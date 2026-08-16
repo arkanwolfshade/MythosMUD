@@ -6,7 +6,7 @@
 
 - **handle_teach_command()** (19 connections) — `server/commands/teach_command.py`
 - **teach_command.py** (15 connections) — `server/commands/teach_command.py`
-- **test_teach_command.py** (13 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_teach_command.py** (14 connections) — `server/tests/unit/commands/test_teach_command.py`
 - **asyncio** (9 connections)
 - **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
 - **test_handle_teach_command()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
@@ -32,11 +32,13 @@
 ## Relationships
 
 - [TargetResolutionService](TargetResolutionService.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (94%)
+- EXTRACTED: 61 (94%)
 - INFERRED: 4 (6%)
 - AMBIGUOUS: 0 (0%)
 

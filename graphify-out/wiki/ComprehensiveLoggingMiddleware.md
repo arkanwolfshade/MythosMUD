@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **ComprehensiveLoggingMiddleware** (16 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging.py** (9 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
+- **test_comprehensive_logging.py** (11 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
 - **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **comprehensive_logging.py** (7 connections) — `server/middleware/comprehensive_logging.py`
@@ -33,10 +33,11 @@
 
 ## Relationships
 
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
 - [middleware](middleware.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [factory.py](factory.py.md) (2 shared connections)
 - [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (83%)
-- INFERRED: 10 (17%)
+- EXTRACTED: 52 (84%)
+- INFERRED: 10 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_profession_service.py** (15 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_profession_service.py** (16 connections) — `server/tests/unit/game/test_profession_service.py`
 - **asyncio** (6 connections)
 - **_profession()** (5 connections) — `server/tests/unit/game/test_profession_service.py`
 - **service()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
@@ -22,8 +22,9 @@
 ## Relationships
 
 - [ValidationError](ValidationError.md) (3 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
@@ -32,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 27 (90%)
+- EXTRACTED: 28 (90%)
 - INFERRED: 3 (10%)
 - AMBIGUOUS: 0 (0%)
 

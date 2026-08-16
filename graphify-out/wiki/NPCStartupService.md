@@ -36,9 +36,9 @@
 - [asyncio](asyncio.md) (10 shared connections)
 - [test_npc_startup_service.py](test_npc_startup_service.py.md) (9 shared connections)
 - [mock_container](mock_container.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (6 shared connections)
 - [_errors_len](_errors_len.md) (5 shared connections)
-- [.get_instance](get_instance.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [npc_database.py](npc_database.py.md) (1 shared connections)
 
 ## Source Files

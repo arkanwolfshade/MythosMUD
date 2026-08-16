@@ -1,43 +1,46 @@
 # PlayerRepositoryProtocol
 
-> 23 nodes
+> 51 nodes
 
 ## Key Concepts
 
 - **PlayerRepositoryProtocol** (23 connections) — `server/persistence/protocols.py`
 - **test_protocol_ellipsis_bodies_via_unbound_methods()** (22 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **protocols.py** (12 connections) — `server/persistence/protocols.py`
+- **RoomRepositoryProtocol** (11 connections) — `server/persistence/protocols.py`
 - **Player** (11 connections)
+- **test_protocols.py** (11 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **UUID** (6 connections)
+- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
+- **test_player_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **_StubRoomRepo** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
 - **.get_active_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
 - **.get_player_by_name()** (4 connections) — `server/persistence/protocols.py`
 - **.get_player_by_user_id()** (4 connections) — `server/persistence/protocols.py`
 - **.get_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
 - **.get_players_in_room()** (4 connections) — `server/persistence/protocols.py`
 - **.save_player()** (4 connections) — `server/persistence/protocols.py`
 - **.save_players()** (4 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
 - **.validate_and_fix_player_room()** (4 connections) — `server/persistence/protocols.py`
+- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
 - **.list_players()** (3 connections) — `server/persistence/protocols.py`
-- **Protocol** (2 connections)
-- **Protocol for player persistence operations. Defines the contract used by…** (1 connections) — `server/persistence/protocols.py`
-- **Get the first active player for a user ID.** (1 connections) — `server/persistence/protocols.py`
-- **Get all players (including deleted) for a user ID.** (1 connections) — `server/persistence/protocols.py`
-- **Get active (non-deleted) players for a user ID.** (1 connections) — `server/persistence/protocols.py`
-- **Get an active player by name (case-insensitive).** (1 connections) — `server/persistence/protocols.py`
-- **Save a player to the database.** (1 connections) — `server/persistence/protocols.py`
-- **Save multiple players in a single transaction.** (1 connections) — `server/persistence/protocols.py`
-- **Get all players in a specific room.** (1 connections) — `server/persistence/protocols.py`
-- **Validate player's current room and fix if invalid.** (1 connections) — `server/persistence/protocols.py`
-- **Exercise Protocol method bodies (`...`) for line coverage.** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [UUID](UUID.md) (12 shared connections)
-- [test_protocols.py](test_protocols.py.md) (4 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [.get_room_by_id](get_room_by_id.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [retry.py](retry.py.md) (3 shared connections)
 - [Room](Room.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 102 (93%)
+- INFERRED: 8 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

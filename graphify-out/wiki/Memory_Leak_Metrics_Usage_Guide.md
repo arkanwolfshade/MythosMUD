@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Memory Leak Monitoring Endpoints** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **Memory Leak Monitoring Endpoints** (1 connections) — `server/README.md`
 - **Memory Leak Metrics Usage Guide** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Relationships
@@ -14,6 +14,7 @@
 ## Source Files
 
 - `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- `server/README.md`
 
 ## Audit Trail
 

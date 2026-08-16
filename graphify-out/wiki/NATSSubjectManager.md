@@ -1,71 +1,78 @@
 # NATSSubjectManager
 
-> 232 nodes
+> 228 nodes
 
 ## Key Concepts
 
-- **NATSSubjectManager** (57 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_manager.py** (48 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **create_error_context()** (35 connections) — `server/exceptions.py`
-- **subject_controller.py** (29 connections) — `server/api/admin/subject_controller.py`
-- **SubjectValidationError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **test_subject_controller.py** (21 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **server/services/nats_subject_manager/__init__.py** (20 connections) — `server/services/nats_subject_manager/__init__.py`
-- **manager.py** (20 connections) — `server/services/nats_subject_manager/manager.py`
-- **PatternNotFoundError** (17 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **MissingParameterError** (16 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **NATSSubjectManager** (58 connections) — `server/services/nats_subject_manager/manager.py`
+- **nats_service.py** (33 connections) — `server/services/nats_service.py`
+- **AppConfig** (31 connections) — `server/config/models/app.py`
+- **config/models/__init__.py** (27 connections) — `server/config/models/__init__.py`
+- **app.py** (21 connections) — `server/config/models/app.py`
+- **server/services/nats_subject_manager/__init__.py** (21 connections) — `server/services/nats_subject_manager/__init__.py`
+- **nats_service_pool.py** (20 connections) — `server/services/nats_service_pool.py`
+- **test_config_models.py** (20 connections) — `server/tests/unit/config/test_config_models.py`
 - **SubjectManagerMetrics** (16 connections) — `server/services/nats_subject_manager/metrics.py`
-- **test_nats_subject_exceptions.py** (16 connections) — `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- **InvalidPatternError** (15 connections) — `server/services/nats_subject_manager/exceptions.py`
+- **GameConfig** (15 connections) — `server/config/models/game.py`
+- **event_publisher.py** (15 connections) — `server/realtime/event_publisher.py`
+- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
 - **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **nats_subject_manager/exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
-- **NATSSubjectError** (10 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (9 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (8 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **_register_pattern_try()** (7 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
-- **.build_subject()** (7 connections) — `server/services/nats_subject_manager/manager.py`
-- *... and 207 more nodes in this community*
+- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
+- **_parse_env_list()** (12 connections) — `server/config/models/_helpers.py`
+- **_helpers.py** (12 connections) — `server/config/models/_helpers.py`
+- **test_config_model_helpers.py** (12 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **nats.py** (11 connections) — `server/config/models/nats.py`
+- **LoggingConfig** (10 connections) — `server/config/models/security_logging.py`
+- **server_db.py** (10 connections) — `server/config/models/server_db.py`
+- **TimeConfig** (9 connections) — `server/config/models/chat_time.py`
+- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
+- **_default_cors_origins()** (9 connections) — `server/config/models/_helpers.py`
+- **ChatConfig** (8 connections) — `server/config/models/chat_time.py`
+- **_apply_url_fallback()** (8 connections) — `server/config/models/_helpers.py`
+- *... and 203 more nodes in this community*
 
 ## Relationships
 
-- [test_validation.py](test_validation.py.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (8 shared connections)
-- [test_metrics.py](test_metrics.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (26 shared connections)
+- [SubjectValidator](SubjectValidator.md) (12 shared connections)
+- [NATSConfig](NATSConfig.md) (11 shared connections)
+- [subject_controller.py](subject_controller.py.md) (11 shared connections)
+- [CombatInstance](CombatInstance.md) (10 shared connections)
+- [test_manager.py](test_manager.py.md) (9 shared connections)
+- [.build_subject](build_subject.md) (8 shared connections)
+- [BaseCommand](BaseCommand.md) (7 shared connections)
+- [PatternNotFoundError](PatternNotFoundError.md) (6 shared connections)
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (6 shared connections)
-- [ErrorContext](ErrorContext.md) (5 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (5 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (4 shared connections)
-- [NATSService](NATSService.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (3 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (5 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (5 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/exceptions.py`
-- `server/services/combat_event_publisher.py`
+- `server/config/__init__.py`
+- `server/config/models/__init__.py`
+- `server/config/models/_helpers.py`
+- `server/config/models/app.py`
+- `server/config/models/chat_time.py`
+- `server/config/models/game.py`
+- `server/config/models/nats.py`
+- `server/config/models/player_stats.py`
+- `server/config/models/security_logging.py`
+- `server/config/models/server_db.py`
+- `server/infrastructure/nats_broker.py`
+- `server/realtime/event_publisher.py`
+- `server/services/nats_metrics.py`
+- `server/services/nats_service.py`
+- `server/services/nats_service_pool.py`
 - `server/services/nats_subject_manager/__init__.py`
-- `server/services/nats_subject_manager/exceptions.py`
 - `server/services/nats_subject_manager/manager.py`
 - `server/services/nats_subject_manager/metrics.py`
 - `server/services/nats_subject_manager/pattern_matcher.py`
-- `server/services/nats_subject_manager/patterns.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_nats_subject_exceptions.py`
-- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/config/test_config_model_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 452 (94%)
-- INFERRED: 29 (6%)
+- EXTRACTED: 492 (94%)
+- INFERRED: 31 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

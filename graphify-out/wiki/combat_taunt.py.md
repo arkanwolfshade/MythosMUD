@@ -1,12 +1,12 @@
 # combat_taunt.py
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **combat_taunt.py** (32 connections) — `server/commands/combat_taunt.py`
 - **TauntCommandHandler** (27 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (20 connections) — `server/tests/unit/commands/test_combat_taunt.py`
+- **test_combat_taunt.py** (21 connections) — `server/tests/unit/commands/test_combat_taunt.py`
 - **run_handle_taunt_command()** (13 connections) — `server/commands/combat_taunt.py`
 - **_validate_taunt_context()** (12 connections) — `server/commands/combat_taunt.py`
 - **_apply_taunt_and_maybe_broadcast()** (9 connections) — `server/commands/combat_taunt.py`
@@ -28,23 +28,23 @@
 - **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_taunt.py`
 - **.combat_service()** (3 connections) — `server/commands/combat_taunt.py`
 - **.get_player_and_room()** (3 connections) — `server/commands/combat_taunt.py`
-- **test_resolve_taunt_room_and_player_uses_room_id_attr()** (3 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- *... and 33 more nodes in this community*
+- **.resolve_combat_target()** (3 connections) — `server/commands/combat_taunt.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
+- [CombatInstance](CombatInstance.md) (17 shared connections)
 - [TargetMatch](TargetMatch.md) (11 shared connections)
-- [models/combat.py](models-combat.py.md) (9 shared connections)
 - [CombatParticipant](CombatParticipant.md) (7 shared connections)
-- [CombatInstance](CombatInstance.md) (6 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (4 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (5 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [combat_service_npc.py](combat_service_npc.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 130 (85%)
+- EXTRACTED: 133 (85%)
 - INFERRED: 23 (15%)
 - AMBIGUOUS: 0 (0%)
 

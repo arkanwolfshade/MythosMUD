@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_channel_commands.py** (20 connections) — `server/tests/unit/commands/test_channel_commands.py`
+- **test_channel_commands.py** (21 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
 - **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
 - **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
@@ -33,14 +33,16 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
-- [get_async_session](get_async_session.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [database.py](database.py.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 87 (98%)
+- EXTRACTED: 88 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

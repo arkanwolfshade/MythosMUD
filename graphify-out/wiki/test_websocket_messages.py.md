@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **test_websocket_messages.py** (32 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
+- **test_websocket_messages.py** (34 connections) — `server/tests/unit/schemas/test_websocket_messages.py`
 - **ChatMessageData** (11 connections) — `server/schemas/realtime/websocket_messages.py`
 - **CommandMessageData** (11 connections) — `server/schemas/realtime/websocket_messages.py`
 - **BaseWebSocketMessage** (10 connections) — `server/schemas/realtime/websocket_messages.py`
-- **websocket_messages.py** (9 connections) — `server/schemas/realtime/websocket_messages.py`
+- **websocket_messages.py** (10 connections) — `server/schemas/realtime/websocket_messages.py`
 - **ChatMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
 - **CommandMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
 - **PingMessage** (7 connections) — `server/schemas/realtime/websocket_messages.py`
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 77 (73%)
+- EXTRACTED: 80 (73%)
 - INFERRED: 29 (27%)
 - AMBIGUOUS: 0 (0%)
 

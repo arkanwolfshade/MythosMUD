@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **spell_effects_support.py** (20 connections) — `server/game/magic/spell_effects_support.py`
-- **test_spell_effects_support.py** (13 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_spell_effects_support.py** (14 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 - **process_create_object_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
 - **process_stat_modify_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
 - **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
-- [Spell](Spell.md) (6 shared connections)
-- [server/models/game.py](server-models-game.py.md) (4 shared connections)
+- [TargetMatch](TargetMatch.md) (20 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
+- [server/models/game.py](server-models-game.py.md) (3 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (1 shared connections)
+- [run_flee_effect](run_flee_effect.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (95%)
+- EXTRACTED: 102 (95%)
 - INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 

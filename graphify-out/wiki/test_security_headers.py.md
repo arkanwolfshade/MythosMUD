@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_security_headers.py** (20 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **test_security_headers.py** (21 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
 - **MutableHeaders** (6 connections)
 - **.__call__()** (5 connections) — `server/middleware/security_headers.py`
@@ -35,7 +35,8 @@
 
 - [middleware](middleware.md) (6 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [factory.py](factory.py.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 69 (90%)
+- INFERRED: 8 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

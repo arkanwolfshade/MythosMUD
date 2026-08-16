@@ -5,9 +5,9 @@
 ## Key Concepts
 
 - **CoordinateValidator** (11 connections) — `server/services/coordinate_validator.py`
-- **coordinate_validator.py** (8 connections) — `server/services/coordinate_validator.py`
+- **coordinate_validator.py** (9 connections) — `server/services/coordinate_validator.py`
+- **test_coordinate_validator.py** (7 connections) — `server/tests/unit/services/test_coordinate_validator.py`
 - **.validate_coordinates()** (6 connections) — `server/services/coordinate_validator.py`
-- **test_coordinate_validator.py** (6 connections) — `server/tests/unit/services/test_coordinate_validator.py`
 - **._fetch_conflicts()** (4 connections) — `server/services/coordinate_validator.py`
 - **_conflict_from_row()** (3 connections) — `server/services/coordinate_validator.py`
 - **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
@@ -28,8 +28,10 @@
 
 ## Relationships
 
-- [maps.py](maps.py.md) (4 shared connections)
+- [ExplorationService](ExplorationService.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 34 (97%)
+- EXTRACTED: 36 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

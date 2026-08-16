@@ -1,12 +1,13 @@
 # test_player_death_service.py
 
-> 86 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **test_player_death_service.py** (52 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_death_service.py** (53 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **asyncio** (26 connections)
 - **fixture** (7 connections)
+- **mock_player()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **player_death_service()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **player_death_service_no_dependencies()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_process_mortally_wounded_tick_publishes_event()** (4 connections) — `server/tests/unit/services/test_player_death_service.py`
@@ -28,15 +29,15 @@
 - **test_get_mortally_wounded_players_excludes_healthy()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_get_mortally_wounded_players_finds_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
 - **test_get_mortally_wounded_players_handles_error()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_handle_player_death_clears_combat_state()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- *... and 61 more nodes in this community*
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [Player](Player.md) (5 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (4 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 126 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 128 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,11 @@
 # test_occupants.py
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
 - **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_test_occupants_command()** (13 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Any** (7 connections)
 - **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
 - **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
@@ -15,6 +16,7 @@
 - **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
 - **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Resolve application, player, room_id, and event handler for NPC test occupants…** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Handle NPC test occupants command - manually trigger occupant query for…** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 - **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
@@ -24,10 +26,10 @@
 
 ## Relationships
 
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (6 shared connections)
+- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [event_handler](event_handler.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
@@ -36,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

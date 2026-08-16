@@ -1,34 +1,34 @@
 # properties
 
-> 12 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **properties** (7 connections) — `schemas/intersection_schema.json`
+- **exits** (5 connections) — `schemas/intersection_schema.json`
+- **down** (2 connections) — `schemas/intersection_schema.json`
+- **east** (2 connections) — `schemas/intersection_schema.json`
+- **north** (2 connections) — `schemas/intersection_schema.json`
+- **south** (2 connections) — `schemas/intersection_schema.json`
+- **up** (2 connections) — `schemas/intersection_schema.json`
+- **west** (2 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **oneOf** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [start_hour](start_hour.md) (1 shared connections)
-- [end_hour](end_hour.md) (1 shared connections)
-- [days](days.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
-- [effects](effects.md) (1 shared connections)
-- [items](items.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 

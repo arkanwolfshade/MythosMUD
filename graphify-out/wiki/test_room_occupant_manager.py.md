@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_room_occupant_manager.py** (16 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **test_room_occupant_manager.py** (17 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **asyncio** (9 connections)
 - **occupant_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
 - **test_get_room_occupants_get_players_error()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
+- EXTRACTED: 41 (93%)
 - INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 

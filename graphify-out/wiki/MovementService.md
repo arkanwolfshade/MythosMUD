@@ -1,6 +1,6 @@
 # MovementService
 
-> 54 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -14,6 +14,7 @@
 - **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
 - **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
 - **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
 - **.remove_player_from_room()** (5 connections) — `server/game/movement_service.py`
 - **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
 - **._validate_add_player_ids()** (5 connections) — `server/game/movement_service.py`
@@ -28,23 +29,21 @@
 - **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
 - **.get_room_players()** (3 connections) — `server/game/movement_service.py`
 - **.validate_player_location()** (3 connections) — `server/game/movement_service.py`
-- **test_movement_service_init()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- *... and 29 more nodes in this community*
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
 - [test_movement_service.py](test_movement_service.py.md) (11 shared connections)
-- [DatabaseError](DatabaseError.md) (9 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [log_and_raise](log_and_raise.md) (9 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [FollowService](FollowService.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (2 shared connections)
-- [FollowService](FollowService.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [ValidationError](ValidationError.md) (2 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
-- [test_spell_effects.py](test_spell_effects.py.md) (1 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 121 (95%)
+- EXTRACTED: 124 (95%)
 - INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 

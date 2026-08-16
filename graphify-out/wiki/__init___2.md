@@ -1,23 +1,25 @@
 # .__init__
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/app/task_registry.py`
-- **Initialize TaskRegistry with empty task collections.** (1 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
+- **SendPersonalMessage** (1 connections)
+- **Initialize the message broadcaster. Args: room_manager: RoomSubscriptionManager…** (1 connections) — `server/realtime/messaging/message_broadcaster.py`
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/realtime/messaging/message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

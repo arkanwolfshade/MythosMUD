@@ -21,7 +21,7 @@
 - [devDependencies](devDependencies.md) (1 shared connections)
 - [scripts](scripts.md) (1 shared connections)
 - [overrides](overrides.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [AuthenticationError](AuthenticationError.md) (1 shared connections)
 
 ## Source Files
 

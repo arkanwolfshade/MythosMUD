@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (3 shared connections)
+- [logger.ts](logger.ts.md) (3 shared connections)
 
 ## Source Files
 

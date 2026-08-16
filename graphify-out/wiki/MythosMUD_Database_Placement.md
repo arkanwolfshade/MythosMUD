@@ -1,13 +1,17 @@
 # MythosMUD Database Placement
 
-> 16 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **MythosMUD Database Placement** (7 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
 - **MythosMUD Full-Stack Feature** (7 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **mythosmud-database-placement/SKILL.md** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **mythosmud-full-stack-feature/SKILL.md** (2 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **MythosMUD OpenAPI Workflow** (6 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **MythosMUD Pre-Commit Checklist** (5 connections) — `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **Full Stack Feature Skill** (3 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **OpenAPI Workflow Skill** (3 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Database Placement Skill** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Pre-Commit Checklist Skill** (2 connections) — `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
 - **Allowed Paths Only** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
 - **Data Types** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
 - **Forbidden** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
@@ -20,6 +24,12 @@
 - **Reference** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
 - **Stack Summary** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
 - **When to Touch Each Layer** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Output** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Requirements** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **When to Regenerate** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -29,10 +39,12 @@
 
 - `.claude/skills/mythosmud-database-placement/SKILL.md`
 - `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

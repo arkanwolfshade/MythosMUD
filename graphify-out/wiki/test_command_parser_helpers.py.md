@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (24 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
+- **test_command_parser_helpers.py** (26 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
 - **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
@@ -34,9 +34,10 @@
 ## Relationships
 
 - [ValidationError](ValidationError.md) (6 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (88%)
+- EXTRACTED: 46 (88%)
 - INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 

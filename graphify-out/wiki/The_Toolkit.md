@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **The Toolkit** (8 connections) — `.claude/skills/overdrive/SKILL.md`
-- **overdrive/SKILL.md** (5 connections) — `.claude/skills/overdrive/SKILL.md`
+- **Overdrive Skill** (6 connections) — `.claude/skills/overdrive/SKILL.md`
 - **Assess What "Extraordinary" Means Here** (5 connections) — `.claude/skills/overdrive/SKILL.md`
 - **Implement with Discipline** (4 connections) — `.claude/skills/overdrive/SKILL.md`
 - **MANDATORY PREPARATION** (3 connections) — `.claude/skills/overdrive/SKILL.md`
@@ -29,7 +29,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

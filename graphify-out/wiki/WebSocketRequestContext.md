@@ -1,14 +1,16 @@
 # WebSocketRequestContext
 
-> 41 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
 - **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
 - **Any** (7 connections)
 - **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
 - **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
@@ -27,27 +29,25 @@
 - **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **Get the event bus from the request context.** (1 connections) — `server/realtime/request_context.py`
 - **Get the alias storage from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Creates FastAPI Request-like objects for WebSocket commands. This allows…** (1 connections) — `server/realtime/request_context.py`
-- **Initialize the WebSocket request context. Args: app_state: Real application…** (1 connections) — `server/realtime/request_context.py`
-- *... and 16 more nodes in this community*
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/request_context.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
 - `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (79%)
-- INFERRED: 15 (21%)
+- EXTRACTED: 62 (81%)
+- INFERRED: 15 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

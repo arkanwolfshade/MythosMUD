@@ -1,6 +1,6 @@
 # CorpseOverlay.tsx
 
-> 88 nodes
+> 90 nodes
 
 ## Key Concepts
 
@@ -22,21 +22,23 @@
 - **ContainerSplitPane.test.tsx** (7 connections) — `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
 - **CorpseOverlay.test.tsx** (7 connections) — `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
 - **getCorpseTiming()** (6 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
+- **useGameClientV2MemoryMonitorEffect.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **BackpackTab()** (5 connections) — `client/src/components/containers/BackpackTab.tsx`
 - **ContainerSplitPane()** (5 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
+- **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
 - **formatTimeRemaining()** (4 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **ContainerItemRow()** (3 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- **ContainerSplitPaneView()** (3 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- *... and 63 more nodes in this community*
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
 - [gameStore.ts](gameStore.ts.md) (9 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (6 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (4 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
+- [TerminalButton.tsx](TerminalButton.tsx.md) (4 shared connections)
+- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (3 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
 
@@ -53,13 +55,14 @@
 - `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
 - `client/src/components/containers/corpseOverlayUtils.ts`
 - `client/src/components/containers/useContainerSplitPane.ts`
+- `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/stores/__tests__/containerStore.test.ts`
 - `client/src/stores/containerStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (100%)
+- EXTRACTED: 196 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

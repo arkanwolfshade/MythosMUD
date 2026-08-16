@@ -35,7 +35,7 @@
 - [asyncio](asyncio.md) (10 shared connections)
 - [test_npc_startup_service.py](test_npc_startup_service.py.md) (10 shared connections)
 - [NPCStartupService](NPCStartupService.md) (9 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files

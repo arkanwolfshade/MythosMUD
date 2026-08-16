@@ -1,69 +1,78 @@
 # gameStore.ts
 
-> 71 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **gameStore.ts** (37 connections) — `client/src/stores/gameStore.ts`
-- **useGameTerminal.ts** (22 connections) — `client/src/hooks/useGameTerminal.ts`
-- **commandStore.ts** (18 connections) — `client/src/stores/commandStore.ts`
-- **connectionStore.ts** (13 connections) — `client/src/stores/connectionStore.ts`
-- **stateManagementIntegration.test.ts** (13 connections) — `client/src/stores/__tests__/stateManagementIntegration.test.ts`
-- **useGameTerminal()** (12 connections) — `client/src/hooks/useGameTerminal.ts`
+- **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **useRoomMapData.ts** (22 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
+- **Room** (17 connections) — `client/src/stores/gameStore.ts`
+- **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- **createEdgesFromRooms()** (16 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **RoomMapViewer.map-controls.test.tsx** (16 connections) — `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
+- **useMapLayout()** (15 connections) — `client/src/components/map/hooks/useMapLayout.ts`
+- **roomsToNodes()** (15 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **RoomMapViewer.rendering.test.tsx** (14 connections) — `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
+- **useRoomMapData()** (13 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
+- **RoomDetailsPanel.tsx** (12 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
+- **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
 - **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
-- **sessionStore.ts** (11 connections) — `client/src/stores/sessionStore.ts`
-- **GameTerminalContainer.test.tsx** (9 connections) — `client/src/components/__tests__/GameTerminalContainer.test.tsx`
-- **useGameTerminal.test.ts** (8 connections) — `client/src/hooks/useGameTerminal.test.ts`
-- **useConnectionStore** (7 connections) — `client/src/stores/connectionStore.ts`
-- **useSessionStore** (7 connections) — `client/src/stores/sessionStore.ts`
-- **useGameTerminalStores()** (6 connections) — `client/src/hooks/useGameTerminal.ts`
-- **GameTerminalContainer.tsx** (6 connections) — `client/src/components/GameTerminalContainer.tsx`
-- **useCommandStore** (5 connections) — `client/src/stores/commandStore.ts`
-- **createCommandQueueAndAliasActions()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createCommandStoreSlice()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createSessionActions()** (4 connections) — `client/src/stores/sessionStore.ts`
-- **GameTerminalContainer()** (3 connections) — `client/src/components/GameTerminalContainer.tsx`
-- **createInitialState()** (3 connections) — `client/src/stores/commandStore.ts`
-- **createInitialState()** (3 connections) — `client/src/stores/connectionStore.ts`
-- **generateSessionId()** (3 connections) — `client/src/stores/connectionStore.ts`
-- **createInitialState()** (3 connections) — `client/src/stores/sessionStore.ts`
-- **connectionStore.test.ts** (3 connections) — `client/src/stores/__tests__/connectionStore.test.ts`
-- **GameTerminalState** (2 connections) — `client/src/hooks/useGameTerminal.ts`
-- *... and 46 more nodes in this community*
+- **RoomMapViewer()** (10 connections) — `client/src/components/map/RoomMapViewer.tsx`
+- **MapControls.tsx** (10 connections) — `client/src/components/map/MapControls.tsx`
+- **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
+- **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
+- **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
+- **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
+- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (11 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (19 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
+- [map/types.ts](map-types.ts.md) (12 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (9 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (8 shared connections)
-- [GameTerminalContext.test.tsx](GameTerminalContext.test.tsx.md) (5 shared connections)
-- [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
-- [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (1 shared connections)
-- [chatPanelRefactoredDerived.ts](chatPanelRefactoredDerived.ts.md) (1 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (1 shared connections)
+- [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (5 shared connections)
+- [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
+- [utils/config.ts](utils-config.ts.md) (3 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminalContainer.tsx`
-- `client/src/components/__tests__/GameTerminalContainer.test.tsx`
-- `client/src/hooks/useGameTerminal.test.ts`
-- `client/src/hooks/useGameTerminal.ts`
-- `client/src/stores/__tests__/commandStore.test.ts`
-- `client/src/stores/__tests__/connectionStore.test.ts`
-- `client/src/stores/__tests__/gameStore.test.ts`
-- `client/src/stores/__tests__/sessionStore.test.ts`
-- `client/src/stores/__tests__/stateManagementIntegration.test.ts`
-- `client/src/stores/commandStore.ts`
-- `client/src/stores/connectionStore.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/stores/sessionStore.ts`
+- `client/src/components/map/MapControls.tsx`
+- `client/src/components/map/RoomDetailsPanel.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- `client/src/components/map/RoomMapViewer.tsx`
+- `client/src/components/map/__tests__/MapControls.test.tsx`
+- `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
+- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
+- `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
+- `client/src/components/map/__tests__/theme.test.tsx`
+- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
+- `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/hooks/useRoomMapData.ts`
+- `client/src/components/map/utils/__tests__/mapUtils.test.ts`
+- `client/src/components/map/utils/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 275 (99%)
+- INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

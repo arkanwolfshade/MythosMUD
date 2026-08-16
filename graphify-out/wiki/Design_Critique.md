@@ -6,7 +6,7 @@
 
 - **Design Critique** (11 connections) — `.claude/skills/critique/SKILL.md`
 - **Generate Critique Report** (7 connections) — `.claude/skills/critique/SKILL.md`
-- **critique/SKILL.md** (3 connections) — `.claude/skills/critique/SKILL.md`
+- **Critique Skill** (4 connections) — `.claude/skills/critique/SKILL.md`
 - **10. Microcopy & Voice** (1 connections) — `.claude/skills/critique/SKILL.md`
 - **1. AI Slop Detection (CRITICAL)** (1 connections) — `.claude/skills/critique/SKILL.md`
 - **2. Visual Hierarchy** (1 connections) — `.claude/skills/critique/SKILL.md`
@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -35,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

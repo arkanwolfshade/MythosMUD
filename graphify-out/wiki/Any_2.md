@@ -1,33 +1,34 @@
 # Any
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.execute()** (4 connections) — `server/postgres_adapter.py`
-- **.cursor()** (3 connections) — `server/postgres_adapter.py`
-- **.keys()** (3 connections) — `server/postgres_adapter.py`
-- **.__getitem__()** (2 connections) — `server/postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **.__iter__()** (2 connections) — `server/postgres_adapter.py`
-- **Return the keys of the row dictionary. Returns: dict_keys: The keys of the row…** (1 connections) — `server/postgres_adapter.py`
-- **Execute a query and return a cursor. Args: query: SQL query with PostgreSQL %s…** (1 connections) — `server/postgres_adapter.py`
-- **Get a cursor from the underlying connection. This method provides direct access…** (1 connections) — `server/postgres_adapter.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [PostgresRow](PostgresRow.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (3 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [RoomDataCache](RoomDataCache.md) (6 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

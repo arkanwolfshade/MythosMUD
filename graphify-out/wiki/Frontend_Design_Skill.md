@@ -1,50 +1,53 @@
 # Frontend Design Skill
 
-> 16 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Frontend Design Skill** (15 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **AI Slop Avoidance** (2 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Critique Skill** (2 connections) — `.cursor/skills/critique/SKILL.md`
-- **Design Context Gathering Protocol** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **teach-impeccable Prerequisite** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Tailwind CSS Anti-Pattern Remediation** (1 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
-- **Adapt Skill** (1 connections) — `.cursor/skills/adapt/SKILL.md`
-- **Animate Skill** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Arrange Skill** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Audit Skill** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Bolder Skill** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Clarify Skill** (1 connections) — `.cursor/skills/clarify/SKILL.md`
-- **Colorize Skill** (1 connections) — `.cursor/skills/colorize/SKILL.md`
-- **Delight Skill** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Distill Skill** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Extract Skill** (1 connections) — `.cursor/skills/extract/SKILL.md`
+- **Frontend Design Skill** (31 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Frontend Aesthetics Guidelines** (9 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Normalize Skill** (5 connections) — `.claude/skills/normalize/SKILL.md`
+- **Color & Theme** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Context Gathering Protocol** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Design Direction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Implementation Principles** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Interaction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Layout & Space** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Motion** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Responsive** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **The AI Slop Test** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Typography** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **UX Writing** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Visual Details** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
+- **Clean Up** (1 connections) — `.claude/skills/normalize/SKILL.md`
+- **Execute** (1 connections) — `.claude/skills/normalize/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/normalize/SKILL.md`
+- **Plan** (1 connections) — `.claude/skills/normalize/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Interaction Design](Interaction_Design.md) (1 shared connections)
+- [Responsive Design](Responsive_Design.md) (1 shared connections)
+- [UX Writing](UX_Writing.md) (1 shared connections)
+- [Typography](Typography.md) (1 shared connections)
+- [Color & Contrast](Color_&_Contrast.md) (1 shared connections)
+- [Spatial Design](Spatial_Design.md) (1 shared connections)
+- [Motion Design](Motion_Design.md) (1 shared connections)
+- [Step 2: Ask UX-Focused Questions](Step_2-_Ask_UX-Focused_Questions.md) (1 shared connections)
+- [Adapt Skill](Adapt_Skill.md) (1 shared connections)
+- [Animate Skill](Animate_Skill.md) (1 shared connections)
+- [Improve Layout Systematically](Improve_Layout_Systematically.md) (1 shared connections)
+- [Generate Comprehensive Report](Generate_Comprehensive_Report.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
-- `.cursor/skills/adapt/SKILL.md`
-- `.cursor/skills/animate/SKILL.md`
-- `.cursor/skills/arrange/SKILL.md`
-- `.cursor/skills/audit/SKILL.md`
-- `.cursor/skills/bolder/SKILL.md`
-- `.cursor/skills/clarify/SKILL.md`
-- `.cursor/skills/colorize/SKILL.md`
-- `.cursor/skills/critique/SKILL.md`
-- `.cursor/skills/delight/SKILL.md`
-- `.cursor/skills/distill/SKILL.md`
-- `.cursor/skills/extract/SKILL.md`
-- `.cursor/skills/frontend-design/SKILL.md`
+- `.claude/skills/frontend-design/SKILL.md`
+- `.claude/skills/normalize/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

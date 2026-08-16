@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Amplify the Design** (7 connections) — `.claude/skills/bolder/SKILL.md`
-- **bolder/SKILL.md** (5 connections) — `.claude/skills/bolder/SKILL.md`
+- **Bolder Skill** (6 connections) — `.claude/skills/bolder/SKILL.md`
 - **Assess Current State** (1 connections) — `.claude/skills/bolder/SKILL.md`
 - **Color Intensification** (1 connections) — `.claude/skills/bolder/SKILL.md`
 - **Composition Boldness** (1 connections) — `.claude/skills/bolder/SKILL.md`
@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +27,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

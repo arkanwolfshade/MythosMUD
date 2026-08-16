@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **testing_examples.py** (30 connections) — `docs/examples/logging/testing_examples.py`
+- **testing_examples.py** (32 connections) — `docs/examples/logging/testing_examples.py`
 - **WebSocket** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **process_batch()** (4 connections) — `docs/examples/logging/testing_examples.py`
 - **test_async_logging()** (4 connections) — `docs/examples/logging/testing_examples.py`
@@ -33,9 +33,12 @@
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (6 shared connections)
-- [correct_patterns.py](correct_patterns.py.md) (2 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
+- [Client](Client.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [TestRunner](TestRunner.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 73 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

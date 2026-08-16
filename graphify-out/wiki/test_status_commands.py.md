@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_status_commands.py** (31 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_status_commands.py** (32 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **status_commands.py** (18 connections) — `server/commands/status_commands.py`
 - **handle_status_command()** (14 connections) — `server/commands/status_commands.py`
 - **asyncio** (14 connections)
@@ -33,14 +33,16 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
+- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (3 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 162 (95%)
+- EXTRACTED: 163 (95%)
 - INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 

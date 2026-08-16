@@ -1,11 +1,12 @@
 # get_username_from_user
 
-> 74 nodes
+> 80 nodes
 
 ## Key Concepts
 
 - **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
-- **test_command_helpers.py** (27 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **test_command_helpers.py** (28 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **command_helpers.py** (18 connections) — `server/utils/command_helpers.py`
 - **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
 - **test_command_helpers_functions.py** (17 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
 - **get_command_help()** (12 connections) — `server/utils/command_helpers.py`
@@ -28,23 +29,22 @@
 - **test_get_command_help_no_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
 - **test_get_command_help_specific_commands()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
 - **test_get_command_help_unknown_command()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- **test_get_username_from_user_dict_name()** (3 connections) — `server/tests/unit/utils/test_command_helpers.py`
-- *... and 49 more nodes in this community*
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (11 shared connections)
-- [BaseCommand](BaseCommand.md) (3 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (3 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (7 shared connections)
+- [CommandFactory](CommandFactory.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
 - [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
 - [quest_commands.py](quest_commands.py.md) (2 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [test_channel_commands.py](test_channel_commands.py.md) (1 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [.state](state.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [handle_command](handle_command.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 119 (78%)
-- INFERRED: 34 (22%)
+- EXTRACTED: 135 (80%)
+- INFERRED: 34 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

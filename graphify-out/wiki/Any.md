@@ -1,6 +1,6 @@
 # Any
 
-> 30 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **Task** (8 connections)
 - **TaskMetadata** (7 connections) — `server/app/task_registry.py`
 - **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **register_task()** (6 connections) — `server/app/task_registry.py`
 - **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
 - **.__init__()** (4 connections) — `server/app/task_registry.py`
 - **.cancel_task()** (4 connections) — `server/app/task_registry.py`
@@ -29,12 +28,12 @@
 - **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
 - **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
 - **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
-- *... and 5 more nodes in this community*
+- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (12 shared connections)
-- [task_registry.py](task_registry.py.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (15 shared connections)
 - [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (1 shared connections)
 
 ## Source Files
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

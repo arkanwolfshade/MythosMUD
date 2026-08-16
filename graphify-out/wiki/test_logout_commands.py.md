@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_logout_commands.py** (42 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_logout_commands.py** (43 connections) — `server/tests/unit/commands/test_logout_commands.py`
 - **logout_commands.py** (26 connections) — `server/commands/logout_commands.py`
 - **handle_logout_command()** (24 connections) — `server/commands/logout_commands.py`
 - **asyncio** (18 connections)
@@ -34,14 +34,16 @@
 ## Relationships
 
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [get_cached_player](get_cached_player.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
+- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 215 (95%)
+- EXTRACTED: 216 (95%)
 - INFERRED: 12 (5%)
 - AMBIGUOUS: 0 (0%)
 

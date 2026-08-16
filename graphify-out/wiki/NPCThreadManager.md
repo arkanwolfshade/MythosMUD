@@ -1,43 +1,46 @@
 # NPCThreadManager
 
-> 46 nodes
+> 75 nodes
 
 ## Key Concepts
 
 - **NPCThreadManager** (30 connections) — `server/npc/threading.py`
-- **test_npc_threading_messages.py** (24 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_threading_messages.py** (25 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
 - **NPCMessageQueue** (15 connections) — `server/npc/threading.py`
+- **Any** (14 connections)
 - **NPCCommunicationBridge** (13 connections) — `server/npc/threading.py`
 - **asyncio** (10 connections)
-- **.__init__()** (4 connections) — `server/npc/threading.py`
+- **._execute_wander_movement()** (8 connections) — `server/npc/threading.py`
+- **._npc_thread_worker()** (6 connections) — `server/npc/threading.py`
+- **._process_wander_action()** (6 connections) — `server/npc/threading.py`
+- **._execute_npc_behavior()** (5 connections) — `server/npc/threading.py`
+- **._process_npc_message()** (5 connections) — `server/npc/threading.py`
+- **._resolve_wander_npc()** (5 connections) — `server/npc/threading.py`
+- **.restart_npc_thread()** (5 connections) — `server/npc/threading.py`
+- **.start_npc_thread()** (5 connections) — `server/npc/threading.py`
+- **._parse_behavior_config()** (4 connections) — `server/npc/threading.py`
 - **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
 - **._stop_npc_thread_internal()** (4 connections) — `server/npc/threading.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.broadcast_to_all_npcs()** (3 connections) — `server/npc/threading.py`
+- **.get_messages_for_npc()** (3 connections) — `server/npc/threading.py`
+- **.get_pending_messages()** (3 connections) — `server/npc/threading.py`
+- **.receive_message_from_npc()** (3 connections) — `server/npc/threading.py`
+- **.send_message_to_npc()** (3 connections) — `server/npc/threading.py`
+- **.add_message()** (3 connections) — `server/npc/threading.py`
+- **.get_messages()** (3 connections) — `server/npc/threading.py`
 - **.get_npc_definition()** (3 connections) — `server/npc/threading.py`
-- **.stop()** (3 connections) — `server/npc/threading.py`
-- **test_bridge_broadcast_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_receive_message_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_communication_bridge_messages()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_restart_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_stop_cancels_running_task()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_dispatches_wander()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_handles_errors()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **.clear_messages()** (2 connections) — `server/npc/threading.py`
-- **.get_queue_size()** (2 connections) — `server/npc/threading.py`
-- **.get_total_queue_size()** (2 connections) — `server/npc/threading.py`
-- **.__init__()** (2 connections) — `server/npc/threading.py`
-- **.get_active_npc_threads()** (2 connections) — `server/npc/threading.py`
-- *... and 21 more nodes in this community*
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (16 shared connections)
-- [Any](Any.md) (12 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (5 shared connections)
-- [HealthMonitor](HealthMonitor.md) (2 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [NPCActionMessage](NPCActionMessage.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (84%)
-- INFERRED: 17 (16%)
+- EXTRACTED: 134 (89%)
+- INFERRED: 16 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

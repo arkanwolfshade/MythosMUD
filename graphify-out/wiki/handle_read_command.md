@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **handle_read_command()** (23 connections) — `server/commands/read_command.py`
-- **test_read_command.py** (18 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_read_command.py** (19 connections) — `server/tests/unit/commands/test_read_command.py`
 - **read_command.py** (16 connections) — `server/commands/read_command.py`
 - **asyncio** (15 connections)
 - **_process_spellbook_read()** (8 connections) — `server/commands/read_command.py`
@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (97%)
+- EXTRACTED: 102 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

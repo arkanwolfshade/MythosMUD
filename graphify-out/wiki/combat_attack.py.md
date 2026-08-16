@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **combat_attack.py** (17 connections) — `server/commands/combat_attack.py`
-- **test_combat_attack.py** (12 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_combat_attack.py** (13 connections) — `server/tests/unit/commands/test_combat_attack.py`
 - **run_handle_attack_command()** (9 connections) — `server/commands/combat_attack.py`
 - **_resolve_combat_damage()** (8 connections) — `server/commands/combat_attack.py`
 - **asyncio** (8 connections)
@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (2 shared connections)
 - [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [combat_integration.py](combat_integration.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 80 (99%)
+- EXTRACTED: 81 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

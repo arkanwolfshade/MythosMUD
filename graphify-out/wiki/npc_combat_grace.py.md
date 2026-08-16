@@ -25,13 +25,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (2 shared connections)
 - [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

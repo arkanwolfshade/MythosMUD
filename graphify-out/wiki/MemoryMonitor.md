@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
+- [StatisticsAggregator](StatisticsAggregator.md) (1 shared connections)
 
 ## Source Files
 

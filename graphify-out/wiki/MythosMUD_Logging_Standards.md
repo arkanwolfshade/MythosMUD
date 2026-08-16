@@ -5,12 +5,12 @@
 ## Key Concepts
 
 - **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
-- **mythosmud-logging-standards/SKILL.md** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 - **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 - **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 - **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 - **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 - **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 

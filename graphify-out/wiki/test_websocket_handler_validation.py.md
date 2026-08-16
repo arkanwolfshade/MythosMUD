@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_validation.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **test_websocket_handler_validation.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 - **test_validate_message_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 - **mock_validator()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
 - **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
@@ -20,6 +20,7 @@
 ## Relationships
 
 - [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
@@ -28,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
+- EXTRACTED: 16 (94%)
 - INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 

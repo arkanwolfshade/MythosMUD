@@ -1,10 +1,10 @@
 # test_quest_service.py
 
-> 85 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **test_quest_service.py** (42 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_quest_service.py** (43 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_MockDefRepo** (30 connections) — `server/tests/unit/game/test_quest_service.py`
 - **asyncio** (27 connections)
 - **_MockInstanceRepo** (25 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -29,25 +29,27 @@
 - **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 60 more nodes in this community*
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (31 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [QuestService](QuestService.md) (33 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [NPCDied](NPCDied.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/inventory_command_helpers.py`
 - `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 216 (87%)
-- INFERRED: 33 (13%)
+- EXTRACTED: 220 (86%)
+- INFERRED: 36 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

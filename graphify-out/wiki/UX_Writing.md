@@ -1,12 +1,13 @@
 # UX Writing
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
 - **UX Writing** (12 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
 - **Error Messages: The Formula** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
 - **Writing for Translation** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
+- **ux-writing.md** (2 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
 - **Avoid Redundant Copy** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
 - **Confirmation Dialogs: Use Sparingly** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
 - **Consistency: The Terminology Problem** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
@@ -23,7 +24,7 @@
 
 ## Relationships
 
-- [frontend-design/SKILL.md](frontend-design-SKILL.md.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -31,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

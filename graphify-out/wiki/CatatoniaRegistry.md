@@ -7,7 +7,7 @@
 - **CatatoniaRegistry** (42 connections) — `server/services/catatonia_registry.py`
 - **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **UUID** (6 connections)
-- **test_catatonia_registry.py** (5 connections) — `server/tests/unit/services/test_catatonia_registry.py`
+- **test_catatonia_registry.py** (6 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
 - **.test_on_sanitarium_failover_with_async_callback()** (4 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **datetime** (4 connections)
@@ -33,13 +33,15 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
 - [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (97%)
+- EXTRACTED: 106 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,13 +1,12 @@
 # test_admin_auth_service.py
 
-> 139 nodes
+> 128 nodes
 
 ## Key Concepts
 
-- **test_admin_auth_service.py** (54 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_auth_service.py** (56 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 - **AdminAction** (32 connections) — `server/services/admin_auth_service.py`
 - **AdminRole** (24 connections) — `server/services/admin_auth_service.py`
-- **admin_auth_service.py** (24 connections) — `server/services/admin_auth_service.py`
 - **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
 - **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
 - **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
@@ -25,24 +24,19 @@
 - **test_has_permission_moderator()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 - **test_has_permission_superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
 - **test_has_permission_viewer()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Protocol** (4 connections)
 - **Request** (4 connections)
-- **_HasId** (3 connections) — `server/services/admin_auth_service.py`
-- **_HasIsAdmin** (3 connections) — `server/services/admin_auth_service.py`
-- *... and 114 more nodes in this community*
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_username()** (3 connections) — `server/services/admin_auth_service.py`
+- *... and 103 more nodes in this community*
 
 ## Relationships
 
-- [get_admin_auth_service](get_admin_auth_service.md) (10 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [User](User.md) (3 shared connections)
-- [npc_definitions_api.py](npc_definitions_api.py.md) (2 shared connections)
-- [npc_instances_api.py](npc_instances_api.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [models/user.py](models-user.py.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (23 shared connections)
+- [ExplorationService](ExplorationService.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 196 (83%)
-- INFERRED: 39 (17%)
+- EXTRACTED: 171 (81%)
+- INFERRED: 39 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

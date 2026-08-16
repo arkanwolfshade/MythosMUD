@@ -1,13 +1,11 @@
 # PydanticErrorHandler
 
-> 64 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.handle_validation_error()** (13 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **MythosValidationError** (10 connections)
 - **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
 - **convert_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
@@ -22,44 +20,33 @@
 - **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **test_process_validated_command_validation_error()** (5 connections) — `server/tests/unit/commands/test_command_service.py`
 - **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_SampleModel** (4 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
 - **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.test_handle_transfer_items_exceptions_validation_error()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
-- *... and 39 more nodes in this community*
+- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **Unpack** (3 connections)
+- **StandardizedErrorResponseDict** (3 connections)
+- **TypedDict** (2 connections)
+- **TypedDict** (1 connections)
+- **Handle a Pydantic ValidationError and convert it to a standardized response.…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **Extract structured information from a Pydantic ValidationError. Args: error:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (31 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
-- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (15 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (8 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (5 shared connections)
 - [test_command_service.py](test_command_service.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [ErrorContext](ErrorContext.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
-- [test_command_processor.py](test_command_processor.py.md) (1 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
 
 ## Source Files
 
 - `server/error_handlers/pydantic_error_handler.py`
 - `server/exceptions.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (89%)
-- INFERRED: 16 (11%)
+- EXTRACTED: 98 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

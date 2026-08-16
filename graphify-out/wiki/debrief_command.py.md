@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
-- **test_debrief_command.py** (25 connections) — `server/tests/unit/commands/test_debrief_command.py`
+- **test_debrief_command.py** (26 connections) — `server/tests/unit/commands/test_debrief_command.py`
 - **handle_debrief_command()** (19 connections) — `server/commands/debrief_command.py`
 - **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
 - **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
@@ -33,16 +33,18 @@
 
 ## Relationships
 
-- [Player](Player.md) (9 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [get_async_session](get_async_session.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (6 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [ActiveLucidityService](ActiveLucidityService.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [lucidity.py](lucidity.py.md) (2 shared connections)
+- [active_lucidity_service.py](active_lucidity_service.py.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [test_hallucination_services.py](test_hallucination_services.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 117 (97%)
+- EXTRACTED: 118 (97%)
 - INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 

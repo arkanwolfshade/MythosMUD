@@ -1,6 +1,6 @@
 # ChatPoseManager
 
-> 30 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **ChatWhisperTracker** (10 connections) — `server/game/chat_whisper_tracker.py`
 - **.__init__()** (7 connections) — `server/game/chat_service.py`
 - **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **chat_whisper_tracker.py** (5 connections) — `server/game/chat_whisper_tracker.py`
 - **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
 - **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
 - **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
@@ -27,15 +26,16 @@
 - **Clear a player's pose. Args: player_id: ID of the player Returns: True if pose…** (1 connections) — `server/game/chat_pose_manager.py`
 - **Get all poses (for testing/debugging). Returns: Dictionary mapping player IDs…** (1 connections) — `server/game/chat_pose_manager.py`
 - **Initialize chat service. Args: persistence: Database persistence layer…** (1 connections) — `server/game/chat_service.py`
-- **Chat whisper tracking utilities. This module provides whisper tracking…** (1 connections) — `server/game/chat_whisper_tracker.py`
 - **Tracks last whisper senders for reply functionality.** (1 connections) — `server/game/chat_whisper_tracker.py`
-- *... and 5 more nodes in this community*
+- **Initialize the whisper tracker.** (1 connections) — `server/game/chat_whisper_tracker.py`
+- **Store the last whisper sender for a player. Args: receiver_name: Name of the…** (1 connections) — `server/game/chat_whisper_tracker.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [ChatService](ChatService.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
 - [PlayerService](PlayerService.md) (1 shared connections)
 - [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 41 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 37 (92%)
+- INFERRED: 3 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,65 +1,67 @@
-# log_and_raise()
+# log_and_raise
 
-> God node · 196 connections · `server/utils/error_logging.py`
+> 152 nodes
 
-**Community:** [DatabaseError](DatabaseError.md)
+## Key Concepts
 
-## Connections by Relation
+- **log_and_raise()** (196 connections) — `server/utils/error_logging.py`
+- **error_logging.py** (62 connections) — `server/utils/error_logging.py`
+- **test_container_persistence_crud.py** (43 connections) — `server/tests/unit/container_persistence/test_container_persistence_crud.py`
+- **container_persistence/container_persistence.py** (42 connections) — `server/container_persistence/container_persistence.py`
+- **ContainerCreateParams** (32 connections) — `server/persistence/container_create_params.py`
+- **container_persistence/container_helpers.py** (25 connections) — `server/container_persistence/container_helpers.py`
+- **create_container()** (23 connections) — `server/container_persistence/container_persistence.py`
+- **_container_data_from_dict()** (18 connections) — `server/container_persistence/container_persistence.py`
+- **update_container()** (17 connections) — `server/container_persistence/container_persistence.py`
+- **ContainerData** (15 connections) — `server/container_persistence/container_data.py`
+- **get_container()** (15 connections) — `server/container_persistence/container_persistence.py`
+- **skill_use_log_repository.py** (15 connections) — `server/persistence/repositories/skill_use_log_repository.py`
+- **get_containers_by_entity_id()** (13 connections) — `server/container_persistence/container_persistence.py`
+- **get_containers_by_room_id()** (12 connections) — `server/container_persistence/container_persistence.py`
+- **_complete_container_create()** (11 connections) — `server/container_persistence/container_persistence.py`
+- **PsycopgConnection** (11 connections)
+- **delete_container()** (10 connections) — `server/container_persistence/container_persistence.py`
+- **_execute_container_update()** (10 connections) — `server/container_persistence/container_persistence.py`
+- **UUID** (10 connections)
+- **container_create_params.py** (9 connections) — `server/persistence/container_create_params.py`
+- **ContainerData** (8 connections)
+- **server/container_persistence/__init__.py** (8 connections) — `server/container_persistence/__init__.py`
+- **fetch_container_items()** (7 connections) — `server/container_persistence/container_helpers.py`
+- **as_opt_datetime()** (6 connections) — `server/container_persistence/container_helpers.py`
+- **as_uuid()** (6 connections) — `server/container_persistence/container_helpers.py`
+- *... and 127 more nodes in this community*
 
-### calls
-- log_and_raise_enhanced() `EXTRACTED`
-- create_access_token() `EXTRACTED`
-- hash_password() `EXTRACTED`
-- update_container() `EXTRACTED`
-- create_container() `EXTRACTED`
-- create_container() `EXTRACTED`
-- get_container() `EXTRACTED`
-- hash_password() `EXTRACTED`
-- update_container() `EXTRACTED`
-- get_container() `EXTRACTED`
-- ._initialize_database() `EXTRACTED`
-- create_container_async() `EXTRACTED`
-- get_container_async() `EXTRACTED`
-- get_decayed_containers_async() `EXTRACTED`
-- get_containers_by_entity_id() `EXTRACTED`
-- delete_container() `EXTRACTED`
-- get_containers_by_entity_id_async() `EXTRACTED`
-- get_decayed_containers() `EXTRACTED`
-- create_item_instance_async() `EXTRACTED`
-- get_containers_by_room_id() `EXTRACTED`
+## Relationships
 
-### contains
-- error_logging.py `EXTRACTED`
+- [ContainerServiceError](ContainerServiceError.md) (30 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (25 shared connections)
+- [DatabaseError](DatabaseError.md) (21 shared connections)
+- [get_session_maker](get_session_maker.md) (17 shared connections)
+- [PlayerRepository](PlayerRepository.md) (14 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (14 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (11 shared connections)
+- [SkillService](SkillService.md) (10 shared connections)
+- [Player](Player.md) (10 shared connections)
+- [ValidationError](ValidationError.md) (9 shared connections)
+- [database.py](database.py.md) (9 shared connections)
+- [MovementService](MovementService.md) (9 shared connections)
 
-### imports
-- database.py `EXTRACTED`
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) `EXTRACTED`
-- movement_service.py `EXTRACTED`
-- container_persistence_async.py `EXTRACTED`
-- container_service_transfer_to.py `EXTRACTED`
-- player_repository.py `EXTRACTED`
-- container_service_session.py `EXTRACTED`
-- [npc_database.py](npc_database.py.md) `EXTRACTED`
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) `EXTRACTED`
-- container_service_lock.py `EXTRACTED`
-- container_service_transfer_from.py `EXTRACTED`
-- container_persistence/container_helpers.py `EXTRACTED`
-- [database_config_helpers.py](database_config_helpers.py.md) `EXTRACTED`
-- container_query_helpers_async.py `EXTRACTED`
-- [test_error_logging.py](test_error_logging.py.md) `EXTRACTED`
-- container_query_helpers.py `EXTRACTED`
-- [item_instance_persistence.py](item_instance_persistence.py.md) `EXTRACTED`
-- [player_effect_repository.py](player_effect_repository.py.md) `EXTRACTED`
-- player_spell_repository.py `EXTRACTED`
+## Source Files
 
-### rationale_for
-- Log and raise; uses legacy behavior (no skip_log for ValidationError).… `EXTRACTED`
+- `server/container_persistence/__init__.py`
+- `server/container_persistence/container_data.py`
+- `server/container_persistence/container_helpers.py`
+- `server/container_persistence/container_persistence.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/repositories/skill_use_log_repository.py`
+- `server/tests/unit/container_persistence/test_container_persistence_crud.py`
+- `server/utils/error_logging.py`
 
-### references
-- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
-- [Any](Any.md) `EXTRACTED`
-- NoReturn `EXTRACTED`
+## Audit Trail
+
+- EXTRACTED: 571 (94%)
+- INFERRED: 35 (6%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

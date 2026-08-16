@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **handle_system_command()** (9 connections) — `server/commands/system_commands.py`
-- **test_system_commands.py** (6 connections) — `server/tests/unit/commands/test_system_commands.py`
+- **test_system_commands.py** (7 connections) — `server/tests/unit/commands/test_system_commands.py`
 - **test_handle_system_command()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
 - **test_handle_system_command_no_chat_service()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
 - **test_handle_system_command_no_message()** (4 connections) — `server/tests/unit/commands/test_system_commands.py`
@@ -19,8 +19,10 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [alias_storage.py](alias_storage.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -29,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
+- EXTRACTED: 21 (95%)
 - INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 

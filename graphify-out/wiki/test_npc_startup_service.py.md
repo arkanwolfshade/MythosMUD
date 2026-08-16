@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_npc_startup_service.py** (40 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **npc_startup_service()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
@@ -32,7 +32,8 @@
 - [mock_container](mock_container.md) (10 shared connections)
 - [NPCStartupService](NPCStartupService.md) (9 shared connections)
 - [_errors_len](_errors_len.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (85%)
+- EXTRACTED: 53 (85%)
 - INFERRED: 9 (15%)
 - AMBIGUOUS: 0 (0%)
 

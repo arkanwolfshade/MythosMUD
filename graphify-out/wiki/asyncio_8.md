@@ -1,46 +1,49 @@
 # asyncio
 
-> 13 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **asyncio** (21 connections)
-- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_with_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_death_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_no_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_respawn()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded without attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_respawn broadcasts respawn message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_death handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **asyncio** (27 connections)
+- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_shutdown_cleans_up_service_subscriptions()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_shutdown_idempotent()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_to_same_event()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_not_running()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_and_lifecycle_metrics()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_includes_exception()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_ensure_async_processing_no_loop_logs()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_set_main_loop_and_ensure_processing()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_signal_shutdown_and_cancel_helpers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test EventBus.shutdown() automatically cleans up all service subscriptions.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test multiple services subscribing to the same event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Test that service shutdown removes all subscribers for that service. This test…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **Integration test: Multiple services subscribing to same events and cleanup.…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (6 shared connections)
-- [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)
-- [test_broadcast_combat_death](test_broadcast_combat_death.md) (1 shared connections)
-- [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
-- [test_broadcast_combat_ended](test_broadcast_combat_ended.md) (1 shared connections)
-- [test_broadcast_combat_error](test_broadcast_combat_error.md) (1 shared connections)
-- [test_broadcast_combat_error_send_error](test_broadcast_combat_error_send_error.md) (1 shared connections)
-- [test_broadcast_combat_start](test_broadcast_combat_start.md) (1 shared connections)
-- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
+- [test_event_bus.py](test_event_bus.py.md) (13 shared connections)
+- [MockEventClass](MockEventClass.md) (9 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_event_bus_publish_no_subscribers](test_event_bus_publish_no_subscribers.md) (1 shared connections)
+- [test_handle_event_async_async_subscriber_error](test_handle_event_async_async_subscriber_error.md) (1 shared connections)
+- [test_handle_event_async_no_subscribers](test_handle_event_async_no_subscribers.md) (1 shared connections)
+- [test_handle_event_async_sync_subscriber_error](test_handle_event_async_sync_subscriber_error.md) (1 shared connections)
+- [test_handle_task_result_async_with_error](test_handle_task_result_async_with_error.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/events/test_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (90%)
+- INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

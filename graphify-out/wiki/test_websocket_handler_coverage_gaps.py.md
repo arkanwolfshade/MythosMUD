@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_coverage_gaps.py** (24 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- **test_websocket_handler_coverage_gaps.py** (26 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
 - **asyncio** (20 connections)
 - **handle_chat_message()** (17 connections) — `server/realtime/websocket_handler.py`
 - **test_handle_chat_message_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (11 shared connections)
+- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (6 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (5 shared connections)
+- [build_event](build_event.md) (3 shared connections)
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (3 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (3 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 85 (96%)
+- EXTRACTED: 87 (96%)
 - INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 

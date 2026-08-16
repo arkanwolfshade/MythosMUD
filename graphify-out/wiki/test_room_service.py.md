@@ -1,12 +1,11 @@
 # test_room_service.py
 
-> 110 nodes
+> 108 nodes
 
 ## Key Concepts
 
-- **test_room_service.py** (56 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_room_service.py** (57 connections) — `server/tests/unit/game/test_room_service.py`
 - **asyncio** (37 connections)
-- **room_service()** (6 connections) — `server/tests/unit/game/test_room_service.py`
 - **fixture** (5 connections)
 - **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
@@ -29,12 +28,14 @@
 - **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
 - **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 85 more nodes in this community*
+- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [RoomService](RoomService.md) (4 shared connections)
+- [ExplorationService](ExplorationService.md) (3 shared connections)
 - [HealthService](HealthService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 151 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

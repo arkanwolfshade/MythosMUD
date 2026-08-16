@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_monitoring_service.py** (52 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_combat_monitoring_service.py** (53 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 - **combat_monitoring_service.py** (21 connections) — `server/services/combat_monitoring_service.py`
 - **AlertType** (15 connections) — `server/services/combat_monitoring_service.py`
 - **AlertSeverity** (12 connections) — `server/services/combat_monitoring_service.py`
@@ -38,7 +38,8 @@
 - [monitoring_service](monitoring_service.md) (4 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 128 (86%)
+- EXTRACTED: 129 (86%)
 - INFERRED: 21 (14%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,10 +5,10 @@
 ## Key Concepts
 
 - **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **mythosmud-coppa-checklist/SKILL.md** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 - **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 - **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 - **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Relationships
 

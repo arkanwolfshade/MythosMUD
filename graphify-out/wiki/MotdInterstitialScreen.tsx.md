@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Profession](Profession.md) (2 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
 
 ## Source Files
 

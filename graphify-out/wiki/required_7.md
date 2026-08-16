@@ -1,29 +1,36 @@
 # required
 
-> 8 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **required** (8 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **exits** (1 connections) — `schemas/intersection_schema.json`
-- **id** (1 connections) — `schemas/intersection_schema.json`
-- **name** (1 connections) — `schemas/intersection_schema.json`
-- **plane** (1 connections) — `schemas/intersection_schema.json`
-- **sub_zone** (1 connections) — `schemas/intersection_schema.json`
-- **zone** (1 connections) — `schemas/intersection_schema.json`
+- **required** (15 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **effect_components** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **flags** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **item_type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **long_description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **metadata** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **prototype_id** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **short_description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **tags** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **wear_slots** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **weight** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [intersection_schema.json](intersection_schema.json.md) (1 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

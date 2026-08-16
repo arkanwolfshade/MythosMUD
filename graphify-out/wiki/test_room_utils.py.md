@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [.handle_player_movement](handle_player_movement.md) (1 shared connections)
 - [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
 
 ## Source Files

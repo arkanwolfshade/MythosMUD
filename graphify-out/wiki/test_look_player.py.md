@@ -1,11 +1,11 @@
 # test_look_player.py
 
-> 188 nodes
+> 186 nodes
 
 ## Key Concepts
 
-- **test_look_player.py** (32 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_look_helpers.py** (30 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **test_look_player.py** (33 connections) — `server/tests/unit/commands/test_look_player.py`
+- **test_look_helpers.py** (31 connections) — `server/tests/unit/commands/test_look_helpers.py`
 - **look_player.py** (26 connections) — `server/commands/look_player.py`
 - **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **_format_player_look_display()** (22 connections) — `server/commands/look_player.py`
@@ -13,9 +13,9 @@
 - **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
 - **_select_target_player()** (17 connections) — `server/commands/look_player.py`
 - **look_helpers.py** (16 connections) — `server/commands/look_helpers.py`
+- **test_visual_indicator.py** (14 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_handle_player_look()** (13 connections) — `server/commands/look_player.py`
 - **asyncio** (13 connections)
-- **test_visual_indicator.py** (13 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
 - **_try_lookup_player_implicit()** (12 connections) — `server/commands/look_player.py`
 - **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
 - **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
@@ -29,19 +29,22 @@
 - **_player_id_uuid()** (4 connections) — `server/commands/look_player.py`
 - **test_find_matching_players_no_match()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
 - **test_find_matching_players_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 163 more nodes in this community*
+- *... and 161 more nodes in this community*
 
 ## Relationships
 
 - [look_command.py](look_command.py.md) (8 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [look_container.py](look_container.py.md) (3 shared connections)
-- [WearableContainerService](WearableContainerService.md) (3 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (3 shared connections)
+- [test_look_room.py](test_look_room.py.md) (5 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [mock_persistence](mock_persistence.md) (3 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
+- [test_filter_other_players_adds_linkdead_indicator](test_filter_other_players_adds_linkdead_indicator.md) (2 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,8 +58,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 354 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 354 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -8,15 +8,15 @@
 - **isElementVisible()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **evaluateGameUiLoaded()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **captureGameUiDiagnosticsInBrowser()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **getBodyInnerText()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **getBodyInnerText()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasCommandInputInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasGameInfoPanelInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasGameInfoAnyMessageInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasPrimaryGameUiMarkersInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **isLoginFormVisibleInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **multiplayer-browser-helpers.test.ts** (5 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
 - **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasRoomSubscriptionInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **multiplayer-browser-helpers.test.ts** (4 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
 - **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasBodyTextGameUiIndicators()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasConnectedStatusInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
 
 ## Source Files
 

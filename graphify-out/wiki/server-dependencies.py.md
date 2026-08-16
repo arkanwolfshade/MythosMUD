@@ -1,16 +1,18 @@
 # server/dependencies.py
 
-> 249 nodes
+> 259 nodes
 
 ## Key Concepts
 
-- **server/dependencies.py** (106 connections) — `server/dependencies.py`
-- **test_dependencies.py** (60 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **server/dependencies.py** (107 connections) — `server/dependencies.py`
+- **test_dependencies.py** (62 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 - **get_container()** (40 connections) — `server/dependencies.py`
 - **Request** (28 connections)
+- **test_dependency_injection.py** (20 connections) — `server/tests/unit/test_dependency_injection.py`
 - **LevelService** (13 connections) — `server/game/level_service.py`
 - **get_player_service()** (13 connections) — `server/dependencies.py`
 - **get_room_service()** (11 connections) — `server/dependencies.py`
+- **get_stats_generator()** (11 connections) — `server/dependencies.py`
 - **get_async_persistence()** (9 connections) — `server/dependencies.py`
 - **get_connection_manager()** (9 connections) — `server/dependencies.py`
 - **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
@@ -27,24 +29,22 @@
 - **get_npc_spawning_service()** (7 connections) — `server/dependencies.py`
 - **get_passive_lucidity_flux_service()** (7 connections) — `server/dependencies.py`
 - **get_player_combat_service()** (7 connections) — `server/dependencies.py`
-- **get_player_death_service()** (7 connections) — `server/dependencies.py`
-- **get_player_respawn_service()** (7 connections) — `server/dependencies.py`
-- *... and 224 more nodes in this community*
+- *... and 234 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (19 shared connections)
-- [Stats](Stats.md) (14 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (14 shared connections)
-- [PlayerService](PlayerService.md) (9 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (14 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [PlayerService](PlayerService.md) (10 shared connections)
+- [ExplorationService](ExplorationService.md) (9 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
+- [TargetMatch](TargetMatch.md) (7 shared connections)
 - [test_level_service.py](test_level_service.py.md) (5 shared connections)
-- [RoomService](RoomService.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [QuestService](QuestService.md) (3 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
+- [Stats](Stats.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
+- [SkillService](SkillService.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
 
 ## Source Files
 
@@ -55,8 +55,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 493 (99%)
-- INFERRED: 7 (1%)
+- EXTRACTED: 522 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

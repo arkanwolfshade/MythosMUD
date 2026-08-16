@@ -33,7 +33,7 @@
 ## Relationships
 
 - [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
 
 ## Source Files

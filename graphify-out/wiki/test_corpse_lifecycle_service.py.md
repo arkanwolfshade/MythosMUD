@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_corpse_lifecycle_service.py** (55 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service.py** (56 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **CorpseLifecycleService** (24 connections) — `server/services/corpse_lifecycle_service.py`
 - **asyncio** (23 connections)
 - **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
@@ -34,11 +34,12 @@
 ## Relationships
 
 - [ContainerComponent](ContainerComponent.md) (31 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (6 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (4 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 203 (91%)
+- EXTRACTED: 204 (91%)
 - INFERRED: 20 (9%)
 - AMBIGUOUS: 0 (0%)
 

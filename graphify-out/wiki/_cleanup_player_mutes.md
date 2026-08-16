@@ -27,9 +27,8 @@
 
 ## Relationships
 
-- [UserManager](UserManager.md) (16 shared connections)
-- [._get_player_mute_file](_get_player_mute_file.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [UserManager](UserManager.md) (17 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 
 ## Source Files
 

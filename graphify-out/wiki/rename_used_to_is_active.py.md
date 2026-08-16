@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (4 connections) — `server/scripts/rename_used_to_is_active.py`
+- **rename_used_to_is_active.py** (5 connections) — `server/scripts/rename_used_to_is_active.py`
 - **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
 - **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
 - **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
@@ -13,6 +13,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

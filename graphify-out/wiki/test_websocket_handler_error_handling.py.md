@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_error_handling.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **test_websocket_handler_error_handling.py** (10 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 - **test_send_error_response_disconnected()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 - **test_send_error_response_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
 - **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
@@ -21,7 +21,9 @@
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (6 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (3 shared connections)
+- [ErrorType](ErrorType.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
@@ -30,8 +32,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 17 (81%)
-- INFERRED: 4 (19%)
+- EXTRACTED: 18 (82%)
+- INFERRED: 4 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

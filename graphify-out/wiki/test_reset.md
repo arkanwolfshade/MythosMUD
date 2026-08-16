@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_reset()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test reset() manually resets circuit breaker.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_reset()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **Test reset() clears all metrics.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 
 ## Relationships
 
-- [test_circuit_breaker.py](test_circuit_breaker.py.md) (1 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
-- [CircuitState](CircuitState.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (50%)
-- INFERRED: 2 (50%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (8 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (5 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (7 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
 
 ## Source Files

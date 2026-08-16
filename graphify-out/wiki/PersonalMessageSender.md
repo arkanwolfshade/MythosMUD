@@ -1,11 +1,12 @@
 # PersonalMessageSender
 
-> 33 nodes
+> 37 nodes
 
 ## Key Concepts
 
 - **PersonalMessageSender** (22 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **test_personal_message_sender.py** (15 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_personal_message_sender.py** (17 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **personal_message_sender.py** (16 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **asyncio** (8 connections)
 - **.send_message()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **UUID** (7 connections)
@@ -14,6 +15,7 @@
 - **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **Any** (6 connections)
 - **test_send_to_websocket_accept_first_is_debug_not_warning()** (5 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **server/realtime/messaging/__init__.py** (5 connections) — `server/realtime/messaging/__init__.py`
 - **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **test_send_message_fans_out_to_all_listed_sockets()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
@@ -27,28 +29,33 @@
 - **test_send_to_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **LogCaptureFixture** (2 connections)
 - **fixture** (1 connections)
-- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- *... and 8 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
+- [MessageQueue](MessageQueue.md) (3 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
 - [DatabaseError](DatabaseError.md) (3 shared connections)
-- [deque](deque.md) (2 shared connections)
-- [HealthMonitor](HealthMonitor.md) (1 shared connections)
-- [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [PayloadOptimizer](PayloadOptimizer.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/messaging/__init__.py`
 - `server/realtime/messaging/personal_message_sender.py`
 - `server/tests/unit/realtime/test_personal_message_sender.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (83%)
-- INFERRED: 13 (17%)
+- EXTRACTED: 81 (86%)
+- INFERRED: 13 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

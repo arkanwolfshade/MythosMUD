@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_player_service.py** (26 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_player_service.py** (27 connections) — `server/tests/unit/game/test_player_service.py`
 - **asyncio** (19 connections)
 - **test_create_player_with_stats_character_limit()** (5 connections) — `server/tests/unit/game/test_player_service.py`
 - **test_create_player_with_stats_name_exists()** (5 connections) — `server/tests/unit/game/test_player_service.py`
@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [Stats](Stats.md) (5 shared connections)
 - [ValidationError](ValidationError.md) (4 shared connections)
+- [Stats](Stats.md) (4 shared connections)
 - [PlayerService](PlayerService.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 72 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

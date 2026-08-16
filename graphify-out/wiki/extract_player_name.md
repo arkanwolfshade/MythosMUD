@@ -1,10 +1,11 @@
 # extract_player_name
 
-> 25 nodes
+> 27 nodes
 
 ## Key Concepts
 
 - **extract_player_name()** (22 connections) — `server/realtime/player_presence_utils.py`
+- **player_presence_utils.py** (18 connections) — `server/realtime/player_presence_utils.py`
 - **test_player_presence_utils.py** (18 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
 - **get_player_position()** (10 connections) — `server/realtime/player_presence_utils.py`
 - **_is_valid_name()** (6 connections) — `server/realtime/player_presence_utils.py`
@@ -23,23 +24,24 @@
 - **test_is_uuid_string()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
 - **test_is_valid_name()** (2 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
 - **Any** (1 connections)
+- **Utility functions for player presence tracking. This module provides helper…** (1 connections) — `server/realtime/player_presence_utils.py`
 - **Get player position from stats. Args: player: The player object player_id: The…** (1 connections) — `server/realtime/player_presence_utils.py`
 - **Check if a value is a valid non-empty string name. Args: name: Value to check…** (1 connections) — `server/realtime/player_presence_utils.py`
 - **Check if a string is a UUID format. Args: value: String to check Returns: True…** (1 connections) — `server/realtime/player_presence_utils.py`
 - **Attempt to get player name from related User object. Args: player: The player…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Extract and validate player name, ensuring it's never a UUID. Args: player: The…** (1 connections) — `server/realtime/player_presence_utils.py`
-- **Unit tests for player_presence_utils.** (1 connections) — `server/tests/unit/realtime/test_player_presence_utils.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (7 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (5 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (6 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (3 shared connections)
 - [DatabaseError](DatabaseError.md) (3 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (2 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (2 shared connections)
-- [start_grace_period](start_grace_period.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (97%)
+- EXTRACTED: 70 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

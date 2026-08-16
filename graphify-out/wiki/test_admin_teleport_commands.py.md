@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_admin_teleport_commands.py** (36 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_admin_teleport_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
 - **handle_teleport_command()** (30 connections) — `server/commands/admin_teleport_commands.py`
 - **patch** (29 connections)
 - **asyncio** (28 connections)
@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (15 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (8 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
-- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (26 shared connections)
+- [command_service.py](command_service.py.md) (10 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 183 (99%)
+- EXTRACTED: 184 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

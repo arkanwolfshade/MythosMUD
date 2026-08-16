@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_json_error.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_websocket_handler_json_error.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 - **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 - **test_handle_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 - **asyncio** (1 connections)
@@ -15,6 +15,7 @@
 
 ## Relationships
 
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
@@ -23,7 +24,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

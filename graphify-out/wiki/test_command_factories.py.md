@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_command_factories.py** (59 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factories.py** (60 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **factory()** (4 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_command_factory_create_existing_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 - **test_command_factory_create_nonexistent_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
@@ -33,7 +33,9 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (3 shared connections)
+- [CommandFactory](CommandFactory.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 116 (99%)
+- EXTRACTED: 117 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

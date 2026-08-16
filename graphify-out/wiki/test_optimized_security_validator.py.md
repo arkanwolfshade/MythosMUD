@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_optimized_security_validator.py** (78 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_security_validator.py** (79 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **optimized_validate_message_content()** (19 connections) — `server/validators/optimized_security_validator.py`
 - **test_optimized_validate_message_content_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **test_optimized_validate_message_content_data_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [optimized_security_validator.py](optimized_security_validator.py.md) (9 shared connections)
 - [optimized_validate_player_name](optimized_validate_player_name.md) (8 shared connections)
 - [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (5 shared connections)
 - [optimized_validate_action_content](optimized_validate_action_content.md) (5 shared connections)
 - [optimized_validate_alias_name](optimized_validate_alias_name.md) (5 shared connections)
 - [optimized_validate_security_comprehensive](optimized_validate_security_comprehensive.md) (5 shared connections)
 - [optimized_sanitize_unicode_input](optimized_sanitize_unicode_input.md) (4 shared connections)
+- [optimized_strip_ansi_codes](optimized_strip_ansi_codes.md) (4 shared connections)
 - [optimized_validate_command_content](optimized_validate_command_content.md) (4 shared connections)
 - [optimized_validate_filter_name](optimized_validate_filter_name.md) (4 shared connections)
 - [optimized_validate_help_topic](optimized_validate_help_topic.md) (4 shared connections)
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 110 (100%)
+- EXTRACTED: 111 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

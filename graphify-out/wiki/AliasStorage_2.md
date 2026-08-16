@@ -14,26 +14,26 @@
 - [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 
 ### imports
-- command_service.py `EXTRACTED`
+- [command_service.py](command_service.py.md) `EXTRACTED`
 - test_alias_storage.py `EXTRACTED`
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) `EXTRACTED`
+- [look_command.py](look_command.py.md) `EXTRACTED`
 - [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
 - player_service.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
-- [look_command.py](look_command.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
-- [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
+- admin_summon_command.py `EXTRACTED`
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) `EXTRACTED`
 - admin_commands.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
-- [rescue_commands.py](rescue_commands.py.md) `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
+- rescue_commands.py `EXTRACTED`
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - admin_setlucidity_command.py `EXTRACTED`
-- communication_commands.py `EXTRACTED`
+- [communication_commands.py](communication_commands.py.md) `EXTRACTED`
 
 ### method
 - .get_player_aliases() `EXTRACTED`

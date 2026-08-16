@@ -30,14 +30,14 @@
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (10 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (11 shared connections)
+- [combat_integration.py](combat_integration.py.md) (2 shared connections)
 - [._get_npc_display_name](_get_npc_display_name.md) (1 shared connections)
 - [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [.get_combat_stats](get_combat_stats.md) (1 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_config](get_config.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (3 shared connections)
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)

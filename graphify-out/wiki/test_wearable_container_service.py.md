@@ -1,51 +1,56 @@
 # test_wearable_container_service.py
 
-> 83 nodes
+> 157 nodes
 
 ## Key Concepts
 
-- **test_wearable_container_service.py** (62 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_wearable_container_service.py** (63 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 - **asyncio** (48 connections)
-- **test_get_enum_value_with_enum()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player_filters_non_equipment()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_dict_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_non_dict_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player_empty()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player_exception_in_validation()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_get_wearable_containers_for_player_multiple_containers()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_empty_overflow()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_ground_container_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_inventory_full()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_no_room_id()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_no_spilled_items()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_partial_spill()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_room_id_empty_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_save_player_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_container_overflow_spilled_items_save_player()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_handle_equip_wearable_container_creates_new()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 58 more nodes in this community*
+- **WearableContainerService** (28 connections) — `server/services/wearable_container_service.py`
+- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
+- **WearableContainerServiceError** (18 connections) — `server/services/wearable_container_service.py`
+- **Any** (15 connections)
+- **UUID** (14 connections)
+- **._load_player_wearable_container()** (9 connections) — `server/services/wearable_container_service.py`
+- **_filter_container_data()** (8 connections) — `server/services/wearable_container_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/wearable_container_service.py`
+- **.handle_container_overflow()** (8 connections) — `server/services/wearable_container_service.py`
+- **.handle_equip_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
+- **.add_items_to_wearable_container()** (7 connections) — `server/services/wearable_container_service.py`
+- **._update_container_items_or_raise()** (7 connections) — `server/services/wearable_container_service.py`
+- **.update_wearable_container_items()** (7 connections) — `server/services/wearable_container_service.py`
+- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
+- **._validate_inner_container_capacity()** (6 connections) — `server/services/wearable_container_service.py`
+- **._create_equipment_container_record()** (5 connections) — `server/services/wearable_container_service.py`
+- **._drop_overflow_to_ground()** (5 connections) — `server/services/wearable_container_service.py`
+- **._find_existing_equipment_container()** (5 connections) — `server/services/wearable_container_service.py`
+- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
+- **._save_overflow_inventory()** (5 connections) — `server/services/wearable_container_service.py`
+- **._split_overflow_items()** (4 connections) — `server/services/wearable_container_service.py`
+- **test_add_items_to_wearable_container_capacity_exceeded()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_add_items_to_wearable_container_not_found()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- *... and 132 more nodes in this community*
 
 ## Relationships
 
-- [WearableContainerServiceError](WearableContainerServiceError.md) (27 shared connections)
-- [WearableContainerService](WearableContainerService.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [wearable_service](wearable_service.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (9 shared connections)
+- [log_and_raise](log_and_raise.md) (9 shared connections)
+- [ContainerComponent](ContainerComponent.md) (6 shared connections)
+- [test_look_player.py](test_look_player.py.md) (3 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/wearable_container_service.py`
 - `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 285 (94%)
+- INFERRED: 18 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

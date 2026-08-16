@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_rest_and_grace_period.py** (25 connections) — `server/tests/integration/test_rest_and_grace_period.py`
+- **test_rest_and_grace_period.py** (26 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
 - **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
 - **asyncio** (13 connections)
@@ -33,17 +33,17 @@
 
 ## Relationships
 
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (10 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (9 shared connections)
-- [start_grace_period](start_grace_period.md) (8 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
 - [test_look_player.py](test_look_player.py.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [occupant_display.py](occupant_display.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (2 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
+- [test_look_room.py](test_look_room.py.md) (2 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (2 shared connections)
+- [_check_grace_period_block](_check_grace_period_block.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 103 (100%)
+- EXTRACTED: 104 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

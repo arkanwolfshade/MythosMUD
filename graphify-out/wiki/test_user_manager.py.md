@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_user_manager.py** (71 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_user_manager.py** (72 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_can_send_message_channel_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_can_send_message_globally_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
 - **test_can_send_message_player_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
@@ -35,8 +35,9 @@
 
 - [asyncio](asyncio.md) (18 shared connections)
 - [user_manager](user_manager.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 119 (100%)
+- EXTRACTED: 120 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

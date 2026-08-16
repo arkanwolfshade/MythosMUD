@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_logging_processors.py** (36 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_logging_processors.py** (37 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **enhance_player_ids()** (18 connections) — `server/structured_logging/logging_processors.py`
 - **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
 - **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
 - [DatabaseError](DatabaseError.md) (2 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 - [lifespan.py](lifespan.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 145 (96%)
+- EXTRACTED: 146 (96%)
 - INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_professions_endpoints.py** (13 connections) — `server/tests/unit/api/test_professions_endpoints.py`
+- **test_professions_endpoints.py** (15 connections) — `server/tests/unit/api/test_professions_endpoints.py`
 - **get_all_professions()** (11 connections) — `server/api/professions.py`
 - **get_profession_by_id()** (11 connections) — `server/api/professions.py`
 - **test_get_all_professions_requires_auth()** (5 connections) — `server/tests/unit/api/test_professions_endpoints.py`
@@ -21,11 +21,11 @@
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (7 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
-- [User](User.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [models/user.py](models-user.py.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
+- EXTRACTED: 42 (93%)
 - INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 

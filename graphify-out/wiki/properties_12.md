@@ -1,38 +1,38 @@
 # properties
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [days](days.md) (2 shared connections)
-- [required](required.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
 - [start_hour](start_hour.md) (1 shared connections)
+- [end_hour](end_hour.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
 - [applies_to](applies_to.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

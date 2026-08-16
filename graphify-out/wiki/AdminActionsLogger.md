@@ -1,12 +1,11 @@
 # AdminActionsLogger
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **AdminActionsLogger** (31 connections) — `server/structured_logging/admin_actions_logger.py`
-- **test_admin_actions_logger.py** (21 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **admin_actions_logger.py** (19 connections) — `server/structured_logging/admin_actions_logger.py`
+- **test_admin_actions_logger.py** (22 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **._log_entry()** (8 connections) — `server/structured_logging/admin_actions_logger.py`
 - **Any** (8 connections)
 - **_read_log_entries()** (7 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
@@ -29,20 +28,16 @@
 - **test_admin_logger_init_from_config()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **test_log_admin_command()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 - **test_log_admin_command_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- *... and 26 more nodes in this community*
+- **test_log_permission_check_denied()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) (2 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (2 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
-- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
-- [admin_summon_command.py](admin_summon_command.py.md) (1 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (1 shared connections)
+- [build_event](build_event.md) (4 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (3 shared connections)
+- [admin_shutdown_command.py](admin_shutdown_command.py.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (87%)
-- INFERRED: 15 (13%)
+- EXTRACTED: 88 (85%)
+- INFERRED: 15 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

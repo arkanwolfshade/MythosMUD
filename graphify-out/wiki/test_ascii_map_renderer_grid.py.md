@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_ascii_map_renderer_grid.py** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- **test_ascii_map_renderer_grid.py** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
 - **test_render_map_empty_and_connected_rooms()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
@@ -20,6 +20,7 @@
 ## Relationships
 
 - [AsciiMapRenderer](AsciiMapRenderer.md) (6 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
@@ -28,8 +29,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (78%)
-- INFERRED: 4 (22%)
+- EXTRACTED: 15 (79%)
+- INFERRED: 4 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -22,9 +22,8 @@
 
 ## Relationships
 
-- [CircuitBreaker](CircuitBreaker.md) (7 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (8 shared connections)
 - [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
-- [CircuitState](CircuitState.md) (1 shared connections)
 
 ## Source Files
 

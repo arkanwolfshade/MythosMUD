@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [logger.ts](logger.ts.md) (1 shared connections)
 
 ## Source Files
 

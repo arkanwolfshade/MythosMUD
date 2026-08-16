@@ -1,28 +1,41 @@
 # enum
 
-> 7 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
-- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
+- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [type](type.md) (2 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

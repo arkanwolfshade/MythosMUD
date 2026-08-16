@@ -1,33 +1,59 @@
 # UUID
 
-> 9 nodes
+> 104 nodes
 
 ## Key Concepts
 
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **UUID** (41 connections)
+- **test_connection_error_methods.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
+- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
+- **detect_and_handle_error_state_impl()** (10 connections) — `server/realtime/connection_error_methods.py`
+- **handle_authentication_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **handle_security_violation_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **handle_websocket_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
+- **.check_connection_health()** (6 connections) — `server/realtime/connection_manager.py`
+- **._get_player()** (6 connections) — `server/realtime/connection_manager.py`
+- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
 - **UUID** (6 connections)
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **asyncio** (6 connections)
+- **.broadcast_connection_message()** (5 connections) — `server/realtime/connection_manager.py`
+- **.connect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
+- **._get_players_batch()** (5 connections) — `server/realtime/connection_manager.py`
+- **._send_initial_game_state()** (5 connections) — `server/realtime/connection_manager.py`
+- **.track_player_connected()** (5 connections) — `server/realtime/connection_manager.py`
+- **Any** (5 connections)
+- **Player** (5 connections)
+- **.broadcast_to_room()** (4 connections) — `server/realtime/connection_manager.py`
+- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
+- **._cleanup_dead_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
+- *... and 79 more nodes in this community*
 
 ## Relationships
 
-- [StatisticsAggregator](StatisticsAggregator.md) (4 shared connections)
-- [._build_connection_stats](_build_connection_stats.md) (3 shared connections)
-- [._compose_memory_stats](_compose_memory_stats.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (37 shared connections)
+- [connection_manager.py](connection_manager.py.md) (32 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (9 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
+- [connection_helpers.py](connection_helpers.py.md) (2 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (1 shared connections)
+- [test_connection_session_management.py](test_connection_session_management.py.md) (1 shared connections)
+- [handle_new_login_impl](handle_new_login_impl.md) (1 shared connections)
+- [test_connection_room_utils.py](test_connection_room_utils.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/realtime/connection_error_methods.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_error_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 227 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

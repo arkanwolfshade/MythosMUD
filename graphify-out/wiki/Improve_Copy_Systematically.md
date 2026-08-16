@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Improve Copy Systematically** (10 connections) — `.claude/skills/clarify/SKILL.md`
-- **clarify/SKILL.md** (6 connections) — `.claude/skills/clarify/SKILL.md`
+- **Clarify Skill** (7 connections) — `.claude/skills/clarify/SKILL.md`
 - **Apply Clarity Principles** (1 connections) — `.claude/skills/clarify/SKILL.md`
 - **Assess Current Copy** (1 connections) — `.claude/skills/clarify/SKILL.md`
 - **Button & CTA Text** (1 connections) — `.claude/skills/clarify/SKILL.md`
@@ -23,7 +23,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -31,7 +31,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,8 +35,8 @@
 - [get_logger](get_logger.md) (1 shared connections)
 - [PostgresConnection](PostgresConnection.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [lucidity.py](lucidity.py.md) (1 shared connections)
 
 ## Source Files
 

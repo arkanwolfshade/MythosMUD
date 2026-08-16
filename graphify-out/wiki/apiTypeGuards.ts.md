@@ -1,6 +1,6 @@
 # apiTypeGuards.ts
 
-> 45 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -13,9 +13,11 @@
 - **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
 - **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasSharedCharacterRecordCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
 - **isCharacterInfoArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
@@ -27,28 +29,29 @@
 - **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **hasValidOptionalRollFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidProfessionMechanicalEffects()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasValidProfessionStatRequirements()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 20 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (17 shared connections)
-- [Profession](Profession.md) (9 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (15 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (6 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (4 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (3 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (3 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
 
 ## Source Files
 
+- `client/src/types/auth.ts`
 - `client/src/utils/__tests__/apiTypeGuards.test.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (100%)
+- EXTRACTED: 164 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

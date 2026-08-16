@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Files to Update** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **3.3 Consolidate Duplicate Test Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 

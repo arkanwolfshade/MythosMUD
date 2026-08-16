@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_rate_limit.py** (7 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_websocket_handler_rate_limit.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 - **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 - **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 - **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
@@ -21,6 +21,7 @@
 
 ## Relationships
 
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
@@ -29,7 +30,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

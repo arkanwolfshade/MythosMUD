@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_email_utils.py** (12 connections) — `server/tests/unit/auth/test_email_utils.py`
-- **email_utils.py** (10 connections) — `server/auth/email_utils.py`
+- **test_email_utils.py** (13 connections) — `server/tests/unit/auth/test_email_utils.py`
+- **email_utils.py** (11 connections) — `server/auth/email_utils.py`
 - **generate_unique_bogus_email()** (7 connections) — `server/auth/email_utils.py`
 - **is_bogus_email()** (7 connections) — `server/auth/email_utils.py`
 - **validate_bogus_email_format()** (7 connections) — `server/auth/email_utils.py`
@@ -26,10 +26,11 @@
 
 ## Relationships
 
-- [test_users.py](test_users.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [User](User.md) (1 shared connections)
-- [models/user.py](models-user.py.md) (1 shared connections)
+- [test_users.py](test_users.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

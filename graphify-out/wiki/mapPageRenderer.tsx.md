@@ -29,14 +29,12 @@
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
+- [gameStore.ts](gameStore.ts.md) (4 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (1 shared connections)
-- [logoutHandler.ts](logoutHandler.ts.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
 
 ## Source Files
 

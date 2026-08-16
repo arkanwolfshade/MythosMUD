@@ -1,33 +1,44 @@
 # UUID
 
-> 11 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **UUID** (6 connections)
-- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
-- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
-- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **datetime** (2 connections)
-- **Get multiple players by IDs in a single query.** (1 connections) — `server/persistence/protocols.py`
-- **Soft delete a player (sets is_deleted=True).** (1 connections) — `server/persistence/protocols.py`
-- **Delete a player from the database.** (1 connections) — `server/persistence/protocols.py`
-- **Update the last_active timestamp for a player.** (1 connections) — `server/persistence/protocols.py`
+- **UUID** (8 connections)
+- **._persist_player_dp_sync()** (6 connections) — `server/services/combat_persistence_handler.py`
+- **._get_persistence_layer()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_update_event_impl()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._verify_player_save()** (5 connections) — `server/services/combat_persistence_handler.py`
+- **._log_death_state_changes()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **._publish_player_dp_correction_event()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
+- **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
+- **Any** (3 connections)
+- **Synchronously persist player DP to database. This is the actual persistence…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget). This method runs…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Initialize the persistence handler. Args: combat_service: Reference to the…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget). Public API…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates. Args: player_id: ID…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Get persistence layer from application container. Returns: Persistence layer…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Internal implementation of player DP update event publishing. Args: player_id:…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a correction event when database persistence fails. This sends a…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Verify that player save was successful by reading back from database. Args:…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Log death state changes (death threshold or mortally wounded). Args: player_id:…** (1 connections) — `server/services/combat_persistence_handler.py`
 
 ## Relationships
 
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (12 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (10 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/protocols.py`
+- `server/services/combat_persistence_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service_player_attacks.py** (22 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_npc_combat_integration_service_player_attacks.py** (23 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 - **asyncio** (14 connections)
 - **test_handle_player_attack_on_npc_grace_period_check_fails()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 - **test_handle_player_attack_on_npc_error_handling()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [test_npc_combat_integration_service_npc_aggro.py](test_npc_combat_integration_service_npc_aggro.py.md) (3 shared connections)
-- [test_npc_combat_integration_service.py](test_npc_combat_integration_service.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [mock_async_persistence](mock_async_persistence.md) (3 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 46 (90%)
+- EXTRACTED: 47 (90%)
 - INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 

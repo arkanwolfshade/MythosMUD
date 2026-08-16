@@ -1,6 +1,6 @@
 # MinimapRenderer
 
-> 29 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -16,9 +16,11 @@
 - **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **minimap_renderer.py** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Any** (3 connections)
 - **.get_street_acronym()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Mini-map renderer for room connectivity visualization. This module provides…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Renders room connectivity graphs in various visual formats. Implements the…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Extract street acronym from room ID. Args: room_id: Full room ID (e.g.,…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Extract street name from room ID. Args: room_id: Full room ID Returns: Street…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
@@ -27,9 +29,7 @@
 - **Initialize the mini-map renderer.** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Create a grid-based map visualization. Args: nodes: List of room nodes edges:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - **Assign grid coordinates to rooms based on connectivity. Args: nodes: List of…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Get coordinates for the next room based on direction. Args: x: Current x…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- **Reverse a direction. Args: direction: Original direction Returns: Reversed…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
-- *... and 4 more nodes in this community*
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
+- EXTRACTED: 43 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

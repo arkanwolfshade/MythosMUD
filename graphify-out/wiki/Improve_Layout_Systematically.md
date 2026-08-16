@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Improve Layout Systematically** (8 connections) — `.claude/skills/arrange/SKILL.md`
-- **arrange/SKILL.md** (5 connections) — `.claude/skills/arrange/SKILL.md`
+- **Arrange Skill** (6 connections) — `.claude/skills/arrange/SKILL.md`
 - **Assess Current Layout** (1 connections) — `.claude/skills/arrange/SKILL.md`
 - **Break Card Grid Monotony** (1 connections) — `.claude/skills/arrange/SKILL.md`
 - **Choose the Right Layout Tool** (1 connections) — `.claude/skills/arrange/SKILL.md`
@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

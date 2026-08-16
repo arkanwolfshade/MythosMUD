@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_load_world_seed.py** (11 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_load_world_seed.py** (12 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
 - **LoadWorldSeedTestApi** (10 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
 - **test_validate_environment_rejects_non_allowlist_database_name()** (6 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
 - **test_asyncpg_server_settings_defaults_to_db_name()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

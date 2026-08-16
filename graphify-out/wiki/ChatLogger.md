@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **ChatLogger** (29 connections) — `server/services/chat_logger.py`
+- **ChatLogger** (30 connections) — `server/services/chat_logger.py`
 - **._write_log_entry()** (14 connections) — `server/services/chat_logger.py`
 - **._get_current_log_file()** (6 connections) — `server/services/chat_logger.py`
 - **Any** (6 connections)
@@ -35,9 +35,10 @@
 
 - [test_chat_logger.py](test_chat_logger.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 - [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (95%)
+- EXTRACTED: 74 (95%)
 - INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 

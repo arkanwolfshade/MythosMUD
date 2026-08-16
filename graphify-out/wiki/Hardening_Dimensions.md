@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Hardening Dimensions** (8 connections) — `.claude/skills/harden/SKILL.md`
-- **harden/SKILL.md** (4 connections) — `.claude/skills/harden/SKILL.md`
+- **Harden Skill** (5 connections) — `.claude/skills/harden/SKILL.md`
 - **Accessibility Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
 - **Assess Hardening Needs** (1 connections) — `.claude/skills/harden/SKILL.md`
 - **Edge Cases & Boundary Conditions** (1 connections) — `.claude/skills/harden/SKILL.md`
@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +27,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

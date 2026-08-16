@@ -1,13 +1,12 @@
 # description
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

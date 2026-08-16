@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **rename_invites_columns.py** (4 connections) — `server/scripts/rename_invites_columns.py`
+- **rename_invites_columns.py** (5 connections) — `server/scripts/rename_invites_columns.py`
 - **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
 - **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
 - **Apply the migration to rename columns. Args: database_url: PostgreSQL database…** (1 connections) — `server/scripts/rename_invites_columns.py`
@@ -13,6 +13,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

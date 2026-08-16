@@ -34,12 +34,10 @@
 ## Relationships
 
 - [utils/config.ts](utils-config.ts.md) (5 shared connections)
+- [logger.ts](logger.ts.md) (4 shared connections)
+- [security.ts](security.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [logoutHandler.ts](logoutHandler.ts.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,93 +1,79 @@
 # Player
 
-> God node · 228 connections · `server/models/player.py`
+> 378 nodes
 
-**Community:** [Player](Player.md)
+## Key Concepts
 
-## Connections by Relation
+- **Player** (229 connections) — `server/models/player.py`
+- **models/player.py** (96 connections) — `server/models/player.py`
+- **sqlalchemy.md** (89 connections) — `.claude/rules/sqlalchemy.md`
+- **server/models/__init__.py** (86 connections) — `server/models/__init__.py`
+- **Base** (60 connections) — `server/models/base.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
+- **models/base.py** (22 connections) — `server/models/base.py`
+- **player_spell_repository.py** (22 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
+- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
+- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **health_repository.py** (18 connections) — `server/persistence/repositories/health_repository.py`
+- **test_player_effect_repository.py** (18 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **quest_definition_repository.py** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **test_quest_flow.py** (17 connections) — `server/tests/integration/test_quest_flow.py`
+- **PlayerInventory** (16 connections) — `server/models/player.py`
+- **async_persistence_direct_queries.py** (16 connections) — `server/async_persistence_direct_queries.py`
+- **PlayerSkill** (14 connections) — `server/models/player_skill.py`
+- **models/quest.py** (14 connections) — `server/models/quest.py`
+- **ItemComponentState** (13 connections) — `server/models/item.py`
+- **ItemPrototype** (13 connections) — `server/models/item.py`
+- **PlayerEffect** (13 connections) — `server/models/player_effect.py`
+- **QuestDefinition** (13 connections) — `server/models/quest.py`
+- *... and 353 more nodes in this community*
 
-### calls
-- .create_player_with_stats() `EXTRACTED`
-- .create_player() `EXTRACTED`
-- quest_seed_data() `EXTRACTED`
+## Relationships
 
-### contains
-- models/player.py `EXTRACTED`
+- [test_player_model.py](test_player_model.py.md) (45 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (26 shared connections)
+- [PlayerRepository](PlayerRepository.md) (22 shared connections)
+- [lucidity.py](lucidity.py.md) (19 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (16 shared connections)
+- [command_result_text](command_result_text.md) (15 shared connections)
+- [DatabaseError](DatabaseError.md) (15 shared connections)
+- [SkillService](SkillService.md) (14 shared connections)
+- [coerce_int](coerce_int.md) (14 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (12 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (11 shared connections)
 
-### imports
-- server/models/__init__.py `EXTRACTED`
-- async_persistence.py `EXTRACTED`
-- game_tick_processing.py `EXTRACTED`
-- [models/user.py](models-user.py.md) `EXTRACTED`
-- test_player_respawn_service.py `EXTRACTED`
-- lucidity_service.py `EXTRACTED`
-- [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
-- test_player_model.py `EXTRACTED`
-- [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
-- [websocket_initial_state.py](websocket_initial_state.py.md) `EXTRACTED`
-- test_websocket_initial_state.py `EXTRACTED`
-- player_respawn_service.py `EXTRACTED`
-- test_async_persistence_core.py `EXTRACTED`
-- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
-- [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
-- test_inventory_equip_command.py `EXTRACTED`
-- inventory_pickup_command.py `EXTRACTED`
-- movement_service.py `EXTRACTED`
-- service.py `EXTRACTED`
+## Source Files
 
-### inherits
-- Base `EXTRACTED`
+- `.claude/rules/sqlalchemy.md`
+- `server/alembic/versions/2025_11_12_add_item_tables.py`
+- `server/async_persistence_direct_queries.py`
+- `server/metadata.py`
+- `server/models/__init__.py`
+- `server/models/base.py`
+- `server/models/calendar.py`
+- `server/models/dialogue.py`
+- `server/models/emote.py`
+- `server/models/item.py`
+- `server/models/player.py`
+- `server/models/player_effect.py`
+- `server/models/player_skill.py`
+- `server/models/player_spells.py`
+- `server/models/profession.py`
+- `server/models/quest.py`
+- `server/models/skill.py`
+- `server/models/skill_use_log.py`
+- `server/models/spell_db.py`
+- `server/models/world.py`
 
-### method
-- .get_stats() `EXTRACTED`
-- .set_stats() `EXTRACTED`
-- .get_equipped_items() `EXTRACTED`
-- .apply_dp_decay() `EXTRACTED`
-- .restore_to_full_health() `EXTRACTED`
-- .apply_dp_change() `EXTRACTED`
-- .is_alive() `EXTRACTED`
-- .is_mortally_wounded() `EXTRACTED`
-- .is_dead() `EXTRACTED`
-- .get_health_state() `EXTRACTED`
-- .get_combat_stats() `EXTRACTED`
-- .get_health_percentage() `EXTRACTED`
-- .set_inventory() `EXTRACTED`
-- .set_equipped_items() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__repr__() `EXTRACTED`
-- .get_inventory() `EXTRACTED`
-- .get_status_effects() `EXTRACTED`
-- .set_status_effects() `EXTRACTED`
-- .add_experience() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- Player model for game data. Stores all game-specific data for a user including… `EXTRACTED`
-
-### references
-- _convert_legacy_stats_string() `EXTRACTED`
-
-### uses
-- [User](User.md) `INFERRED`
-- PlayerLucidity `INFERRED`
-- Base `INFERRED`
-- [HealthRepository](HealthRepository.md) `INFERRED`
-- PlayerRepository `INFERRED`
-- ExperienceRepository `INFERRED`
-- SpellTargetingService `INFERRED`
-- [PlayerDeathService](PlayerDeathService.md) `INFERRED`
-- LucidityExposureState `INFERRED`
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
-- LucidityCooldown `INFERRED`
-- LucidityAdjustmentLog `INFERRED`
-- PlayerSpell `INFERRED`
-- row_to_player() `INFERRED`
-- PositionState `INFERRED`
-- PlayerSavePreparer `INFERRED`
-- PlayerSkill `INFERRED`
-- PlayerEffect `INFERRED`
-- validate_and_fix_player_room() `INFERRED`
-- _sample_work() `INFERRED`
+- EXTRACTED: 944 (78%)
+- INFERRED: 271 (22%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

@@ -1,38 +1,42 @@
 # properties
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/intersection_schema.json`
-- **exits** (5 connections) — `schemas/intersection_schema.json`
-- **down** (2 connections) — `schemas/intersection_schema.json`
-- **east** (2 connections) — `schemas/intersection_schema.json`
-- **north** (2 connections) — `schemas/intersection_schema.json`
-- **south** (2 connections) — `schemas/intersection_schema.json`
-- **up** (2 connections) — `schemas/intersection_schema.json`
-- **west** (2 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
-- **oneOf** (1 connections) — `schemas/intersection_schema.json`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
+- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
+- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
+- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
+- **items** (2 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [enabled](enabled.md) (1 shared connections)
+- [lock_state](lock_state.md) (1 shared connections)
+- [container](container.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

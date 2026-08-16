@@ -1,10 +1,10 @@
 # test_movement_service.py
 
-> 103 nodes
+> 105 nodes
 
 ## Key Concepts
 
-- **test_movement_service.py** (51 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_movement_service.py** (52 connections) — `server/tests/unit/game/test_movement_service.py`
 - **movement_service.py** (35 connections) — `server/game/movement_service.py`
 - **asyncio** (20 connections)
 - **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
@@ -29,20 +29,22 @@
 - **test_add_player_to_room_room_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
 - **test_add_player_to_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
 - **test_check_combat_state_allows_without_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- *... and 78 more nodes in this community*
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (15 shared connections)
 - [MovementService](MovementService.md) (11 shared connections)
-- [Player](Player.md) (6 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 - [ValidationError](ValidationError.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (6 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
 - [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [Room](Room.md) (2 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
-- [test_go_command.py](test_go_command.py.md) (1 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 
 ## Source Files
 
@@ -52,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 202 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 204 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

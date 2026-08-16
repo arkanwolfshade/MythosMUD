@@ -1,14 +1,11 @@
 # test_message_broadcaster.py
 
-> 42 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **test_message_broadcaster.py** (22 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster.py** (23 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **asyncio** (15 connections)
-- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
@@ -24,17 +21,22 @@
 - **test_broadcast_to_room_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_to_room_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_to_room_with_uuid_exclude()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **fixture** (3 connections)
 - **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **Unit tests for message broadcaster. Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **Test broadcast_global() when no players online.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 17 more nodes in this community*
+- **Test broadcast_room_event() broadcasts room event.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() records invalid subscriber IDs.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [MessageBroadcaster](MessageBroadcaster.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [message_broadcaster](message_broadcaster.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

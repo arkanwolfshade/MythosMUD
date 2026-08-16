@@ -6,7 +6,7 @@
 
 - **player_connection_setup.py** (26 connections) — `server/realtime/player_connection_setup.py`
 - **handle_new_connection_setup()** (19 connections) — `server/realtime/player_connection_setup.py`
-- **test_player_connection_setup.py** (17 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
+- **test_player_connection_setup.py** (18 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **_manager()** (11 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **asyncio** (11 connections)
 - **_trigger_quests_for_room_on_spawn()** (10 connections) — `server/realtime/player_connection_setup.py`
@@ -16,10 +16,10 @@
 - **UUID** (7 connections)
 - **_add_player_to_room_silently()** (6 connections) — `server/realtime/player_connection_setup.py`
 - **Any** (6 connections)
+- **test_player_connection_setup_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 - **test_broadcast_player_entered_game_success_and_error()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **test_send_room_occupants_update_paths()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
 - **test_update_player_last_active_database_error()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_player_connection_setup_grace_period.py** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 - **_stable_room_id_for_quest()** (4 connections) — `server/realtime/player_connection_setup.py`
 - **test_reconnection_cancels_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
 - **test_reconnection_no_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [extract_player_name](extract_player_name.md) (3 shared connections)
 - [build_event](build_event.md) (3 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
 - [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
-- [extract_player_name](extract_player_name.md) (2 shared connections)
-- [start_grace_period](start_grace_period.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [event_handler](event_handler.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
-- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 116 (95%)
+- EXTRACTED: 118 (95%)
 - INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 

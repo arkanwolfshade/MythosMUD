@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **server/tests/conftest.py** (15 connections) — `server/tests/conftest.py`
+- **server/tests/conftest.py** (17 connections) — `server/tests/conftest.py`
 - **_apply_path_based_markers()** (6 connections) — `server/tests/conftest.py`
 - **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
 - **pytest_collection_modifyitems()** (5 connections) — `server/tests/conftest.py`
@@ -34,7 +34,9 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [reset_config](reset_config.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (98%)
+- EXTRACTED: 46 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

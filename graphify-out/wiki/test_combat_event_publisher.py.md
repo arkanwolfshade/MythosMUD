@@ -1,20 +1,21 @@
 # test_combat_event_publisher.py
 
-> 151 nodes
+> 157 nodes
 
 ## Key Concepts
 
-- **test_combat_event_publisher.py** (48 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_combat_event_publisher.py** (49 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
 - **CombatEventPublisher** (31 connections) — `server/services/combat_event_publisher.py`
 - **CombatEventHandler** (27 connections) — `server/services/combat_event_handler.py`
 - **combat_event_publisher.py** (23 connections) — `server/services/combat_event_publisher.py`
 - **combat_events.py** (20 connections) — `server/events/combat_events.py`
 - **combat_event_handler.py** (18 connections) — `server/services/combat_event_handler.py`
 - **asyncio** (18 connections)
+- **test_combat_event_handler.py** (17 connections) — `server/tests/unit/services/test_combat_event_handler.py`
 - **CombatStartedEvent** (16 connections) — `server/events/combat_events.py`
+- **NPCDiedEvent** (16 connections) — `server/events/combat_events.py`
 - **NPCTookDamageEvent** (16 connections) — `server/events/combat_events.py`
 - **PlayerAttackedEvent** (16 connections) — `server/events/combat_events.py`
-- **test_combat_event_handler.py** (16 connections) — `server/tests/unit/services/test_combat_event_handler.py`
 - **._publish_combat_payload()** (14 connections) — `server/services/combat_event_publisher.py`
 - **CombatEndedEvent** (13 connections) — `server/events/combat_events.py`
 - **NPCAttackedEvent** (11 connections) — `server/events/combat_events.py`
@@ -28,28 +29,25 @@
 - **CombatTurnAdvancedEvent** (8 connections) — `server/events/combat_events.py`
 - **.handle_attack_events_and_xp()** (7 connections) — `server/services/combat_event_handler.py`
 - **asyncio** (6 connections)
-- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
-- *... and 126 more nodes in this community*
+- *... and 132 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (28 shared connections)
-- [get_logger](get_logger.md) (19 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (7 shared connections)
+- [CombatInstance](CombatInstance.md) (43 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
 - [CombatParticipant](CombatParticipant.md) (7 shared connections)
-- [models/combat.py](models-combat.py.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (4 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
+- [combat_integration.py](combat_integration.py.md) (5 shared connections)
+- [NATSPublishError](NATSPublishError.md) (5 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (4 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [CombatEventPublisherProtocol](CombatEventPublisherProtocol.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/events/combat_events.py`
-- `server/npc/combat_integration_protocols.py`
 - `server/services/combat_event_handler.py`
 - `server/services/combat_event_publisher.py`
 - `server/services/combat_service.py`
@@ -58,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 319 (84%)
-- INFERRED: 61 (16%)
+- EXTRACTED: 331 (84%)
+- INFERRED: 65 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

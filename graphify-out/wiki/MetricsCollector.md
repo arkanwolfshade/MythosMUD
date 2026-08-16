@@ -1,6 +1,6 @@
 # MetricsCollector
 
-> 29 nodes
+> 27 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
@@ -27,14 +26,16 @@
 - **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Get concise metrics summary. Returns: High-level metrics summary AI: For quick…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Initialize metrics collector. AI: Uses Lock for thread-safety in async context.** (1 connections) — `server/middleware/metrics_collector.py`
 - **Record a successfully processed message. Args: channel: Message channel for…** (1 connections) — `server/middleware/metrics_collector.py`
-- *... and 4 more nodes in this community*
+- **Record a failed message. Args: channel: Message channel error_type: Type of…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Record a message retry attempt. Args: channel: Message channel attempt: Retry…** (1 connections) — `server/middleware/metrics_collector.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [HealthMonitor](HealthMonitor.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 32 (86%)
-- INFERRED: 5 (14%)
+- EXTRACTED: 31 (89%)
+- INFERRED: 4 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

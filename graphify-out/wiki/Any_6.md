@@ -1,47 +1,33 @@
 # Any
 
-> 41 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **Any** (13 connections)
-- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
-- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
-- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **Retrieve current room drops as a defensive copy for callers. Args: room_id: The…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Append an item stack to the room drop ledger. Args: room_id: The room receiving…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Remove quantity of a drop entry, returning the removed stack. Args: room_id:…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Adjust quantity for an existing drop entry; removing entry when zero. Args:…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- *... and 16 more nodes in this community*
+- **Any** (7 connections)
+- **.execute()** (4 connections) — `server/postgres_adapter.py`
+- **.cursor()** (3 connections) — `server/postgres_adapter.py`
+- **.keys()** (3 connections) — `server/postgres_adapter.py`
+- **.__getitem__()** (2 connections) — `server/postgres_adapter.py`
+- **.__init__()** (2 connections) — `server/postgres_adapter.py`
+- **.__iter__()** (2 connections) — `server/postgres_adapter.py`
+- **Return the keys of the row dictionary. Returns: dict_keys: The keys of the row…** (1 connections) — `server/postgres_adapter.py`
+- **Execute a query and return a cursor. Args: query: SQL query with PostgreSQL %s…** (1 connections) — `server/postgres_adapter.py`
+- **Get a cursor from the underlying connection. This method provides direct access…** (1 connections) — `server/postgres_adapter.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (22 shared connections)
+- [PostgresRow](PostgresRow.md) (4 shared connections)
+- [PostgresConnection](PostgresConnection.md) (3 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_subscription_manager.py`
+- `server/postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

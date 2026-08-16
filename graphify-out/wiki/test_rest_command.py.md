@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **test_rest_command.py** (40 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **rest_command.py** (27 connections) — `server/commands/rest_command.py`
+- **test_rest_command.py** (41 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **rest_command.py** (28 connections) — `server/commands/rest_command.py`
 - **cancel_rest_countdown()** (25 connections) — `server/commands/rest_command.py`
 - **asyncio** (22 connections)
 - **handle_rest_command()** (21 connections) — `server/commands/rest_command.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (11 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (9 shared connections)
 - [MockPersistence](MockPersistence.md) (6 shared connections)
 - [test_go_command.py](test_go_command.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
+- [CombatInstance](CombatInstance.md) (5 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (4 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
 - [rest_countdown_task.py](rest_countdown_task.py.md) (3 shared connections)
 - [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 222 (99%)
+- EXTRACTED: 224 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -6,7 +6,7 @@
 
 - **Generate Comprehensive Report** (8 connections) — `.claude/skills/audit/SKILL.md`
 - **Detailed Findings by Severity** (5 connections) — `.claude/skills/audit/SKILL.md`
-- **audit/SKILL.md** (2 connections) — `.claude/skills/audit/SKILL.md`
+- **Audit Skill** (3 connections) — `.claude/skills/audit/SKILL.md`
 - **Anti-Patterns Verdict** (1 connections) — `.claude/skills/audit/SKILL.md`
 - **Critical Issues** (1 connections) — `.claude/skills/audit/SKILL.md`
 - **Diagnostic Scan** (1 connections) — `.claude/skills/audit/SKILL.md`
@@ -21,7 +21,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -29,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

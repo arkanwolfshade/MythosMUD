@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
+- **fixtures/shared/__init__.py** (7 connections) — `server/tests/fixtures/shared/__init__.py`
 - **StubPersistence** (6 connections) — `server/tests/fixtures/shared/__init__.py`
-- **fixtures/shared/__init__.py** (6 connections) — `server/tests/fixtures/shared/__init__.py`
 - **stub_persistence()** (4 connections) — `server/tests/fixtures/shared/__init__.py`
 - **Any** (4 connections)
 - **fake_clock()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_nats_message_handler_chat.py** (40 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_nats_message_handler_chat.py** (41 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 - **asyncio** (16 connections)
 - **test_broadcast_to_room_with_filtering_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 - **test_echo_message_to_sender_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (3 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 93 (98%)
+- EXTRACTED: 94 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,40 @@
 # .__init__
 
-> 2 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Initialize the periodic orphan auditor. Args: check_interval_seconds: Seconds…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
+- **.__init__()** (5 connections) — `server/models/invite.py`
+- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
+- **.is_active()** (4 connections) — `server/models/game.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **Any** (1 connections)
+- **setter** (1 connections)
+- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
+- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
+- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
+- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [Invite](Invite.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (73%)
+- INFERRED: 4 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

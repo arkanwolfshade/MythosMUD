@@ -1,17 +1,18 @@
 # PlayerDeathService
 
-> 31 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **PlayerDeathService** (26 connections) — `server/services/player_death_service.py`
+- **PlayerDeathService** (25 connections) — `server/services/player_death_service.py`
+- **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
 - **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **.handle_player_death()** (9 connections) — `server/services/player_death_service.py`
+- **.initialize()** (8 connections) — `server/container/bundles/combat.py`
 - **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
 - **combat_service_types.py** (7 connections) — `server/services/combat_service_types.py`
 - **.process_mortally_wounded_tick()** (6 connections) — `server/services/player_death_service.py`
 - **UUID** (6 connections)
-- **PlayerLifecycleServices** (5 connections) — `server/services/combat_service_types.py`
 - **._clear_player_combat_state()** (5 connections) — `server/services/player_death_service.py`
 - **._ensure_player_posture_lying()** (5 connections) — `server/services/player_death_service.py`
 - **.get_dead_players()** (5 connections) — `server/services/player_death_service.py`
@@ -22,39 +23,40 @@
 - **Any** (3 connections)
 - **Player** (3 connections)
 - **Exception** (1 connections)
+- **Initialize combat services.** (1 connections) — `server/container/bundles/combat.py`
 - **Small types shared by CombatService wiring.** (1 connections) — `server/services/combat_service_types.py`
-- **Player death and respawn services for CombatService injection.** (1 connections) — `server/services/combat_service_types.py`
+- **Player Death Service for managing player mortality and DP decay. This service…** (1 connections) — `server/services/player_death_service.py`
 - **Process DP decay for a single mortally wounded player. Decreases player DP by…** (1 connections) — `server/services/player_death_service.py`
 - **Ensure player posture is set to lying when dead. Args: player: Player object to…** (1 connections) — `server/services/player_death_service.py`
 - **Clear player combat state when they die. BUGFIX #244: As documented in…** (1 connections) — `server/services/player_death_service.py`
-- **Get room name for death location display. Args: death_location: Room ID where…** (1 connections) — `server/services/player_death_service.py`
-- **Publish player died event if event bus is available. Args: player_id: ID of the…** (1 connections) — `server/services/player_death_service.py`
-- *... and 6 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (3 shared connections)
-- [LoggedException](LoggedException.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [ErrorContext](ErrorContext.md) (1 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (1 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (4 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
+- [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (2 shared connections)
 
 ## Source Files
 
+- `server/container/bundles/combat.py`
 - `server/services/combat_service_types.py`
 - `server/services/player_death_service.py`
 - `server/structured_logging/enhanced_logging_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (89%)
-- INFERRED: 9 (11%)
+- EXTRACTED: 93 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -20,7 +20,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 

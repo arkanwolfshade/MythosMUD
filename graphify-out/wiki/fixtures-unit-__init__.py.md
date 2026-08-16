@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **fixtures/unit/__init__.py** (8 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fixtures/unit/__init__.py** (9 connections) — `server/tests/fixtures/unit/__init__.py`
 - **strict_mocker()** (6 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **mock_helpers.py** (5 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 - **dummy_request()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
 - **fakerandom()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
 - **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **mock_helpers.py** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 - **test_container()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
 - **fixture** (3 connections)
 - **MockerFixture** (2 connections)
@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 
@@ -37,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

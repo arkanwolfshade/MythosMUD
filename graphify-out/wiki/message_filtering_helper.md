@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_message_filtering.py](test_message_filtering.py.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,63 +1,60 @@
 # errorHandler.ts
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **errorHandler.ts** (28 connections) — `client/src/utils/errorHandler.ts`
 - **getErrorMessage()** (26 connections) — `client/src/utils/errorHandler.ts`
 - **isErrorResponse()** (26 connections) — `client/src/utils/errorHandler.ts`
-- **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
-- **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
 - **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
-- **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
 - **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
 - **errorMessageFromApiBody()** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
 - **registerFailureMessage()** (8 connections) — `client/src/mythosApp/registerFailureMessage.ts`
 - **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
 - **apiErrorMessage.ts** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
 - **loginFailureMessage.ts** (7 connections) — `client/src/mythosApp/loginFailureMessage.ts`
-- **messageFromCreationRefreshHttpError()** (6 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
 - **loginFailureMessage()** (6 connections) — `client/src/mythosApp/loginFailureMessage.ts`
 - **formatErrorForDisplay()** (6 connections) — `client/src/utils/errorHandler.ts`
-- **parseRefreshFailure()** (5 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
+- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
 - **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **extractErrorMessageFromResponseBody()** (4 connections) — `client/src/components/CharacterSelectionScreen.tsx`
-- **errorDetailString()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **useProfessions()** (4 connections) — `client/src/hooks/useProfessions.ts`
 - **getErrorDetails()** (4 connections) — `client/src/utils/errorHandler.ts`
 - **getErrorSeverity()** (4 connections) — `client/src/utils/errorHandler.ts`
+- **parseProfessionsBody()** (3 connections) — `client/src/hooks/useProfessions.ts`
 - **messageFromNestedError()** (3 connections) — `client/src/mythosApp/registerFailureMessage.ts`
-- *... and 16 more nodes in this community*
+- **messageFromValidationDetail()** (3 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **isAuthenticationError()** (3 connections) — `client/src/utils/errorHandler.ts`
+- **isErrorType()** (3 connections) — `client/src/utils/errorHandler.ts`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (43 shared connections)
-- [Profession](Profession.md) (15 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (6 shared connections)
-- [logoutHandler.ts](logoutHandler.ts.md) (5 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (36 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (10 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (6 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (6 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/CharacterNameScreen.tsx`
 - `client/src/components/CharacterSelectionScreen.tsx`
+- `client/src/hooks/useProfessions.ts`
 - `client/src/mythosApp/apiErrorMessage.ts`
-- `client/src/mythosApp/creationCompleteFlow.ts`
-- `client/src/mythosApp/deleteCharacterFlow.ts`
-- `client/src/mythosApp/guards.ts`
 - `client/src/mythosApp/loginFailureMessage.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
 - `client/src/mythosApp/registerFailureMessage.ts`
-- `client/src/mythosApp/serverAvailability.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/utils/errorHandler.test.ts`
 - `client/src/utils/errorHandler.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (100%)
+- EXTRACTED: 156 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,34 @@
 # properties
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [zone_schema.json](zone_schema.json.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [weather_patterns](weather_patterns.md) (1 shared connections)
-- [special_rules](special_rules.md) (1 shared connections)
-- [enum](enum.md) (1 shared connections)
+- [exits](exits.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

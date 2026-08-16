@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **test_magic_service.py** (47 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_magic_service.py** (48 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **MagicService** (41 connections) — `server/game/magic/magic_service.py`
 - **UUID** (26 connections)
 - **CastingStateManager** (25 connections) — `server/game/magic/casting_state_manager.py`
 - **asyncio** (19 connections)
+- **test_casting_state_manager.py** (12 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
 - **casting_state_manager.py** (11 connections) — `server/game/magic/casting_state_manager.py`
-- **test_casting_state_manager.py** (11 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
 - **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
 - **StartCastingTarget** (8 connections) — `server/game/magic/casting_state_manager.py`
 - **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
@@ -33,18 +33,17 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (12 shared connections)
-- [SpellEffectType](SpellEffectType.md) (10 shared connections)
-- [magic_service.py](magic_service.py.md) (8 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
+- [TargetMatch](TargetMatch.md) (34 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (8 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (4 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (4 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [SpellMaterial](SpellMaterial.md) (3 shared connections)
+- [SpellLearningService](SpellLearningService.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 178 (76%)
-- INFERRED: 55 (24%)
+- EXTRACTED: 180 (77%)
+- INFERRED: 55 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

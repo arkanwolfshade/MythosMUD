@@ -8,9 +8,9 @@
 - **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
 - **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
 - **TestCombatConfiguration** (16 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **test_combat_configuration_service.py** (9 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
 - **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
-- **test_combat_configuration_service.py** (8 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
 - **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
 - **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
@@ -35,10 +35,11 @@
 
 - [TestCombatConfigurationService](TestCombatConfigurationService.md) (7 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (2 shared connections)
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 134 (96%)
+- EXTRACTED: 135 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

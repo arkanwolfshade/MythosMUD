@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_ascii_map_renderer_exits.py** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **test_ascii_map_renderer_exits.py** (10 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 - **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
@@ -23,6 +23,7 @@
 ## Relationships
 
 - [AsciiMapRenderer](AsciiMapRenderer.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [TestHorizontalExitCharBetween](TestHorizontalExitCharBetween.md) (1 shared connections)
 - [TestResolveExitTarget](TestResolveExitTarget.md) (1 shared connections)
@@ -33,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 22 (88%)
+- EXTRACTED: 23 (88%)
 - INFERRED: 3 (12%)
 - AMBIGUOUS: 0 (0%)
 

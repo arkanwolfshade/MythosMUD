@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_async_persistence_room_loading.py** (29 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_async_persistence_room_loading.py** (30 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **test_build_room_objects_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 - **test_process_exit_rows_with_full_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
@@ -18,7 +18,9 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 - [test_process_exit_rows_with_partial_room_ids](test_process_exit_rows_with_partial_room_ids.md) (1 shared connections)
 - [test_process_exit_rows_debug_logging](test_process_exit_rows_debug_logging.md) (1 shared connections)
 - [test_process_room_rows_with_full_room_id](test_process_room_rows_with_full_room_id.md) (1 shared connections)
@@ -27,8 +29,6 @@
 - [test_load_room_cache_with_rooms_logs_sample_ids](test_load_room_cache_with_rooms_logs_sample_ids.md) (1 shared connections)
 - [test_process_room_rows_empty_list](test_process_room_rows_empty_list.md) (1 shared connections)
 - [test_process_exit_rows_empty_list](test_process_exit_rows_empty_list.md) (1 shared connections)
-- [test_process_exit_rows_multiple_exits_same_room](test_process_exit_rows_multiple_exits_same_room.md) (1 shared connections)
-- [test_process_exit_rows_zone_single_part](test_process_exit_rows_zone_single_part.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

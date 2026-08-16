@@ -1,17 +1,16 @@
 # Authoritative Environment DML
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Authoritative Environment DML** (7 connections) — `data/spells/README.md`
+- **Authoritative Environment DML** (7 connections) — `db/LEGACY_FILES.md`
 - **Historical DDL Final Status** (3 connections) — `db/verification/ddl_final_status.md`
-- **DB Bootstrap Execution Order** (2 connections) — `db/databases/README.md`
 - **Removed Schema and Migration SQL** (2 connections) — `db/LEGACY_FILES.md`
 - **Historical DDL Partial Status** (2 connections) — `db/verification/ddl_status.md`
 - **Historical DDL Verification Summary** (2 connections) — `db/verification/ddl_verification_summary.md`
 - **static_seed.sql (Deprecated)** (1 connections) — `data/static/generated_sql/README.md`
-- **Authoritative Environment DML** (1 connections) — `db/LEGACY_FILES.md`
+- **DB Bootstrap Execution Order** (1 connections) — `db/databases/README.md`
 - **mythos_dev players UUID Schema Variation** (1 connections) — `db/verification/ddl_verification_summary.md`
 - **Spells Seed Data (Deprecated)** (1 connections) — `data/spells/README.md`
 - **Generated World and Emotes SQL** (1 connections) — `data/static/generated_sql/README.md`
@@ -34,8 +33,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 10 (83%)
-- INFERRED: 2 (17%)
+- EXTRACTED: 9 (82%)
+- INFERRED: 2 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

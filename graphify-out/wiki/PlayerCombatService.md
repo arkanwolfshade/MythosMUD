@@ -1,18 +1,18 @@
 # PlayerCombatService
 
-> 116 nodes
+> 117 nodes
 
 ## Key Concepts
 
 - **PlayerCombatService** (76 connections) — `server/services/player_combat_service.py`
-- **test_player_combat_service.py** (37 connections) — `server/tests/unit/services/test_player_combat_service.py`
+- **test_player_combat_service.py** (38 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **asyncio** (22 connections)
 - **UUID** (15 connections)
 - **PlayerCombatState** (14 connections) — `server/services/player_combat_service.py`
-- **.__init__()** (11 connections) — `server/commands/combat_handler.py`
 - **._award_xp_via_persistence_fallback()** (7 connections) — `server/services/player_combat_service.py`
-- **.get_base_stats()** (6 connections) — `server/models/npc.py`
+- **player_combat_service()** (7 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
+- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
 - **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
 - **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
 - **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
@@ -29,27 +29,26 @@
 - **.handle_npc_death()** (4 connections) — `server/services/player_combat_service.py`
 - **test_award_xp_on_npc_death_delegates_to_rewards_when_available()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **test_award_xp_on_npc_death_error()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- *... and 91 more nodes in this community*
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
-- [combat_loader.py](combat_loader.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [CombatInstance](CombatInstance.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (4 shared connections)
 - [test_movement_service.py](test_movement_service.py.md) (3 shared connections)
-- [NPCCombatIntegrationReadApi](NPCCombatIntegrationReadApi.md) (3 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [test_npc_service.py](test_npc_service.py.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [combat_loader.py](combat_loader.py.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/models/npc.py`
+- `server/game/magic/spell_targeting.py`
 - `server/realtime/connection_manager.py`
 - `server/services/combat_service.py`
 - `server/services/player_combat_service.py`
@@ -57,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 200 (81%)
-- INFERRED: 47 (19%)
+- EXTRACTED: 192 (80%)
+- INFERRED: 49 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

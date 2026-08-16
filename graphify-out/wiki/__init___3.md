@@ -1,25 +1,25 @@
 # .__init__
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
-- **Initialize the memory leak metrics collector.** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
+- **timedelta** (1 connections)
+- **Initialize circuit breaker. Args: failure_threshold: Number of failures before…** (1 connections) — `server/realtime/circuit_breaker.py`
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
-- [deque](deque.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/memory_leak_metrics.py`
+- `server/realtime/circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

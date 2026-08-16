@@ -1,60 +1,54 @@
 # RateLimiter
 
-> 187 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (66 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_disconnection.py** (37 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **_DisconnectConnectionManager** (19 connections) — `server/realtime/connection_disconnection.py`
-- **test_connection_disconnection_websockets.py** (19 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- **cleanup_websocket_disconnect()** (16 connections) — `server/realtime/connection_disconnection.py`
-- **_cleanup_room_subscriptions()** (14 connections) — `server/realtime/connection_disconnection.py`
-- **_track_disconnect_if_needed()** (14 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **disconnect_connection_by_id_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
-- **safe_close_websocket_impl()** (13 connections) — `server/realtime/connection_manager_methods.py`
-- **force_disconnect_player_impl()** (12 connections) — `server/realtime/connection_manager_methods.py`
-- **asyncio** (12 connections)
-- **_cleanup_player_data()** (11 connections) — `server/realtime/connection_disconnection.py`
-- **UUID** (11 connections)
-- **_cleanup_fully_disconnected_player()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **_disconnect_single_websocket()** (7 connections) — `server/realtime/connection_disconnection.py`
-- **asyncio** (7 connections)
-- **_disconnect_websocket_by_connection_id()** (6 connections) — `server/realtime/connection_disconnection.py`
-- **_is_non_intentional_force_disconnect()** (6 connections) — `server/realtime/connection_disconnection.py`
-- **mock_manager()** (6 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_disconnect_connection_by_id_impl_websocket()** (5 connections) — `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- **_cleanup_connection_tracking()** (4 connections) — `server/realtime/connection_disconnection.py`
-- **test_cleanup_player_data_has_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- **test_cleanup_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
-- *... and 162 more nodes in this community*
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Remove timestamps older than the window size. Args: player_id: Player ID…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel. Args: player_id: Player…** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting. Args: player_id: Player ID channel: Channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels. Implements per-user, per-channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player. Args: player_id: Player ID channel: Specific…** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics. Returns: Dictionary with system…** (1 connections) — `server/services/rate_limiter.py`
+- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel. Args: player_id:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the number of remaining messages a player can send on a channel. Args:…** (1 connections) — `server/services/rate_limiter.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (46 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (10 shared connections)
-- [ConnectionManager](ConnectionManager.md) (7 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (2 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
-- [handle_new_game_session_impl](handle_new_game_session_impl.md) (1 shared connections)
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (3 shared connections)
+- [RateLimiter](RateLimiter.md) (2 shared connections)
+- [rate_limiter](rate_limiter.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_disconnection.py`
-- `server/realtime/connection_manager_methods.py`
-- `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_disconnection.py`
-- `server/tests/unit/realtime/test_connection_disconnection_websockets.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 323 (87%)
-- INFERRED: 49 (13%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

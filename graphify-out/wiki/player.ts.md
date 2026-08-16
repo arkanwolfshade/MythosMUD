@@ -1,21 +1,22 @@
 # player.ts
 
-> 40 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **player.ts** (47 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
 - **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
+- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **despawnSanitariumCultists()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
 - **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **clickWithoutStability()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
 - **lookAndStand()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
@@ -28,16 +29,14 @@
 - **keepFirstCultistInstanceId()** (4 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
 - **dismissDeathInterstitial()** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **isInDeathVoid()** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **prepareForDirectionalMove()** (4 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- *... and 15 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (33 shared connections)
-- [multiplayer.ts](multiplayer.ts.md) (31 shared connections)
-- [executeCommand](executeCommand.md) (19 shared connections)
-- [waitForMessage](waitForMessage.md) (16 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (6 shared connections)
+- [executeCommand](executeCommand.md) (64 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (28 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (21 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (3 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (2 shared connections)
 
 ## Source Files
@@ -51,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 192 (100%)
+- EXTRACTED: 212 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

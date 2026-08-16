@@ -1,6 +1,6 @@
 # App.tsx
 
-> 48 nodes
+> 44 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
 - **App.logoutError.test.tsx** (8 connections) — `client/src/__tests__/App.logoutError.test.tsx`
-- **components/__tests__/LogoutFlow.integration.test.tsx** (7 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
 - **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
 - **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
 - **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
@@ -29,15 +28,15 @@
 - **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
 - **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
 - **createMockJsonResponse()** (3 connections) — `client/src/__tests__/app.test.helpers.ts`
-- *... and 23 more nodes in this community*
+- **mockFetchForAuthAndProfessions()** (3 connections) — `client/src/__tests__/app.test.helpers.ts`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [security.ts](security.ts.md) (7 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
-- [Profession](Profession.md) (2 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
 - [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
-- [security.ts](security.ts.md) (1 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files
@@ -65,7 +64,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 142 (100%)
+- EXTRACTED: 137 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

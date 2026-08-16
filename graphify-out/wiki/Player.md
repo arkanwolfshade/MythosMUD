@@ -1,78 +1,52 @@
 # Player
 
-> 958 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **Player** (228 connections) — `server/models/player.py`
-- **AsyncPersistenceLayer** (166 connections) — `server/async_persistence.py`
-- **models/player.py** (94 connections) — `server/models/player.py`
-- **server/models/__init__.py** (86 connections) — `server/models/__init__.py`
-- **LucidityService** (79 connections) — `server/services/lucidity_service.py`
-- **PlayerLucidity** (69 connections) — `server/models/lucidity.py`
-- **Base** (60 connections) — `server/models/base.py`
-- **test_player_respawn_service.py** (54 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **lucidity_service.py** (52 connections) — `server/services/lucidity_service.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **player_respawn_service.py** (44 connections) — `server/services/player_respawn_service.py`
-- **coerce_int()** (37 connections) — `server/utils/int_coercion.py`
-- **service.py** (35 connections) — `server/services/passive_lucidity_flux/service.py`
-- **test_async_persistence_delegates.py** (35 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **lucidity.py** (34 connections) — `server/models/lucidity.py`
-- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
-- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
-- **asyncio** (27 connections)
-- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
-- **lucidity_helpers.py** (24 connections) — `server/services/lucidity_helpers.py`
-- **test_lucidity_repository.py** (24 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **test_lucidity_service.py** (24 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **LucidityCooldown** (22 connections) — `server/models/lucidity.py`
-- **models/base.py** (22 connections) — `server/models/base.py`
-- *... and 933 more nodes in this community*
+- **Player** (26 connections) — `server/models/game.py`
+- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
+- **.add_item()** (3 connections) — `server/models/game.py`
+- **.add_status_effect()** (3 connections) — `server/models/game.py`
+- **.get_active_status_effects()** (3 connections) — `server/models/game.py`
+- **.remove_status_effect()** (3 connections) — `server/models/game.py`
+- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_item_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_remove_status_effect_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_update_last_active()** (3 connections) — `server/tests/unit/models/test_game_player.py`
+- **.can_carry_weight()** (2 connections) — `server/models/game.py`
+- **.remove_item()** (2 connections) — `server/models/game.py`
+- **.update_last_active()** (2 connections) — `server/models/game.py`
+- **Pydantic Player model for game logic and validation. This is separate from the…** (1 connections) — `server/models/game.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (93 shared connections)
-- [DatabaseError](DatabaseError.md) (88 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (29 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (19 shared connections)
-- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (18 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (16 shared connections)
-- [command_result_text](command_result_text.md) (15 shared connections)
-- [server/models/game.py](server-models-game.py.md) (14 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (14 shared connections)
-- [HealthRepository](HealthRepository.md) (14 shared connections)
-- [models/user.py](models-user.py.md) (13 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (13 shared connections)
+- [server/models/game.py](server-models-game.py.md) (16 shared connections)
+- [Stats](Stats.md) (3 shared connections)
+- [run_flee_effect](run_flee_effect.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/constants/spawn_defaults.py`
-- `server/game/player_creation_service.py`
-- `server/game/player_respawn_wrapper.py`
-- `server/metadata.py`
-- `server/models/__init__.py`
-- `server/models/base.py`
-- `server/models/calendar.py`
-- `server/models/dialogue.py`
-- `server/models/emote.py`
 - `server/models/game.py`
-- `server/models/item.py`
-- `server/models/lucidity.py`
-- `server/models/player.py`
-- `server/models/player_effect.py`
-- `server/models/player_skill.py`
-- `server/models/player_spells.py`
-- `server/models/skill.py`
-- `server/models/skill_use_log.py`
-- `server/models/spell_db.py`
+- `server/tests/unit/models/test_game_player.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2013 (83%)
-- INFERRED: 400 (17%)
+- EXTRACTED: 84 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

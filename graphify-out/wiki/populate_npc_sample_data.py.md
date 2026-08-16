@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **populate_npc_sample_data.py** (10 connections) — `scripts/populate_npc_sample_data.py`
+- **populate_npc_sample_data.py** (11 connections) — `scripts/populate_npc_sample_data.py`
 - **populate_database()** (9 connections) — `scripts/populate_npc_sample_data.py`
 - **main()** (4 connections) — `scripts/populate_npc_sample_data.py`
 - **_process_select_statement()** (4 connections) — `scripts/populate_npc_sample_data.py`
@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

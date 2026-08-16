@@ -1,30 +1,29 @@
 # fixture
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (3 connections)
+- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (4 shared connections)
+- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

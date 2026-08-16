@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 

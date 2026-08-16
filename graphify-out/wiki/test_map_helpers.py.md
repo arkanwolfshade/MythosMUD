@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **test_map_helpers.py** (15 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_map_helpers.py** (16 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **map_helpers.py** (15 connections) — `server/api/map_helpers.py`
 - **load_rooms_with_coordinates()** (14 connections) — `server/api/map_helpers.py`
-- **map_helpers.py** (14 connections) — `server/api/map_helpers.py`
 - **load_single_room_with_coordinates()** (11 connections) — `server/api/map_helpers.py`
 - **load_room_exits()** (9 connections) — `server/api/map_helpers.py`
 - **build_room_dict()** (8 connections) — `server/api/map_helpers.py`
@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (6 shared connections)
-- [maps.py](maps.py.md) (6 shared connections)
+- [ExplorationService](ExplorationService.md) (12 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 92 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
