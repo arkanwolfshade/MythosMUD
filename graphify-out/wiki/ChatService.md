@@ -1,60 +1,41 @@
-# ChatService
+# chatservice
 
-> 157 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **ChatService** (96 connections) — `server/game/chat_service.py`
-- **test_chat_service.py** (44 connections) — `server/tests/unit/game/test_chat_service.py`
-- **UUID** (28 connections)
-- **asyncio** (22 connections)
-- **.send_say_message()** (11 connections) — `server/game/chat_service.py`
-- **.send_emote_message()** (10 connections) — `server/game/chat_service.py`
-- **_publish_room_chat()** (6 connections) — `server/game/chat_service.py`
-- **._chat_send_services()** (5 connections) — `server/game/chat_service.py`
-- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
-- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
-- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
-- **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_global_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_local_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_local_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
-- *... and 132 more nodes in this community*
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **.__init__()** (8 connections) — `server/game/magic/magic_service.py`
+- **MagicServiceOptionalDeps** (4 connections) — `server/game/magic/magic_service.py`
+- **PlayerSpellRepository** (2 connections)
+- **ChatService** (1 connections)
+- **PlayerService** (1 connections)
+- **SpellRegistry** (1 connections)
+- **SpellRegistry** (1 connections)
+- **TypedDict** (1 connections)
+- **SpellEffects** (1 connections)
+- **SpellLearningService** (1 connections)
+- **SpellTargetingService** (1 connections)
+- **Initialize the magic command handler. Args: magic_service: Magic service for…** (1 connections) — `server/commands/magic_commands.py`
+- **Initialize the magic service. Args: spell_registry: Registry for spell lookups…** (1 connections) — `server/game/magic/magic_service.py`
+- **Optional dependencies for MagicService. All keys optional; defaults applied in…** (1 connections) — `server/game/magic/magic_service.py`
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (14 shared connections)
-- [ChatMessage](ChatMessage.md) (13 shared connections)
-- [chat_message.py](chat_message.py.md) (5 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [npc_base.py](npc_base.py.md) (1 shared connections)
-- [SpellRegistry](SpellRegistry.md) (1 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [server commands magic commands](server_commands_magic_commands.md) (2 shared connections)
+- [server app game tick counter](server_app_game_tick_counter.md) (1 shared connections)
+- [server game magic casting state](server_game_magic_casting_state.md) (1 shared connections)
+- [magicservicecompletionmixin](magicservicecompletionmixin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_service.py`
-- `server/tests/unit/game/test_chat_service.py`
+- `server/commands/magic_commands.py`
+- `server/game/magic/magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 240 (82%)
-- INFERRED: 54 (18%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

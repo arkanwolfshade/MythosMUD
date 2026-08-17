@@ -1,79 +1,83 @@
 # DatabaseError
 
-> 843 nodes
+> God node · 255 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [scripts populate test npc databases](scripts_populate_test_npc_databases.md)
 
-- **DatabaseError** (264 connections) — `server/exceptions.py`
-- **Player** (231 connections) — `server/models/player.py`
-- **log_and_raise()** (196 connections) — `server/utils/error_logging.py`
-- **models/player.py** (98 connections) — `server/models/player.py`
-- **get_session_maker()** (97 connections) — `server/database.py`
-- **sqlalchemy.md** (89 connections) — `.claude/rules/sqlalchemy.md`
-- **server/models/__init__.py** (86 connections) — `server/models/__init__.py`
-- **database.py** (82 connections) — `server/database.py`
-- **Base** (60 connections) — `server/models/base.py`
-- **Profession** (53 connections) — `server/models/profession.py`
-- **get_async_session()** (53 connections) — `server/database.py`
-- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **rooms.py** (40 connections) — `server/api/rooms.py`
-- **game_tick_death.py** (34 connections) — `server/app/game_tick_death.py`
-- **persistence/repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
-- **PlayerRepository** (30 connections) — `server/persistence/repositories/player_repository.py`
-- **SkillRepository** (29 connections) — `server/persistence/repositories/skill_repository.py`
-- **player_repository.py** (29 connections) — `server/persistence/repositories/player_repository.py`
-- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
-- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
-- **Skill** (26 connections) — `server/models/skill.py`
-- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
-- **PlayerSkillRepository** (24 connections) — `server/persistence/repositories/player_skill_repository.py`
-- *... and 818 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- ._execute_create_npc_definition() `EXTRACTED`
+- ._execute_npc_update() `EXTRACTED`
+- ._execute_create_spawn_rule() `EXTRACTED`
+- ._get_room_uuid_by_stable_id() `EXTRACTED`
+- .mark_room_as_explored() `EXTRACTED`
+- .get_npc_definitions() `EXTRACTED`
+- .is_room_explored() `EXTRACTED`
+- .get_spawn_rules() `EXTRACTED`
+- .get_explored_rooms() `EXTRACTED`
+- .get_system_statistics() `EXTRACTED`
+- .test_get_severity_for_error_database() `EXTRACTED`
+- .test_get_status_code_for_error_database() `EXTRACTED`
+- .test_map_error_type_database() `EXTRACTED`
+- test_is_transient_error_cause_chain_connection_closed() `INFERRED`
+- test_is_transient_error_wrapped_connection_closed() `INFERRED`
 
-- [get_logger](get_logger.md) (204 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (99 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (51 shared connections)
-- [AliasStorage](AliasStorage.md) (38 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (29 shared connections)
-- [HealthRepository](HealthRepository.md) (24 shared connections)
-- [NPCDefinition](NPCDefinition.md) (19 shared connections)
-- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (19 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (19 shared connections)
-- [test_item.py](test_item.py.md) (19 shared connections)
-- [ConnectionManager](ConnectionManager.md) (18 shared connections)
-- [ExplorationService](ExplorationService.md) (17 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- async_persistence.py `EXTRACTED`
+- database.py `EXTRACTED`
+- players.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- persistence/container_persistence.py `EXTRACTED`
+- test_container_persistence_extended_row_helpers.py `EXTRACTED`
+- test_connection_delegates.py `EXTRACTED`
+- test_connection_session_management.py `EXTRACTED`
+- test_npc_service.py `EXTRACTED`
+- player_service.py `EXTRACTED`
+- test_exploration_service.py `EXTRACTED`
+- test_admin_setlucidity_command.py `EXTRACTED`
+- legacy_error_handlers.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
+- test_container_persistence_crud.py `EXTRACTED`
+- test_database_error_handling.py `EXTRACTED`
+- test_legacy_error_handlers.py `EXTRACTED`
+- container_persistence/container_persistence.py `EXTRACTED`
 
-- `.claude/rules/sqlalchemy.md`
-- `e2e-tests/load-tests/get_invite_codes.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/alembic/versions/2025_11_12_add_item_tables.py`
-- `server/api/rooms.py`
-- `server/app/game_tick_death.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/async_persistence_room_loader.py`
-- `server/commands/channel_commands.py`
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/exceptions.py`
-- `server/game/room_service.py`
-- `server/game/skill_service.py`
-- `server/metadata.py`
-- `server/models/__init__.py`
-- `server/models/base.py`
+### inherits
+- MythosMUDError `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 2557 (84%)
-- INFERRED: 504 (16%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Database operation errors. `EXTRACTED`
+
+### uses
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) `INFERRED`
+- TestErrorMapping `INFERRED`
+- HealthRepository `INFERRED`
+- DialogueDefinitionRepository `INFERRED`
+- PlayerRepository `INFERRED`
+- SkillRepository `INFERRED`
+- ExperienceRepository `INFERRED`
+- PlayerSpellRepository `INFERRED`
+- ConnectionCleaner `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
+- RoomCacheLoader `INFERRED`
+- PlayerSkillRepository `INFERRED`
+- _map_error_type() `INFERRED`
+- QuestInstanceRepository `INFERRED`
+- _get_status_code_for_error() `INFERRED`
+- _get_severity_for_error() `INFERRED`
+- PlayerEffectRepository `INFERRED`
+- QuestDefinitionRepository `INFERRED`
+- SkillUseLogRepository `INFERRED`
+- SpellRepository `INFERRED`
 
 ---
 

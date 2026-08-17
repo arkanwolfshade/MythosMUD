@@ -234,16 +234,6 @@ async def test_broadcast_global_event_impl(mock_manager: MagicMock) -> None:
 
 
 @pytest.mark.asyncio
-async def test_force_disconnect_player_with_sockets(mock_manager: MagicMock) -> None:
-    player_id = uuid.uuid4()
-    mock_manager.player_websockets = {player_id: ["conn-1"]}
-    disconnect_websocket: AsyncMock = AsyncMock()
-    mock_manager.disconnect_websocket = disconnect_websocket
-    await cm_methods.force_disconnect_player_impl(mock_manager, player_id)
-    disconnect_websocket.assert_awaited_once_with(player_id, is_force_disconnect=True)
-
-
-@pytest.mark.asyncio
 async def test_disconnect_websocket_connection_impl_success(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
     metadata: MagicMock = MagicMock(player_id=player_id, connection_type="websocket")

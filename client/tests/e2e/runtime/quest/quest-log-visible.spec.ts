@@ -6,7 +6,7 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { loginPlayer } from '../fixtures/auth';
+import { clickWithoutStability, loginPlayer } from '../fixtures/auth';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
 test.describe('Quest log visible after login', () => {
@@ -22,7 +22,7 @@ test.describe('Quest log visible after login', () => {
     // Default panelLayout starts Journal minimized (title only; body unmounted).
     const journalPanel = page.getByTestId('game-panel-questLog');
     await expect(journalPanel).toBeVisible({ timeout: TEST_TIMEOUTS.GAME_LOAD });
-    await page.getByTestId('game-panel-questLog-restore').click();
+    await clickWithoutStability(page.getByTestId('game-panel-questLog-restore'));
 
     const questLogHeader = journalPanel.getByText('Quest log', { exact: true });
     const emptyState = journalPanel.getByText('You have no active or completed quests.');

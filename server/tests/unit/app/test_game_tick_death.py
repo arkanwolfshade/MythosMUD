@@ -27,6 +27,7 @@ from server.app.game_tick_processing import (
     game_tick_loop,
     process_dp_decay_and_death,
 )
+from server.app.game_tick_protocols import _tick_online_players
 from server.models.combat import CombatStatus
 
 
@@ -235,3 +236,20 @@ async def test_process_passive_lucidity_flux() -> None:
 
 def test_log_cleanup_results_warning_path() -> None:
     _log_cleanup_results(tick_count=60, cleaned_count=0, total_decayed=2)
+
+
+@pytest.mark.asyncio
+async def test_tick_online_players_counts_successes() -> None:
+    seen: list[str] = []
+
+    async def process_one(player_id_str: str) -> bool:
+        seen.append(player_id_str)
+        return player_id_str.endswith("1")
+
+    id_ok = uuid.UUID("00000000-0000-0000-0000-000000000001")
+    id_skip = uuid.UUID("00000000-0000-0000-0000-000000000002")
+    debug: MagicMock = MagicMock()
+    with patch("server.app.game_tick_protocols.logger.debug", debug):
+        await _tick_online_players([id_ok, id_skip], 3, "Processed test", process_one)
+    assert seen == [str(id_ok), str(id_skip)]
+    debug.assert_called_once_with("Processed test", tick_count=3, players_processed=1)

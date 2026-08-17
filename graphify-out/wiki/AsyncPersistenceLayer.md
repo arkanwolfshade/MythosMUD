@@ -1,79 +1,107 @@
 # AsyncPersistenceLayer
 
-> 746 nodes
+> God node · 165 connections · `server/async_persistence.py`
 
-## Key Concepts
+**Community:** [server async persistence asyncpersistencelayer](server_async_persistence_asyncpersistencelayer.md)
 
-- **AsyncPersistenceLayer** (167 connections) — `server/async_persistence.py`
-- **CombatService** (165 connections) — `server/services/combat_service.py`
-- **get_config()** (105 connections) — `server/config/__init__.py`
-- **combat_service.py** (99 connections) — `server/services/combat_service.py`
-- **async_persistence.py** (84 connections) — `server/async_persistence.py`
-- **PlayerCombatService** (76 connections) — `server/services/player_combat_service.py`
-- **Room** (73 connections) — `server/models/room.py`
-- **api/monitoring.py** (64 connections) — `server/api/monitoring.py`
-- **models/combat.py** (58 connections) — `server/models/combat.py`
-- **npc_combat_integration_service.py** (53 connections) — `server/services/npc_combat_integration_service.py`
-- **test_movement_service.py** (52 connections) — `server/tests/unit/game/test_movement_service.py`
-- **CombatCommandHandler** (51 connections) — `server/commands/combat_handler.py`
-- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
-- **combat_turn_participant_actions.py** (47 connections) — `server/services/combat_turn_participant_actions.py`
-- **CombatParticipantType** (44 connections) — `server/models/combat.py`
-- **CombatParticipantData** (37 connections) — `server/services/combat_types.py`
-- **player_combat_service.py** (36 connections) — `server/services/player_combat_service.py`
-- **movement_service.py** (35 connections) — `server/game/movement_service.py`
-- **models/room.py** (32 connections) — `server/models/room.py`
-- **test_room_class.py** (30 connections) — `server/tests/unit/models/test_room_class.py`
-- **player_disconnect_handlers.py** (29 connections) — `server/realtime/player_disconnect_handlers.py`
-- **combat_service_start.py** (28 connections) — `server/services/combat_service_start.py`
-- **monitoring_models.py** (23 connections) — `server/api/monitoring_models.py`
-- **combat_event_publisher.py** (23 connections) — `server/services/combat_event_publisher.py`
-- **combat_death_handler.py** (22 connections) — `server/services/combat_death_handler.py`
-- *... and 721 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- .initialize() `EXTRACTED`
 
-- [get_logger](get_logger.md) (144 shared connections)
-- [ConnectionManager](ConnectionManager.md) (102 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (74 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (60 shared connections)
-- [DatabaseError](DatabaseError.md) (51 shared connections)
-- [UUID](UUID.md) (47 shared connections)
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (44 shared connections)
-- [AliasStorage](AliasStorage.md) (42 shared connections)
-- [CombatParticipant](CombatParticipant.md) (42 shared connections)
-- [CombatInstance](CombatInstance.md) (40 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (30 shared connections)
-- [combat_service_npc.py](combat_service_npc.py.md) (25 shared connections)
+### contains
+- async_persistence.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/dependencies.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- container_endpoints_basic.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- lifecycle_manager.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- combat_turn_participant_actions.py `EXTRACTED`
+- npc_base.py `EXTRACTED`
+- population_control.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- service.py `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
+- player_event_handlers_respawn.py `EXTRACTED`
+- container_service.py `EXTRACTED`
+- container_service_transfer_to.py `EXTRACTED`
+- api/player_respawn.py `EXTRACTED`
 
-- `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
-- `server/app/game_tick_counter.py`
-- `server/async_persistence.py`
-- `server/commands/combat_handler.py`
-- `server/config/__init__.py`
-- `server/constants/spawn_defaults.py`
-- `server/container/bundles/combat.py`
-- `server/container/bundles/core.py`
-- `server/events/combat_events.py`
-- `server/game/instance_manager.py`
-- `server/game/magic/spell_targeting.py`
-- `server/game/movement_helpers.py`
-- `server/game/movement_monitor.py`
-- `server/game/movement_service.py`
-- `server/models/combat.py`
-- `server/models/room.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/npc/movement_integration.py`
-- `server/npc/spawning_request_execution.py`
+### method
+- .__init__() `EXTRACTED`
+- ._ensure_room_cache_loaded() `EXTRACTED`
+- .get_player_by_id() `EXTRACTED`
+- .get_players_batch() `EXTRACTED`
+- .get_player_by_name() `EXTRACTED`
+- .get_players_by_user_id() `EXTRACTED`
+- .get_active_players_by_user_id() `EXTRACTED`
+- .get_player_by_user_id() `EXTRACTED`
+- .get_user_by_username_case_insensitive() `EXTRACTED`
+- .list_players() `EXTRACTED`
+- .get_players_in_room() `EXTRACTED`
+- .update_player_last_active() `EXTRACTED`
+- .get_professions() `EXTRACTED`
+- .add_player_effect() `EXTRACTED`
+- .get_active_player_effects() `EXTRACTED`
+- .create_container() `EXTRACTED`
+- .get_container() `EXTRACTED`
+- .get_containers_by_entity_id() `EXTRACTED`
+- .get_decayed_containers() `EXTRACTED`
+- .set_instance_manager() `EXTRACTED`
 
-## Audit Trail
+### rationale_for
+- Async persistence layer using SQLAlchemy ORM for true async PostgreSQL… `EXTRACTED`
 
-- EXTRACTED: 2273 (88%)
-- INFERRED: 303 (12%)
-- AMBIGUOUS: 0 (0%)
+### references
+- transfer_items() `EXTRACTED`
+- open_container() `EXTRACTED`
+- close_container() `EXTRACTED`
+- get_async_persistence() `EXTRACTED`
+- emit_close_container_event() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- validate_exit() `EXTRACTED`
+- validate_player_room_membership() `EXTRACTED`
+- validate_room_integrity() `EXTRACTED`
+- ._init_npc_submodules() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- _get_user_characters() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- ._init_persistence_and_event_bus() `EXTRACTED`
+
+### uses
+- [DatabaseError](DatabaseError.md) `INFERRED`
+- CombatCommandHandler `INFERRED`
+- HolidayService `INFERRED`
+- ScheduleService `INFERRED`
+- RoomCacheLoader `INFERRED`
+- CombatDeathHandler `INFERRED`
+- CreateItemInstanceInput `INFERRED`
+- CoreBundle `INFERRED`
+- _LifecycleManagerForDeath `INFERRED`
+- _weapon_damage_from_equipped_player() `INFERRED`
+- TestEmitCloseContainerEvent `INFERRED`
+- _get_combat_container_services() `INFERRED`
+- resolve_player_attack_damage() `INFERRED`
+- _room_from_persistence() `INFERRED`
+- _get_target_stats_for_damage() `INFERRED`
+- test_apply_corruption_delegates() `INFERRED`
+- test_apply_fear_delegates() `INFERRED`
+- test_apply_lucidity_loss_delegates() `INFERRED`
+- test_async_damage_player_delegates() `INFERRED`
+- test_async_heal_player_delegates() `INFERRED`
 
 ---
 

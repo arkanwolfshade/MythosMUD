@@ -30,14 +30,14 @@ test.describe('New game session replacement (#610)', () => {
     await waitForAllPlayersInGame(firstPair, 60000);
 
     const replacement = await createMultiPlayerContexts(browser, ['ArkanWolfshade']);
-    await waitForAllPlayersInGame(replacement, 60000);
-
     const ithaqua = firstPair[0];
     const awLive = replacement[0];
 
     try {
+      // Replacement login kicks the first AW socket; that tab may show login/linkdead.
+      // waitForAllPlayersInGame does not re-enter. ensurePlayerInGame does.
+      await ensurePlayerInGame(awLive, 60000);
       await ensurePlayerInGame(ithaqua, 45000);
-      await ensurePlayerInGame(awLive, 45000);
       await waitForPlayableSession(awLive.page, 30000);
 
       await awLive.page.bringToFront().catch(() => {});

@@ -1,0 +1,28 @@
+# github dependabot dependabot updates
+
+> 3 nodes
+
+## Key Concepts
+
+- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
+- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
+- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
+
+## Relationships
+
+- No strong cross-community connections detected
+
+## Source Files
+
+- `.github/dependabot.yml`
+- `.github/workflows/dependency-review.yml`
+
+## Audit Trail
+
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

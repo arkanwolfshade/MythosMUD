@@ -15,7 +15,7 @@ async function waitForGameReady(page: Page): Promise<void> {
   await page.getByTestId('game-panel-chatHistory').waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
 }
 
-async function panelBottomEdge(page: Page, panel: Locator): Promise<number> {
+async function panelBottomEdge(panel: Locator): Promise<number> {
   const box = await panel.boundingBox();
   expect(box).not.toBeNull();
   return box!.y + box!.height;
@@ -42,14 +42,15 @@ test.describe('Panel minimize dock', () => {
     await clickWithoutStability(page.getByTestId('game-panel-chatHistory-minimize'));
 
     await expect(chatPanel).toHaveAttribute('data-panel-minimized', 'true');
-    await expect(chatPanel.getByText('Chat', { exact: true })).toHaveCount(0);
+    // MinimizedPanelRnd keeps children mounted under `hidden`; count stays 1.
+    await expect(chatPanel.getByText('Chat', { exact: true })).toBeHidden();
 
     const minimizedBox = await chatPanel.boundingBox();
     expect(minimizedBox).not.toBeNull();
     expect(minimizedBox!.height).toBeLessThanOrEqual(MINIMIZED_BAR_HEIGHT + 4);
 
     const viewportHeight = page.viewportSize()?.height ?? 720;
-    const bottomEdge = await panelBottomEdge(page, chatPanel);
+    const bottomEdge = await panelBottomEdge(chatPanel);
     expect(bottomEdge).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
 
     await clickWithoutStability(page.getByTestId('game-panel-chatHistory-restore'));
@@ -85,7 +86,7 @@ test.describe('Panel minimize dock', () => {
     expect(Math.abs(chatBox!.y - infoBox!.y)).toBeLessThanOrEqual(4);
 
     const viewportHeight = page.viewportSize()?.height ?? 720;
-    expect(await panelBottomEdge(page, chatPanel)).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
-    expect(await panelBottomEdge(page, gameInfoPanel)).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
+    expect(await panelBottomEdge(chatPanel)).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
+    expect(await panelBottomEdge(gameInfoPanel)).toBeGreaterThanOrEqual(viewportHeight - DOCK_BOTTOM_PADDING - 4);
   });
 });

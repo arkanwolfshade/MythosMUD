@@ -1,8 +1,8 @@
 # ValidationError
 
-> God node · 337 connections · `server/exceptions.py`
+> God node · 336 connections · `server/exceptions.py`
 
-**Community:** [get_logger](get_logger.md)
+**Community:** [server exceptions rationale 179](server_exceptions_rationale_179.md)
 
 ## Connections by Relation
 
@@ -28,22 +28,22 @@
 - command_service.py `EXTRACTED`
 - database.py `EXTRACTED`
 - players.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
 - test_container_service.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
+- persistence/container_persistence.py `EXTRACTED`
 - test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_movement_service.py `EXTRACTED`
 - test_command_factories_utility.py `EXTRACTED`
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
 - player_service.py `EXTRACTED`
 - test_command_factories_exploration.py `EXTRACTED`
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) `EXTRACTED`
-- [test_database_helpers.py](test_database_helpers.py.md) `EXTRACTED`
-- [test_command_parser.py](test_command_parser.py.md) `EXTRACTED`
+- test_command_factories_inventory.py `EXTRACTED`
+- test_database_helpers.py `EXTRACTED`
+- test_command_parser.py `EXTRACTED`
 - command_parser.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
-- [test_database_extended.py](test_database_extended.py.md) `EXTRACTED`
+- test_database_extended.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 
 ### inherits
@@ -57,7 +57,7 @@
 - Data validation errors (e.g. empty local/whisper message). Log at warning, not… `EXTRACTED`
 
 ### uses
-- [DatabaseManager](DatabaseManager.md) `INFERRED`
+- DatabaseManager `INFERRED`
 - TestErrorMapping `INFERRED`
 - _map_error_type() `INFERRED`
 - _get_status_code_for_error() `INFERRED`
@@ -69,7 +69,7 @@
 - TestHandleTransferItemsExceptions `INFERRED`
 - init_npc_db() `INFERRED`
 - _initialize_npc_database() `INFERRED`
-- [TestValidateRoomData](TestValidateRoomData.md) `INFERRED`
+- TestValidateRoomData `INFERRED`
 - get_npc_database_path() `INFERRED`
 - fetch_user_by_username_case_insensitive() `INFERRED`
 - _create_engine_or_raise() `INFERRED`

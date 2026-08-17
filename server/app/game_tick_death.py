@@ -16,7 +16,13 @@ from ..models.combat import CombatStatus
 from ..services.combat_messaging_integration import combat_messaging_integration
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
-from .game_tick_protocols import _app_container, _TickContainer, _TickMpRegen
+from .game_tick_protocols import (
+    _app_container,
+    _online_player_ids,
+    _tick_online_players,
+    _TickContainer,
+    _TickMpRegen,
+)
 
 logger = get_logger("server.game_tick")
 
@@ -33,7 +39,6 @@ __all__ = [
     "_process_passive_lucidity_flux",
     "_process_session_dp_decay_and_death",
     "_process_single_player_mp_regeneration",
-    "_regenerate_mp_for_players",
     "_validate_mp_regeneration_services",
     "process_dp_decay_and_death",
 ]
@@ -184,38 +189,22 @@ async def _process_single_player_mp_regeneration(mp_service: _TickMpRegen, playe
         return False
 
 
-async def _regenerate_mp_for_players(
-    mp_service: _TickMpRegen,
-    online_player_ids: list[uuid.UUID],
-    tick_count: int,
-) -> None:
-    """Regenerate MP for each online player and log aggregate progress."""
-    processed_count = 0
-    for player_id in online_player_ids:
-        # Convert player_id to string (online_players.keys() returns UUIDs)
-        player_id_str = str(player_id)
-        if await _process_single_player_mp_regeneration(mp_service, player_id_str):
-            processed_count += 1
-
-    if processed_count > 0:
-        logger.debug("Processed MP regeneration", tick_count=tick_count, players_processed=processed_count)
-
-
 async def _process_mp_regeneration(container: _TickContainer, _session: AsyncSession, tick_count: int) -> None:
     """Process MP regeneration for online players."""
     if not _validate_mp_regeneration_services(container) or not container.connection_manager:
         return
 
     try:
-        online_player_ids = list(container.connection_manager.online_players.keys())
-        if not online_player_ids:
-            return
-
         mp_service = container.mp_regeneration_service
         if not mp_service:
             return
 
-        await _regenerate_mp_for_players(mp_service, online_player_ids, tick_count)
+        await _tick_online_players(
+            _online_player_ids(container),
+            tick_count,
+            "Processed MP regeneration",
+            lambda player_id_str: _process_single_player_mp_regeneration(mp_service, player_id_str),
+        )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as mp_regen_error:
         logger.error("Error processing MP regeneration", tick_count=tick_count, error=str(mp_regen_error))
 

@@ -1,0 +1,25 @@
+# claude agents performance profiler md
+
+> 1 nodes
+
+## Key Concepts
+
+- **Performance Profiler Agent** (0 connections) — `.claude/agents/performance-profiler.md`
+
+## Relationships
+
+- No strong cross-community connections detected
+
+## Source Files
+
+- `.claude/agents/performance-profiler.md`
+
+## Audit Trail
+
+- EXTRACTED: 0 (0%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

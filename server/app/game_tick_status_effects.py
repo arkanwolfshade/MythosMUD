@@ -10,7 +10,13 @@ from fastapi import FastAPI
 from ..realtime.login_grace_period import handle_login_grace_period_expiration, is_player_in_login_grace_period
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
-from .game_tick_protocols import _app_container, _TickConnectionManager, _TickContainer
+from .game_tick_protocols import (
+    _app_container,
+    _online_player_ids,
+    _tick_online_players,
+    _TickConnectionManager,
+    _TickContainer,
+)
 
 logger = get_logger("server.game_tick")
 
@@ -24,7 +30,6 @@ __all__ = [
     "_process_heal_over_time_effect",
     "_process_player_status_effects",
     "_process_single_effect",
-    "_process_status_effects_for_players",
     "_update_player_status_effects",
     "_validate_and_get_player",
     "_validate_app_state_for_status_effects",
@@ -267,24 +272,6 @@ async def process_player_effects_expiration(app: FastAPI, tick_count: int) -> No
         )
 
 
-async def _process_status_effects_for_players(
-    app: FastAPI,
-    container: _TickContainer,
-    online_player_ids: list[uuid.UUID],
-    tick_count: int,
-) -> None:
-    """Apply status-effect ticks for each online player and log aggregate progress."""
-    processed_count = 0
-    for player_id in online_player_ids:
-        # Convert player_id to string (online_players.keys() returns UUIDs)
-        player_id_str = str(player_id)
-        if await _process_player_status_effects(app, container, player_id_str):
-            processed_count += 1
-
-    if processed_count > 0:
-        logger.debug("Processed status effects", tick_count=tick_count, players_processed=processed_count)
-
-
 async def process_status_effects(app: FastAPI, tick_count: int) -> None:
     """Process status effects for online players."""
     is_valid, container = _validate_app_state_for_status_effects(app)
@@ -292,9 +279,11 @@ async def process_status_effects(app: FastAPI, tick_count: int) -> None:
         return
 
     try:
-        online_player_ids = list(container.connection_manager.online_players.keys())
-        if not online_player_ids:
-            return
-        await _process_status_effects_for_players(app, container, online_player_ids, tick_count)
+        await _tick_online_players(
+            _online_player_ids(container),
+            tick_count,
+            "Processed status effects",
+            lambda player_id_str: _process_player_status_effects(app, container, player_id_str),
+        )
     except (AttributeError, KeyError, TypeError, ValueError, RuntimeError) as e:
         logger.warning("Error processing status/effect ticks", tick_count=tick_count, error=str(e))
