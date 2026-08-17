@@ -24,7 +24,7 @@ JsonMap = dict[str, object]
 _T = TypeVar("_T")
 
 
-def _select_match(matching: list[_T], instance_number: int | None) -> _T | None:
+def _select_match(matching: list[_T], instance_number: int | None) -> _T | None:  # noqa: UP047  # Reason: PEP 695 [T] fails older pylint/Codacy parsers
     """Pick a single match by instance number, or the sole match when unambiguous."""
     if not matching:
         return None
