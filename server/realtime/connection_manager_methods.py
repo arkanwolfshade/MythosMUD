@@ -345,31 +345,6 @@ async def broadcast_global_event_impl(
 # ============================================================================
 
 
-async def force_disconnect_player_impl(manager: ConnectionManager, player_id: UUID) -> None:
-    """Force disconnect a player from all connections (WebSocket only)."""
-    from .connection_disconnection import apply_disconnect_side_effects
-
-    try:
-        logger.info("Force disconnecting player from all connections", player_id=player_id)
-        has_sockets = bool(manager.player_websockets.get(player_id))
-        if has_sockets:
-            await manager.disconnect_websocket(player_id, is_force_disconnect=True)
-        elif player_id in manager.intentional_disconnects:
-            # On-close may clear player_websockets before logout's force_disconnect runs.
-            # Still emit player_left_game and clear Occupants for intentional logout.
-            should_track = await apply_disconnect_side_effects(player_id, manager, True)
-            if should_track:
-                await manager.track_player_disconnected(player_id)
-        logger.info("Player force disconnected from all connections", player_id=player_id)
-    except (DatabaseError, AttributeError) as e:
-        logger.error(
-            "Error force disconnecting player",
-            player_id=player_id,
-            error=str(e),
-            exc_info=True,
-        )
-
-
 async def disconnect_websocket_connection_impl(manager: ConnectionManager, player_id: UUID, connection_id: str) -> bool:
     """Disconnect a specific WebSocket connection for a player."""
     try:

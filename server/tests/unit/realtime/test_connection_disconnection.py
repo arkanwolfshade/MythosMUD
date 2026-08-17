@@ -6,7 +6,10 @@ Tests the connection disconnection functions.
 
 # pyright: reportPrivateUsage=false
 # Reason: Unit tests target connection_disconnection module helpers not exposed as public API.
+# pyright: reportAny=false
+# Reason: MagicMock fixture and nested mock attribute access; production code is Protocol-typed.
 
+import asyncio
 import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -16,6 +19,7 @@ from server.realtime.connection_disconnection import (
     _cleanup_player_data,
     _cleanup_room_subscriptions,
     _track_disconnect_if_needed,
+    force_disconnect_player_impl,
 )
 from server.realtime.message_queue import MessageQueue
 from server.realtime.rate_limiter import RateLimiter
@@ -148,10 +152,6 @@ async def test_cleanup_websocket_disconnect_intentional_without_sockets(
 @pytest.mark.asyncio
 async def test_force_disconnect_player_impl_intentional_without_sockets():
     """force_disconnect with no sockets must still track intentional leave."""
-    import asyncio
-
-    from server.realtime.connection_manager_methods import force_disconnect_player_impl
-
     player_id = uuid.uuid4()
     manager: MagicMock = MagicMock()
     manager.player_websockets = {}
@@ -171,6 +171,18 @@ async def test_force_disconnect_player_impl_intentional_without_sockets():
 
     manager.track_player_disconnected.assert_awaited_once_with(player_id)
     manager.room_manager.remove_player_from_all_rooms.assert_called_once_with(str(player_id))
+
+
+@pytest.mark.asyncio
+async def test_force_disconnect_player_impl_with_sockets() -> None:
+    """force_disconnect with sockets delegates to disconnect_websocket."""
+    player_id = uuid.uuid4()
+    manager: MagicMock = MagicMock()
+    manager.player_websockets = {player_id: ["conn-1"]}
+    disconnect_websocket: AsyncMock = AsyncMock()
+    manager.disconnect_websocket = disconnect_websocket
+    await force_disconnect_player_impl(manager, player_id)
+    disconnect_websocket.assert_awaited_once_with(player_id, is_force_disconnect=True)
 
 
 def test_cleanup_room_subscriptions(

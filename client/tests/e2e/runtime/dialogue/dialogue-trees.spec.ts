@@ -4,6 +4,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 import {
+  clickWithoutStability,
   ensurePlayableConnection,
   executeCommand,
   executeCommandWithoutRecovery,
@@ -152,15 +153,15 @@ test.describe('dialogue trees (#583)', () => {
       },
     };
     await page.getByTestId('dialogue-tree-json').fill(JSON.stringify(tree, null, 2));
-    await page.getByTestId('dialogue-save').click();
+    await clickWithoutStability(page.getByTestId('dialogue-save'));
 
     await expect(page.getByRole('status')).toContainText(new RegExp(`Saved\\s+${E2E_DIALOGUE_ID}`), {
       timeout: 20000,
     });
     await expect(page.getByRole('button', { name: E2E_DIALOGUE_ID })).toBeVisible({ timeout: 10000 });
 
-    await page.getByRole('button', { name: E2E_DIALOGUE_ID }).click();
-    await page.getByTestId('dialogue-delete').click();
+    await clickWithoutStability(page.getByRole('button', { name: E2E_DIALOGUE_ID }));
+    await clickWithoutStability(page.getByTestId('dialogue-delete'));
     await expect(page.getByRole('status')).toContainText(new RegExp(`Deleted\\s+${E2E_DIALOGUE_ID}`), {
       timeout: 20000,
     });

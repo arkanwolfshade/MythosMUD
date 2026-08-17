@@ -33,6 +33,7 @@ from .connection_delegates import cleanup_dead_websocket_impl, validate_token_im
 from .connection_disconnection import (
     cleanup_websocket_disconnect,
     disconnect_connection_by_id_impl,
+    force_disconnect_player_impl,
 )
 from .connection_error_methods import (
     detect_and_handle_error_state_impl,
@@ -233,7 +234,7 @@ class ConnectionManager:
 
     async def force_disconnect_player(self, player_id: uuid.UUID) -> None:
         """Force disconnect a player from all connections (WebSocket only)."""
-        await _cmm.force_disconnect_player_impl(self, player_id)
+        await force_disconnect_player_impl(self, player_id)
 
     async def disconnect_connection_by_id(self, connection_id: str) -> bool:
         """Disconnect a specific connection by its ID."""

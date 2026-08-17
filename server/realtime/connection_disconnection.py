@@ -55,6 +55,14 @@ class _DisconnectConnectionManager(Protocol):
         """Record that this WebSocket id has been closed."""
         ...
 
+    async def disconnect_websocket(self, player_id: uuid.UUID, is_force_disconnect: bool = False) -> None:
+        """Disconnect all WebSocket connections for a player."""
+        ...
+
+    async def track_player_disconnected(self, player_id: uuid.UUID, connection_type: str | None = None) -> None:
+        """Record that the player disconnected (presence / occupancy)."""
+        ...
+
 
 def _is_non_intentional_force_disconnect(
     player_id: uuid.UUID,
@@ -205,8 +213,27 @@ async def _apply_disconnect_side_effects(
     return should_track
 
 
-# Public name for connection_manager_methods (avoids reportPrivateUsage on underscore helpers).
-apply_disconnect_side_effects = _apply_disconnect_side_effects
+async def force_disconnect_player_impl(manager: _DisconnectConnectionManager, player_id: uuid.UUID) -> None:
+    """Force disconnect a player from all connections (WebSocket only)."""
+    try:
+        logger.info("Force disconnecting player from all connections", player_id=player_id)
+        has_sockets = bool(manager.player_websockets.get(player_id))
+        if has_sockets:
+            await manager.disconnect_websocket(player_id, is_force_disconnect=True)
+        elif player_id in manager.intentional_disconnects:
+            # On-close may clear player_websockets before logout's force_disconnect runs.
+            # Still emit player_left_game and clear Occupants for intentional logout.
+            should_track = await _apply_disconnect_side_effects(player_id, manager, True)
+            if should_track:
+                await manager.track_player_disconnected(player_id)
+        logger.info("Player force disconnected from all connections", player_id=player_id)
+    except (DatabaseError, AttributeError) as e:
+        logger.error(
+            "Error force disconnecting player",
+            player_id=player_id,
+            error=str(e),
+            exc_info=True,
+        )
 
 
 async def _close_and_untrack_websockets(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:
