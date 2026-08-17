@@ -193,7 +193,7 @@ def test_get_wearable_container_service_initializes() -> None:
     mock_request: MagicMock = MagicMock()
     mock_request.app = app
 
-    look_helpers._cached_wearable_container_service = None
+    look_helpers._WEARABLE_CONTAINER_SERVICE_HOLDER.instance = None
 
     service = _get_wearable_container_service(mock_request)
     assert service is not None
@@ -208,7 +208,7 @@ def test_get_wearable_container_service_no_persistence() -> None:
     mock_request: MagicMock = MagicMock()
     mock_request.app = app
 
-    look_helpers._cached_wearable_container_service = None
+    look_helpers._WEARABLE_CONTAINER_SERVICE_HOLDER.instance = None
 
     with pytest.raises(ValueError, match="async_persistence is required"):
         _ = _get_wearable_container_service(mock_request)

@@ -14,10 +14,14 @@ from fastapi import WebSocket
 from starlette.websockets import WebSocketDisconnect, WebSocketState
 
 
-class _CloseableWebSocketManager(Protocol):
-    def is_websocket_closed(self, ws_id: int) -> bool: ...
+class _CloseableWebSocketManager(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
+    def is_websocket_closed(self, ws_id: int) -> bool:
+        """Return True if this WebSocket id was already marked closed."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
-    def mark_websocket_closed(self, ws_id: int) -> None: ...
+    def mark_websocket_closed(self, ws_id: int) -> None:
+        """Record that this WebSocket id has been closed."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
 
 def is_websocket_open_impl(_manager: object, websocket: WebSocket) -> bool:

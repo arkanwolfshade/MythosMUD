@@ -14,7 +14,14 @@ from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
-_cached_wearable_container_service: WearableContainerService | None = None
+
+class _WearableContainerServiceHolder:
+    """Mutable holder so we can cache the service without a ``global`` statement."""
+
+    instance: WearableContainerService | None = None
+
+
+_WEARABLE_CONTAINER_SERVICE_HOLDER = _WearableContainerServiceHolder()
 
 
 class LookRequest(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol is a structural type, not a concrete class
@@ -27,7 +34,9 @@ class LookRequest(Protocol):  # pylint: disable=too-few-public-methods  # Reason
     """
 
     @property
-    def app(self) -> object: ...
+    def app(self) -> object:
+        """FastAPI/Starlette application (or duck-typed equivalent)."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
 
 class _ContainerWithPersistence(Protocol):
@@ -42,8 +51,10 @@ class _AppWithState(Protocol):
     state: _StateWithContainer
 
 
-class _EquippedPlayer(Protocol):
-    def get_equipped_items(self) -> Mapping[str, Mapping[str, object]]: ...
+class _EquippedPlayer(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
+    def get_equipped_items(self) -> Mapping[str, Mapping[str, object]]:
+        """Return equipped slot -> item mappings."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
 
 def _async_persistence_from_app(app: object) -> object | None:
@@ -67,16 +78,15 @@ def _get_wearable_container_service(request: LookRequest) -> WearableContainerSe
     Returns:
         WearableContainerService instance
     """
-    global _cached_wearable_container_service
-    if _cached_wearable_container_service is not None:
-        return _cached_wearable_container_service
+    if _WEARABLE_CONTAINER_SERVICE_HOLDER.instance is not None:
+        return _WEARABLE_CONTAINER_SERVICE_HOLDER.instance
 
     async_persistence = _async_persistence_from_app(request.app)
     if async_persistence is None:
         raise ValueError("async_persistence is required but not available from container")
 
-    _cached_wearable_container_service = WearableContainerService(persistence=async_persistence)
-    return _cached_wearable_container_service
+    _WEARABLE_CONTAINER_SERVICE_HOLDER.instance = WearableContainerService(persistence=async_persistence)
+    return _WEARABLE_CONTAINER_SERVICE_HOLDER.instance
 
 
 def _parse_instance_number(target: str) -> tuple[str, int | None]:
