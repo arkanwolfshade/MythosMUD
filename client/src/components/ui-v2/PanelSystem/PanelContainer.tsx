@@ -140,6 +140,9 @@ export const PanelContainer: React.FC<PanelContainerProps> = React.memo(props =>
             )}
           </div>
         </div>
+        {/* Content stays mounted while minimized so panel state and its DOM survive a collapse.
+            The hidden attribute keeps it out of layout and the accessibility tree. */}
+        <div hidden>{children}</div>
       </Rnd>
     );
   }

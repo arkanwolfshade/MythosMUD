@@ -10,19 +10,31 @@ or equipped items, formatting container displays, and handling container look re
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import NamedTuple, Protocol, cast
+from typing import NamedTuple, Protocol, TypeVar, cast
 from uuid import UUID
-
-from fastapi import Request
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.int_coercion import coerce_int
 from .inventory_command_contracts import CommandResponse
-from .look_helpers import _get_wearable_container_service
+from .look_helpers import LookRequest, _get_wearable_container_service
 
 logger = get_logger(__name__)
 
 JsonMap = dict[str, object]
+_T = TypeVar("_T")
+
+
+def _select_match(matching: list[_T], instance_number: int | None) -> _T | None:
+    """Pick a single match by instance number, or the sole match when unambiguous."""
+    if not matching:
+        return None
+    if instance_number is not None:
+        if instance_number < 1 or instance_number > len(matching):
+            return None
+        return matching[instance_number - 1]
+    if len(matching) == 1:
+        return matching[0]
+    return None
 
 
 class _LookPlayer(Protocol):
@@ -67,7 +79,7 @@ class ContainerLookArgs(NamedTuple):
     persistence: object
     prototype_registry: object | None
     command_data: Mapping[str, object]
-    request: Request | None
+    request: LookRequest | None
     player_name: str
 
 
@@ -152,18 +164,14 @@ def _find_container_in_room(
         if target_lower in container_name or target_lower in container_id:
             matching_containers.append(container)
 
-    if not matching_containers:
-        return None
+    return _select_match(matching_containers, instance_number)
 
-    if instance_number is not None:
-        if instance_number < 1 or instance_number > len(matching_containers):
-            return None
-        return matching_containers[instance_number - 1]
 
-    if len(matching_containers) == 1:
-        return matching_containers[0]
-
-    return None
+def _wearable_matches_target(item: Mapping[str, object], target_lower: str) -> bool:
+    item_name = str(item.get("item_name", item.get("name", ""))).lower()
+    prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
+    item_id = str(item.get("item_id", "")).lower()
+    return target_lower in item_name or target_lower in prototype_id or target_lower in item_id
 
 
 def _find_container_wearable(
@@ -171,9 +179,6 @@ def _find_container_wearable(
 ) -> tuple[str, JsonMap] | None:
     """
     Find a wearable container in equipped items by name or prototype_id.
-
-    This function finds items that are containers, either by checking for inner_container
-    or by matching item names that suggest they are containers (e.g., "backpack", "bag").
 
     Args:
         equipped: Dictionary of equipped items (slot -> item dict)
@@ -188,28 +193,11 @@ def _find_container_wearable(
 
     for slot, raw_item in equipped.items():
         item = _as_map(raw_item)
-        item_name = str(item.get("item_name", item.get("name", ""))).lower()
-        prototype_id = str(item.get("prototype_id", item.get("item_id", ""))).lower()
-        item_id = str(item.get("item_id", "")).lower()
+        # Name match is what actually selects; inner_container alone never appended.
+        if _wearable_matches_target(item, target_lower):
+            matching_containers.append((slot, item))
 
-        name_matches = target_lower in item_name or target_lower in prototype_id or target_lower in item_id
-
-        if item.get("inner_container") or name_matches:
-            if name_matches:
-                matching_containers.append((slot, item))
-
-    if not matching_containers:
-        return None
-
-    if instance_number is not None:
-        if instance_number < 1 or instance_number > len(matching_containers):
-            return None
-        return matching_containers[instance_number - 1]
-
-    if len(matching_containers) == 1:
-        return matching_containers[0]
-
-    return None
+    return _select_match(matching_containers, instance_number)
 
 
 async def _find_container_via_inner_container(item: Mapping[str, object], persistence: object) -> JsonMap | None:
@@ -301,7 +289,7 @@ async def _find_container_via_wearable_service(  # pylint: disable=too-many-argu
     target_lower: str,
     player: object,
     persistence: object,
-    request: Request | None,
+    request: LookRequest | None,
     player_name: str,
 ) -> JsonMap | None:
     """Find container via wearable container service."""
@@ -336,7 +324,7 @@ async def _find_container_in_room_or_equipped(  # pylint: disable=too-many-argum
     room: object,
     player: object,
     persistence: object,
-    request: Request | None,
+    request: LookRequest | None,
     player_name: str,
 ) -> tuple[JsonMap | None, JsonMap | None]:
     """

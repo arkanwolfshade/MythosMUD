@@ -9,7 +9,19 @@ export interface OccupantsSnapshot {
   hasPlayersMatch: boolean;
   playersCount: number | null;
   occupantsSnippet: string;
+  panelFound: boolean;
+  panelNames: string | null;
   hasLinkdead: boolean;
+}
+
+/** Raw presence payload as received over the WebSocket, before projection into GameState. */
+export interface PresenceEvent {
+  eventType: string;
+  sequence: number | null;
+  roomId: string | null;
+  players: string[] | null;
+  npcs: string[] | null;
+  count: number | null;
 }
 
 export interface GameUiDiagnostics {
@@ -29,3 +41,5 @@ export function hasExpectedOccupantCountInBrowser(expected: number): boolean;
 export function hasOtherPlayerNamesInBrowser(names: string[]): boolean;
 export function isDisconnectedBannerVisibleInBrowser(): boolean;
 export function captureOccupantsSnapshotInBrowser(): OccupantsSnapshot;
+export function installPresenceRecorderInBrowser(): void;
+export function getPresenceEventsInBrowser(): PresenceEvent[];

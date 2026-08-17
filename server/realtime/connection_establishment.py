@@ -330,6 +330,31 @@ def _cleanup_failed_connection(
         logger.warning("Error during connection failure cleanup", player_id=player_id, cleanup_error=str(cleanup_error))
 
 
+async def _reconcile_prior_session(
+    player_id: uuid.UUID,
+    session_id: str | None,
+    manager: _EstablishmentConnectionManager,
+) -> None:
+    """Settle a differing prior session before a new socket is registered.
+
+    ADR-018 replaces prior sockets when the session changes, but only while sockets still
+    exist to replace. A mapping left behind by a client that vanished has nothing live
+    behind it; replacing against it would tear down the socket being established and leave
+    the player linkdead until a server restart, so drop it and let the new session own the
+    player instead.
+    """
+    current_session = manager.player_sessions.get(player_id)
+    if not session_id or current_session is None or current_session == session_id:
+        return
+
+    if manager.player_websockets.get(player_id):
+        _ = await handle_new_game_session_impl(player_id, session_id, manager)
+        return
+
+    _ = manager.player_sessions.pop(player_id, None)
+    _ = manager.session_connections.pop(current_session, None)
+
+
 async def establish_websocket_connection(
     websocket: WebSocket,
     player_id: uuid.UUID,
@@ -360,10 +385,7 @@ async def establish_websocket_connection(
         # Clean up dead connections under lock
         await _cleanup_dead_connections(dead_connection_ids, player_id, manager)
 
-        # ADR-018: replace prior sockets only when session_id actually changes.
-        current_session = manager.player_sessions.get(player_id)
-        if session_id and current_session is not None and current_session != session_id:
-            _ = await handle_new_game_session_impl(player_id, session_id, manager)
+        await _reconcile_prior_session(player_id, session_id, manager)
 
         await websocket.accept()
         connection_id = _bind_accepted_websocket(websocket, player_id, manager, session_id, token)

@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -149,6 +149,37 @@ async def test_establish_websocket_connection_new_session_disconnects_prior():
     assert old_conn not in mock_manager.active_websockets
     assert mock_manager.player_websockets[player_id] == [connection_id]
     assert mock_websocket.accept_calls == 1
+
+
+@pytest.mark.asyncio
+async def test_establish_websocket_connection_stale_session_does_not_replace():
+    """A leaked session with no live sockets must not trigger the replacement path.
+
+    Session tracking used to outlive every connection, so the next login for that player
+    looked like a session change and tore down the socket it was still establishing,
+    leaving the client permanently linkdead until the server restarted.
+    """
+    mock_websocket = _FakeWebSocket()
+    player_id = uuid.uuid4()
+    mock_manager = _make_manager()
+    mock_manager.get_player = AsyncMock(return_value=_player_with_room())
+    mock_manager.player_sessions = {player_id: "stale_session"}
+    mock_manager.session_connections = {"stale_session": ["conn_from_dead_run"]}
+
+    with patch(
+        "server.realtime.connection_establishment.handle_new_game_session_impl",
+        new_callable=AsyncMock,
+    ) as new_session:
+        success, connection_id = await establish_websocket_connection(
+            _as_ws(mock_websocket), player_id, _as_mgr(mock_manager), "fresh_session", "jwt"
+        )
+
+    new_session.assert_not_awaited()
+    assert success is True
+    assert connection_id is not None
+    assert connection_id in mock_manager.active_websockets
+    assert mock_manager.player_websockets[player_id] == [connection_id]
+    assert mock_manager.player_sessions[player_id] == "fresh_session"
 
 
 @pytest.mark.asyncio

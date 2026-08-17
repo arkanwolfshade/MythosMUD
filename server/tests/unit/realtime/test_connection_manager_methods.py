@@ -1,5 +1,8 @@
 """Unit tests for connection_manager_methods wrappers."""
 
+# pyright: reportAny=false
+# Reason: MagicMock fixture and nested mock attribute access; production code is Protocol-typed.
+
 from __future__ import annotations
 
 import uuid
@@ -9,11 +12,13 @@ import pytest
 from starlette.websockets import WebSocketState
 
 from server.realtime import connection_manager_methods as cm_methods
+from server.realtime import connection_websocket_close as ws_close
 
 
 @pytest.fixture
 def mock_manager() -> MagicMock:
-    manager = MagicMock()
+    # ponytail: only stubs tests assert; async paths patch delegates themselves
+    manager: MagicMock = MagicMock()
     manager.active_websockets = {"conn1": MagicMock(), "conn2": MagicMock()}
     manager.statistics_aggregator.get_memory_stats.return_value = {"total": 2}
     manager.statistics_aggregator.get_connection_stats.return_value = {"ws": 2}
@@ -22,49 +27,7 @@ def mock_manager() -> MagicMock:
     manager.performance_tracker.get_stats.return_value = {"latency": 1}
     manager.error_handler = MagicMock()
     manager.error_handler.get_error_statistics.return_value = {"errors": 0}
-    manager.memory_monitor.max_connection_age = 3600
     manager.rate_limiter.get_rate_limit_info.return_value = {"remaining": 10}
-    manager.message_delivery.get_message_delivery_stats.return_value = {"sent": 1}
-    manager.presence_tracker.get_player_presence_info.return_value = {"online": True}
-    manager.presence_tracker.validate_player_presence.return_value = {"valid": True}
-    manager.get_online_players.return_value = []
-    manager.get_online_player_by_display_name.return_value = None
-    manager.get_player_session.return_value = "sess-1"
-    manager.get_session_connections.return_value = ["conn1"]
-    manager.validate_session.return_value = True
-    manager.get_connection_count.return_value = {"websocket": 1}
-    manager.has_websocket_connection.return_value = True
-    manager.get_player_websocket_connection_id.return_value = "conn1"
-    manager.get_connection_id_from_websocket.return_value = "conn1"
-    manager.get_next_sequence.return_value = 42
-    manager.get_pending_messages.return_value = []
-    manager.get_closed_websockets_count.return_value = 0
-    manager.room_broadcast.broadcast_to_room = AsyncMock(return_value={"sent": 1})
-    manager.room_broadcast.broadcast_global = AsyncMock(return_value={"sent": 2})
-    manager.room_broadcast.broadcast_room_event = AsyncMock(return_value={"sent": 1})
-    manager.room_broadcast.broadcast_global_event = AsyncMock(return_value={"sent": 2})
-    manager.disconnect.force_disconnect_player = AsyncMock()
-    manager.disconnect.disconnect_websocket_connection = AsyncMock(return_value=True)
-    manager.health.check_connection_health = AsyncMock(return_value={"ok": True})
-    manager.health.check_all_connections_health = AsyncMock()
-    manager.health.periodic_health_check = AsyncMock()
-    manager.health.start_health_checks = MagicMock()
-    manager.health.stop_health_checks = MagicMock()
-    manager.game_state.get_player = AsyncMock(return_value=None)
-    manager.game_state.get_players_batch = AsyncMock(return_value={})
-    manager.game_state.convert_room_uuids_to_names = AsyncMock(return_value={})
-    manager.game_state.get_npcs_batch.return_value = {}
-    manager.game_state.get_room_occupants = AsyncMock(return_value=[])
-    manager.game_state.send_initial_game_state = AsyncMock()
-    manager.game_state.send_personal_message = AsyncMock(return_value={"success": True})
-    manager.room_events.handle_player_entered_room = AsyncMock()
-    manager.room_events.handle_player_left_room = AsyncMock()
-    manager.room_subscription.subscribe_to_room = AsyncMock()
-    manager.room_subscription.unsubscribe_from_room = AsyncMock()
-    manager.room_subscription.canonical_room_id_public.return_value = "room_001"
-    manager.room_events.subscribe_to_room_events = AsyncMock()
-    manager.room_events.unsubscribe_from_room_events = AsyncMock()
-    manager.convert_uuids_to_strings.return_value = {"id": "x"}
     return manager
 
 
@@ -78,11 +41,11 @@ def test_get_memory_stats_impl(mock_manager: MagicMock) -> None:
 
 
 def test_is_websocket_open_impl(mock_manager: MagicMock) -> None:
-    ws = MagicMock()
+    ws: MagicMock = MagicMock()
     ws.application_state = WebSocketState.CONNECTED
-    assert cm_methods.is_websocket_open_impl(mock_manager, ws) is True
+    assert ws_close.is_websocket_open_impl(mock_manager, ws) is True
     ws.application_state = WebSocketState.DISCONNECTED
-    assert cm_methods.is_websocket_open_impl(mock_manager, ws) is False
+    assert ws_close.is_websocket_open_impl(mock_manager, ws) is False
 
 
 def test_get_rate_limit_info_impl(mock_manager: MagicMock) -> None:
@@ -97,7 +60,7 @@ def test_get_dual_connection_stats_impl(mock_manager: MagicMock) -> None:
 
 
 def test_get_error_statistics_impl_no_handler() -> None:
-    manager = MagicMock()
+    manager: MagicMock = MagicMock()
     manager.error_handler = None
     assert cm_methods.get_error_statistics_impl(manager) == {}
 
@@ -116,8 +79,10 @@ def test_get_memory_alerts_impl(mock_manager: MagicMock) -> None:
 
 def test_get_message_delivery_stats_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    mock_manager.personal_message_sender = MagicMock()
-    mock_manager.personal_message_sender.get_delivery_stats = MagicMock(return_value={"sent": 1})
+    get_delivery_stats: MagicMock = MagicMock(return_value={"sent": 1})
+    personal_message_sender: MagicMock = MagicMock()
+    personal_message_sender.get_delivery_stats = get_delivery_stats
+    mock_manager.personal_message_sender = personal_message_sender
     mock_manager.player_websockets = {}
     result = cm_methods.get_message_delivery_stats_impl(mock_manager, player_id)
     assert result == {"sent": 1}
@@ -152,8 +117,10 @@ def test_get_next_sequence_impl(mock_manager: MagicMock) -> None:
 
 def test_get_pending_messages_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    mock_manager.message_queue = MagicMock()
-    mock_manager.message_queue.get_messages.return_value = [{"text": "hi"}]
+    get_messages: MagicMock = MagicMock(return_value=[{"text": "hi"}])
+    message_queue: MagicMock = MagicMock()
+    message_queue.get_messages = get_messages
+    mock_manager.message_queue = message_queue
     assert cm_methods.get_pending_messages_impl(mock_manager, player_id) == [{"text": "hi"}]
 
 
@@ -165,10 +132,13 @@ def test_validate_session_impl(mock_manager: MagicMock) -> None:
 
 
 def test_stop_health_checks_impl() -> None:
-    manager = MagicMock()
-    manager.health_monitor = MagicMock()
+    stop_periodic_checks: MagicMock = MagicMock()
+    health_monitor: MagicMock = MagicMock()
+    health_monitor.stop_periodic_checks = stop_periodic_checks
+    manager: MagicMock = MagicMock()
+    manager.health_monitor = health_monitor
     cm_methods.stop_health_checks_impl(manager)
-    manager.health_monitor.stop_periodic_checks.assert_called_once()
+    stop_periodic_checks.assert_called_once()
 
 
 def test_get_player_websocket_connection_id_impl(mock_manager: MagicMock) -> None:
@@ -267,15 +237,16 @@ async def test_broadcast_global_event_impl(mock_manager: MagicMock) -> None:
 async def test_force_disconnect_player_with_sockets(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
     mock_manager.player_websockets = {player_id: ["conn-1"]}
-    mock_manager.disconnect_websocket = AsyncMock()
+    disconnect_websocket: AsyncMock = AsyncMock()
+    mock_manager.disconnect_websocket = disconnect_websocket
     await cm_methods.force_disconnect_player_impl(mock_manager, player_id)
-    mock_manager.disconnect_websocket.assert_awaited_once_with(player_id, is_force_disconnect=True)
+    disconnect_websocket.assert_awaited_once_with(player_id, is_force_disconnect=True)
 
 
 @pytest.mark.asyncio
 async def test_disconnect_websocket_connection_impl_success(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    metadata = MagicMock(player_id=player_id, connection_type="websocket")
+    metadata: MagicMock = MagicMock(player_id=player_id, connection_type="websocket")
     mock_manager.connection_metadata = {"conn-1": metadata}
     mock_manager.disconnect_connection_by_id = AsyncMock(return_value=True)
     assert await cm_methods.disconnect_websocket_connection_impl(mock_manager, player_id, "conn-1") is True
@@ -284,8 +255,10 @@ async def test_disconnect_websocket_connection_impl_success(mock_manager: MagicM
 @pytest.mark.asyncio
 async def test_check_connection_health_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    mock_manager.health_monitor = MagicMock()
-    mock_manager.health_monitor.check_player_connection_health = AsyncMock(return_value={"ok": True})
+    check_player_connection_health: AsyncMock = AsyncMock(return_value={"ok": True})
+    health_monitor: MagicMock = MagicMock()
+    health_monitor.check_player_connection_health = check_player_connection_health
+    mock_manager.health_monitor = health_monitor
     result = await cm_methods.check_connection_health_impl(mock_manager, player_id)
     assert result == {"ok": True}
 
@@ -315,7 +288,7 @@ async def test_send_personal_message_impl(mock_manager: MagicMock) -> None:
 @pytest.mark.asyncio
 async def test_get_player_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    player = MagicMock()
+    player: MagicMock = MagicMock()
     with patch(
         "server.realtime.connection_delegates.delegate_game_state_provider",
         new_callable=AsyncMock,
@@ -326,7 +299,7 @@ async def test_get_player_impl(mock_manager: MagicMock) -> None:
 
 
 def test_start_health_checks_impl() -> None:
-    manager = MagicMock()
+    manager: MagicMock = MagicMock()
     manager.health_monitor = MagicMock()
     with patch("server.realtime.connection_delegates.delegate_health_monitor_sync") as mock_sync:
         cm_methods.start_health_checks_impl(manager)
@@ -380,7 +353,7 @@ async def test_get_players_batch_impl(mock_manager: MagicMock) -> None:
 
 
 def test_get_connection_id_from_websocket_impl(mock_manager: MagicMock) -> None:
-    ws = MagicMock()
+    ws: MagicMock = MagicMock()
     mock_manager.active_websockets = {"conn-abc": ws}
     assert cm_methods.get_connection_id_from_websocket_impl(mock_manager, ws) == "conn-abc"
     assert cm_methods.get_connection_id_from_websocket_impl(mock_manager, MagicMock()) is None
@@ -393,20 +366,25 @@ def test_get_error_statistics_impl_with_handler(mock_manager: MagicMock) -> None
 
 @pytest.mark.asyncio
 async def test_safe_close_websocket_impl(mock_manager: MagicMock) -> None:
-    ws = AsyncMock()
+    ws: AsyncMock = AsyncMock()
     ws.application_state = WebSocketState.CONNECTED
-    mock_manager.is_websocket_closed.return_value = False
-    await cm_methods.safe_close_websocket_impl(mock_manager, ws, code=1000, reason="bye")
+    is_websocket_closed: MagicMock = MagicMock(return_value=False)
+    mock_manager.is_websocket_closed = is_websocket_closed
+    await ws_close.safe_close_websocket_impl(mock_manager, ws, code=1000, reason="bye")
     ws.close.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_subscribe_to_room_impl(mock_manager: MagicMock) -> None:
     player_id = uuid.uuid4()
-    mock_manager.canonical_room_id.return_value = "room-1"
-    mock_manager.room_manager.subscribe_to_room.return_value = True
+    subscribe_to_room: MagicMock = MagicMock(return_value=True)
+    room_manager: MagicMock = MagicMock()
+    room_manager.subscribe_to_room = subscribe_to_room
+    canonical_room_id: MagicMock = MagicMock(return_value="room-1")
+    mock_manager.canonical_room_id = canonical_room_id
+    mock_manager.room_manager = room_manager
     await cm_methods.subscribe_to_room_impl(mock_manager, player_id, "room-1")
-    mock_manager.room_manager.subscribe_to_room.assert_called_once_with(str(player_id), "room-1")
+    subscribe_to_room.assert_called_once_with(str(player_id), "room-1")
 
 
 @pytest.mark.asyncio
@@ -419,6 +397,7 @@ async def test_unsubscribe_from_room_events_impl(mock_manager: MagicMock) -> Non
     mock_unsub.assert_awaited_once_with(mock_manager)
 
 
+@pytest.mark.asyncio
 async def test_handle_player_entered_room_impl(mock_manager: MagicMock) -> None:
     with patch(
         "server.realtime.connection_delegates.delegate_room_event_handler",
@@ -428,6 +407,7 @@ async def test_handle_player_entered_room_impl(mock_manager: MagicMock) -> None:
     mock_handler.assert_awaited_once()
 
 
+@pytest.mark.asyncio
 async def test_periodic_health_check_impl(mock_manager: MagicMock) -> None:
     with patch(
         "server.realtime.connection_delegates.delegate_health_monitor",

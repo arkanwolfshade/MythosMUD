@@ -12,8 +12,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, NamedTuple, Protocol, cast
 
-from fastapi import FastAPI, Request
-from starlette.datastructures import State
+from fastapi import FastAPI
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -21,7 +20,7 @@ from ..utils.command_parser import get_username_from_user
 from ..utils.room_renderer import clone_room_drops
 from .inventory_command_contracts import CommandResponse
 from .look_container import ContainerLookArgs, _handle_container_look, _try_lookup_container_implicit
-from .look_helpers import _is_direction
+from .look_helpers import LookRequest, _is_direction
 from .look_item import _handle_item_look, _try_lookup_item_implicit
 from .look_npc import _try_lookup_npc_implicit
 from .look_player import _handle_player_look, _try_lookup_player_implicit
@@ -70,7 +69,7 @@ class LookRouteCtx(NamedTuple):
     persistence: _LookPersistence
     room_drops: list[dict[str, object]]
     app: FastAPI | None
-    request: Request | None
+    request: LookRequest | None
     player_name: str
 
 
@@ -107,13 +106,13 @@ def _container_from_app(app: FastAPI | None) -> _LookContainer | None:
     return cast(_LookContainer, raw)
 
 
-def _app_from_request(request: Request | None) -> FastAPI | None:
+def _app_from_request(request: LookRequest | None) -> FastAPI | None:
     if request is None:
         return None
     return cast(FastAPI | None, request.app)
 
 
-def _get_app_and_persistence(request: Request | None) -> tuple[FastAPI | None, _LookPersistence | None]:
+def _get_app_and_persistence(request: LookRequest | None) -> tuple[FastAPI | None, _LookPersistence | None]:
     """Extract app and persistence from request."""
     app = _app_from_request(request)
     container = _container_from_app(app)
@@ -180,7 +179,7 @@ def _get_room_drops(app: FastAPI | None, room_id: object, player_name: str) -> l
 
 
 async def _setup_look_command(
-    request: Request | None, current_user: object, player_name: str
+    request: LookRequest | None, current_user: object, player_name: str
 ) -> tuple[FastAPI | None, _LookPersistence, Player, _LookRoom, list[dict[str, object]]] | None:
     """Setup and validate look command prerequisites."""
     app, persistence = _get_app_and_persistence(request)
@@ -422,7 +421,7 @@ async def handle_look_command(
     _ = alias_storage  # Unused parameter
     logger.debug("Processing look command", player=player_name, args=command_data)
 
-    look_request = cast(Request[State] | None, request if isinstance(request, Request) else None)
+    look_request = cast(LookRequest | None, request)
     setup_result = await _setup_look_command(look_request, current_user, player_name)
     if not setup_result:
         return {"result": "You see nothing special."}

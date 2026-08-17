@@ -13,7 +13,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.realtime.connection_disconnection import disconnect_all_websockets_impl, disconnect_connection_by_id_impl
+from server.realtime.connection_disconnection import (
+    _cleanup_fully_disconnected_player,
+    disconnect_all_websockets_impl,
+    disconnect_connection_by_id_impl,
+)
 from server.realtime.message_queue import MessageQueue
 from server.realtime.rate_limiter import RateLimiter
 
@@ -123,14 +127,14 @@ async def test_safe_close_websocket_swallows_websocket_disconnect():
     """Regression: e2e logout hit WebSocketDisconnect on close and aborted leave cleanup."""
     from fastapi import WebSocketDisconnect
 
-    from server.realtime.connection_manager_methods import safe_close_websocket_impl
+    from server.realtime.connection_websocket_close import safe_close_websocket_impl
 
     manager: MagicMock = MagicMock()
     manager.is_websocket_closed = MagicMock(return_value=False)
     manager.mark_websocket_closed = MagicMock()
     websocket = AsyncMock()
     websocket.close = AsyncMock(side_effect=WebSocketDisconnect(code=1006))
-    with patch("server.realtime.connection_manager_methods.is_websocket_open_impl", return_value=True):
+    with patch("server.realtime.connection_websocket_close.is_websocket_open_impl", return_value=True):
         await safe_close_websocket_impl(manager, websocket, code=1000, reason="Connection closed")
     manager.mark_websocket_closed.assert_called()
 
@@ -165,3 +169,85 @@ async def test_cleanup_websocket_disconnect_continues_after_close_error():
 
     assert result is True
     manager.room_manager.remove_player_from_all_rooms.assert_called()
+
+
+def _session_cleanup_manager(
+    player_sessions: dict[uuid.UUID, str],
+    session_connections: dict[str, list[str]],
+    still_connected: bool,
+) -> MagicMock:
+    manager: MagicMock = MagicMock()
+    manager.player_sessions = player_sessions
+    manager.session_connections = session_connections
+    manager.has_websocket_connection = MagicMock(return_value=still_connected)
+    manager.room_manager = MagicMock()
+    manager.rate_limiter = MagicMock()
+    manager.message_queue = MagicMock()
+    manager.last_seen = {}
+    manager.last_active_update_times = {}
+    return manager
+
+
+def test_cleanup_fully_disconnected_player_clears_session_tracking():
+    """Session tracking must not outlive a player's last connection.
+
+    Leaked session state made the next login look like a session change, so the ADR-018
+    replacement path tore down the socket still being established and left the client
+    permanently linkdead until the server restarted.
+    """
+    player_id = uuid.uuid4()
+    session_id = "session_001"
+    player_sessions: dict[uuid.UUID, str] = {player_id: session_id}
+    session_connections: dict[str, list[str]] = {session_id: ["conn_from_previous_run"]}
+    manager = _session_cleanup_manager(player_sessions, session_connections, still_connected=False)
+
+    _cleanup_fully_disconnected_player(player_id, manager)
+
+    assert player_id not in player_sessions
+    assert session_id not in session_connections
+
+
+@pytest.mark.asyncio
+async def test_cleanup_websocket_disconnect_clears_session_tracking():
+    """The ordinary disconnect path must clear session tracking too.
+
+    This is the path a dropped socket actually takes; cleaning up only in
+    disconnect_connection_by_id_impl left the leak in place for real disconnects.
+    """
+    import asyncio
+
+    from server.realtime.connection_disconnection import cleanup_websocket_disconnect
+
+    player_id = uuid.uuid4()
+    session_id = "session_001"
+    player_sessions: dict[uuid.UUID, str] = {player_id: session_id}
+    session_connections: dict[str, list[str]] = {session_id: ["conn_001"]}
+    manager = _session_cleanup_manager(player_sessions, session_connections, still_connected=False)
+    manager.disconnect_lock = asyncio.Lock()
+    manager.processed_disconnect_lock = asyncio.Lock()
+    manager.player_websockets = {player_id: ["conn_001"]}
+    manager.intentional_disconnects = set()
+    manager.processed_disconnects = set()
+
+    with patch(
+        "server.realtime.connection_disconnection.disconnect_all_websockets_impl",
+        new_callable=AsyncMock,
+    ):
+        _ = await cleanup_websocket_disconnect(player_id, manager)
+
+    assert player_id not in player_sessions
+    assert session_id not in session_connections
+
+
+def test_cleanup_fully_disconnected_player_keeps_session_while_connected():
+    """A player with a surviving connection keeps their session mapping."""
+    player_id = uuid.uuid4()
+    session_id = "session_001"
+    player_sessions: dict[uuid.UUID, str] = {player_id: session_id}
+    session_connections: dict[str, list[str]] = {session_id: ["conn_live"]}
+    manager = _session_cleanup_manager(player_sessions, session_connections, still_connected=True)
+
+    _cleanup_fully_disconnected_player(player_id, manager)
+
+    assert player_sessions[player_id] == session_id
+    assert session_id in session_connections

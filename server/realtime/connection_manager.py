@@ -94,9 +94,7 @@ from .connection_manager_methods import (
     handle_player_entered_room_impl,
     handle_player_left_room_impl,
     has_websocket_connection_impl,
-    is_websocket_open_impl,
     periodic_health_check_impl,
-    safe_close_websocket_impl,
     send_initial_game_state_impl,
     send_personal_message_impl,
     start_health_checks_impl,
@@ -118,9 +116,14 @@ from .connection_room_utils import (
 from .connection_session_management import NewGameSessionResult, handle_new_game_session_impl
 from .connection_statistics import get_presence_statistics_impl, get_session_stats_impl
 from .connection_utils import get_npc_name_from_instance
+from .connection_websocket_close import is_websocket_open_impl, safe_close_websocket_impl
+from .errors.error_handler import ConnectionErrorHandler
 from .event_publisher import EventPublisher
+from .memory_monitor import MemoryMonitor
 from .message_queue import MessageQueue
+from .monitoring.health_monitor import HealthMonitor
 from .monitoring.performance_tracker import PerformanceTracker
+from .monitoring.statistics_aggregator import StatisticsAggregator
 from .player_presence_tracker import (
     broadcast_connection_message_impl,
     track_player_connected_impl,
@@ -175,6 +178,16 @@ class ConnectionManager:
         self.player_sessions: dict[uuid.UUID, str]
         self.session_connections: dict[str, list[str]]
         self.session_disconnect_times: dict[str, float]
+        self.connection_timestamps: dict[str, float]
+        self.cleanup_stats: dict[str, object]
+        self.statistics_aggregator: StatisticsAggregator
+        self.memory_monitor: MemoryMonitor
+        self.error_handler: ConnectionErrorHandler | None
+        self.health_monitor: HealthMonitor | None
+        self.personal_message_sender: object | None
+        self.message_broadcaster: object | None
+        self.game_state_provider: object | None
+        self.room_event_handler: object | None
         self.app: object | None
         initialize_connection_state(self, event_publisher)
         initialize_core_components(self)
@@ -450,6 +463,10 @@ class ConnectionManager:
         """
         await track_player_disconnected_impl(player_id, self, connection_type)
 
+    async def track_player_disconnected(self, player_id: uuid.UUID, connection_type: str | None = None) -> None:
+        """Public wrapper for intentional-logout leave tracking from facade impls."""
+        await self._track_player_disconnected(player_id, connection_type)
+
     def _cleanup_ghost_players(self) -> None:
         """Clean up ghost players from all rooms."""
         cleanup_ghost_players_impl(self)
@@ -601,39 +618,10 @@ def resolve_connection_manager(candidate: ConnectionManager | None = None) -> Co
     return cast(ConnectionManager | None, _resolve_connection_manager_uncast(candidate))
 
 
-# Re-export for backward compatibility
-__all__ = [
-    "ConnectionManager",
-    "ConnectionMetadata",
-    "resolve_connection_manager",
-]
+__all__ = ["ConnectionManager", "ConnectionMetadata", "resolve_connection_manager"]
 
 
 def __getattr__(name: str) -> object:
-    """Lazy import for API utility functions to avoid circular dependencies."""
-    # Kept here (not in utils) so utils never imports connection_manager_api.
-    if name == "broadcast_game_event":
-        from .connection_manager_api import broadcast_game_event
+    from .connection_manager_lazy import resolve_lazy_attr
 
-        return broadcast_game_event
-    if name == "send_game_event":
-        from .connection_manager_api import send_game_event
-
-        return send_game_event
-    if name == "send_player_status_update":
-        from .connection_manager_api import send_player_status_update
-
-        return send_player_status_update
-    if name == "send_room_description":
-        from .connection_manager_api import send_room_description
-
-        return send_room_description
-    if name == "send_room_event":
-        from .connection_manager_api import send_room_event
-
-        return send_room_event
-    if name == "send_system_notification":
-        from .connection_manager_api import send_system_notification
-
-        return send_system_notification
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    return resolve_lazy_attr(name, __name__)

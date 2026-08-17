@@ -165,11 +165,11 @@ async def test_force_disconnect_player_impl_intentional_without_sockets():
     manager.message_queue = MagicMock()
     manager.last_seen = {}
     manager.last_active_update_times = {}
-    manager._track_player_disconnected = AsyncMock()
+    manager.track_player_disconnected = AsyncMock()
 
     await force_disconnect_player_impl(manager, player_id)
 
-    manager._track_player_disconnected.assert_awaited_once_with(player_id)
+    manager.track_player_disconnected.assert_awaited_once_with(player_id)
     manager.room_manager.remove_player_from_all_rooms.assert_called_once_with(str(player_id))
 
 
