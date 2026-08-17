@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_users_current_user_logging.py** (12 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **test_users_current_user_logging.py** (13 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
 - **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
 - **asyncio** (7 connections)
 - **test_get_current_user_with_logging_generic_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
@@ -28,7 +28,8 @@
 ## Relationships
 
 - [User](User.md) (8 shared connections)
-- [test_users.py](test_users.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [models/user.py](models-user.py.md) (1 shared connections)
 
 ## Source Files
@@ -38,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 36 (84%)
+- EXTRACTED: 37 (84%)
 - INFERRED: 7 (16%)
 - AMBIGUOUS: 0 (0%)
 

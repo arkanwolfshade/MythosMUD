@@ -1,12 +1,13 @@
 # NPCMovementIntegration
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **NPCMovementIntegration** (50 connections) — `server/npc/movement_integration.py`
-- **test_movement_integration.py** (29 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_movement_integration.py** (30 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
+- **.__init__()** (5 connections) — `server/npc/idle_movement.py`
 - **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
 - **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
 - **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
@@ -28,25 +29,31 @@
 - **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
 - **test_get_room_objects_missing_destination()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **test_get_room_objects_missing_room()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [.move_to_room](move_to_room.md) (1 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [test_room_utils.py](test_room_utils.py.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [npc_base.py](npc_base.py.md) (2 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
+- [idle_movement.py](idle_movement.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [MovementService](MovementService.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/npc/idle_movement.py`
 - `server/npc/movement_integration.py`
 - `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (74%)
-- INFERRED: 27 (26%)
+- EXTRACTED: 80 (75%)
+- INFERRED: 27 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

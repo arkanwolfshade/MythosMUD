@@ -1,11 +1,12 @@
 # Interaction Design
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **Interaction Design** (10 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
 - **Keyboard Navigation Patterns** (3 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
+- **interaction-design.md** (2 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
 - **Destructive Actions: Undo > Confirm** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
 - **Focus Rings: Do Them Right** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
 - **Form Design: The Non-Obvious** (1 connections) — `.claude/skills/frontend-design/reference/interaction-design.md`
@@ -19,7 +20,7 @@
 
 ## Relationships
 
-- [frontend-design/SKILL.md](frontend-design-SKILL.md.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

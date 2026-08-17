@@ -1,33 +1,37 @@
 # UUID
 
-> 9 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **UUID** (6 connections)
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **UUID** (7 connections)
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.is_valid_uuid()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the original string ID from a UUID. Args: uuid_id: The UUID to look up…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get XP value for a UUID. Args: uuid_id: The UUID to look up Returns: XP value…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Check if a string is a valid UUID. Args: uuid_string: String to check Returns:…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Convert string ID to UUID, creating new UUID if needed. For non-UUID string IDs…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-string ID mapping. Args: uuid_id: UUID of the entity string_id:…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-XP mapping. Args: uuid_id: UUID of the NPC xp_value: XP value for…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the UUID that was stored for a given string ID (reverse of…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
 
 ## Relationships
 
-- [StatisticsAggregator](StatisticsAggregator.md) (4 shared connections)
-- [._build_connection_stats](_build_connection_stats.md) (3 shared connections)
-- [._compose_memory_stats](_compose_memory_stats.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (7 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
+- `server/services/npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

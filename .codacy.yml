@@ -30,6 +30,9 @@ exclude_paths:
   # Lockfiles are not product source; Lizard file-nloc on uv.lock is pure noise.
   - "uv.lock"
   - "**/uv.lock"
+  - "package-lock.json"
+  - "**/package-lock.json"
+  - "client/package-lock.json"
   # Makefile is build DSL, not Python/Go source; avoid false parse errors from Pylint/Revive.
   - "Makefile"
   - "**/mythosmud_data/**"
@@ -405,17 +408,28 @@ ignore_patterns:
     file_paths:
       - "server/scripts/create_professions_table.sql"
     reason: "One-shot DDL; CREATE INDEX CONCURRENTLY not used for offline apply scripts."
+  - pattern_id: "Lizard_parameter-count-medium"
+    file_paths:
+      - "server/utils/audit_logger.py"
+      - "server/realtime/errors/error_handler.py"
+      - "server/realtime/monitoring/statistics_aggregator.py"
+      - "server/realtime/maintenance/connection_cleaner.py"
+      - "server/realtime/monitoring/health_monitor.py"
+    reason: "Constructors and audit signatures; bundling would be a speculative API churn."
   # Pylint R0801 duplicate-code: thin shared patterns across cohesive modules; extraction
   # would create speculative single-use helpers (ponytail / fragmentation rules).
   - pattern_id: "PyLintPython3_R0801"
     file_paths:
       - "server/api/admin/dialogue_definitions_api.py"
       - "server/auth/token_epoch.py"
+      - "server/commands/combat_flee.py"
       - "server/game/dialogue/__init__.py"
       - "server/game/room_service.py"
       - "server/infrastructure/message_broker.py"
       - "server/infrastructure/nats_broker.py"
       - "server/persistence/container_query_helpers_async.py"
+      - "server/realtime/connection_session_management.py"
+      - "server/services/combat_configuration_service.py"
 
 # Cyclomatic complexity configuration
 # Set cyclomatic complexity threshold to 11 (only report > 10)

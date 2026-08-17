@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_player_event_handlers_room.py** (37 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_player_event_handlers_room.py** (38 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 - **test_broadcast_player_entered_message_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 - **test_log_player_movement_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 - **test_prepare_room_data_without_to_dict()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
@@ -20,7 +20,8 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (9 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_subscribe_player_to_room_success](test_subscribe_player_to_room_success.md) (1 shared connections)
 - [test_subscribe_player_to_room_invalid_id](test_subscribe_player_to_room_invalid_id.md) (1 shared connections)
 - [test_subscribe_player_to_room_error](test_subscribe_player_to_room_error.md) (1 shared connections)
@@ -30,7 +31,6 @@
 - [test_send_room_update_to_player_room_not_found](test_send_room_update_to_player_room_not_found.md) (1 shared connections)
 - [test_send_room_update_to_player_error_handling](test_send_room_update_to_player_error_handling.md) (1 shared connections)
 - [test_build_room_occupants_message](test_build_room_occupants_message.md) (1 shared connections)
-- [test_send_occupants_snapshot_to_player_success](test_send_occupants_snapshot_to_player_success.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,8 +5,9 @@
 ## Key Concepts
 
 - **PlayerGuidFormatter** (34 connections) — `server/structured_logging/player_guid_formatter.py`
-- **test_player_guid_formatter.py** (24 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **test_player_guid_formatter.py** (25 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **player_guid_formatter.py** (5 connections) — `server/structured_logging/player_guid_formatter.py`
 - **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **formatter()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
@@ -17,7 +18,6 @@
 - **test_format_player_service_error()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_with_different_log_levels()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **player_guid_formatter.py** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **._convert_player_guids()** (3 connections) — `server/structured_logging/player_guid_formatter.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_empty_message()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
@@ -35,8 +35,10 @@
 
 - [logging_file_setup.py](logging_file_setup.py.md) (3 shared connections)
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (74%)
-- INFERRED: 25 (26%)
+- EXTRACTED: 74 (75%)
+- INFERRED: 25 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

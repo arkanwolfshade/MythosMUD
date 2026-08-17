@@ -1,14 +1,12 @@
 # description
 
-> 5 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **maxLength** (1 connections) — `schemas/room_schema.json`
-- **minLength** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **description** (3 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
@@ -16,11 +14,11 @@
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

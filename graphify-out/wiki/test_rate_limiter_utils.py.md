@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_rate_limiter_utils.py** (22 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_rate_limiter_utils.py** (23 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
@@ -19,9 +19,9 @@
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [RateLimiter](RateLimiter.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_get_rate_limit_info_calculates_retry_after](test_get_rate_limit_info_calculates_retry_after.md) (1 shared connections)
 - [test_get_rate_limit_info_filters_old_requests](test_get_rate_limit_info_filters_old_requests.md) (1 shared connections)
 - [test_enforce_rate_limit_allows_request](test_enforce_rate_limit_allows_request.md) (1 shared connections)
@@ -38,8 +38,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 27 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 28 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

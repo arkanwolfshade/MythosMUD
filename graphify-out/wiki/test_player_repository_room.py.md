@@ -4,12 +4,12 @@
 
 ## Key Concepts
 
-- **test_player_repository_room.py** (14 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_player_repository_room.py** (15 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 - **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
 - **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
 - **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
 - **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **player_repository_room.py** (8 connections) — `server/persistence/repositories/player_repository_room.py`
+- **player_repository_room.py** (9 connections) — `server/persistence/repositories/player_repository_room.py`
 - **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 - **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 - **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
@@ -29,8 +29,8 @@
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (10 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -39,7 +39,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
+- EXTRACTED: 54 (95%)
 - INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 

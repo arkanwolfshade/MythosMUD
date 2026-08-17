@@ -149,6 +149,7 @@ bandit:
 	$(PYTHON) scripts/bandit.py
 
 pylint:
+	@echo "Pylint: any E/W/F/C/R finding fails this target (and make all)."
 	$(PYTHON) scripts/pylint.py
 
 sqlfluff:
@@ -354,8 +355,8 @@ run-production:
 # ============================================================================
 
 # Flattened stages so FAIL-FAST names the exact leaf target (not a nested composite).
-# Warning: grepping tool "WARNING" strings is intentionally not a fail condition here;
-# tools already exit non-zero for real failures. Tracebacks still fail even on exit 0.
+# Tools must exit non-zero on real failures (pylint: any E/W/F/C/R finding). Tracebacks
+# still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
 ALL_STAGES := format mypy lint lint-sqlalchemy \
 	$(CODACY_TOOL_STAGES) \
 	quality-fragmentation-guard check-postgresql build openapi-spec \

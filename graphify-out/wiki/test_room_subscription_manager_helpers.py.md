@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_room_subscription_manager_helpers.py** (22 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
+- **test_room_subscription_manager_helpers.py** (23 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
 - **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
 - **test_canonical_room_id()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
 - **test_canonical_room_id_empty_string()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_helpers.py`
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
+- EXTRACTED: 43 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

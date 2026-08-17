@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_utility_commands_whoami.py** (5 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_utility_commands_whoami.py** (6 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
 - **test_handle_whoami_command()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
 - **test_handle_whoami_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
 - **test_handle_whoami_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
@@ -17,6 +17,7 @@
 ## Relationships
 
 - [test_status_commands.py](test_status_commands.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
@@ -25,8 +26,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (79%)
-- INFERRED: 3 (21%)
+- EXTRACTED: 12 (80%)
+- INFERRED: 3 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

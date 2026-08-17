@@ -1,38 +1,37 @@
 # properties
 
-> 17 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/unified_room_schema.json`
-- **exits** (5 connections) — `schemas/unified_room_schema.json`
-- **down** (2 connections) — `schemas/unified_room_schema.json`
-- **east** (2 connections) — `schemas/unified_room_schema.json`
-- **north** (2 connections) — `schemas/unified_room_schema.json`
-- **south** (2 connections) — `schemas/unified_room_schema.json`
-- **up** (2 connections) — `schemas/unified_room_schema.json`
-- **west** (2 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
-- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [applies_to](applies_to.md) (3 shared connections)
+- [required](required.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
+- [start_hour](start_hour.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

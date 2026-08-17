@@ -1,60 +1,63 @@
 # TargetResolutionResult
 
-> 67 nodes
+> 73 nodes
 
 ## Key Concepts
 
 - **TargetResolutionResult** (34 connections) — `server/schemas/shared/target_resolution.py`
-- **test_follow_commands.py** (23 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **follow_commands.py** (18 connections) — `server/commands/follow_commands.py`
-- **handle_follow_command()** (17 connections) — `server/commands/follow_commands.py`
-- **asyncio** (13 connections)
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (6 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (6 connections)
-- **_load_follow_context()** (5 connections) — `server/commands/follow_commands.py`
-- **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- *... and 42 more nodes in this community*
+- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
+- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
+- **asyncio** (7 connections)
+- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
+- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **UUID** (6 connections)
+- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
+- **.resolve_combat_target()** (5 connections) — `server/commands/combat_handler.py`
+- **._validate_combat_target_match()** (5 connections) — `server/commands/combat_handler.py`
+- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
+- **Player** (5 connections)
+- **.get_players_in_room()** (4 connections) — `server/services/target_resolution_service.py`
+- **.__init__()** (4 connections) — `server/services/target_resolution_service.py`
+- **test_resolve_entity_target_rejects_location()** (4 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_resolve_entity_target_success()** (4 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_get_disambiguation_list()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **test_get_disambiguation_list_empty()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **test_get_single_match()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **test_get_single_match_none()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **test_target_match()** (4 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [TargetResolutionService](TargetResolutionService.md) (19 shared connections)
-- [TargetMatch](TargetMatch.md) (12 shared connections)
-- [AliasStorage](AliasStorage.md) (8 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
-- [SpellEffectType](SpellEffectType.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
-- [InventorySchemaValidationError](InventorySchemaValidationError.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (24 shared connections)
+- [TargetMatch](TargetMatch.md) (18 shared connections)
+- [SpellEffectType](SpellEffectType.md) (11 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (6 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (5 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (4 shared connections)
+- [test_target_resolution_service.py](test_target_resolution_service.py.md) (1 shared connections)
+- [UUID](UUID.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [SpellTargetingService](SpellTargetingService.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
+- `server/commands/combat_handler.py`
 - `server/schemas/shared/target_resolution.py`
-- `server/tests/unit/commands/test_follow_commands.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
 - `server/tests/unit/schemas/test_target_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 176 (95%)
-- INFERRED: 10 (5%)
+- EXTRACTED: 165 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

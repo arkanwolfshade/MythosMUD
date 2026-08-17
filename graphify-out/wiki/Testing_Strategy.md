@@ -1,24 +1,25 @@
 # Testing Strategy
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Testing Strategy** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Integration Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Unit Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **User Acceptance Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

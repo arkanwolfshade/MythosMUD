@@ -4,21 +4,21 @@
 
 ## Key Concepts
 
-- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Automatic decision tree** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Forbidden (hangs non-interactive agents)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Full skill body** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Integration with other skills** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Mythos defaults** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **One-liner status check (PowerShell)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (1 shared connections)
+- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/gh-stack/SKILL.md`
+- `.claude/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 

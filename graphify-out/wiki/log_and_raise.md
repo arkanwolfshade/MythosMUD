@@ -34,30 +34,30 @@
 ### imports
 - database.py `EXTRACTED`
 - [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) `EXTRACTED`
-- movement_service.py `EXTRACTED`
+- container_persistence/container_persistence.py `EXTRACTED`
 - container_persistence_async.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
 - container_service_transfer_to.py `EXTRACTED`
+- npc_database.py `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - container_service_session.py `EXTRACTED`
-- [npc_database.py](npc_database.py.md) `EXTRACTED`
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) `EXTRACTED`
+- persistence/container_helpers.py `EXTRACTED`
 - container_service_lock.py `EXTRACTED`
 - container_service_transfer_from.py `EXTRACTED`
 - container_persistence/container_helpers.py `EXTRACTED`
-- [database_config_helpers.py](database_config_helpers.py.md) `EXTRACTED`
-- container_query_helpers_async.py `EXTRACTED`
-- [test_error_logging.py](test_error_logging.py.md) `EXTRACTED`
-- container_query_helpers.py `EXTRACTED`
-- [item_instance_persistence.py](item_instance_persistence.py.md) `EXTRACTED`
-- [player_effect_repository.py](player_effect_repository.py.md) `EXTRACTED`
+- database_config_helpers.py `EXTRACTED`
+- [container_query_helpers_async.py](container_query_helpers_async.py.md) `EXTRACTED`
+- test_error_logging.py `EXTRACTED`
+- player_effect_repository.py `EXTRACTED`
 - player_spell_repository.py `EXTRACTED`
+- emote_service.py `EXTRACTED`
+- container_query_helpers.py `EXTRACTED`
 
 ### rationale_for
 - Log and raise; uses legacy behavior (no skip_log for ValidationError).… `EXTRACTED`
 
 ### references
-- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
+- MythosMUDError `EXTRACTED`
 - [Any](Any.md) `EXTRACTED`
 - NoReturn `EXTRACTED`
 

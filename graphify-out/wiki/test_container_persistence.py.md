@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_container_persistence.py** (20 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
+- **test_container_persistence.py** (21 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
 - **test_container_data_init()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
 - **test_container_data_to_dict()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
 - **test_container_data_to_dict_with_all_fields()** (2 connections) — `server/tests/unit/container_persistence/test_container_persistence.py`
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

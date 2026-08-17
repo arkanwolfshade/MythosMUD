@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_protocols.py** (10 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **test_protocols.py** (11 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **test_player_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **_StubRoomRepo** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **test_room_repository_protocol_stub()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
@@ -17,9 +17,9 @@
 
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (4 shared connections)
 - [_StubPlayerRepo](_StubPlayerRepo.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,8 +27,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (84%)
-- INFERRED: 3 (16%)
+- EXTRACTED: 17 (85%)
+- INFERRED: 3 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

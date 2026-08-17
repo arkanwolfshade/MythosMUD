@@ -1,48 +1,49 @@
 # asyncio
 
-> 25 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (16 connections)
+- **test_handle_npc_entered_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_no_match()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_send_room_message_no_room_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_entered_room() processes event.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left_room() processes event.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left_room() with valid NPC instance.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _determine_direction_from_rooms() returns None when room not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _determine_direction_from_rooms() returns None when no matching exit.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test _send_room_message() handles missing room_manager.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_entered() handles missing persistence.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left() handles missing persistence.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **Test handle_npc_left() handles room not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (9 shared connections)
+- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [test_determine_direction_from_rooms_no_persistence](test_determine_direction_from_rooms_no_persistence.md) (1 shared connections)
+- [test_handle_npc_entered_no_connection_manager](test_handle_npc_entered_no_connection_manager.md) (1 shared connections)
+- [test_handle_npc_entered_room_not_found](test_handle_npc_entered_room_not_found.md) (1 shared connections)
+- [test_handle_npc_entered_room_with_npc_instance](test_handle_npc_entered_room_with_npc_instance.md) (1 shared connections)
+- [test_handle_npc_left_no_connection_manager](test_handle_npc_left_no_connection_manager.md) (1 shared connections)
+- [test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails](test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails.md) (1 shared connections)
+- [test_send_room_message_no_connection_manager](test_send_room_message_no_connection_manager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/realtime/test_npc_event_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (85%)
+- INFERRED: 6 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

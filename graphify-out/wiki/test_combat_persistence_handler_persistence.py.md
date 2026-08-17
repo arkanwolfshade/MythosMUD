@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_persistence.py** (22 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_combat_persistence_handler_persistence.py** (23 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **asyncio** (16 connections)
 - **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 - **test_persist_player_dp_sync_get_stats_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 57 (95%)
+- EXTRACTED: 58 (95%)
 - INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 

@@ -26,7 +26,7 @@
 ## Relationships
 
 - [test_protocols.py](test_protocols.py.md) (3 shared connections)
-- [retry.py](retry.py.md) (2 shared connections)
+- [test_retry.py](test_retry.py.md) (2 shared connections)
 - [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files

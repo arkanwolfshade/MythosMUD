@@ -13,8 +13,8 @@ from starlette.websockets import WebSocketDisconnect
 
 from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
-from .connection_manager_methods import safe_close_websocket_impl
 from .connection_models import ConnectionMetadata
+from .connection_websocket_close import safe_close_websocket_impl
 from .message_queue import MessageQueue
 from .rate_limiter import RateLimiter
 from .room_subscription_manager import RoomSubscriptionManager
@@ -31,6 +31,8 @@ class _DisconnectConnectionManager(Protocol):
     active_websockets: dict[str, WebSocket]
     connection_metadata: dict[str, ConnectionMetadata]
     player_websockets: dict[uuid.UUID, list[str]]
+    player_sessions: dict[uuid.UUID, str]
+    session_connections: dict[str, list[str]]
     rate_limiter: RateLimiter
     message_queue: MessageQueue
     room_manager: RoomSubscriptionManager
@@ -43,6 +45,14 @@ class _DisconnectConnectionManager(Protocol):
 
     def has_websocket_connection(self, player_id: uuid.UUID) -> bool:
         """Return True when the player still has at least one WebSocket connection."""
+        ...
+
+    def is_websocket_closed(self, ws_id: int) -> bool:
+        """Return True when this WebSocket id was already closed."""
+        ...
+
+    def mark_websocket_closed(self, ws_id: int) -> None:
+        """Record that this WebSocket id has been closed."""
         ...
 
 
@@ -58,7 +68,7 @@ def _is_non_intentional_force_disconnect(
     """
     if not is_force_disconnect:
         return False
-    return player_id not in getattr(manager, "intentional_disconnects", set())
+    return player_id not in manager.intentional_disconnects
 
 
 def _cleanup_connection_tracking(connection_id: str, manager: _DisconnectConnectionManager) -> None:
@@ -159,7 +169,12 @@ def _cleanup_room_subscriptions(
 
 def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:
     """
-    Clean up rate limiting and message data for a player.
+    Clean up rate limiting, message, and session data for a player.
+
+    Every disconnect path funnels through here once the player's last connection is gone.
+    Session tracking must go with it: a mapping that outlives its connections makes the
+    next login look like a session change to establish_websocket_connection, which then
+    replaces the socket it is still setting up and leaves the player linkdead (ADR-018).
 
     Args:
         player_id: The player's ID
@@ -173,6 +188,45 @@ def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionMan
     if player_id in manager.last_seen:
         del manager.last_seen[player_id]
     _ = manager.last_active_update_times.pop(player_id, None)
+    session_id = manager.player_sessions.pop(player_id, None)
+    if session_id is not None:
+        _ = manager.session_connections.pop(session_id, None)
+
+
+async def _apply_disconnect_side_effects(
+    player_id: uuid.UUID,
+    manager: _DisconnectConnectionManager,
+    is_force_disconnect: bool,
+) -> bool:
+    """Track leave if needed, then clear room subscriptions and player-scoped data."""
+    should_track = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
+    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
+    _cleanup_player_data(player_id, manager)
+    return should_track
+
+
+# Public name for connection_manager_methods (avoids reportPrivateUsage on underscore helpers).
+apply_disconnect_side_effects = _apply_disconnect_side_effects
+
+
+async def _close_and_untrack_websockets(player_id: uuid.UUID, manager: _DisconnectConnectionManager) -> None:
+    """Close every tracked WebSocket for the player and drop player_websockets entry."""
+    connection_ids = manager.player_websockets[player_id].copy()
+    logger.info(
+        "Found WebSocket connections",
+        player_id=player_id,
+        connection_count=len(connection_ids),
+        connection_ids=connection_ids,
+    )
+    try:
+        await disconnect_all_websockets_impl(connection_ids, player_id, manager)
+    except (RuntimeError, OSError, WebSocketDisconnect) as close_err:
+        logger.warning(
+            "Error closing websockets during disconnect; continuing cleanup",
+            player_id=player_id,
+            error=str(close_err),
+        )
+    _ = manager.player_websockets.pop(player_id, None)
 
 
 async def cleanup_websocket_disconnect(
@@ -203,43 +257,14 @@ async def cleanup_websocket_disconnect(
 
             if player_id not in manager.player_websockets:
                 # Intentional logout can race with on-close clearing sockets; still track leave.
-                if player_id in getattr(manager, "intentional_disconnects", set()):
-                    should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
-                    _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
-                    _cleanup_player_data(player_id, manager)
+                if player_id in manager.intentional_disconnects:
+                    should_track_disconnect = await _apply_disconnect_side_effects(
+                        player_id, manager, is_force_disconnect
+                    )
                 return should_track_disconnect
 
-            connection_ids = manager.player_websockets[player_id].copy()
-
-            logger.info(
-                "Found WebSocket connections",
-                player_id=player_id,
-                connection_count=len(connection_ids),
-                connection_ids=connection_ids,
-            )
-
-            # Disconnect all WebSocket connections
-            try:
-                await disconnect_all_websockets_impl(connection_ids, player_id, manager)
-            except (RuntimeError, OSError, WebSocketDisconnect) as close_err:
-                logger.warning(
-                    "Error closing websockets during disconnect; continuing cleanup",
-                    player_id=player_id,
-                    error=str(close_err),
-                )
-
-            # Remove from tracking (on-close handler may have already cleared this entry)
-            _ = manager.player_websockets.pop(player_id, None)
-
-            # Check if we need to track disconnection
-            should_track_disconnect = await _track_disconnect_if_needed(player_id, manager, is_force_disconnect)
-
-            # Clean up room subscriptions and player data
-            _cleanup_room_subscriptions(player_id, manager, is_force_disconnect)
-
-            # Clean up rate limiting and messages
-            _cleanup_player_data(player_id, manager)
-
+            await _close_and_untrack_websockets(player_id, manager)
+            should_track_disconnect = await _apply_disconnect_side_effects(player_id, manager, is_force_disconnect)
             logger.info("WebSocket disconnected", player_id=player_id)
 
         except (DatabaseError, AttributeError) as e:

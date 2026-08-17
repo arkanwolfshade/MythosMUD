@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (20 shared connections)
+- [NPCDefinition](NPCDefinition.md) (14 shared connections)
 - [NPCDied](NPCDied.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
 
 ## Source Files
 

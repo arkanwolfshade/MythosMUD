@@ -1,13 +1,14 @@
 # description
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (5 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

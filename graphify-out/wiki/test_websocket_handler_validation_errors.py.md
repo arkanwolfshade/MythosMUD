@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_validation_errors.py** (39 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_websocket_handler_validation_errors.py** (40 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 - **asyncio** (25 connections)
 - **test_validate_message_validation_error()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 - **test_handle_chat_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
@@ -33,13 +33,13 @@
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (7 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (6 shared connections)
+- [ErrorType](ErrorType.md) (7 shared connections)
+- [handle_game_command](handle_game_command.md) (6 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 - [WebSocketMessageValidator](WebSocketMessageValidator.md) (4 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (2 shared connections)
 - [send_system_message](send_system_message.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (88%)
+- EXTRACTED: 99 (88%)
 - INFERRED: 13 (12%)
 - AMBIGUOUS: 0 (0%)
 

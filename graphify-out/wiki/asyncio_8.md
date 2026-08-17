@@ -1,45 +1,46 @@
 # asyncio
 
-> 13 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (21 connections)
-- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_with_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_death_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_no_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_respawn()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded without attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_respawn broadcasts respawn message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_death handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **asyncio** (16 connections)
+- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_echo_message_to_sender_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_with_uuid()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (6 shared connections)
-- [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)
-- [test_broadcast_combat_death](test_broadcast_combat_death.md) (1 shared connections)
-- [test_broadcast_combat_end](test_broadcast_combat_end.md) (1 shared connections)
-- [test_broadcast_combat_ended](test_broadcast_combat_ended.md) (1 shared connections)
-- [test_broadcast_combat_error](test_broadcast_combat_error.md) (1 shared connections)
-- [test_broadcast_combat_error_send_error](test_broadcast_combat_error_send_error.md) (1 shared connections)
-- [test_broadcast_combat_start](test_broadcast_combat_start.md) (1 shared connections)
-- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (8 shared connections)
+- [test_broadcast_by_channel_type_exception](test_broadcast_by_channel_type_exception.md) (1 shared connections)
+- [test_broadcast_to_room_with_filtering_exception](test_broadcast_to_room_with_filtering_exception.md) (1 shared connections)
+- [test_echo_message_to_sender_exception](test_echo_message_to_sender_exception.md) (1 shared connections)
+- [test_get_player_lucidity_tier_default](test_get_player_lucidity_tier_default.md) (1 shared connections)
+- [test_get_player_lucidity_tier_exception_in_processing](test_get_player_lucidity_tier_exception_in_processing.md) (1 shared connections)
+- [test_process_message_with_retry_failure](test_process_message_with_retry_failure.md) (1 shared connections)
+- [test_send_messages_to_players_no_original_content](test_send_messages_to_players_no_original_content.md) (1 shared connections)
+- [test_send_messages_to_players_with_tags](test_send_messages_to_players_with_tags.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

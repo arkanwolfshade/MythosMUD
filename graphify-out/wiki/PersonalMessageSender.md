@@ -1,21 +1,13 @@
 # PersonalMessageSender
 
-> 33 nodes
+> 19 nodes
 
 ## Key Concepts
 
 - **PersonalMessageSender** (22 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **test_personal_message_sender.py** (15 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **test_personal_message_sender.py** (17 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **asyncio** (8 connections)
-- **.send_message()** (7 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **UUID** (7 connections)
-- **._prepare_payload()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._queue_message_if_needed()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **._send_to_websocket()** (6 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Any** (6 connections)
 - **test_send_to_websocket_accept_first_is_debug_not_warning()** (5 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
-- **.get_delivery_stats()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/personal_message_sender.py`
 - **test_send_message_fans_out_to_all_listed_sockets()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **test_send_message_outer_exception()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **test_send_to_websocket_empty_runtime_error_is_debug()** (4 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
@@ -27,18 +19,20 @@
 - **test_send_to_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 - **LogCaptureFixture** (2 connections)
 - **fixture** (1 connections)
-- **Send message to a single WebSocket connection. Returns True if successful.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- **Queue message if no active connections.** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
-- *... and 8 more nodes in this community*
+- **Sends personal messages to individual players. This class provides: - Personal…** (1 connections) — `server/realtime/messaging/personal_message_sender.py`
+- **Unit tests for PersonalMessageSender.** (1 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **E2E teardown: send after client drop must not warn.** (1 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
+- **Occupancy/who/chat ride the full player_websockets list (#610).** (1 connections) — `server/tests/unit/realtime/test_personal_message_sender.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [deque](deque.md) (2 shared connections)
-- [HealthMonitor](HealthMonitor.md) (1 shared connections)
-- [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [.send_message](send_message.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (83%)
-- INFERRED: 13 (17%)
+- EXTRACTED: 41 (77%)
+- INFERRED: 12 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

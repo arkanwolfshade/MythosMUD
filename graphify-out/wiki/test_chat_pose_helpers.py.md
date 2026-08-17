@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_chat_pose_helpers.py** (17 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_chat_pose_helpers.py** (18 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
 - **set_player_pose()** (15 connections) — `server/game/chat_pose_helpers.py`
 - **chat_pose_helpers.py** (15 connections) — `server/game/chat_pose_helpers.py`
 - **clear_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
@@ -38,6 +38,7 @@
 - [ChatMessage](ChatMessage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [chat_message.py](chat_message.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (99%)
+- EXTRACTED: 69 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

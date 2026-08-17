@@ -1,20 +1,21 @@
 # main
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_and_apply_map_migrations.py** (5 connections) — `scripts/check_and_apply_map_migrations.py`
-- **apply_migration_013()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **apply_migration_014()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_migration_013()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_migration_014()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Main function to check and apply migrations.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Check if migration 013 (map_x/map_y columns) has been applied.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Check if migration 014 (player_exploration table) has been applied.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Apply migration 013: Add map_x and map_y columns.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Apply migration 014: Create player_exploration table.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
+- **main()** (6 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **visualize_arkham_rooms_simple.py** (5 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Graph** (2 connections)
+- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 
 ## Relationships
 
@@ -22,11 +23,11 @@
 
 ## Source Files
 
-- `scripts/check_and_apply_map_migrations.py`
+- `scripts/visualize_arkham_rooms_simple.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,19 +1,17 @@
 # RoomDataValidator
 
-> 53 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **RoomDataValidator** (30 connections) — `server/services/room_data_validator.py`
 - **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **NPCCombatIntegrationValidationMixin** (11 connections) — `server/services/npc_combat_integration_validation_mixin.py`
 - **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
 - **Any** (8 connections)
 - **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
 - **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
 - **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
 - **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
 - **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
@@ -29,25 +27,27 @@
 - **test_validate_required_fields_all_present()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_invalid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 28 more nodes in this community*
+- **test_validate_room_data_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- **test_validate_room_data_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_validation_mixin.py`
 - `server/services/room_data_validator.py`
 - `server/tests/unit/services/test_room_data_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (85%)
-- INFERRED: 16 (15%)
+- EXTRACTED: 81 (84%)
+- INFERRED: 15 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_game_state_provider.py** (41 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_game_state_provider.py** (42 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_add_grace_period_indicators()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_get_fallback_player_data_json_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 - **test_get_fallback_player_data_with_get_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
@@ -31,16 +31,16 @@
 
 - [asyncio](asyncio.md) (9 shared connections)
 - [fixture](fixture.md) (5 shared connections)
-- [.state](state.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [test_convert_room_uuids_to_names](test_convert_room_uuids_to_names.md) (1 shared connections)
 - [test_get_room_occupants](test_get_room_occupants.md) (1 shared connections)
 - [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
 - [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
 - [test_convert_room_uuids_to_names_invalid_uuid](test_convert_room_uuids_to_names_invalid_uuid.md) (1 shared connections)
 - [test_get_room_occupants_empty_online_players](test_get_room_occupants_empty_online_players.md) (1 shared connections)
 - [test_get_room_occupants_with_online_players](test_get_room_occupants_with_online_players.md) (1 shared connections)
-- [test_send_initial_game_state_no_player](test_send_initial_game_state_no_player.md) (1 shared connections)
-- [test_send_initial_game_state_send_fails](test_send_initial_game_state_send_fails.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_security_utils.py** (39 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_security_utils.py** (41 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **get_secure_file_path()** (13 connections) — `server/security_utils.py`
 - **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 - **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
@@ -34,8 +34,9 @@
 - [validate_secure_path](validate_secure_path.md) (12 shared connections)
 - [is_safe_filename](is_safe_filename.md) (8 shared connections)
 - [ensure_directory_exists](ensure_directory_exists.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_validate_secure_path_path_traversal_commonpath](test_validate_secure_path_path_traversal_commonpath.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 61 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -10,8 +10,8 @@
 
 ## Relationships
 
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
 
 ## Source Files
 

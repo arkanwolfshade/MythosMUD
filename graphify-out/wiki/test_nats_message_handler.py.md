@@ -1,16 +1,14 @@
 # test_nats_message_handler.py
 
-> 129 nodes
+> 125 nodes
 
 ## Key Concepts
 
-- **test_nats_message_handler.py** (72 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_nats_message_handler.py** (73 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **asyncio** (55 connections)
 - **test_handle_nats_message_attribute_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_circuit_breaker_open()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_connection_manager_resolution_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_dlq_on_final_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- **test_handle_nats_message_unknown_message_id_defaults()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_start_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_stop_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_subscribe_to_event_subjects_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
@@ -29,17 +27,19 @@
 - **test_handle_nats_message_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
 - **test_handle_nats_message_success_path_metrics()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
-- *... and 104 more nodes in this community*
+- **test_handle_nats_message_unknown_channel_defaults()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_validation_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- *... and 100 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (9 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (4 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (13 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (5 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
-- [CircuitState](CircuitState.md) (1 shared connections)
+- [NATSUnsubscribeError](NATSUnsubscribeError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 190 (92%)
-- INFERRED: 16 (8%)
+- EXTRACTED: 189 (93%)
+- INFERRED: 14 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

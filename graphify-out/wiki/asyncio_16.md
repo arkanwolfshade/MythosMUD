@@ -1,44 +1,48 @@
 # asyncio
 
-> 11 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (33 connections)
-- **test_handle_player_entered_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_no_room_id()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_broadcast_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_query_room_occupants_snapshot()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_updates_to_entering_player_invalid_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test query_room_occupants_snapshot() queries occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test send_room_updates_to_entering_player() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test _process_player_entered_event() returns None when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test handle_player_entered() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **Test broadcast_player_entered_message() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **asyncio** (12 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_build_room_occupants_message](test_build_room_occupants_message.md) (1 shared connections)
-- [test_handle_player_entered_no_connection_manager](test_handle_player_entered_no_connection_manager.md) (1 shared connections)
-- [test_handle_player_entered_no_player_info](test_handle_player_entered_no_player_info.md) (1 shared connections)
-- [test_handle_player_entered_success](test_handle_player_entered_success.md) (1 shared connections)
-- [test_log_player_movement_error_handling](test_log_player_movement_error_handling.md) (1 shared connections)
-- [test_log_player_movement_joined](test_log_player_movement_joined.md) (1 shared connections)
-- [test_log_player_movement_left](test_log_player_movement_left.md) (1 shared connections)
-- [test_log_player_movement_no_room](test_log_player_movement_no_room.md) (1 shared connections)
-- [test_prepare_room_data_with_to_dict](test_prepare_room_data_with_to_dict.md) (1 shared connections)
-- [test_process_player_entered_event_no_player_info](test_process_player_entered_event_no_player_info.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
+- [test_look_item.py](test_look_item.py.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

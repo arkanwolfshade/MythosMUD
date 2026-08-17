@@ -37,8 +37,37 @@ function formatOccupantsSnapshotForError(snapshot: unknown): string {
   return (
     `occupants=${snap.occupantsCount ?? '?'} ` +
     `players=${snap.playersCount ?? '?'} ` +
+    `panelNames=${JSON.stringify(snap.panelNames)} ` +
+    `panelFound=${snap.panelFound ?? '?'} ` +
     `linkdead=${snap.hasLinkdead ?? '?'}`
   );
+}
+
+async function captureOccupantsSnapshot(page: Page): Promise<unknown> {
+  return page
+    .evaluate(() => window.__mythosE2eCaptureOccupantsSnapshot?.())
+    .catch(() => ({ error: 'page closed or evaluate failed' }));
+}
+
+async function capturePresenceEvents(page: Page): Promise<unknown> {
+  return page
+    .evaluate(() => window.__mythosE2eGetPresenceEvents?.())
+    .catch(() => ({ error: 'page closed or evaluate failed' }));
+}
+
+async function throwOtherPlayersNotSeen(page: Page, player: TestPlayer, expectedNames: string[]): Promise<never> {
+  const snapshot = await captureOccupantsSnapshot(page);
+  const presenceEvents = await capturePresenceEvents(page);
+  console.error(
+    `[instrumentation] ensurePlayersInSameRoom Step 2 timeout - Player ${player.username} saw:`,
+    JSON.stringify(snapshot, null, 2),
+    '\nraw presence payloads received (server truth before projection):',
+    JSON.stringify(presenceEvents, null, 2)
+  );
+  const msg =
+    `ensurePlayersInSameRoom: Player ${player.username} does not see ${expectedNames.join(', ')} in room ` +
+    `(required for room-scoped /say) (saw: ${formatOccupantsSnapshotForError(snapshot)})`;
+  throw new Error(msg);
 }
 
 async function throwOccupantsWaitTimeout(
@@ -47,9 +76,7 @@ async function throwOccupantsWaitTimeout(
   expectedOccupants: number,
   timeoutMs: number
 ): Promise<never> {
-  const snapshot = await page
-    .evaluate(() => window.__mythosE2eCaptureOccupantsSnapshot?.())
-    .catch(() => ({ error: 'page closed or evaluate failed' }));
+  const snapshot = await captureOccupantsSnapshot(page);
   const snapshotStr = JSON.stringify(snapshot, null, 2);
   console.error(
     `[instrumentation] ensurePlayersInSameRoom Step 1 timeout - Player ${player.username} saw:`,
@@ -141,12 +168,7 @@ export async function ensurePlayersInSameRoom(
           expectedNames,
           { timeout: Math.min(20000, timeoutMs) }
         )
-        .catch(() => {
-          throw new Error(
-            `ensurePlayersInSameRoom: Player ${ctx.player.username} does not see ${expectedNames.join(', ')} in room ` +
-              `(required for room-scoped /say)`
-          );
-        });
+        .catch(() => throwOtherPlayersNotSeen(ctx.page, ctx.player, expectedNames));
     })
   );
 
@@ -299,7 +321,6 @@ async function resolveOtherCharacterName(otherContext: PlayerContext): Promise<s
 
 async function runCoLocateTeleportAttempt(
   awContext: PlayerContext,
-  otherContext: PlayerContext,
   contexts: PlayerContext[],
   otherCharName: string,
   attempt: number,
@@ -372,14 +393,13 @@ async function runCoLocateTeleportAttempt(
 
 async function retryCoLocateUntilSameRoom(
   awContext: PlayerContext,
-  otherContext: PlayerContext,
   contexts: PlayerContext[],
   otherCharName: string,
   coLocateTimeoutMs: number,
   timeoutMs: number
 ): Promise<void> {
   for (let attempt = 0; attempt < MAX_COLOCATE_ATTEMPTS; attempt++) {
-    await runCoLocateTeleportAttempt(awContext, otherContext, contexts, otherCharName, attempt, timeoutMs);
+    await runCoLocateTeleportAttempt(awContext, contexts, otherCharName, attempt, timeoutMs);
 
     try {
       await ensurePlayersInSameRoom(contexts, contexts.length, coLocateTimeoutMs);
@@ -421,7 +441,7 @@ export async function ensureMultiplayerCoLocated(
   const [awContext, otherContext] = contexts;
   const otherCharName = await resolveOtherCharacterName(otherContext);
 
-  await retryCoLocateUntilSameRoom(awContext, otherContext, contexts, otherCharName, coLocateTimeoutMs, timeoutMs);
+  await retryCoLocateUntilSameRoom(awContext, contexts, otherCharName, coLocateTimeoutMs, timeoutMs);
 
   for (const c of contexts) {
     await reopenPlayerPageIfClosed(c);

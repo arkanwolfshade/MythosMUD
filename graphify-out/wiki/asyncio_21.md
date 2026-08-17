@@ -1,46 +1,46 @@
 # asyncio
 
-> 21 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **asyncio** (26 connections)
-- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_skips_low_probability()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_optional_npcs_with_probability()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_spawn_failure()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_required_npcs_success()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() skips NPCs with low probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **One arena instance per definition_id present in required/optional spawned_npcs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Stale definition_id in spawned_npcs that is not in definitions list is ignored.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **asyncio** (12 connections)
+- **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_logging_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_no_command_type()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_unknown_command()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler successfully executes handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler handles handler errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_command successfully processes command string.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_command handles parse errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_command handles missing handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test _execute_command_handler handles handler returning non-dict.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command successfully routes to handler.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles missing command_type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles unknown command type.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles handler errors.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Test process_validated_command handles logging errors gracefully.** (1 connections) — `server/tests/unit/commands/test_command_service.py`
 
 ## Relationships
 
-- [test_npc_startup_service.py](test_npc_startup_service.py.md) (12 shared connections)
-- [NPCStartupService](NPCStartupService.md) (10 shared connections)
-- [mock_container](mock_container.md) (10 shared connections)
-- [_errors_len](_errors_len.md) (5 shared connections)
+- [test_command_service.py](test_command_service.py.md) (11 shared connections)
+- [MythosValidationError](MythosValidationError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_startup_service.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (82%)
-- INFERRED: 10 (18%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

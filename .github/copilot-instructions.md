@@ -12,3 +12,4 @@ Optional quick reminders (details live in `AGENTS.md`):
 - Tests from repo root: `make test` / `make test-comprehensive` (do not run raw `pytest` against `server/` alone).
 - One MythosMUD server at a time; use `scripts/stop_server.ps1` before `scripts/start_local.ps1`.
 - Server is authoritative over client; prefer server payloads on conflicts.
+- Python: no `typing.Any`; after edits `uv run basedpyright <files>` (see `AGENTS.md`).

@@ -1,65 +1,60 @@
 # AttributeError
 
-> 157 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **AttributeError** (45 connections)
-- **test_websocket_room_updates.py** (34 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **websocket_room_updates.py** (30 connections) — `server/realtime/websocket_room_updates.py`
-- **format_room_drop_lines()** (25 connections) — `server/utils/room_renderer.py`
-- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
-- **asyncio** (24 connections)
-- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
-- **clone_room_drops()** (18 connections) — `server/utils/room_renderer.py`
-- **test_room_renderer_functions.py** (14 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
-- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
-- **build_room_drop_summary()** (13 connections) — `server/utils/room_renderer.py`
-- **get_player_occupants()** (12 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
-- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
-- **update_player_room_subscription()** (7 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_room_updates_build_event.py** (6 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_fallback_npc_method()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_player_occupants_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **_resolve_room_with_fallback()** (4 connections) — `server/realtime/websocket_room_updates.py`
-- **test_build_room_update_event()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- *... and 132 more nodes in this community*
+- **asyncio** (14 connections)
+- **test_fetch_fresh_room_data_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_no_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_not_found()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_fetch_fresh_room_data_success()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_invalid_room_id()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_no_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_handle_stale_room_data_success()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_transition_handles_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_transition_missing_data()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_transition_success()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_invalid_data()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_stale_data()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_process_room_update_with_validation_valid_data()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Test _process_room_update_with_validation() processes valid room data.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **Test _process_room_update_with_validation() fixes invalid room data.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **Test _process_room_update_with_validation() handles stale data.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **Test _process_room_update_with_validation() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **Test _invalidate_stale_cache() handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **Test _fetch_fresh_room_data() fetches fresh room data.** (1 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (5 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [test_look_room.py](test_look_room.py.md) (4 shared connections)
-- [occupant_display.py](occupant_display.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (16 shared connections)
 - [test_auth_utils.py](test_auth_utils.py.md) (3 shared connections)
-- [websocket_initial_state.py](websocket_initial_state.py.md) (2 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
+- [test_command_processor.py](test_command_processor.py.md) (2 shared connections)
 - [test_status_commands.py](test_status_commands.py.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [test_connection_event_helpers.py](test_connection_event_helpers.py.md) (2 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
+- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (2 shared connections)
+- [.apply_combat_effects](apply_combat_effects.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_room_updates.py`
-- `server/tests/unit/realtime/test_websocket_room_updates.py`
-- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 - `server/tests/unit/services/test_room_sync_service.py`
-- `server/tests/unit/utils/test_room_renderer.py`
-- `server/tests/unit/utils/test_room_renderer_functions.py`
-- `server/utils/room_renderer.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 305 (87%)
-- INFERRED: 44 (13%)
+- EXTRACTED: 49 (53%)
+- INFERRED: 44 (47%)
 - AMBIGUOUS: 0 (0%)
 
 ---

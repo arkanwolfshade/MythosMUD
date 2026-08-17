@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- **test_websocket_handler_system_message.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
 - **test_send_system_message_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
 - **test_send_system_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
 - **test_send_system_message_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
@@ -25,8 +25,9 @@
 
 - [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (3 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -35,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

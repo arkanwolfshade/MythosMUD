@@ -32,7 +32,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
 - [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
 
 ## Source Files

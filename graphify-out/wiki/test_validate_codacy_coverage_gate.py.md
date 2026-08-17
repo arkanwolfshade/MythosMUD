@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_validate_codacy_coverage_gate.py** (9 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
+- **test_validate_codacy_coverage_gate.py** (10 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
 - **Path** (6 connections)
 - **_CodacyGateModule** (4 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
 - **_load_gate_module()** (2 connections) — `server/tests/unit/test_validate_codacy_coverage_gate.py`
@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -28,7 +28,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

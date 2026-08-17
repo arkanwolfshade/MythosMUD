@@ -1,78 +1,78 @@
 # DatabaseError
 
-> 570 nodes
+> 843 nodes
 
 ## Key Concepts
 
 - **DatabaseError** (264 connections) — `server/exceptions.py`
-- **server/exceptions.py** (244 connections) — `server/exceptions.py`
+- **Player** (231 connections) — `server/models/player.py`
 - **log_and_raise()** (196 connections) — `server/utils/error_logging.py`
+- **models/player.py** (98 connections) — `server/models/player.py`
 - **get_session_maker()** (97 connections) — `server/database.py`
-- **database.py** (80 connections) — `server/database.py`
-- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
+- **sqlalchemy.md** (89 connections) — `.claude/rules/sqlalchemy.md`
+- **server/models/__init__.py** (86 connections) — `server/models/__init__.py`
+- **database.py** (82 connections) — `server/database.py`
+- **Base** (60 connections) — `server/models/base.py`
 - **Profession** (53 connections) — `server/models/profession.py`
-- **test_async_persistence_core.py** (40 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **get_async_session()** (53 connections) — `server/database.py`
+- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **rooms.py** (40 connections) — `server/api/rooms.py`
+- **game_tick_death.py** (34 connections) — `server/app/game_tick_death.py`
 - **persistence/repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
 - **PlayerRepository** (30 connections) — `server/persistence/repositories/player_repository.py`
-- **test_profession.py** (30 connections) — `server/tests/unit/models/test_profession.py`
 - **SkillRepository** (29 connections) — `server/persistence/repositories/skill_repository.py`
-- **ExperienceRepository** (28 connections) — `server/persistence/repositories/experience_repository.py`
-- **player_repository.py** (28 connections) — `server/persistence/repositories/player_repository.py`
+- **player_repository.py** (29 connections) — `server/persistence/repositories/player_repository.py`
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
+- **test_world.py** (27 connections) — `server/tests/unit/models/test_world.py`
 - **Skill** (26 connections) — `server/models/skill.py`
+- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
 - **PlayerSkillRepository** (24 connections) — `server/persistence/repositories/player_skill_repository.py`
-- **npc_spawn_rules_api.py** (24 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **asyncio** (23 connections)
-- **connection_helpers.py** (22 connections) — `server/realtime/connection_helpers.py`
-- **skill_service.py** (21 connections) — `server/game/skill_service.py`
-- **player_spell_repository.py** (21 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **connection_manager_api.py** (21 connections) — `server/realtime/connection_manager_api.py`
-- **emote_service.py** (20 connections) — `server/game/emote_service.py`
-- **dialogue_definition_repository.py** (20 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_quest_definition_repository.py** (20 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- *... and 545 more nodes in this community*
+- *... and 818 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (126 shared connections)
-- [Player](Player.md) (88 shared connections)
-- [MythosMUDError](MythosMUDError.md) (35 shared connections)
-- [item_instance_persistence.py](item_instance_persistence.py.md) (34 shared connections)
-- [DatabaseManager](DatabaseManager.md) (34 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (34 shared connections)
-- [ValidationError](ValidationError.md) (26 shared connections)
-- [get_async_session](get_async_session.md) (26 shared connections)
-- [container_persistence/container_persistence.py](container_persistence-container_persistence.py.md) (24 shared connections)
-- [QuestInstanceRepository](QuestInstanceRepository.md) (24 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (22 shared connections)
-- [ContainerData](ContainerData.md) (21 shared connections)
+- [get_logger](get_logger.md) (204 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (99 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (51 shared connections)
+- [AliasStorage](AliasStorage.md) (38 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (29 shared connections)
+- [HealthRepository](HealthRepository.md) (24 shared connections)
+- [NPCDefinition](NPCDefinition.md) (19 shared connections)
+- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (19 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (19 shared connections)
+- [test_item.py](test_item.py.md) (19 shared connections)
+- [ConnectionManager](ConnectionManager.md) (18 shared connections)
+- [ExplorationService](ExplorationService.md) (17 shared connections)
 
 ## Source Files
 
+- `.claude/rules/sqlalchemy.md`
 - `e2e-tests/load-tests/get_invite_codes.py`
-- `scripts/populate_test_npc_databases.py`
-- `server/api/admin/npc_spawn_rules_api.py`
+- `scripts/add_flavor_text_column.py`
+- `scripts/load_seed_using_project_db.py`
+- `scripts/verify_and_load_seed.py`
+- `server/alembic/versions/2025_11_12_add_item_tables.py`
+- `server/api/rooms.py`
+- `server/app/game_tick_death.py`
 - `server/async_persistence.py`
 - `server/async_persistence_direct_queries.py`
 - `server/async_persistence_room_loader.py`
-- `server/auth/argon2_utils.py`
-- `server/auth_utils.py`
+- `server/commands/channel_commands.py`
 - `server/database.py`
 - `server/database_config_helpers.py`
 - `server/exceptions.py`
-- `server/game/emote_service.py`
-- `server/game/mechanics.py`
+- `server/game/room_service.py`
 - `server/game/skill_service.py`
-- `server/models/dialogue.py`
-- `server/models/profession.py`
-- `server/models/quest.py`
-- `server/models/skill.py`
-- `server/persistence/item_instance_persistence_async.py`
-- `server/persistence/repositories/__init__.py`
+- `server/metadata.py`
+- `server/models/__init__.py`
+- `server/models/base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1990 (89%)
-- INFERRED: 247 (11%)
+- EXTRACTED: 2557 (84%)
+- INFERRED: 504 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

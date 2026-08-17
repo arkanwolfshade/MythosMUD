@@ -1,38 +1,51 @@
 # asyncio
 
-> 15 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **test_chat_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_client_error_report_handler_logs()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_command_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_no_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_success()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_unknown_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_ping_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() successfully handles message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() sends error for unknown type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() handles message with no type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test ClientErrorReportMessageHandler logs via logger.error.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test ChatMessageHandler.handle() calls handle_chat_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **asyncio** (24 connections)
+- **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_load_player_for_catatonia_check()** (10 connections) — `server/command_handler/catatonia_check.py`
+- **TestCheckGracePeriodBlock** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_PersistenceGetPlayerByName** (5 connections) — `server/command_handler/catatonia_check.py`
+- **.test_check_catatonia_block_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_no_app_state()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_fetch_lucidity_record()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_load_player_for_catatonia_check_from_cache()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_load_player_for_catatonia_check_from_persistence()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_query_lucidity_record_success()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_casting()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_catatonia()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_all_command_blocks_no_blocks()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_handles_error()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_casting_state_no_magic_service()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [message_handler_factory.py](message_handler_factory.py.md) (11 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (26 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (13 shared connections)
+- [get_cached_player](get_cached_player.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/command_handler/catatonia_check.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (75%)
-- INFERRED: 7 (25%)
+- EXTRACTED: 141 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

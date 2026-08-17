@@ -33,10 +33,7 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [test_command_service.py](test_command_service.py.md) (1 shared connections)
 - [command_service](command_service.md) (1 shared connections)
 - [test_command_parser.py](test_command_parser.py.md) (1 shared connections)

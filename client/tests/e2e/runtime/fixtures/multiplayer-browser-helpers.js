@@ -263,12 +263,87 @@ export function hasExpectedOccupantCountInBrowser(expected) {
 }
 
 export function hasOtherPlayerNamesInBrowser(names) {
-  const bodyText = getBodyInnerText();
+  // data-names survives overflow clipping; innerText of a header-height Occupants panel does not.
+  const root = document.querySelector('[data-testid="occupants-other-players"]');
+  const listed = root?.getAttribute('data-names');
+  if (listed !== null && listed !== undefined) {
+    return names.every(name => listed.includes(name));
+  }
+  const bodyText = document.body ? (document.body.textContent ?? '') : '';
   return names.every(name => bodyText.includes(name));
 }
 
 export function isDisconnectedBannerVisibleInBrowser() {
   return !getBodyInnerText().includes('You are disconnected and cannot perform actions');
+}
+
+// Presence-event recorder. The Occupants panel is a projection, so a bare panel snapshot cannot
+// say whether the server omitted a player or the projector dropped one. Recording the raw
+// room_occupants / room_state payloads as they arrive answers both from a single failure.
+const PRESENCE_EVENT_LIMIT = 25;
+const presenceEvents = [];
+
+// Lizard counts each `?` in `??` as a decision; coalesce keeps presenceEventFrom under the CCN limit.
+function coalesce() {
+  for (let i = 0; i < arguments.length; i++) {
+    const value = arguments[i];
+    if (value !== undefined && value !== null) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function presenceEventFrom(parsed) {
+  const data = coalesce(parsed.data, {});
+  const room = coalesce(data.room, {});
+  return {
+    eventType: parsed.event_type,
+    sequence: coalesce(parsed.sequence_number),
+    roomId: coalesce(parsed.room_id, room.id),
+    players: coalesce(data.players, room.players),
+    npcs: coalesce(data.npcs, room.npcs),
+    count: coalesce(data.count, data.occupant_count, room.occupant_count),
+  };
+}
+
+function recordPresenceEvent(raw) {
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return;
+  }
+  if (!parsed || (parsed.event_type !== 'room_occupants' && parsed.event_type !== 'room_state')) {
+    return;
+  }
+  presenceEvents.push(presenceEventFrom(parsed));
+  if (presenceEvents.length > PRESENCE_EVENT_LIMIT) {
+    presenceEvents.shift();
+  }
+}
+
+export function installPresenceRecorderInBrowser() {
+  const NativeWebSocket = window.WebSocket;
+  if (!NativeWebSocket || NativeWebSocket.__mythosE2ePatched) {
+    return;
+  }
+  class RecordingWebSocket extends NativeWebSocket {
+    constructor(url, protocols) {
+      super(url, protocols);
+      this.addEventListener('message', event => {
+        if (typeof event.data === 'string') {
+          recordPresenceEvent(event.data);
+        }
+      });
+    }
+  }
+  RecordingWebSocket.__mythosE2ePatched = true;
+  window.WebSocket = RecordingWebSocket;
+}
+
+export function getPresenceEventsInBrowser() {
+  return presenceEvents.slice();
 }
 
 export function captureOccupantsSnapshotInBrowser() {
@@ -277,12 +352,18 @@ export function captureOccupantsSnapshotInBrowser() {
   const playersMatch = bodyText.match(/Players\s*\((\d+)\)/);
   const occupantLine = bodyText.split('\n').find(line => line.includes('Occupants') || line.includes('Players ('));
   const occupantsSection = occupantLine !== undefined ? occupantLine.slice(0, 200) : undefined;
+  // The header count is players + NPCs, while data-names is players only. Report both so a
+  // failure distinguishes "no presence update arrived" from "count and player list disagree".
+  const panel = document.querySelector('[data-testid="occupants-other-players"]');
+  const panelNames = panel?.getAttribute('data-names');
   return {
     hasOccupantsMatch: !!occupantsMatch,
     occupantsCount: occupantsMatch ? parseInt(occupantsMatch[1], 10) : null,
     hasPlayersMatch: !!playersMatch,
     playersCount: playersMatch ? parseInt(playersMatch[1], 10) : null,
     occupantsSnippet: occupantsSection ?? 'not found',
+    panelFound: panel !== null,
+    panelNames: panelNames ?? null,
     hasLinkdead: bodyText.includes('(linkdead)'),
   };
 }

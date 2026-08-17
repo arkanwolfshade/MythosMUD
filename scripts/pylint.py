@@ -29,8 +29,12 @@ from utils.safe_subprocess import safe_run_static
 
 class _CompletedProcessLike(Protocol):
     returncode: int
-    stdout: str | None
-    stderr: str | None
+
+    @property
+    def stdout(self) -> str | None: ...
+
+    @property
+    def stderr(self) -> str | None: ...
 
 
 _INSTALL_HINT = "Install with: uv sync --extra dev  (or: uv sync --group dev / uv pip install 'pylint>=4.0.4')"
@@ -85,6 +89,30 @@ def is_pylint_startup_failure(result: _CompletedProcessLike) -> bool:
     return False
 
 
+def _write_pylint_output(result: _CompletedProcessLike, output_file: Path) -> None:
+    with output_file.open("w", encoding="utf-8") as f:
+        if result.stdout:
+            _ = f.write(result.stdout)
+        if result.stderr:
+            if result.stdout:
+                _ = f.write("\n--- STDERR ---\n")
+            _ = f.write(result.stderr)
+
+
+def _report_pylint_failure(result: _CompletedProcessLike, output_file: Path, *, startup: bool) -> int:
+    if startup:
+        print("[ERROR] pylint failed to start; failing fast so Make does not continue.")
+        print(_INSTALL_HINT)
+    else:
+        print("[ERROR] Pylint found code quality issues:")
+    if result.stdout:
+        print(result.stdout)
+    if result.stderr:
+        print("Errors:", result.stderr)
+    print(f"\nFull output saved to: {output_file}")
+    return 1
+
+
 def main() -> int:
     pylint_cmd = _resolve_pylint_cmd()
     _require_pylint_runnable(pylint_cmd)
@@ -105,9 +133,12 @@ def main() -> int:
         # Re-apply disables from .pylintrc after --enable so they are not re-enabled by --enable=E,W,F,C,R.
         # Complexity (R0911-R0915, R0902, R0903, R0904) is handled by ruff C901; see .pylintrc and
         # docs/LINTING_COMPLEXITY_ALIGNMENT.md.
-        "--disable=line-too-long,import-outside-toplevel,too-many-arguments,too-many-positional-arguments,"
-        "too-many-locals,too-many-statements,too-many-return-statements,too-many-branches,"
-        "too-many-instance-attributes,too-many-public-methods,too-few-public-methods",
+        (
+            "--disable=line-too-long,import-outside-toplevel,too-many-arguments,"
+            + "too-many-positional-arguments,too-many-locals,too-many-statements,"
+            + "too-many-return-statements,too-many-branches,too-many-instance-attributes,"
+            + "too-many-public-methods,too-few-public-methods"
+        ),
         "--output-format=text",
         "--rcfile=.pylintrc",  # Use project pylintrc
     ]
@@ -120,23 +151,10 @@ def main() -> int:
         return 1
 
     output_file = Path("pylint_output.txt")
-    with output_file.open("w", encoding="utf-8") as f:
-        if result.stdout:
-            f.write(result.stdout)
-        if result.stderr:
-            if result.stdout:
-                f.write("\n--- STDERR ---\n")
-            f.write(result.stderr)
+    _write_pylint_output(result, output_file)
 
     if is_pylint_startup_failure(result):
-        print("[ERROR] pylint failed to start; failing fast so Make does not continue.")
-        print(_INSTALL_HINT)
-        if result.stdout:
-            print(result.stdout)
-        if result.stderr:
-            print("Errors:", result.stderr)
-        print(f"\nFull output saved to: {output_file}")
-        return 1
+        return _report_pylint_failure(result, output_file, startup=True)
 
     if result.returncode == 0:
         print("[OK] Pylint scan completed successfully!")
@@ -145,19 +163,8 @@ def main() -> int:
         print("\n[SUCCESS] Pylint checks completed!")
         return 0
 
-    print("[WARNING] Pylint found code quality issues:")
-    if result.stdout:
-        print(result.stdout)
-    if result.stderr:
-        print("Errors:", result.stderr)
-    print(f"\nFull output saved to: {output_file}")
-    # Pylint returns non-zero even for warnings; findings alone do not fail the target.
-    # Fatal message issued (bit 1) still hard-fails.
-    if (result.returncode & 1) != 0:
-        print("[ERROR] pylint reported fatal issues (bit 1); failing fast.")
-        return 1
-    print("\n[SUCCESS] Pylint checks completed!")
-    return 0
+    # Any pylint finding (E/W/F/C/R) fails make pylint / make all.
+    return _report_pylint_failure(result, output_file, startup=False)
 
 
 if __name__ == "__main__":

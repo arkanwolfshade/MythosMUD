@@ -1,7 +1,13 @@
 """Unit tests for combat_service_start, combat_service_end, and combat_service_events."""
 
+# pyright: reportPrivateUsage=false
+# Reason: this module unit-tests CombatDPSync protected methods and melee helper functions.
+
+from __future__ import annotations
+
 import asyncio
 import uuid
+from collections.abc import Coroutine
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -49,13 +55,18 @@ def _combat_instance() -> CombatInstance:
     return combat
 
 
+def _create_task(coro: Coroutine[None, None, None]) -> asyncio.Task[None]:
+    return asyncio.ensure_future(coro)
+
+
 @pytest.mark.asyncio
 async def test_validate_combat_can_start_raises_when_in_combat() -> None:
     """Cannot start combat when either participant is already fighting."""
-    service = MagicMock()
+    get_combat_by_participant: AsyncMock = AsyncMock(side_effect=[MagicMock(), None])
+    service: MagicMock = MagicMock()
+    service.get_combat_by_participant = get_combat_by_participant
     attacker = _participant("Attacker")
     target = _participant("Target")
-    service.get_combat_by_participant = AsyncMock(side_effect=[MagicMock(), None])
 
     with pytest.raises(ValueError, match="already in combat"):
         await combat_service_start.validate_combat_can_start(service, attacker, target)
@@ -64,44 +75,48 @@ async def test_validate_combat_can_start_raises_when_in_combat() -> None:
 @pytest.mark.asyncio
 async def test_validate_combat_can_start_ok() -> None:
     """Validation passes when neither participant is in combat."""
-    service = MagicMock()
-    service.get_combat_by_participant = AsyncMock(return_value=None)
+    get_combat_by_participant: AsyncMock = AsyncMock(return_value=None)
+    service: MagicMock = MagicMock()
+    service.get_combat_by_participant = get_combat_by_participant
     await combat_service_start.validate_combat_can_start(service, _participant(), _participant("Target"))
 
 
 @pytest.mark.asyncio
 async def test_register_combat_delegates_to_service() -> None:
     """register_combat forwards to register_combat_state."""
-    service = MagicMock()
-    service.register_combat_state = AsyncMock()
+    register_combat_state: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.register_combat_state = register_combat_state
     combat = _combat_instance()
     attacker = _participant()
     await combat_service_start.register_combat(service, combat, attacker, "room_001")
-    service.register_combat_state.assert_awaited_once_with(combat, attacker.participant_id, attacker.name, "room_001")
+    register_combat_state.assert_awaited_once_with(combat, attacker.participant_id, attacker.name, "room_001")
 
 
 @pytest.mark.asyncio
 async def test_publish_combat_started_event_success() -> None:
     """Combat started event is built and published."""
-    service = MagicMock()
-    service.publish_combat_started_event = AsyncMock()
+    publish_combat_started_event: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.publish_combat_started_event = publish_combat_started_event
     combat = _combat_instance()
     await combat_service_start.publish_combat_started_event(service, combat, "room_001")
-    service.publish_combat_started_event.assert_awaited_once()
+    publish_combat_started_event.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_publish_combat_started_event_handles_errors() -> None:
     """Publish errors are logged, not raised."""
-    service = MagicMock()
-    service.publish_combat_started_event = AsyncMock(side_effect=RuntimeError("nats down"))
+    publish_combat_started_event: AsyncMock = AsyncMock(side_effect=RuntimeError("nats down"))
+    service: MagicMock = MagicMock()
+    service.publish_combat_started_event = publish_combat_started_event
     await combat_service_start.publish_combat_started_event(service, _combat_instance(), "room_001")
 
 
 @pytest.mark.asyncio
 async def test_check_target_rest_skips_non_player() -> None:
     """NPC targets skip rest/grace checks."""
-    service = MagicMock()
+    service: MagicMock = MagicMock()
     target = _participant("NPC", CombatParticipantType.NPC)
     await combat_service_start.check_target_rest_and_grace_period(service, target, _participant())
 
@@ -111,7 +126,7 @@ async def test_apply_target_rest_grace_raises_on_grace_period() -> None:
     """Target in login grace period blocks combat."""
     target = _participant("Target")
     attacker = _participant("Attacker")
-    connection_manager = MagicMock()
+    connection_manager: MagicMock = MagicMock()
     with (
         patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=True),
         patch("server.services.combat_service_start.is_player_resting", return_value=False),
@@ -126,7 +141,7 @@ async def test_apply_target_rest_grace_raises_on_grace_period() -> None:
 async def test_apply_target_rest_cancels_rest() -> None:
     """Resting target has rest countdown cancelled."""
     target = _participant("Target")
-    connection_manager = MagicMock()
+    connection_manager: MagicMock = MagicMock()
     with (
         patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=False),
         patch("server.services.combat_service_start.is_player_resting", return_value=True),
@@ -142,13 +157,18 @@ async def test_apply_target_rest_cancels_rest() -> None:
 async def test_check_attacker_grace_period_raises() -> None:
     """Attacker in grace period cannot initiate combat."""
     attacker = _participant("Attacker")
-    mock_app = MagicMock()
-    mock_app.state.connection_manager = MagicMock()
+    connection_manager: MagicMock = MagicMock()
+    state: MagicMock = MagicMock()
+    state.connection_manager = connection_manager
+    mock_app: MagicMock = MagicMock()
+    mock_app.state = state
+    config: MagicMock = MagicMock()
+    config._app_instance = mock_app
     with (
         patch("server.services.combat_service_start.get_config") as mock_config,
         patch("server.services.combat_service_start.is_player_in_login_grace_period", return_value=True),
     ):
-        mock_config.return_value._app_instance = mock_app
+        mock_config.return_value = config
         with pytest.raises(ValueError, match="cannot initiate combat"):
             await combat_service_start.check_attacker_grace_period(MagicMock(), attacker, _participant("Target"))
 
@@ -156,51 +176,61 @@ async def test_check_attacker_grace_period_raises() -> None:
 @pytest.mark.asyncio
 async def test_end_combat_missing_combat_returns_early() -> None:
     """Ending unknown combat is a no-op."""
-    service = MagicMock()
-    service.get_combat = MagicMock(return_value=None)
+    get_combat: MagicMock = MagicMock(return_value=None)
+    cleanup_combat_tracking: MagicMock = MagicMock()
+    service: MagicMock = MagicMock()
+    service.get_combat = get_combat
+    service.cleanup_combat_tracking = cleanup_combat_tracking
     await combat_service_end.end_combat(service, uuid.uuid4())
-    service.cleanup_combat_tracking.assert_not_called()
+    cleanup_combat_tracking.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_end_combat_full_flow() -> None:
     """End combat clears aggro, updates status, and publishes event."""
-    service = MagicMock()
     combat = _combat_instance()
-    service.get_combat = MagicMock(return_value=combat)
-    service.cleanup_combat_tracking = MagicMock()
-    service.notify_player_combat_ended = AsyncMock()
-    service.check_connection_state = MagicMock()
-    service.publish_combat_ended_event = AsyncMock()
+    get_combat: MagicMock = MagicMock(return_value=combat)
+    cleanup_combat_tracking: MagicMock = MagicMock()
+    notify_player_combat_ended: AsyncMock = AsyncMock()
+    check_connection_state: MagicMock = MagicMock()
+    publish_combat_ended_event: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.get_combat = get_combat
+    service.cleanup_combat_tracking = cleanup_combat_tracking
+    service.notify_player_combat_ended = notify_player_combat_ended
+    service.check_connection_state = check_connection_state
+    service.publish_combat_ended_event = publish_combat_ended_event
 
     with patch("server.services.combat_service_end.clear_aggro_for_combat") as mock_clear:
         await combat_service_end.end_combat(service, combat.combat_id, reason="Victory")
 
     mock_clear.assert_called_once_with(combat)
     assert combat.status == CombatStatus.ENDED
-    service.cleanup_combat_tracking.assert_called_once_with(combat)
-    service.notify_player_combat_ended.assert_awaited_once_with(combat.combat_id)
-    service.publish_combat_ended_event.assert_awaited_once()
+    cleanup_combat_tracking.assert_called_once_with(combat)
+    notify_player_combat_ended.assert_awaited_once_with(combat.combat_id)
+    publish_combat_ended_event.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_publish_npc_damage_event_success() -> None:
     """NPC damage event delegates to service NATS publisher."""
-    service = MagicMock()
-    service.publish_npc_took_damage_event_to_nats = AsyncMock(return_value=True)
+    publish_npc_took_damage_event_to_nats: AsyncMock = AsyncMock(return_value=True)
+    service: MagicMock = MagicMock()
+    service.publish_npc_took_damage_event_to_nats = publish_npc_took_damage_event_to_nats
     npc_id = uuid.uuid4()
     result = await combat_service_events.publish_npc_damage_event(
         service, "room_001", npc_id, "Deep One", 5, 15, 20, combat_id=uuid.uuid4()
     )
     assert result is True
-    service.publish_npc_took_damage_event_to_nats.assert_awaited_once()
+    publish_npc_took_damage_event_to_nats.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_publish_npc_damage_event_handles_errors() -> None:
     """NPC damage publish errors return False."""
-    service = MagicMock()
-    service.publish_npc_took_damage_event_to_nats = AsyncMock(side_effect=RuntimeError("fail"))
+    publish_npc_took_damage_event_to_nats: AsyncMock = AsyncMock(side_effect=RuntimeError("fail"))
+    service: MagicMock = MagicMock()
+    service.publish_npc_took_damage_event_to_nats = publish_npc_took_damage_event_to_nats
     result = await combat_service_events.publish_npc_damage_event(
         service, "room_001", uuid.uuid4(), "Deep One", 5, 15, 20
     )
@@ -210,8 +240,9 @@ async def test_publish_npc_damage_event_handles_errors() -> None:
 @pytest.mark.asyncio
 async def test_publish_npc_died_event_success() -> None:
     """NPC died event delegates to service NATS publisher."""
-    service = MagicMock()
-    service.publish_npc_died_event_to_nats = AsyncMock(return_value=True)
+    publish_npc_died_event_to_nats: AsyncMock = AsyncMock(return_value=True)
+    service: MagicMock = MagicMock()
+    service.publish_npc_died_event_to_nats = publish_npc_died_event_to_nats
     result = await combat_service_events.publish_npc_died_event(
         service, "room_001", uuid.uuid4(), "Deep One", xp_reward=10, killer_id="player-1"
     )
@@ -221,33 +252,36 @@ async def test_publish_npc_died_event_success() -> None:
 @pytest.mark.asyncio
 async def test_broadcast_aggro_target_switches_noop_cases() -> None:
     """Empty switches or missing NPC service skips broadcast."""
-    service = MagicMock()
-    service.get_npc_combat_integration_service.return_value = None
+    get_npc_combat_integration_service: MagicMock = MagicMock(return_value=None)
+    service: MagicMock = MagicMock()
+    service.get_npc_combat_integration_service = get_npc_combat_integration_service
     await combat_service_events.broadcast_aggro_target_switches(service, "room_001", uuid.uuid4(), [])
-    service.get_npc_combat_integration_service.assert_not_called()
+    get_npc_combat_integration_service.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_broadcast_aggro_target_switches_sends_messages() -> None:
     """Each switch triggers a combat target switch broadcast."""
-    service = MagicMock()
+    broadcast_combat_target_switch: AsyncMock = AsyncMock()
+    mi: MagicMock = MagicMock()
+    mi.broadcast_combat_target_switch = broadcast_combat_target_switch
+    get_messaging_integration: MagicMock = MagicMock(return_value=mi)
+    npc_svc: MagicMock = MagicMock()
+    npc_svc.get_messaging_integration = get_messaging_integration
+    get_npc_combat_integration_service: MagicMock = MagicMock(return_value=npc_svc)
+    service: MagicMock = MagicMock()
+    service.get_npc_combat_integration_service = get_npc_combat_integration_service
     npc_id = uuid.uuid4()
-    mi = MagicMock()
-    mi.broadcast_combat_target_switch = AsyncMock()
-    npc_svc = MagicMock()
-    npc_svc.get_messaging_integration.return_value = mi
-    service.get_npc_combat_integration_service.return_value = npc_svc
 
     switches = [(npc_id, "Horror", "Investigator")]
     await combat_service_events.broadcast_aggro_target_switches(service, "room_001", uuid.uuid4(), switches)
-    mi.broadcast_combat_target_switch.assert_awaited_once()
+    broadcast_combat_target_switch.assert_awaited_once()
 
 
-# --- CombatDPSync ---
-
-
-def _dp_sync(**combat_attrs: object) -> CombatDPSync:
-    combat_service = MagicMock(**combat_attrs)
+def _dp_sync(**combat_attrs: AsyncMock | MagicMock | None) -> CombatDPSync:
+    combat_service: MagicMock = MagicMock()
+    for name, value in combat_attrs.items():
+        setattr(combat_service, name, value)
     return CombatDPSync(combat_service)
 
 
@@ -260,8 +294,9 @@ def test_combat_dp_sync_get_persistence_missing() -> None:
 @pytest.mark.asyncio
 async def test_combat_dp_sync_update_and_save_player_not_found() -> None:
     sync = _dp_sync()
-    persistence = AsyncMock()
-    persistence.get_player_by_id = AsyncMock(return_value=None)
+    get_player_by_id: AsyncMock = AsyncMock(return_value=None)
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_id = get_player_by_id
     result = await sync._update_and_save_player_dp(persistence, uuid.uuid4(), 5)
     assert result is None
 
@@ -269,14 +304,17 @@ async def test_combat_dp_sync_update_and_save_player_not_found() -> None:
 @pytest.mark.asyncio
 async def test_combat_dp_sync_update_and_save_success() -> None:
     sync = _dp_sync()
-    player = MagicMock(name="Investigator")
-    player.apply_dp_change.return_value = (10, False, False)
-    persistence = AsyncMock()
-    persistence.get_player_by_id = AsyncMock(return_value=player)
-    persistence.save_player = AsyncMock()
+    apply_dp_change: MagicMock = MagicMock(return_value=(10, False, False))
+    player: MagicMock = MagicMock(name="Investigator")
+    player.apply_dp_change = apply_dp_change
+    save_player: AsyncMock = AsyncMock()
+    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_id = get_player_by_id
+    persistence.save_player = save_player
     result = await sync._update_and_save_player_dp(persistence, uuid.uuid4(), 8)
     assert result is not None
-    persistence.save_player.assert_awaited_once()
+    save_player.assert_awaited_once()
 
 
 def test_combat_dp_sync_log_death_threshold() -> None:
@@ -296,82 +334,106 @@ async def test_combat_dp_sync_persist_player_dp_sync_no_persistence() -> None:
 @pytest.mark.asyncio
 async def test_combat_dp_sync_publish_player_dp_update_event() -> None:
     sync = _dp_sync(_nats_service=None)
+    publish: MagicMock = MagicMock()
+    bus: MagicMock = MagicMock()
+    bus.publish = publish
     with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value.publish = MagicMock()
+        bus_cls.return_value = bus
         await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20, room_id="room-a")
-        bus_cls.return_value.publish.assert_called_once()
+        publish.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_publish_correction_event() -> None:
     sync = _dp_sync()
+    publish: MagicMock = MagicMock()
+    bus: MagicMock = MagicMock()
+    bus.publish = publish
     with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value.publish = MagicMock()
+        bus_cls.return_value = bus
         await sync._publish_player_dp_correction_event(uuid.uuid4(), 10, 20, error_message="db fail")
-        bus_cls.return_value.publish.assert_called_once()
+        publish.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_verify_player_save_mismatch() -> None:
     sync = _dp_sync()
-    persistence = AsyncMock()
-    player = MagicMock()
-    player.get_stats.return_value = {"current_dp": 99}
-    persistence.get_player_by_id = AsyncMock(return_value=player)
+    get_stats: MagicMock = MagicMock(return_value={"current_dp": 99})
+    player: MagicMock = MagicMock()
+    player.get_stats = get_stats
+    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_id = get_player_by_id
     await sync._verify_player_save(persistence, uuid.uuid4(), "Investigator", 10, 8)
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_persist_player_dp_sync_success() -> None:
     sync = _dp_sync()
-    player = MagicMock(name="Investigator")
-    player.apply_dp_change.return_value = (10, True, False)
-    persistence = AsyncMock()
-    persistence.get_player_by_id = AsyncMock(return_value=player)
-    persistence.save_player = AsyncMock()
+    apply_dp_change: MagicMock = MagicMock(return_value=(10, True, False))
+    player: MagicMock = MagicMock(name="Investigator")
+    player.apply_dp_change = apply_dp_change
+    save_player: AsyncMock = AsyncMock()
+    get_player_by_id: AsyncMock = AsyncMock(return_value=player)
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_id = get_player_by_id
+    persistence.save_player = save_player
     with patch.object(sync, "_get_persistence", return_value=persistence):
         await sync._persist_player_dp_sync(uuid.uuid4(), 5)
-    persistence.save_player.assert_awaited_once()
+    save_player.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_persist_player_dp_sync_database_error() -> None:
     sync = _dp_sync()
-    persistence = AsyncMock()
-    persistence.get_player_by_id = AsyncMock(side_effect=DatabaseError("db down"))
+    get_player_by_id: AsyncMock = AsyncMock(side_effect=DatabaseError("db down"))
+    persistence: AsyncMock = AsyncMock()
+    persistence.get_player_by_id = get_player_by_id
     with patch.object(sync, "_get_persistence", return_value=persistence):
         await sync._persist_player_dp_sync(uuid.uuid4(), 5)
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_publish_with_nats_legacy_subject() -> None:
-    nats_service = AsyncMock()
+    publish: AsyncMock = AsyncMock()
+    nats_service: AsyncMock = AsyncMock()
+    nats_service.publish = publish
     sync = _dp_sync(_nats_service=nats_service, _combat_event_publisher=None)
+    bus_publish: MagicMock = MagicMock()
+    bus: MagicMock = MagicMock()
+    bus.publish = bus_publish
     with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value.publish = MagicMock()
+        bus_cls.return_value = bus
         await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20)
-    nats_service.publish.assert_awaited_once()
+    publish.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_publish_with_nats_subject_manager() -> None:
-    nats_service = AsyncMock()
-    subject_manager = MagicMock()
-    subject_manager.build_subject.return_value = "combat.dp_update.player-1"
-    publisher = MagicMock(subject_manager=subject_manager)
+    publish: AsyncMock = AsyncMock()
+    nats_service: AsyncMock = AsyncMock()
+    nats_service.publish = publish
+    build_subject: MagicMock = MagicMock(return_value="combat.dp_update.player-1")
+    subject_manager: MagicMock = MagicMock()
+    subject_manager.build_subject = build_subject
+    publisher: MagicMock = MagicMock(subject_manager=subject_manager)
     sync = _dp_sync(_nats_service=nats_service, _combat_event_publisher=publisher)
+    bus_publish: MagicMock = MagicMock()
+    bus: MagicMock = MagicMock()
+    bus.publish = bus_publish
     with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value.publish = MagicMock()
+        bus_cls.return_value = bus
         await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20)
-    nats_service.publish.assert_awaited_once()
+    publish.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_combat_dp_sync_persist_background_runs_task() -> None:
     sync = _dp_sync()
     player_id = uuid.uuid4()
-    with patch.object(sync, "_persist_player_dp_sync", AsyncMock()) as persist:
-        with patch("asyncio.create_task", new=lambda coro: asyncio.ensure_future(coro)):
+    persist: AsyncMock = AsyncMock()
+    with patch.object(sync, "_persist_player_dp_sync", persist):
+        with patch("asyncio.create_task", new=_create_task):
             sync._persist_player_dp_background(player_id, 8, 10, 20, room_id="room-a")
             await asyncio.sleep(0)
     persist.assert_awaited_once_with(player_id, 8)
@@ -390,15 +452,13 @@ async def test_combat_dp_sync_persist_background_persistence_failure_sends_corre
     async def fail_persist(_player_id: uuid.UUID, _dp: int) -> None:
         raise DatabaseError("write failed")
 
+    correction: AsyncMock = AsyncMock()
     with patch.object(sync, "_persist_player_dp_sync", fail_persist):
-        with patch.object(sync, "_publish_player_dp_correction_event", AsyncMock()) as correction:
-            with patch("asyncio.create_task", new=lambda coro: asyncio.ensure_future(coro)):
+        with patch.object(sync, "_publish_player_dp_correction_event", correction):
+            with patch("asyncio.create_task", new=_create_task):
                 sync._persist_player_dp_background(uuid.uuid4(), 8, 10, 20, room_id="room-a")
                 await asyncio.sleep(0)
             correction.assert_awaited_once()
-
-
-# --- combat_service_attack ---
 
 
 def _attack_participant(
@@ -417,26 +477,28 @@ def _attack_participant(
 
 @pytest.mark.asyncio
 async def test_handle_combat_completion_ends_combat() -> None:
-    service = MagicMock()
-    service.end_combat = AsyncMock()
+    end_combat: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.end_combat = end_combat
     combat = _combat_instance()
     await combat_service_attack.handle_combat_completion(service, combat, True)
-    service.end_combat.assert_awaited_once()
+    end_combat.assert_awaited_once()
 
 
 @pytest.mark.asyncio
 async def test_handle_combat_completion_end_error_swallowed() -> None:
-    service = MagicMock()
-    service.end_combat = AsyncMock(side_effect=NATSError("down"))
+    end_combat: AsyncMock = AsyncMock(side_effect=NATSError("down"))
+    service: MagicMock = MagicMock()
+    service.end_combat = end_combat
     await combat_service_attack.handle_combat_completion(service, _combat_instance(), True)
 
 
 @pytest.mark.asyncio
 async def test_handle_combat_completion_schedules_next_turn() -> None:
-    service = MagicMock()
+    service: MagicMock = MagicMock()
     combat = _combat_instance()
     combat.turn_interval_ticks = 3
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=10):
+    with patch("server.services.combat_service_attack.get_current_tick", return_value=10):
         await combat_service_attack.handle_combat_completion(service, combat, False)
     assert combat.next_turn_tick == 13
 
@@ -445,14 +507,16 @@ async def test_handle_combat_completion_schedules_next_turn() -> None:
 async def test_queue_combat_action_success_and_failures() -> None:
     combat = _combat_instance()
     pid = next(iter(combat.participants))
-    service = MagicMock()
-    service.get_combat = MagicMock(return_value=combat)
+    get_combat: MagicMock = MagicMock(return_value=combat)
+    service: MagicMock = MagicMock()
+    service.get_combat = get_combat
     assert await combat_service_attack.queue_combat_action(service, combat.combat_id, pid, "attack") is True
 
-    service.get_combat = MagicMock(return_value=None)
+    get_combat_none: MagicMock = MagicMock(return_value=None)
+    service.get_combat = get_combat_none
     assert await combat_service_attack.queue_combat_action(service, combat.combat_id, pid, "attack") is False
 
-    service.get_combat = MagicMock(return_value=combat)
+    service.get_combat = get_combat
     assert await combat_service_attack.queue_combat_action(service, combat.combat_id, uuid.uuid4(), "attack") is False
 
 
@@ -477,8 +541,9 @@ async def test_validate_melee_location_paths() -> None:
         room_id="room_a",
         participants={attacker.participant_id: attacker, target.participant_id: target},
     )
-    service = MagicMock()
-    service.get_participant_current_room = AsyncMock(side_effect=["room_a", "room_a"])
+    get_participant_current_room: AsyncMock = AsyncMock(side_effect=["room_a", "room_a"])
+    service: MagicMock = MagicMock()
+    service.get_participant_current_room = get_participant_current_room
     ok, reason = await combat_service_attack.validate_melee_location(service, combat, attacker, target)
     assert ok is True
     assert reason is None
@@ -495,9 +560,11 @@ async def test_validate_melee_location_paths() -> None:
 
 @pytest.mark.asyncio
 async def test_validate_melee_or_end_combat_ends() -> None:
-    service = MagicMock()
-    service.validate_melee_location = AsyncMock(return_value=(False, "bad rooms"))
-    service.end_combat = AsyncMock()
+    validate_melee_location: AsyncMock = AsyncMock(return_value=(False, "bad rooms"))
+    end_combat: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.validate_melee_location = validate_melee_location
+    service.end_combat = end_combat
     attacker = _attack_participant()
     target = _attack_participant("T")
     combat = _combat_instance()
@@ -510,9 +577,11 @@ async def test_validate_melee_or_end_combat_ends() -> None:
 
 @pytest.mark.asyncio
 async def test_apply_damage_and_check_involuntary_flee() -> None:
-    service = MagicMock()
-    service.apply_attack_damage = AsyncMock(return_value=(8, False, False))
-    service.check_involuntary_flee = AsyncMock(return_value=False)
+    apply_attack_damage: AsyncMock = AsyncMock(return_value=(8, False, False))
+    check_involuntary_flee: AsyncMock = AsyncMock(return_value=False)
+    service: MagicMock = MagicMock()
+    service.apply_attack_damage = apply_attack_damage
+    service.check_involuntary_flee = check_involuntary_flee
     attacker = _attack_participant()
     npc = _attack_participant("Mob", CombatParticipantType.NPC)
     combat = _combat_instance()
@@ -522,8 +591,10 @@ async def test_apply_damage_and_check_involuntary_flee() -> None:
     assert died is False and mw is False and early is None
 
     player = _attack_participant("Player")
-    service.check_involuntary_flee = AsyncMock(return_value=True)
-    service.end_combat = AsyncMock()
+    check_involuntary_flee_true: AsyncMock = AsyncMock(return_value=True)
+    end_combat: AsyncMock = AsyncMock()
+    service.check_involuntary_flee = check_involuntary_flee_true
+    service.end_combat = end_combat
     died, mw, early = await combat_service_attack.apply_damage_and_check_involuntary_flee(
         service, combat, attacker, player, 5
     )
@@ -533,7 +604,15 @@ async def test_apply_damage_and_check_involuntary_flee() -> None:
 
 @pytest.mark.asyncio
 async def test_finalize_attack_result_and_process_attack() -> None:
-    service = MagicMock()
+    handle_target_state_changes: AsyncMock = AsyncMock()
+    handle_attack_events_and_xp: AsyncMock = AsyncMock(return_value=0)
+    award_xp_to_player: AsyncMock = AsyncMock()
+    handle_combat_completion: AsyncMock = AsyncMock()
+    service: MagicMock = MagicMock()
+    service.handle_target_state_changes = handle_target_state_changes
+    service.handle_attack_events_and_xp = handle_attack_events_and_xp
+    service.award_xp_to_player = award_xp_to_player
+    service.handle_combat_completion = handle_combat_completion
     attacker = _attack_participant()
     target = _attack_participant("Mob", CombatParticipantType.NPC)
     combat = CombatInstance(
@@ -541,11 +620,8 @@ async def test_finalize_attack_result_and_process_attack() -> None:
         room_id="room_a",
         participants={attacker.participant_id: attacker, target.participant_id: target},
     )
-    combat.is_combat_over = MagicMock(return_value=False)
-    service.handle_target_state_changes = AsyncMock()
-    service.handle_attack_events_and_xp = AsyncMock(return_value=0)
-    service.award_xp_to_player = AsyncMock()
-    service.handle_combat_completion = AsyncMock()
+    is_combat_over: MagicMock = MagicMock(return_value=False)
+    combat.is_combat_over = is_combat_over
     with patch("server.services.combat_service_attack.add_damage_threat") as threat:
         result = await combat_service_attack.finalize_attack_result(
             service, combat, attacker, target, 4, False, False, target.participant_id
@@ -554,15 +630,20 @@ async def test_finalize_attack_result_and_process_attack() -> None:
     assert result.success is True
     assert result.damage == 4
 
-    service.validate_and_get_combat_participants = AsyncMock(return_value=(combat, attacker, target))
-    service.validate_melee_or_end_combat = AsyncMock(return_value=None)
-    service.apply_damage_and_check_involuntary_flee = AsyncMock(return_value=(False, False, None))
-    service.finalize_attack_result = AsyncMock(return_value=result)
+    validate_and_get_combat_participants: AsyncMock = AsyncMock(return_value=(combat, attacker, target))
+    validate_melee_or_end_combat: AsyncMock = AsyncMock(return_value=None)
+    apply_damage_and_check_involuntary_flee: AsyncMock = AsyncMock(return_value=(False, False, None))
+    finalize_attack_result: AsyncMock = AsyncMock(return_value=result)
+    service.validate_and_get_combat_participants = validate_and_get_combat_participants
+    service.validate_melee_or_end_combat = validate_melee_or_end_combat
+    service.apply_damage_and_check_involuntary_flee = apply_damage_and_check_involuntary_flee
+    service.finalize_attack_result = finalize_attack_result
     out = await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4)
     assert out is result
 
-    early = MagicMock()
-    service.validate_melee_or_end_combat = AsyncMock(return_value=early)
+    early: MagicMock = MagicMock()
+    validate_melee_early: AsyncMock = AsyncMock(return_value=early)
+    service.validate_melee_or_end_combat = validate_melee_early
     assert (
         await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4) is early
     )

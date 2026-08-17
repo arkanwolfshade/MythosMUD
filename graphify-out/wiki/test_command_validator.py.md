@@ -1,16 +1,14 @@
 # test_command_validator.py
 
-> 118 nodes
+> 114 nodes
 
 ## Key Concepts
 
 - **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **CommandValidator** (40 connections) — `server/validators/command_validator.py`
 - **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
-- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
 - **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
 - **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
-- **server/validators/__init__.py** (9 connections) — `server/validators/__init__.py`
 - **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
 - **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
 - **normalize_command()** (8 connections) — `server/validators/command_validator.py`
@@ -29,25 +27,27 @@
 - **test_command_validator_is_valid_command_name_invalid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_sanitize_for_logging()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_sanitize_for_logging_removes_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 93 more nodes in this community*
+- **test_command_validator_sanitize_for_logging_truncates()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 89 more nodes in this community*
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (13 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (6 shared connections)
-- [test_command_processing.py](test_command_processing.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (10 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (7 shared connections)
+- [test_command_processing.py](test_command_processing.py.md) (4 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (2 shared connections)
+- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/__init__.py`
 - `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 191 (88%)
-- INFERRED: 26 (12%)
+- EXTRACTED: 181 (87%)
+- INFERRED: 26 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

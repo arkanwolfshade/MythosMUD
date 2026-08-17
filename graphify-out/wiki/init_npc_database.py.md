@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **init_npc_database.py** (8 connections) — `scripts/init_npc_database.py`
+- **init_npc_database.py** (9 connections) — `scripts/init_npc_database.py`
 - **init_database_schema()** (5 connections) — `scripts/init_npc_database.py`
 - **_initialize_database_with_url()** (5 connections) — `scripts/init_npc_database.py`
 - **main()** (5 connections) — `scripts/init_npc_database.py`
@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
@@ -33,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

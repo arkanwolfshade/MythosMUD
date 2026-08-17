@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **zone** (4 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 

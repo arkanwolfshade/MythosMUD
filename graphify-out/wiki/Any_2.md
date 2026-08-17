@@ -1,33 +1,37 @@
 # Any
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.execute()** (4 connections) — `server/postgres_adapter.py`
-- **.cursor()** (3 connections) — `server/postgres_adapter.py`
-- **.keys()** (3 connections) — `server/postgres_adapter.py`
-- **.__getitem__()** (2 connections) — `server/postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **.__iter__()** (2 connections) — `server/postgres_adapter.py`
-- **Return the keys of the row dictionary. Returns: dict_keys: The keys of the row…** (1 connections) — `server/postgres_adapter.py`
-- **Execute a query and return a cursor. Args: query: SQL query with PostgreSQL %s…** (1 connections) — `server/postgres_adapter.py`
-- **Get a cursor from the underlying connection. This method provides direct access…** (1 connections) — `server/postgres_adapter.py`
+- **Any** (9 connections)
+- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_active_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_all_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_metrics_history()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_monitoring_summary()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **record_combat_error()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **Get metrics history. Args: limit: Optional limit on number of records Returns:…** (1 connections) — `server/services/combat_monitoring_service.py`
+- **Get active alerts. Returns: List[Dict[str, Any]]: Active alerts** (1 connections) — `server/services/combat_monitoring_service.py`
+- **Get all alerts. Returns: List[Dict[str, Any]]: All alerts** (1 connections) — `server/services/combat_monitoring_service.py`
+- **Get monitoring summary. Returns: Dict[str, Any]]: Monitoring summary** (1 connections) — `server/services/combat_monitoring_service.py`
+- **Convenience function to record combat error. Args: error_type: Type of error…** (1 connections) — `server/services/combat_monitoring_service.py`
+- **Convert to dictionary.** (1 connections) — `server/services/combat_monitoring_service.py`
 
 ## Relationships
 
-- [PostgresRow](PostgresRow.md) (4 shared connections)
-- [PostgresConnection](PostgresConnection.md) (3 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [CombatMonitoringService](CombatMonitoringService.md) (5 shared connections)
+- [._generate_alert](_generate_alert.md) (2 shared connections)
+- [CombatMetrics](CombatMetrics.md) (1 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
+- `server/services/combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

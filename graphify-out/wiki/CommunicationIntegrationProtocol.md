@@ -22,7 +22,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [npc_base.py](npc_base.py.md) (3 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
 
 ## Source Files
 

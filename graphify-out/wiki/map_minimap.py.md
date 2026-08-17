@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
-- **test_map_minimap_helpers.py** (20 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_map_minimap_helpers.py** (21 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
 - **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
 - **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
@@ -34,11 +34,13 @@
 ## Relationships
 
 - [maps.py](maps.py.md) (8 shared connections)
-- [RoomService](RoomService.md) (8 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
 - [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
 - [ExplorationService](ExplorationService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 108 (96%)
+- EXTRACTED: 109 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

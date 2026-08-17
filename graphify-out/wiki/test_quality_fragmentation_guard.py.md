@@ -1,10 +1,10 @@
 # test_quality_fragmentation_guard.py
 
-> 36 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **test_quality_fragmentation_guard.py** (21 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_quality_fragmentation_guard.py** (25 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
@@ -22,19 +22,20 @@
 - **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **Protocol** (4 connections)
+- **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_is_safe_git_ref_accepts_sha_and_branch_like_ref()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_is_safe_git_ref_rejects_suspicious_values()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_parse_lizard_output_maps_function_nodes()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- *... and 11 more nodes in this community*
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
 - [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (16 shared connections)
 - [_collect_python_public_defs_and_tiny](_collect_python_public_defs_and_tiny.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (81%)
-- INFERRED: 17 (19%)
+- EXTRACTED: 81 (83%)
+- INFERRED: 17 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

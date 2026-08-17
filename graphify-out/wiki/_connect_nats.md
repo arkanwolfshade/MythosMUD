@@ -17,8 +17,9 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
 - [NATSService](NATSService.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

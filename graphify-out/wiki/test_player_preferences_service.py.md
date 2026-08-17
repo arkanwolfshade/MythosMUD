@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_player_preferences_service.py** (59 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **test_player_preferences_service.py** (60 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **asyncio** (41 connections)
 - **test_create_player_preferences_integrity_error()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 - **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
@@ -34,10 +34,11 @@
 ## Relationships
 
 - [preferences_service](preferences_service.md) (4 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [User](User.md) (1 shared connections)
-- [PlayerChannelPreferences](PlayerChannelPreferences.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_player_related_models.py](test_player_related_models.py.md) (1 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 150 (99%)
+- EXTRACTED: 151 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

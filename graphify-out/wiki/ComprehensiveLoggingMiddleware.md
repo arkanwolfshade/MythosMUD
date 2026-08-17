@@ -1,14 +1,13 @@
 # ComprehensiveLoggingMiddleware
 
-> 32 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **ComprehensiveLoggingMiddleware** (16 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging.py** (9 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
+- **test_comprehensive_logging.py** (11 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
 - **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **comprehensive_logging.py** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
@@ -28,15 +27,16 @@
 - **Receive** (1 connections)
 - **Scope** (1 connections)
 - **Send** (1 connections)
-- **Comprehensive logging middleware for MythosMUD server. This module provides a…** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 7 more nodes in this community*
+- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (4 shared connections)
 - [middleware](middleware.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [factory.py](factory.py.md) (2 shared connections)
 - [build_event](build_event.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (83%)
-- INFERRED: 10 (17%)
+- EXTRACTED: 47 (82%)
+- INFERRED: 10 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

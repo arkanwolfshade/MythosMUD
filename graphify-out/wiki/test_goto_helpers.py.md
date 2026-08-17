@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_goto_helpers.py** (32 connections) — `server/tests/unit/commands/test_goto_helpers.py`
+- **test_goto_helpers.py** (33 connections) — `server/tests/unit/commands/test_goto_helpers.py`
 - **goto_helpers.py** (21 connections) — `server/commands/goto_helpers.py`
 - **asyncio** (21 connections)
 - **patch** (16 connections)
@@ -33,12 +33,12 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (21 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (7 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (19 shared connections)
+- [test_admin_commands_helpers.py](test_admin_commands_helpers.py.md) (9 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (4 shared connections)
 - [validate_admin_permission](validate_admin_permission.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 153 (100%)
+- EXTRACTED: 154 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

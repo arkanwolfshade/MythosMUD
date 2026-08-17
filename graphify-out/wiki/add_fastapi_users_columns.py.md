@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (4 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **add_fastapi_users_columns.py** (5 connections) — `server/scripts/add_fastapi_users_columns.py`
 - **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
 - **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
 - **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
@@ -13,6 +13,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +21,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

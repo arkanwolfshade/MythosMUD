@@ -36,8 +36,9 @@ bodies).
 - **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
   `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
-  Rule: `.cursor/rules/basedpyright-no-any.mdc`. After Python edits, run
-  `uv run basedpyright <edited files>`.
+  Rule: `.cursor/rules/basedpyright-no-any.mdc` (Claude: `.claude/rules/basedpyright.md`). After
+  Python edits, run `uv run basedpyright <edited files>`. Ponytail must not treat `Any` as a
+  shortcut; Protocol + TypedDict is the shortest correct diff.
 - **Obsidian LLM wiki (permanent memory):** Karpathy-pattern vault at
   `data/MythosMUD-Obsidian/` (`raw/` immutable, `wiki/` agent-owned, schema in vault
   `AGENTS.md`). File durable lore, design, and answers there; sync code-graph community
@@ -322,6 +323,8 @@ The definition of done for any work must include:
 - Passing linting checks
 - Passing testing (with appropriate coverage)
 - All code quality standards met
+- After Python edits: `uv run basedpyright <edited files>` with no `reportAny` /
+  `reportExplicitAny` (no `typing.Any`, no ignore comments for those rules)
 - **In-game help** for player-facing commands and features (`help <command>` /
   `server/help/help_content.py`, plus short entries in command help lists when applicable)
 - Content-creator documentation when the feature adds authoring tools (runbooks under
@@ -681,9 +684,10 @@ jobs:
   infer permission from fix CI, open PR, ship, merge, review-and-ship, or skills that include a push step; skip push
   and say the commits are local until they say **push**
 - For basedpyright `reportAny` / `reportExplicitAny`, never add `typing.Any` or file-level suppressions; use Protocol
-  (dict value types matching the real class) and TypedDict. In tests, prefer typed locals (for example
-  `svc: AsyncMock = AsyncMock()` or `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks
-  instead of only `handler.svc = AsyncMock()`. See `.cursor/rules/basedpyright-no-any.mdc`.
+  (dict value types matching the real class) and TypedDict. Ponytail shortest-diff does not authorize `Any`.
+  In tests, prefer typed locals (for example `svc: AsyncMock = AsyncMock()` or
+  `persistence: MagicMock = MagicMock()`) assigned onto handler-shaped mocks instead of only
+  `handler.svc = AsyncMock()`. See `.cursor/rules/basedpyright-no-any.mdc`.
 - When Game Info shows HP or combat text but Character Panel meters lag, inspect `projectEvent` and ui-v2 projector
   handlers so `GameState.player` is updated from the event payload, not only the message log
 - In Playwright E2E specs, avoid `expect` only inside promise `.catch` handlers (see `playwright/no-conditional-expect`); use

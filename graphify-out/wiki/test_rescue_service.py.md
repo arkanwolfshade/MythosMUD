@@ -1,40 +1,32 @@
 # test_rescue_service.py
 
-> 58 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_rescue_service.py** (32 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **asyncio** (17 connections)
-- **fixture** (10 connections)
-- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_lucidity_record()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_apply_lucidity_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_calculation()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_delta_zero_or_negative()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_different_rooms()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_dispatches_events_for_both_players()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_event_dispatcher_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_service.py** (33 connections) — `server/tests/unit/services/test_rescue_service.py`
 - **test_rescue_handles_uuid_objects()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_strings()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
 - **test_rescue_lucidity_record_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
 - **test_rescue_metadata_includes_location()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_metadata_includes_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 33 more nodes in this community*
+- **Unit tests for rescue service. Tests the RescueService class for performing…** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() returns error when lucidity record is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() includes location_id in lucidity adjustment.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles player_id as UUID objects.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
 
 ## Relationships
 
-- [rescue_service.py](rescue_service.py.md) (4 shared connections)
-- [Player](Player.md) (3 shared connections)
+- [asyncio](asyncio.md) (9 shared connections)
+- [fixture](fixture.md) (8 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [rescue_service.py](rescue_service.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_rescue_no_persistence](test_rescue_no_persistence.md) (1 shared connections)
+- [test_rescue_target_not_found](test_rescue_target_not_found.md) (1 shared connections)
+- [test_rescue_different_rooms](test_rescue_different_rooms.md) (1 shared connections)
+- [test_rescue_not_catatonic](test_rescue_not_catatonic.md) (1 shared connections)
+- [test_rescue_success](test_rescue_success.md) (1 shared connections)
+- [test_rescue_with_player_name](test_rescue_with_player_name.md) (1 shared connections)
+- [test_rescue_delta_calculation](test_rescue_delta_calculation.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +34,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 86 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,24 @@
 # Testing Strategy
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Testing Strategy** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Integration Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Load Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Unit Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
+- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

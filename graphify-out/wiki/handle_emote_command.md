@@ -6,7 +6,7 @@
 
 - **handle_emote_command()** (15 connections) — `server/commands/emote_commands.py`
 - **emote_commands.py** (14 connections) — `server/commands/emote_commands.py`
-- **test_emote_commands.py** (6 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_emote_commands.py** (7 connections) — `server/tests/unit/commands/test_emote_commands.py`
 - **_get_emote_services()** (5 connections) — `server/commands/emote_commands.py`
 - **Any** (5 connections)
 - **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
@@ -31,12 +31,11 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
 - [EmoteService](EmoteService.md) (2 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (96%)
+- EXTRACTED: 48 (96%)
 - INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 

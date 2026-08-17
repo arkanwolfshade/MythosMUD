@@ -1,46 +1,40 @@
 # Any
 
-> 25 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
-- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
-- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
-- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
-- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
+- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Get mapping of event types to their handler methods.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Validate that event message has required fields.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle player_left event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle combat_ended event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle player_attacked event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Handle npc_took_damage event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (12 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (6 shared connections)
+- [._handle_combat_started_event](_handle_combat_started_event.md) (1 shared connections)
+- [._handle_event_message](_handle_event_message.md) (1 shared connections)
+- [._handle_game_tick_event](_handle_game_tick_event.md) (1 shared connections)
+- [._handle_npc_attacked_event](_handle_npc_attacked_event.md) (1 shared connections)
+- [._handle_npc_died_event](_handle_npc_died_event.md) (1 shared connections)
+- [._handle_player_entered_event](_handle_player_entered_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

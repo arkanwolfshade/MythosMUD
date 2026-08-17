@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_chat_logger.py** (20 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_chat_logger.py** (21 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **chat_logger()** (8 connections) — `server/tests/unit/services/test_chat_logger.py`
 - **.__init__()** (4 connections) — `server/services/rate_limiter.py`
 - **temp_log_dir()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
@@ -34,11 +34,12 @@
 ## Relationships
 
 - [ChatLogger](ChatLogger.md) (3 shared connections)
-- [get_config](get_config.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
-- [._get_player_mute_file](_get_player_mute_file.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [UserManager](UserManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
@@ -48,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 41 (87%)
-- INFERRED: 6 (13%)
+- EXTRACTED: 42 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

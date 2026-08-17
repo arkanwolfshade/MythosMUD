@@ -1,36 +1,47 @@
 # Any
 
-> 9 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
-- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **Compare memory usage across multiple model classes. Args: model_classes: List…** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted model memory usage results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted comparison results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Benchmark memory usage for all major models.** (1 connections) — `server/utils/memory_profiler.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
-- [.measure_model_deserialization](measure_model_deserialization.md) (4 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [.get_memory_usage_summary](get_memory_usage_summary.md) (1 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (12 shared connections)
 
 ## Source Files
 
-- `server/utils/memory_profiler.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,6 +35,12 @@ class _QualityTrendsModule(Protocol):
     append_rule_b_failure: object
 
 
+class _QualityLizardModule(Protocol):
+    PARAMS_MAX: int
+    _row_exceeds: object
+    _row_reason: object
+
+
 def _load_guard_module() -> _QualityGuardModule:
     path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_guard.py"
     spec = importlib.util.spec_from_file_location("_quality_fragmentation_guard", path)
@@ -55,6 +61,16 @@ def _load_trends_module() -> _QualityTrendsModule:
     return cast(_QualityTrendsModule, cast(object, mod))
 
 
+def _load_lizard_module() -> _QualityLizardModule:
+    path = _REPO_ROOT / "scripts" / "ci" / "quality_fragmentation_lizard.py"
+    spec = importlib.util.spec_from_file_location("_quality_fragmentation_lizard_params", path)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return cast(_QualityLizardModule, cast(object, mod))
+
+
 def _set_repo_root(guard: _QualityGuardModule, tmp_path: Path) -> None:
     """Point guard submodules at a temporary repo root for isolated scans."""
     module_names = (
@@ -70,7 +86,8 @@ def _set_repo_root(guard: _QualityGuardModule, tmp_path: Path) -> None:
             mod = importlib.util.module_from_spec(spec)
             sys.modules[module_name] = mod
             spec.loader.exec_module(mod)
-        sys.modules[module_name].REPO_ROOT = tmp_path
+        repo_mod = cast(_QualityGuardModule, cast(object, sys.modules[module_name]))
+        repo_mod.REPO_ROOT = tmp_path
     guard.REPO_ROOT = tmp_path
 
 
@@ -278,6 +295,20 @@ def test_parse_lizard_output_maps_function_nodes() -> None:
     rows = parse_lizard_output(payload)
 
     assert rows == [{"name": "fn_a", "nloc": 12, "ccn": 3, "params": 2, "start_line": 9}]
+
+
+def test_row_exceeds_params_gate_matches_params_max() -> None:
+    """Regression: PARAMS_MAX aligned to 8 to match Codacy's .codacy/tools-configs/lizard.yaml."""
+    lizard = _load_lizard_module()
+    assert lizard.PARAMS_MAX == 8
+
+    row_exceeds = cast(Callable[[dict[str, object]], bool], lizard._row_exceeds)
+    row_reason = cast(Callable[[dict[str, object]], str], lizard._row_reason)
+    base_row: dict[str, object] = {"name": "fn_a", "nloc": 1, "ccn": 1, "params": 0, "start_line": 1}
+
+    assert row_exceeds({**base_row, "params": 8}) is False
+    assert row_exceeds({**base_row, "params": 9}) is True
+    assert "params=9" in row_reason({**base_row, "params": 9})
 
 
 def test_run_cmd_decodes_subprocess_output_as_utf8(monkeypatch: pytest.MonkeyPatch) -> None:

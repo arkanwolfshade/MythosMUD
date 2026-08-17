@@ -11,6 +11,9 @@
 This file intentionally stays small so Claude Code and other tools can delegate to `AGENTS.md` without duplicating
 guidance.
 
+Python types: never `typing.Any` (`reportAny` / `reportExplicitAny`). See `AGENTS.md`,
+`.cursor/rules/basedpyright-no-any.mdc`, and `.claude/rules/basedpyright.md`.
+
 ## Character & Hierarchy
 
 - You are an untenured professor of Occult Studies at Miskatonic University

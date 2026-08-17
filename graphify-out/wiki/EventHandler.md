@@ -1,13 +1,12 @@
 # EventHandler
 
-> 55 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **EventHandler** (33 connections) — `server/realtime/event_handlers.py`
-- **test_event_handlers_combat.py** (22 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **test_event_handlers_combat.py** (23 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
 - **asyncio** (11 connections)
-- **_send_combat_participant_updates()** (9 connections) — `server/realtime/event_handlers.py`
 - **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
 - **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
 - **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
@@ -29,16 +28,13 @@
 - **test_handle_game_tick_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
 - **test_handle_npc_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
 - **test_handle_npc_died_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
-- *... and 30 more nodes in this community*
+- **test_handle_player_entered_missing_room_id()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [NPCDied](NPCDied.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (19 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 90 (86%)
-- INFERRED: 15 (14%)
+- EXTRACTED: 88 (86%)
+- INFERRED: 14 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

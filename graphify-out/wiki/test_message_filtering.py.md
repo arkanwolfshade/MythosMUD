@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_message_filtering.py** (36 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **test_message_filtering.py** (37 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 - **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
@@ -20,10 +20,9 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (10 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
 - [message_filtering_helper](message_filtering_helper.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_should_apply_mute_check_sensitive_channel](test_should_apply_mute_check_sensitive_channel.md) (1 shared connections)
 - [test_should_apply_mute_check_non_sensitive_channel](test_should_apply_mute_check_non_sensitive_channel.md) (1 shared connections)
 - [test_compare_canonical_rooms_same](test_compare_canonical_rooms_same.md) (1 shared connections)
@@ -31,6 +30,7 @@
 - [test_get_player_room_from_online_players](test_get_player_room_from_online_players.md) (1 shared connections)
 - [test_get_player_room_from_online_players_not_found](test_get_player_room_from_online_players_not_found.md) (1 shared connections)
 - [test_get_player_room_from_persistence_not_found](test_get_player_room_from_persistence_not_found.md) (1 shared connections)
+- [test_is_player_in_room_false](test_is_player_in_room_false.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

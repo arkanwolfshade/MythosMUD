@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_validator.py** (51 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_combat_validator.py** (52 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 - **test_get_combat_death_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
@@ -34,8 +34,9 @@
 ## Relationships
 
 - [CombatValidator](CombatValidator.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 - [test_validate_combat_command_rate_limited](test_validate_combat_command_rate_limited.md) (1 shared connections)
 - [test_validate_combat_command_exception_handling](test_validate_combat_command_exception_handling.md) (1 shared connections)
 - [test_validate_target_exists_exact_match](test_validate_target_exists_exact_match.md) (1 shared connections)
@@ -44,7 +45,6 @@
 - [combat_validator](combat_validator.md) (1 shared connections)
 - [test_validate_target_alive_alive](test_validate_target_alive_alive.md) (1 shared connections)
 - [test_validate_combat_state_not_in_combat_required](test_validate_combat_state_not_in_combat_required.md) (1 shared connections)
-- [test_combat_validator_init](test_combat_validator_init.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
+- EXTRACTED: 68 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_look_item.py** (55 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_look_item.py** (56 connections) — `server/tests/unit/commands/test_look_item.py`
 - **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
 - **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
 - **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
@@ -38,6 +38,7 @@
 - [test_look_item_helpers.py](test_look_item_helpers.py.md) (8 shared connections)
 - [_find_item_in_inventory](_find_item_in_inventory.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
+- EXTRACTED: 84 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -15,7 +15,7 @@
 ## Relationships
 
 - [RateLimiter](RateLimiter.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

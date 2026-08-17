@@ -1,13 +1,16 @@
 # test_npc_combat_handlers.py
 
-> 45 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_handlers.py** (22 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_npc_combat_handlers.py** (23 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
 - **CombatResultCtx** (12 connections) — `server/services/npc_combat_handlers.py`
 - **asyncio** (9 connections)
 - **fixture** (8 connections)
+- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
 - **.handle_combat_result()** (5 connections) — `server/services/npc_combat_handlers.py`
 - **npc_combat_handlers()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_handle_combat_result_broadcast_error()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
@@ -15,6 +18,8 @@
 - **test_handle_combat_result_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_handle_combat_result_unsuccessful()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **._broadcast_combat_success()** (3 connections) — `server/services/npc_combat_handlers.py`
+- **.handle_npc_death()** (3 connections) — `server/services/npc_combat_handlers.py`
+- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_handlers.py`
 - **mock_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **mock_combat_result()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **mock_data_provider()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
@@ -24,17 +29,19 @@
 - **mock_rewards()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
 - **test_handle_npc_death_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_no_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_on_combat_end()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death_on_combat_end_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_is_valid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **Bundle for handle_combat_result (lizard PARAM).** (1 connections) — `server/services/npc_combat_handlers.py`
-- *... and 20 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (7 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [NPCCombatLifecycle](NPCCombatLifecycle.md) (2 shared connections)
+- [NPCStartupService](NPCStartupService.md) (1 shared connections)
+- [.connection_manager](connection_manager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 91 (88%)
+- INFERRED: 12 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

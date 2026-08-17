@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **PeriodicOrphanAuditor** (23 connections) — `server/app/memory_lifespan_coordinator.py`
-- **test_memory_lifespan_coordinator.py** (18 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- **test_memory_lifespan_coordinator.py** (19 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
 - **asyncio** (11 connections)
 - **create_lifespan_memory_service()** (5 connections) — `server/app/memory_lifespan_coordinator.py`
 - **test_background_audit_cycle_cancelled()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
@@ -39,6 +39,7 @@
 - [.force_single_audit_cycle](force_single_audit_cycle.md) (1 shared connections)
 - [.stop_audit_scheduler](stop_audit_scheduler.md) (1 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (80%)
+- EXTRACTED: 53 (80%)
 - INFERRED: 13 (20%)
 - AMBIGUOUS: 0 (0%)
 

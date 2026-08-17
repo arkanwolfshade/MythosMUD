@@ -1,19 +1,16 @@
 # enum
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **enum** (6 connections) — `schemas/unified_room_schema.json`
-- **environment** (5 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **indoors** (1 connections) — `schemas/unified_room_schema.json`
-- **intersection** (1 connections) — `schemas/unified_room_schema.json`
-- **outdoors** (1 connections) — `schemas/unified_room_schema.json`
-- **street_paved** (1 connections) — `schemas/unified_room_schema.json`
-- **underwater** (1 connections) — `schemas/unified_room_schema.json`
+- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
@@ -21,11 +18,11 @@
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

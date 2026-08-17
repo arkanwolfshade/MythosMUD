@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard.py** (17 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard.py** (18 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
 - **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
 - **asyncio** (4 connections)
 - **test_acquire_async_different_players_same_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
+- [ContainerSourceType](ContainerSourceType.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (90%)
+- EXTRACTED: 36 (90%)
 - INFERRED: 4 (10%)
 - AMBIGUOUS: 0 (0%)
 

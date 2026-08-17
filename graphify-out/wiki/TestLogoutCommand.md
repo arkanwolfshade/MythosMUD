@@ -15,10 +15,10 @@
 - **.test_logout_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **.test_logout_command_success()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **.test_logout_command_with_args()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **test_logout_command.py** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **.mock_alias_storage()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **.mock_current_user()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **.mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
-- **test_logout_command.py** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **fixture** (3 connections)
 - **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
 - **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [test_logout_commands.py](test_logout_commands.py.md) (8 shared connections)
+- [logout_commands.py](logout_commands.py.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (85%)
+- EXTRACTED: 46 (85%)
 - INFERRED: 8 (15%)
 - AMBIGUOUS: 0 (0%)
 

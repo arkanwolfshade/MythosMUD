@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_dependency_analysis.py** (21 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_dependency_analysis.py** (22 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
 - **DependencyAnalyzerTestApi** (10 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
 - **DependencyRiskTestApi** (6 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
 - **analyzer_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -17,11 +17,8 @@
 
 ## Relationships
 
-- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
-- [RoomCacheService](RoomCacheService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCCacheService](NPCCacheService.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [RoomCacheService](RoomCacheService.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files

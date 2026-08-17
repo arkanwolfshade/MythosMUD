@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (13 shared connections)
-- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (13 shared connections)
+- [test_lifespan_helpers.py](test_lifespan_helpers.py.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files

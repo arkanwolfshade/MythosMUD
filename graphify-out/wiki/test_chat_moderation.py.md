@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_chat_moderation.py** (30 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_chat_moderation.py** (31 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **asyncio** (14 connections)
 - **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **fixture** (3 connections)
@@ -34,6 +34,7 @@
 ## Relationships
 
 - [ChatModeration](ChatModeration.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
+- EXTRACTED: 48 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

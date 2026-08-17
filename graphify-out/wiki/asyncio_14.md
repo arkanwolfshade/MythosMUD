@@ -1,30 +1,43 @@
 # asyncio
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (4 connections)
-- **test_get_player_info_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_get_player_info_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None for invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() successfully retrieves player info.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test get_player_info() returns None when connection manager not available.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **asyncio** (27 connections)
+- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_lucidity_loss() applies lucidity loss.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_fear() applies fear.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (4 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (9 shared connections)
+- [test_apply_corruption_player_not_found](test_apply_corruption_player_not_found.md) (1 shared connections)
+- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
+- [test_damage_player](test_damage_player.md) (1 shared connections)
+- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
+- [test_delete_player_persistence_fails](test_delete_player_persistence_fails.md) (1 shared connections)
+- [test_delete_player_success](test_delete_player_success.md) (1 shared connections)
+- [test_gain_occult_knowledge](test_gain_occult_knowledge.md) (1 shared connections)
+- [test_gain_occult_knowledge_player_not_found](test_gain_occult_knowledge_player_not_found.md) (1 shared connections)
+- [test_get_user_characters](test_get_user_characters.md) (1 shared connections)
+- [test_heal_player](test_heal_player.md) (1 shared connections)
+- [test_heal_player_player_not_found](test_heal_player_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,28 +33,28 @@
 
 ### imports
 - players.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
-- test_container_helpers.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
 - test_metrics_endpoints.py `EXTRACTED`
-- test_exceptions_comprehensive.py `EXTRACTED`
+- real_time.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
 - [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
-- [npc_definitions_api.py](npc_definitions_api.py.md) `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 
 ### inherits
-- [LoggedException](LoggedException.md) `EXTRACTED`
+- LoggedException `EXTRACTED`
 - HTTPException `EXTRACTED`
 
 ### method
@@ -71,7 +71,7 @@
 ### uses
 - logged_http_exception_handler() `INFERRED`
 - TestLootAllItems `INFERRED`
-- [TestErrorHandlers](TestErrorHandlers.md) `INFERRED`
+- TestErrorHandlers `INFERRED`
 - [TestMonitoringEndpoints](TestMonitoringEndpoints.md) `INFERRED`
 - TestRegisterLootEndpoints `INFERRED`
 - TestRollCharacterStats `INFERRED`
@@ -80,7 +80,7 @@
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
 - TestGetContainerAndPlayerForLootAll `INFERRED`
-- TestHelperFunctions `INFERRED`
+- [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`
 - TestCreateCharacterWithStats `INFERRED`

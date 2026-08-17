@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_statistics_aggregator.py** (14 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_statistics_aggregator.py** (15 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 - **fixture** (6 connections)
 - **statistics_aggregator()** (4 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 - **mock_memory_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
@@ -32,8 +32,8 @@
 
 ## Relationships
 
-- [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 31 (97%)
+- EXTRACTED: 32 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

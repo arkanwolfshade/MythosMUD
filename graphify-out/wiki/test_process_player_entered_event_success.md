@@ -11,7 +11,7 @@
 
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

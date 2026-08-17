@@ -1,49 +1,44 @@
 # asyncio
 
-> 45 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (23 connections)
-- **test_get_npc_instances_get_stats_exception()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_despawn_fails()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_no_get_stats()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_no_lifecycle_record()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_stats_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_population_stats_empty()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_population_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_system_stats_idle()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_system_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_zone_stats_empty()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_zone_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_blocked_when_in_combat()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_no_move_method()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_definition_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_spawn_fails()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test spawn_npc_instance() successfully spawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test spawn_npc_instance() raises ValueError when definition not found.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- *... and 20 more nodes in this community*
+- **asyncio** (33 connections)
+- **test_handle_player_entered_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_process_player_entered_event_no_room_id()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_broadcast_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_query_room_occupants_snapshot()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **test_send_room_updates_to_entering_player_invalid_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test query_room_occupants_snapshot() queries occupants.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_room_updates_to_entering_player() handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test _process_player_entered_event() returns None when room_id is None.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test handle_player_entered() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test broadcast_player_entered_message() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (23 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (9 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [test_build_room_occupants_message](test_build_room_occupants_message.md) (1 shared connections)
+- [test_handle_player_entered_no_connection_manager](test_handle_player_entered_no_connection_manager.md) (1 shared connections)
+- [test_handle_player_entered_no_player_info](test_handle_player_entered_no_player_info.md) (1 shared connections)
+- [test_handle_player_entered_success](test_handle_player_entered_success.md) (1 shared connections)
+- [test_log_player_movement_error_handling](test_log_player_movement_error_handling.md) (1 shared connections)
+- [test_log_player_movement_joined](test_log_player_movement_joined.md) (1 shared connections)
+- [test_log_player_movement_left](test_log_player_movement_left.md) (1 shared connections)
+- [test_log_player_movement_no_room](test_log_player_movement_no_room.md) (1 shared connections)
+- [test_prepare_room_data_with_to_dict](test_prepare_room_data_with_to_dict.md) (1 shared connections)
+- [test_process_player_entered_event_no_player_info](test_process_player_entered_event_no_player_info.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 43 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

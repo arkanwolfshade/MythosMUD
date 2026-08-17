@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **combat_service_npc.py** (31 connections) — `server/services/combat_service_npc.py`
-- **test_combat_service_npc_helpers.py** (30 connections) — `server/tests/unit/services/test_combat_service_npc_helpers.py`
+- **test_combat_service_npc_helpers.py** (31 connections) — `server/tests/unit/services/test_combat_service_npc_helpers.py`
 - **get_combat_id_for_npc()** (17 connections) — `server/services/combat_service_npc.py`
 - **find_participant_uuid_by_string_id()** (11 connections) — `server/services/combat_service_npc.py`
 - **resolve_npc_participant_id_in_combat()** (11 connections) — `server/services/combat_service_npc.py`
@@ -33,12 +33,15 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (26 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (25 shared connections)
 - [CombatInstance](CombatInstance.md) (10 shared connections)
 - [CombatParticipant](CombatParticipant.md) (8 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [models/combat.py](models-combat.py.md) (4 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [spell_effects_internal.py](spell_effects_internal.py.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [UUID](UUID.md) (2 shared connections)
+- [_validate_taunt_context](_validate_taunt_context.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 164 (91%)
+- EXTRACTED: 165 (91%)
 - INFERRED: 17 (9%)
 - AMBIGUOUS: 0 (0%)
 

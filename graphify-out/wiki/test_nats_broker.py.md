@@ -1,13 +1,11 @@
 # test_nats_broker.py
 
-> 87 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_nats_broker.py** (56 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_nats_broker.py** (57 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **asyncio** (35 connections)
-- **nats_broker()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **nats_config()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_disconnect_error_handling()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
@@ -29,12 +27,16 @@
 - **test_disconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_error_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 - **test_publish_json_serialization()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 62 more nodes in this community*
+- **test_publish_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_reconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [NATSMessageBroker](NATSMessageBroker.md) (21 shared connections)
-- [NATSService](NATSService.md) (2 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (20 shared connections)
+- [nats_broker](nats_broker.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [NATSConfig](NATSConfig.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 132 (92%)
-- INFERRED: 12 (8%)
+- EXTRACTED: 128 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

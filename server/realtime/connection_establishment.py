@@ -228,6 +228,29 @@ def _setup_session_tracking(
         manager.player_sessions[player_id] = session_id
 
 
+def _bind_accepted_websocket(
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    manager: _EstablishmentConnectionManager,
+    session_id: str | None,
+    token: str | None,
+) -> str:
+    """Register an accepted socket and attach session metadata."""
+    connection_id = _register_new_connection(websocket, player_id, manager)
+    _setup_connection_metadata(connection_id, player_id, manager, session_id, token)
+    _setup_session_tracking(connection_id, player_id, session_id, manager)
+    existing_count = len(manager.player_websockets[player_id]) - 1
+    logger.info(
+        "WebSocket connected for player",
+        player_id=player_id,
+        connection_id=connection_id,
+        session_id=session_id,
+        existing_websocket_connections=existing_count,
+        total_connections=existing_count + 1,
+    )
+    return connection_id
+
+
 async def _setup_player_and_room(
     player_id: uuid.UUID, manager: _EstablishmentConnectionManager
 ) -> tuple[bool, Player | None]:
@@ -270,23 +293,18 @@ async def _track_player_presence(
         player: The player object
         manager: ConnectionManager instance
     """
-    # Linkdead reconnect stays in online_players, so cancel here (not only in track_player_connected).
-    await cancel_grace_period(player_id, manager)
     # Orphan /rest countdown will force_disconnect the new socket if left running.
     # Inline import: rest_command -> combat -> ConnectionManager -> this module.
     from ..commands.rest_command import cancel_rest_countdown
 
     await cancel_rest_countdown(player_id, manager)
     if player is None:
+        await cancel_grace_period(player_id, manager)
         return
-    if player_id not in manager.online_players:
-        await manager.track_player_connected(player_id, player, "websocket")
-    else:
-        logger.info(
-            "Player already tracked as online, but broadcasting connection message for WebSocket",
-            player_id=player_id,
-        )
-        await manager.broadcast_connection_message(player_id, player)
+    # track_player_connected uses grace_period_players to decide enter setup (add to room._players).
+    # Cancelling grace first made linkdead reconnects skip occupancy and vanish from Occupants.
+    await manager.track_player_connected(player_id, player, "websocket")
+    await cancel_grace_period(player_id, manager)
 
 
 def _cleanup_failed_connection(
@@ -310,6 +328,31 @@ def _cleanup_failed_connection(
             del manager.connection_metadata[connection_id]
     except (DatabaseError, AttributeError) as cleanup_error:
         logger.warning("Error during connection failure cleanup", player_id=player_id, cleanup_error=str(cleanup_error))
+
+
+async def _reconcile_prior_session(
+    player_id: uuid.UUID,
+    session_id: str | None,
+    manager: _EstablishmentConnectionManager,
+) -> None:
+    """Settle a differing prior session before a new socket is registered.
+
+    ADR-018 replaces prior sockets when the session changes, but only while sockets still
+    exist to replace. A mapping left behind by a client that vanished has nothing live
+    behind it; replacing against it would tear down the socket being established and leave
+    the player linkdead until a server restart, so drop it and let the new session own the
+    player instead.
+    """
+    current_session = manager.player_sessions.get(player_id)
+    if not session_id or current_session is None or current_session == session_id:
+        return
+
+    if manager.player_websockets.get(player_id):
+        _ = await handle_new_game_session_impl(player_id, session_id, manager)
+        return
+
+    _ = manager.player_sessions.pop(player_id, None)
+    _ = manager.session_connections.pop(current_session, None)
 
 
 async def establish_websocket_connection(
@@ -342,33 +385,10 @@ async def establish_websocket_connection(
         # Clean up dead connections under lock
         await _cleanup_dead_connections(dead_connection_ids, player_id, manager)
 
-        # ADR-018: replace prior sockets only when session_id actually changes.
-        current_session = manager.player_sessions.get(player_id)
-        if session_id and current_session is not None and current_session != session_id:
-            _ = await handle_new_game_session_impl(player_id, session_id, manager)
+        await _reconcile_prior_session(player_id, session_id, manager)
 
-        # Accept the WebSocket connection
         await websocket.accept()
-
-        # Register new connection
-        connection_id = _register_new_connection(websocket, player_id, manager)
-
-        # Create connection metadata
-        _setup_connection_metadata(connection_id, player_id, manager, session_id, token)
-
-        # Track connection in session
-        _setup_session_tracking(connection_id, player_id, session_id, manager)
-
-        # Log connection
-        existing_count = len(manager.player_websockets[player_id]) - 1
-        logger.info(
-            "WebSocket connected for player",
-            player_id=player_id,
-            connection_id=connection_id,
-            session_id=session_id,
-            existing_websocket_connections=existing_count,
-            total_connections=existing_count + 1,
-        )
+        connection_id = _bind_accepted_websocket(websocket, player_id, manager, session_id, token)
 
         # Get player and setup room subscription
         success, player = await _setup_player_and_room(player_id, manager)

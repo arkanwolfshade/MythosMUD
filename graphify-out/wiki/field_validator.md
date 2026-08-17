@@ -21,7 +21,8 @@
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (6 shared connections)
+- [HolidayEntry](HolidayEntry.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 
 ## Source Files
 

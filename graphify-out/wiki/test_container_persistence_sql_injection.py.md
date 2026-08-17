@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
+- **test_container_persistence_sql_injection.py** (7 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 - **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 - **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
-- **test_container_persistence_sql_injection.py** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 - **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 - **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 - **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
@@ -22,7 +22,9 @@
 
 ## Relationships
 
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (6 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

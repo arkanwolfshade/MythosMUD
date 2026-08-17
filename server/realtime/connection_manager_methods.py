@@ -13,24 +13,82 @@ to reduce file complexity and improve maintainability.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Protocol, cast
 from uuid import UUID
 
+from anyio import Lock
 from fastapi import WebSocket
-from starlette.websockets import WebSocketDisconnect
 
 from ..exceptions import DatabaseError
 from ..models import Player
 from ..structured_logging.enhanced_logging_config import get_logger
+from .connection_models import ConnectionMetadata
 from .connection_statistics import (
     get_online_player_by_display_name_impl,
     get_player_presence_info_impl,
     validate_player_presence_impl,
 )
+from .errors.error_handler import ConnectionErrorHandler
+from .memory_monitor import MemoryMonitor
+from .message_queue import MessageQueue
+from .monitoring.health_monitor import HealthMonitor
+from .monitoring.performance_tracker import PerformanceTracker
+from .monitoring.statistics_aggregator import MemoryStatsSnapshot, StatisticsAggregator
+from .rate_limiter import RateLimiter
+from .room_subscription_manager import RoomSubscriptionManager
 
-# Avoid TYPE_CHECKING import of ConnectionManager (basedpyright import cycle).
-# Plain assignment: ruff UP040 rejects TypeAlias; Codacy pylint cannot parse PEP 695 `type`.
-ConnectionManager = Any
+# Protocol stub bodies use Ellipsis per PEP 544; Pylint W2301 conflicts with pyright if replaced with pass.
+# pylint: disable=unnecessary-ellipsis,too-few-public-methods,missing-function-docstring
+# Reason: PEP 544 Protocol surface for this module; docs live on ConnectionManager.
+
+
+class ConnectionManager(Protocol):
+    """Connection manager surface used by extracted facade impls (avoids import cycle + Any)."""
+
+    active_websockets: dict[str, WebSocket]
+    connection_metadata: dict[str, ConnectionMetadata]
+    player_websockets: dict[UUID, list[str]]
+    connection_timestamps: dict[str, float]
+    cleanup_stats: dict[str, object]
+    player_sessions: dict[UUID, str]
+    session_connections: dict[str, list[str]]
+    online_players: dict[UUID, dict[str, object]]
+    last_seen: dict[UUID, float]
+    last_active_update_times: dict[UUID, float]
+    intentional_disconnects: set[UUID]
+    processed_disconnects: set[UUID]
+    sequence_counter: int
+    disconnect_lock: Lock
+    processed_disconnect_lock: Lock
+    statistics_aggregator: StatisticsAggregator
+    performance_tracker: PerformanceTracker
+    memory_monitor: MemoryMonitor
+    error_handler: ConnectionErrorHandler | None
+    health_monitor: HealthMonitor | None
+    rate_limiter: RateLimiter
+    message_queue: MessageQueue
+    room_manager: RoomSubscriptionManager
+    personal_message_sender: object | None
+    message_broadcaster: object | None
+    game_state_provider: object | None
+    room_event_handler: object | None
+
+    def get_closed_websockets_count(self) -> int: ...
+
+    def canonical_room_id(self, room_id: str | None) -> str | None: ...
+
+    def has_websocket_connection(self, player_id: UUID) -> bool: ...
+
+    def is_websocket_closed(self, ws_id: int) -> bool: ...
+
+    def mark_websocket_closed(self, ws_id: int) -> None: ...
+
+    async def disconnect_websocket(self, player_id: UUID, is_force_disconnect: bool = False) -> None: ...
+
+    async def disconnect_connection_by_id(self, connection_id: str) -> bool: ...
+
+    async def track_player_disconnected(self, player_id: UUID, connection_type: str | None = None) -> None: ...
+
 
 logger = get_logger(__name__)
 
@@ -42,7 +100,7 @@ logger = get_logger(__name__)
 
 def get_memory_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive memory and connection statistics."""
-    snap = {
+    snap: MemoryStatsSnapshot = {
         "active_websockets": manager.active_websockets,
         "player_websockets": manager.player_websockets,
         "connection_timestamps": manager.connection_timestamps,
@@ -54,47 +112,35 @@ def get_memory_stats_impl(manager: ConnectionManager) -> dict[str, object]:
         "closed_websockets_count": manager.get_closed_websockets_count(),
         "connection_metadata": manager.connection_metadata,
     }
-    result: dict[str, object] = cast(dict[str, object], manager.statistics_aggregator.get_memory_stats(snap))
-    return result
+    return manager.statistics_aggregator.get_memory_stats(snap)
 
 
 def get_dual_connection_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive connection statistics."""
-    result: dict[str, object] = cast(
-        dict[str, object],
-        manager.statistics_aggregator.get_connection_stats(
-            player_websockets=manager.player_websockets,
-            connection_metadata=manager.connection_metadata,
-            session_connections=manager.session_connections,
-            player_sessions=manager.player_sessions,
-        ),
+    return manager.statistics_aggregator.get_connection_stats(
+        player_websockets=manager.player_websockets,
+        connection_metadata=manager.connection_metadata,
+        session_connections=manager.session_connections,
+        player_sessions=manager.player_sessions,
     )
-    return result
 
 
 def get_performance_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get connection performance statistics."""
-    result: dict[str, object] = cast(dict[str, object], manager.performance_tracker.get_stats())
-    return result
+    # PerformanceTracker.get_stats still returns dict[str, Any]; narrow at this boundary.
+    return cast(dict[str, object], manager.performance_tracker.get_stats())
 
 
 def get_connection_health_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive connection health statistics."""
-    result: dict[str, object] = cast(
-        dict[str, object],
-        manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata),
-    )
-    return result
+    return manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata)
 
 
 def get_memory_alerts_impl(manager: ConnectionManager) -> list[str]:
     """Get memory-related alerts."""
-    return cast(
-        list[str],
-        manager.statistics_aggregator.get_memory_alerts(
-            connection_timestamps=manager.connection_timestamps,
-            max_connection_age=manager.memory_monitor.max_connection_age,
-        ),
+    return manager.statistics_aggregator.get_memory_alerts(
+        connection_timestamps=manager.connection_timestamps,
+        max_connection_age=manager.memory_monitor.max_connection_age,
     )
 
 
@@ -103,20 +149,20 @@ def get_error_statistics_impl(manager: ConnectionManager) -> dict[str, object]:
     if manager.error_handler is None:
         logger.error("Error handler not initialized")
         return {}
-    result: dict[str, object] = cast(
+    # ConnectionErrorHandler.get_error_statistics still returns dict[str, Any].
+    return cast(
         dict[str, object],
         manager.error_handler.get_error_statistics(
             online_players=manager.online_players,
             player_websockets=manager.player_websockets,
         ),
     )
-    return result
 
 
 def get_rate_limit_info_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
     """Get rate limit information for a player."""
-    result: dict[str, object] = cast(dict[str, object], manager.rate_limiter.get_rate_limit_info(str(player_id)))
-    return result
+    # RateLimiter.get_rate_limit_info still returns dict[str, Any].
+    return cast(dict[str, object], manager.rate_limiter.get_rate_limit_info(str(player_id)))
 
 
 def get_message_delivery_stats_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, object]:
@@ -164,17 +210,17 @@ def get_online_player_by_display_name_method(manager: ConnectionManager, display
 
 def get_player_session_impl(manager: ConnectionManager, player_id: UUID) -> str | None:
     """Get the current session ID for a player."""
-    return cast(str | None, manager.player_sessions.get(player_id))
+    return manager.player_sessions.get(player_id)
 
 
 def get_session_connections_impl(manager: ConnectionManager, session_id: str) -> list[str]:
     """Get all connection IDs for a session."""
-    return cast(list[str], manager.session_connections.get(session_id, []))
+    return manager.session_connections.get(session_id, [])
 
 
 def validate_session_impl(manager: ConnectionManager, player_id: UUID, session_id: str) -> bool:
     """Validate that a session ID matches the player's current session."""
-    return cast(bool, manager.player_sessions.get(player_id) == session_id)
+    return manager.player_sessions.get(player_id) == session_id
 
 
 def get_connection_count_impl(manager: ConnectionManager, player_id: UUID) -> dict[str, int]:
@@ -190,8 +236,9 @@ def has_websocket_connection_impl(manager: ConnectionManager, player_id: UUID) -
 
 def get_player_websocket_connection_id_impl(manager: ConnectionManager, player_id: UUID) -> str | None:
     """Get the first WebSocket connection ID for a player (backward compatibility)."""
-    if manager.player_websockets.get(player_id):
-        return cast(str | None, manager.player_websockets[player_id][0])
+    connections = manager.player_websockets.get(player_id)
+    if connections:
+        return connections[0]
     return None
 
 
@@ -199,7 +246,7 @@ def get_connection_id_from_websocket_impl(manager: ConnectionManager, websocket:
     """Get connection ID from a WebSocket instance."""
     for conn_id, ws in manager.active_websockets.items():
         if ws is websocket:
-            return cast(str | None, conn_id)
+            return conn_id
     return None
 
 
@@ -300,11 +347,7 @@ async def broadcast_global_event_impl(
 
 async def force_disconnect_player_impl(manager: ConnectionManager, player_id: UUID) -> None:
     """Force disconnect a player from all connections (WebSocket only)."""
-    from .connection_disconnection import (
-        _cleanup_player_data,
-        _cleanup_room_subscriptions,
-        _track_disconnect_if_needed,
-    )
+    from .connection_disconnection import apply_disconnect_side_effects
 
     try:
         logger.info("Force disconnecting player from all connections", player_id=player_id)
@@ -314,11 +357,9 @@ async def force_disconnect_player_impl(manager: ConnectionManager, player_id: UU
         elif player_id in manager.intentional_disconnects:
             # On-close may clear player_websockets before logout's force_disconnect runs.
             # Still emit player_left_game and clear Occupants for intentional logout.
-            should_track = await _track_disconnect_if_needed(player_id, manager, True)
-            _cleanup_room_subscriptions(player_id, manager, True)
-            _cleanup_player_data(player_id, manager)
+            should_track = await apply_disconnect_side_effects(player_id, manager, True)
             if should_track:
-                await manager._track_player_disconnected(player_id)  # pylint: disable=protected-access  # Reason: intentional logout must reuse presence leave path when sockets already gone
+                await manager.track_player_disconnected(player_id)
         logger.info("Player force disconnected from all connections", player_id=player_id)
     except (DatabaseError, AttributeError) as e:
         logger.error(
@@ -503,7 +544,7 @@ async def send_initial_game_state_impl(
     """Send initial game_state event to a newly connected player."""
     from .connection_delegates import delegate_game_state_provider
 
-    await delegate_game_state_provider(
+    _ = await delegate_game_state_provider(
         manager.game_state_provider,
         "send_initial_game_state",
         None,
@@ -546,45 +587,6 @@ async def handle_player_left_room_impl(manager: ConnectionManager, event_data: d
 
 
 # ============================================================================
-# Utility Methods
-# ============================================================================
-
-
-def is_websocket_open_impl(_manager: ConnectionManager, websocket: WebSocket) -> bool:
-    """Check if a WebSocket is open."""
-    try:
-        from starlette.websockets import WebSocketState
-
-        state: object | None = getattr(websocket, "application_state", None)
-        return state != WebSocketState.DISCONNECTED
-    except (AttributeError, ValueError, TypeError):
-        return True
-
-
-async def safe_close_websocket_impl(
-    manager: ConnectionManager,
-    websocket: WebSocket,
-    code: int = 1000,
-    reason: str = "Connection closed",
-) -> None:
-    """Safely close a WebSocket connection."""
-    import asyncio
-
-    ws_id = id(websocket)
-    if manager.is_websocket_closed(ws_id):
-        return
-    if not is_websocket_open_impl(manager, websocket):
-        manager.mark_websocket_closed(ws_id)
-        return
-    try:
-        await asyncio.wait_for(websocket.close(code=code, reason=reason), timeout=2.0)
-    except (AttributeError, ValueError, TypeError, RuntimeError, WebSocketDisconnect):
-        pass
-    finally:
-        manager.mark_websocket_closed(ws_id)
-
-
-# ============================================================================
 # Compatibility and Room Methods
 # ============================================================================
 
@@ -615,21 +617,21 @@ def canonical_room_id_public_impl(manager: ConnectionManager, room_id: str | Non
 
 def get_pending_messages_impl(manager: ConnectionManager, player_id: UUID) -> list[dict[str, object]]:
     """Get pending messages for a player."""
-    result: list[dict[str, object]] = cast(list[dict[str, object]], manager.message_queue.get_messages(str(player_id)))
-    return result
+    return cast(list[dict[str, object]], manager.message_queue.get_messages(str(player_id)))
 
 
 def convert_uuids_to_strings_impl(_manager: ConnectionManager, obj: object) -> object:
     """Recursively convert UUID objects to strings for JSON serialization."""
     from .connection_helpers import convert_uuids_to_strings
 
+    # convert_uuids_to_strings is still typed with Any; narrow at this boundary.
     return cast(object, convert_uuids_to_strings(obj))
 
 
 def get_next_sequence_impl(manager: ConnectionManager) -> int:
     """Get the next sequence number for events."""
     manager.sequence_counter += 1
-    return cast(int, manager.sequence_counter)
+    return manager.sequence_counter
 
 
 # ============================================================================

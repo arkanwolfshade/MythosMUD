@@ -1,23 +1,27 @@
 # .__init__
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **.__init__()** (2 connections) — `server/app/task_registry.py`
-- **Initialize TaskRegistry with empty task collections.** (1 connections) — `server/app/task_registry.py`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
+- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
+- **Any** (2 connections)
+- **Initialize the rewards manager. Args: async_persistence: Async persistence…** (1 connections) — `server/services/npc_combat_rewards.py`
+- **Calculate XP reward from NPC definition. Args: npc_definition: NPC definition…** (1 connections) — `server/services/npc_combat_rewards.py`
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/services/npc_combat_rewards.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

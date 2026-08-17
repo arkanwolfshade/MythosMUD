@@ -1,38 +1,40 @@
 # UUID
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **UUID** (10 connections)
-- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Remove players whose presence is stale beyond the threshold. Args: last_seen:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return True if websocket appears dead (should be cleaned up).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Return list of player IDs to check (single player or all).** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a single player.** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **Clean up dead connections for a specific player or all players. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [ConnectionCleaner](ConnectionCleaner.md) (14 shared connections)
-- [.check_and_cleanup](check_and_cleanup.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
+- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
+- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

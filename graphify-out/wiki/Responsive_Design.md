@@ -18,7 +18,7 @@
 
 ## Relationships
 
-- [frontend-design/SKILL.md](frontend-design-SKILL.md.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 

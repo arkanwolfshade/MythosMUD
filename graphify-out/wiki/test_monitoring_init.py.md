@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_monitoring_init.py** (6 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_init.py** (7 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 - **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 - **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 - **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +27,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

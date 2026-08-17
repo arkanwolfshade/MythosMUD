@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
+- [npc_base.py](npc_base.py.md) (6 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files

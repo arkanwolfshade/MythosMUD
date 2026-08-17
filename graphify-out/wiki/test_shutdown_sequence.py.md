@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_shutdown_sequence.py** (26 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_shutdown_sequence.py** (27 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
 - **shutdown_sequence.py** (17 connections) — `server/commands/shutdown_sequence.py`
 - **execute_shutdown_sequence()** (15 connections) — `server/commands/shutdown_sequence.py`
 - **_ShutdownApp** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (5 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 - [test_shutdown_process_termination.py](test_shutdown_process_termination.py.md) (3 shared connections)
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 133 (98%)
+- EXTRACTED: 134 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

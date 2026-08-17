@@ -1,36 +1,34 @@
 # properties
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
-- **id** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [enum](enum.md) (2 shared connections)
-- [holiday](holiday.md) (1 shared connections)
-- [month](month.md) (1 shared connections)
-- [day](day.md) (1 shared connections)
-- [duration_hours](duration_hours.md) (1 shared connections)
-- [items](items.md) (1 shared connections)
+- [exits](exits.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

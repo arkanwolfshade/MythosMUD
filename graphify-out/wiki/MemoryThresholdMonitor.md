@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
-- **test_memory_cleanup_service.py** (21 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_memory_cleanup_service.py** (22 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **asyncio** (9 connections)
 - **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
 - **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [.get_memory_status_report](get_memory_status_report.md) (4 shared connections)
 - [._flush_memory_indexes_cache](_flush_memory_indexes_cache.md) (2 shared connections)
 - [monitor](monitor.md) (2 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 61 (81%)
-- INFERRED: 14 (19%)
+- EXTRACTED: 62 (82%)
+- INFERRED: 14 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

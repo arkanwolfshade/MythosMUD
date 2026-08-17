@@ -9,9 +9,9 @@ import datetime
 import uuid
 from typing import TYPE_CHECKING, Any
 
+from ..constants.spawn_defaults import LIMBO_ROOM_ID
 from ..exceptions import ValidationError
 from ..models.player import Player
-from ..services.player_respawn_service import LIMBO_ROOM_ID
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.enhanced_error_logging import log_and_raise_enhanced
 

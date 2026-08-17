@@ -1,54 +1,53 @@
 # test_command_moderation.py
 
-> 101 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_command_moderation.py** (38 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_command_moderation.py** (40 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **MuteCommand** (18 connections) — `server/models/command_moderation.py`
-- **command_moderation.py** (16 connections) — `server/models/command_moderation.py`
-- **AdminCommand** (15 connections) — `server/models/command_moderation.py`
-- **MuteGlobalCommand** (15 connections) — `server/models/command_moderation.py`
-- **AddAdminCommand** (10 connections) — `server/models/command_moderation.py`
-- **UnmuteCommand** (10 connections) — `server/models/command_moderation.py`
-- **UnmuteGlobalCommand** (10 connections) — `server/models/command_moderation.py`
-- **validate_reason_content()** (10 connections) — `server/validators/security_validator.py`
-- **MutesCommand** (8 connections) — `server/models/command_moderation.py`
-- **field_validator** (8 connections)
-- **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_player_name_field()** (4 connections) — `server/models/command_moderation.py`
-- **.validate_subcommand()** (3 connections) — `server/models/command_moderation.py`
 - **test_add_admin_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_add_admin_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
 - **test_admin_command_validate_subcommand_case_insensitive()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
-- *... and 76 more nodes in this community*
+- **test_admin_command_validate_subcommand_invalid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_validate_subcommand_valid()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_admin_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_duration_validation_max()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_reason_max_length()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_reason_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_validate_reason_none()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_with_duration()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_command_with_reason()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_max()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_duration_validation_min()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **test_mute_global_command_validate_reason_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_moderation.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [command.py](command.py.md) (17 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (13 shared connections)
-- [BaseCommand](BaseCommand.md) (8 shared connections)
-- [test_command_factories_moderation.py](test_command_factories_moderation.py.md) (7 shared connections)
+- [BaseCommand](BaseCommand.md) (32 shared connections)
+- [ModerationCommandFactory](ModerationCommandFactory.md) (1 shared connections)
+- [validate_player_name](validate_player_name.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/command_moderation.py`
 - `server/tests/unit/models/test_command_moderation.py`
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (77%)
-- INFERRED: 43 (23%)
+- EXTRACTED: 75 (71%)
+- INFERRED: 31 (29%)
 - AMBIGUOUS: 0 (0%)
 
 ---

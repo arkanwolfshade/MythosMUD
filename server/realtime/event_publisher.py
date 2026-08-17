@@ -5,16 +5,37 @@ This module provides a service class for publishing player_entered, player_left,
 and game_tick events to NATS subjects for real-time game event distribution.
 """
 
-# pylint: disable=too-many-locals  # Reason: Event publishing requires many intermediate variables for complex event processing logic
+# pylint: disable=too-many-locals,missing-class-docstring,missing-function-docstring,too-few-public-methods  # Reason: Event publishing locals; Protocol stubs (PEP 544)
+
+from __future__ import annotations
 
 import uuid
+from collections.abc import Mapping
 from datetime import datetime
-from typing import Any
+from typing import Protocol, cast
 
 from ..services.nats_subject_manager import NATSSubjectManager
 from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger("realtime.event_publisher")
+
+JsonMap = dict[str, object]
+
+
+class _Named(Protocol):
+    name: object
+
+
+class _EventPersistence(Protocol):
+    async def get_player_by_id(self, player_id: uuid.UUID) -> _Named | None: ...
+
+    def get_room_by_id(self, room_id: str) -> _Named | None: ...
+
+
+class _NatsPublish(Protocol):
+    def is_connected(self) -> bool: ...
+
+    async def publish(self, subject: str, data: Mapping[str, object]) -> object: ...
 
 
 class EventPublisher:
@@ -26,8 +47,16 @@ class EventPublisher:
     to connected clients.
     """
 
+    nats_service: _NatsPublish | None
+    subject_manager: NATSSubjectManager | None
+    sequence_number: int
+    _async_persistence: _EventPersistence | None
+
     def __init__(
-        self, nats_service: Any, subject_manager: NATSSubjectManager | None = None, initial_sequence: int = 0
+        self,
+        nats_service: _NatsPublish | None,
+        subject_manager: NATSSubjectManager | None = None,
+        initial_sequence: int = 0,
     ) -> None:
         """
         Initialize EventPublisher service.
@@ -43,16 +72,57 @@ class EventPublisher:
         self.nats_service = nats_service
         self.subject_manager = subject_manager
         self.sequence_number = initial_sequence
-        self._async_persistence: Any | None = None  # Lazy-loaded from ApplicationContainer
+        self._async_persistence = None
 
         logger.info("EventPublisher initialized", subject_manager_enabled=subject_manager is not None)
+
+    async def _resolve_player_and_room_names(self, player_id: str, room_id: str) -> tuple[str, str]:
+        player_name = f"Player_{player_id}"
+        room_name = f"Room_{room_id}"
+        async_persistence = self._get_async_persistence()
+        if not async_persistence:
+            return player_name, room_name
+        try:
+            try:
+                player = await async_persistence.get_player_by_id(uuid.UUID(player_id))
+                if player is not None:
+                    name = str(player.name)
+                    if name:
+                        player_name = name
+            except (ValueError, TypeError, AttributeError) as e:
+                logger.debug("Failed to get player name", player_id=player_id, error=str(e))
+            room = async_persistence.get_room_by_id(room_id)
+            if room is not None:
+                name = str(room.name)
+                if name:
+                    room_name = name
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: optional metadata
+            logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
+        return player_name, room_name
+
+    def _player_event_subject(self, event_key: str, room_id: str, legacy_prefix: str) -> str:
+        if self.subject_manager:
+            return self.subject_manager.build_subject(event_key, room_id=room_id)
+        logger.warning(
+            "Using legacy subject construction - subject_manager not configured",
+            event_type=event_key,
+            room_id=room_id,
+        )
+        return f"{legacy_prefix}.{room_id}"
+
+    async def _publish_event(self, subject: str, event_message: JsonMap) -> bool:
+        nats_service = self.nats_service
+        if nats_service is None or not nats_service.is_connected():
+            return False
+        published = await nats_service.publish(subject, event_message)
+        return published is not False
 
     async def publish_player_entered_event(
         self,
         player_id: str,
         room_id: str,
         timestamp: str | None = None,
-        additional_metadata: dict[str, Any] | None = None,
+        additional_metadata: JsonMap | None = None,
     ) -> bool:
         """
         Publish a player_entered event to NATS.
@@ -67,65 +137,26 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is available and connected
             if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish player_entered event")
                 return False
 
-            # Get actual player and room names from persistence
-            player_name = f"Player_{player_id}"  # Fallback
-            room_name = f"Room_{room_id}"  # Fallback
-
-            async_persistence = self._get_async_persistence()
-            if async_persistence:
-                try:
-                    # Get player name
-                    try:
-                        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                        player = await async_persistence.get_player_by_id(player_id_uuid)
-                        if player and hasattr(player, "name") and player.name:
-                            player_name = player.name
-                    except (ValueError, TypeError, AttributeError) as e:
-                        logger.debug("Failed to get player name", player_id=player_id, error=str(e))
-
-                    # Get room name (sync cache method)
-                    room = async_persistence.get_room_by_id(room_id)
-                    if room and hasattr(room, "name") and room.name:
-                        room_name = room.name
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database/attribute access errors unpredictable, optional metadata
-                    logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
-
-            # Generate event data
-            event_data = {
+            player_name, room_name = await self._resolve_player_and_room_names(player_id, room_id)
+            event_data: JsonMap = {
                 "player_id": player_id,
                 "room_id": room_id,
                 "player_name": player_name,
                 "room_name": room_name,
             }
-
-            # Create the complete event message
             event_message = self._create_event_message(
                 event_type="player_entered",
                 data=event_data,
                 timestamp=timestamp,
                 additional_metadata=additional_metadata,
             )
+            subject = self._player_event_subject("event_player_entered", room_id, "events.player_entered")
 
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("event_player_entered", room_id=room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"events.player_entered.{room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="player_entered",
-                    room_id=room_id,
-                )
-
-            success = await self.nats_service.publish(subject, event_message)
-
-            if success:
+            if await self._publish_event(subject, event_message):
                 logger.info(
                     "Player entered event published successfully",
                     player_id=player_id,
@@ -155,7 +186,7 @@ class EventPublisher:
         player_id: str,
         room_id: str,
         timestamp: str | None = None,
-        additional_metadata: dict[str, Any] | None = None,
+        additional_metadata: JsonMap | None = None,
     ) -> bool:
         """
         Publish a player_left event to NATS.
@@ -170,62 +201,23 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is available and connected
             if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish player_left event")
                 return False
 
-            # Get actual player and room names from persistence
-            player_name = f"Player_{player_id}"  # Fallback
-            room_name = f"Room_{room_id}"  # Fallback
-
-            async_persistence = self._get_async_persistence()
-            if async_persistence:
-                try:
-                    # Get player name
-                    try:
-                        player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
-                        player = await async_persistence.get_player_by_id(player_id_uuid)
-                        if player and hasattr(player, "name") and player.name:
-                            player_name = player.name
-                    except (ValueError, TypeError, AttributeError) as e:
-                        logger.debug("Failed to get player name", player_id=player_id, error=str(e))
-
-                    # Get room name (sync cache method)
-                    room = async_persistence.get_room_by_id(room_id)
-                    if room and hasattr(room, "name") and room.name:
-                        room_name = room.name
-                except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database/attribute access errors unpredictable, optional metadata
-                    logger.debug("Failed to get player/room names", player_id=player_id, room_id=room_id, error=str(e))
-
-            # Generate event data
-            event_data = {
+            player_name, room_name = await self._resolve_player_and_room_names(player_id, room_id)
+            event_data: JsonMap = {
                 "player_id": player_id,
                 "room_id": room_id,
                 "player_name": player_name,
                 "room_name": room_name,
             }
-
-            # Create the complete event message
             event_message = self._create_event_message(
                 event_type="player_left", data=event_data, timestamp=timestamp, additional_metadata=additional_metadata
             )
+            subject = self._player_event_subject("event_player_left", room_id, "events.player_left")
 
-            # Build subject using standardized pattern
-            if self.subject_manager:
-                subject = self.subject_manager.build_subject("event_player_left", room_id=room_id)
-            else:
-                # Legacy fallback for backward compatibility
-                subject = f"events.player_left.{room_id}"
-                logger.warning(
-                    "Using legacy subject construction - subject_manager not configured",
-                    event_type="player_left",
-                    room_id=room_id,
-                )
-
-            success = await self.nats_service.publish(subject, event_message)
-
-            if success:
+            if await self._publish_event(subject, event_message):
                 logger.info(
                     "Player left event published successfully",
                     player_id=player_id,
@@ -249,7 +241,7 @@ class EventPublisher:
             return False
 
     async def publish_game_tick_event(
-        self, timestamp: str | None = None, additional_metadata: dict[str, Any] | None = None
+        self, timestamp: str | None = None, additional_metadata: JsonMap | None = None
     ) -> bool:
         """
         Publish a game_tick event to NATS.
@@ -262,42 +254,34 @@ class EventPublisher:
             True if published successfully, False otherwise
         """
         try:
-            # Check if NATS service is available and connected
             if self.nats_service is None or not self.nats_service.is_connected():
                 logger.warning("NATS service not connected, cannot publish game_tick event")
                 return False
 
-            # Generate event data
             current_time = datetime.now()
-            # Use tick_number from additional_metadata if available, otherwise use sequence number
-            tick_number = (
+            tick_number: object = (
                 additional_metadata.get("tick_number")
                 if additional_metadata and "tick_number" in additional_metadata
                 else self.sequence_number + 1
             )
-            event_data = {
+            event_data: JsonMap = {
                 "tick_number": tick_number,
                 "server_time": current_time.isoformat(),
             }
 
-            # Create the complete event message
             event_message = self._create_event_message(
                 event_type="game_tick", data=event_data, timestamp=timestamp, additional_metadata=additional_metadata
             )
 
-            # Build subject using standardized pattern
             if self.subject_manager:
                 subject = self.subject_manager.build_subject("event_game_tick")
             else:
-                # Legacy fallback for backward compatibility
                 subject = "events.game_tick"
                 logger.warning(
                     "Using legacy subject construction - subject_manager not configured", event_type="game_tick"
                 )
 
-            success = await self.nats_service.publish(subject, event_message)
-
-            if success:
+            if await self._publish_event(subject, event_message):
                 logger.info(
                     "Game tick event published successfully",
                     subject=subject,
@@ -316,10 +300,10 @@ class EventPublisher:
     def _create_event_message(
         self,
         event_type: str,
-        data: dict[str, Any],
+        data: JsonMap,
         timestamp: str | None = None,
-        additional_metadata: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
+        additional_metadata: JsonMap | None = None,
+    ) -> JsonMap:
         """
         Create a standardized event message structure.
 
@@ -332,34 +316,27 @@ class EventPublisher:
         Returns:
             Standardized event message dictionary
         """
-        # Generate timestamp if not provided
         if timestamp is None:
             timestamp = datetime.now().isoformat()
 
-        # Generate sequence number
         sequence_number = self.get_next_sequence_number()
 
-        # Create base metadata
-        metadata = {
+        metadata: JsonMap = {
             "event_type": event_type,
             "timestamp": timestamp,
             "sequence_number": sequence_number,
         }
 
-        # Add additional metadata if provided
         if additional_metadata:
             metadata.update(additional_metadata)
 
-        # Create the complete event message
-        event_message = {
+        return {
             "event_type": event_type,
             "timestamp": timestamp,
             "sequence_number": sequence_number,
             "data": data,
             "metadata": metadata,
         }
-
-        return event_message
 
     def get_next_sequence_number(self) -> int:
         """
@@ -376,15 +353,16 @@ class EventPublisher:
         self.sequence_number = 0
         logger.info("EventPublisher sequence number reset")
 
-    def _get_async_persistence(self) -> Any | None:
+    def _get_async_persistence(self) -> _EventPersistence | None:
         """Get async_persistence from ApplicationContainer (lazy-loaded)."""
         if self._async_persistence is None:
             try:
-                from ..container import ApplicationContainer
+                from ..container import ApplicationContainer  # noqa: I001,PLC0415  # Reason: lazy load avoids container import cycle
 
                 container = ApplicationContainer.get_instance()
-                if container and container.async_persistence:
-                    self._async_persistence = container.async_persistence
+                persistence = getattr(container, "async_persistence", None) if container else None
+                if persistence is not None:
+                    self._async_persistence = cast(_EventPersistence, cast(object, persistence))
             except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container access errors unpredictable, must handle gracefully
                 logger.warning("Failed to get async_persistence from ApplicationContainer", error=str(e))
         return self._async_persistence

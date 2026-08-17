@@ -6,8 +6,8 @@
 
 - **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 - **.validator()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **test_path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 - **.zone_transition_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 - **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 - **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
 - **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
@@ -29,6 +29,7 @@
 ## Relationships
 
 - [RoomLoader](RoomLoader.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
+- EXTRACTED: 24 (96%)
 - INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 

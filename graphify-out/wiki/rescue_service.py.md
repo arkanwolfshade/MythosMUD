@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **rescue_service.py** (19 connections) — `server/services/rescue_service.py`
+- **rescue_service.py** (20 connections) — `server/services/rescue_service.py`
 - **RescueService** (12 connections) — `server/services/rescue_service.py`
 - **.rescue()** (8 connections) — `server/services/rescue_service.py`
 - **Any** (7 connections)
@@ -29,13 +29,14 @@
 
 ## Relationships
 
-- [Player](Player.md) (8 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (4 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (8 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
+- [test_rescue_no_persistence](test_rescue_no_persistence.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (91%)
+- EXTRACTED: 53 (91%)
 - INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 

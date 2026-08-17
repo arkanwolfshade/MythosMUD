@@ -1,40 +1,51 @@
 # UUID
 
-> 16 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **Any** (7 connections)
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UUID** (20 connections)
+- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
+- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
+- **.end_combat_if_npc_died()** (5 connections) — `server/services/combat_service.py`
+- **.handle_attack_events_and_xp()** (5 connections) — `server/services/combat_service.py`
+- **.validate_and_get_combat_participants()** (5 connections) — `server/services/combat_service.py`
+- **.award_xp_to_player()** (4 connections) — `server/services/combat_service.py`
+- **.end_combat()** (4 connections) — `server/services/combat_service.py`
+- **.get_combat()** (4 connections) — `server/services/combat_service.py`
+- **.get_combat_by_participant()** (4 connections) — `server/services/combat_service.py`
+- **._get_combat_id_for_npc()** (4 connections) — `server/services/combat_service.py`
+- **.process_attack()** (4 connections) — `server/services/combat_service.py`
+- **.register_combat_state()** (4 connections) — `server/services/combat_service.py`
+- **.broadcast_aggro_target_switches()** (3 connections) — `server/services/combat_service.py`
+- **.get_combat_id_for_npc_uuid()** (3 connections) — `server/services/combat_service.py`
+- **.get_combat_id_for_participant()** (3 connections) — `server/services/combat_service.py`
+- **.notify_player_combat_ended()** (3 connections) — `server/services/combat_service.py`
+- **.publish_npc_damage_event()** (3 connections) — `server/services/combat_service.py`
+- **.publish_npc_died_event()** (3 connections) — `server/services/combat_service.py`
+- **.queue_combat_action()** (3 connections) — `server/services/combat_service.py`
+- **Publish an npc_took_damage event for non-combat damage.** (1 connections) — `server/services/combat_service.py`
+- **Publish an npc_died event when non-combat damage kills an NPC.** (1 connections) — `server/services/combat_service.py`
+- **Return combat_id if this NPC is in combat, else None.** (1 connections) — `server/services/combat_service.py`
+- **End combat if the given NPC is in combat (e.g. steal-life kill).** (1 connections) — `server/services/combat_service.py`
+- **Return the active combat for combat_id, or None if not found.** (1 connections) — `server/services/combat_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (1 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (20 shared connections)
+- [CombatInstance](CombatInstance.md) (7 shared connections)
+- [CombatParticipant](CombatParticipant.md) (5 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
+- [combat_service_npc.py](combat_service_npc.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/services/combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

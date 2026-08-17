@@ -20,22 +20,22 @@
 - server/models/__init__.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
+- test_admin_auth_service.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
-- api/container_helpers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
 - rooms.py `EXTRACTED`
 - test_metrics_endpoints.py `EXTRACTED`
 - [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
-- [npc_definitions_api.py](npc_definitions_api.py.md) `EXTRACTED`
-- container_endpoints_loot.py `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
 
 ### inherits
 - Base `EXTRACTED`
@@ -74,7 +74,7 @@
 ### uses
 - [Player](Player.md) `INFERRED`
 - Base `INFERRED`
-- Invite `INFERRED`
+- [Invite](Invite.md) `INFERRED`
 - _admin_user() `INFERRED`
 - _admin_user() `INFERRED`
 - test_lucidity_adjustment_round_trip() `INFERRED`

@@ -1,50 +1,47 @@
 # RoomCacheService
 
-> 28 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **RoomCacheService** (29 connections) — `server/caching/cache_service.py`
-- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **test_cache_service.py** (22 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **NPCCacheService** (21 connections) — `server/caching/cache_service.py`
 - **TestRoomCacheService** (14 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Any** (13 connections)
+- **asyncio** (10 connections)
+- **TestNPCCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
 - **.__init__()** (7 connections) — `server/caching/cache_service.py`
+- **_NpcDef** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
 - **_RoomObj** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **reset_cache_manager()** (5 connections) — `server/caching/lru_cache.py`
+- **fixture** (5 connections)
+- **_Profession** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_SpawnRule** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
 - **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_returns_none()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
-- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
-- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Any** (1 connections)
-- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
-- *... and 3 more nodes in this community*
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.npc_service()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_definitions_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_npc_definition_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_spawn_rules_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [test_cache_service.py](test_cache_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [NPCCacheService](NPCCacheService.md) (4 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (18 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (9 shared connections)
+- [cached](cached.md) (6 shared connections)
+- [CacheService](CacheService.md) (5 shared connections)
+- [bench_cache_npc.py](bench_cache_npc.py.md) (2 shared connections)
 - [bench_cache.py](bench_cache.py.md) (2 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [cached](cached.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [LRUCache](LRUCache.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 78 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 153 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

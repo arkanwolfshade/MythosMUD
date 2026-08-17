@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_player_spell_repository.py** (19 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_player_spell_repository.py** (20 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **asyncio** (9 connections)
 - **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
@@ -24,8 +24,10 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -33,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

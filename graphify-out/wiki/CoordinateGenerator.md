@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **CoordinateGenerator** (24 connections) — `server/services/coordinate_generator.py`
-- **test_coordinate_generator.py** (17 connections) — `server/tests/unit/services/test_coordinate_generator.py`
+- **test_coordinate_generator.py** (18 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
 - **Any** (8 connections)
 - **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
@@ -36,6 +36,7 @@
 - [maps.py](maps.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [deque](deque.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 75 (95%)
+- EXTRACTED: 76 (95%)
 - INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 

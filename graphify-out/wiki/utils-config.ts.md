@@ -1,64 +1,70 @@
 # utils/config.ts
 
-> 42 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **utils/config.ts** (28 connections) — `client/src/utils/config.ts`
-- **MonitoringPanel.tsx** (19 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **DialogueEditorPage.tsx** (22 connections) — `client/src/pages/DialogueEditorPage.tsx`
 - **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
 - **getVersionedApiBaseUrl()** (17 connections) — `client/src/utils/config.ts`
-- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
-- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **dialogue.ts** (16 connections) — `client/src/api/dialogue.ts`
+- **AppRouter.tsx** (12 connections) — `client/src/AppRouter.tsx`
+- **SkillsPage.tsx** (11 connections) — `client/src/pages/SkillsPage.tsx`
 - **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **useDialogueEditor()** (6 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **baseUrl()** (5 connections) — `client/src/api/dialogue.ts`
+- **deleteDialogueDefinition()** (5 connections) — `client/src/api/dialogue.ts`
+- **listDialogueDefinitions()** (5 connections) — `client/src/api/dialogue.ts`
+- **upsertDialogueDefinition()** (5 connections) — `client/src/api/dialogue.ts`
+- **validateDialogueTreeClient()** (5 connections) — `client/src/api/dialogue.ts`
 - **AppCreationFlowViews()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **creationShell()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **MonitoringPanel()** (4 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **ConnectionHealthStats()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **formatNumber()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **formatPercentage()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **useMonitoringPanel()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
-- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
-- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **buildHeaders()** (4 connections) — `client/src/api/dialogue.ts`
+- **xstateInspector.ts** (4 connections) — `client/src/utils/xstateInspector.ts`
+- **DialogueTreeDto** (3 connections) — `client/src/api/dialogue.ts`
+- **validateDialogueNode()** (3 connections) — `client/src/api/dialogue.ts`
+- **AppRouter()** (3 connections) — `client/src/AppRouter.tsx`
 - **renderNameStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **renderProfessionStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
 - **renderSkillsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderStatsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- *... and 17 more nodes in this community*
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
+- [useMythosAppState.ts](useMythosAppState.ts.md) (8 shared connections)
+- [security.ts](security.ts.md) (8 shared connections)
 - [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (6 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (5 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (3 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (3 shared connections)
+- [RoomNodeData](RoomNodeData.md) (3 shared connections)
 - [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (2 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)
-- [types/mythosTime.ts](types-mythosTime.ts.md) (2 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [MonitoringPanel.tsx](MonitoringPanel.tsx.md) (3 shared connections)
+- [App.tsx](App.tsx.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/MonitoringPanel.tsx`
-- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
-- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- `client/src/AppRouter.tsx`
+- `client/src/__tests__/AppRouter.test.tsx`
+- `client/src/api/__tests__/dialogue.test.ts`
+- `client/src/api/dialogue.ts`
+- `client/src/main.tsx`
 - `client/src/mythosApp/AppCreationFlowViews.tsx`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
+- `client/src/pages/DialogueEditorPage.tsx`
+- `client/src/pages/SkillsPage.tsx`
+- `client/src/pages/__tests__/SkillsPage.test.tsx`
 - `client/src/utils/__tests__/config.test.ts`
+- `client/src/utils/__tests__/xstateInspector.test.ts`
 - `client/src/utils/config.ts`
+- `client/src/utils/xstateInspector.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (100%)
+- EXTRACTED: 160 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -20,6 +20,7 @@ When the context matches a situation below, apply the corresponding project skil
 | Adding tests, test failures, or test layout/coverage                        | **mythosmud-test-writing**         |
 | Auth, user data, or features affecting minors / user info                   | **mythosmud-coppa-checklist**      |
 | Improving code for AI, maintainability, or AI-friendly code quality         | **mythosmud-code-quality-ai**      |
+| Editing Python, basedpyright, `typing.Any`, or reportAny                    | **mythosmud-code-quality-ai**      |
 | Obsidian vault, LLM wiki, permanent memory, ingest/lint wiki, graphify sync | **mythosmud-llm-wiki**             |
 | Stacked PRs, `gh stack`, multi-layer PR, sync/rebase/merge stacked branches | **gh-stack**                       |
 | Open PR / ship / review-and-ship with >1 layer or existing stack            | **gh-stack** (then PR tooling)     |

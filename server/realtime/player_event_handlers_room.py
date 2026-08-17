@@ -4,56 +4,140 @@ Room-related player event handlers.
 This module handles player room entry/exit events and room occupant management.
 """
 
-# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-lines  # Reason: Event handlers require many service attributes and complex event processing logic. Room event handlers require extensive event handling logic for comprehensive room event management.
+# pylint: disable=too-many-instance-attributes,too-many-arguments,too-many-positional-arguments,too-many-lines,missing-class-docstring,missing-function-docstring,too-few-public-methods  # Reason: Room handlers are large; Protocol stubs (PEP 544)
+
+from __future__ import annotations
 
 import uuid
+from collections.abc import Awaitable, Mapping
+from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import Protocol, cast, overload
 
 from sqlalchemy.exc import SQLAlchemyError
+from structlog.stdlib import BoundLogger
 
 from ..events.event_types import PlayerEnteredRoom, PlayerLeftRoom
+from .envelope import build_event
 from .message_builders import MessageBuilder
 from .player_event_handlers_utils import PlayerEventHandlerUtils
 from .player_name_utils import PlayerNameExtractor
 from .room_occupant_manager import RoomOccupantManager
 
+JsonMap = dict[str, object]
+OccupantSnap = list[JsonMap | str]
+
+
+class _NamedRoom(Protocol):
+    name: object
+
+    def to_dict(self) -> object: ...
+
+
+class _RoomPersistence(Protocol):
+    def get_room_by_id(self, room_id: str) -> _NamedRoom | None: ...
+
+
+class RoomConnectionManager(Protocol):
+    async_persistence: _RoomPersistence | None
+    sequence_counter: int
+
+    async def broadcast_to_room(
+        self, room_id: str, message: Mapping[str, object], exclude_player: str | None = None
+    ) -> None: ...
+
+    async def subscribe_to_room(self, player_id: uuid.UUID, room_id: str) -> None: ...
+
+    async def unsubscribe_from_room(self, player_id: uuid.UUID, room_id: str) -> None: ...
+
+    async def send_personal_message(self, player_id: uuid.UUID, event: Mapping[str, object]) -> None: ...
+
+    async def convert_room_players_uuids_to_names(self, room_data: JsonMap) -> JsonMap: ...
+
+
+class RoomChatLogger(Protocol):
+    def log_player_joined_room(self, *, player_id: str, player_name: str, room_id: str, room_name: object) -> None: ...
+
+    def log_player_left_room(self, *, player_id: str, player_name: str, room_id: str, room_name: object) -> None: ...
+
+
+class RoomSyncOrdering(Protocol):
+    @overload
+    def process_event_with_ordering(self, event: PlayerEnteredRoom) -> PlayerEnteredRoom: ...
+
+    @overload
+    def process_event_with_ordering(self, event: PlayerLeftRoom) -> PlayerLeftRoom: ...
+
+    def process_event_with_ordering(
+        self, event: PlayerEnteredRoom | PlayerLeftRoom
+    ) -> PlayerEnteredRoom | PlayerLeftRoom: ...
+
+
+class OccupantsUpdateFn(Protocol):
+    def __call__(self, room_id: str, exclude_player: str | None = None) -> Awaitable[None]: ...
+
+
+def _as_map(value: object) -> JsonMap:
+    if not isinstance(value, dict):
+        return {}
+    typed = cast(dict[object, object], value)
+    return {str(k): v for k, v in typed.items()}
+
+
+def _as_occupant_snap(value: object) -> OccupantSnap:
+    if not isinstance(value, list):
+        return []
+    result: OccupantSnap = []
+    for item in cast(list[object], value):
+        if isinstance(item, str):
+            result.append(item)
+        else:
+            result.append(_as_map(item))
+    return result
+
+
+def _snapshot_payload(utils: PlayerEventHandlerUtils, raw: object) -> tuple[OccupantSnap, JsonMap]:
+    snap = _as_occupant_snap(raw)
+    data = _as_map(cast(object, utils.build_occupants_snapshot_data(snap)))
+    return snap, data
+
+
+@dataclass
+class PlayerRoomEventHandlerDeps:
+    """Constructor bundle so Lizard does not count eight service args."""
+
+    connection_manager: RoomConnectionManager | None
+    room_sync_service: RoomSyncOrdering
+    chat_logger: RoomChatLogger
+    message_builder: MessageBuilder
+    name_extractor: PlayerNameExtractor
+    occupant_manager: RoomOccupantManager
+    utils: PlayerEventHandlerUtils
+    logger: BoundLogger
+
 
 class PlayerRoomEventHandler:
     """Handles room-related player events (entered, left, occupants)."""
 
-    def __init__(
-        self,
-        connection_manager: Any,
-        room_sync_service: Any,
-        chat_logger: Any,
-        message_builder: MessageBuilder,
-        name_extractor: PlayerNameExtractor,
-        occupant_manager: RoomOccupantManager,
-        utils: PlayerEventHandlerUtils,
-        logger: Any,
-    ) -> None:
-        """
-        Initialize room event handler.
+    connection_manager: RoomConnectionManager | None
+    room_sync_service: RoomSyncOrdering
+    chat_logger: RoomChatLogger
+    message_builder: MessageBuilder
+    name_extractor: PlayerNameExtractor
+    occupant_manager: RoomOccupantManager
+    utils: PlayerEventHandlerUtils
+    _logger: BoundLogger
 
-        Args:
-            connection_manager: ConnectionManager instance
-            room_sync_service: RoomSyncService instance
-            chat_logger: ChatLogger instance
-            message_builder: MessageBuilder instance
-            name_extractor: PlayerNameExtractor instance
-            occupant_manager: RoomOccupantManager instance
-            utils: PlayerEventHandlerUtils instance
-            logger: Logger instance
-        """
-        self.connection_manager = connection_manager
-        self.room_sync_service = room_sync_service
-        self.chat_logger = chat_logger
-        self.message_builder = message_builder
-        self.name_extractor = name_extractor
-        self.occupant_manager = occupant_manager
-        self.utils = utils
-        self._logger = logger
+    def __init__(self, deps: PlayerRoomEventHandlerDeps) -> None:
+        """Initialize room event handler from a deps bundle."""
+        self.connection_manager = deps.connection_manager
+        self.room_sync_service = deps.room_sync_service
+        self.chat_logger = deps.chat_logger
+        self.message_builder = deps.message_builder
+        self.name_extractor = deps.name_extractor
+        self.occupant_manager = deps.occupant_manager
+        self.utils = deps.utils
+        self._logger = deps.logger
 
     async def log_player_movement(
         self, player_id: uuid.UUID | str, player_name: str, room_id: str, movement_type: str
@@ -77,7 +161,7 @@ class PlayerRoomEventHandler:
                 if self.connection_manager.async_persistence
                 else None
             )
-            room_name = getattr(room, "name", room_id) if room else room_id
+            room_name = str(room.name) if room is not None and room.name else room_id
 
             if movement_type == "joined":
                 self.chat_logger.log_player_joined_room(
@@ -97,7 +181,7 @@ class PlayerRoomEventHandler:
             self._logger.error("Error logging player movement", error=str(e), movement_type=movement_type)
 
     async def broadcast_player_entered_message(
-        self, message: dict[str, Any], room_id_str: str | None, exclude_player_id: str | None
+        self, message: JsonMap, room_id_str: str | None, exclude_player_id: str | None
     ) -> None:
         """
         Broadcast player entered message to room occupants.
@@ -107,7 +191,7 @@ class PlayerRoomEventHandler:
             room_id_str: The room ID as string
             exclude_player_id: Player ID to exclude from broadcast
         """
-        if room_id_str is not None:
+        if room_id_str is not None and self.connection_manager is not None:
             await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
     async def subscribe_player_to_room(self, player_id: uuid.UUID | str, room_id: str) -> None:
@@ -124,6 +208,8 @@ class PlayerRoomEventHandler:
             return
 
         try:
+            if self.connection_manager is None:
+                return
             await self.connection_manager.subscribe_to_room(player_id_uuid, room_id)
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.warning(
@@ -139,8 +225,9 @@ class PlayerRoomEventHandler:
             room_id: The room ID
             room_name: The room name
         """
-        from .envelope import build_event
-
+        cm = self.connection_manager
+        if cm is None:
+            return
         room_name_event = build_event(
             "command_response",
             {
@@ -151,7 +238,7 @@ class PlayerRoomEventHandler:
             player_id=player_id_uuid,
             connection_manager=self.connection_manager,
         )
-        await self.connection_manager.send_personal_message(player_id_uuid, room_name_event)
+        await cm.send_personal_message(player_id_uuid, room_name_event)
         self._logger.debug(
             "Sent room name message to player",
             player_id=player_id_uuid,
@@ -159,7 +246,7 @@ class PlayerRoomEventHandler:
             room_name=room_name,
         )
 
-    async def _prepare_room_data(self, room: Any, _room_id: str) -> dict[str, Any]:
+    async def _prepare_room_data(self, room: _NamedRoom, _room_id: str) -> JsonMap:
         """
         Prepare room data for client, removing occupant fields.
 
@@ -170,15 +257,14 @@ class PlayerRoomEventHandler:
         Returns:
             Prepared room data dictionary
         """
-        room_data = room.to_dict() if hasattr(room, "to_dict") else room
-        if isinstance(room_data, dict):
-            room_data = await self.connection_manager.convert_room_players_uuids_to_names(room_data)
-            # CRITICAL FIX: Remove occupant fields from room_data - room_update should NEVER include these
-            room_data.pop("players", None)
-            room_data.pop("npcs", None)
-            room_data.pop("occupants", None)
-            room_data.pop("occupant_count", None)
-        return cast(dict[str, Any], room_data)
+        cm = self.connection_manager
+        room_data = _as_map(room.to_dict() if hasattr(room, "to_dict") else room)
+        if cm is not None:
+            room_data = await cm.convert_room_players_uuids_to_names(room_data)
+            for key in ("players", "npcs", "occupants", "occupant_count"):
+                if key in room_data:
+                    del room_data[key]
+        return room_data
 
     async def send_room_update_to_player(
         self, player_id: uuid.UUID | str, room_id: str, include_occupants: bool = False
@@ -210,15 +296,15 @@ class PlayerRoomEventHandler:
             occupants_info = await self.occupant_manager.get_room_occupants(
                 room_id, ensure_player_included=player_id if include_occupants else None
             )
-            occupant_names = self.utils.extract_occupant_names(occupants_info)
+            occupants_snap, occupants_data = _snapshot_payload(self.utils, occupants_info)
+            occupant_names = [str(name) for name in self.utils.extract_occupant_names(occupants_snap)]
             room_data = await self._prepare_room_data(room, room_id)
             if include_occupants:
-                occupants_data = self.utils.build_occupants_snapshot_data(occupants_info)
                 room_data["players"] = occupants_data.get("players", [])
                 room_data["npcs"] = occupants_data.get("npcs", [])
                 room_data["occupants"] = occupants_data.get("occupants", [])
                 room_data["occupant_count"] = occupants_data.get("count", 0)
-            room_update_event = self.message_builder.build_room_update_message(room_id, room_data)
+            room_update_event = _as_map(self.message_builder.build_room_update_message(room_id, room_data))
             await self.connection_manager.send_personal_message(player_id_uuid, room_update_event)
             if include_occupants:
                 self._logger.info(
@@ -236,7 +322,7 @@ class PlayerRoomEventHandler:
             )
 
             if room.name:
-                await self._send_room_name_message(player_id_uuid, room_id, room.name)
+                await self._send_room_name_message(player_id_uuid, room_id, str(room.name))
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.error("Error sending room update to player", player_id=player_id_uuid, error=str(e))
 
@@ -244,8 +330,8 @@ class PlayerRoomEventHandler:
         self,
         player_id_uuid: uuid.UUID,
         room_id: str,
-        occupants_snapshot: list[dict[str, Any] | str],
-        occupants_data: dict[str, Any],
+        occupants_snapshot: OccupantSnap,
+        occupants_data: JsonMap,
     ) -> None:
         """
         Log occupants snapshot preparation and sending.
@@ -257,6 +343,10 @@ class PlayerRoomEventHandler:
             occupants_data: Structured occupants data
         """
         npc_count, player_count = self.utils.count_occupants_by_type(occupants_snapshot)
+        players_raw = occupants_data.get("players", [])
+        npcs_raw = occupants_data.get("npcs", [])
+        players_list: list[object] = list(cast(list[object], players_raw)) if isinstance(players_raw, list) else []
+        npcs_list: list[object] = list(cast(list[object], npcs_raw)) if isinstance(npcs_raw, list) else []
         self._logger.info(
             "Sending room_occupants event with data to player",
             player_id=player_id_uuid,
@@ -264,12 +354,12 @@ class PlayerRoomEventHandler:
             total_occupants=len(occupants_snapshot),
             npc_count=npc_count,
             player_count=player_count,
-            players_count=len(occupants_data["players"]),
-            npcs_count=len(occupants_data["npcs"]),
-            players=occupants_data["players"],
-            npcs=occupants_data["npcs"],
+            players_count=len(players_list),
+            npcs_count=len(npcs_list),
+            players=players_list,
+            npcs=npcs_list,
         )
-        if not occupants_data["npcs"]:
+        if not npcs_list:
             # Log as warning to help identify NPC spawning issues
             self._logger.info(
                 "No NPCs included in occupants snapshot - player may not see NPCs",
@@ -277,7 +367,7 @@ class PlayerRoomEventHandler:
                 room_id=room_id,
             )
 
-    def build_room_occupants_message(self, room_id: str, occupants_data: dict[str, Any]) -> dict[str, Any]:
+    def build_room_occupants_message(self, room_id: str, occupants_data: JsonMap) -> JsonMap:
         """
         Build room occupants message for sending to player.
 
@@ -296,9 +386,7 @@ class PlayerRoomEventHandler:
             "data": occupants_data,
         }
 
-    async def query_room_occupants_snapshot(
-        self, player_id_uuid: uuid.UUID, room_id: str
-    ) -> list[dict[str, Any] | str]:
+    async def query_room_occupants_snapshot(self, player_id_uuid: uuid.UUID, room_id: str) -> OccupantSnap:
         """
         Query room occupants snapshot for a player.
 
@@ -314,10 +402,9 @@ class PlayerRoomEventHandler:
             player_id=player_id_uuid,
             room_id=room_id,
         )
-        occupants_snapshot = await self.occupant_manager.get_room_occupants(
-            room_id, ensure_player_included=player_id_uuid
+        return _as_occupant_snap(
+            await self.occupant_manager.get_room_occupants(room_id, ensure_player_included=player_id_uuid)
         )
-        return occupants_snapshot
 
     async def send_occupants_snapshot_to_player(self, player_id: uuid.UUID | str, room_id: str) -> None:
         """
@@ -340,15 +427,16 @@ class PlayerRoomEventHandler:
         player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
         try:
             occupants_snapshot = await self.query_room_occupants_snapshot(player_id_uuid, room_id)
-            occupants_data = self.utils.build_occupants_snapshot_data(occupants_snapshot)
+            _, occupants_data = _snapshot_payload(self.utils, occupants_snapshot)
             self._log_occupants_info(player_id_uuid, room_id, occupants_snapshot, occupants_data)
             personal = self.build_room_occupants_message(room_id, occupants_data)
             await self.connection_manager.send_personal_message(player_id_uuid, personal)
+            npcs_sent = occupants_data.get("npcs", [])
             self._logger.debug(
                 "Occupants snapshot sent successfully to player",
                 player_id=player_id_uuid,
                 room_id=room_id,
-                npcs_count=len(occupants_data["npcs"]),
+                npcs_count=len(cast(list[object], npcs_sent)) if isinstance(npcs_sent, list) else 0,
             )
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.error(
@@ -382,14 +470,14 @@ class PlayerRoomEventHandler:
             if not room:
                 return
             occupants_info = await self.occupant_manager.get_room_occupants(room_id, ensure_player_included=player_id)
-            occupant_names = self.utils.extract_occupant_names(occupants_info)
+            occupants_snap, occupants_data = _snapshot_payload(self.utils, occupants_info)
+            occupant_names = [str(name) for name in self.utils.extract_occupant_names(occupants_snap)]
             room_data = await self._prepare_room_data(room, room_id)
-            occupants_data = self.utils.build_occupants_snapshot_data(occupants_info)
             room_data["players"] = occupants_data.get("players", [])
             room_data["npcs"] = occupants_data.get("npcs", [])
             room_data["occupants"] = occupants_data.get("occupants", [])
             room_data["occupant_count"] = occupants_data.get("count", 0)
-            room_state_event = self.message_builder.build_room_state_message(room_id, room_data)
+            room_state_event = _as_map(self.message_builder.build_room_state_message(room_id, room_data))
             await self.connection_manager.send_personal_message(player_id_uuid, room_state_event)
             self._logger.debug(
                 "Sent room_state (authoritative) to player",
@@ -406,7 +494,7 @@ class PlayerRoomEventHandler:
                 error=str(e),
             )
 
-    async def get_room_state_event(self, player_id: uuid.UUID | str, room_id: str) -> dict[str, Any] | None:
+    async def get_room_state_event(self, player_id: uuid.UUID | str, room_id: str) -> JsonMap | None:
         """
         Build authoritative room_state event for a room (same as send_room_state_to_player, without sending).
 
@@ -432,12 +520,12 @@ class PlayerRoomEventHandler:
                 return None
             occupants_info = await self.occupant_manager.get_room_occupants(room_id, ensure_player_included=player_id)
             room_data = await self._prepare_room_data(room, room_id)
-            occupants_data = self.utils.build_occupants_snapshot_data(occupants_info)
+            _, occupants_data = _snapshot_payload(self.utils, occupants_info)
             room_data["players"] = occupants_data.get("players", [])
             room_data["npcs"] = occupants_data.get("npcs", [])
             room_data["occupants"] = occupants_data.get("occupants", [])
             room_data["occupant_count"] = occupants_data.get("count", 0)
-            return self.message_builder.build_room_state_message(room_id, room_data)
+            return _as_map(self.message_builder.build_room_state_message(room_id, room_data))
         except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as e:
             self._logger.debug(
                 "get_room_state_event failed",
@@ -533,7 +621,7 @@ class PlayerRoomEventHandler:
         player_info = await self.utils.get_player_info(processed_event.player_id)
         if not player_info:
             return None
-        _, player_name = player_info
+        player_name = player_info[1]
 
         exclude_player_id, room_id_str = self.utils.normalize_event_ids(
             processed_event.player_id, processed_event.room_id
@@ -549,7 +637,9 @@ class PlayerRoomEventHandler:
 
         return player_name, exclude_player_id, room_id_str
 
-    async def handle_player_entered(self, event: PlayerEnteredRoom, send_occupants_update: Any | None = None) -> None:
+    async def handle_player_entered(
+        self, event: PlayerEnteredRoom, send_occupants_update: OccupantsUpdateFn | None = None
+    ) -> None:
         """
         Handle player entering a room with enhanced synchronization.
 
@@ -579,7 +669,7 @@ class PlayerRoomEventHandler:
             player_name, exclude_player_id, room_id_str = result
 
             await self.log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "joined")
-            message = self.message_builder.create_player_entered_message(processed_event, player_name)
+            message = _as_map(self.message_builder.create_player_entered_message(processed_event, player_name))
             self._logger.debug(
                 "Broadcasting player_entered",
                 exclude_player=exclude_player_id,
@@ -589,7 +679,7 @@ class PlayerRoomEventHandler:
             await self.broadcast_player_entered_message(message, room_id_str, exclude_player_id)
 
             # Send room occupants update to all players in the room
-            if send_occupants_update is not None and room_id_str is not None:
+            if send_occupants_update is not None:
                 await send_occupants_update(room_id_str, exclude_player=exclude_player_id)
 
             await self.subscribe_player_to_room(processed_event.player_id, room_id_str)
@@ -614,12 +704,14 @@ class PlayerRoomEventHandler:
         """
         try:
             player_id_uuid = uuid.UUID(player_id) if isinstance(player_id, str) else player_id
+            if self.connection_manager is None:
+                return
             await self.connection_manager.unsubscribe_from_room(player_id_uuid, room_id)
         except (ValueError, AttributeError):
             self._logger.warning("Failed to convert player_id to UUID for room unsubscription", player_id=player_id)
 
     async def broadcast_player_left_message(
-        self, message: dict[str, Any], room_id_str: str | None, exclude_player_id: str | None, is_disconnecting: bool
+        self, message: JsonMap, room_id_str: str | None, exclude_player_id: str | None, is_disconnecting: bool
     ) -> None:
         """
         Broadcast player left message to room occupants.
@@ -630,10 +722,10 @@ class PlayerRoomEventHandler:
             exclude_player_id: Player ID to exclude from broadcast
             is_disconnecting: Whether the player is disconnecting (skip message if True)
         """
-        if room_id_str is not None and not is_disconnecting:
+        if room_id_str is not None and not is_disconnecting and self.connection_manager is not None:
             await self.connection_manager.broadcast_to_room(room_id_str, message, exclude_player=exclude_player_id)
 
-    async def handle_player_left(self, event: PlayerLeftRoom, send_occupants_update: Any) -> None:
+    async def handle_player_left(self, event: PlayerLeftRoom, send_occupants_update: OccupantsUpdateFn) -> None:
         """
         Handle player leaving a room with enhanced synchronization.
 
@@ -664,13 +756,13 @@ class PlayerRoomEventHandler:
             player_info = await self.utils.get_player_info(processed_event.player_id)
             if not player_info:
                 return
-            _, player_name = player_info
+            player_name = player_info[1]
 
             # Log player movement for AI processing
             await self.log_player_movement(processed_event.player_id, player_name, processed_event.room_id, "left")
 
             # Create real-time message with processed event
-            message = self.message_builder.create_player_left_message(processed_event, player_name)
+            message = _as_map(self.message_builder.create_player_left_message(processed_event, player_name))
 
             # CRITICAL FIX: Ensure player_id is always a string for proper comparison
             exclude_player_id = str(processed_event.player_id) if processed_event.player_id else None

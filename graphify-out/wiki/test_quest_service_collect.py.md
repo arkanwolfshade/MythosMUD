@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_quest_service_collect.py** (15 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_quest_service_collect.py** (16 connections) — `server/tests/unit/game/test_quest_service_collect.py`
 - **_make_collect_quest_row()** (9 connections) — `server/tests/unit/game/test_quest_service_collect.py`
 - **_quest_service_with_persistence()** (8 connections) — `server/tests/unit/game/test_quest_service_collect.py`
 - **_make_inventory_player()** (7 connections) — `server/tests/unit/game/test_quest_service_collect.py`
@@ -34,6 +34,7 @@
 ## Relationships
 
 - [QuestService](QuestService.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -41,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 53 (95%)
+- EXTRACTED: 54 (95%)
 - INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 

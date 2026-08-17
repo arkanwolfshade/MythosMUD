@@ -6,7 +6,6 @@
 
 - **Skill: Create a New Worktree for a Task** (8 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **MythosMUD Worktree Workflow** (7 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
-- **mythosmud-worktree-workflow/SKILL.md** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **Canonical Layout (Summary)** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **Preconditions and Safety** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **Skill: Clean Up a Completed or Stale Worktree** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
@@ -19,6 +18,7 @@
 - **Step 7 — Create a Task Plan in the New Worktree** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **Weekly Maintenance Pattern** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 - **When to Use** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Worktree Workflow Skill** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Relationships
 

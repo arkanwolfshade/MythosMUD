@@ -13,7 +13,7 @@
 
 ## Relationships
 
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

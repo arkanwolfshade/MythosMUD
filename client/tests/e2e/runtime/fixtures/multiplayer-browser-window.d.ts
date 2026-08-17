@@ -17,5 +17,6 @@ declare global {
     __mythosE2eHasOtherPlayerNames?: (names: string[]) => boolean;
     __mythosE2eIsDisconnectedBannerVisible?: () => boolean;
     __mythosE2eCaptureOccupantsSnapshot?: () => import('./multiplayer-browser-helpers').OccupantsSnapshot;
+    __mythosE2eGetPresenceEvents?: () => import('./multiplayer-browser-helpers').PresenceEvent[];
   }
 }

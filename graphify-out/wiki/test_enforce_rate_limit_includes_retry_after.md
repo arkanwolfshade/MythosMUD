@@ -10,7 +10,7 @@
 ## Relationships
 
 - [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

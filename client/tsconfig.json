@@ -23,7 +23,6 @@
       "@stores/*": ["src/stores/*"],
       "@utils/*": ["src/utils/*"],
       "@styles/*": ["src/styles/*"],
-      "@types/*": ["src/types/*"],
       "@api/*": ["src/api/*"],
       "@lib/*": ["src/lib/*"]
     }

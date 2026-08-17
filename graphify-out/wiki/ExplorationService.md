@@ -1,20 +1,20 @@
 # ExplorationService
 
-> 96 nodes
+> 103 nodes
 
 ## Key Concepts
 
 - **ExplorationService** (77 connections) — `server/services/exploration_service.py`
-- **test_exploration_service.py** (45 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_exploration_service.py** (46 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **asyncio** (28 connections)
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
 - **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
-- **test_apply_exploration_filter_if_needed_calls_for_normal_user()** (7 connections) — `server/tests/unit/api/test_maps.py`
-- **test_apply_exploration_filter_if_needed_skips_for_superuser()** (7 connections) — `server/tests/unit/api/test_maps.py`
-- **test_filter_explored_rooms_calls_room_service()** (6 connections) — `server/tests/unit/api/test_maps.py`
-- **_two_rooms()** (6 connections) — `server/tests/unit/api/test_maps.py`
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
 - **test_get_room_uuid_by_stable_id_no_session()** (6 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
 - **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_get_explored_rooms_database_error()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
@@ -29,31 +29,30 @@
 - **test_is_room_explored_database_error_in_query()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_is_room_explored_false()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
 - **test_is_room_explored_true()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
-- *... and 71 more nodes in this community*
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [maps.py](maps.py.md) (33 shared connections)
-- [RoomService](RoomService.md) (16 shared connections)
-- [DatabaseError](DatabaseError.md) (8 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (7 shared connections)
-- [User](User.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [maps.py](maps.py.md) (17 shared connections)
+- [DatabaseError](DatabaseError.md) (17 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [map_minimap.py](map_minimap.py.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
 - `server/services/exploration_service.py`
-- `server/tests/unit/api/test_maps.py`
 - `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 193 (76%)
-- INFERRED: 60 (24%)
+- EXTRACTED: 187 (77%)
+- INFERRED: 55 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

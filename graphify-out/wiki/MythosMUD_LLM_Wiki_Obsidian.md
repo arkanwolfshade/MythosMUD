@@ -6,7 +6,6 @@
 
 - **MythosMUD LLM Wiki (Obsidian)** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **Workflows** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
-- **mythosmud-llm-wiki/SKILL.md** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **Chaosium ingest** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **Division of labor** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **Graphify sync** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
@@ -16,6 +15,7 @@
 - **Query (durable)** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **Vault location** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 - **When to use this skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **LLM Wiki Skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 

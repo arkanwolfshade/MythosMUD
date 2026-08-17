@@ -24,9 +24,9 @@
 ## Relationships
 
 - [Any](Any.md) (6 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 - [.cleanup_empty_subzone_subscriptions](cleanup_empty_subzone_subscriptions.md) (3 shared connections)
 - [.handle_player_movement](handle_player_movement.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [._handle_event_message](_handle_event_message.md) (1 shared connections)
 - [._handle_player_entered_event](_handle_player_entered_event.md) (1 shared connections)
 - [._handle_game_tick_event](_handle_game_tick_event.md) (1 shared connections)
@@ -34,7 +34,6 @@
 - [._handle_npc_attacked_event](_handle_npc_attacked_event.md) (1 shared connections)
 - [._handle_npc_died_event](_handle_npc_died_event.md) (1 shared connections)
 - [.unsubscribe_from_room](unsubscribe_from_room.md) (1 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
 
 ## Source Files
 

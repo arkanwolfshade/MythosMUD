@@ -1,56 +1,49 @@
 # test_command_communication.py
 
-> 158 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_command_communication.py** (45 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_command_factories_communication.py** (29 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **command_communication.py** (19 connections) — `server/models/command_communication.py`
-- **WhisperCommand** (15 connections) — `server/models/command_communication.py`
-- **PoseCommand** (13 connections) — `server/models/command_communication.py`
-- **EmoteCommand** (12 connections) — `server/models/command_communication.py`
-- **LocalCommand** (12 connections) — `server/models/command_communication.py`
-- **MeCommand** (12 connections) — `server/models/command_communication.py`
-- **ReplyCommand** (12 connections) — `server/models/command_communication.py`
-- **SayCommand** (12 connections) — `server/models/command_communication.py`
-- **SystemCommand** (12 connections) — `server/models/command_communication.py`
-- **.create_channel_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_local_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_whisper_command()** (8 connections) — `server/utils/command_factories_communication.py`
-- **.create_reply_command()** (7 connections) — `server/utils/command_factories_communication.py`
-- **.create_emote_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_me_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_say_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **.create_system_command()** (6 connections) — `server/utils/command_factories_communication.py`
-- **test_create_channel_command_default_no_channel()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_channel_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_emote_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_local_command_too_long()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_create_me_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- *... and 133 more nodes in this community*
+- **test_command_communication.py** (47 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_action_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_emote_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_local_command_validate_message_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_action_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_action_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_me_command_validate_action_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_pose_empty_string()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_pose_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_pose_none()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_pose_command_validate_pose_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_reply_command_validate_message_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_say_command_message_max_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_say_command_message_min_length()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_say_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_communication.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (43 shared connections)
-- [ValidationError](ValidationError.md) (23 shared connections)
-- [command.py](command.py.md) (20 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (14 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (45 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_communication.py`
 - `server/tests/unit/models/test_command_communication.py`
-- `server/tests/unit/utils/test_command_factories_communication.py`
-- `server/utils/command_factories_communication.py`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (73%)
-- INFERRED: 89 (27%)
+- EXTRACTED: 82 (70%)
+- INFERRED: 35 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

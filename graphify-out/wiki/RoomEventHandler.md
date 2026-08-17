@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
-- **test_room_event_handler.py** (13 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **test_room_event_handler.py** (14 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
 - **asyncio** (9 connections)
 - **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
 - **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [HealthMonitor](HealthMonitor.md) (1 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (82%)
+- EXTRACTED: 46 (82%)
 - INFERRED: 10 (18%)
 - AMBIGUOUS: 0 (0%)
 

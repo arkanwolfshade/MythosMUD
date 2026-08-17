@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Delight Techniques** (9 connections) — `.claude/skills/delight/SKILL.md`
-- **delight/SKILL.md** (6 connections) — `.claude/skills/delight/SKILL.md`
+- **Delight Skill** (7 connections) — `.claude/skills/delight/SKILL.md`
 - **Delight Principles** (5 connections) — `.claude/skills/delight/SKILL.md`
 - **Appropriate to Context** (1 connections) — `.claude/skills/delight/SKILL.md`
 - **Assess Delight Opportunities** (1 connections) — `.claude/skills/delight/SKILL.md`
@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

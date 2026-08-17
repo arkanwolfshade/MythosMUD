@@ -1,6 +1,6 @@
 # Reporter
 
-> 89 nodes
+> 91 nodes
 
 ## Key Concepts
 
@@ -29,21 +29,21 @@
 - **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
 - **.test_print_error()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
 - **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- *... and 64 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (9 shared connections)
-- [TestValidatorComponents](TestValidatorComponents.md) (3 shared connections)
+- [RoomLoader](RoomLoader.md) (12 shared connections)
 
 ## Source Files
 
 - `tools/room_toolkit/room_validator/core/reporter.py`
 - `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (96%)
+- EXTRACTED: 131 (96%)
 - INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,39 +1,33 @@
 # overrides
 
-> 18 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **overrides** (16 connections) — `client/package.json`
-- **@stoplight/spectral-core** (2 connections) — `client/package.json`
-- **@stoplight/spectral-ruleset-bundler** (2 connections) — `client/package.json`
-- **@asyncapi/generator** (1 connections) — `client/package.json`
-- **@asyncapi/generator-components** (1 connections) — `client/package.json`
-- **@asyncapi/generator-helpers** (1 connections) — `client/package.json`
-- **@asyncapi/specs** (1 connections) — `client/package.json`
-- **fast-uri** (1 connections) — `client/package.json`
-- **flatted** (1 connections) — `client/package.json`
-- **glob** (1 connections) — `client/package.json`
-- **js-yaml** (1 connections) — `client/package.json`
-- **linkify-it** (1 connections) — `client/package.json`
-- **lodash** (1 connections) — `client/package.json`
-- **magic-string** (1 connections) — `client/package.json`
-- **markdown-it** (1 connections) — `client/package.json`
-- **undici** (1 connections) — `client/package.json`
-- **minimatch** (1 connections) — `client/package.json`
-- **rollup** (1 connections) — `client/package.json`
+- **overrides** (5 connections) — `package.json`
+- **package.json** (3 connections) — `package.json`
+- **dependencies** (2 connections) — `package.json`
+- **eslint** (2 connections) — `package.json`
+- **devDependencies** (2 connections) — `package.json`
+- **markdownlint-cli** (2 connections) — `package.json`
+- **flatted** (1 connections) — `package.json`
+- **js-yaml** (1 connections) — `package.json`
+- **linkify-it** (1 connections) — `package.json`
+- **markdown-it** (1 connections) — `package.json`
+- **eslint** (1 connections) — `package.json`
+- **markdownlint-cli** (1 connections) — `package.json`
 
 ## Relationships
 
-- [client/package.json](client-package.json.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

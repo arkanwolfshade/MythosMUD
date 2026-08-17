@@ -6,7 +6,7 @@
 
 - **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
 - **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_spell_effect_flee.py** (17 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **test_spell_effect_flee.py** (18 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
 - **Any** (10 connections)
 - **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
 - **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
@@ -33,10 +33,12 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
+- [TargetMatch](TargetMatch.md) (11 shared connections)
 - [CombatInstance](CombatInstance.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
+- [spell_effects_status.py](spell_effects_status.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (99%)
+- EXTRACTED: 90 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

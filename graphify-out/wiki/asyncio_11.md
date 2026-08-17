@@ -1,49 +1,40 @@
 # asyncio
 
-> 17 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (20 connections)
-- **test_process_tick_regeneration_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_restores_mp()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_process_tick_regeneration_sitting_position()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_respects_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_item_uses_magic_service()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_at_max()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **test_restore_mp_from_meditation_restores_mp()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() returns message when MP already at max.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_meditation() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_item() respects max_mp limit.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test restore_mp_from_item() uses magic_service if available.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() uses REST multiplier for sitting position.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() restores MP.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
-- **Test process_tick_regeneration() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **asyncio** (12 connections)
+- **test_get_players_batch_empty_list()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_other_error_raises()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_success_with_rooms_logs_sample_ids()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_load_room_cache_async_table_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_other_error_raises()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_query_rooms_with_exits_async_table_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_players_batch with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async logs sample room IDs when rooms are loaded…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async handles table not found error.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _load_room_cache_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async handles table not found error.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (8 shared connections)
-- [test_process_tick_regeneration_at_max](test_process_tick_regeneration_at_max.md) (1 shared connections)
-- [test_process_tick_regeneration_fractional_accumulation](test_process_tick_regeneration_fractional_accumulation.md) (1 shared connections)
-- [test_process_tick_regeneration_lying_position](test_process_tick_regeneration_lying_position.md) (1 shared connections)
-- [test_process_tick_regeneration_player_not_found](test_process_tick_regeneration_player_not_found.md) (1 shared connections)
-- [test_restore_mp_from_item_calculates_max_from_power](test_restore_mp_from_item_calculates_max_from_power.md) (1 shared connections)
-- [test_restore_mp_from_item_player_not_found](test_restore_mp_from_item_player_not_found.md) (1 shared connections)
-- [test_restore_mp_from_item_restores_mp](test_restore_mp_from_item_restores_mp.md) (1 shared connections)
-- [test_restore_mp_from_meditation_higher_than_rest](test_restore_mp_from_meditation_higher_than_rest.md) (1 shared connections)
-- [test_restore_mp_from_rest_at_max](test_restore_mp_from_rest_at_max.md) (1 shared connections)
-- [test_restore_mp_from_rest_calculates_max_from_power](test_restore_mp_from_rest_calculates_max_from_power.md) (1 shared connections)
-- [test_restore_mp_from_rest_player_not_found](test_restore_mp_from_rest_player_not_found.md) (1 shared connections)
+- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (6 shared connections)
+- [test_get_players_batch_with_players](test_get_players_batch_with_players.md) (1 shared connections)
+- [test_get_professions_no_session](test_get_professions_no_session.md) (1 shared connections)
+- [test_get_user_by_username_case_insensitive_no_session](test_get_user_by_username_case_insensitive_no_session.md) (1 shared connections)
+- [test_load_room_cache_async_rooms_none](test_load_room_cache_async_rooms_none.md) (1 shared connections)
+- [test_load_room_cache_async_warning_logging](test_load_room_cache_async_warning_logging.md) (1 shared connections)
+- [test_warmup_room_cache](test_warmup_room_cache.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

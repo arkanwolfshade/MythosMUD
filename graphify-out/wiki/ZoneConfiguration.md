@@ -1,11 +1,12 @@
 # ZoneConfiguration
 
-> 56 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **ZoneConfiguration** (54 connections) — `server/npc/zone_configuration.py`
 - **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
+- **test_should_spawn_npc()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
 - **test_check_spawn_requirements_for_room_with_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
 - **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
 - **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
@@ -28,16 +29,19 @@
 - **test_zone_configuration_init_full()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **test_zone_configuration_init_minimal()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
 - **test_zone_configuration_init_partial_special_rules()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **test_zone_configuration_weather_patterns()** (3 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- *... and 31 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
+- [ConnectionManager](ConnectionManager.md) (7 shared connections)
 - [zone_config_loader.py](zone_config_loader.py.md) (6 shared connections)
-- [should_spawn_npc](should_spawn_npc.md) (5 shared connections)
 - [test_zone_config_loader.py](test_zone_config_loader.py.md) (5 shared connections)
-- [mock_zone_config](mock_zone_config.md) (1 shared connections)
+- [test_spawn_validator.py](test_spawn_validator.py.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [load_zone_configurations](load_zone_configurations.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 69 (65%)
-- INFERRED: 37 (35%)
+- EXTRACTED: 71 (65%)
+- INFERRED: 38 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

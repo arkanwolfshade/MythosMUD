@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **day** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **day** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 

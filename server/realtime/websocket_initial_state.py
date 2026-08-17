@@ -209,7 +209,7 @@ async def check_and_send_death_notification(  # pylint: disable=too-many-argumen
     connection_manager: "ConnectionManager",
 ) -> None:
     """Check if player is dead and send death notification if needed."""
-    from ..services.player_respawn_service import LIMBO_ROOM_ID
+    from ..constants.spawn_defaults import LIMBO_ROOM_ID
 
     player_result = await _get_player_for_death_check(player_id, connection_manager)
     if not player_result:

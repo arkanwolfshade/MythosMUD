@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
+- **2026_02_09_add_player_effects_table.py** (3 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
-- **2026_02_09_add_player_effects_table.py** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 - **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
@@ -20,7 +20,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

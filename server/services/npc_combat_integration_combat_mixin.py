@@ -10,6 +10,7 @@ from uuid import UUID
 
 from structlog.stdlib import BoundLogger
 
+from ..app.game_tick_counter import get_current_tick
 from ..models.combat import CombatResult
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_messaging_integration import CombatMessagingIntegration
@@ -72,10 +73,6 @@ class NPCCombatIntegrationCombatMixin:
         Damage amount is the caller-supplied ``attack_damage``; combat resolution (armor, etc.)
         is handled inside ``process_attack``.
         """
-        from ..app.game_tick_processing import (
-            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import; tick lives here, not lifespan (avoids app boot import cycle)
-        )
-
         current_tick = get_current_tick()
         data_provider = self.get_data_provider()
         player_name = await data_provider.get_player_name(target_id)
@@ -122,10 +119,6 @@ class NPCCombatIntegrationCombatMixin:
         npc_instance: object,
     ) -> CombatResult:
         """Process combat attack, starting new combat or continuing existing one."""
-        from ..app.game_tick_processing import (
-            get_current_tick,  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import; tick lives here, not lifespan (avoids app boot import cycle)
-        )
-
         current_tick = get_current_tick()
 
         combat_service = self.get_combat_service()

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_quest_service.py** (42 connections) — `server/tests/unit/game/test_quest_service.py`
+- **test_quest_service.py** (43 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_MockDefRepo** (30 connections) — `server/tests/unit/game/test_quest_service.py`
 - **asyncio** (27 connections)
 - **_MockInstanceRepo** (25 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -36,9 +36,10 @@
 - [QuestService](QuestService.md) (31 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [NPCDied](NPCDied.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [test_quest_events.py](test_quest_events.py.md) (1 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 216 (87%)
+- EXTRACTED: 217 (87%)
 - INFERRED: 33 (13%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_health_monitor.py** (26 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor.py** (27 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 - **asyncio** (12 connections)
 - **fixture** (5 connections)
 - **health_monitor()** (4 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [HealthMonitor](HealthMonitor.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 56 (97%)
+- EXTRACTED: 57 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

@@ -13,8 +13,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.constants.spawn_defaults import LIMBO_ROOM_ID
 from server.services.npc_combat_integration_service import NPCCombatIntegrationService
-from server.services.player_respawn_service import LIMBO_ROOM_ID
 
 if TYPE_CHECKING:
     pass
@@ -487,7 +487,7 @@ async def test_process_combat_attack_queues_when_already_in_combat(
     existing.combat_round = 0
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=existing)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=True)
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=99):
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=99):
         result = await integration_service._process_combat_attack(
             player_id=str(uuid.uuid4()),
             room_id="r1",
@@ -515,7 +515,7 @@ async def test_process_combat_attack_queue_fail_falls_back_to_process_attack(
     integration_service._combat_service.get_combat_by_participant = AsyncMock(return_value=existing)
     integration_service._combat_service.queue_combat_action = AsyncMock(return_value=False)
     integration_service._combat_service.process_attack = AsyncMock(return_value=MagicMock(success=True))
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=1):
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=1):
         _ = await integration_service._process_combat_attack(
             "pid",
             "r1",
@@ -542,7 +542,7 @@ async def test_process_combat_attack_starts_new_combat_when_none(
     integration_service._data_provider.get_player_combat_data = AsyncMock(return_value={})
     integration_service._data_provider.get_npc_combat_data = MagicMock(return_value={})
     npc = MagicMock()
-    with patch("server.app.game_tick_processing.get_current_tick", return_value=5):
+    with patch("server.services.npc_combat_integration_combat_mixin.get_current_tick", return_value=5):
         _ = await integration_service._process_combat_attack("pid", "r1", att, tgt, 4, npc)
     integration_service._combat_service.start_combat.assert_awaited_once()
     process_mock = integration_service._combat_service.process_attack

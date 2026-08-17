@@ -5,39 +5,130 @@ This module handles the look command for examining surroundings.
 This is the main entry point that routes to specialized handlers.
 """
 
-# pylint: disable=too-many-arguments  # Reason: Look command requires many parameters for context and target resolution
+# pylint: disable=too-many-arguments,missing-class-docstring,missing-function-docstring,too-few-public-methods  # Reason: Look params; Protocol stubs (PEP 544)
 
-from typing import Any
+from __future__ import annotations
+
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, NamedTuple, Protocol, cast
+
+from fastapi import FastAPI
 
 from ..alias_storage import AliasStorage
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 from ..utils.room_renderer import clone_room_drops
-from .look_container import _handle_container_look, _try_lookup_container_implicit
-from .look_helpers import _is_direction
+from .inventory_command_contracts import CommandResponse
+from .look_container import ContainerLookArgs, _handle_container_look, _try_lookup_container_implicit
+from .look_helpers import LookRequest, _is_direction
 from .look_item import _handle_item_look, _try_lookup_item_implicit
 from .look_npc import _try_lookup_npc_implicit
 from .look_player import _handle_player_look, _try_lookup_player_implicit
 from .look_room import _handle_direction_look, _handle_room_look
 
+if TYPE_CHECKING:
+    from ..models.player import Player
+
 logger = get_logger(__name__)
 
 
-def _get_app_and_persistence(request: Any) -> tuple[Any, Any]:
+class _LookRoom(Protocol):
+    id: object
+
+
+class _LookPersistence(Protocol):
+    async def get_player_by_name(self, name: str) -> Player | None: ...
+
+    def get_room_by_id(self, room_id: str) -> _LookRoom | None: ...
+
+
+class _LookRoomManager(Protocol):
+    def list_room_drops(self, room_id: str) -> list[dict[str, object]]: ...
+
+
+class _LookConnectionManager(Protocol):
+    room_manager: _LookRoomManager | None
+
+
+class _LookContainer(Protocol):
+    async_persistence: _LookPersistence | None
+    connection_manager: _LookConnectionManager | None
+    item_prototype_registry: object | None
+
+
+class LookRouteCtx(NamedTuple):
+    """Shared look-command context so handlers stay under the param-count gate."""
+
+    command_data: Mapping[str, object]
+    target: str | None
+    target_type: str | None
+    direction: str | None
+    instance_number: int | None
+    room: _LookRoom
+    player: Player
+    persistence: _LookPersistence
+    room_drops: list[dict[str, object]]
+    app: FastAPI | None
+    request: LookRequest | None
+    player_name: str
+
+
+def _opt_str(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value
+    return str(value)
+
+
+def _opt_int(value: object) -> int | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    return None
+
+
+def _as_response(raw: object) -> CommandResponse | None:
+    if raw is None:
+        return None
+    if isinstance(raw, dict):
+        return cast(CommandResponse, raw)
+    return None
+
+
+def _container_from_app(app: FastAPI | None) -> _LookContainer | None:
+    if app is None:
+        return None
+    raw = getattr(app.state, "container", None)
+    if raw is None:
+        return None
+    return cast(_LookContainer, raw)
+
+
+def _app_from_request(request: LookRequest | None) -> FastAPI | None:
+    if request is None:
+        return None
+    return cast(FastAPI | None, request.app)
+
+
+def _get_app_and_persistence(request: LookRequest | None) -> tuple[FastAPI | None, _LookPersistence | None]:
     """Extract app and persistence from request."""
-    app = request.app if request else None
-    # Prefer container, fallback to app.state for backward compatibility
-    persistence = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        persistence = app.state.container.async_persistence
-    elif app:
-        persistence = getattr(app.state, "persistence", None)
-    return app, persistence
+    app = _app_from_request(request)
+    container = _container_from_app(app)
+    if container is not None and container.async_persistence is not None:
+        return app, container.async_persistence
+    if app is None:
+        return None, None
+    persistence = getattr(app.state, "persistence", None)
+    if persistence is None:
+        return app, None
+    return app, cast(_LookPersistence, persistence)
 
 
 async def _validate_look_prerequisites(
-    persistence: Any, current_user: dict[str, Any], player_name: str
-) -> tuple[Any, Any] | None:
+    persistence: _LookPersistence | None, current_user: object, player_name: str
+) -> tuple[Player, _LookRoom] | None:
     """Validate and retrieve player and room for look command."""
     if not persistence:
         logger.warning("Look command failed - no persistence layer", player=player_name)
@@ -48,7 +139,7 @@ async def _validate_look_prerequisites(
         logger.warning("Look command failed - player not found", player=player_name)
         return None
 
-    room_id = player.current_room_id
+    room_id = str(player.current_room_id)
     room = persistence.get_room_by_id(room_id)
     if not room:
         logger.warning("Look command failed - room not found", player=player_name, room_id=room_id)
@@ -57,24 +148,25 @@ async def _validate_look_prerequisites(
     return player, room
 
 
-def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, Any]]:
+def _get_room_drops(app: FastAPI | None, room_id: object, player_name: str) -> list[dict[str, object]]:
     """Get room drops from room manager."""
-    room_drops: list[dict[str, Any]] = []
+    room_drops: list[dict[str, object]] = []
     if not app:
         return room_drops
 
-    # Prefer container, fallback to app.state for backward compatibility
-    connection_manager = None
-    if hasattr(app.state, "container") and app.state.container:
-        connection_manager = app.state.container.connection_manager
+    container = _container_from_app(app)
+    connection_manager: _LookConnectionManager | None
+    if container is not None:
+        connection_manager = container.connection_manager
     else:
-        connection_manager = getattr(app.state, "connection_manager", None)
+        raw_manager = getattr(app.state, "connection_manager", None)
+        connection_manager = None if raw_manager is None else cast(_LookConnectionManager, raw_manager)
 
     if not connection_manager:
         return room_drops
 
-    room_manager = getattr(connection_manager, "room_manager", None)
-    if not room_manager or not hasattr(room_manager, "list_room_drops"):
+    room_manager = connection_manager.room_manager
+    if room_manager is None:
         return room_drops
 
     try:
@@ -86,14 +178,17 @@ def _get_room_drops(app: Any, room_id: int, player_name: str) -> list[dict[str, 
     return room_drops
 
 
-async def _setup_look_command(  # pylint: disable=too-many-arguments  # Reason: Look command setup requires many parameters for context and validation
-    request: Any, current_user: dict[str, Any], player_name: str
-) -> tuple[Any, Any, Any, Any, list[dict[str, Any]]] | None:
+async def _setup_look_command(
+    request: LookRequest | None, current_user: object, player_name: str
+) -> tuple[FastAPI | None, _LookPersistence, Player, _LookRoom, list[dict[str, object]]] | None:
     """Setup and validate look command prerequisites."""
     app, persistence = _get_app_and_persistence(request)
 
     prerequisites = await _validate_look_prerequisites(persistence, current_user, player_name)
     if not prerequisites:
+        return None
+
+    if persistence is None:
         return None
 
     player, room = prerequisites
@@ -102,29 +197,49 @@ async def _setup_look_command(  # pylint: disable=too-many-arguments  # Reason: 
     return (app, persistence, player, room, room_drops)
 
 
+def _connection_manager_from_app(app: FastAPI | None) -> _LookConnectionManager | None:
+    container = _container_from_app(app)
+    if container is not None:
+        return container.connection_manager
+    if app is None:
+        return None
+    raw_manager = getattr(app.state, "connection_manager", None)
+    if raw_manager is None:
+        return None
+    return cast(_LookConnectionManager, raw_manager)
+
+
+def _prototype_registry_from_app(app: FastAPI | None) -> object | None:
+    container = _container_from_app(app)
+    if container is not None:
+        return container.item_prototype_registry
+    if app is None:
+        return None
+    return getattr(app.state, "prototype_registry", None)
+
+
 async def _try_explicit_player_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
-    room: Any,
-    persistence: Any,
+    room: _LookRoom,
+    persistence: _LookPersistence,
     player_name: str,
-    app: Any | None = None,
-) -> dict[str, Any] | None:
+    app: FastAPI | None = None,
+) -> CommandResponse | None:
     """Try to handle explicit player look."""
     if target_type == "player" and target:
         target_lower = target.lower()
-        # Prefer container, fallback to app.state for backward compatibility
-        connection_manager = None
-        if app and hasattr(app.state, "container") and app.state.container:
-            connection_manager = app.state.container.connection_manager
-        elif app:
-            connection_manager = getattr(app.state, "connection_manager", None)
         result = await _handle_player_look(
-            target, target_lower, instance_number, room, persistence, player_name, connection_manager
+            target,
+            target_lower,
+            instance_number,
+            room,
+            persistence,
+            player_name,
+            _connection_manager_from_app(app),
         )
-        if result:
-            return result
+        return _as_response(result)
     return None
 
 
@@ -132,216 +247,164 @@ async def _try_explicit_item_look(  # pylint: disable=too-many-arguments,too-man
     target: str | None,
     target_type: str | None,
     instance_number: int | None,
-    room_drops: list[dict[str, Any]],
-    player: Any,
-    app: Any,
-    command_data: dict[str, Any],
+    room_drops: list[dict[str, object]],
+    player: Player,
+    app: FastAPI | None,
+    command_data: Mapping[str, object],
     player_name: str,
-) -> dict[str, Any] | None:
+) -> CommandResponse | None:
     """Try to handle explicit item look."""
     if target_type == "item" and target:
         target_lower = target.lower()
-        # Prefer container, fallback to app.state for backward compatibility
-        prototype_registry = None
-        if app and hasattr(app.state, "container") and app.state.container:
-            prototype_registry = app.state.container.item_prototype_registry
-        elif app:
-            prototype_registry = getattr(app.state, "prototype_registry", None)
         result = await _handle_item_look(
-            target, target_lower, instance_number, room_drops, player, prototype_registry, command_data, player_name
-        )
-        if result:
-            return result
-    return None
-
-
-async def _try_explicit_container_look(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
-    target: str | None,
-    target_type: str | None,
-    instance_number: int | None,
-    room: Any,
-    player: Any,
-    persistence: Any,
-    app: Any,
-    command_data: dict[str, Any],
-    request: Any,
-    player_name: str,
-) -> dict[str, Any] | None:
-    """Try to handle explicit container look or container inspection."""
-    if (target_type == "container" or command_data.get("look_in", False)) and target:
-        target_lower = target.lower()
-        # Prefer container, fallback to app.state for backward compatibility
-        prototype_registry = None
-        if app and hasattr(app.state, "container") and app.state.container:
-            prototype_registry = app.state.container.item_prototype_registry
-        elif app:
-            prototype_registry = getattr(app.state, "prototype_registry", None)
-        result = await _handle_container_look(
             target,
             target_lower,
             instance_number,
-            room,
+            room_drops,
             player,
-            persistence,
-            prototype_registry,
-            command_data,
-            request,
+            _prototype_registry_from_app(app),
+            dict(command_data),
             player_name,
         )
-        if result:
-            return result
+        return _as_response(result)
     return None
 
 
-async def _handle_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
-    target: str,
-    target_lower: str,
-    instance_number: int | None,
-    room: Any,
-    player: Any,
-    persistence: Any,
-    room_drops: list[dict[str, Any]],
-    app: Any,
-    player_name: str,
-) -> dict[str, Any] | None:
+async def _try_explicit_container_look(ctx: LookRouteCtx) -> CommandResponse | None:
+    """Try to handle explicit container look or container inspection."""
+    if (ctx.target_type == "container" or bool(ctx.command_data.get("look_in", False))) and ctx.target:
+        target_lower = ctx.target.lower()
+        result = await _handle_container_look(
+            ContainerLookArgs(
+                target=ctx.target,
+                target_lower=target_lower,
+                instance_number=ctx.instance_number,
+                room=ctx.room,
+                player=ctx.player,
+                persistence=ctx.persistence,
+                prototype_registry=_prototype_registry_from_app(ctx.app),
+                command_data=dict(ctx.command_data),
+                request=ctx.request,
+                player_name=ctx.player_name,
+            )
+        )
+        return _as_response(result)
+    return None
+
+
+async def _handle_implicit_target_lookup(ctx: LookRouteCtx, target: str, target_lower: str) -> CommandResponse | None:
     """Handle implicit target lookup with priority resolution."""
-    logger.debug("Looking at target", player=player_name, target=target)
+    logger.debug("Looking at target", player=ctx.player_name, target=target)
 
     if _is_direction(target_lower):
-        return None  # Will be handled as direction
+        return None
 
-    # Priority 1: Try players
-    # Prefer container, fallback to app.state for backward compatibility
-    connection_manager = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        connection_manager = app.state.container.connection_manager
-    elif app:
-        connection_manager = getattr(app.state, "connection_manager", None)
     result = await _try_lookup_player_implicit(
-        target, target_lower, instance_number, room, persistence, player_name, connection_manager
+        target,
+        target_lower,
+        ctx.instance_number,
+        ctx.room,
+        ctx.persistence,
+        ctx.player_name,
+        _connection_manager_from_app(ctx.app),
     )
-    if result:
-        return result
+    parsed = _as_response(result)
+    if parsed:
+        return parsed
 
-    # Priority 2: Try NPCs
-    result = await _try_lookup_npc_implicit(target_lower, room, player_name, player)
-    if result:
-        return result
+    result = await _try_lookup_npc_implicit(target_lower, ctx.room, ctx.player_name, ctx.player)
+    parsed = _as_response(result)
+    if parsed:
+        return parsed
 
-    # Priority 3: Try items
-    # Prefer container, fallback to app.state for backward compatibility
-    prototype_registry = None
-    if app and hasattr(app.state, "container") and app.state.container:
-        prototype_registry = app.state.container.item_prototype_registry
-    elif app:
-        prototype_registry = getattr(app.state, "prototype_registry", None)
-    result = await _try_lookup_item_implicit(target_lower, instance_number, room_drops, player, prototype_registry)
-    if result:
-        return result
-
-    # Priority 4: Try containers
-    result = await _try_lookup_container_implicit(
-        target, target_lower, instance_number, room, player, persistence, player_name
+    result = await _try_lookup_item_implicit(
+        target_lower, ctx.instance_number, ctx.room_drops, ctx.player, _prototype_registry_from_app(ctx.app)
     )
-    if result:
-        return result
+    parsed = _as_response(result)
+    if parsed:
+        return parsed
 
-    logger.debug("No matches found for target", player=player_name, target=target, room_id=room.id)
+    container_result = await _try_lookup_container_implicit(
+        target, target_lower, ctx.instance_number, ctx.room, ctx.player, ctx.persistence, ctx.player_name
+    )
+    parsed = _as_response(container_result)
+    if parsed:
+        return parsed
+
+    logger.debug("No matches found for target", player=ctx.player_name, target=target, room_id=ctx.room.id)
     return {"result": f"You don't see any '{target}' here."}
 
 
-async def _try_implicit_target_lookup(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command requires many parameters for context and target resolution
-    target: str | None,
-    target_type: str | None,
-    instance_number: int | None,
-    room: Any,
-    player: Any,
-    persistence: Any,
-    room_drops: list[dict[str, Any]],
-    app: Any,
-    player_name: str,
-) -> tuple[dict[str, Any] | None, str | None]:
+async def _try_implicit_target_lookup(ctx: LookRouteCtx) -> tuple[CommandResponse | None, str | None]:
     """Try to handle implicit target lookup, returns (result, direction)."""
-    if target and not target_type:
-        target_lower = target.lower()
+    if ctx.target and not ctx.target_type:
+        target_lower = ctx.target.lower()
         if target_lower in ["north", "south", "east", "west", "up", "down", "n", "s", "e", "w", "u", "d"]:
             return None, target_lower
-        result = await _handle_implicit_target_lookup(
-            target, target_lower, instance_number, room, player, persistence, room_drops, app, player_name
-        )
+        result = await _handle_implicit_target_lookup(ctx, ctx.target, target_lower)
         if result:
             return result, None
     return None, None
 
 
 async def _try_direction_look(
-    direction: str | None, room: Any, persistence: Any, player_name: str
-) -> dict[str, Any] | None:
+    direction: str | None, room: _LookRoom, persistence: _LookPersistence, player_name: str
+) -> CommandResponse | None:
     """Try to handle direction look."""
     if direction:
         result = await _handle_direction_look(direction, room, persistence, player_name)
-        if result:
-            return result
+        return _as_response(result)
     return None
 
 
-async def _route_look_command(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: Look command routing requires many parameters for context and target resolution
-    command_data: dict[str, Any],
-    target: str | None,
-    target_type: str | None,
-    direction: str | None,
-    instance_number: int | None,
-    room: Any,
-    player: Any,
-    persistence: Any,
-    room_drops: list[dict[str, Any]],
-    app: Any,
-    request: Any,
-    player_name: str,
-) -> dict[str, Any]:
+async def _route_look_command(ctx: LookRouteCtx) -> CommandResponse:
     """Route look command to appropriate handler."""
-    # Try explicit handlers in order
-    result = await _try_explicit_player_look(target, target_type, instance_number, room, persistence, player_name, app)
+    result = await _try_explicit_player_look(
+        ctx.target, ctx.target_type, ctx.instance_number, ctx.room, ctx.persistence, ctx.player_name, ctx.app
+    )
     if result:
         return result
 
     result = await _try_explicit_item_look(
-        target, target_type, instance_number, room_drops, player, app, command_data, player_name
+        ctx.target,
+        ctx.target_type,
+        ctx.instance_number,
+        ctx.room_drops,
+        ctx.player,
+        ctx.app,
+        ctx.command_data,
+        ctx.player_name,
     )
     if result:
         return result
 
-    result = await _try_explicit_container_look(
-        target, target_type, instance_number, room, player, persistence, app, command_data, request, player_name
-    )
+    result = await _try_explicit_container_look(ctx)
     if result:
         return result
 
-    # Handle implicit target lookup (may return direction)
-    result, new_direction = await _try_implicit_target_lookup(
-        target, target_type, instance_number, room, player, persistence, room_drops, app, player_name
-    )
+    result, new_direction = await _try_implicit_target_lookup(ctx)
     if result:
         return result
-    if new_direction:
-        direction = new_direction
+    direction = new_direction or ctx.direction
 
-    # Handle direction lookups
-    result = await _try_direction_look(direction, room, persistence, player_name)
+    result = await _try_direction_look(direction, ctx.room, ctx.persistence, ctx.player_name)
     if result:
         return result
 
-    # Look at current room (default)
-    return await _handle_room_look(room, room_drops, persistence, player_name, request)
+    room_result = await _handle_room_look(ctx.room, ctx.room_drops, ctx.persistence, ctx.player_name, ctx.request)
+    parsed = _as_response(room_result)
+    if parsed is not None:
+        return parsed
+    return {"result": "You see nothing special."}
 
 
 async def handle_look_command(
-    command_data: dict[str, Any],
-    current_user: dict[str, Any],
-    request: Any,
+    command_data: dict[str, object],
+    current_user: dict[str, object],
+    request: object,
     alias_storage: AliasStorage | None,
     player_name: str,
-) -> dict[str, Any]:
+) -> CommandResponse:
     """
     Handle the look command for examining surroundings.
 
@@ -358,30 +421,28 @@ async def handle_look_command(
     _ = alias_storage  # Unused parameter
     logger.debug("Processing look command", player=player_name, args=command_data)
 
-    setup_result = await _setup_look_command(request, current_user, player_name)
+    look_request = cast(LookRequest | None, request)
+    setup_result = await _setup_look_command(look_request, current_user, player_name)
     if not setup_result:
         return {"result": "You see nothing special."}
 
     app, persistence, player, room, room_drops = setup_result
 
-    direction = command_data.get("direction")
-    target = command_data.get("target")
-    target_type = command_data.get("target_type")
-    instance_number = command_data.get("instance_number")
-
     return await _route_look_command(
-        command_data,
-        target,
-        target_type,
-        direction,
-        instance_number,
-        room,
-        player,
-        persistence,
-        room_drops,
-        app,
-        request,
-        player_name,
+        LookRouteCtx(
+            command_data=command_data,
+            target=_opt_str(command_data.get("target")),
+            target_type=_opt_str(command_data.get("target_type")),
+            direction=_opt_str(command_data.get("direction")),
+            instance_number=_opt_int(command_data.get("instance_number")),
+            room=room,
+            player=player,
+            persistence=persistence,
+            room_drops=room_drops,
+            app=app,
+            request=look_request,
+            player_name=player_name,
+        )
     )
 
 

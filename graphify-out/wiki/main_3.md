@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **visualize_arkham_rooms_simple.py** (5 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
+- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
+- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
+- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
+- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
+- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
 - **Graph** (2 connections)
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
 
 ## Relationships
 
@@ -23,7 +23,7 @@
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms_simple.py`
+- `scripts/visualize_arkham_rooms.py`
 
 ## Audit Trail
 

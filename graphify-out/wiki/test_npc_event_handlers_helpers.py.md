@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_npc_event_handlers_helpers.py** (14 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- **test_npc_event_handlers_helpers.py** (15 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **npc_event_handler()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
 - **mock_message_builder()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 30 (97%)
+- EXTRACTED: 31 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

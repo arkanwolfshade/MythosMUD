@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_lucidity_event_dispatcher.py** (34 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_lucidity_event_dispatcher.py** (35 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **asyncio** (24 connections)
 - **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
 - **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [Player](Player.md) (8 shared connections)
-- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (7 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [test_lucidity_trigger_handlers.py](test_lucidity_trigger_handlers.py.md) (4 shared connections)
 - [PhantomHostileService](PhantomHostileService.md) (3 shared connections)
-- [send_game_event](send_game_event.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [rescue_service.py](rescue_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [mock_send_game_event](mock_send_game_event.md) (1 shared connections)
 
 ## Source Files
@@ -49,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 160 (96%)
+- EXTRACTED: 161 (96%)
 - INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 

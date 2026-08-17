@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **room_validator/tests/conftest.py** (9 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_validator/tests/conftest.py** (10 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 - **fixture** (8 connections)
 - **temp_rooms_dir()** (4 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 - **dead_end_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
@@ -27,6 +27,7 @@
 ## Relationships
 
 - [RoomLoader](RoomLoader.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
+- EXTRACTED: 26 (96%)
 - INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 

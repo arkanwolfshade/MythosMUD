@@ -1,34 +1,29 @@
 # required
 
-> 12 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
-- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (8 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **exits** (1 connections) — `schemas/room_schema.json`
+- **id** (1 connections) — `schemas/room_schema.json`
+- **name** (1 connections) — `schemas/room_schema.json`
+- **plane** (1 connections) — `schemas/room_schema.json`
+- **sub_zone** (1 connections) — `schemas/room_schema.json`
+- **zone** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [schedule.schema.json](schedule.schema.json.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [room_schema.json](room_schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,56 @@
 # test_look_container_helpers.py
 
-> 29 nodes
+> 124 nodes
 
 ## Key Concepts
 
-- **test_look_container_helpers.py** (45 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_look_container_helpers.py** (46 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **look_container.py** (45 connections) — `server/commands/look_container.py`
+- **_find_container_in_room()** (24 connections) — `server/commands/look_container.py`
+- **_find_container_wearable()** (23 connections) — `server/commands/look_container.py`
+- **_format_container_display()** (21 connections) — `server/commands/look_container.py`
+- **_find_container_in_room_or_equipped()** (17 connections) — `server/commands/look_container.py`
+- **_try_lookup_container_implicit()** (16 connections) — `server/commands/look_container.py`
+- **_find_container_via_inner_container()** (14 connections) — `server/commands/look_container.py`
+- **JsonMap** (13 connections)
+- **_format_container_contents()** (12 connections) — `server/commands/look_container.py`
+- **_as_map()** (9 connections) — `server/commands/look_container.py`
+- **_get_container_data_from_component()** (9 connections) — `server/commands/look_container.py`
+- **_try_match_container_component()** (9 connections) — `server/commands/look_container.py`
+- **_extract_container_metadata()** (8 connections) — `server/commands/look_container.py`
+- **_fetch_container()** (7 connections) — `server/commands/look_container.py`
+- **_find_container_via_wearable_service()** (7 connections) — `server/commands/look_container.py`
+- **_matches_item_instance_id()** (7 connections) — `server/commands/look_container.py`
+- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
+- **Protocol** (7 connections)
+- **_WearableContainer** (6 connections) — `server/commands/look_container.py`
+- **_as_map_list()** (6 connections) — `server/commands/look_container.py`
+- **_container_name()** (5 connections) — `server/commands/look_container.py`
+- **_room_container_maps()** (5 connections) — `server/commands/look_container.py`
+- **_select_match()** (5 connections) — `server/commands/look_container.py`
 - **asyncio** (5 connections)
-- **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_get_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_via_inner_container_no_inner_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_container_id()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_get_container_data_from_component_no_get_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_none()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_item_instance_id_true()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_name_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **test_matches_name_or_slot_slot_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Unit tests for look container helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when item has no inner_container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() with invalid UUID.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _find_container_via_inner_container() when persistence has no…** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns True when IDs match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when IDs don't match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_item_instance_id() returns False when either ID is None.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns True for slot match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns True for name match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **Test _matches_name_or_slot() returns False when no match.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 4 more nodes in this community*
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [look_container.py](look_container.py.md) (18 shared connections)
-- [_find_container_in_room](_find_container_in_room.md) (10 shared connections)
-- [_find_container_wearable](_find_container_wearable.md) (8 shared connections)
-- [_format_container_display](_format_container_display.md) (5 shared connections)
-- [_format_container_contents](_format_container_contents.md) (3 shared connections)
+- [test_look_container.py](test_look_container.py.md) (50 shared connections)
+- [look_command.py](look_command.py.md) (6 shared connections)
+- [coerce_int](coerce_int.md) (5 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (3 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/look_container.py`
 - `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 296 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

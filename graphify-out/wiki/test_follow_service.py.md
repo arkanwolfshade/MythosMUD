@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_follow_service.py** (47 connections) — `server/tests/unit/game/test_follow_service.py`
+- **test_follow_service.py** (48 connections) — `server/tests/unit/game/test_follow_service.py`
 - **asyncio** (20 connections)
 - **test_follow_request_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
 - **fixture** (5 connections)
@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [ConnectionManager](ConnectionManager.md) (8 shared connections)
 - [FollowService](FollowService.md) (6 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (3 shared connections)
+- [test_party_service.py](test_party_service.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 112 (94%)
+- EXTRACTED: 113 (94%)
 - INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 

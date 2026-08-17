@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_player_occupant_processor.py** (26 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_player_occupant_processor.py** (27 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **processor()** (4 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **asyncio** (4 connections)
 - **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
@@ -35,6 +35,7 @@
 
 - [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (2 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 56 (97%)
+- EXTRACTED: 57 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

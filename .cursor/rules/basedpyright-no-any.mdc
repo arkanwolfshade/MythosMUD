@@ -13,6 +13,12 @@ Do not write Python that triggers **`reportAny`** or **`reportExplicitAny`**. Do
 After editing Python, run `uv run basedpyright <edited files>` from the repo root. Fix findings before
 considering the change done.
 
+## Ponytail / shortest-diff
+
+`typing.Any` is **not** a lazy shortcut. It fails basedpyright and gets rewritten, so it is the
+_longest_ path. Protocol + TypedDict (matching real dict value types) is the shortest _correct_
+diff. Never hide `reportAny` / `reportExplicitAny` with `# type: ignore` or `# pyright: ignore`.
+
 ## Fixes (use these, not `Any`)
 
 - **Structured dicts:** `TypedDict` (see `NewGameSessionResult` in `connection_session_management.py`).

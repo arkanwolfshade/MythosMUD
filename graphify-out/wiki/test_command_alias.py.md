@@ -1,17 +1,13 @@
 # test_command_alias.py
 
-> 43 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **test_command_alias.py** (18 connections) — `server/tests/unit/models/test_command_alias.py`
+- **test_command_alias.py** (20 connections) — `server/tests/unit/models/test_command_alias.py`
 - **AliasCommand** (17 connections) — `server/models/command_alias.py`
-- **UnaliasCommand** (12 connections) — `server/models/command_alias.py`
-- **command_alias.py** (12 connections) — `server/models/command_alias.py`
-- **AliasesCommand** (8 connections) — `server/models/command_alias.py`
 - **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
 - **.validate_command()** (4 connections) — `server/models/command_alias.py`
-- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
 - **test_alias_command_alias_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
 - **test_alias_command_alias_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
 - **test_alias_command_command_max_length()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
@@ -26,17 +22,21 @@
 - **test_unalias_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
 - **test_unalias_command_validate_alias_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_alias.py`
 - **field_validator** (3 connections)
-- **Alias command models for MythosMUD. This module provides command models for…** (1 connections) — `server/models/command_alias.py`
 - **Command for creating or viewing command aliases.** (1 connections) — `server/models/command_alias.py`
 - **Validate alias name format using centralized validation.** (1 connections) — `server/models/command_alias.py`
-- *... and 18 more nodes in this community*
+- **Validate command content for security using centralized validation.** (1 connections) — `server/models/command_alias.py`
+- **Unit tests for alias command models. Tests the alias command models and their…** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test UnaliasCommand requires alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test UnaliasCommand calls validate_alias_name.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- **Test UnaliasCommand validates alias_name min length.** (1 connections) — `server/tests/unit/models/test_command_alias.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [command.py](command.py.md) (9 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (6 shared connections)
-- [BaseCommand](BaseCommand.md) (4 shared connections)
-- [test_command_factories_utility.py](test_command_factories_utility.py.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (15 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (77%)
-- INFERRED: 19 (23%)
+- EXTRACTED: 46 (75%)
+- INFERRED: 15 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

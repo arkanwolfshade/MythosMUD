@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_logging_handlers.py** (28 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_logging_handlers.py** (29 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **create_aggregator_handler()** (22 connections) — `server/structured_logging/logging_handlers.py`
 - **SafeRotatingFileHandler** (15 connections) — `server/structured_logging/logging_handlers.py`
 - **logging_handlers.py** (15 connections) — `server/structured_logging/logging_handlers.py`
@@ -38,6 +38,7 @@
 - [get_logger](get_logger.md) (4 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 109 (84%)
+- EXTRACTED: 110 (84%)
 - INFERRED: 21 (16%)
 - AMBIGUOUS: 0 (0%)
 

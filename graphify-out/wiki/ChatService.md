@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **ChatService** (96 connections) — `server/game/chat_service.py`
-- **test_chat_service.py** (43 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_chat_service.py** (44 connections) — `server/tests/unit/game/test_chat_service.py`
 - **UUID** (28 connections)
 - **asyncio** (22 connections)
 - **.send_say_message()** (11 connections) — `server/game/chat_service.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (17 shared connections)
-- [ChatMessage](ChatMessage.md) (10 shared connections)
+- [chat_service.py](chat_service.py.md) (14 shared connections)
+- [ChatMessage](ChatMessage.md) (13 shared connections)
 - [chat_message.py](chat_message.py.md) (5 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [npc_base.py](npc_base.py.md) (1 shared connections)
+- [SpellRegistry](SpellRegistry.md) (1 shared connections)
 - [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 239 (82%)
+- EXTRACTED: 240 (82%)
 - INFERRED: 54 (18%)
 - AMBIGUOUS: 0 (0%)
 

@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Introduce Color Strategically** (8 connections) — `.claude/skills/colorize/SKILL.md`
-- **colorize/SKILL.md** (6 connections) — `.claude/skills/colorize/SKILL.md`
+- **Colorize Skill** (7 connections) — `.claude/skills/colorize/SKILL.md`
 - **Balance & Refinement** (4 connections) — `.claude/skills/colorize/SKILL.md`
 - **Accent Color Application** (1 connections) — `.claude/skills/colorize/SKILL.md`
 - **Accessibility** (1 connections) — `.claude/skills/colorize/SKILL.md`
@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -32,7 +32,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

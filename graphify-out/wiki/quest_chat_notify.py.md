@@ -1,6 +1,6 @@
 # quest_chat_notify.py
 
-> 26 nodes
+> 24 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
 - **Any** (4 connections)
 - **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_should_notify_quest_progress_milestones()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
 - **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
 - **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP). # group:…** (1 connections) — `server/game/quest/quest_chat_notify.py`
 - **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
@@ -29,7 +28,6 @@
 - **True if any goal slot has a non-zero / non-empty progress value.** (1 connections) — `server/game/quest/quest_chat_notify.py`
 - **Return True when a progress personal-system line should be sent. Notifies on…** (1 connections) — `server/game/quest/quest_chat_notify.py`
 - **Quest notify helpers schedule personal system chat with expected text.** (1 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- *... and 1 more nodes in this community*
 
 ## Relationships
 
@@ -46,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,13 @@
 # multiplayer-browser-helpers.d.ts
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.d.ts** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **multiplayer-browser-helpers.d.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 - **GameUiDiagnostics** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 - **OccupantsSnapshot** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **PresenceEvent** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 
 ## Relationships
 
@@ -18,7 +19,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

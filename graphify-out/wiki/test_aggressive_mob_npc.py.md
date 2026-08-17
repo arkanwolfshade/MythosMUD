@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_aggressive_mob_npc.py** (23 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_aggressive_mob_npc.py** (24 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_attack_via_create_task_with_running_loop()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_flee_error_returns_false()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
@@ -22,14 +22,14 @@
 
 ## Relationships
 
-- [AggressiveMobNPC](AggressiveMobNPC.md) (4 shared connections)
+- [AggressiveMobNPC](AggressiveMobNPC.md) (5 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [npc_base.py](npc_base.py.md) (1 shared connections)
+- [test_enrich_behavior_context_handles_no_current_room](test_enrich_behavior_context_handles_no_current_room.md) (1 shared connections)
 - [test_get_attack_damage_from_behavior_config](test_get_attack_damage_from_behavior_config.md) (1 shared connections)
-- [test_get_attack_damage_invalid_string_falls_back_to_one](test_get_attack_damage_invalid_string_falls_back_to_one.md) (1 shared connections)
-- [test_hunt_target_avoids_duplicate_ids](test_hunt_target_avoids_duplicate_ids.md) (1 shared connections)
-- [test_enrich_behavior_context_swallows_compute_errors](test_enrich_behavior_context_swallows_compute_errors.md) (1 shared connections)
 - [test_enrich_behavior_context_sets_player_in_range_when_players_in_room](test_enrich_behavior_context_sets_player_in_range_when_players_in_room.md) (1 shared connections)
+- [test_enrich_behavior_context_sets_false_when_no_players_in_room](test_enrich_behavior_context_sets_false_when_no_players_in_room.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (95%)
+- EXTRACTED: 36 (95%)
 - INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 

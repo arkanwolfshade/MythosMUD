@@ -10,12 +10,12 @@ from uuid import UUID, uuid4
 
 from structlog.stdlib import BoundLogger
 
+from ..constants.spawn_defaults import LIMBO_ROOM_ID
 from ..structured_logging.enhanced_logging_config import get_logger
 from .combat_service import CombatService
 from .npc_combat_data_provider import NPCCombatDataProvider
 from .npc_combat_lucidity import NPCCombatLucidity
 from .npc_combat_uuid_mapping import NPCCombatUUIDMapping
-from .player_respawn_service import LIMBO_ROOM_ID
 from .room_data_validator import RoomDataValidator
 
 logger: BoundLogger = get_logger(__name__)

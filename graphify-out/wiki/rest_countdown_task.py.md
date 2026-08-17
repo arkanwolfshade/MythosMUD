@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (12 connections) — `server/commands/rest_countdown_task.py`
+- **rest_countdown_task.py** (13 connections) — `server/commands/rest_countdown_task.py`
 - **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
 - **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
 - **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
@@ -23,8 +23,10 @@
 ## Relationships
 
 - [build_event](build_event.md) (4 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -32,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

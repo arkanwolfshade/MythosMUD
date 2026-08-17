@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_async_persistence_room_cache.py** (32 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **test_async_persistence_room_cache.py** (33 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 - **test_generate_room_id_from_zone_data_none_values()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 - **test_parse_exits_json_string_invalid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 - **test_process_combined_rows_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
@@ -22,7 +22,8 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [test_get_user_by_username_case_insensitive_no_session](test_get_user_by_username_case_insensitive_no_session.md) (1 shared connections)
 - [test_get_professions_no_session](test_get_professions_no_session.md) (1 shared connections)
 - [test_get_players_batch_with_players](test_get_players_batch_with_players.md) (1 shared connections)
@@ -32,7 +33,6 @@
 - [test_load_room_cache_async_rooms_none](test_load_room_cache_async_rooms_none.md) (1 shared connections)
 - [test_parse_exits_json_list](test_parse_exits_json_list.md) (1 shared connections)
 - [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
-- [test_process_exits_for_room_multiple_exits](test_process_exits_for_room_multiple_exits.md) (1 shared connections)
 
 ## Source Files
 
@@ -40,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

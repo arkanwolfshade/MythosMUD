@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_postgres_adapter.py** (14 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **test_postgres_adapter.py** (15 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **TestUtilityFunctions** (8 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 - **connect_postgres()** (6 connections) — `server/postgres_adapter.py`
 - **convert_sqlite_to_postgres_query()** (6 connections) — `server/postgres_adapter.py`
@@ -30,6 +30,7 @@
 - [get_logger](get_logger.md) (3 shared connections)
 - [PostgresCursor](PostgresCursor.md) (2 shared connections)
 - [PostgresRow](PostgresRow.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [is_postgres_url](is_postgres_url.md) (1 shared connections)
 
 ## Source Files
@@ -39,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
+- EXTRACTED: 38 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

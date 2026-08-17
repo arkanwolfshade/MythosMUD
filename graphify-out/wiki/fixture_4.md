@@ -1,30 +1,29 @@
 # fixture
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (3 connections)
+- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (4 shared connections)
+- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/infrastructure/test_postgres_adapter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

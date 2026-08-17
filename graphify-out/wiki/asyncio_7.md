@@ -1,38 +1,34 @@
 # asyncio
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (8 connections)
-- **test_call_closes_from_half_open_on_success()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_failure_closed_state()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_opens_circuit_after_threshold()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_reopens_from_half_open_on_failure()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_transitions_to_half_open_after_timeout()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() closes circuit from HALF_OPEN after success threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() reopens circuit from HALF_OPEN on failure.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() executes successfully in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() handles failure in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **Test call() transitions to HALF_OPEN after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **asyncio** (6 connections)
+- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test_circuit_breaker.py](test_circuit_breaker.py.md) (7 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (6 shared connections)
-- [CircuitState](CircuitState.md) (5 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (1 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_circuit_breaker.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (65%)
-- INFERRED: 11 (35%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

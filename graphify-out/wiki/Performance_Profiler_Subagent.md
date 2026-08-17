@@ -1,6 +1,6 @@
 # Performance Profiler Subagent
 
-> 23 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -8,11 +8,10 @@
 - **Capabilities** (6 connections) — `.claude/agents/performance-profiler.md`
 - **Example Scenarios** (4 connections) — `.claude/agents/performance-profiler.md`
 - **Performance Monitoring** (4 connections) — `.claude/agents/performance-profiler.md`
+- **Database Performance** (2 connections) — `.claude/agents/performance-profiler.md`
 - **performance-profiler.md** (1 connections) — `.claude/agents/performance-profiler.md`
 - **Bottleneck Identification** (1 connections) — `.claude/agents/performance-profiler.md`
 - **Code Performance Review** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Database Performance** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Database Performance** (1 connections) — `.claude/agents/performance-profiler.md`
 - **Database Query Optimization** (1 connections) — `.claude/agents/performance-profiler.md`
 - **Enhanced Logging Integration** (1 connections) — `.claude/agents/performance-profiler.md`
 - **Game Loop Performance** (1 connections) — `.claude/agents/performance-profiler.md`

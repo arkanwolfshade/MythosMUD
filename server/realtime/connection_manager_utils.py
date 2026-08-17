@@ -10,8 +10,6 @@ import inspect
 from collections.abc import Callable, Coroutine
 from typing import cast
 
-from ..container import ApplicationContainer
-
 
 def _coerce_connection_manager(manager: object) -> object:
     """Pass-through for container values; typing lives at call sites."""
@@ -97,6 +95,9 @@ def resolve_connection_manager(candidate: object | None = None) -> object | None
     # This requires accessing the current request context, which is not always available
     # For now, try ApplicationContainer.get_instance() as fallback
     try:
+        # Deferred: ApplicationContainer import graph includes combat/magic, which import this module.
+        from ..container import ApplicationContainer  # noqa: I001,PLC0415  # Reason: Break import cycle with container/combat/magic
+
         container = ApplicationContainer.get_instance()
         manager = cast(object | None, getattr(container, "connection_manager", None))
         if manager is not None:

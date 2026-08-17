@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_service.py** (37 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_combat_service.py** (38 connections) — `server/tests/unit/services/test_combat_service.py`
 - **_make_service()** (28 connections) — `server/tests/unit/services/test_combat_service.py`
 - **asyncio** (17 connections)
 - **_make_combat_instance()** (15 connections) — `server/tests/unit/services/test_combat_service.py`
@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (6 shared connections)
-- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (6 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 133 (99%)
+- EXTRACTED: 134 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

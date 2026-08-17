@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   captureGameUiDiagnosticsInBrowser,
+  hasOtherPlayerNamesInBrowser,
   isGameUiLoadedInBrowser,
 } from '../../tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js';
 
@@ -57,5 +58,14 @@ describe('multiplayer-browser-helpers', () => {
 
     expect(isGameUiLoadedInBrowser()).toBe(false);
     expect(captureGameUiDiagnosticsInBrowser().hasVisibleLoginForm).toBe(true);
+  });
+
+  it('reads other player names from data-names even when Occupants list is overflow-clipped', () => {
+    setBodyHtml(`
+      <div data-testid="occupants-other-players" data-names="ArkanWolfshade" style="height:0;overflow:hidden">
+        ArkanWolfshade
+      </div>
+    `);
+    expect(hasOtherPlayerNamesInBrowser(['ArkanWolfshade'])).toBe(true);
   });
 });

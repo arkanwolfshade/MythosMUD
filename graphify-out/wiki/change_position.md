@@ -1,6 +1,6 @@
 # .change_position
 
-> 28 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **._initial_response()** (4 connections) — `server/services/player_position_service.py`
 - **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
 - **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
 - **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
 - **._validate_position()** (3 connections) — `server/services/player_position_service.py`
 - **.get_player_by_name()** (3 connections) — `server/services/player_position_service.py`
@@ -29,14 +28,13 @@
 - **Mutate persistence and in-memory tracking to reflect the requested position.** (1 connections) — `server/services/player_position_service.py`
 - **Mirror posture changes into the live connection manager.** (1 connections) — `server/services/player_position_service.py`
 - **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
-- *... and 3 more nodes in this community*
+- **Look up a player by name.** (1 connections) — `server/services/player_position_service.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [PlayerPositionService](PlayerPositionService.md) (10 shared connections)
-- [position_commands.py](position_commands.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [build_event](build_event.md) (12 shared connections)
+- [UUID](UUID.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,54 @@
 # test_npc_startup_service.py
 
-> 21 nodes
+> 79 nodes
 
 ## Key Concepts
 
-- **test_npc_startup_service.py** (39 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_npc_startup_service.py** (40 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **asyncio** (26 connections)
+- **mock_container()** (13 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **_assign_container_get_instance()** (12 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **_errors_len()** (7 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_exception()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_fallback_not_found()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_container()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_persistence()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_room_id_not_found()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_sub_zone_room_not_found()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_room_id()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_sub_zone()** (6 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **npc_startup_service()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_spawns_each_spawned_definition()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_critical_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_exception_in_session()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_exception()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_no_spawn_room()** (5 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_get_npc_startup_service()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_spawn_npcs_on_startup_with_optional_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone_case_insensitive()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_get_default_room_for_sub_zone_unknown()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_npc_startup_service_init()** (3 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **test_arena_room_ids()** (2 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **fixture** (1 connections)
-- **Unit tests for NPC startup service. Tests the NPCStartupService class.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() returns correct room for known sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() returns None for unknown sub-zone.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test _get_default_room_for_sub_zone() is case insensitive.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test get_npc_startup_service() returns service instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Create an NPCStartupService instance.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test ARENA_ROOM_IDS defines 121 arena rooms (11x11) and includes center.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() spawns optional NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test NPCStartupService initialization.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (12 shared connections)
-- [mock_container](mock_container.md) (10 shared connections)
-- [NPCStartupService](NPCStartupService.md) (9 shared connections)
-- [_errors_len](_errors_len.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [NPCStartupService](NPCStartupService.md) (33 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [container_events.py](container_events.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
+- `server/tests/unit/services/test_container_websocket_events.py`
 - `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (85%)
-- INFERRED: 9 (15%)
+- EXTRACTED: 124 (74%)
+- INFERRED: 43 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

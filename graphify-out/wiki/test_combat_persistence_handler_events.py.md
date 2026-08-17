@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_persistence_handler_events.py** (25 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_combat_persistence_handler_events.py** (26 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **asyncio** (18 connections)
 - **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 - **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 65 (97%)
+- EXTRACTED: 66 (97%)
 - INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 

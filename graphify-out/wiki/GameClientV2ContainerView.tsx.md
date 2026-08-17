@@ -1,16 +1,14 @@
 # GameClientV2ContainerView.tsx
 
-> 51 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **GameClientV2ContainerView.tsx** (25 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
 - **MapView.tsx** (14 connections) — `client/src/components/MapView.tsx`
-- **ModalContainer.tsx** (11 connections) — `client/src/components/ui/ModalContainer.tsx`
 - **TabbedInterfaceOverlay.tsx** (8 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
 - **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
 - **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
-- **ModalContainer()** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
 - **DeathInterstitial.tsx** (5 connections) — `client/src/components/DeathInterstitial.tsx`
 - **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
 - **MapView()** (4 connections) — `client/src/components/MapView.tsx`
@@ -29,17 +27,18 @@
 - **TabbedInterfaceOverlayProps** (2 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
 - **GameClientV2ContainerViewProps** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
 - **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
-- *... and 26 more nodes in this community*
+- **MapViewBody()** (2 connections) — `client/src/components/MapView.tsx`
+- **useMapViewEffects()** (2 connections) — `client/src/components/MapView.tsx`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (5 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (5 shared connections)
+- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (7 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
 - [utils/config.ts](utils-config.ts.md) (3 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
-- [PanelState](PanelState.md) (2 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
+- [ModalContainer.tsx](ModalContainer.tsx.md) (2 shared connections)
 
 ## Source Files
 
@@ -58,12 +57,11 @@
 - `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
 - `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
 - `client/src/components/ui-v2/useTabbedInterface.ts`
-- `client/src/components/ui/ModalContainer.tsx`
 - `client/src/constants/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (100%)
+- EXTRACTED: 86 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

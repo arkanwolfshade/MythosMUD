@@ -1,12 +1,11 @@
 # validate_admin_permission
 
-> 18 nodes
+> 16 nodes
 
 ## Key Concepts
 
 - **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
-- **test_admin_permission_utils.py** (11 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **admin_permission_utils.py** (9 connections) — `server/commands/admin_permission_utils.py`
+- **test_admin_permission_utils.py** (12 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **asyncio** (6 connections)
 - **_BrokenAdminPlayer** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **test_validate_admin_permission_attribute_error()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
@@ -19,21 +18,19 @@
 - **mock_admin_logger()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 - **Any** (1 connections)
 - **fixture** (1 connections)
-- **Admin permission validation utilities for MythosMUD. This module provides…** (1 connections) — `server/commands/admin_permission_utils.py`
 - **Validate that a player has admin permissions. Args: player: Player object to…** (1 connections) — `server/commands/admin_permission_utils.py`
 - **Unit tests for admin permission validation.** (1 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 
 ## Relationships
 
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
-- [admin_summon_command.py](admin_summon_command.py.md) (3 shared connections)
 - [test_goto_helpers.py](test_goto_helpers.py.md) (3 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,8 +39,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

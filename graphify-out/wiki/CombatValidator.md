@@ -35,9 +35,8 @@
 
 - [.validate_combat_command](validate_combat_command.md) (7 shared connections)
 - [test_combat_validator.py](test_combat_validator.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [combat_validator](combat_validator.md) (1 shared connections)
 
 ## Source Files

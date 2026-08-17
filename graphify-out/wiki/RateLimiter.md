@@ -18,7 +18,7 @@
 
 - [.enforce_rate_limit](enforce_rate_limit.md) (3 shared connections)
 - [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 

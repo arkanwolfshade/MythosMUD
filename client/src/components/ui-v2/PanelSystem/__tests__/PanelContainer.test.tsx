@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom/vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { CSSProperties, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -197,6 +198,16 @@ describe('PanelContainer', () => {
       expect(rndContainer).toHaveAttribute('data-size-height', '40');
     });
 
+    it('should keep children mounted but hidden when minimized', () => {
+      // Unmounting children while minimized removed occupant markup from the DOM entirely,
+      // which silently broke presence assertions against a collapsed Occupants panel.
+      const { container } = render(<PanelContainer {...defaultProps} isMinimized={true} />);
+
+      const content = screen.getByText('Test Content');
+      expect(content).toBeInTheDocument();
+      expect(container.querySelector('[hidden]')).toContainElement(content);
+    });
+
     it('should show restore button when minimized', () => {
       render(<PanelContainer {...defaultProps} isMinimized={true} />);
 
@@ -218,10 +229,10 @@ describe('PanelContainer', () => {
       expect(minimizeIcon).not.toBeInTheDocument();
     });
 
-    it('should not show content when minimized', () => {
+    it('should not display content when minimized', () => {
       render(<PanelContainer {...defaultProps} isMinimized={true} />);
 
-      expect(screen.queryByText('Test Content')).not.toBeInTheDocument();
+      expect(screen.getByText('Test Content')).not.toBeVisible();
     });
   });
 
@@ -277,13 +288,8 @@ describe('PanelContainer', () => {
     it('should call onMinimize when minimize button is clicked', () => {
       render(<PanelContainer {...defaultProps} />);
 
-      const minimizeButton = screen
-        .getAllByTestId('terminal-button')
-        .find(btn => btn.querySelector('[data-testid="eldritch-icon-minimize"]'));
-      if (minimizeButton) {
-        fireEvent.click(minimizeButton);
-        expect(defaultProps.onMinimize).toHaveBeenCalledWith('test-panel');
-      }
+      fireEvent.click(screen.getByTestId('game-panel-test-panel-minimize'));
+      expect(defaultProps.onMinimize).toHaveBeenCalledWith('test-panel');
     });
 
     it('exposes stable test ids for panel chrome controls', () => {
@@ -310,25 +316,15 @@ describe('PanelContainer', () => {
     it('should call onMaximize when maximize button is clicked', () => {
       render(<PanelContainer {...defaultProps} />);
 
-      const maximizeButton = screen
-        .getAllByTestId('terminal-button')
-        .find(btn => btn.querySelector('[data-testid="eldritch-icon-maximize"]'));
-      if (maximizeButton) {
-        fireEvent.click(maximizeButton);
-        expect(defaultProps.onMaximize).toHaveBeenCalledWith('test-panel');
-      }
+      fireEvent.click(screen.getByTestId('eldritch-icon-maximize'));
+      expect(defaultProps.onMaximize).toHaveBeenCalledWith('test-panel');
     });
 
     it('should call onClose when close button is clicked', () => {
       render(<PanelContainer {...defaultProps} />);
 
-      const closeButton = screen
-        .getAllByTestId('terminal-button')
-        .find(btn => btn.querySelector('[data-testid="eldritch-icon-close"]'));
-      if (closeButton) {
-        fireEvent.click(closeButton);
-        expect(defaultProps.onClose).toHaveBeenCalledWith('test-panel');
-      }
+      fireEvent.click(screen.getByTestId('eldritch-icon-close'));
+      expect(defaultProps.onClose).toHaveBeenCalledWith('test-panel');
     });
 
     it('should not render close button when onClose is not provided', () => {

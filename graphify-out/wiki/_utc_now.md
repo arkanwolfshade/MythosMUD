@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 
 ## Source Files
 

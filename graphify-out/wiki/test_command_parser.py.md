@@ -1,10 +1,10 @@
 # test_command_parser.py
 
-> 104 nodes
+> 106 nodes
 
 ## Key Concepts
 
-- **test_command_parser.py** (45 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **parse_command()** (24 connections) — `server/utils/command_parser.py`
 - **CommandParser** (19 connections) — `server/utils/command_parser.py`
 - **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
@@ -29,31 +29,30 @@
 - **test_create_command_object_type_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_create_command_object_value_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 79 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (18 shared connections)
-- [BaseCommand](BaseCommand.md) (6 shared connections)
-- [command.py](command.py.md) (6 shared connections)
-- [CommandProcessor](CommandProcessor.md) (2 shared connections)
+- [get_logger](get_logger.md) (25 shared connections)
+- [BaseCommand](BaseCommand.md) (7 shared connections)
+- [test_command_processor.py](test_command_processor.py.md) (3 shared connections)
 - [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [CommandFactory](CommandFactory.md) (2 shared connections)
 - [CommandService](CommandService.md) (1 shared connections)
-- [.extract_command_data](extract_command_data.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [MythosValidationError](MythosValidationError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/test_command_parser_smoke.py`
 - `server/tests/unit/utils/test_command_parser.py`
 - `server/utils/command_parser.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 147 (87%)
+- EXTRACTED: 151 (87%)
 - INFERRED: 22 (13%)
 - AMBIGUOUS: 0 (0%)
 

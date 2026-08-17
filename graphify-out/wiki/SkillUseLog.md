@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
 
 ## Source Files
 

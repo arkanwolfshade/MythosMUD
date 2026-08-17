@@ -8,7 +8,6 @@
 - **High Priority** (4 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **As You Touch** (3 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **Medium Priority** (3 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **mythosmud-code-quality-ai/SKILL.md** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **`__all__` for public modules** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **Client return types (TypeScript)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **Complexity policy** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
@@ -19,6 +18,7 @@
 - **Reference** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **Review Checklist** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 - **Type hints (TCH + policy)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
+- **Code Quality AI Skill** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
 
 ## Relationships
 

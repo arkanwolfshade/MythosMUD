@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_combat_death_handler.py** (30 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_combat_death_handler.py** (31 connections) — `server/tests/unit/services/test_combat_death_handler.py`
 - **asyncio** (11 connections)
 - **patch** (9 connections)
 - **fixture** (5 connections)
@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [CombatDeathHandler](CombatDeathHandler.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [models/combat.py](models-combat.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (98%)
+- EXTRACTED: 60 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

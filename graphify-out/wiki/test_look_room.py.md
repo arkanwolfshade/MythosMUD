@@ -4,11 +4,11 @@
 
 ## Key Concepts
 
-- **test_look_room.py** (35 connections) — `server/tests/unit/commands/test_look_room.py`
+- **test_look_room.py** (36 connections) — `server/tests/unit/commands/test_look_room.py`
 - **look_room.py** (26 connections) — `server/commands/look_room.py`
-- **test_look_room_helpers.py** (21 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
+- **test_look_room_helpers.py** (22 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
+- **_handle_room_look()** (18 connections) — `server/commands/look_room.py`
 - **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
-- **_handle_room_look()** (17 connections) — `server/commands/look_room.py`
 - **asyncio** (13 connections)
 - **_format_items_section()** (11 connections) — `server/commands/look_room.py`
 - **_format_exits_list()** (10 connections) — `server/commands/look_room.py`
@@ -35,11 +35,14 @@
 
 - [test_look_player.py](test_look_player.py.md) (7 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
-- [AttributeError](AttributeError.md) (4 shared connections)
+- [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
 - [occupant_display.py](occupant_display.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
+- [build_event](build_event.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 213 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 215 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

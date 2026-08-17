@@ -10,25 +10,27 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from copy import deepcopy
-from typing import Any
 
 DROP_INTRO_LINE = "Scattered upon the floor, you notice:"
 DROP_EMPTY_LINE = "The floor bears no abandoned curios."
 
 
-def _coerce_stack(stack: Mapping[str, Any]) -> tuple[str, str, int]:
+def _coerce_stack(stack: Mapping[str, object]) -> tuple[str, str, int]:
     """Normalize stack fields for presentation."""
     item_name = str(stack.get("item_name") or stack.get("item_id") or "Uncatalogued Relic")
     slot_type = str(stack.get("slot_type") or "unknown")
     quantity_raw = stack.get("quantity", 0)
-    try:
-        quantity = int(quantity_raw)
-    except (TypeError, ValueError):
+    if isinstance(quantity_raw, int | float | str):
+        try:
+            quantity = int(quantity_raw)
+        except (TypeError, ValueError):
+            quantity = 0
+    else:
         quantity = 0
     return item_name, slot_type, quantity
 
 
-def format_room_drop_lines(drops: Sequence[Mapping[str, Any]] | None) -> list[str]:
+def format_room_drop_lines(drops: Sequence[Mapping[str, object]] | None) -> list[str]:
     """
     Build human-readable lines describing room drops.
 
@@ -38,7 +40,7 @@ def format_room_drop_lines(drops: Sequence[Mapping[str, Any]] | None) -> list[st
     Returns:
         List[str]: Narrative lines suitable for terminal rendering.
     """
-    safe_drops: Sequence[Mapping[str, Any]] = drops or ()
+    safe_drops: Sequence[Mapping[str, object]] = drops or ()
     if not safe_drops:
         return [DROP_EMPTY_LINE]
 
@@ -49,12 +51,12 @@ def format_room_drop_lines(drops: Sequence[Mapping[str, Any]] | None) -> list[st
     return lines
 
 
-def build_room_drop_summary(drops: Sequence[Mapping[str, Any]] | None) -> str:
+def build_room_drop_summary(drops: Sequence[Mapping[str, object]] | None) -> str:
     """Return a newline-separated textual summary of room drops."""
     return "\n".join(format_room_drop_lines(drops))
 
 
-def clone_room_drops(drops: Iterable[Mapping[str, Any]] | None) -> list[dict[str, Any]]:
+def clone_room_drops(drops: Iterable[Mapping[str, object]] | None) -> list[dict[str, object]]:
     """Deep copy room drop payloads to shield callers from mutation."""
     if not drops:
         return []

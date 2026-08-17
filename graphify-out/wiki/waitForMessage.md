@@ -6,7 +6,6 @@
 
 - **waitForMessage()** (54 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **executeCommandWithoutRecovery()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **dialogue-trees.spec.ts** (16 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
 - **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
@@ -18,6 +17,7 @@
 - **summonAndPickupCollectItems()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **turnInCollectNQuest()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **despawnArmitage()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
 - **askCollectNQuest()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **despawnQuestGiverInstances()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **ensureAdminInFoyer()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
@@ -28,12 +28,12 @@
 
 ## Relationships
 
-- [multiplayer.ts](multiplayer.ts.md) (32 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (26 shared connections)
-- [executeCommand](executeCommand.md) (16 shared connections)
-- [player.ts](player.ts.md) (16 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (7 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (2 shared connections)
+- [executeCommand](executeCommand.md) (43 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (21 shared connections)
+- [player.ts](player.ts.md) (12 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (6 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (3 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (3 shared connections)
 
 ## Source Files
 
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 156 (100%)
+- EXTRACTED: 139 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

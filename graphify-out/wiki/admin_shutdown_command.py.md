@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **admin_shutdown_command.py** (35 connections) — `server/commands/admin_shutdown_command.py`
+- **admin_shutdown_command.py** (36 connections) — `server/commands/admin_shutdown_command.py`
 - **Any** (20 connections)
 - **handle_shutdown_command()** (13 connections) — `server/commands/admin_shutdown_command.py`
 - **initiate_shutdown_countdown()** (13 connections) — `server/commands/admin_shutdown_command.py`
@@ -33,18 +33,17 @@
 
 ## Relationships
 
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (14 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (16 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (3 shared connections)
 - [parse_shutdown_parameters](parse_shutdown_parameters.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_cancel_shutdown_countdown_no_active](test_cancel_shutdown_countdown_no_active.md) (2 shared connections)
+- [User](User.md) (3 shared connections)
 - [calculate_notification_times](calculate_notification_times.md) (2 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
 - [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 113 (98%)
+- EXTRACTED: 114 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

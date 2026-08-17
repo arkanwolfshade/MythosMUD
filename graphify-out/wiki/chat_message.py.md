@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (15 shared connections)
-- [ChatMessage](ChatMessage.md) (11 shared connections)
+- [ChatMessage](ChatMessage.md) (15 shared connections)
+- [chat_service.py](chat_service.py.md) (11 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (7 shared connections)
 - [ChatService](ChatService.md) (5 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)

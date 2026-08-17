@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **test_level_service.py** (16 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_level_service.py** (17 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_level_curve.py** (16 connections) — `server/tests/unit/game/test_level_curve.py`
 - **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
-- **test_level_curve.py** (15 connections) — `server/tests/unit/game/test_level_curve.py`
 - **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
 - **asyncio** (8 connections)
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 
@@ -45,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 99 (98%)
+- EXTRACTED: 101 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

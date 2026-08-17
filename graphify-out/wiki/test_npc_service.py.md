@@ -1,67 +1,47 @@
 # test_npc_service.py
 
-> 278 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_npc_service.py** (49 connections) — `server/tests/unit/services/test_npc_service.py`
-- **NPCSpawnRule** (47 connections) — `server/models/npc.py`
-- **asyncio** (35 connections)
-- **test_npc_models.py** (33 connections) — `server/tests/unit/models/test_npc_models.py`
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service/__init__.py** (22 connections) — `server/services/npc_service/__init__.py`
-- **NPCDefinitionCRUDMixin** (18 connections) — `server/services/npc_service/definition_crud.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **definition_crud.py** (15 connections) — `server/services/npc_service/definition_crud.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **npc_service_models.py** (13 connections) — `server/services/npc_service_models.py`
-- **_row_to_npc_definition()** (12 connections) — `server/services/npc_service_models.py`
-- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
-- **queries.py** (11 connections) — `server/services/npc_service/queries.py`
-- **spawn_rule_crud.py** (11 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **_JSONDict** (10 connections)
-- **NPCRelationship** (9 connections) — `server/models/npc.py`
-- **.update_npc_definition()** (9 connections) — `server/services/npc_service/definition_crud.py`
-- **.create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_create_npc_definition()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **._execute_npc_update()** (8 connections) — `server/services/npc_service/definition_crud.py`
-- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
-- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
-- **AsyncSession** (8 connections)
-- *... and 253 more nodes in this community*
+- **test_npc_service.py** (50 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_delete_npc_definition_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_delete_spawn_rule_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_spawn_rules_database_error()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_invalid_type()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definition_error()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Unit tests for NPC service. Tests the NPCService class.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definition() returns None when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definition() handles errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test create_npc_definition() raises ValueError for invalid type.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test delete_npc_definition() returns False when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_spawn_rules() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test delete_spawn_rule() returns False when not found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (63 shared connections)
-- [DatabaseError](DatabaseError.md) (18 shared connections)
-- [should_spawn_npc](should_spawn_npc.md) (5 shared connections)
-- [npc_definitions_api.py](npc_definitions_api.py.md) (5 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (5 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [test_npc_spawn_rules_api.py](test_npc_spawn_rules_api.py.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [asyncio](asyncio.md) (13 shared connections)
+- [_mock_result_mappings_all](_mock_result_mappings_all.md) (11 shared connections)
+- [_def_row](_def_row.md) (9 shared connections)
+- [_spawn_rule_row](_spawn_rule_row.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [npc_service](npc_service.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_update_npc_definition_invalid_type](test_update_npc_definition_invalid_type.md) (1 shared connections)
+- [test_update_npc_definition_invalid_probability](test_update_npc_definition_invalid_probability.md) (1 shared connections)
+- [test_create_spawn_rule_invalid_min_population](test_create_spawn_rule_invalid_min_population.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/npc.py`
-- `server/npc/population_control.py`
-- `server/services/npc_service/__init__.py`
-- `server/services/npc_service/definition_crud.py`
-- `server/services/npc_service/queries.py`
-- `server/services/npc_service/spawn_rule_crud.py`
-- `server/services/npc_service_models.py`
-- `server/tests/unit/models/test_npc_models.py`
 - `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 561 (99%)
-- INFERRED: 6 (1%)
+- EXTRACTED: 65 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

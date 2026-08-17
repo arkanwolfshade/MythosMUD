@@ -18,7 +18,7 @@ const DAISY_PROTOTYPE = 'misc.herb.sanitarium_daisy';
 
 function resetDaisyQuestInstances(): void {
   loadE2eEnv();
-  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_daisy_quest.py');
+  const scriptPath = join(E2E_PROJECT_ROOT, 'scripts', 'e2e_reset_collect_n_quest.py');
   const result = spawnSync('uv', ['run', '--no-sync', 'python', scriptPath], {
     cwd: E2E_PROJECT_ROOT,
     encoding: 'utf-8',
@@ -26,7 +26,7 @@ function resetDaisyQuestInstances(): void {
   });
   if (result.status !== 0) {
     throw new Error(
-      `e2e_reset_daisy_quest.py failed (status ${result.status}): ${result.stdout ?? ''}\n${result.stderr ?? ''}`
+      `e2e_reset_collect_n_quest.py failed (status ${result.status}): ${result.stdout ?? ''}\n${result.stderr ?? ''}`
     );
   }
 }
@@ -87,8 +87,9 @@ test.describe('collect_n daisy quest ask/turnin', () => {
     // Leave foyer so Morgan is not present (teleport does not accept room ids).
     await ensureStanding(page);
     await executeCommand(page, 'go east');
-    await waitForMessage(page, EASTERN_HALLWAY_LOOK_CUE, 25000);
-    await expect(page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 15000 });
+    // Movement replies "You go east."; the room description arrives via room_state into the
+    // Location panel, not the message log. Assert on the panel, not on [data-message-text].
+    await expect(page.getByText(EASTERN_HALLWAY_LOOK_CUE).first()).toBeVisible({ timeout: 25000 });
 
     await executeCommand(page, 'quest ask morgan');
     // Server: You do not see '{npc_name}' here. — npc_name is the typed arg (case preserved).

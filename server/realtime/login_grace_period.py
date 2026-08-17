@@ -11,11 +11,15 @@ Effects system (ADR-009): Grace period is implemented as LOGIN_WARDED effect in
 player_effects table; tick processing expires it and clears in-memory state.
 """
 
+# pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods  # Reason: Protocol stubs (PEP 544)
+
+from __future__ import annotations
+
 import asyncio
 import time
 import uuid
 from collections.abc import Callable
-from typing import Any, cast
+from typing import Protocol, cast
 
 from anyio import sleep
 
@@ -25,54 +29,105 @@ logger = get_logger(__name__)
 
 LOGIN_GRACE_PERIOD_DURATION = 10.0  # 10 seconds
 
+GraceEntry = asyncio.Task[None] | bool
 
-def _remove_from_grace_period_tracking(player_id: uuid.UUID, manager: Any) -> None:
+
+class _GracePlayer(Protocol):
+    current_room_id: object
+
+
+class _OccupantsHandler(Protocol):
+    async def send_room_occupants_update(self, room_id: str, exclude_player: str | None = None) -> None: ...
+
+
+class _GraceContainer(Protocol):
+    real_time_event_handler: _OccupantsHandler | None
+
+
+class _GraceAppState(Protocol):
+    container: _GraceContainer | None
+
+
+class _GraceApp(Protocol):
+    state: _GraceAppState
+
+
+class _GraceManager(Protocol):
+    login_grace_period_players: dict[uuid.UUID, GraceEntry]
+    login_grace_period_start_times: dict[uuid.UUID, float]
+    async_persistence: object | None
+    app: object | None
+
+    async def get_player(self, player_id: uuid.UUID) -> _GracePlayer | None: ...
+
+
+class _EffectPersistence(Protocol):
+    async def add_player_effect(
+        self,
+        player_id: uuid.UUID | str,
+        effect_type: str,
+        category: str,
+        duration: int,
+        applied_at_tick: int,
+        options: dict[str, object] | None = None,
+    ) -> str: ...
+
+
+def _as_grace(manager: object) -> _GraceManager:
+    return cast(_GraceManager, manager)
+
+
+def _remove_from_grace_period_tracking(player_id: uuid.UUID, manager: object) -> None:
     """Remove player from grace period tracking dictionaries."""
-    if player_id in manager.login_grace_period_players:
-        del manager.login_grace_period_players[player_id]
-    if hasattr(manager, "login_grace_period_start_times") and player_id in manager.login_grace_period_start_times:
-        del manager.login_grace_period_start_times[player_id]
+    mgr = _as_grace(manager)
+    if player_id in mgr.login_grace_period_players:
+        del mgr.login_grace_period_players[player_id]
+    if hasattr(manager, "login_grace_period_start_times") and player_id in mgr.login_grace_period_start_times:
+        del mgr.login_grace_period_start_times[player_id]
 
 
-async def _trigger_room_occupants_update(player_id: uuid.UUID, manager: Any) -> None:
-    """Trigger room occupants update after grace period expiration."""
+async def _send_occupants_update_via_app(app: object, room_id: str, player_id: uuid.UUID) -> None:
+    """Resolve container event handler from app.state and send room occupants update."""
     try:
-        if not (hasattr(manager, "async_persistence") and manager.async_persistence):
+        grace_app = cast(_GraceApp, app)
+        container = grace_app.state.container
+        if container is None:
+            return
+        event_handler = container.real_time_event_handler
+        if event_handler is None:
             return
 
-        player = await manager.get_player(player_id)
-        if not (player and hasattr(player, "current_room_id") and player.current_room_id):
+        await event_handler.send_room_occupants_update(room_id)
+        logger.info(
+            "Triggered room occupants update after grace period expiration", player_id=player_id, room_id=room_id
+        )
+    except (AttributeError, TypeError) as app_error:
+        logger.debug("Could not access app state container", player_id=player_id, error=str(app_error))
+
+
+async def _trigger_room_occupants_update(player_id: uuid.UUID, manager: object) -> None:
+    """Trigger room occupants update after grace period expiration."""
+    try:
+        mgr = _as_grace(manager)
+        if mgr.async_persistence is None:
+            return
+
+        player = await mgr.get_player(player_id)
+        if player is None or not player.current_room_id:
             return
 
         room_id = str(player.current_room_id)
-        if not (hasattr(manager, "app") and manager.app):
+        if mgr.app is None:
             return
 
-        try:
-            if not hasattr(manager.app.state, "container"):
-                return
-
-            container = manager.app.state.container
-            if not (container and hasattr(container, "real_time_event_handler")):
-                return
-
-            event_handler = container.real_time_event_handler
-            if not (event_handler and hasattr(event_handler, "send_room_occupants_update")):
-                return
-
-            await event_handler.send_room_occupants_update(room_id)
-            logger.info(
-                "Triggered room occupants update after grace period expiration", player_id=player_id, room_id=room_id
-            )
-        except (AttributeError, TypeError) as app_error:
-            logger.debug("Could not access app state container", player_id=player_id, error=str(app_error))
+        await _send_occupants_update_via_app(mgr.app, room_id, player_id)
     except (AttributeError, RuntimeError, ValueError, TypeError, KeyError) as e:
         logger.warning(
             "Could not trigger room occupants update after grace period expiration", player_id=player_id, error=str(e)
         )
 
 
-async def _grace_period_expiration_handler(player_id: uuid.UUID, manager: Any) -> None:
+async def handle_login_grace_period_expiration(player_id: uuid.UUID, manager: object) -> None:
     """Handle grace period expiration - remove tracking and trigger updates."""
     # Grace period expired - remove from tracking FIRST to prevent race condition
     # CRITICAL: Remove from tracking BEFORE triggering room occupants update
@@ -80,26 +135,20 @@ async def _grace_period_expiration_handler(player_id: uuid.UUID, manager: Any) -
     # return False, preventing "(warded)" from appearing after expiration
     logger.info("Login grace period expired", player_id=player_id)
 
-    # Remove from grace period tracking BEFORE triggering update
     _remove_from_grace_period_tracking(player_id, manager)
-
-    # Get player's current room to trigger occupants update
-    # Now that player is removed from tracking, the grace period check will return False
     await _trigger_room_occupants_update(player_id, manager)
 
 
-async def _grace_period_task(player_id: uuid.UUID, manager: Any) -> None:
+async def _grace_period_task(player_id: uuid.UUID, manager: object) -> None:
     """Internal task that waits for grace period duration and handles expiration."""
     try:
-        # Wait for grace period duration
         await sleep(LOGIN_GRACE_PERIOD_DURATION)
 
-        # Check if player is still in grace period (task may have been cancelled)
-        if player_id not in manager.login_grace_period_players:
+        if player_id not in _as_grace(manager).login_grace_period_players:
             logger.debug("Login grace period cancelled", player_id=player_id)
             return
 
-        await _grace_period_expiration_handler(player_id, manager)
+        await handle_login_grace_period_expiration(player_id, manager)
 
     except asyncio.CancelledError:
         logger.debug("Login grace period task cancelled", player_id=player_id)
@@ -109,85 +158,67 @@ async def _grace_period_task(player_id: uuid.UUID, manager: Any) -> None:
         # is always removed from tracking
         logger.error("Error in login grace period task", player_id=player_id, error=str(e), exc_info=True)
     finally:
-        # Ensure cleanup even if exception occurred (defensive cleanup)
-        # Note: If expiration completed successfully, player was already removed above
         _remove_from_grace_period_tracking(player_id, manager)
+
+
+async def _try_start_effect_based_grace(
+    player_id: uuid.UUID,
+    mgr: _GraceManager,
+    async_persistence: object,
+    get_current_tick: Callable[[], int],
+    get_tick_interval: Callable[[], float],
+) -> bool:
+    """Add LOGIN_WARDED via persistence. True if in-memory sentinel was set."""
+    try:
+        tick_interval = get_tick_interval()
+        duration_ticks = max(1, int(LOGIN_GRACE_PERIOD_DURATION / tick_interval))
+        persistence = cast(_EffectPersistence, async_persistence)
+        _ = await persistence.add_player_effect(
+            player_id,
+            effect_type="login_warded",
+            category="entry_ward",
+            duration=duration_ticks,
+            applied_at_tick=get_current_tick(),
+            options={"intensity": 1, "source": "game_entry", "visibility_level": "visible"},
+        )
+        mgr.login_grace_period_players[player_id] = True
+        return True
+    except (AttributeError, TypeError, ValueError) as e:
+        logger.warning(
+            "Failed to add LOGIN_WARDED effect, falling back to asyncio task",
+            player_id=player_id,
+            error=str(e),
+        )
+        return False
 
 
 async def start_login_grace_period(
     player_id: uuid.UUID,
-    manager: Any,  # ConnectionManager
-    async_persistence: Any | None = None,
+    manager: object,
+    async_persistence: object | None = None,
     get_current_tick: Callable[[], int] | None = None,
     get_tick_interval: Callable[[], float] | None = None,
 ) -> None:
-    """
-    Start a login grace period for a player.
-
-    When async_persistence and get_current_tick are provided (effects system ADR-009),
-    adds a LOGIN_WARDED effect to player_effects and sets in-memory state; expiration
-    is handled by game tick processing. Otherwise falls back to asyncio task (legacy).
-
-    During the grace period, the player:
-    - Is immune to all damage and negative status effects
-    - Cannot initiate combat
-    - Hostile NPCs/mobs ignore them
-    - Can move freely
-    - Shows "(warded)" indicator to other players
-
-    Args:
-        player_id: The player's ID
-        manager: ConnectionManager instance
-        async_persistence: Optional async persistence layer for effect storage
-        get_current_tick: Optional function returning current game tick
-        get_tick_interval: Optional function returning tick interval in seconds (for duration_ticks)
-    """
-    # Check if already in grace period
-    if player_id in manager.login_grace_period_players:
+    """Start LOGIN_WARDED via effects (ADR-009) or a legacy asyncio timeout task."""
+    mgr = _as_grace(manager)
+    if player_id in mgr.login_grace_period_players:
         logger.debug("Player already in login grace period", player_id=player_id)
         return
 
     logger.info("Starting login grace period for player", player_id=player_id, duration=LOGIN_GRACE_PERIOD_DURATION)
-
-    start_time = time.time()
-    manager.login_grace_period_start_times[player_id] = start_time
+    mgr.login_grace_period_start_times[player_id] = time.time()
 
     if async_persistence and get_current_tick and get_tick_interval:
-        # Effects system (ADR-009): persist effect; tick processing will expire and clear in-memory
-        try:
-            tick_interval = get_tick_interval()
-            duration_ticks = max(1, int(LOGIN_GRACE_PERIOD_DURATION / tick_interval))
-            current_tick = get_current_tick()
-            await async_persistence.add_player_effect(
-                player_id,
-                effect_type="login_warded",
-                category="entry_ward",
-                duration=duration_ticks,
-                applied_at_tick=current_tick,
-                options={
-                    "intensity": 1,
-                    "source": "game_entry",
-                    "visibility_level": "visible",
-                },
-            )
-            # In-memory state so is_player_in_login_grace_period / get_login_grace_period_remaining work
-            manager.login_grace_period_players[player_id] = True  # Sentinel: effect-based, no asyncio task
+        if await _try_start_effect_based_grace(player_id, mgr, async_persistence, get_current_tick, get_tick_interval):
             return
-        except (AttributeError, TypeError, ValueError) as e:
-            logger.warning(
-                "Failed to add LOGIN_WARDED effect, falling back to asyncio task",
-                player_id=player_id,
-                error=str(e),
-            )
 
-    # Legacy: asyncio task
     task = asyncio.create_task(_grace_period_task(player_id, manager))
-    manager.login_grace_period_players[player_id] = task
+    mgr.login_grace_period_players[player_id] = task
 
 
 async def cancel_login_grace_period(
     player_id: uuid.UUID,
-    manager: Any,  # ConnectionManager
+    manager: object,
 ) -> None:
     """
     Cancel login grace period for a player (if needed).
@@ -196,30 +227,30 @@ async def cancel_login_grace_period(
     in-memory state; the effect remains in DB until tick expiration (or could be removed
     by a future API). For task-based grace, cancels the asyncio task.
     """
-    if player_id not in manager.login_grace_period_players:
+    mgr = _as_grace(manager)
+    if player_id not in mgr.login_grace_period_players:
         return
 
     logger.info("Cancelling login grace period for player", player_id=player_id)
 
-    entry = manager.login_grace_period_players[player_id]
+    entry = mgr.login_grace_period_players[player_id]
     if entry is True:
-        # Effect-based: no task to cancel
         _remove_from_grace_period_tracking(player_id, manager)
         return
 
-    task = entry
-    task.cancel()
-    try:
-        await task
-    except asyncio.CancelledError:
-        pass
-    except (AttributeError, RuntimeError, ValueError, TypeError) as e:
-        logger.error("Error cancelling login grace period task", player_id=player_id, error=str(e), exc_info=True)
-    finally:
-        _remove_from_grace_period_tracking(player_id, manager)
+    if isinstance(entry, asyncio.Task):
+        _ = entry.cancel()
+        try:
+            await entry
+        except asyncio.CancelledError:
+            pass
+        except (AttributeError, RuntimeError, ValueError, TypeError) as e:
+            logger.error("Error cancelling login grace period task", player_id=player_id, error=str(e), exc_info=True)
+        finally:
+            _remove_from_grace_period_tracking(player_id, manager)
 
 
-def is_player_in_login_grace_period(player_id: uuid.UUID, manager: Any) -> bool:
+def is_player_in_login_grace_period(player_id: uuid.UUID, manager: object) -> bool:
     """
     Check if a player is currently in login grace period.
 
@@ -233,10 +264,10 @@ def is_player_in_login_grace_period(player_id: uuid.UUID, manager: Any) -> bool:
     if not hasattr(manager, "login_grace_period_players"):
         return False
 
-    return player_id in manager.login_grace_period_players
+    return player_id in _as_grace(manager).login_grace_period_players
 
 
-def get_login_grace_period_remaining(player_id: uuid.UUID, manager: Any) -> float:
+def get_login_grace_period_remaining(player_id: uuid.UUID, manager: object) -> float:
     """
     Get the remaining time in seconds for a player's login grace period.
 
@@ -253,11 +284,10 @@ def get_login_grace_period_remaining(player_id: uuid.UUID, manager: Any) -> floa
     if not hasattr(manager, "login_grace_period_start_times"):
         return 0.0
 
-    if player_id not in manager.login_grace_period_start_times:
+    mgr = _as_grace(manager)
+    if player_id not in mgr.login_grace_period_start_times:
         return 0.0
 
-    start_time = manager.login_grace_period_start_times[player_id]
+    start_time = mgr.login_grace_period_start_times[player_id]
     elapsed = time.time() - start_time
-    remaining: float = cast(float, max(0.0, LOGIN_GRACE_PERIOD_DURATION - elapsed))
-
-    return remaining
+    return max(0.0, LOGIN_GRACE_PERIOD_DURATION - elapsed)

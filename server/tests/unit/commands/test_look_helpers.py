@@ -4,11 +4,17 @@ Unit tests for look command helper functions.
 Tests utility functions used by the look command system.
 """
 
-from typing import Any
+# pyright: reportPrivateUsage=false
+# Reason: Unit tests call look_helpers private helpers and clear the module cache.
+
+from __future__ import annotations
+
+from collections.abc import Mapping
 from unittest.mock import MagicMock
 
 import pytest
 
+from server.commands import look_helpers
 from server.commands.look_helpers import (
     _get_health_label,
     _get_lucidity_label,
@@ -118,31 +124,33 @@ def test_get_lucidity_label_mad():
     assert label == "mad"
 
 
-def test_get_lucidity_label_no_lucidity():
+def test_get_lucidity_label_no_lucidity() -> None:
     """Test _get_lucidity_label when lucidity is missing."""
-    stats: dict[str, Any] = {}
+    stats: Mapping[str, object] = {}
     label = _get_lucidity_label(stats)
     assert label == "mad"  # Defaults to 0 lucidity, which is mad
 
 
-def test_get_visible_equipment_no_equipment():
+def test_get_visible_equipment_no_equipment() -> None:
     """Test _get_visible_equipment with no equipment."""
-    player = MagicMock()
-    player.get_equipped_items = MagicMock(return_value={})
+    get_equipped_items: MagicMock = MagicMock(return_value={})
+    player: MagicMock = MagicMock()
+    player.get_equipped_items = get_equipped_items
 
     result = _get_visible_equipment(player)
     assert result == {}
 
 
-def test_get_visible_equipment_with_equipment():
+def test_get_visible_equipment_with_equipment() -> None:
     """Test _get_visible_equipment with equipment."""
-    player = MagicMock()
-    player.get_equipped_items = MagicMock(
+    get_equipped_items: MagicMock = MagicMock(
         return_value={
             "head": {"name": "Hat"},
             "ring": {"name": "Ring"},  # Hidden slot
         }
     )
+    player: MagicMock = MagicMock()
+    player.get_equipped_items = get_equipped_items
 
     result = _get_visible_equipment(player)
     assert "head" in result
@@ -173,34 +181,34 @@ def test_is_direction_not_direction():
     assert _is_direction("") is False
 
 
-def test_get_wearable_container_service_initializes():
+def test_get_wearable_container_service_initializes() -> None:
     """Test _get_wearable_container_service initializes service."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = MagicMock()
-    mock_app.state.container.async_persistence = MagicMock()
-    mock_request.app = mock_app
+    async_persistence: MagicMock = MagicMock()
+    container: MagicMock = MagicMock()
+    container.async_persistence = async_persistence
+    state: MagicMock = MagicMock()
+    state.container = container
+    app: MagicMock = MagicMock()
+    app.state = state
+    mock_request: MagicMock = MagicMock()
+    mock_request.app = app
 
-    # Clear cached instance
-    if hasattr(_get_wearable_container_service, "cached_instance"):
-        _get_wearable_container_service.cached_instance = None
+    look_helpers._WEARABLE_CONTAINER_SERVICE_HOLDER.instance = None
 
     service = _get_wearable_container_service(mock_request)
     assert service is not None
 
 
-def test_get_wearable_container_service_no_persistence():
+def test_get_wearable_container_service_no_persistence() -> None:
     """Test _get_wearable_container_service raises when persistence missing."""
-    mock_request = MagicMock()
-    mock_app = MagicMock()
-    mock_app.state = MagicMock()
-    mock_app.state.container = None
-    mock_request.app = mock_app
+    state: MagicMock = MagicMock()
+    state.container = None
+    app: MagicMock = MagicMock()
+    app.state = state
+    mock_request: MagicMock = MagicMock()
+    mock_request.app = app
 
-    # Clear cached instance
-    if hasattr(_get_wearable_container_service, "cached_instance"):
-        _get_wearable_container_service.cached_instance = None
+    look_helpers._WEARABLE_CONTAINER_SERVICE_HOLDER.instance = None
 
     with pytest.raises(ValueError, match="async_persistence is required"):
-        _get_wearable_container_service(mock_request)
+        _ = _get_wearable_container_service(mock_request)

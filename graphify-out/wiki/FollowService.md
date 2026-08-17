@@ -1,6 +1,6 @@
 # FollowService
 
-> 48 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **._send_result_and_player_update()** (5 connections) — `server/game/follow_service.py`
 - **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
 - **._send_follow_request_to_target()** (4 connections) — `server/game/follow_service.py`
-- *... and 23 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
+- [ConnectionManager](ConnectionManager.md) (13 shared connections)
 - [test_follow_service.py](test_follow_service.py.md) (6 shared connections)
-- [send_game_event](send_game_event.md) (3 shared connections)
+- [build_event](build_event.md) (3 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [test_follow_flow.py](test_follow_flow.py.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 - [MovementService](MovementService.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (2 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
 - [_is_npc_follow_value](_is_npc_follow_value.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

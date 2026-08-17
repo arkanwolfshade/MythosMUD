@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_look_npc.py** (59 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_look_npc.py** (60 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **look_npc.py** (25 connections) — `server/commands/look_npc.py`
 - **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
@@ -34,10 +34,12 @@
 ## Relationships
 
 - [quest_commands.py](quest_commands.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
 - [test_look_room.py](test_look_room.py.md) (3 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 313 (100%)
+- EXTRACTED: 314 (100%)
 - INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 

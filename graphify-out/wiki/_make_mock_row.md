@@ -25,7 +25,7 @@
 - [test_player_repository.py](test_player_repository.py.md) (8 shared connections)
 - [asyncio](asyncio.md) (6 shared connections)
 - [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

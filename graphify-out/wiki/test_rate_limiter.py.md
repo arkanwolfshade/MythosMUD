@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_rate_limiter.py** (35 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter.py** (36 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
@@ -34,7 +34,9 @@
 ## Relationships
 
 - [RateLimiter](RateLimiter.md) (5 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 67 (99%)
+- EXTRACTED: 68 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

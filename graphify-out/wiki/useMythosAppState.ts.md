@@ -1,60 +1,76 @@
 # useMythosAppState.ts
 
-> 31 nodes
+> 83 nodes
 
 ## Key Concepts
 
 - **useMythosAppState.ts** (32 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **1774539086359-useMythosAppState.ts** (27 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **CharacterInfo** (21 connections) — `client/src/types/auth.ts`
+- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
+- **Stats** (17 connections) — `client/src/hooks/useStatsRolling.ts`
+- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
 - **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
+- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **types/auth.ts** (15 connections) — `client/src/types/auth.ts`
+- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
 - **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
 - **MythosAppViewModel** (11 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
+- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
 - **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
 - **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **useReducerStateSlices()** (6 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
 - **useReducerStateSlices()** (6 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
 - **AppRootViews.tsx** (6 connections) — `client/src/mythosApp/AppRootViews.tsx`
+- **CreationCompleteActions** (5 connections) — `client/src/mythosApp/creationCompleteActions.ts`
+- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
 - **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useMythosApp()** (4 connections) — `client/src/mythosApp/useMythosApp.tsx`
-- **makeAuthSetter()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **makeCreationSetter()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **resolveNextState()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useAuthSliceSetters()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useCreationSliceSetters()** (3 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **AppDemoView.tsx** (3 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **useMythosAppState.test.ts** (3 connections) — `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
-- **AuthSlice** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **buildActionViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **buildStateViewModel()** (2 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **authSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **creationSliceReducer()** (2 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **AppActions** (1 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- **AppState** (1 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
-- *... and 6 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (20 shared connections)
-- [Profession](Profession.md) (12 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (5 shared connections)
-- [utils/config.ts](utils-config.ts.md) (4 shared connections)
-- [logoutHandler.ts](logoutHandler.ts.md) (2 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (44 shared connections)
+- [Profession](Profession.md) (21 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (10 shared connections)
+- [utils/config.ts](utils-config.ts.md) (8 shared connections)
+- [security.ts](security.ts.md) (7 shared connections)
+- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (4 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (4 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (3 shared connections)
 - [App.tsx](App.tsx.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
 
 ## Source Files
 
+- `client/src/components/CharacterNameScreen.tsx`
+- `client/src/components/CharacterSelectionScreen.tsx`
+- `client/src/hooks/useStatsRolling.ts`
+- `client/src/hooks/useStatsRollingActions.ts`
+- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
 - `client/src/mythosApp/AppDemoView.tsx`
 - `client/src/mythosApp/AppRootViews.tsx`
+- `client/src/mythosApp/AppSessionOutroViews.tsx`
 - `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/creationCompleteActions.ts`
+- `client/src/mythosApp/creationTypes.ts`
+- `client/src/mythosApp/deleteCharacterActions.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
 - `client/src/mythosApp/mythosAppViewModel.ts`
 - `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- `client/src/mythosApp/submitAuth.ts`
+- `client/src/mythosApp/useAuthSessionRestore.ts`
 - `client/src/mythosApp/useMythosApp.tsx`
-- `client/src/mythosApp/useMythosAppState.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 268 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,43 @@
 # asyncio
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
-- **asyncio** (5 connections)
-- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **asyncio** (17 connections)
+- **test_rescue_apply_lucidity_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_delta_zero_or_negative()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_dispatches_events_for_both_players()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_event_dispatcher_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_handles_uuid_strings()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_rescuer_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() returns error when rescuer is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() sets delta to 1 when delta is zero or negative.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles errors during lucidity adjustment.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles event dispatcher errors gracefully.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() dispatches events for both target and rescuer.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles player_id as UUID strings.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (5 shared connections)
-- [test_lifespan_event_subscriptions.py](test_lifespan_event_subscriptions.py.md) (1 shared connections)
-- [PartyService](PartyService.md) (1 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (9 shared connections)
+- [test_rescue_delta_calculation](test_rescue_delta_calculation.md) (1 shared connections)
+- [test_rescue_different_rooms](test_rescue_different_rooms.md) (1 shared connections)
+- [test_rescue_metadata_includes_rescuer](test_rescue_metadata_includes_rescuer.md) (1 shared connections)
+- [test_rescue_no_persistence](test_rescue_no_persistence.md) (1 shared connections)
+- [test_rescue_not_catatonic](test_rescue_not_catatonic.md) (1 shared connections)
+- [test_rescue_success](test_rescue_success.md) (1 shared connections)
+- [test_rescue_target_not_found](test_rescue_target_not_found.md) (1 shared connections)
+- [test_rescue_with_player_name](test_rescue_with_player_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/tests/unit/services/test_rescue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

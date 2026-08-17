@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_behavior_engine.py** (54 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_behavior_engine.py** (55 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 - **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
@@ -34,6 +34,7 @@
 ## Relationships
 
 - [BehaviorEngine](BehaviorEngine.md) (19 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [test_evaluate_equality_false](test_evaluate_equality_false.md) (1 shared connections)
 - [test_evaluate_equality_string](test_evaluate_equality_string.md) (1 shared connections)
@@ -44,7 +45,6 @@
 - [test_evaluate_inequality_false](test_evaluate_inequality_false.md) (1 shared connections)
 - [test_evaluate_inequality_not_inequality](test_evaluate_inequality_not_inequality.md) (1 shared connections)
 - [test_evaluate_numeric_comparison_greater_equal](test_evaluate_numeric_comparison_greater_equal.md) (1 shared connections)
-- [test_add_rule_success](test_add_rule_success.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (83%)
+- EXTRACTED: 69 (83%)
 - INFERRED: 14 (17%)
 - AMBIGUOUS: 0 (0%)
 

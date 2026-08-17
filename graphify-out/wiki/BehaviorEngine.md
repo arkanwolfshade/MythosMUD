@@ -25,8 +25,9 @@
 
 - [test_behavior_engine.py](test_behavior_engine.py.md) (19 shared connections)
 - [Any](Any.md) (12 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [register_default_reactions_for_npc](register_default_reactions_for_npc.md) (1 shared connections)
+- [npc_base.py](npc_base.py.md) (3 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_add_rule_missing_fields](test_add_rule_missing_fields.md) (1 shared connections)
 - [test_add_rule_success](test_add_rule_success.md) (1 shared connections)
 - [test_behavior_engine_init](test_behavior_engine_init.md) (1 shared connections)
@@ -34,7 +35,6 @@
 - [test_evaluate_boolean_condition_variable_false](test_evaluate_boolean_condition_variable_false.md) (1 shared connections)
 - [test_evaluate_condition_equality](test_evaluate_condition_equality.md) (1 shared connections)
 - [test_evaluate_condition_greater_than](test_evaluate_condition_greater_than.md) (1 shared connections)
-- [test_evaluate_condition_handles_exception](test_evaluate_condition_handles_exception.md) (1 shared connections)
 
 ## Source Files
 

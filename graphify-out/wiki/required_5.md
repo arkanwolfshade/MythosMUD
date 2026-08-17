@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
-- **required** (9 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **applies_to** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **category** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **days** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **end_hour** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **name** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **start_hour** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **effects** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **required** (9 connections) — `db/static/schemas/holidays.schema.json`
+- **bonus_tags** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **day** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **duration_hours** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **id** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **month** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **name** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **season** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **tradition** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
@@ -20,7 +20,7 @@
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 

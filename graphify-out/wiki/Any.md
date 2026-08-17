@@ -1,50 +1,40 @@
 # Any
 
-> 30 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **register_task()** (6 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
-- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
-- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
-- *... and 5 more nodes in this community*
+- **Any** (7 connections)
+- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_get_app_or_error()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **Parse value from args[2] when value_input is None and args has at least 3…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Parse stat name, target player, and value from command data.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value exceeds DP or MP calculated maximum; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value is outside normal range for stat; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Calculate warnings for stat values that exceed maximums or normal ranges.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Resolve required services and check admin permissions.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return (app, None) if request has app, else (None, error_dict).** (1 connections) — `server/commands/admin_setstat_command.py`
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (12 shared connections)
-- [task_registry.py](task_registry.py.md) (4 shared connections)
-- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (1 shared connections)
+- [build_event](build_event.md) (8 shared connections)
+- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (4 shared connections)
+- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/commands/admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

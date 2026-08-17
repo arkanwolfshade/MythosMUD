@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_persistence_container_persistence.py** (8 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **test_persistence_container_persistence.py** (9 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 - **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 - **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
 - **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
@@ -21,6 +21,7 @@
 
 ## Relationships
 
+- [pytest.md](pytest.md.md) (1 shared connections)
 - [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
 
 ## Source Files
@@ -29,7 +30,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

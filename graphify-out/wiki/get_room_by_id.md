@@ -13,7 +13,7 @@
 ## Relationships
 
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
-- [Room](Room.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
 
 ## Source Files
 

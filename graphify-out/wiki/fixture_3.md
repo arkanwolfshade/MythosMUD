@@ -1,34 +1,38 @@
 # fixture
 
-> 11 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **fixture** (5 connections)
-- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock get_async_persistence callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **fixture** (7 connections)
+- **handler()** (4 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_chat_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_magic_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_player_spell_repository()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **mock_spell_registry()** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player spell repository.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock spell learning service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock chat service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a MagicCommandHandler instance.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock magic service.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock spell registry.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Create a mock player (healthy by default for cast/combat checks).** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [test_game_state_provider.py](test_game_state_provider.py.md) (5 shared connections)
-- [.state](state.md) (1 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

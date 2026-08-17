@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **test_memory_leak_metrics.py** (23 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_memory_leak_metrics.py** (24 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **collector()** (4 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 - **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 44 (98%)
+- EXTRACTED: 45 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

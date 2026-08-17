@@ -28,9 +28,7 @@
 
 ## Relationships
 
-- [LRUCache](LRUCache.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (7 shared connections)
 
 ## Source Files
 

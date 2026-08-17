@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **test_logging_utilities.py** (40 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_logging_utilities.py** (41 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **ensure_log_directory()** (23 connections) — `server/structured_logging/logging_utilities.py`
 - **Path** (23 connections)
-- **logging_utilities.py** (21 connections) — `server/structured_logging/logging_utilities.py`
+- **logging_utilities.py** (22 connections) — `server/structured_logging/logging_utilities.py`
 - **rotate_log_files()** (19 connections) — `server/structured_logging/logging_utilities.py`
 - **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
 - **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
@@ -34,11 +34,14 @@
 ## Relationships
 
 - [logging_file_setup.py](logging_file_setup.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (6 shared connections)
 - [test_logging_processors.py](test_logging_processors.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
 - [RoomLoader](RoomLoader.md) (2 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 188 (98%)
+- EXTRACTED: 190 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

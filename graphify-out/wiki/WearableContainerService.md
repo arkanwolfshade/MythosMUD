@@ -1,11 +1,10 @@
 # WearableContainerService
 
-> 41 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **WearableContainerService** (28 connections) — `server/services/wearable_container_service.py`
-- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
 - **Any** (15 connections)
 - **UUID** (14 connections)
 - **._load_player_wearable_container()** (9 connections) — `server/services/wearable_container_service.py`
@@ -24,33 +23,33 @@
 - **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
 - **._save_overflow_inventory()** (5 connections) — `server/services/wearable_container_service.py`
 - **._split_overflow_items()** (4 connections) — `server/services/wearable_container_service.py`
+- **test_get_enum_value_with_enum()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 - **.__init__()** (3 connections) — `server/services/wearable_container_service.py`
+- **test_filter_container_data()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_enum_value_with_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_wearable_container_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 - **ContainerComponent** (2 connections)
-- **Wearable container service for unified container system. As documented in the…** (1 connections) — `server/services/wearable_container_service.py`
-- **Return existing equipment container ID for item instance if present.** (1 connections) — `server/services/wearable_container_service.py`
-- **Create wearable container in persistence and return container_id payload.** (1 connections) — `server/services/wearable_container_service.py`
-- *... and 16 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (10 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (9 shared connections)
 - [test_wearable_container_service.py](test_wearable_container_service.py.md) (8 shared connections)
-- [test_look_player.py](test_look_player.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [wearable_service](wearable_service.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
-- [WearableContainerServiceError](WearableContainerServiceError.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (2 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
+- [ContainerSourceType](ContainerSourceType.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/wearable_container_service.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 110 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

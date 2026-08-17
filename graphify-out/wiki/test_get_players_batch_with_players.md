@@ -11,7 +11,7 @@
 
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

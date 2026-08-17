@@ -1,6 +1,6 @@
 # PartyService
 
-> 46 nodes
+> 53 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **_str_id()** (16 connections) — `server/game/party_service.py`
 - **UUID** (15 connections)
 - **Any** (10 connections)
+- **Party** (9 connections) — `server/game/party_service.py`
 - **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
 - **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
 - **.disband_party()** (8 connections) — `server/game/party_service.py`
@@ -28,22 +29,18 @@
 - **.is_leader()** (5 connections) — `server/game/party_service.py`
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
 - **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
-- **Create a new party with the given player as leader. Returns dict with success…** (1 connections) — `server/game/party_service.py`
-- *... and 21 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [party_service.py](party_service.py.md) (9 shared connections)
-- [Party](Party.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_party_service.py](test_party_service.py.md) (6 shared connections)
+- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [test_party_flow.py](test_party_flow.py.md) (6 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [test_party_service.py](test_party_service.py.md) (1 shared connections)
-- [party_service](party_service.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
-- [send_game_event](send_game_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 127 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

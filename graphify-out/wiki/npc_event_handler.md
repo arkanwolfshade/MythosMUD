@@ -16,8 +16,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (1 shared connections)
+- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

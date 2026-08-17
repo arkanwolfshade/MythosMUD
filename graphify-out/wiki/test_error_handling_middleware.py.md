@@ -1,17 +1,21 @@
 # test_error_handling_middleware.py
 
-> 46 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **test_error_handling_middleware.py** (28 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **error_handling_middleware.py** (19 connections) — `server/middleware/error_handling_middleware.py`
+- **test_error_handling_middleware.py** (30 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
+- **error_handling_middleware.py** (20 connections) — `server/middleware/error_handling_middleware.py`
 - **ErrorHandlingMiddleware** (17 connections) — `server/middleware/error_handling_middleware.py`
 - **register_error_handlers()** (11 connections) — `server/middleware/error_handling_middleware.py`
+- **._handle_exception()** (10 connections) — `server/middleware/error_handling_middleware.py`
 - **setup_error_handling()** (10 connections) — `server/middleware/error_handling_middleware.py`
 - **_http_scope()** (8 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **add_error_handling_middleware()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.log_exception()** (7 connections) — `server/middleware/error_handling_middleware.py`
 - **request_id_from_scope()** (7 connections) — `server/middleware/error_handling_middleware.py`
+- **.__call__()** (6 connections) — `server/middleware/error_handling_middleware.py`
+- **.dispatch()** (6 connections) — `server/middleware/error_handling_middleware.py`
 - **test_registered_exception_handlers_return_json()** (6 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **server/middleware/__init__.py** (6 connections) — `server/middleware/__init__.py`
 - **asyncio** (6 connections)
@@ -25,22 +29,18 @@
 - **test_handle_exception_fallback_when_handler_fails()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **test_request_id_from_scope()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
 - **FastAPI** (4 connections)
-- **_UserObjectWithId** (3 connections) — `server/middleware/error_handling_middleware.py`
-- **_UserWithId** (3 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **.__init__()** (3 connections) — `server/middleware/error_handling_middleware.py`
-- **test_call_passes_through_non_http()** (3 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- *... and 21 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (9 shared connections)
-- [._handle_exception](_handle_exception.md) (7 shared connections)
-- [factory.py](factory.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
-- [_UserWithGet](_UserWithGet.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [create_app](create_app.md) (1 shared connections)
+- [.error](error.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 105 (88%)
-- INFERRED: 14 (12%)
+- EXTRACTED: 131 (90%)
+- INFERRED: 14 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

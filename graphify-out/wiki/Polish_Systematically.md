@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **Polish Systematically** (13 connections) — `.claude/skills/polish/SKILL.md`
-- **polish/SKILL.md** (5 connections) — `.claude/skills/polish/SKILL.md`
+- **Polish Skill** (6 connections) — `.claude/skills/polish/SKILL.md`
 - **Code Quality** (1 connections) — `.claude/skills/polish/SKILL.md`
 - **Color & Contrast** (1 connections) — `.claude/skills/polish/SKILL.md`
 - **Content & Copy** (1 connections) — `.claude/skills/polish/SKILL.md`
@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -33,7 +33,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

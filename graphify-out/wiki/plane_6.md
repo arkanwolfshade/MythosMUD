@@ -1,12 +1,13 @@
 # plane
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **plane** (3 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **plane** (4 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
