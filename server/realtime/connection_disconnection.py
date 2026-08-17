@@ -264,9 +264,7 @@ async def cleanup_websocket_disconnect(
                 return should_track_disconnect
 
             await _close_and_untrack_websockets(player_id, manager)
-            should_track_disconnect = await _apply_disconnect_side_effects(
-                player_id, manager, is_force_disconnect
-            )
+            should_track_disconnect = await _apply_disconnect_side_effects(player_id, manager, is_force_disconnect)
             logger.info("WebSocket disconnected", player_id=player_id)
 
         except (DatabaseError, AttributeError) as e:

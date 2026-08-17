@@ -133,9 +133,7 @@ def get_performance_stats_impl(manager: ConnectionManager) -> dict[str, object]:
 
 def get_connection_health_stats_impl(manager: ConnectionManager) -> dict[str, object]:
     """Get comprehensive connection health statistics."""
-    return manager.statistics_aggregator.get_connection_health_stats(
-        connection_metadata=manager.connection_metadata
-    )
+    return manager.statistics_aggregator.get_connection_health_stats(connection_metadata=manager.connection_metadata)
 
 
 def get_memory_alerts_impl(manager: ConnectionManager) -> list[str]:
@@ -451,7 +449,7 @@ def start_health_checks_impl(manager: ConnectionManager) -> None:
     """Start the periodic health check task."""
     from .connection_delegates import delegate_health_monitor_sync
 
-    _ = delegate_health_monitor_sync(
+    delegate_health_monitor_sync(
         manager.health_monitor,
         "start_periodic_checks",
         manager.active_websockets,

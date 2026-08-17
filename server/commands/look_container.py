@@ -293,6 +293,8 @@ async def _find_container_via_wearable_service(  # pylint: disable=too-many-argu
     player_name: str,
 ) -> JsonMap | None:
     """Find container via wearable container service."""
+    if request is None:
+        return None
     try:
         wearable_container_service = cast(_WearableSvc, cast(object, _get_wearable_container_service(request)))
         player_id_uuid = UUID(str(cast(_LookPlayer, player).player_id))
