@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (8 shared connections)
-- [LootAllRequest](LootAllRequest.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

@@ -33,17 +33,16 @@
 
 ## Relationships
 
+- [DatabaseError](DatabaseError.md) (5 shared connections)
 - [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [MessageQueue](MessageQueue.md) (3 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
 - [PayloadOptimizer](PayloadOptimizer.md) (2 shared connections)
+- [deque](deque.md) (2 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [test_message_broadcaster.py](test_message_broadcaster.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [RateLimiter](RateLimiter.md) (2 shared connections)
+- [User](User.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

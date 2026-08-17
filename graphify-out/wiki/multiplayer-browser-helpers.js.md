@@ -1,10 +1,10 @@
 # multiplayer-browser-helpers.js
 
-> 32 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.js** (32 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **multiplayer-browser-helpers.js** (38 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **isElementVisible()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **evaluateGameUiLoaded()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **captureGameUiDiagnosticsInBrowser()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
@@ -24,16 +24,17 @@
 - **hasTickMessageInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **isGameUiLoadedInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **captureOccupantsSnapshotInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
 - **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **elementShowsConnectedStatus()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- *... and 7 more nodes in this community*
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [fixtures/auth.ts](fixtures-auth.ts.md) (2 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 84 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 
 ## Source Files
 

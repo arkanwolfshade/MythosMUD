@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **.to_dict()** (3 connections) — `server/game/chat_message.py`
+- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
 - **Any** (1 connections)
-- **Convert message to dictionary for serialization.** (1 connections) — `server/game/chat_message.py`
+- **Convert population statistics to dictionary.** (1 connections) — `server/npc/population_stats.py`
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_message.py`
+- `server/npc/population_stats.py`
 
 ## Audit Trail
 

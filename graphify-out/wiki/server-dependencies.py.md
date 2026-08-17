@@ -1,6 +1,6 @@
 # server/dependencies.py
 
-> 259 nodes
+> 252 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,7 @@
 - **LevelService** (13 connections) — `server/game/level_service.py`
 - **get_player_service()** (13 connections) — `server/dependencies.py`
 - **get_room_service()** (11 connections) — `server/dependencies.py`
-- **get_stats_generator()** (11 connections) — `server/dependencies.py`
+- **get_profession_service()** (10 connections) — `server/dependencies.py`
 - **get_async_persistence()** (9 connections) — `server/dependencies.py`
 - **get_connection_manager()** (9 connections) — `server/dependencies.py`
 - **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
@@ -29,22 +29,22 @@
 - **get_npc_spawning_service()** (7 connections) — `server/dependencies.py`
 - **get_passive_lucidity_flux_service()** (7 connections) — `server/dependencies.py`
 - **get_player_combat_service()** (7 connections) — `server/dependencies.py`
-- *... and 234 more nodes in this community*
+- *... and 227 more nodes in this community*
 
 ## Relationships
 
-- [api/character_creation.py](api-character_creation.py.md) (14 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [PlayerService](PlayerService.md) (10 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (16 shared connections)
+- [PlayerService](PlayerService.md) (15 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [User](User.md) (10 shared connections)
 - [ExplorationService](ExplorationService.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [TargetMatch](TargetMatch.md) (7 shared connections)
-- [test_level_service.py](test_level_service.py.md) (5 shared connections)
+- [test_level_service.py](test_level_service.py.md) (7 shared connections)
 - [Stats](Stats.md) (5 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
-- [SkillService](SkillService.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
+- [bundles/game.py](bundles-game.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -55,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 522 (98%)
+- EXTRACTED: 512 (98%)
 - INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 

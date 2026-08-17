@@ -33,13 +33,12 @@
 
 ## Relationships
 
-- [Player](Player.md) (11 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (15 shared connections)
+- [DatabaseError](DatabaseError.md) (5 shared connections)
 - [Profession](Profession.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [User](User.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 
 ## Source Files
 

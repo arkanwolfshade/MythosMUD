@@ -1,6 +1,6 @@
 # BaseCommand
 
-> 612 nodes
+> 587 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **test_command_player_state.py** (25 connections) — `server/tests/unit/models/test_command_player_state.py`
 - **command_base.py** (24 connections) — `server/models/command_base.py`
 - **test_command_base.py** (24 connections) — `server/tests/unit/models/test_command_base.py`
-- **validate_player_name()** (23 connections) — `server/validators/security_validator.py`
 - **test_command_exploration.py** (22 connections) — `server/tests/unit/models/test_command_exploration.py`
 - **test_command_utility.py** (22 connections) — `server/tests/unit/models/test_command_utility.py`
 - **SummonCommand** (20 connections) — `server/models/command_admin.py`
@@ -29,22 +28,23 @@
 - **MuteCommand** (18 connections) — `server/models/command_moderation.py`
 - **AliasCommand** (17 connections) — `server/models/command_alias.py`
 - **command_moderation.py** (17 connections) — `server/models/command_moderation.py`
-- *... and 587 more nodes in this community*
+- **command_player_state.py** (16 connections) — `server/models/command_player_state.py`
+- *... and 562 more nodes in this community*
 
 ## Relationships
 
-- [CommandFactory](CommandFactory.md) (67 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (62 shared connections)
+- [CommandFactory](CommandFactory.md) (70 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (67 shared connections)
 - [test_command_inventory.py](test_command_inventory.py.md) (34 shared connections)
 - [test_command_magic.py](test_command_magic.py.md) (22 shared connections)
+- [ValidationError](ValidationError.md) (21 shared connections)
 - [pytest.md](pytest.md.md) (15 shared connections)
 - [UtilityCommandFactory](UtilityCommandFactory.md) (14 shared connections)
-- [ValidationError](ValidationError.md) (14 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (12 shared connections)
 - [ExplorationCommandFactory](ExplorationCommandFactory.md) (12 shared connections)
 - [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (12 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (7 shared connections)
+- [CombatCommandFactory](CombatCommandFactory.md) (7 shared connections)
 - [ModerationCommandFactory](ModerationCommandFactory.md) (7 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (6 shared connections)
 
 ## Source Files
 
@@ -71,8 +71,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1152 (76%)
-- INFERRED: 372 (24%)
+- EXTRACTED: 1111 (75%)
+- INFERRED: 372 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

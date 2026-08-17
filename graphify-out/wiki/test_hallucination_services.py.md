@@ -1,6 +1,6 @@
 # test_hallucination_services.py
 
-> 108 nodes
+> 107 nodes
 
 ## Key Concepts
 
@@ -17,10 +17,10 @@
 - **handle_fake_hallucination()** (8 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
 - **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
 - **handle_phantom_hostile_hallucination()** (7 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
-- **LucidityActionCode** (6 connections) — `server/models/lucidity.py`
 - **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
 - **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
 - **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **fake_hallucination_service.py** (6 connections) — `server/services/fake_hallucination_service.py`
 - **phantom_hostile_service.py** (6 connections) — `server/services/phantom_hostile_service.py`
 - **asyncio** (6 connections)
 - **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
@@ -29,23 +29,21 @@
 - **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
 - **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
 - **test_check_room_entry_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- *... and 83 more nodes in this community*
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
 - [LucidityService](LucidityService.md) (8 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
 - [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (3 shared connections)
 - [service.py](service.py.md) (3 shared connections)
-- [lucidity.py](lucidity.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [debrief_command.py](debrief_command.py.md) (1 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (1 shared connections)
 - [PlayerRespawnService](PlayerRespawnService.md) (1 shared connections)
+- [debrief_command.py](debrief_command.py.md) (1 shared connections)
+- [lucidity.py](lucidity.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
 - `server/services/fake_hallucination_service.py`
 - `server/services/hallucination_frequency_service.py`
 - `server/services/lucidity_helpers.py`
@@ -56,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 183 (90%)
+- EXTRACTED: 181 (90%)
 - INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 

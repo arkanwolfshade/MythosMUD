@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [NATSError](NATSError.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

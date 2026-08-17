@@ -1,23 +1,13 @@
 # test_shopkeeper_npc.py
 
-> 47 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **test_shopkeeper_npc.py** (25 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
 - **_shopkeeper()** (20 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **ShopkeeperNPC** (19 connections) — `server/npc/shopkeeper_npc.py`
 - **_shop_quantity()** (5 connections) — `server/npc/shopkeeper_npc.py`
-- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
-- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
 - **test_add_buyable_item_invalid()** (3 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
 - **.sell_to_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
 - **test_add_buyable_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
 - **test_add_shop_item_and_inventory()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
@@ -29,13 +19,23 @@
 - **test_buy_from_player_success()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
 - **test_calculate_price_default_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
 - **test_calculate_price_explicit_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- *... and 22 more nodes in this community*
+- **test_calculate_price_invalid_markup_config()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_get_behavior_rules()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_get_shop_inventory_returns_copy()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_exception()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_insufficient_quantity()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_not_available()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_reduces_quantity()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_sell_to_player_removes_depleted_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_shop_quantity_coercion()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **Coerce inventory quantity from JSON-shaped dict values to int (excludes bool).** (1 connections) — `server/npc/shopkeeper_npc.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [ShopkeeperNPC](ShopkeeperNPC.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 48 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

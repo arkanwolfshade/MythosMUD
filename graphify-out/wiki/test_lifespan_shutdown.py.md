@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [HolidayService](HolidayService.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -1,11 +1,10 @@
 # test_alias_commands.py
 
-> 73 nodes
+> 71 nodes
 
 ## Key Concepts
 
 - **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
 - **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
 - **asyncio** (23 connections)
 - **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
@@ -29,32 +28,26 @@
 - **test_handle_alias_command_view_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 48 more nodes in this community*
+- **test_handle_aliases_command_no_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (6 shared connections)
-- [command_service.py](command_service.py.md) (6 shared connections)
-- [communication_commands.py](communication_commands.py.md) (4 shared connections)
-- [position_commands.py](position_commands.py.md) (4 shared connections)
-- [alias_storage.py](alias_storage.py.md) (3 shared connections)
+- [server/commands/__init__.py](server-commands-__init__.py.md) (4 shared connections)
+- [command_service.py](command_service.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [look_command.py](look_command.py.md) (1 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (1 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/__init__.py`
 - `server/commands/alias_commands.py`
 - `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 166 (98%)
+- EXTRACTED: 141 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

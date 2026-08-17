@@ -34,7 +34,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files

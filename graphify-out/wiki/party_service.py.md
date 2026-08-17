@@ -25,11 +25,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
 - [PartyService](PartyService.md) (9 shared connections)
 - [.__post_init__](__post_init__.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [FollowService](FollowService.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 - [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)

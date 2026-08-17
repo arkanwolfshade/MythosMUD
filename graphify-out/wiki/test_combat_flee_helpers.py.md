@@ -14,8 +14,8 @@
 - **_PlayerForFlee** (8 connections) — `server/commands/combat_flee.py`
 - **_ensure_flee_standing()** (8 connections) — `server/commands/combat_flee.py`
 - **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
+- **run_handle_flee_command()** (8 connections) — `server/commands/combat_flee.py`
 - **_get_flee_room_id()** (7 connections) — `server/commands/combat_flee.py`
-- **run_handle_flee_command()** (7 connections) — `server/commands/combat_flee.py`
 - **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
 - **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
 - **combat_app_protocols.py** (6 connections) — `server/commands/combat_app_protocols.py`
@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (13 shared connections)
+- [CombatInstance](CombatInstance.md) (8 shared connections)
 - [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
 - [combat_loader.py](combat_loader.py.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (3 shared connections)
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [.app](app.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 151 (92%)
+- INFERRED: 13 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

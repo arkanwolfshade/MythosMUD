@@ -34,7 +34,7 @@
 ## Relationships
 
 - [ExplorationService](ExplorationService.md) (3 shared connections)
-- [HealthService](HealthService.md) (2 shared connections)
+- [HealthStatus](HealthStatus.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

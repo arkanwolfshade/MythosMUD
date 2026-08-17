@@ -34,17 +34,17 @@
 ## Relationships
 
 - [MonitoringDashboard](MonitoringDashboard.md) (9 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (6 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (8 shared connections)
 - [service.py](service.py.md) (4 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
 - [testing_examples.py](testing_examples.py.md) (4 shared connections)
-- [websocket_integration.py](websocket_integration.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [general_exception_handler](general_exception_handler.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [LogAggregator](LogAggregator.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 
 ## Source Files
 

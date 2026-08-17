@@ -33,15 +33,13 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [log_and_raise](log_and_raise.md) (4 shared connections)
-- [get_session_maker](get_session_maker.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
+- [get_session_maker](get_session_maker.md) (5 shared connections)
+- [log_and_raise](log_and_raise.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [database.py](database.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [Spell](Spell.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

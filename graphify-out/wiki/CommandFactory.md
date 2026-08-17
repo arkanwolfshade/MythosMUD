@@ -1,12 +1,13 @@
 # CommandFactory
 
-> 158 nodes
+> 160 nodes
 
 ## Key Concepts
 
 - **CommandFactory** (83 connections) — `server/utils/command_factories.py`
 - **command_parser.py** (47 connections) — `server/utils/command_parser.py`
 - **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **command_processor.py** (14 connections) — `server/utils/command_processor.py`
 - **._create_command_object()** (7 connections) — `server/utils/command_parser.py`
 - **.parse_command()** (7 connections) — `server/utils/command_parser.py`
 - **_build_command_factory()** (6 connections) — `server/utils/command_parser.py`
@@ -28,32 +29,32 @@
 - **.create_flee_command()** (3 connections) — `server/utils/command_factories.py`
 - **.create_follow_command()** (3 connections) — `server/utils/command_factories.py`
 - **.create_following_command()** (3 connections) — `server/utils/command_factories.py`
-- **.create_get_command()** (3 connections) — `server/utils/command_factories.py`
-- *... and 133 more nodes in this community*
+- *... and 135 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (67 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (11 shared connections)
-- [ValidationError](ValidationError.md) (7 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
+- [BaseCommand](BaseCommand.md) (70 shared connections)
+- [ValidationError](ValidationError.md) (10 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (7 shared connections)
+- [test_command_processor.py](test_command_processor.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [get_username_from_user](get_username_from_user.md) (4 shared connections)
 - [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
 - [test_command_factories.py](test_command_factories.py.md) (2 shared connections)
 - [CombatCommandFactory](CombatCommandFactory.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
 - [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
-- [ModerationCommandFactory](ModerationCommandFactory.md) (1 shared connections)
 
 ## Source Files
 
 - `server/utils/command_factories.py`
 - `server/utils/command_parser.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 285 (95%)
+- EXTRACTED: 297 (95%)
 - INFERRED: 16 (5%)
 - AMBIGUOUS: 0 (0%)
 

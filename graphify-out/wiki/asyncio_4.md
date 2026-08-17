@@ -4,41 +4,32 @@
 
 ## Key Concepts
 
-- **asyncio** (27 connections)
-- **test_apply_fear_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_heal_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_validate_player_name_invalid_characters()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test heal_player() heals player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test validate_player_name() with invalid characters.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_fear() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_lucidity_loss() applies lucidity loss.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_fear() applies fear.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
+- **asyncio** (5 connections)
+- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (9 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [test_apply_corruption](test_apply_corruption.md) (1 shared connections)
-- [test_apply_corruption_player_not_found](test_apply_corruption_player_not_found.md) (1 shared connections)
-- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
-- [test_damage_player](test_damage_player.md) (1 shared connections)
-- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
-- [test_delete_player_persistence_fails](test_delete_player_persistence_fails.md) (1 shared connections)
-- [test_delete_player_success](test_delete_player_success.md) (1 shared connections)
-- [test_gain_occult_knowledge](test_gain_occult_knowledge.md) (1 shared connections)
-- [test_gain_occult_knowledge_player_not_found](test_gain_occult_knowledge_player_not_found.md) (1 shared connections)
-- [test_get_user_characters](test_get_user_characters.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (5 shared connections)
+- [.__post_init__](__post_init__.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

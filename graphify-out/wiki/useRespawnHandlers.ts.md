@@ -17,7 +17,7 @@
 - **appendChatError()** (4 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **appendChatSystem()** (4 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **isRespawnApiResponse()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
-- **messageUtils.test.ts** (4 connections) — `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
+- **UseRespawnHandlersParams** (3 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
 - **handleCombatDeath()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
 - **handleCombatTargetSwitch()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
 - **handleNpcAttacked()** (3 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
@@ -33,17 +33,15 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (20 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (26 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (6 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (4 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (4 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
 - [security.ts](security.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +49,6 @@
 - `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
 - `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
 - `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- `client/src/components/ui-v2/utils/__tests__/messageUtils.test.ts`
 - `client/src/components/ui-v2/utils/messageUtils.ts`
 - `client/src/utils/apiTypeGuards.ts`
 

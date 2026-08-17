@@ -1,78 +1,70 @@
 # get_npc_instance_service
 
-> 377 nodes
+> 180 nodes
 
 ## Key Concepts
 
 - **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
-- **NPCLifecycleManager** (69 connections) — `server/npc/lifecycle_manager.py`
-- **lifespan_startup.py** (64 connections) — `server/app/lifespan_startup.py`
-- **NPCPopulationController** (60 connections) — `server/npc/population_control.py`
-- **test_npc_instance_service.py** (54 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **asyncio.md** (54 connections) — `.claude/rules/asyncio.md`
-- **npc_instance_service.py** (32 connections) — `server/services/npc_instance_service.py`
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **time_service.py** (27 connections) — `server/time/time_service.py`
-- **schedule_service.py** (26 connections) — `server/services/schedule_service.py`
-- **MythosTimeEventConsumer** (25 connections) — `server/time/time_event_consumer.py`
-- **holiday_service.py** (25 connections) — `server/services/holiday_service.py`
-- **time_event_consumer.py** (25 connections) — `server/time/time_event_consumer.py`
-- **NPCInstanceService** (23 connections) — `server/services/npc_instance_service.py`
-- **asyncio** (23 connections)
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **npc_startup_service.py** (21 connections) — `server/services/npc_startup_service.py`
-- **player_combat_service_support.py** (20 connections) — `server/services/player_combat_service_support.py`
-- **MythosHourTickEvent** (15 connections) — `server/events/event_types.py`
-- **initialize_npc_instance_service()** (14 connections) — `server/services/npc_instance_service.py`
-- **catatonia_registry.py** (13 connections) — `server/services/catatonia_registry.py`
-- **test_schedule_service.py** (13 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **._spawn_npc_impl()** (12 connections) — `server/npc/lifecycle_manager.py`
-- **npc_admin/monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- *... and 352 more nodes in this community*
+- **test_npc_admin_commands.py** (55 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **asyncio** (41 connections)
+- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
+- **npc_admin/__init__.py** (25 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (23 connections) — `server/commands/npc_admin/instance.py`
+- **npc_admin_commands.py** (22 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
+- **definition.py** (17 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_behavior_command()** (14 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **NPCDefinitionType** (11 connections) — `server/models/npc.py`
+- **handle_npc_delete_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_despawn_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
+- *... and 155 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (118 shared connections)
-- [HolidayService](HolidayService.md) (31 shared connections)
-- [NPCDefinition](NPCDefinition.md) (28 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (15 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (11 shared connections)
-- [NPCDied](NPCDied.md) (10 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (8 shared connections)
-- [npc_database.py](npc_database.py.md) (8 shared connections)
-- [validate_calendar.py](validate_calendar.py.md) (8 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (7 shared connections)
+- [get_logger](get_logger.md) (30 shared connections)
+- [AliasStorage](AliasStorage.md) (21 shared connections)
+- [test_occupants.py](test_occupants.py.md) (7 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (6 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
+- [alias_storage.py](alias_storage.py.md) (5 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (4 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (4 shared connections)
+- [npc_database.py](npc_database.py.md) (3 shared connections)
+- [test_npc_population_api.py](test_npc_population_api.py.md) (3 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [RealTimeEventHandler](RealTimeEventHandler.md) (3 shared connections)
 
 ## Source Files
 
-- `.claude/rules/asyncio.md`
-- `server/app/lifespan_startup.py`
+- `server/commands/combat_handler.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
 - `server/commands/npc_admin/monitoring.py`
-- `server/container/bundles/npc.py`
-- `server/events/event_types.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin_commands.py`
 - `server/models/npc.py`
-- `server/npc/lifecycle_manager.py`
-- `server/npc/population_control.py`
-- `server/schemas/calendar/calendar.py`
-- `server/scripts/verify_npc_occupants.py`
-- `server/services/catatonia_registry.py`
-- `server/services/holiday_service.py`
 - `server/services/npc_instance_service.py`
-- `server/services/npc_startup_service.py`
-- `server/services/player_combat_service_support.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/npc/test_population_control.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 - `server/tests/unit/services/test_npc_instance_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
-- `server/tests/unit/time/test_time_event_consumer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1002 (94%)
-- INFERRED: 69 (6%)
+- EXTRACTED: 476 (93%)
+- INFERRED: 36 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -34,8 +34,8 @@
 ## Relationships
 
 - [.load_room_data](load_room_data.md) (18 shared connections)
-- [SchemaValidator](SchemaValidator.md) (14 shared connections)
 - [Path](Path.md) (13 shared connections)
+- [SchemaValidator](SchemaValidator.md) (13 shared connections)
 - [Reporter](Reporter.md) (12 shared connections)
 - [.check_bidirectional_connections](check_bidirectional_connections.md) (9 shared connections)
 - [TestValidatorIntegration](TestValidatorIntegration.md) (7 shared connections)
@@ -44,7 +44,7 @@
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
 - [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (1 shared connections)
 - [alias_schema.json](alias_schema.json.md) (1 shared connections)
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (1 shared connections)
+- [emote_service.py](emote_service.py.md) (1 shared connections)
 
 ## Source Files
 

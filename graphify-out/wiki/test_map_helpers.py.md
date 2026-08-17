@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (12 shared connections)
+- [map_minimap.py](map_minimap.py.md) (7 shared connections)
+- [ExplorationService](ExplorationService.md) (5 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

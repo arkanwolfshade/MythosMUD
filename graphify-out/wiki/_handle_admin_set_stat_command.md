@@ -8,9 +8,9 @@
 - **test_admin_setstat_command.py** (22 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **asyncio** (18 connections)
 - **Any** (7 connections)
+- **_get_app_or_error()** (5 connections) — `server/commands/admin_setstat_command.py`
 - **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_logging()** (5 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **_get_app_or_error()** (4 connections) — `server/commands/admin_setstat_command.py`
 - **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
 - **test_handle_admin_set_stat_command_dp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (13 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (13 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
+- [.app](app.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 107 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 107 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

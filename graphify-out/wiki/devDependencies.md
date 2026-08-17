@@ -5,6 +5,7 @@
 ## Key Concepts
 
 - **devDependencies** (36 connections) — `client/package.json`
+- **autoprefixer** (2 connections) — `client/package.json`
 - **cross-env** (2 connections) — `client/package.json`
 - **eslint-plugin-playwright** (2 connections) — `client/package.json`
 - **eslint-plugin-react-hooks** (2 connections) — `client/package.json`
@@ -22,13 +23,12 @@
 - **@types/react** (2 connections) — `client/package.json`
 - **@types/react-dom** (2 connections) — `client/package.json`
 - **typescript-eslint** (2 connections) — `client/package.json`
-- **@vitejs/plugin-react** (2 connections) — `client/package.json`
 - **vitest** (2 connections) — `client/package.json`
 - **@vitest/coverage-v8** (2 connections) — `client/package.json`
+- **autoprefixer** (1 connections) — `client/package.json`
 - **cross-env** (1 connections) — `client/package.json`
 - **eslint-plugin-playwright** (1 connections) — `client/package.json`
 - **eslint-plugin-react-hooks** (1 connections) — `client/package.json`
-- **eslint-plugin-react-refresh** (1 connections) — `client/package.json`
 - *... and 16 more nodes in this community*
 
 ## Relationships
@@ -39,7 +39,7 @@
 - [@testing-library/dom](@testing-library-dom.md) (1 shared connections)
 - [@testing-library/react](@testing-library-react.md) (1 shared connections)
 - [@testing-library/user-event](@testing-library-user-event.md) (1 shared connections)
-- [autoprefixer](autoprefixer.md) (1 shared connections)
+- [@vitejs/plugin-react](@vitejs-plugin-react.md) (1 shared connections)
 - [esbuild](esbuild.md) (1 shared connections)
 - [eslint](eslint.md) (1 shared connections)
 - [eslint-plugin-jsx-a11y](eslint-plugin-jsx-a11y.md) (1 shared connections)

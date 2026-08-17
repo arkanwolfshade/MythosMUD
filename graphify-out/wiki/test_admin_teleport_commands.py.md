@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (26 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (18 shared connections)
 - [command_service.py](command_service.py.md) (10 shared connections)
+- [test_goto_helpers.py](test_goto_helpers.py.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (4 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

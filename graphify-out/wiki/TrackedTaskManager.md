@@ -34,9 +34,8 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (9 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [DistributedEventBus](DistributedEventBus.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

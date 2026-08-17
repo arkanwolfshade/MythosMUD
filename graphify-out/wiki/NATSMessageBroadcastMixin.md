@@ -1,6 +1,6 @@
 # NATSMessageBroadcastMixin
 
-> 44 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -19,7 +19,6 @@
 - **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._preload_receiver_mute_data()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **._compare_canonical_rooms()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
@@ -29,15 +28,17 @@
 - **._should_apply_mute_check()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **Determine if message should be echoed to sender. Args: channel: Channel type…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
 - **Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- *... and 19 more nodes in this community*
+- **Broadcast room-based messages with server-side filtering. This method ensures…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (5 shared connections)
+- [NATSError](NATSError.md) (4 shared connections)
 - [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
 - [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 71 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

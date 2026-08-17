@@ -1,14 +1,16 @@
 # enum
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **enum** (5 connections) — `db/static/schemas/holidays.schema.json`
-- **autumn** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **spring** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **summer** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **winter** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
@@ -16,11 +18,11 @@
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

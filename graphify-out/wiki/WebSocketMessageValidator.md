@@ -1,6 +1,6 @@
 # WebSocketMessageValidator
 
-> 67 nodes
+> 65 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
 - **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
 - **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
-- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
 - **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
 - **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
 - **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
@@ -29,13 +28,14 @@
 - **._calculate_depth()** (3 connections) — `server/realtime/message_validator.py`
 - **.__init__()** (3 connections) — `server/realtime/message_validator.py`
 - **test_extract_csrf_invalid_type_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- *... and 42 more nodes in this community*
+- **test_parse_and_validate_rejects_invalid_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [websocket_handler.py](websocket_handler.py.md) (8 shared connections)
+- [ErrorType](ErrorType.md) (7 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
-- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (3 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (4 shared connections)
 - [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 109 (71%)
+- EXTRACTED: 106 (71%)
 - INFERRED: 44 (29%)
 - AMBIGUOUS: 0 (0%)
 

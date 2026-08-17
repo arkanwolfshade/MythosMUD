@@ -1,33 +1,38 @@
 # properties
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [special_rules](special_rules.md) (1 shared connections)
-- [npc_spawn_modifier](npc_spawn_modifier.md) (1 shared connections)
+- [start_hour](start_hour.md) (1 shared connections)
+- [end_hour](end_hour.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

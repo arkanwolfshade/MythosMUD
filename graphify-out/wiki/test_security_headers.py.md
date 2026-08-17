@@ -35,7 +35,7 @@
 
 - [middleware](middleware.md) (6 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -35,7 +35,7 @@
 
 - [CommandFactory](CommandFactory.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,56 +1,52 @@
 # quality_fragmentation_lizard.py
 
-> 47 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **quality_fragmentation_lizard.py** (25 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **quality_fragmentation_guard.py** (24 connections) — `scripts/ci/quality_fragmentation_guard.py`
-- **quality_fragmentation_core.py** (18 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **ChangedFile** (11 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **GuardContext** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **check_ai_guardrails()** (9 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - **git_show_file()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **run_cmd()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **check_fragmentation_trends()** (9 connections) — `scripts/ci/quality_fragmentation_guard.py`
-- **quality_fragmentation_trends.py** (9 connections) — `scripts/ci/quality_fragmentation_trends.py`
 - **LizardFunctionRow** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **main()** (8 connections) — `scripts/ci/quality_fragmentation_guard.py`
 - **_check_head_rows()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **_process_head_lizard()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **build_context()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **is_safe_git_ref()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
 - **check_lizard_limits()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **_has_override_in_file()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **parse_lizard_output()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **run_lizard_on_content()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **_process_base_lizard()** (6 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- **is_code_file()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **parse_args()** (5 connections) — `scripts/ci/quality_fragmentation_core.py`
-- **file_nloc_failures()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
 - **_map_function_node_to_row()** (5 connections) — `scripts/ci/quality_fragmentation_lizard.py`
-- *... and 22 more nodes in this community*
+- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **ChangedFile** (4 connections)
+- **has_lizard_override()** (3 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_iter_lizard_function_maps()** (3 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_row_exceeds()** (3 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_row_reason()** (3 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_has_file_nloc_override()** (2 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_lizard_entries()** (2 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_to_int()** (2 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_to_str()** (2 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **MonkeyPatch** (2 connections)
+- **TypedDict** (1 connections)
+- **Windows defaults text=True to cp1252; lizard/git can emit UTF-8 bytes (e.g.…** (1 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (14 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (11 shared connections)
-- [safe_run](safe_run.md) (3 shared connections)
-- [quality_fragmentation_graph.py](quality_fragmentation_graph.py.md) (1 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (22 shared connections)
+- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (3 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - `scripts/ci/quality_fragmentation_core.py`
-- `scripts/ci/quality_fragmentation_guard.py`
 - `scripts/ci/quality_fragmentation_lizard.py`
-- `scripts/ci/quality_fragmentation_trends.py`
+- `server/tests/unit/test_quality_fragmentation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (87%)
-- INFERRED: 21 (13%)
+- EXTRACTED: 71 (89%)
+- INFERRED: 9 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

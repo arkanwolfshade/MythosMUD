@@ -1,6 +1,6 @@
 # ConnectionManager
 
-> God node · 257 connections · `server/realtime/connection_manager.py`
+> God node · 255 connections · `server/realtime/connection_manager.py`
 
 **Community:** [ConnectionManager](ConnectionManager.md)
 
@@ -16,7 +16,7 @@
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) `EXTRACTED`
@@ -24,14 +24,14 @@
 - player_event_handlers.py `EXTRACTED`
 - event_handler.py `EXTRACTED`
 - nats_message_handler.py `EXTRACTED`
-- [player_event_handlers_respawn.py](player_event_handlers_respawn.py.md) `EXTRACTED`
+- player_event_handlers_respawn.py `EXTRACTED`
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
 - websocket_room_updates.py `EXTRACTED`
 - api/game.py `EXTRACTED`
 - player_disconnect_handlers.py `EXTRACTED`
-- test_envelope.py `EXTRACTED`
+- [test_envelope.py](test_envelope.py.md) `EXTRACTED`
 - websocket_handler_message_loop.py `EXTRACTED`
-- container_events.py `EXTRACTED`
+- [container_events.py](container_events.py.md) `EXTRACTED`
 - [combat_loader.py](combat_loader.py.md) `EXTRACTED`
 
 ### method
@@ -67,7 +67,6 @@
 - emit_transfer_event() `EXTRACTED`
 - emit_container_opened_events() `EXTRACTED`
 - emit_close_container_event() `EXTRACTED`
-- safe_close_websocket_impl() `EXTRACTED`
 - resolve_connection_manager() `EXTRACTED`
 - force_disconnect_player_impl() `EXTRACTED`
 - .__init__() `EXTRACTED`
@@ -80,16 +79,17 @@
 - broadcast_global_event_impl() `EXTRACTED`
 - broadcast_global_impl() `EXTRACTED`
 - broadcast_room_event_impl() `EXTRACTED`
+- get_message_delivery_stats_impl() `EXTRACTED`
 
 ### uses
 - [RateLimiter](RateLimiter.md) `INFERRED`
-- [MessageQueue](MessageQueue.md) `INFERRED`
+- MessageQueue `INFERRED`
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
 - [RoomSubscriptionManager](RoomSubscriptionManager.md) `INFERRED`
-- [FollowService](FollowService.md) `INFERRED`
+- FollowService `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - RealtimeBundle `INFERRED`
-- EventHandler `INFERRED`
+- [EventHandler](EventHandler.md) `INFERRED`
 - PlayerRespawnEventHandler `INFERRED`
 - [EventPublisher](EventPublisher.md) `INFERRED`
 - PlayerEventHandler `INFERRED`

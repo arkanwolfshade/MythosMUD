@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (12 shared connections)
-- [LucidityService](LucidityService.md) (8 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [LucidityService](LucidityService.md) (10 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
 - [coerce_int](coerce_int.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
 - [api/player_respawn.py](api-player_respawn.py.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [player_respawn_wrapper.py](player_respawn_wrapper.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [combat_service_types.py](combat_service_types.py.md) (1 shared connections)
+- [test_hallucination_services.py](test_hallucination_services.py.md) (1 shared connections)
 
 ## Source Files
 

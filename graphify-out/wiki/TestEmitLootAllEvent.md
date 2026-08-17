@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (21 shared connections)
-- [LootAllRequest](LootAllRequest.md) (8 shared connections)
+- [container_events.py](container_events.py.md) (13 shared connections)
+- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
 - [ContainerComponent](ContainerComponent.md) (4 shared connections)
 
 ## Source Files

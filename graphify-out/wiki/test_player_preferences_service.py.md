@@ -34,9 +34,10 @@
 ## Relationships
 
 - [preferences_service](preferences_service.md) (4 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [register_user](register_user.md) (1 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

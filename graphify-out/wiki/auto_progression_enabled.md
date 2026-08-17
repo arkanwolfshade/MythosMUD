@@ -14,7 +14,7 @@
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 
 ## Source Files
 

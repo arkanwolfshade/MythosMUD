@@ -1,63 +1,65 @@
 # PrototypeRegistryError
 
-> 53 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **PrototypeRegistryError** (25 connections) — `server/game/items/prototype_registry.py`
+- **prototype_registry.py** (23 connections) — `server/game/items/prototype_registry.py`
+- **player_schema_converter.py** (22 connections) — `server/game/player_schema_converter.py`
+- **test_player_schema_converter_weapon.py** (20 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
 - **ItemFactory** (19 connections) — `server/game/items/item_factory.py`
 - **item_factory.py** (16 connections) — `server/game/items/item_factory.py`
 - **ItemFactoryError** (12 connections) — `server/game/items/item_factory.py`
 - **test_item_factory.py** (12 connections) — `server/tests/unit/game/test_item_factory.py`
-- **ItemInstance** (9 connections) — `server/game/items/item_instance.py`
-- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
+- **_weapon_from_prototype_registry()** (11 connections) — `server/game/player_schema_converter.py`
+- **items/__init__.py** (11 connections) — `server/game/items/__init__.py`
 - **.create_instance()** (7 connections) — `server/game/items/item_factory.py`
-- **component_hooks.py** (6 connections) — `server/game/items/component_hooks.py`
-- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
-- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
+- **weapon.py** (7 connections) — `server/schemas/game/weapon.py`
 - **._build_instance_metadata()** (4 connections) — `server/game/items/item_factory.py`
-- **main()** (4 connections) — `server/scripts/validate_prototypes.py`
 - **test_create_instance_prototype_not_found()** (4 connections) — `server/tests/unit/game/test_item_factory.py`
+- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
 - **.__init__()** (3 connections) — `server/game/items/item_factory.py`
 - **._resolve_stack_slot()** (3 connections) — `server/game/items/item_factory.py`
-- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
 - **factory()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
 - **test_create_instance_invalid_quantity()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
+- **test_weapon_from_prototype_registry_empty_prototype_id_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **test_weapon_from_prototype_registry_no_metadata_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **test_weapon_from_prototype_registry_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
+- **test_weapon_from_prototype_registry_weapon_present_returns_dict()** (3 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
 - **Any** (3 connections)
-- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- *... and 28 more nodes in this community*
+- **test_create_instance_success()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [PrototypeRegistry](PrototypeRegistry.md) (23 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (12 shared connections)
+- [PlayerSchemaConverter](PlayerSchemaConverter.md) (10 shared connections)
+- [pytest.md](pytest.md.md) (10 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (7 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (6 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (4 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ItemInstance](ItemInstance.md) (5 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
+- [initialize_components](initialize_components.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/items/component_hooks.py`
+- `server/game/items/__init__.py`
 - `server/game/items/item_factory.py`
-- `server/game/items/item_instance.py`
 - `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
-- `server/tests/unit/game/items/test_component_hooks.py`
+- `server/game/player_schema_converter.py`
+- `server/schemas/game/weapon.py`
 - `server/tests/unit/game/test_item_factory.py`
-- `server/tests/unit/game/test_item_instance.py`
+- `server/tests/unit/game/test_player_schema_converter_weapon.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (81%)
-- INFERRED: 24 (19%)
+- EXTRACTED: 148 (88%)
+- INFERRED: 21 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

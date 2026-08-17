@@ -1,66 +1,62 @@
 # log_and_raise
 
-> 152 nodes
+> 81 nodes
 
 ## Key Concepts
 
 - **log_and_raise()** (196 connections) — `server/utils/error_logging.py`
-- **error_logging.py** (62 connections) — `server/utils/error_logging.py`
-- **test_container_persistence_crud.py** (43 connections) — `server/tests/unit/container_persistence/test_container_persistence_crud.py`
-- **container_persistence/container_persistence.py** (42 connections) — `server/container_persistence/container_persistence.py`
-- **ContainerCreateParams** (32 connections) — `server/persistence/container_create_params.py`
-- **container_persistence/container_helpers.py** (25 connections) — `server/container_persistence/container_helpers.py`
-- **create_container()** (23 connections) — `server/container_persistence/container_persistence.py`
-- **_container_data_from_dict()** (18 connections) — `server/container_persistence/container_persistence.py`
-- **update_container()** (17 connections) — `server/container_persistence/container_persistence.py`
-- **ContainerData** (15 connections) — `server/container_persistence/container_data.py`
-- **get_container()** (15 connections) — `server/container_persistence/container_persistence.py`
-- **skill_use_log_repository.py** (15 connections) — `server/persistence/repositories/skill_use_log_repository.py`
-- **get_containers_by_entity_id()** (13 connections) — `server/container_persistence/container_persistence.py`
-- **get_containers_by_room_id()** (12 connections) — `server/container_persistence/container_persistence.py`
-- **_complete_container_create()** (11 connections) — `server/container_persistence/container_persistence.py`
-- **PsycopgConnection** (11 connections)
-- **delete_container()** (10 connections) — `server/container_persistence/container_persistence.py`
-- **_execute_container_update()** (10 connections) — `server/container_persistence/container_persistence.py`
-- **UUID** (10 connections)
-- **container_create_params.py** (9 connections) — `server/persistence/container_create_params.py`
-- **ContainerData** (8 connections)
-- **server/container_persistence/__init__.py** (8 connections) — `server/container_persistence/__init__.py`
-- **fetch_container_items()** (7 connections) — `server/container_persistence/container_helpers.py`
-- **as_opt_datetime()** (6 connections) — `server/container_persistence/container_helpers.py`
-- **as_uuid()** (6 connections) — `server/container_persistence/container_helpers.py`
-- *... and 127 more nodes in this community*
+- **MovementService** (45 connections) — `server/game/movement_service.py`
+- **UUID** (18 connections)
+- **ContainerLockMixin** (14 connections) — `server/services/container_service_lock.py`
+- **._execute_move_locked()** (14 connections) — `server/game/movement_service.py`
+- **._require_container_for_lock_ops()** (9 connections) — `server/services/container_service_lock.py`
+- **._validate_movement()** (8 connections) — `server/game/movement_service.py`
+- **.lock_container()** (8 connections) — `server/services/container_service_lock.py`
+- **._handle_movement_error()** (7 connections) — `server/game/movement_service.py`
+- **.move_player()** (7 connections) — `server/game/movement_service.py`
+- **._persist_lock_state()** (7 connections) — `server/services/container_service_lock.py`
+- **._raise_if_cannot_lock()** (7 connections) — `server/services/container_service_lock.py`
+- **._require_player_for_lock_ops()** (7 connections) — `server/services/container_service_lock.py`
+- **.unlock_container()** (7 connections) — `server/services/container_service_lock.py`
+- **Any** (7 connections)
+- **UUID** (7 connections)
+- **.add_player_to_room()** (6 connections) — `server/game/movement_service.py`
+- **._get_rooms_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._resolve_player_for_movement()** (6 connections) — `server/game/movement_service.py`
+- **._validate_movement_rooms()** (6 connections) — `server/game/movement_service.py`
+- **._execute_room_transfer()** (5 connections) — `server/game/movement_service.py`
+- **.__init__()** (5 connections) — `server/game/movement_service.py`
+- **.remove_player_from_room()** (5 connections) — `server/game/movement_service.py`
+- **._resolve_posture_player()** (5 connections) — `server/game/movement_service.py`
+- **._validate_add_player_ids()** (5 connections) — `server/game/movement_service.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (30 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (25 shared connections)
-- [DatabaseError](DatabaseError.md) (21 shared connections)
-- [get_session_maker](get_session_maker.md) (17 shared connections)
-- [PlayerRepository](PlayerRepository.md) (14 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (14 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (11 shared connections)
-- [SkillService](SkillService.md) (10 shared connections)
-- [Player](Player.md) (10 shared connections)
-- [ValidationError](ValidationError.md) (9 shared connections)
-- [database.py](database.py.md) (9 shared connections)
-- [MovementService](MovementService.md) (9 shared connections)
+- [container_service_transfer_to.py](container_service_transfer_to.py.md) (16 shared connections)
+- [get_session_maker](get_session_maker.md) (13 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (13 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (12 shared connections)
+- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (10 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
+- [row_to_player](row_to_player.md) (8 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [GameMechanicsService](GameMechanicsService.md) (7 shared connections)
+- [QuestInstance](QuestInstance.md) (7 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
 
 ## Source Files
 
-- `server/container_persistence/__init__.py`
-- `server/container_persistence/container_data.py`
-- `server/container_persistence/container_helpers.py`
-- `server/container_persistence/container_persistence.py`
-- `server/persistence/container_create_params.py`
-- `server/persistence/repositories/skill_use_log_repository.py`
-- `server/tests/unit/container_persistence/test_container_persistence_crud.py`
+- `server/game/movement_service.py`
+- `server/services/container_service_lock.py`
+- `server/tests/unit/game/test_movement_service.py`
 - `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 571 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 356 (97%)
+- INFERRED: 12 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -6,7 +6,7 @@
 
 - **player.ts** (47 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **ensureStanding()** (26 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
 - **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
@@ -17,7 +17,7 @@
 - **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **clickWithoutStability()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
 - **lookAndStand()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
 - **prepAwForAdminSet()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [executeCommand](executeCommand.md) (64 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (28 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (21 shared connections)
-- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (3 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (2 shared connections)
+- [executeCommand](executeCommand.md) (66 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (27 shared connections)
+- [waitForMessage](waitForMessage.md) (12 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (9 shared connections)
+- [whisper-movement.spec.ts](whisper-movement.spec.ts.md) (6 shared connections)
 
 ## Source Files
 
@@ -50,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 212 (100%)
+- EXTRACTED: 213 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

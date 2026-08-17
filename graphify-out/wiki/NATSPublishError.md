@@ -33,17 +33,18 @@
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (17 shared connections)
+- [NATSError](NATSError.md) (18 shared connections)
 - [test_nats_service.py](test_nats_service.py.md) (7 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (5 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (4 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (3 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
+- [NATSMetrics](NATSMetrics.md) (6 shared connections)
 - [NATSService](NATSService.md) (3 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
 - [JsonMap](JsonMap.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [chat_nats_publisher.py](chat_nats_publisher.py.md) (2 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [combat_event_publisher.py](combat_event_publisher.py.md) (1 shared connections)
+- [CombatEventPublisher](CombatEventPublisher.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 

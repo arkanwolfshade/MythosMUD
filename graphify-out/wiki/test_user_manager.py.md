@@ -37,7 +37,7 @@
 - [user_manager](user_manager.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [TerminalButton.tsx](TerminalButton.tsx.md) (4 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (3 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (7 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (4 shared connections)
 
 ## Source Files
 

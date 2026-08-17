@@ -16,8 +16,7 @@
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (2 shared connections)
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (3 shared connections)
 
 ## Source Files
 

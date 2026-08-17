@@ -13,10 +13,10 @@
 - .__init__() `EXTRACTED`
 - handle_new_game_session() `EXTRACTED`
 - wrap_third_party_exception_enhanced() `EXTRACTED`
+- websocket_endpoint() `EXTRACTED`
 - db_cleanup() `EXTRACTED`
 - log_structured_error() `EXTRACTED`
 - get_player_connections() `EXTRACTED`
-- websocket_endpoint() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - websocket_endpoint_route() `EXTRACTED`
 - .__init__() `EXTRACTED`
@@ -32,7 +32,7 @@
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
 - [command_service.py](command_service.py.md) `EXTRACTED`
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
@@ -40,8 +40,8 @@
 - time.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - [game_tick_processing.py](game_tick_processing.py.md) `EXTRACTED`
-- [database.py](database.py.md) `EXTRACTED`
-- connection_manager_methods.py `EXTRACTED`
+- database.py `EXTRACTED`
+- [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
 - [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
@@ -50,8 +50,8 @@
 - [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
-- lifespan_startup.py `EXTRACTED`
-- chat_service.py `EXTRACTED`
+- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
+- [chat_service.py](chat_service.py.md) `EXTRACTED`
 
 ### rationale_for
 - Get a Structlog logger with the specified name. This ensures all loggers are… `EXTRACTED`

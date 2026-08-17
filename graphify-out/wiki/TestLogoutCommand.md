@@ -35,7 +35,7 @@
 
 - [test_logout_commands.py](test_logout_commands.py.md) (8 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [utility_commands.py](utility_commands.py.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 
 ## Source Files
 

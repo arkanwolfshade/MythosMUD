@@ -1,6 +1,6 @@
 # gameStore.ts
 
-> 68 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -19,7 +19,6 @@
 - **useRoomMapData()** (13 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
 - **RoomDetailsPanel.tsx** (12 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
 - **RoomMapViewer.interactions.test.tsx** (12 connections) — `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
-- **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
 - **RoomMapViewer()** (10 connections) — `client/src/components/map/RoomMapViewer.tsx`
 - **MapControls.tsx** (10 connections) — `client/src/components/map/MapControls.tsx`
 - **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
@@ -28,23 +27,24 @@
 - **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
-- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- *... and 43 more nodes in this community*
+- **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
+- **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (19 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (27 shared connections)
 - [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
-- [map/types.ts](map-types.ts.md) (12 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (9 shared connections)
+- [map/types.ts](map-types.ts.md) (7 shared connections)
+- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (6 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (5 shared connections)
-- [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
 - [utils/config.ts](utils-config.ts.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (3 shared connections)
 
 ## Source Files
 
@@ -54,13 +54,11 @@
 - `client/src/components/map/RoomMapViewer.tsx`
 - `client/src/components/map/__tests__/MapControls.test.tsx`
 - `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
-- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.interactions.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.map-controls.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
-- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
 - `client/src/components/map/__tests__/theme.test.tsx`
 - `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
@@ -68,11 +66,13 @@
 - `client/src/components/map/hooks/useRoomMapData.ts`
 - `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - `client/src/components/map/utils/layout.ts`
+- `client/src/components/map/utils/mapUtils.ts`
+- `client/src/stores/gameStore.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 275 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 258 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

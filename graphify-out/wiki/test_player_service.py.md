@@ -33,11 +33,10 @@
 
 ## Relationships
 
+- [PlayerService](PlayerService.md) (4 shared connections)
 - [ValidationError](ValidationError.md) (4 shared connections)
 - [Stats](Stats.md) (4 shared connections)
-- [PlayerService](PlayerService.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

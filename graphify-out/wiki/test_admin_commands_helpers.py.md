@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (20 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (11 shared connections)
+- [test_goto_helpers.py](test_goto_helpers.py.md) (9 shared connections)
 - [build_event](build_event.md) (4 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)

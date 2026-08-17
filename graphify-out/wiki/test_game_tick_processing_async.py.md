@@ -1,11 +1,13 @@
 # test_game_tick_processing_async.py
 
-> 46 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_game_tick_processing_async.py** (28 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
+- **_process_single_effect()** (15 connections) — `server/app/game_tick_processing.py`
 - **asyncio** (15 connections)
+- **_process_damage_over_time_effect()** (14 connections) — `server/app/game_tick_processing.py`
 - **_process_heal_over_time_effect()** (12 connections) — `server/app/game_tick_processing.py`
 - **_update_player_status_effects()** (10 connections) — `server/app/game_tick_processing.py`
 - **test_process_combat_tick_no_service()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
@@ -26,19 +28,17 @@
 - **mock_app()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
 - **mock_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
 - **mock_player()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_update_player_status_effects_saves()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **fixture** (3 connections)
-- *... and 21 more nodes in this community*
+- **test_process_damage_over_time_zero_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [game_tick_processing.py](game_tick_processing.py.md) (18 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (9 shared connections)
-- [_process_mortally_wounded_player](_process_mortally_wounded_player.md) (2 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (22 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (13 shared connections)
+- [coerce_int](coerce_int.md) (3 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (100%)
+- EXTRACTED: 121 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

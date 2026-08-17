@@ -1,11 +1,10 @@
 # test_party_service.py
 
-> 53 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_party_service.py** (39 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_service()** (4 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_already_in_party_rejected()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_no_such_party()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_add_member_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
@@ -29,15 +28,18 @@
 - **test_on_player_disconnect_member_removed()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_on_player_disconnect_not_in_party_no_op()** (2 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_remove_member_leader_leaves_disbands()** (2 connections) — `server/tests/unit/game/test_party_service.py`
-- *... and 28 more nodes in this community*
+- **test_remove_member_leave_success()** (2 connections) — `server/tests/unit/game/test_party_service.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [assert_event_envelope](assert_event_envelope.md) (7 shared connections)
+- [asyncio](asyncio.md) (5 shared connections)
 - [Party](Party.md) (3 shared connections)
-- [PartyService](PartyService.md) (2 shared connections)
+- [.__post_init__](__post_init__.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 - [party_service.py](party_service.py.md) (1 shared connections)
+- [party_service](party_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 65 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

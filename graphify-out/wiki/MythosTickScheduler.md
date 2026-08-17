@@ -1,19 +1,16 @@
 # MythosTickScheduler
 
-> 41 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **MythosTickScheduler** (30 connections) — `server/time/tick_scheduler.py`
 - **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **tick_scheduler.py** (16 connections) — `server/time/tick_scheduler.py`
 - **asyncio** (9 connections)
-- **time/__init__.py** (8 connections) — `server/time/__init__.py`
 - **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
 - **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
 - **._run()** (5 connections) — `server/time/tick_scheduler.py`
 - **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
-- **MythosCalendarComponents** (4 connections) — `server/time/time_service.py`
 - **fixture** (4 connections)
 - **scheduler()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **test_emit_pending_ticks_initializes_last_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
@@ -29,31 +26,30 @@
 - **.start()** (3 connections) — `server/time/tick_scheduler.py`
 - **datetime** (3 connections)
 - **mock_chronicle()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- *... and 16 more nodes in this community*
+- **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **test_publish_tick_with_holidays()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [MythosChronicle](MythosChronicle.md) (5 shared connections)
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [HolidayService](HolidayService.md) (3 shared connections)
+- [.__post_init__](__post_init__.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/time/test_tick_scheduler.py`
-- `server/time/__init__.py`
 - `server/time/tick_scheduler.py`
-- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (84%)
-- INFERRED: 16 (16%)
+- EXTRACTED: 61 (79%)
+- INFERRED: 16 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

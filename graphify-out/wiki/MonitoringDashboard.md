@@ -1,12 +1,11 @@
 # MonitoringDashboard
 
-> 75 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **MonitoringDashboard** (35 connections) — `server/monitoring/monitoring_dashboard.py`
 - **monitoring_dashboard.py** (26 connections) — `server/monitoring/monitoring_dashboard.py`
-- **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
 - **test_monitoring_dashboard.py** (17 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
 - **Alert** (12 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
@@ -29,22 +28,23 @@
 - **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_memory_leak_metrics()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 50 more nodes in this community*
+- **.get_stats()** (3 connections) — `server/monitoring/exception_tracker.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
 - [PerformanceMonitor](PerformanceMonitor.md) (9 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (8 shared connections)
-- [lifespan.py](lifespan.py.md) (6 shared connections)
 - [LogAggregator](LogAggregator.md) (6 shared connections)
-- [system_monitoring.py](system_monitoring.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_monitoring_dashboard](get_monitoring_dashboard.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -57,7 +57,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 174 (89%)
+- EXTRACTED: 165 (89%)
 - INFERRED: 21 (11%)
 - AMBIGUOUS: 0 (0%)
 

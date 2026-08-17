@@ -37,7 +37,7 @@
 - [CommandFactory](CommandFactory.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

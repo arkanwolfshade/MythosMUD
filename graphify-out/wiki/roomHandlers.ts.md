@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (6 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (10 shared connections)
 - [logger.ts](logger.ts.md) (4 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 
 ## Source Files
 

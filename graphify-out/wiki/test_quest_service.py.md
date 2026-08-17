@@ -1,6 +1,6 @@
 # test_quest_service.py
 
-> 88 nodes
+> 79 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **_make_definition_row()** (18 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_InstanceStub** (15 connections) — `server/tests/unit/game/test_quest_service.py`
-- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -29,27 +28,23 @@
 - **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 63 more nodes in this community*
+- **_make_turn_in_definition_row()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (33 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
-- [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
+- [QuestService](QuestService.md) (31 shared connections)
+- [quest_service](quest_service.md) (7 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_helpers.py`
 - `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 220 (86%)
-- INFERRED: 36 (14%)
+- EXTRACTED: 211 (88%)
+- INFERRED: 29 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

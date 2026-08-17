@@ -32,7 +32,7 @@
 ## Relationships
 
 - [Stats](Stats.md) (12 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [.get_instance](get_instance.md) (1 shared connections)
 
 ## Source Files
 

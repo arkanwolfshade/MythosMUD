@@ -1,6 +1,6 @@
 # CorpseOverlay.tsx
 
-> 90 nodes
+> 93 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
 - **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
 - **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
+- **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
 - **useContainerStore** (11 connections) — `client/src/stores/containerStore.ts`
 - **ContainerComponent** (10 connections) — `client/src/stores/containerStore.ts`
 - **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
@@ -28,19 +29,19 @@
 - **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
-- **formatTimeRemaining()** (4 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- *... and 65 more nodes in this community*
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (9 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (6 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
+- [gameStore.ts](gameStore.ts.md) (6 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (4 shared connections)
-- [TerminalButton.tsx](TerminalButton.tsx.md) (4 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (3 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
 - [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (2 shared connections)
+- [stateNormalization.ts](stateNormalization.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -57,12 +58,14 @@
 - `client/src/components/containers/useContainerSplitPane.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/stores/__tests__/containerStore.test.ts`
+- `client/src/stores/__tests__/gameStore.test.ts`
 - `client/src/stores/containerStore.ts`
+- `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (100%)
+- EXTRACTED: 204 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

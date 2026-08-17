@@ -1,53 +1,60 @@
 # InventorySchemaValidationError
 
-> 26 nodes
+> 56 nodes
 
 ## Key Concepts
 
 - **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **PlayerSavePreparer** (16 connections) — `server/persistence/repositories/player_repository_save.py`
+- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
 - **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **player_repository_save.py** (12 connections) — `server/persistence/repositories/player_repository_save.py`
 - **test_inventory_schema.py** (12 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **.prepare()** (10 connections) — `server/persistence/repositories/player_repository_save.py`
 - **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **._prepare_inventory_payload()** (7 connections) — `server/persistence/repositories/player_repository_save.py`
+- **Any** (7 connections)
+- **Player** (7 connections)
 - **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_parse_equipped_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **_parse_inventory_raw()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._ensure_inventory_record()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._normalize_timestamps()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_numeric_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
+- **._upsert_string_defaults()** (5 connections) — `server/persistence/repositories/player_repository_save.py`
 - **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **._normalize_is_admin()** (4 connections) — `server/persistence/repositories/player_repository_save.py`
 - **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
 - **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Any** (3 connections)
-- **Exception** (1 connections)
-- **Inventory JSON schema validation utilities. As recorded in the restricted…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate a complete inventory payload against the canonical schema. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate only the inventory portion to simplify testing workflows. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Unit tests for inventory_schema validation functions. Tests the validation…** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() accepts valid items.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- *... and 1 more nodes in this community*
+- **.execute()** (3 connections) — `server/persistence/repositories/player_repository_save.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
-- [PlayerRepository](PlayerRepository.md) (5 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (4 shared connections)
-- [combat_schema.py](combat_schema.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (8 shared connections)
+- [TargetType](TargetType.md) (4 shared connections)
+- [test_player_related_models.py](test_player_related_models.py.md) (3 shared connections)
+- [test_invite_schemas.py](test_invite_schemas.py.md) (3 shared connections)
+- [test_combat_schema.py](test_combat_schema.py.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
+- [test_party_commands.py](test_party_commands.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
+- `server/persistence/repositories/player_repository_save.py`
+- `server/schemas/shared/__init__.py`
 - `server/schemas/shared/inventory_schema.py`
 - `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 125 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

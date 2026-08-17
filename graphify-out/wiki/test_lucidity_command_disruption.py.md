@@ -28,7 +28,7 @@
 
 ## Relationships
 
-- [test_combat_flee_handler.py](test_combat_flee_handler.py.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

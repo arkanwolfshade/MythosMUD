@@ -32,12 +32,12 @@
 - error_logging.py `EXTRACTED`
 
 ### imports
-- [database.py](database.py.md) `EXTRACTED`
+- database.py `EXTRACTED`
 - [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
 - container_persistence/container_persistence.py `EXTRACTED`
 - container_persistence_async.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- container_service_transfer_to.py `EXTRACTED`
+- [container_service_transfer_to.py](container_service_transfer_to.py.md) `EXTRACTED`
 - [npc_database.py](npc_database.py.md) `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - container_service_session.py `EXTRACTED`
@@ -45,12 +45,12 @@
 - container_service_lock.py `EXTRACTED`
 - container_service_transfer_from.py `EXTRACTED`
 - container_persistence/container_helpers.py `EXTRACTED`
-- database_config_helpers.py `EXTRACTED`
+- [database_config_helpers.py](database_config_helpers.py.md) `EXTRACTED`
 - container_query_helpers_async.py `EXTRACTED`
-- [test_error_logging.py](test_error_logging.py.md) `EXTRACTED`
+- test_error_logging.py `EXTRACTED`
 - [player_effect_repository.py](player_effect_repository.py.md) `EXTRACTED`
 - player_spell_repository.py `EXTRACTED`
-- emote_service.py `EXTRACTED`
+- [emote_service.py](emote_service.py.md) `EXTRACTED`
 - container_query_helpers.py `EXTRACTED`
 
 ### rationale_for

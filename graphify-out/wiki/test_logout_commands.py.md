@@ -36,7 +36,7 @@
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
-- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)

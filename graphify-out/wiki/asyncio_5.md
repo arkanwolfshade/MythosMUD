@@ -1,48 +1,34 @@
 # asyncio
 
-> 37 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (18 connections)
-- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 12 more nodes in this community*
+- **asyncio** (6 connections)
+- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (18 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

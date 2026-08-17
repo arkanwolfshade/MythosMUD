@@ -1,29 +1,32 @@
 # channel_broadcasting_strategies.py
 
-> 11 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **ABC** (2 connections)
 - **Channel Broadcasting Strategies for NATS Message Handler. This module…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for room-based channels (say, local, emote, pose).** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize room-based channel strategy. Args: channel_type: Type of room-based…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 - **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (7 shared connections)
-- [asyncio](asyncio.md) (6 shared connections)
-- [UUID](UUID.md) (4 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (3 shared connections)
+- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (12 shared connections)
+- [UUID](UUID.md) (5 shared connections)
+- [ChannelBroadcastingStrategyFactory](ChannelBroadcastingStrategyFactory.md) (4 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
 - [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
@@ -32,8 +35,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 38 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 43 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

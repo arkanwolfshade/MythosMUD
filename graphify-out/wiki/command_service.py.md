@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (12 shared connections)
+- [AliasStorage](AliasStorage.md) (18 shared connections)
 - [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (6 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (7 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (6 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (5 shared connections)
-- [alias_storage.py](alias_storage.py.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [server/commands/__init__.py](server-commands-__init__.py.md) (5 shared connections)
 - [position_commands.py](position_commands.py.md) (4 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (4 shared connections)
 - [combat_loader.py](combat_loader.py.md) (4 shared connections)
-- [communication_commands.py](communication_commands.py.md) (4 shared connections)
+- [TargetType](TargetType.md) (4 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
 
 ## Source Files
 

@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (1 shared connections)
 
 ## Source Files
 

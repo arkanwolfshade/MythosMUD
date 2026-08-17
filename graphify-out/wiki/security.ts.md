@@ -1,73 +1,78 @@
 # security.ts
 
-> 54 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **security.ts** (41 connections) — `client/src/utils/security.ts`
-- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
-- **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
-- **logoutHandler()** (11 connections) — `client/src/utils/logoutHandler.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
-- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- **ansiToHtml.ts** (21 connections) — `client/src/utils/ansiToHtml.ts`
+- **GameInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **ansiToHtmlWithBreaks()** (16 connections) — `client/src/utils/ansiToHtml.ts`
+- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
+- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
+- **SessionManager** (12 connections) — `client/src/utils/security.ts`
+- **SafeHtml()** (10 connections) — `client/src/components/common/SafeHtml.tsx`
+- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
 - **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **components/__tests__/LogoutFlow.integration.test.tsx** (7 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
-- **useMotdAndLogoutHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **AppSessionOutroViews.tsx** (5 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
+- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
+- **GameInfoPanel()** (5 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
+- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
 - **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **useCommandHandlers()** (4 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- **applyStyleCode()** (4 connections) — `client/src/utils/ansiToHtml.ts`
+- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
+- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
 - **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **createLogoutHandler()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- *... and 29 more nodes in this community*
+- **GameInfoPanel.test.tsx** (4 connections) — `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (16 shared connections)
-- [App.tsx](App.tsx.md) (7 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (15 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (10 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (8 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
 - [logger.ts](logger.ts.md) (7 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (7 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
-- [utils/config.ts](utils-config.ts.md) (4 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (4 shared connections)
-- [usePlayerStatusEffects.ts](usePlayerStatusEffects.ts.md) (3 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (3 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
+- [utils/config.ts](utils-config.ts.md) (3 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (3 shared connections)
+- [setup.ts](setup.ts.md) (2 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
-- `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/mythosApp/AppSessionOutroViews.tsx`
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/useMythosAppActions.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
+- `client/src/components/common/SafeHtml.tsx`
+- `client/src/components/common/__tests__/SafeHtml.test.tsx`
+- `client/src/components/panels/chat/ChatMessage.tsx`
+- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
+- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
+- `client/src/utils/__tests__/domPurifyClient.test.ts`
 - `client/src/utils/__tests__/inputSanitizer.test.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
 - `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/logoutHandler.ts`
+- `client/src/utils/__tests__/sessionManager.test.ts`
+- `client/src/utils/ansiToHtml.test.ts`
+- `client/src/utils/ansiToHtml.ts`
+- `client/src/utils/domPurifyClient.ts`
 - `client/src/utils/security.ts`
+- `client/src/utils/testAnsi.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 159 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 215 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

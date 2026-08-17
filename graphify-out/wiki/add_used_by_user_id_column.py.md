@@ -13,7 +13,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 
 ## Source Files
 

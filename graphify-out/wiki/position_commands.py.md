@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [PlayerPositionService](PlayerPositionService.md) (8 shared connections)
 - [AliasStorage](AliasStorage.md) (6 shared connections)
-- [.state](state.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
 - [command_service.py](command_service.py.md) (4 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (4 shared connections)
+- [server/commands/__init__.py](server-commands-__init__.py.md) (4 shared connections)
 - [build_event](build_event.md) (3 shared connections)
+- [.app](app.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [CommandFactory](CommandFactory.md) (1 shared connections)
 
 ## Source Files
 

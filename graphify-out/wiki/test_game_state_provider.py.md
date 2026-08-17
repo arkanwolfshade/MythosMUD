@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [GameStateProvider](GameStateProvider.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 
 ## Source Files
 

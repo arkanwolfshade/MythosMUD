@@ -1,48 +1,38 @@
 # Any
 
-> 28 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **._ensure_unique_task_name()** (3 connections) — `server/app/task_registry.py`
-- **._extract_service_name()** (3 connections) — `server/app/task_registry.py`
-- **.get_registry_info()** (3 connections) — `server/app/task_registry.py`
-- **.list_active_tasks()** (3 connections) — `server/app/task_registry.py`
-- **._track_task_creation_metrics()** (3 connections) — `server/app/task_registry.py`
-- **.__repr__()** (2 connections) — `server/app/task_registry.py`
-- **Create callback function for task completion cleanup.** (1 connections) — `server/app/task_registry.py`
-- **Set up tracking for a newly created task.** (1 connections) — `server/app/task_registry.py`
-- **Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…** (1 connections) — `server/app/task_registry.py`
-- **Unregister task from tracking, optionally force-cancelling. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Cancel specific task with logical timeout boundaries. Args: task: Task…** (1 connections) — `server/app/task_registry.py`
-- **Metadata for tracked asyncio.Tasks.** (1 connections) — `server/app/task_registry.py`
-- **Initialize task metadata. Args: task: The asyncio.Task instance to track…** (1 connections) — `server/app/task_registry.py`
-- **Return list of currently registered TaskMetadata.** (1 connections) — `server/app/task_registry.py`
-- **Return comprehensive registry state information.** (1 connections) — `server/app/task_registry.py`
-- **String representation of task metadata for logging.** (1 connections) — `server/app/task_registry.py`
-- *... and 3 more nodes in this community*
+- **Any** (8 connections)
+- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
+- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_by_id()** (3 connections) — `server/game/chat_moderation.py`
+- **.resolve_player_name()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
+- **Protocol** (2 connections)
+- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
+- **Resolve player name to player object.** (1 connections) — `server/game/chat_moderation.py`
+- **Get all mutes applied by a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (15 shared connections)
-- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (5 shared connections)
+- [UserManagerProtocol](UserManagerProtocol.md) (3 shared connections)
+- [._format_mute_entry](_format_mute_entry.md) (2 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

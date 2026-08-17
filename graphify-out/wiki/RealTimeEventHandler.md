@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (48 shared connections)
-- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (3 shared connections)
+- [get_logger](get_logger.md) (43 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (3 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
 - [PlayerNameExtractor](PlayerNameExtractor.md) (2 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (2 shared connections)
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (1 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
 - [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 

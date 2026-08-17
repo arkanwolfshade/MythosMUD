@@ -1,33 +1,36 @@
 # properties
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
+- **id** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [zone_schema.json](zone_schema.json.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [weather_patterns](weather_patterns.md) (1 shared connections)
-- [special_rules](special_rules.md) (1 shared connections)
-- [enum](enum.md) (1 shared connections)
+- [enum](enum.md) (2 shared connections)
+- [holiday](holiday.md) (1 shared connections)
+- [month](month.md) (1 shared connections)
+- [day](day.md) (1 shared connections)
+- [duration_hours](duration_hours.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

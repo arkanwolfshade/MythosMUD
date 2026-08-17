@@ -1,12 +1,11 @@
 # test_room_utils.py
 
-> 44 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
-- **room_utils.py** (10 connections) — `server/utils/room_utils.py`
 - **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
 - **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
 - **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
@@ -29,15 +28,18 @@
 - **Unit tests for room_utils. Tests utility functions for room operations.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test get_subzone_local_channel_subject() generates subject.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test get_subzone_local_channel_subject() returns None for invalid room ID.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- *... and 19 more nodes in this community*
+- **Test extract_subzone_from_room_id() extracts subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
+- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
 - [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
+- EXTRACTED: 72 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

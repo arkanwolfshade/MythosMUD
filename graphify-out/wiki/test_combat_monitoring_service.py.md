@@ -38,7 +38,7 @@
 - [monitoring_service](monitoring_service.md) (4 shared connections)
 - [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

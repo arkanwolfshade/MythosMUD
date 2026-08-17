@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **handle_explore_command()** (8 connections) — `server/commands/exploration_commands.py`
+- **handle_explore_command()** (9 connections) — `server/commands/exploration_commands.py`
 - **test_exploration_commands.py** (6 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 - **test_handle_explore_command()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 - **test_handle_explore_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
@@ -19,7 +19,8 @@
 
 - [look_command.py](look_command.py.md) (2 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [.app](app.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -29,8 +30,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

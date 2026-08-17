@@ -1,6 +1,6 @@
 # GameClientV2ContainerView.tsx
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,8 @@
 - **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
 - **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
 - **useTabbedInterface.test.ts** (4 connections) — `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
+- **constants/layout.ts** (4 connections) — `client/src/constants/layout.ts`
+- **Z_INDEX_OVERLAY_TOP** (4 connections) — `client/src/constants/layout.ts`
 - **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
 - **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
 - **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
@@ -27,18 +29,16 @@
 - **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
 - **renderOpenModal()** (2 connections) — `client/src/components/ui/ModalContainer.tsx`
 - **useModalEscapeKey()** (2 connections) — `client/src/components/ui/ModalContainer.tsx`
-- **GameClientV2ContainerLayout()** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- **openMapTab()** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
-- *... and 16 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (7 shared connections)
-- [TerminalButton.tsx](TerminalButton.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (5 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
+- [utils/config.ts](utils-config.ts.md) (4 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
+- [PanelState](PanelState.md) (2 shared connections)
 
 ## Source Files
 
@@ -56,10 +56,11 @@
 - `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
 - `client/src/components/ui-v2/useTabbedInterface.ts`
 - `client/src/components/ui/ModalContainer.tsx`
+- `client/src/constants/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
+- EXTRACTED: 85 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

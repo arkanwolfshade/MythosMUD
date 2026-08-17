@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [server/exceptions.py](server-exceptions.py.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (5 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
+- [User](User.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [JSONResponse](JSONResponse.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [server/main.py](server-main.py.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

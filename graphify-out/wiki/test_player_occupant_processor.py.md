@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (9 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (8 shared connections)
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
 - [test_look_player.py](test_look_player.py.md) (4 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (3 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
+- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

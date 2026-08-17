@@ -1,6 +1,6 @@
 # test_nats_service.py
 
-> 87 nodes
+> 101 nodes
 
 ## Key Concepts
 
@@ -29,20 +29,19 @@
 - **test_flush_batch_empty()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_flush_batch_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_is_connected_true()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 62 more nodes in this community*
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (46 shared connections)
-- [NATSMetrics](NATSMetrics.md) (15 shared connections)
+- [NATSService](NATSService.md) (53 shared connections)
+- [NATSMetrics](NATSMetrics.md) (18 shared connections)
 - [NATSPublishError](NATSPublishError.md) (7 shared connections)
-- [NATSConfig](NATSConfig.md) (7 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (4 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
 - [JsonMap](JsonMap.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 161 (76%)
-- INFERRED: 51 (24%)
+- EXTRACTED: 168 (74%)
+- INFERRED: 58 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

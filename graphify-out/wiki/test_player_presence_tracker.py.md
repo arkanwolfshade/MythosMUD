@@ -17,7 +17,7 @@
 - **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
 - **test_player_presence_tracker_grace_period.py** (8 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 - **_disconnect_during_rest_is_intentional()** (7 connections) — `server/realtime/player_presence_tracker.py`
-- **_get_instance_manager_from_manager()** (6 connections) — `server/realtime/player_presence_tracker.py`
+- **_get_instance_manager_from_manager()** (7 connections) — `server/realtime/player_presence_tracker.py`
 - **_resolve_intentional_disconnect()** (6 connections) — `server/realtime/player_presence_tracker.py`
 - **UUID** (6 connections)
 - **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (10 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
 - [extract_player_name](extract_player_name.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
 - [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
-- [UUID](UUID.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [start_grace_period](start_grace_period.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
+- [.app](app.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 218 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 218 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

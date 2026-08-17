@@ -1,71 +1,78 @@
 # pytest.md
 
-> 187 nodes
+> 771 nodes
 
 ## Key Concepts
 
-- **pytest.md** (514 connections) — `.claude/rules/pytest.md`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **register_user()** (32 connections) — `server/auth/endpoints.py`
-- **UserCreate** (24 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (23 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_invite_schemas.py** (17 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **test_user_schemas.py** (15 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **asyncio** (14 connections)
-- **schemas/auth/__init__.py** (13 connections) — `server/schemas/auth/__init__.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- **create_invite()** (12 connections) — `server/auth/endpoints.py`
-- **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
-- **SecureBaseModel** (10 connections) — `server/schemas/shared/base.py`
-- **auth/user.py** (10 connections) — `server/schemas/auth/user.py`
-- **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
-- **UserUpdate** (9 connections) — `server/schemas/auth/user.py`
-- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
-- **auth/invite.py** (9 connections) — `server/schemas/auth/invite.py`
-- **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
-- **UserBase** (8 connections) — `server/schemas/auth/user.py`
-- **UserCreate** (8 connections) — `server/schemas/auth/user.py`
-- **_authenticate_user_credentials()** (8 connections) — `server/auth/endpoints.py`
-- **_generate_jwt_token()** (8 connections) — `server/auth/endpoints.py`
-- *... and 162 more nodes in this community*
+- **pytest.md** (515 connections) — `.claude/rules/pytest.md`
+- **Player** (229 connections) — `server/models/player.py`
+- **AsyncPersistenceLayer** (167 connections) — `server/async_persistence.py`
+- **models/player.py** (96 connections) — `server/models/player.py`
+- **test_player_respawn_service.py** (55 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_player_death_service.py** (53 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_async_persistence_delegates.py** (36 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **server/models/game.py** (33 connections) — `server/models/game.py`
+- **test_async_persistence_room_cache.py** (33 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **StatusEffect** (31 connections) — `server/models/game.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **persistence/repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
+- **PlayerRepository** (30 connections) — `server/persistence/repositories/player_repository.py`
+- **player_repository.py** (29 connections) — `server/persistence/repositories/player_repository.py`
+- **asyncio** (27 connections)
+- **Player** (26 connections) — `server/models/game.py`
+- **asyncio** (26 connections)
+- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
+- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
+- **players/player.py** (21 connections) — `server/schemas/players/player.py`
+- **asyncio** (21 connections)
+- **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
+- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
+- *... and 746 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (82 shared connections)
-- [Invite](Invite.md) (15 shared connections)
+- [get_logger](get_logger.md) (94 shared connections)
+- [get_session_maker](get_session_maker.md) (41 shared connections)
+- [DatabaseError](DatabaseError.md) (34 shared connections)
+- [User](User.md) (19 shared connections)
+- [Stats](Stats.md) (17 shared connections)
+- [row_to_player](row_to_player.md) (17 shared connections)
+- [LucidityService](LucidityService.md) (17 shared connections)
+- [test_inventory_put_command.py](test_inventory_put_command.py.md) (16 shared connections)
+- [test_async_persistence_core.py](test_async_persistence_core.py.md) (15 shared connections)
+- [coerce_int](coerce_int.md) (15 shared connections)
 - [BaseCommand](BaseCommand.md) (15 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [TargetMatch](TargetMatch.md) (8 shared connections)
-- [test_users.py](test_users.py.md) (6 shared connections)
-- [lifespan.py](lifespan.py.md) (6 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (6 shared connections)
-- [DatabaseManager](DatabaseManager.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (5 shared connections)
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (5 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (14 shared connections)
 
 ## Source Files
 
 - `.claude/rules/pytest.md`
-- `server/auth/endpoints.py`
-- `server/auth/users.py`
-- `server/schemas/auth/__init__.py`
-- `server/schemas/auth/invite.py`
-- `server/schemas/auth/user.py`
-- `server/schemas/shared/base.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/async_persistence.py`
+- `server/models/game.py`
+- `server/models/player.py`
+- `server/npc/combat_integration_base.py`
+- `server/npc/idle_movement.py`
+- `server/npc/movement_integration.py`
+- `server/persistence/protocols.py`
+- `server/persistence/repositories/__init__.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/player_repository.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/schemas/players/class_definition.py`
+- `server/schemas/players/player.py`
+- `server/services/player_death_service.py`
+- `server/services/player_position_service.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/unit/events/test_event_serialization.py`
 - `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/schemas/test_invite_schemas.py`
-- `server/tests/unit/schemas/test_user_schemas.py`
-- `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Audit Trail
 
-- EXTRACTED: 925 (96%)
-- INFERRED: 41 (4%)
+- EXTRACTED: 2095 (90%)
+- INFERRED: 241 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

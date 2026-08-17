@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (9 shared connections)
-- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (8 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (9 shared connections)
 - [security.ts](security.ts.md) (7 shared connections)
+- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (6 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (5 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (5 shared connections)
+- [utils/config.ts](utils-config.ts.md) (4 shared connections)
+- [useProfessions.ts](useProfessions.ts.md) (4 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
 - [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
-- [usePlayerStatusEffects.ts](usePlayerStatusEffects.ts.md) (4 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (4 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (3 shared connections)
 - [ResourceManager](ResourceManager.md) (3 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
+- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
 
 ## Source Files
 

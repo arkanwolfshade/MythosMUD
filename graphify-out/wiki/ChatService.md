@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [ChatMessage](ChatMessage.md) (32 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [chat_service.py](chat_service.py.md) (18 shared connections)
+- [ChatMessage](ChatMessage.md) (10 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,32 +1,26 @@
 # mock_connection_manager
 
-> 8 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mock_connection_manager()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **mock_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **_passthrough_room_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **fixture** (3 connections)
-- **Return room data unchanged for convert_room_players_uuids_to_names mocks.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **mock_room()** (2 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
+- **fixture** (2 connections)
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_initial_state.py`
+- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (77%)
-- INFERRED: 3 (23%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

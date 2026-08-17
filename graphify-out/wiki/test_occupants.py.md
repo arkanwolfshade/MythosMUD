@@ -26,7 +26,7 @@
 
 ## Relationships
 
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (7 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)

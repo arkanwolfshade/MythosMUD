@@ -34,10 +34,10 @@
 ## Relationships
 
 - [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (3 shared connections)
+- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (1 shared connections)
 
 ## Source Files
 

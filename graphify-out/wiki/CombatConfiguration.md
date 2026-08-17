@@ -35,7 +35,7 @@
 
 - [TestCombatConfigurationService](TestCombatConfigurationService.md) (7 shared connections)
 - [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)

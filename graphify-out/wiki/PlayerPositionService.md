@@ -1,61 +1,64 @@
 # PlayerPositionService
 
-> 83 nodes
+> 220 nodes
 
 ## Key Concepts
 
 - **PlayerPositionService** (48 connections) — `server/services/player_position_service.py`
+- **test_follow_service.py** (48 connections) — `server/tests/unit/game/test_follow_service.py`
+- **FollowService** (39 connections) — `server/game/follow_service.py`
 - **test_player_position_service.py** (28 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **player_position_service.py** (17 connections) — `server/services/player_position_service.py`
+- **asyncio** (20 connections)
+- **_str_id()** (15 connections) — `server/game/follow_service.py`
 - **.change_position()** (12 connections) — `server/services/player_position_service.py`
 - **asyncio** (12 connections)
 - **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
+- **.request_follow()** (10 connections) — `server/game/follow_service.py`
+- **UUID** (10 connections)
+- **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
+- **._handle_npc_follower_move()** (8 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (8 connections) — `server/game/follow_service.py`
+- **.__init__()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **Any** (8 connections)
 - **Player** (8 connections)
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **._schedule_coro()** (7 connections) — `server/game/follow_service.py`
 - **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
-- **test_change_position_database_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_save_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
-- **test_change_position_all_positions()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_already_in_position()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_get_stats_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_invalid_position()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_no_get_stats()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_no_persistence()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **test_change_position_player_not_found()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
-- *... and 58 more nodes in this community*
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- *... and 195 more nodes in this community*
 
 ## Relationships
 
-- [position_commands.py](position_commands.py.md) (8 shared connections)
-- [FollowService](FollowService.md) (5 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ExplorationService](ExplorationService.md) (1 shared connections)
-- [InstanceManager](InstanceManager.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [PartyService](PartyService.md) (1 shared connections)
+- [get_logger](get_logger.md) (28 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [position_commands.py](position_commands.py.md) (4 shared connections)
+- [log_and_raise](log_and_raise.md) (3 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
+- [TargetType](TargetType.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [.__post_init__](__post_init__.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [bundles/game.py](bundles-game.py.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 
 ## Source Files
 
 - `server/container/bundles/game.py`
+- `server/game/follow_service.py`
 - `server/services/player_position_service.py`
+- `server/tests/integration/test_follow_flow.py`
+- `server/tests/unit/game/test_follow_service.py`
 - `server/tests/unit/services/test_player_position_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (83%)
-- INFERRED: 29 (17%)
+- EXTRACTED: 379 (90%)
+- INFERRED: 44 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

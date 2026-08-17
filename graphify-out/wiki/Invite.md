@@ -12,7 +12,7 @@
 - **models/invite.py** (13 connections) — `server/models/invite.py`
 - **asyncio** (12 connections)
 - **get_invite_manager()** (11 connections) — `server/auth/invites.py`
-- **server/auth/__init__.py** (7 connections) — `server/auth/__init__.py`
+- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
 - **.validate_invite()** (6 connections) — `server/auth/invites.py`
 - **.create_invite()** (6 connections) — `server/models/invite.py`
 - **._generate_invite_code()** (6 connections) — `server/models/invite.py`
@@ -33,19 +33,21 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (18 shared connections)
-- [pytest.md](pytest.md.md) (15 shared connections)
-- [Player](Player.md) (7 shared connections)
-- [database.py](database.py.md) (4 shared connections)
-- [test_users.py](test_users.py.md) (2 shared connections)
+- [User](User.md) (19 shared connections)
+- [get_session_maker](get_session_maker.md) (9 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
+- [test_invite_schemas.py](test_invite_schemas.py.md) (4 shared connections)
+- [register_user](register_user.md) (4 shared connections)
+- [database_config_helpers.py](database_config_helpers.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/__init__.py`
+- `server/auth/endpoints.py`
 - `server/auth/invites.py`
 - `server/models/invite.py`
 - `server/tests/unit/auth/test_invite_manager.py`

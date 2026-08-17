@@ -1,12 +1,11 @@
 # subject_controller.py
 
-> 47 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
 - **test_subject_controller.py** (22 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **InvalidPatternError** (15 connections) — `server/services/nats_subject_manager/exceptions.py`
 - **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
 - **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
 - **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
@@ -27,33 +26,30 @@
 - **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
 - **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
 - **test_get_patterns()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
-- **.register_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- *... and 22 more nodes in this community*
+- **test_get_subject_statistics()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_require_admin_user_allows_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- **test_require_admin_user_rejects_non_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (11 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (8 shared connections)
-- [PatternNotFoundError](PatternNotFoundError.md) (6 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (12 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [User](User.md) (5 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [SubjectValidator](SubjectValidator.md) (2 shared connections)
-- [test_manager.py](test_manager.py.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/admin/subject_controller.py`
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/manager.py`
 - `server/tests/unit/api/admin/test_subject_controller.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 119 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

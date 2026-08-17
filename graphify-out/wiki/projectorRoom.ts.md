@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (16 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (5 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (26 shared connections)
 - [types/mythosTime.ts](types-mythosTime.ts.md) (5 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
 - [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
-- [messageTypeUtils.ts](messageTypeUtils.ts.md) (2 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
 
 ## Source Files
 

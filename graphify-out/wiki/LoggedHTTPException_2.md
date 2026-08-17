@@ -29,7 +29,7 @@
 - get_npc_population_stats() `EXTRACTED`
 
 ### contains
-- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- server/exceptions.py `EXTRACTED`
 
 ### imports
 - players.py `EXTRACTED`
@@ -50,7 +50,7 @@
 - [real_time.py](real_time.py.md) `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
 - test_npc_definitions_api.py `EXTRACTED`
 
 ### inherits

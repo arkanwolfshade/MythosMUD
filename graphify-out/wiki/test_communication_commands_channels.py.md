@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [communication_commands.py](communication_commands.py.md) (13 shared connections)
+- [request_with_app_container](request_with_app_container.md) (9 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (7 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
 - [command_service.py](command_service.py.md) (3 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -35,9 +35,8 @@
 
 - [MonitoringDashboard](MonitoringDashboard.md) (6 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 

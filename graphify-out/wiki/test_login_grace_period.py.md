@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (22 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (17 shared connections)
+- [login_grace_period.py](login_grace_period.py.md) (5 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [Player](Player.md) (4 shared connections)
-- [persistence/repositories/__init__.py](persistence-repositories-__init__.py.md) (3 shared connections)
+- [get_session_maker](get_session_maker.md) (5 shared connections)
 - [test_async_persistence_core.py](test_async_persistence_core.py.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_profession_repository.py](test_profession_repository.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

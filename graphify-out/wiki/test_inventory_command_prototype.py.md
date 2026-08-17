@@ -1,14 +1,15 @@
 # test_inventory_command_prototype.py
 
-> 27 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **test_inventory_command_prototype.py** (21 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
 - **infer_equip_slot_from_prototype()** (18 connections) — `server/commands/inventory_command_prototype.py`
 - **inventory_command_prototype.py** (13 connections) — `server/commands/inventory_command_prototype.py`
+- **prototype_registry_from_request()** (9 connections) — `server/commands/inventory_command_prototype.py`
 - **prototype_from_registry()** (8 connections) — `server/commands/inventory_command_prototype.py`
-- **prototype_registry_from_request()** (8 connections) — `server/commands/inventory_command_prototype.py`
+- **.get()** (5 connections) — `server/game/items/prototype_registry.py`
 - **_first_normalized_wear_slot()** (3 connections) — `server/commands/inventory_command_prototype.py`
 - **test_prototype_from_registry_missing_get()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
 - **test_prototype_from_registry_swallows_registry_error()** (3 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
@@ -28,27 +29,29 @@
 - **test_prototype_registry_from_request_returns_registry()** (2 connections) — `server/tests/unit/commands/test_inventory_command_prototype.py`
 - **Prototype registry access and equip-slot inference for inventory items.** (1 connections) — `server/commands/inventory_command_prototype.py`
 - **Resolve prototype registry from FastAPI-style request (agent-readable…** (1 connections) — `server/commands/inventory_command_prototype.py`
-- **Return the prototype object for ``prototype_id``, or None if missing or invalid.** (1 connections) — `server/commands/inventory_command_prototype.py`
-- *... and 2 more nodes in this community*
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
+- [PrototypeRegistryError](PrototypeRegistryError.md) (6 shared connections)
 - [inventory_equip_command.py](inventory_equip_command.py.md) (5 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (3 shared connections)
-- [test_inventory_equip_command.py](test_inventory_equip_command.py.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
+- [.app](app.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/inventory_command_prototype.py`
+- `server/game/items/prototype_registry.py`
 - `server/tests/unit/commands/test_inventory_command_prototype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 62 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

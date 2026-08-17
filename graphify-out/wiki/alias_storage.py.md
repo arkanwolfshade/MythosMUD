@@ -1,65 +1,59 @@
 # alias_storage.py
 
-> 44 nodes
+> 53 nodes
 
 ## Key Concepts
 
 - **alias_storage.py** (75 connections) — `server/alias_storage.py`
-- **get_help_content()** (15 connections) — `server/help/help_content.py`
-- **system_commands.py** (13 connections) — `server/commands/system_commands.py`
-- **help_content.py** (12 connections) — `server/help/help_content.py`
-- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
-- **test_help_commands.py** (6 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_websocket_handler_help.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
+- **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **Path** (6 connections)
 - **_apply_alias_timestamps()** (5 connections) — `server/alias_storage.py`
-- **test_handle_help_command_no_topic()** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_unknown_topic()** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **test_handle_help_command_with_topic()** (4 connections) — `server/tests/unit/commands/test_help_commands.py`
-- **help_commands.py** (4 connections) — `server/commands/help_commands.py`
+- **AliasPayload** (5 connections)
+- **_AliasValidatorCache** (4 connections) — `server/alias_storage.py`
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
+- **_get_alias_validator()** (4 connections) — `server/alias_storage.py`
+- **.clear_aliases()** (3 connections) — `server/alias_storage.py`
+- **.delete_player_aliases()** (3 connections) — `server/alias_storage.py`
+- **._resolved_alias_open_path()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_command()** (3 connections) — `server/alias_storage.py`
+- **.validate_alias_name()** (3 connections) — `server/alias_storage.py`
 - **_as_alias_record()** (3 connections) — `server/alias_storage.py`
-- **_parse_alias_timestamp()** (3 connections) — `server/alias_storage.py`
-- **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
-- **_get_general_help()** (3 connections) — `server/help/help_content.py`
-- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_talk()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **help/__init__.py** (3 connections) — `server/help/__init__.py`
-- **asyncio** (3 connections)
-- **get_command_categories()** (2 connections) — `server/help/help_content.py`
-- **AliasRecord** (2 connections)
-- **datetime** (2 connections)
-- **Any** (1 connections)
-- *... and 19 more nodes in this community*
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [AliasStorage](AliasStorage.md) (9 shared connections)
-- [command_service.py](command_service.py.md) (5 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [inventory_pickup_command.py](inventory_pickup_command.py.md) (4 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (3 shared connections)
-- [handle_system_command](handle_system_command.md) (3 shared connections)
-- [SchemaValidator](SchemaValidator.md) (3 shared connections)
-- [test_npc_admin_commands.py](test_npc_admin_commands.py.md) (3 shared connections)
-- [Alias](Alias.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (21 shared connections)
+- [Alias](Alias.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (4 shared connections)
+- [emote_service.py](emote_service.py.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [SchemaValidator](SchemaValidator.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (2 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (2 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
-- `server/commands/help_commands.py`
-- `server/commands/system_commands.py`
-- `server/help/__init__.py`
-- `server/help/help_content.py`
-- `server/tests/unit/commands/test_help_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_help.py`
 
 ## Audit Trail
 
-- EXTRACTED: 148 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 162 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

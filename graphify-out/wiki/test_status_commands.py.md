@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [utility_commands.py](utility_commands.py.md) (3 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
 - [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (3 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)

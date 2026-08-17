@@ -1,6 +1,6 @@
 # ComprehensiveLoggingMiddleware
 
-> 32 nodes
+> 31 nodes
 
 ## Key Concepts
 
@@ -21,7 +21,6 @@
 - **test_comprehensive_logging_dispatch_error()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **test_comprehensive_logging_dispatch_success()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **test_log_request_start_long_auth_header()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.default()** (2 connections) — `server/realtime/envelope.py`
 - **Any** (1 connections)
 - **ASGIApp** (1 connections)
 - **Exception** (1 connections)
@@ -29,25 +28,25 @@
 - **Scope** (1 connections)
 - **Send** (1 connections)
 - **Comprehensive logging middleware for MythosMUD server. This module provides a…** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 7 more nodes in this community*
+- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [User](User.md) (3 shared connections)
 - [middleware](middleware.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_envelope.py](test_envelope.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/comprehensive_logging.py`
-- `server/realtime/envelope.py`
 - `server/tests/unit/middleware/test_comprehensive_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (84%)
+- EXTRACTED: 51 (84%)
 - INFERRED: 10 (16%)
 - AMBIGUOUS: 0 (0%)
 

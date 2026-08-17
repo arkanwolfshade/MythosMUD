@@ -1,6 +1,6 @@
 # ConnectionCleaner
 
-> 46 nodes
+> 44 nodes
 
 ## Key Concepts
 
@@ -27,25 +27,25 @@
 - **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **server/realtime/maintenance/__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
 - **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- *... and 21 more nodes in this community*
+- **Remove all data for a stale player. Args: pid: Player ID to remove…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (6 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (4 shared connections)
 - [test_connection_cleaner.py](test_connection_cleaner.py.md) (3 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
 - [DatabaseError](DatabaseError.md) (1 shared connections)
-- [test_connection_delegates.py](test_connection_delegates.py.md) (1 shared connections)
+- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/__init__.py`
 - `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (98%)
+- EXTRACTED: 88 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,10 +35,10 @@
 
 - [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [Client](Client.md) (1 shared connections)
+- [bind_request_context](bind_request_context.md) (2 shared connections)
+- [NATSMetrics](NATSMetrics.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [TestRunner](TestRunner.md) (1 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
 
 ## Source Files
 

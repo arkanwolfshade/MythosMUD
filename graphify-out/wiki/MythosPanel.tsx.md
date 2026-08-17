@@ -33,11 +33,9 @@
 
 ## Relationships
 
-- [TerminalButton.tsx](TerminalButton.tsx.md) (10 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (14 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (4 shared connections)
 - [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (2 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
 
 ## Source Files
 

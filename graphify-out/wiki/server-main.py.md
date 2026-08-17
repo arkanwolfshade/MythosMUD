@@ -1,43 +1,45 @@
 # server/main.py
 
-> 23 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **server/main.py** (17 connections) — `server/main.py`
 - **create_app()** (12 connections) — `server/app/factory.py`
+- **CORSConfigDict** (7 connections) — `server/app/factory.py`
+- **_configure_cors()** (6 connections) — `server/app/factory.py`
+- **_get_cors_config_from_app_config()** (6 connections) — `server/app/factory.py`
+- **_parse_cors_env_vars()** (6 connections) — `server/app/factory.py`
+- **_apply_cors_env_overrides()** (5 connections) — `server/app/factory.py`
+- **CORSConfigOverrides** (4 connections) — `server/app/factory.py`
 - **main()** (4 connections) — `scripts/generate_openapi_spec.py`
+- **_get_default_cors_config()** (4 connections) — `server/app/factory.py`
+- **_parse_cors_origin_list()** (4 connections) — `server/app/factory.py`
 - **_register_v1_routers()** (4 connections) — `server/app/factory.py`
 - **_create_get_app()** (4 connections) — `server/main.py`
 - **main()** (4 connections) — `server/main.py`
 - **test_auth()** (4 connections) — `server/main.py`
 - **_sanitize_token_examples()** (3 connections) — `scripts/generate_openapi_spec.py`
+- **_first_set_env()** (3 connections) — `server/app/factory.py`
+- **_try_json_str_list()** (3 connections) — `server/app/factory.py`
 - **read_root()** (3 connections) — `server/main.py`
 - **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
 - **FastAPI** (3 connections)
 - **FastAPI** (3 connections)
+- **TypedDict** (2 connections)
 - **get** (2 connections)
 - **Any** (1 connections)
-- **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Generate and write OpenAPI spec to docs/openapi/openapi.json.** (1 connections) — `scripts/generate_openapi_spec.py`
-- **Mount all versioned API routers under /v1.** (1 connections) — `server/app/factory.py`
-- **Create and configure the FastAPI application. This function sets up the FastAPI…** (1 connections) — `server/app/factory.py`
-- **MythosMUD Server - Main Application Entry Point This module serves as the…** (1 connections) — `server/main.py`
-- **Root endpoint providing basic server information.** (1 connections) — `server/main.py`
-- **Test endpoint to verify JWT authentication is working.** (1 connections) — `server/main.py`
-- **Main entry point for the MythosMUD server.** (1 connections) — `server/main.py`
-- **Factory function that creates the get_app function with encapsulated cache.…** (1 connections) — `server/main.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
+- [User](User.md) (15 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
+- [get_config](get_config.md) (2 shared connections)
 - [middleware](middleware.md) (2 shared connections)
-- [CORSConfigDict](CORSConfigDict.md) (1 shared connections)
 - [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (1 shared connections)
 - [lifespan.py](lifespan.py.md) (1 shared connections)
 - [Uvicorn ASGI Server Best Practices](Uvicorn_ASGI_Server_Best_Practices.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 80 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

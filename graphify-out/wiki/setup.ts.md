@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files

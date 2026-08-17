@@ -33,17 +33,17 @@
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (34 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (8 shared connections)
+- [Spell](Spell.md) (23 shared connections)
+- [PlayerService](PlayerService.md) (13 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (4 shared connections)
-- [SpellMaterial](SpellMaterial.md) (3 shared connections)
-- [SpellLearningService](SpellLearningService.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [TargetType](TargetType.md) (1 shared connections)
 
 ## Source Files
 

@@ -17,8 +17,8 @@
 
 - [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
 - [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
 
 ## Source Files
 

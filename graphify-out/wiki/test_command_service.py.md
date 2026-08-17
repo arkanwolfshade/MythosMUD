@@ -1,6 +1,6 @@
 # test_command_service.py
 
-> 71 nodes
+> 69 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_extract_parsed_fields_handles_missing_attributes()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_process_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
@@ -29,21 +28,23 @@
 - **fixture** (3 connections)
 - **test_extract_parsed_fields_basic()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
 - **test_extract_parsed_fields_with_pipe_target()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
-- *... and 46 more nodes in this community*
+- **test_get_available_commands()** (2 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
 - [ValidationError](ValidationError.md) (6 shared connections)
 - [CommandService](CommandService.md) (2 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (1 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
+- [test_command_processor.py](test_command_processor.py.md) (1 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (86%)
-- INFERRED: 14 (14%)
+- EXTRACTED: 88 (87%)
+- INFERRED: 13 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

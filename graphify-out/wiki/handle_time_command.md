@@ -24,11 +24,11 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (1 shared connections)
-- [utility_commands.py](utility_commands.py.md) (1 shared connections)
+- [HolidayService](HolidayService.md) (1 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [real_time.py](real_time.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

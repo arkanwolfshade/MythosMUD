@@ -35,7 +35,7 @@
 
 - [ExplorationService](ExplorationService.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [MessageQueue](MessageQueue.md) (1 shared connections)
+- [deque](deque.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

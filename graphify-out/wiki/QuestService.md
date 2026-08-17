@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test_quest_service.py](test_quest_service.py.md) (33 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (31 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (13 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (7 shared connections)
+- [QuestInstance](QuestInstance.md) (7 shared connections)
 - [collect_inventory.py](collect_inventory.py.md) (7 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
 - [test_quest_service_collect.py](test_quest_service_collect.py.md) (5 shared connections)
 - [quest_commands.py](quest_commands.py.md) (4 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (3 shared connections)
 - [.__post_init__](__post_init__.md) (3 shared connections)
 - [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_session_maker](get_session_maker.md) (2 shared connections)
+- [quest_service](quest_service.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # ValidationRule
 
-> 42 nodes
+> 38 nodes
 
 ## Key Concepts
 
@@ -9,12 +9,10 @@
 - **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
 - **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **base_rule.py** (5 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
-- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **Path** (4 connections)
-- **._load_schema()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **.create_error()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
 - **.create_warning()** (3 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
@@ -29,11 +27,13 @@
 - **Validate a room file against the schema. Args: file_path: Path to the room JSON…** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **Validate all rooms in a database against the schema. Args: room_database:…** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
 - **Validate a sub-zone configuration against its schema. Args: config_data: Sub-…** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- *... and 17 more nodes in this community*
+- **Validate a zone configuration against its schema. Args: config_data: Zone…** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **Validate a single room against the schema. Args: room_data: Room data to…** (1 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (7 shared connections)
+- [SchemaValidator](SchemaValidator.md) (6 shared connections)
 
 ## Source Files
 
@@ -43,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 47 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

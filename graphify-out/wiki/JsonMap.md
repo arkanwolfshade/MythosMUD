@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [NATSService](NATSService.md) (8 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (5 shared connections)
+- [NATSService](NATSService.md) (9 shared connections)
+- [NATSMetrics](NATSMetrics.md) (5 shared connections)
 - [NATSPublishError](NATSPublishError.md) (2 shared connections)
 - [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
-- [.disconnect](disconnect.md) (1 shared connections)
 
 ## Source Files
 

@@ -34,9 +34,10 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (7 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [Room](Room.md) (2 shared connections)
 - [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

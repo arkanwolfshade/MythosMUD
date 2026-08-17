@@ -1,14 +1,12 @@
 # PlayerNameExtractor
 
-> 166 nodes
+> 162 nodes
 
 ## Key Concepts
 
 - **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
 - **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
 - **Any** (14 connections)
-- **player_name_utils.py** (13 connections) — `server/realtime/player_name_utils.py`
 - **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
 - **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
 - **UUID** (8 connections)
@@ -29,33 +27,31 @@
 - **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
-- *... and 141 more nodes in this community*
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
+- **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
-- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (5 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (5 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
 - [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (1 shared connections)
-- [player_event_handlers_respawn.py](player_event_handlers_respawn.py.md) (1 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (2 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_utils.py`
 - `server/realtime/player_name_utils.py`
 - `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 296 (96%)
-- INFERRED: 13 (4%)
+- EXTRACTED: 272 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

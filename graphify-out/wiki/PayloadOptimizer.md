@@ -1,6 +1,6 @@
 # PayloadOptimizer
 
-> 28 nodes
+> 37 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,13 @@
 - **test_payload_optimizer.py** (20 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
 - **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
 - **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
+- **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
+- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
+- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
 - **optimizer()** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **Any** (4 connections)
 - **_CompareExplodes** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
 - **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
 - **test_get_payload_size_returns_zero_on_serialization_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
 - **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
@@ -24,20 +29,13 @@
 - **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
 - **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
 - **test_optimize_payload_returns_small_payload_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **.__eq__()** (1 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **fixture** (1 connections)
-- **Payload optimization for WebSocket messages. This module provides utilities for…** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Optimizes payloads for WebSocket transmission. Features: - Size limit…** (1 connections) — `server/realtime/payload_optimizer.py`
-- **Get the global payload optimizer instance.** (1 connections) — `server/realtime/payload_optimizer.py`
-- *... and 3 more nodes in this community*
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [.optimize_payload](optimize_payload.md) (4 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
 - [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [_optimize_payload](_optimize_payload.md) (1 shared connections)
-- [connection_helpers.py](connection_helpers.py.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -48,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (75%)
-- INFERRED: 14 (25%)
+- EXTRACTED: 53 (79%)
+- INFERRED: 14 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

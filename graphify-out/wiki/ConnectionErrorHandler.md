@@ -34,7 +34,7 @@
 ## Relationships
 
 - [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [get_config](get_config.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

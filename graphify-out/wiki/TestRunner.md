@@ -1,12 +1,11 @@
 # TestRunner
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **TestRunner** (13 connections) — `scripts/test_runner.py`
 - **.run_tests()** (11 connections) — `scripts/test_runner.py`
-- **structlog.md** (8 connections) — `.claude/rules/structlog.md`
 - **test_runner.py** (7 connections) — `scripts/test_runner.py`
 - **main()** (3 connections) — `scripts/test_runner.py`
 - **.clean_test_databases()** (3 connections) — `scripts/test_runner.py`
@@ -29,27 +28,21 @@
 - **Main entry point for the test runner.** (1 connections) — `scripts/test_runner.py`
 - **Clean test runner for MythosMUD server tests. This class provides a modern,…** (1 connections) — `scripts/test_runner.py`
 - **Initialize the test runner with project root.** (1 connections) — `scripts/test_runner.py`
-- *... and 1 more nodes in this community*
+- **Set up the test environment with proper configuration. Returns: Environment…** (1 connections) — `scripts/test_runner.py`
 
 ## Relationships
 
-- [safe_run](safe_run.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [safe_run_static](safe_run_static.md) (1 shared connections)
-- [testing_examples.py](testing_examples.py.md) (1 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
-- [Structured Logging with Structlog Best Practices](Structured_Logging_with_Structlog_Best_Practices.md) (1 shared connections)
+- [safe_run_static](safe_run_static.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/structlog.md`
 - `scripts/test_runner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

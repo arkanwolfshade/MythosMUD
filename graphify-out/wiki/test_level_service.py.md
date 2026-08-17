@@ -1,6 +1,6 @@
 # test_level_service.py
 
-> 61 nodes
+> 63 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_level_curve.py** (16 connections) — `server/tests/unit/game/test_level_curve.py`
 - **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
 - **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **level_service.py** (9 connections) — `server/game/level_service.py`
 - **asyncio** (8 connections)
 - **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
 - **level_curve.py** (6 connections) — `server/game/level_curve.py`
@@ -28,13 +29,12 @@
 - **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- **sample_player()** (3 connections) — `server/tests/unit/game/test_level_service.py`
-- *... and 36 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (98%)
+- EXTRACTED: 106 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

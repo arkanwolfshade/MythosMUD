@@ -1,28 +1,29 @@
 # player_service
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **fixture** (2 connections)
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **player_service()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.create_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.get_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.list_players()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.update_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.upload_avatar()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Simulate player service.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
 
 ## Relationships
 
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `docs/examples/logging/fastapi_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

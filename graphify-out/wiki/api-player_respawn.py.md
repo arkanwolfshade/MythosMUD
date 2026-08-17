@@ -1,6 +1,6 @@
 # api/player_respawn.py
 
-> 61 nodes
+> 40 nodes
 
 ## Key Concepts
 
@@ -14,51 +14,49 @@
 - **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
 - **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
 - **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
 - **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
 - **asyncio** (8 connections)
-- **RoomPositionUpdateResponse** (7 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (7 connections) — `server/schemas/rooms/room.py`
-- **players/player_respawn.py** (7 connections) — `server/schemas/players/player_respawn.py`
-- **rooms/__init__.py** (7 connections) — `server/schemas/rooms/__init__.py`
-- **RoomData** (6 connections) — `server/schemas/rooms/room_data.py`
 - **test_respawn_player_from_delirium_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 - **test_respawn_player_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 - **test_respawn_player_validation_error()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 - **test_respawn_delirium_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 - **test_respawn_player_from_delirium_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 - **test_respawn_player_no_session()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 36 more nodes in this community*
+- **test_respawn_player_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_handle_delirium_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_lucidity_keyword()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_must_be_delirious()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_delirium_validation_not_found()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- **test_handle_respawn_validation_generic_500()** (5 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (40 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (20 shared connections)
 - [ValidationError](ValidationError.md) (13 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (4 shared connections)
-- [BaseCommand](BaseCommand.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [User](User.md) (11 shared connections)
+- [PlayerService](PlayerService.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [players/__init__.py](players-__init__.py.md) (2 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (2 shared connections)
+- [get_session_maker](get_session_maker.md) (2 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 - [PlayerRespawnService](PlayerRespawnService.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/player_respawn.py`
 - `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
 - `server/tests/unit/api/test_player_respawn_api.py`
 - `server/tests/unit/api/test_player_respawn_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (87%)
-- INFERRED: 26 (13%)
+- EXTRACTED: 137 (85%)
+- INFERRED: 25 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

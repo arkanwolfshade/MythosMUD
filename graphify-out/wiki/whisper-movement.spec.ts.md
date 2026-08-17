@@ -24,10 +24,11 @@
 
 ## Relationships
 
-- [executeCommand](executeCommand.md) (25 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (3 shared connections)
-- [player.ts](player.ts.md) (3 shared connections)
+- [executeCommand](executeCommand.md) (21 shared connections)
+- [player.ts](player.ts.md) (6 shared connections)
+- [waitForMessage](waitForMessage.md) (3 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (3 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
 
 ## Source Files
 

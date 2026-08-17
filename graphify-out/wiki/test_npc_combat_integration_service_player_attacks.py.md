@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [mock_async_persistence](mock_async_persistence.md) (3 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_npc_combat_integration_service_npc_aggro.py](test_npc_combat_integration_service_npc_aggro.py.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [test_npc_combat_integration_service.py](test_npc_combat_integration_service.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
 
 ## Source Files
 

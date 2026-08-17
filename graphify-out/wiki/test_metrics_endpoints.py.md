@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (35 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [User](User.md) (20 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
+- [AliasStorage](AliasStorage.md) (9 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (9 shared connections)
 - [MockPersistence](MockPersistence.md) (6 shared connections)
 - [test_go_command.py](test_go_command.py.md) (5 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
-- [CombatInstance](CombatInstance.md) (5 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (4 shared connections)
-- [rest_countdown_task.py](rest_countdown_task.py.md) (3 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
+- [build_event](build_event.md) (3 shared connections)
 - [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
 - [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
 
 ## Source Files
 

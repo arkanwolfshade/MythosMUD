@@ -30,11 +30,12 @@
 ## Relationships
 
 - [gameStore.ts](gameStore.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
 - [logger.ts](logger.ts.md) (2 shared connections)
+- [security.ts](security.ts.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 

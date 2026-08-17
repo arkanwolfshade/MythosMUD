@@ -8,9 +8,9 @@
 - **channel_commands.py** (17 connections) — `server/commands/channel_commands.py`
 - **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
 - **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
+- **_get_persistence_and_player()** (9 connections) — `server/commands/channel_commands.py`
 - **asyncio** (9 connections)
 - **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (8 connections) — `server/commands/channel_commands.py`
 - **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
 - **test_get_persistence_and_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
 - **test_get_persistence_and_player_not_found()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
@@ -33,14 +33,14 @@
 
 ## Relationships
 
-- [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
+- [get_session_maker](get_session_maker.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (2 shared connections)
 - [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [.app](app.md) (1 shared connections)
 - [alias_storage.py](alias_storage.py.md) (1 shared connections)
-- [database.py](database.py.md) (1 shared connections)
 - [CommandFactory](CommandFactory.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -51,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 88 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 88 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

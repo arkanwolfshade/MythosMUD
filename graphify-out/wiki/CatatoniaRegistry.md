@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [get_npc_instance_service](get_npc_instance_service.md) (5 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
 - [LucidityService](LucidityService.md) (1 shared connections)
 - [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

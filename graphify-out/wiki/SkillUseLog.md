@@ -19,7 +19,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (3 shared connections)
+- [get_session_maker](get_session_maker.md) (3 shared connections)
 
 ## Source Files
 

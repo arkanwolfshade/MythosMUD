@@ -34,11 +34,12 @@
 ## Relationships
 
 - [ContainerComponent](ContainerComponent.md) (31 shared connections)
-- [log_and_raise](log_and_raise.md) (6 shared connections)
+- [log_and_raise](log_and_raise.md) (5 shared connections)
 - [test_game_tick_processing.py](test_game_tick_processing.py.md) (4 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [CombatDeathHandler](CombatDeathHandler.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

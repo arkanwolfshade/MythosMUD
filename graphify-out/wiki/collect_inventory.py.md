@@ -34,7 +34,7 @@
 ## Relationships
 
 - [QuestService](QuestService.md) (7 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 

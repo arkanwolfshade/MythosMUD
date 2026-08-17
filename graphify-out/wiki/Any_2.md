@@ -1,34 +1,47 @@
 # Any
 
-> 13 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **Any** (6 connections)
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
-- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
-- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
-- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
-- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
+- **Any** (13 connections)
+- **.get_room()** (8 connections) — `server/game/room_service.py`
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **.filter_rooms_by_exploration()** (6 connections) — `server/game/room_service.py`
+- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
+- **.list_rooms()** (5 connections) — `server/game/room_service.py`
+- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
+- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
+- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
+- **._extract_occupants_from_room()** (3 connections) — `server/game/room_service.py`
+- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
+- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
+- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **._lookup_explored_stable_ids()** (3 connections) — `server/game/room_service.py`
+- **._prepare_room_for_list()** (3 connections) — `server/game/room_service.py`
+- **._room_matches_zone_filters()** (3 connections) — `server/game/room_service.py`
+- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
+- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
+- **AsyncSession** (2 connections)
+- **UUID** (2 connections)
+- **Get a list of rooms adjacent to the specified room. Args: room_id: The room's…** (1 connections) — `server/game/room_service.py`
+- **Get the scope of rooms for local chat (current room + adjacent rooms). Args:…** (1 connections) — `server/game/room_service.py`
+- **Validate that there's a valid exit from one room to another. Args:…** (1 connections) — `server/game/room_service.py`
+- **Get all occupants (players and NPCs) currently in a room using cached data.…** (1 connections) — `server/game/room_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [RoomDataCache](RoomDataCache.md) (6 shared connections)
+- [ExplorationService](ExplorationService.md) (19 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
+- `server/game/room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

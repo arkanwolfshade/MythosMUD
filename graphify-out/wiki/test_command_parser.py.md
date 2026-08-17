@@ -1,21 +1,11 @@
 # test_command_parser.py
 
-> 173 nodes
+> 79 nodes
 
 ## Key Concepts
 
 - **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_command_processor.py** (41 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **parse_command()** (24 connections) — `server/utils/command_parser.py`
-- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **command_processor.py** (14 connections) — `server/utils/command_processor.py`
-- **test_command_parser_smoke.py** (8 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
-- **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **test_parse_command_basic()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_args()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
-- **test_parse_command_with_pipes()** (4 connections) — `server/tests/unit/test_command_parser_smoke.py`
 - **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_create_command_object_pydantic_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_parse_command_alias_g()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
@@ -23,39 +13,45 @@
 - **test_parse_command_too_long()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_parse_command_unknown_command()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_parse_command_whitespace_only()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
-- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
-- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
 - **test_create_command_object_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
 - **test_create_command_object_key_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
-- *... and 148 more nodes in this community*
+- **test_create_command_object_runtime_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_create_command_object_type_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_create_command_object_value_error()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_alias_l()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_global_function_with_args()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_empty_string()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_parts_mock_object_detection()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_spawn_alias()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_go()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_valid_look()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_parse_command_with_slash_prefix()** (3 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_command_parser_initialization()** (2 connections) — `server/tests/unit/utils/test_command_parser.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (17 shared connections)
-- [BaseCommand](BaseCommand.md) (12 shared connections)
-- [CommandFactory](CommandFactory.md) (11 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [server/exceptions.py](server-exceptions.py.md) (3 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [test_command_service.py](test_command_service.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (15 shared connections)
+- [CommandFactory](CommandFactory.md) (7 shared connections)
+- [BaseCommand](BaseCommand.md) (6 shared connections)
 - [CommandService](CommandService.md) (1 shared connections)
+- [test_command_processor.py](test_command_processor.py.md) (1 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_command_service.py](test_command_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_command_parser_smoke.py`
 - `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
 - `server/utils/command_parser.py`
-- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (90%)
-- INFERRED: 26 (10%)
+- EXTRACTED: 108 (87%)
+- INFERRED: 16 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---
