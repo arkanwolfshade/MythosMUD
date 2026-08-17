@@ -5,11 +5,13 @@
 from __future__ import annotations
 
 import uuid
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from typing import TYPE_CHECKING, Protocol, cast
 
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
@@ -28,6 +30,8 @@ __all__ = [
     "_TickNpcLifecycle",
     "_TickRespawnService",
     "_app_container",
+    "_online_player_ids",
+    "_tick_online_players",
 ]
 
 
@@ -95,9 +99,35 @@ class _TickContainer(Protocol):
     npc_lifecycle_manager: _TickNpcLifecycle | None
 
 
+logger = get_logger("server.game_tick")
+
+
 def _app_container(app: FastAPI) -> _TickContainer | None:
     """Return the DI container from app.state, or None if missing."""
     raw = getattr(app.state, "container", None)
     if raw is None:
         return None
     return cast(_TickContainer, raw)
+
+
+def _online_player_ids(container: _TickContainer) -> list[uuid.UUID]:
+    """Return currently online player UUIDs, or empty if no connection manager."""
+    manager = container.connection_manager
+    if manager is None:
+        return []
+    return list(manager.online_players.keys())
+
+
+async def _tick_online_players(
+    online_player_ids: list[uuid.UUID],
+    tick_count: int,
+    log_message: str,
+    process_one: Callable[[str], Awaitable[bool]],
+) -> None:
+    """Run process_one(str(player_id)) for each online player and log successes."""
+    processed_count = 0
+    for player_id in online_player_ids:
+        if await process_one(str(player_id)):
+            processed_count += 1
+    if processed_count > 0:
+        logger.debug(log_message, tick_count=tick_count, players_processed=processed_count)
