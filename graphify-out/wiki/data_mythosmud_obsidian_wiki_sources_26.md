@@ -1,0 +1,27 @@
+# data mythosmud obsidian wiki sources
+
+> 3 nodes
+
+## Key Concepts
+
+- **Reign of Terror (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- **Reign of Terror.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+
+## Relationships
+
+- No strong cross-community connections detected
+
+## Source Files
+
+- `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+
+## Audit Trail
+
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

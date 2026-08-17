@@ -1,57 +1,49 @@
-# NPCCombatLucidity
+# npccombatlucidity
 
-> 53 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
-- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
-- **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **Any** (6 connections)
-- **test_npc_combat_lucidity.py** (5 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_with_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_without_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_none_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- *... and 28 more nodes in this community*
+- **_NPCCombatIntegrationValidationDeps** (14 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (9 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **UUID** (5 connections)
+- **.get_combat_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.get_lucidity_service()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._end_combat_if_participant_in_combat()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **._validate_combat_location()** (4 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_coerce_xp_mapping_value()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **.store_npc_xp_mapping_for_mixin()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **_warn_attacked_dead_npc()** (3 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **NPCCombatLucidity** (1 connections)
+- **NPCCombatUUIDMapping** (1 connections)
+- **CombatService** (1 connections)
+- **NPCCombatDataProvider** (1 connections)
+- **Protocol** (1 connections)
+- **Validate that player and NPC are in the same room.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **End any active combat that includes this player when room validation fails.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Convert string IDs to UUIDs and set up XP mappings.** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Set up UUIDs for NPC-as-attacker combat (aggro). Returns (npc_uuid,…** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- **Parse xp_value from NPC base_stats JSON; bool maps to 0 (avoid True -> 1).** (1 connections) — `server/services/npc_combat_integration_validation_mixin.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [NPCCombatLifecycle](NPCCombatLifecycle.md) (1 shared connections)
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [server commands combat handler combatcommandhandler](server_commands_combat_handler_combatcommandhandler.md) (6 shared connections)
+- [claude rules asyncio](claude_rules_asyncio.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lucidity.py`
-- `server/tests/unit/services/test_npc_combat_lucidity.py`
+- `server/services/npc_combat_integration_validation_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 96 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 55 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,93 @@
 # Player
 
-> 46 nodes
+> God node · 224 connections · `server/models/player.py`
 
-## Key Concepts
+**Community:** [claude rules asyncio](claude_rules_asyncio.md)
 
-- **Player** (26 connections) — `server/models/game.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **.add_item()** (3 connections) — `server/models/game.py`
-- **.add_status_effect()** (3 connections) — `server/models/game.py`
-- **.get_active_status_effects()** (3 connections) — `server/models/game.py`
-- **test_player_add_item_default_quantity()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_item_new()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_not_found()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_update_last_active()** (3 connections) — `server/tests/unit/models/test_game_player.py`
-- **.can_carry_weight()** (2 connections) — `server/models/game.py`
-- **.remove_item()** (2 connections) — `server/models/game.py`
-- **.update_last_active()** (2 connections) — `server/models/game.py`
-- **Pydantic Player model for game logic and validation. This is separate from the…** (1 connections) — `server/models/game.py`
-- **Add an item to the player's inventory. Args: item_id: Unique identifier for the…** (1 connections) — `server/models/game.py`
-- *... and 21 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- .create_player_with_stats() `EXTRACTED`
+- .create_player() `EXTRACTED`
+- quest_seed_data() `EXTRACTED`
 
-- [PlayerService](PlayerService.md) (14 shared connections)
-- [Stats](Stats.md) (3 shared connections)
-- [test_player_respawn_service.py](test_player_respawn_service.py.md) (2 shared connections)
-- [run_flee_effect](run_flee_effect.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+### contains
+- models/player.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/models/__init__.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- models/user.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- test_player_death_service.py `EXTRACTED`
+- lucidity_service.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- test_player_model.py `EXTRACTED`
+- test_websocket_initial_state.py `EXTRACTED`
+- inventory_equip_command.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_player_repository.py `EXTRACTED`
+- websocket_helpers.py `EXTRACTED`
+- test_inventory_equip_command.py `EXTRACTED`
+- service.py `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- inventory_pickup_command.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
+- lucidity.py `EXTRACTED`
+- inventory_unequip_command.py `EXTRACTED`
 
-- `server/models/game.py`
-- `server/tests/unit/models/test_game_player.py`
+### inherits
+- Base `EXTRACTED`
 
-## Audit Trail
+### method
+- .get_stats() `EXTRACTED`
+- .set_stats() `EXTRACTED`
+- .apply_dp_decay() `EXTRACTED`
+- .restore_to_full_health() `EXTRACTED`
+- .apply_dp_change() `EXTRACTED`
+- .is_alive() `EXTRACTED`
+- .is_mortally_wounded() `EXTRACTED`
+- .is_dead() `EXTRACTED`
+- .get_health_state() `EXTRACTED`
+- .get_combat_stats() `EXTRACTED`
+- .get_health_percentage() `EXTRACTED`
+- .set_inventory() `EXTRACTED`
+- .set_equipped_items() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__repr__() `EXTRACTED`
+- .get_inventory() `EXTRACTED`
+- .get_status_effects() `EXTRACTED`
+- .set_status_effects() `EXTRACTED`
+- .get_equipped_items() `EXTRACTED`
+- .add_experience() `EXTRACTED`
 
-- EXTRACTED: 82 (100%)
-- INFERRED: 0 (0%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Player model for game data. Stores all game-specific data for a user including… `EXTRACTED`
+
+### references
+- _convert_legacy_stats_string() `EXTRACTED`
+
+### uses
+- [User](User.md) `INFERRED`
+- PlayerLucidity `INFERRED`
+- Base `INFERRED`
+- HealthRepository `INFERRED`
+- PlayerRepository `INFERRED`
+- ExperienceRepository `INFERRED`
+- PlayerDeathService `INFERRED`
+- SpellTargetingService `INFERRED`
+- LucidityExposureState `INFERRED`
+- PlayerRepositoryProtocol `INFERRED`
+- LucidityCooldown `INFERRED`
+- LucidityAdjustmentLog `INFERRED`
+- PlayerSpell `INFERRED`
+- row_to_player() `INFERRED`
+- PositionState `INFERRED`
+- PlayerSavePreparer `INFERRED`
+- PlayerSkill `INFERRED`
+- PlayerEffect `INFERRED`
+- validate_and_fix_player_room() `INFERRED`
+- _sample_work() `INFERRED`
 
 ---
 

@@ -1,73 +1,94 @@
 # LoggedHTTPException
 
-> 110 nodes
+> God node · 358 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [server api character creation apply](server_api_character_creation_apply.md)
 
-- **LoggedHTTPException** (358 connections) — `server/exceptions.py`
-- **api/player_respawn.py** (29 connections) — `server/api/player_respawn.py`
-- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **test_player_respawn_api.py** (18 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **test_player_respawn_handlers.py** (16 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
-- **test_professions_endpoints.py** (15 connections) — `server/tests/unit/api/test_professions_endpoints.py`
-- **asyncio** (14 connections)
-- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
-- **_handle_delirium_respawn_validation_error()** (12 connections) — `server/api/player_respawn.py`
-- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
-- **_handle_respawn_validation_error()** (11 connections) — `server/api/player_respawn.py`
-- **get_all_professions()** (11 connections) — `server/api/professions.py`
-- **get_profession_by_id()** (11 connections) — `server/api/professions.py`
-- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
-- **validate_user_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
-- **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
-- **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
-- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_respawn_handlers.py`
-- **player_router.py** (8 connections) — `server/api/player_router.py`
-- **asyncio** (8 connections)
-- **get_optional_current_user()** (6 connections) — `server/auth/dependencies.py`
-- **test_respawn_player_from_delirium_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
-- *... and 85 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- create_character_with_stats() `EXTRACTED`
+- get_player_id_from_user() `EXTRACTED`
+- handle_container_service_error() `EXTRACTED`
+- get_player_quests() `EXTRACTED`
+- get_container_and_player_for_loot_all() `EXTRACTED`
+- _update_npc_definition_internal() `EXTRACTED`
+- _start_login_grace_period_body() `EXTRACTED`
+- update_room_position() `EXTRACTED`
+- get_npc_definitions() `EXTRACTED`
+- spawn_npc_instance() `EXTRACTED`
+- create_npc_spawn_rule() `EXTRACTED`
+- get_npc_spawn_rules() `EXTRACTED`
+- validate_character_stats() `EXTRACTED`
+- select_character() `EXTRACTED`
+- create_dialogue_definition() `EXTRACTED`
+- list_dialogue_definitions() `EXTRACTED`
+- upsert_dialogue_definition() `EXTRACTED`
+- create_npc_definition() `EXTRACTED`
+- get_npc_definition() `EXTRACTED`
+- get_npc_population_stats() `EXTRACTED`
 
-- [get_logger](get_logger.md) (78 shared connections)
-- [PlayerService](PlayerService.md) (43 shared connections)
-- [User](User.md) (41 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (37 shared connections)
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (18 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (14 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (13 shared connections)
-- [login_user](login_user.md) (13 shared connections)
-- [ValidationError](ValidationError.md) (13 shared connections)
-- [ExplorationService](ExplorationService.md) (11 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (10 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- players.py `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- maps.py `EXTRACTED`
+- endpoints.py `EXTRACTED`
+- api/monitoring.py `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
+- test_maps.py `EXTRACTED`
+- legacy_error_handlers.py `EXTRACTED`
+- test_container_helpers.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
+- api/container_helpers.py `EXTRACTED`
+- test_legacy_error_handlers.py `EXTRACTED`
+- rooms.py `EXTRACTED`
+- test_metrics_endpoints.py `EXTRACTED`
+- real_time.py `EXTRACTED`
+- standardized_responses.py `EXTRACTED`
+- test_exceptions_comprehensive.py `EXTRACTED`
+- api/player_effects.py `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
 
-- `server/api/container_helpers.py`
-- `server/api/player_respawn.py`
-- `server/api/player_router.py`
-- `server/api/professions.py`
-- `server/auth/dependencies.py`
-- `server/exceptions.py`
-- `server/schemas/players/player_respawn.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_player_respawn_api.py`
-- `server/tests/unit/api/test_player_respawn_handlers.py`
-- `server/tests/unit/api/test_professions_endpoints.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/test_exceptions.py`
-- `server/tests/unit/test_exceptions_comprehensive.py`
+### inherits
+- LoggedException `EXTRACTED`
+- HTTPException `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
 
-- EXTRACTED: 499 (76%)
-- INFERRED: 158 (24%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
+
+### references
+- ._handle_logged_http_exception() `EXTRACTED`
+- ._get_logged_http_user_friendly_message() `EXTRACTED`
+- _invalid_credentials_exc() `EXTRACTED`
+
+### uses
+- logged_http_exception_handler() `INFERRED`
+- TestLootAllItems `INFERRED`
+- TestErrorHandlers `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
+- TestRegisterLootEndpoints `INFERRED`
+- TestRollCharacterStats `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- register_error_handlers() `INFERRED`
+- TestOpenContainer `INFERRED`
+- TestTransferItems `INFERRED`
+- TestGetContainerAndPlayerForLootAll `INFERRED`
+- TestHelperFunctions `INFERRED`
+- TestHandleLootAllExceptions `INFERRED`
+- TestHandleOpenContainerExceptions `INFERRED`
+- TestCreateCharacterWithStats `INFERRED`
+- TestHandleContainerServiceErrorEdgeCases `INFERRED`
+- TestHandleContainerServiceError `INFERRED`
+- TestCloseContainer `INFERRED`
+- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
+- test_register_pattern_invalid() `INFERRED`
 
 ---
 

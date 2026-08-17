@@ -1,41 +1,49 @@
-# CombatMessagingIntegration
+# combatmessagingintegration
 
-> 8 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
-- **combat_messaging_integration.py** (5 connections) — `server/services/combat_messaging_integration.py`
-- **.get_messaging_integration()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **combat_messaging/__init__.py** (3 connections) — `server/services/combat_messaging/__init__.py`
-- **Combat messaging integration with real-time messaging system. This package…** (1 connections) — `server/services/combat_messaging/__init__.py`
-- **Combat messaging integration with real-time messaging system. Re-exports from…** (1 connections) — `server/services/combat_messaging_integration.py`
-- **Integrates combat messaging with the real-time messaging system. This service…** (1 connections) — `server/services/combat_messaging/integration.py`
-- **Return combat messaging integration for room broadcasts (e.g. aggro switches).** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **_NPCCombatIntegrationDeps** (12 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **NPCCombatIntegrationCombatMixin** (9 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **UUID** (5 connections)
+- **._broadcast_room_after_npc_death()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.get_messaging_integration()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **.start_new_combat_for_mixin()** (4 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **._broadcast_npc_attack_on_player_started()** (3 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **CombatResult** (3 connections)
+- **CombatMessagingIntegration** (1 connections)
+- **CombatService** (1 connections)
+- **NPCCombatDataProvider** (1 connections)
+- **Protocol** (1 connections)
+- **Structured logging / observability trail when NPC-initiated combat begins.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Process combat attack, starting new combat or continuing existing one.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Start a new combat and process initial attack.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Broadcast room occupants update to killer's room after NPC death. Swallows…** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize…** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return combat service dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return data provider dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- **Return messaging integration dependency.** (1 connections) — `server/services/npc_combat_integration_combat_mixin.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [build_event](build_event.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (2 shared connections)
-- [combat_service_attack.py](combat_service_attack.py.md) (1 shared connections)
-- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
-- [CombatBroadcastMixin](CombatBroadcastMixin.md) (1 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [server app game tick counter](server_app_game_tick_counter.md) (5 shared connections)
+- [server commands combat handler combatcommandhandler](server_commands_combat_handler_combatcommandhandler.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging/__init__.py`
-- `server/services/combat_messaging/integration.py`
-- `server/services/combat_messaging_integration.py`
-- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_integration_combat_mixin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (80%)
-- INFERRED: 4 (20%)
+- EXTRACTED: 49 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

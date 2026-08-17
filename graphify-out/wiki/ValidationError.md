@@ -1,79 +1,82 @@
 # ValidationError
 
-> 1352 nodes
+> God node · 336 connections · `server/exceptions.py`
 
-## Key Concepts
+**Community:** [server exceptions rationale 179](server_exceptions_rationale_179.md)
 
-- **ValidationError** (337 connections) — `server/exceptions.py`
-- **BaseCommand** (152 connections) — `server/models/command_base.py`
-- **pydantic.md** (117 connections) — `.claude/rules/pydantic.md`
-- **command.py** (98 connections) — `server/models/command.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **CommandType** (96 connections) — `server/models/command_base.py`
-- **UtilityCommandFactory** (65 connections) — `server/utils/command_factories_utility.py`
-- **test_command_inventory.py** (65 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **ExplorationCommandFactory** (59 connections) — `server/utils/command_factories_exploration.py`
-- **test_command_factories_utility.py** (52 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_command_factories_exploration.py** (49 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_command_communication.py** (47 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **command_parser.py** (47 connections) — `server/utils/command_parser.py`
-- **test_command_admin.py** (44 connections) — `server/tests/unit/models/test_command_admin.py`
-- **PlayerStateCommandFactory** (40 connections) — `server/utils/command_factories_player_state.py`
-- **test_command_moderation.py** (40 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **CommunicationCommandFactory** (39 connections) — `server/utils/command_factories_communication.py`
-- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
-- **security_validator.py** (36 connections) — `server/validators/security_validator.py`
-- **test_command_combat.py** (33 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_command_factories_communication.py** (30 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_command_factories_moderation.py** (30 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_command_magic.py** (29 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Direction** (28 connections) — `server/models/command_base.py`
-- *... and 1327 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- handle_exception() `EXTRACTED`
+- ._get_rooms_for_movement() `EXTRACTED`
+- ._resolve_player_for_movement() `EXTRACTED`
+- .test_roll_character_stats_profession_not_found() `EXTRACTED`
+- .test_mythos_exception_handler_sets_request_id() `EXTRACTED`
+- .test_mythos_exception_handler() `EXTRACTED`
+- .test_mythos_exception_handler_with_debug() `EXTRACTED`
+- .test_create_error_response_sanitizes_unsafe_keys() `EXTRACTED`
+- .test_create_error_response_with_details() `EXTRACTED`
+- .test_create_error_response_without_details() `EXTRACTED`
+- .test_get_status_code_for_error_validation() `EXTRACTED`
+- .test_map_error_type_validation() `EXTRACTED`
+- .validate_and_get_profession() `EXTRACTED`
 
-- [get_logger](get_logger.md) (112 shared connections)
-- [CommandFactory](CommandFactory.md) (78 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (62 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (38 shared connections)
-- [DatabaseManager](DatabaseManager.md) (23 shared connections)
-- [pytest.md](pytest.md.md) (17 shared connections)
-- [PlayerService](PlayerService.md) (16 shared connections)
-- [test_command_processor.py](test_command_processor.py.md) (15 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (11 shared connections)
-- [test_command_helpers.py](test_command_helpers.py.md) (11 shared connections)
-- [ErrorContext](ErrorContext.md) (11 shared connections)
+### contains
+- server/exceptions.py `EXTRACTED`
 
-## Source Files
+### imports
+- command_service.py `EXTRACTED`
+- database.py `EXTRACTED`
+- players.py `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- test_container_service.py `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
+- persistence/container_persistence.py `EXTRACTED`
+- test_container_persistence_extended_row_helpers.py `EXTRACTED`
+- test_movement_service.py `EXTRACTED`
+- test_command_factories_utility.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- player_service.py `EXTRACTED`
+- test_command_factories_exploration.py `EXTRACTED`
+- test_command_factories_inventory.py `EXTRACTED`
+- test_database_helpers.py `EXTRACTED`
+- test_command_parser.py `EXTRACTED`
+- command_parser.py `EXTRACTED`
+- legacy_error_handlers.py `EXTRACTED`
+- test_database_extended.py `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 
-- `.claude/rules/pydantic.md`
-- `server/exceptions.py`
-- `server/models/command.py`
-- `server/models/command_admin.py`
-- `server/models/command_alias.py`
-- `server/models/command_base.py`
-- `server/models/command_channel.py`
-- `server/models/command_combat.py`
-- `server/models/command_communication.py`
-- `server/models/command_exploration.py`
-- `server/models/command_follow.py`
-- `server/models/command_inventory.py`
-- `server/models/command_magic.py`
-- `server/models/command_moderation.py`
-- `server/models/command_party.py`
-- `server/models/command_player_state.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/models/test_command_admin.py`
-- `server/tests/unit/models/test_command_alias.py`
-- `server/tests/unit/models/test_command_base.py`
+### inherits
+- MythosMUDError `EXTRACTED`
 
-## Audit Trail
+### method
+- .__init__() `EXTRACTED`
+- ._log_error() `EXTRACTED`
 
-- EXTRACTED: 2405 (75%)
-- INFERRED: 822 (25%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Data validation errors (e.g. empty local/whisper message). Log at warning, not… `EXTRACTED`
+
+### uses
+- DatabaseManager `INFERRED`
+- TestErrorMapping `INFERRED`
+- _map_error_type() `INFERRED`
+- _get_status_code_for_error() `INFERRED`
+- _get_severity_for_error() `INFERRED`
+- get_database_path() `INFERRED`
+- validate_room_data() `INFERRED`
+- TestErrorHandlers `INFERRED`
+- TestRollCharacterStats `INFERRED`
+- TestHandleTransferItemsExceptions `INFERRED`
+- init_npc_db() `INFERRED`
+- _initialize_npc_database() `INFERRED`
+- TestValidateRoomData `INFERRED`
+- get_npc_database_path() `INFERRED`
+- fetch_user_by_username_case_insensitive() `INFERRED`
+- _create_engine_or_raise() `INFERRED`
+- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
+- TestNPCDatabaseInitialization `INFERRED`
+- TestCreateErrorResponse `INFERRED`
+- load_database_url() `INFERRED`
 
 ---
 

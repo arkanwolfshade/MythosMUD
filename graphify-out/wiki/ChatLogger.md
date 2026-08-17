@@ -1,54 +1,58 @@
-# ChatLogger
+# chatlogger
 
-> 46 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **ChatLogger** (30 connections) — `server/services/chat_logger.py`
-- **._write_log_entry()** (14 connections) — `server/services/chat_logger.py`
-- **._get_current_log_file()** (6 connections) — `server/services/chat_logger.py`
-- **Any** (6 connections)
-- **.__init__()** (5 connections) — `server/services/chat_logger.py`
-- **._process_log_entry()** (5 connections) — `server/services/chat_logger.py`
-- **Path** (5 connections)
-- **.get_log_file_paths()** (4 connections) — `server/services/chat_logger.py`
-- **.get_log_stats()** (4 connections) — `server/services/chat_logger.py`
-- **.log_chat_message()** (4 connections) — `server/services/chat_logger.py`
-- **.log_moderation_event()** (4 connections) — `server/services/chat_logger.py`
-- **.log_system_event()** (4 connections) — `server/services/chat_logger.py`
-- **._queue_log_entry()** (4 connections) — `server/services/chat_logger.py`
-- **.log_message_flagged()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_joined_room()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_left_room()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_muted()** (3 connections) — `server/services/chat_logger.py`
-- **.log_player_unmuted()** (3 connections) — `server/services/chat_logger.py`
-- **.log_rate_limit_violation()** (3 connections) — `server/services/chat_logger.py`
-- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
-- **._writer_worker()** (3 connections) — `server/services/chat_logger.py`
-- **._ensure_log_directories()** (2 connections) — `server/services/chat_logger.py`
-- **.shutdown()** (2 connections) — `server/services/chat_logger.py`
-- **.wait_for_queue_processing()** (2 connections) — `server/services/chat_logger.py`
-- **Shutdown the logger and wait for writer thread to finish.** (1 connections) — `server/services/chat_logger.py`
-- *... and 21 more nodes in this community*
+- **PlayerEventHandler** (26 connections) — `server/realtime/player_event_handlers.py`
+- **realtime/conftest.py** (22 connections) — `server/tests/unit/realtime/conftest.py`
+- **fixture** (15 connections)
+- **OccupantsUpdateFn** (9 connections) — `server/realtime/player_event_handlers_room.py`
+- **.__init__()** (9 connections) — `server/realtime/player_event_handlers.py`
+- **PlayerRoomEventHandlerDeps** (8 connections) — `server/realtime/player_event_handlers_room.py`
+- **RoomChatLogger** (6 connections) — `server/realtime/player_event_handlers_room.py`
+- **._initialize_handlers()** (6 connections) — `server/realtime/player_event_handlers.py`
+- **Protocol** (6 connections)
+- **_NamedRoom** (5 connections) — `server/realtime/player_event_handlers_room.py`
+- **player_room_event_handler()** (5 connections) — `server/tests/unit/realtime/conftest.py`
+- **.get_room_state_event()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_entered()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_left()** (4 connections) — `server/realtime/player_event_handlers.py`
+- **mock_utils()** (4 connections) — `server/tests/unit/realtime/conftest.py`
+- **_RoomPersistence** (3 connections) — `server/realtime/player_event_handlers_room.py`
+- **.handle_player_delirium_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_died()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_dp_decay()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_respawned()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.handle_player_xp_awarded()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **.send_occupants_snapshot_to_player()** (3 connections) — `server/realtime/player_event_handlers.py`
+- **mock_chat_logger()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/conftest.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (2 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
-- [UserManager](UserManager.md) (1 shared connections)
-- [chat_logger](chat_logger.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [claude rules asyncio](claude_rules_asyncio.md) (15 shared connections)
+- [occupantsnap](occupantsnap.md) (11 shared connections)
+- [server realtime event handler py](server_realtime_event_handler_py.md) (2 shared connections)
+- [server tests unit realtime test](server_tests_unit_realtime_test.md) (2 shared connections)
+- [baseevent](baseevent.md) (2 shared connections)
+- [playerdpupdated](playerdpupdated.md) (1 shared connections)
+- [playercombatservice](playercombatservice.md) (1 shared connections)
+- [characterinfo](characterinfo.md) (1 shared connections)
+- [server realtime event handlers](server_realtime_event_handlers.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/chat_logger.py`
+- `server/realtime/player_event_handlers.py`
+- `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 128 (90%)
+- INFERRED: 15 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

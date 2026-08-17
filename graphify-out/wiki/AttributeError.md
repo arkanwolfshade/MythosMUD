@@ -1,64 +1,63 @@
-# AttributeError
+# attributeerror
 
-> 90 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **AttributeError** (45 connections)
-- **test_websocket_room_updates.py** (35 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **websocket_room_updates.py** (30 connections) — `server/realtime/websocket_room_updates.py`
-- **asyncio** (24 connections)
-- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
-- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
-- **get_player_occupants()** (12 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
-- **update_player_room_subscription()** (7 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_room_updates_build_event.py** (7 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_fallback_npc_method()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_player_occupants_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **_resolve_room_with_fallback()** (4 connections) — `server/realtime/websocket_room_updates.py`
-- **test_build_room_update_event()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event_with_drops()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_fallback_filters_dead()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_fallback_no_service()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- *... and 65 more nodes in this community*
+- **AttributeError** (43 connections)
+- **test_connection_event_helpers.py** (14 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **subscribe_to_room_events_impl()** (8 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (8 connections) — `server/realtime/connection_event_helpers.py`
+- **asyncio** (8 connections)
+- **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_invalidate_stale_cache_error()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **Any** (2 connections)
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers. Tests the connection_event_helpers…** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [websocket_initial_state.py](websocket_initial_state.py.md) (6 shared connections)
-- [test_look_room.py](test_look_room.py.md) (5 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (3 shared connections)
-- [.__post_init__](__post_init__.md) (2 shared connections)
-- [EventHandler](EventHandler.md) (2 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [server tests unit realtime test](server_tests_unit_realtime_test.md) (4 shared connections)
+- [server events event types playerleftroom](server_events_event_types_playerleftroom.md) (3 shared connections)
+- [scripts populate test npc databases](scripts_populate_test_npc_databases.md) (3 shared connections)
+- [server services room sync service](server_services_room_sync_service.md) (3 shared connections)
+- [server auth utils](server_auth_utils.md) (3 shared connections)
+- [server realtime occupant display](server_realtime_occupant_display.md) (3 shared connections)
+- [server tests unit utils test](server_tests_unit_utils_test.md) (2 shared connections)
+- [server commands status commands](server_commands_status_commands.md) (2 shared connections)
+- [server tests unit services test](server_tests_unit_services_test.md) (2 shared connections)
+- [server npc combat integration base](server_npc_combat_integration_base.md) (1 shared connections)
+- [server monitoring init getattr](server_monitoring_init_getattr.md) (1 shared connections)
+- [server api real time](server_api_real_time.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_room_updates.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 - `server/tests/unit/realtime/test_player_occupant_processor.py`
-- `server/tests/unit/realtime/test_websocket_room_updates.py`
-- `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
 - `server/tests/unit/services/test_room_sync_service.py`
 - `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (82%)
-- INFERRED: 44 (18%)
+- EXTRACTED: 53 (55%)
+- INFERRED: 44 (45%)
 - AMBIGUOUS: 0 (0%)
 
 ---
