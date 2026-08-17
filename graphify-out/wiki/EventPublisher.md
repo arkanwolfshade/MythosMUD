@@ -28,12 +28,12 @@
 ## Relationships
 
 - [test_event_publisher.py](test_event_publisher.py.md) (9 shared connections)
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
 - [_EventPersistence](_EventPersistence.md) (2 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [MessageQueue](MessageQueue.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [event_publisher](event_publisher.md) (1 shared connections)
 - [NPCStartupService](NPCStartupService.md) (1 shared connections)
 

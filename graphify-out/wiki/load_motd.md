@@ -20,7 +20,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 

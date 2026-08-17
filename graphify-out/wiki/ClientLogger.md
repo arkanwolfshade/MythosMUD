@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (1 shared connections)
+- [logger.ts](logger.ts.md) (1 shared connections)
 
 ## Source Files
 

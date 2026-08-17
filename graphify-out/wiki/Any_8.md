@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (8 shared connections)
 - [RoomDataCache](RoomDataCache.md) (1 shared connections)
 - [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
 - [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)

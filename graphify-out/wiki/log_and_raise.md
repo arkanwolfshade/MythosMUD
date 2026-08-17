@@ -2,7 +2,7 @@
 
 > God node · 196 connections · `server/utils/error_logging.py`
 
-**Community:** [DatabaseError](DatabaseError.md)
+**Community:** [get_logger](get_logger.md)
 
 ## Connections by Relation
 
@@ -38,7 +38,7 @@
 - container_persistence_async.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
 - container_service_transfer_to.py `EXTRACTED`
-- npc_database.py `EXTRACTED`
+- [npc_database.py](npc_database.py.md) `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - container_service_session.py `EXTRACTED`
 - persistence/container_helpers.py `EXTRACTED`
@@ -46,7 +46,7 @@
 - container_service_transfer_from.py `EXTRACTED`
 - container_persistence/container_helpers.py `EXTRACTED`
 - database_config_helpers.py `EXTRACTED`
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) `EXTRACTED`
+- container_query_helpers_async.py `EXTRACTED`
 - test_error_logging.py `EXTRACTED`
 - player_effect_repository.py `EXTRACTED`
 - player_spell_repository.py `EXTRACTED`

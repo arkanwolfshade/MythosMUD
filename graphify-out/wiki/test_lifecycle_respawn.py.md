@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

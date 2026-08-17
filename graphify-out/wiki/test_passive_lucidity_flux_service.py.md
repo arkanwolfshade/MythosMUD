@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (4 shared connections)
-- [config.py](config.py.md) (3 shared connections)
-- [._resolve_context_async](_resolve_context_async.md) (2 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- [service.py](service.py.md) (10 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (5 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

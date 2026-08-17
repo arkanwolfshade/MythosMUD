@@ -33,15 +33,18 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (12 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [DialogueService](DialogueService.md) (3 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [talk_command.py](talk_command.py.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [MovementService](MovementService.md) (2 shared connections)
-- [player_combat_service](player_combat_service.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 

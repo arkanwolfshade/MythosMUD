@@ -1,13 +1,12 @@
 # WebSocketMessageValidator
 
-> 65 nodes
+> 63 nodes
 
 ## Key Concepts
 
 - **WebSocketMessageValidator** (42 connections) — `server/realtime/message_validator.py`
 - **MessageValidationError** (37 connections) — `server/realtime/message_validator.py`
 - **test_message_validator.py** (29 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **message_validator.py** (10 connections) — `server/realtime/message_validator.py`
 - **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
 - **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
 - **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
@@ -29,18 +28,16 @@
 - **.__init__()** (3 connections) — `server/realtime/message_validator.py`
 - **test_extract_csrf_invalid_type_rejected()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
 - **test_parse_and_validate_rejects_invalid_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- *... and 40 more nodes in this community*
+- **test_parse_and_validate_rejects_non_object_json()** (3 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [ErrorType](ErrorType.md) (3 shared connections)
+- [test_websocket_handler_helpers_extended.py](test_websocket_handler_helpers_extended.py.md) (3 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (3 shared connections)
 - [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [validate_websocket_message](validate_websocket_message.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -50,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (71%)
-- INFERRED: 44 (29%)
+- EXTRACTED: 99 (69%)
+- INFERRED: 44 (31%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -31,10 +31,13 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
 - [EmoteService](EmoteService.md) (2 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

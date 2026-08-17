@@ -9,8 +9,7 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_event_bus.py](test_event_bus.py.md) (1 shared connections)
+- [test_event_bus.py](test_event_bus.py.md) (2 shared connections)
 
 ## Source Files
 

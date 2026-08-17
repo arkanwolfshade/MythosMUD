@@ -1,11 +1,10 @@
 # HealthService
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **HealthService** (24 connections) — `server/services/health_service.py`
-- **HealthComponents** (21 connections) — `server/models/health.py`
 - **.get_health_status()** (10 connections) — `server/services/health_service.py`
 - **.check_database_health_async()** (9 connections) — `server/services/health_service.py`
 - **._create_health_response()** (7 connections) — `server/services/health_service.py`
@@ -27,31 +26,29 @@
 - **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
 - **.__init__()** (3 connections) — `server/services/health_service.py`
 - **HealthStatus** (3 connections)
-- **Health status for all system components.** (1 connections) — `server/models/health.py`
 - **Async database health check.** (1 connections) — `server/services/health_service.py`
-- *... and 16 more nodes in this community*
+- **check_database_health.** (1 connections) — `server/services/health_service.py`
+- **Check connection manager health.** (1 connections) — `server/services/health_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [HealthStatus](HealthStatus.md) (21 shared connections)
-- [test_health_service.py](test_health_service.py.md) (5 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (13 shared connections)
 - [NPCStartupService](NPCStartupService.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [health_service](health_service.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [test_room_service.py](test_room_service.py.md) (1 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [ExplorationService](ExplorationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/health.py`
 - `server/services/health_service.py`
 - `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (85%)
-- INFERRED: 15 (15%)
+- EXTRACTED: 80 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

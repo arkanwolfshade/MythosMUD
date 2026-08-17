@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

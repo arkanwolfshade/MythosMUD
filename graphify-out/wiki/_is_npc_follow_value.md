@@ -13,7 +13,7 @@
 
 - [FollowService](FollowService.md) (1 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

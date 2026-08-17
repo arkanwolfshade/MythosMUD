@@ -1,10 +1,11 @@
 # test_movement_monitor.py
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **test_movement_monitor.py** (34 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
 - **movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **sample_player_id()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
@@ -28,23 +29,26 @@
 - **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_reset_metrics()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
 - **test_validate_room_integrity_calculates_occupancy()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **test_validate_room_integrity_duplicate_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
-- [MovementMonitor](MovementMonitor.md) (2 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (4 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [MovementMonitor](MovementMonitor.md) (3 shared connections)
+- [MovementService](MovementService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/movement_monitor.py`
 - `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 76 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

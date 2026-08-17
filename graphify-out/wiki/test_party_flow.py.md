@@ -23,9 +23,10 @@
 
 ## Relationships
 
-- [PartyService](PartyService.md) (6 shared connections)
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [PartyService](PartyService.md) (8 shared connections)
 - [EventBus](EventBus.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [BaseEvent](BaseEvent.md) (1 shared connections)
 - [.__post_init__](__post_init__.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

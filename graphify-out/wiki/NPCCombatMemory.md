@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
 - [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [NPCCombatLifecycle](NPCCombatLifecycle.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [._handle_npc_death_on_combat_end](_handle_npc_death_on_combat_end.md) (1 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
 
 ## Source Files

@@ -34,9 +34,9 @@
 ## Relationships
 
 - [test_occupant_formatter.py](test_occupant_formatter.py.md) (27 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
 
 ## Source Files
 

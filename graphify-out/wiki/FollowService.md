@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (13 shared connections)
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
 - [test_follow_service.py](test_follow_service.py.md) (6 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [send_game_event](send_game_event.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [test_follow_flow.py](test_follow_flow.py.md) (2 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
 - [MovementService](MovementService.md) (2 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (2 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 - [UserManager](UserManager.md) (1 shared connections)
-- [_is_npc_follow_value](_is_npc_follow_value.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

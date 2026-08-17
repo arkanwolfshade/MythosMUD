@@ -34,11 +34,12 @@
 ## Relationships
 
 - [RetryConfig](RetryConfig.md) (7 shared connections)
-- [ConnectionManager](ConnectionManager.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
+- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

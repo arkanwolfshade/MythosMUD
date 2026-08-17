@@ -1,40 +1,49 @@
 # Any
 
-> 15 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
-- **_get_app_or_error()** (5 connections) — `server/commands/admin_setstat_command.py`
-- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
-- **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
-- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
-- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
-- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
-- **Parse value from args[2] when value_input is None and args has at least 3…** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Parse stat name, target player, and value from command data.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Return warning message if value exceeds DP or MP calculated maximum; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Return warning message if value is outside normal range for stat; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Calculate warnings for stat values that exceed maximums or normal ranges.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Resolve required services and check admin permissions.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Return (app, None) if request has app, else (None, error_dict).** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Any** (13 connections)
+- **.get_room()** (8 connections) — `server/game/room_service.py`
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **.filter_rooms_by_exploration()** (6 connections) — `server/game/room_service.py`
+- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
+- **.list_rooms()** (5 connections) — `server/game/room_service.py`
+- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
+- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
+- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
+- **._extract_occupants_from_room()** (3 connections) — `server/game/room_service.py`
+- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
+- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
+- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **._lookup_explored_stable_ids()** (3 connections) — `server/game/room_service.py`
+- **._prepare_room_for_list()** (3 connections) — `server/game/room_service.py`
+- **._room_matches_zone_filters()** (3 connections) — `server/game/room_service.py`
+- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
+- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
+- **AsyncSession** (2 connections)
+- **UUID** (2 connections)
+- **Get a list of rooms adjacent to the specified room. Args: room_id: The room's…** (1 connections) — `server/game/room_service.py`
+- **Get the scope of rooms for local chat (current room + adjacent rooms). Args:…** (1 connections) — `server/game/room_service.py`
+- **Validate that there's a valid exit from one room to another. Args:…** (1 connections) — `server/game/room_service.py`
+- **Get all occupants (players and NPCs) currently in a room using cached data.…** (1 connections) — `server/game/room_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [build_event](build_event.md) (8 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (4 shared connections)
-- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [ExplorationService](ExplorationService.md) (18 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
+- `server/game/room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

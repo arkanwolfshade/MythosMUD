@@ -42,7 +42,7 @@
 - [TestPathValidator](TestPathValidator.md) (3 shared connections)
 - [MinimapRenderer](MinimapRenderer.md) (3 shared connections)
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [alias_storage.py](alias_storage.py.md) (2 shared connections)
 - [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (1 shared connections)
 - [alias_schema.json](alias_schema.json.md) (1 shared connections)
 

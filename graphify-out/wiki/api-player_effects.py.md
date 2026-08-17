@@ -1,6 +1,6 @@
 # api/player_effects.py
 
-> 90 nodes
+> 94 nodes
 
 ## Key Concepts
 
@@ -22,28 +22,24 @@
 - **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
 - **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
 - **BaseModel** (11 connections)
+- **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
 - **test_apply_lucidity_loss_validation_maps_to_404()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
 - **UUID** (7 connections)
 - **asyncio** (7 connections)
 - **FastAPIRequest** (6 connections)
 - **post** (6 connections)
-- **test_apply_corruption_success()** (5 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- *... and 65 more nodes in this community*
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (22 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [User](User.md) (7 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (26 shared connections)
+- [User](User.md) (18 shared connections)
+- [get_logger](get_logger.md) (13 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
+- [ValidationError](ValidationError.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [models/user.py](models-user.py.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 251 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 259 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

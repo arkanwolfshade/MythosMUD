@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (6 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (4 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (5 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (4 shared connections)
 - [TargetMatch](TargetMatch.md) (3 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

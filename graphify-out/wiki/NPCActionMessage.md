@@ -35,8 +35,9 @@
 
 - [PassiveMobNPC](PassiveMobNPC.md) (8 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (7 shared connections)
-- [npc_base.py](npc_base.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [NPCStartupService](NPCStartupService.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)

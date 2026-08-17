@@ -1,46 +1,34 @@
 # Any
 
-> 25 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (12 connections)
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
-- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
-- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
-- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
-- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
-- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
-- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
-- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
-- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
-- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
-- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
-- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
-- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
-- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [BehaviorEngine](BehaviorEngine.md) (12 shared connections)
+- [RoomDataCache](RoomDataCache.md) (6 shared connections)
 
 ## Source Files
 
-- `server/npc/behavior_engine.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

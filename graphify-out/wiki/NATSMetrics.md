@@ -1,6 +1,6 @@
 # NATSMetrics
 
-> 50 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -20,7 +20,6 @@
 - **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
 - **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
 - **.record_ack_failure()** (2 connections) — `server/services/nats_metrics.py`
 - **.record_ack_success()** (2 connections) — `server/services/nats_metrics.py`
 - **.record_batch_flush()** (2 connections) — `server/services/nats_metrics.py`
@@ -29,16 +28,16 @@
 - **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
 - **.update_connection_health()** (2 connections) — `server/services/nats_metrics.py`
 - **.update_pool_utilization()** (2 connections) — `server/services/nats_metrics.py`
-- *... and 25 more nodes in this community*
+- **Any** (1 connections)
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [test_nats_service.py](test_nats_service.py.md) (15 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [NATSError](NATSError.md) (17 shared connections)
+- [NATSService](NATSService.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [deque](deque.md) (1 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (75%)
-- INFERRED: 18 (25%)
+- EXTRACTED: 54 (76%)
+- INFERRED: 17 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

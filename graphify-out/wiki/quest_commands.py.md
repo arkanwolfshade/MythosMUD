@@ -1,6 +1,6 @@
 # quest_commands.py
 
-> 48 nodes
+> 50 nodes
 
 ## Key Concepts
 
@@ -29,20 +29,22 @@
 - **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
 - **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
 - **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
-- *... and 23 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (13 shared connections)
 - [test_quest_commands.py](test_quest_commands.py.md) (11 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (9 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (7 shared connections)
-- [quest_chat_notify.py](quest_chat_notify.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
 - [talk_command.py](talk_command.py.md) (5 shared connections)
-- [QuestService](QuestService.md) (4 shared connections)
-- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [QuestService](QuestService.md) (3 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
+- [_get_npc_room_id](_get_npc_room_id.md) (2 shared connections)
+- [_should_include_npc](_should_include_npc.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [_get_lifecycle_manager](_get_lifecycle_manager.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
@@ -52,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 136 (95%)
+- EXTRACTED: 138 (95%)
 - INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 

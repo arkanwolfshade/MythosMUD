@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [test_zone_config_loader.py](test_zone_config_loader.py.md) (6 shared connections)
-- [zone_config_loader.py](zone_config_loader.py.md) (2 shared connections)
+- [test_zone_config_loader.py](test_zone_config_loader.py.md) (5 shared connections)
+- [zone_config_loader.py](zone_config_loader.py.md) (3 shared connections)
 
 ## Source Files
 

@@ -1,30 +1,34 @@
 # fixture
 
-> 7 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **fixture** (3 connections)
-- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **fixture** (5 connections)
+- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock get_async_persistence callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (5 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

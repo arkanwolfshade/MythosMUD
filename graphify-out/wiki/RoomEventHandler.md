@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [MessageQueue](MessageQueue.md) (1 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [Any](Any.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
 
 ## Source Files
 

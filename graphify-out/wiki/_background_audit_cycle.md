@@ -14,7 +14,7 @@
 ## Relationships
 
 - [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (2 shared connections)
 
 ## Source Files
 

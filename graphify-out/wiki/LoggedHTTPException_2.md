@@ -33,10 +33,10 @@
 
 ### imports
 - players.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- maps.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
@@ -46,16 +46,16 @@
 - api/container_helpers.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - real_time.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 - [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
 
 ### inherits
 - LoggedException `EXTRACTED`
-- HTTPException `EXTRACTED`
+- [HTTPException](HTTPException.md) `EXTRACTED`
 
 ### method
 - .__init__() `EXTRACTED`
@@ -71,8 +71,8 @@
 ### uses
 - logged_http_exception_handler() `INFERRED`
 - TestLootAllItems `INFERRED`
-- TestErrorHandlers `INFERRED`
-- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) `INFERRED`
+- [TestErrorHandlers](TestErrorHandlers.md) `INFERRED`
+- TestMonitoringEndpoints `INFERRED`
 - TestRegisterLootEndpoints `INFERRED`
 - TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`

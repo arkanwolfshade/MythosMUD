@@ -29,10 +29,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [._resolve_context_async](_resolve_context_async.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [service.py](service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [npc_database.py](npc_database.py.md) (3 shared connections)
 
 ## Source Files
 

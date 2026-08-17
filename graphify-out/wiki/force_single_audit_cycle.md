@@ -10,7 +10,7 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (1 shared connections)
 - [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
 
 ## Source Files

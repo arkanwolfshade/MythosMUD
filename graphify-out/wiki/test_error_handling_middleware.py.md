@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
+- [get_logger](get_logger.md) (12 shared connections)
 - [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
+- [factory.py](factory.py.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
-- [create_app](create_app.md) (1 shared connections)
-- [.error](error.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

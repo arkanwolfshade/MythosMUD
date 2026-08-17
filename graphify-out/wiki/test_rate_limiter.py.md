@@ -1,12 +1,10 @@
 # test_rate_limiter.py
 
-> 61 nodes
+> 56 nodes
 
 ## Key Concepts
 
 - **test_rate_limiter.py** (36 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
@@ -29,14 +27,16 @@
 - **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 36 more nodes in this community*
+- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_reset_player_limits_all_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (5 shared connections)
+- [RateLimiter](RateLimiter.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [rate_limiter](rate_limiter.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 68 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

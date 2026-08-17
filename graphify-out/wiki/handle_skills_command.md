@@ -1,6 +1,6 @@
 # handle_skills_command
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **_resolve_player_id()** (6 connections) — `server/commands/skills_commands.py`
 - **_format_skills_output()** (5 connections) — `server/commands/skills_commands.py`
 - **_resolve_user_id()** (5 connections) — `server/commands/skills_commands.py`
+- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
 - **Any** (5 connections)
 - **test_get_container_services_ok()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
 - **test_handle_skills_command_no_services()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
@@ -26,25 +27,28 @@
 - **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
 - **Handle the /skills command: return the active character's skills as text.…** (1 connections) — `server/commands/skills_commands.py`
 - **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (9 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
-- [fixture](fixture.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [User](User.md) (4 shared connections)
+- [test_skill_service.py](test_skill_service.py.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/skills_commands.py`
 - `server/tests/unit/commands/test_skills_commands.py`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 47 (90%)
+- INFERRED: 5 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

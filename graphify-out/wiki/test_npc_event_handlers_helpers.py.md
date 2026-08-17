@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

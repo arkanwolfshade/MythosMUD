@@ -33,15 +33,15 @@
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (23 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (6 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (4 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (21 shared connections)
+- [types/mythosTime.ts](types-mythosTime.ts.md) (6 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (4 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
+- [logger.ts](logger.ts.md) (3 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
 - [security.ts](security.ts.md) (1 shared connections)
 
 ## Source Files

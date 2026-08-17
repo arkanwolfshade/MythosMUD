@@ -1,6 +1,6 @@
 # test_npc_startup_service.py
 
-> 79 nodes
+> 76 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,16 @@
 - **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
 - **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
-- *... and 54 more nodes in this community*
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
 - [NPCStartupService](NPCStartupService.md) (33 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [container_events.py](container_events.py.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (2 shared connections)
 - [ContainerComponent](ContainerComponent.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -47,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 124 (74%)
+- EXTRACTED: 121 (74%)
 - INFERRED: 43 (26%)
 - AMBIGUOUS: 0 (0%)
 

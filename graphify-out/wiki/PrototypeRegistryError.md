@@ -1,6 +1,6 @@
 # PrototypeRegistryError
 
-> 47 nodes
+> 42 nodes
 
 ## Key Concepts
 
@@ -12,39 +12,39 @@
 - **test_item_factory.py** (12 connections) — `server/tests/unit/game/test_item_factory.py`
 - **items/__init__.py** (11 connections) — `server/game/items/__init__.py`
 - **ItemInstance** (9 connections) — `server/game/items/item_instance.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
 - **.create_instance()** (7 connections) — `server/game/items/item_factory.py`
 - **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
 - **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
 - **._build_instance_metadata()** (4 connections) — `server/game/items/item_factory.py`
-- **main()** (4 connections) — `server/scripts/validate_prototypes.py`
 - **test_create_instance_prototype_not_found()** (4 connections) — `server/tests/unit/game/test_item_factory.py`
 - **.__init__()** (3 connections) — `server/game/items/item_factory.py`
 - **._resolve_stack_slot()** (3 connections) — `server/game/items/item_factory.py`
 - **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
 - **factory()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
 - **test_create_instance_invalid_quantity()** (3 connections) — `server/tests/unit/game/test_item_factory.py`
 - **Any** (3 connections)
 - **test_create_instance_success()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
 - **test_create_instance_with_overrides()** (2 connections) — `server/tests/unit/game/test_item_factory.py`
 - **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- *... and 22 more nodes in this community*
+- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
+- **ItemInstance** (1 connections)
+- **Exception** (1 connections)
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [PrototypeRegistry](PrototypeRegistry.md) (11 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (9 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (7 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (6 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (6 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (6 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (5 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [test_player_schema_converter_weapon.py](test_player_schema_converter_weapon.py.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
+- [validate_prototypes.py](validate_prototypes.py.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [initialize_components](initialize_components.md) (2 shared connections)
-- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,14 +52,13 @@
 - `server/game/items/item_factory.py`
 - `server/game/items/item_instance.py`
 - `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
 - `server/tests/unit/game/test_item_factory.py`
 - `server/tests/unit/game/test_item_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (82%)
-- INFERRED: 24 (18%)
+- EXTRACTED: 103 (82%)
+- INFERRED: 23 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

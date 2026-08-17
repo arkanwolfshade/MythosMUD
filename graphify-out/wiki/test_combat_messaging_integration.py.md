@@ -34,7 +34,7 @@
 ## Relationships
 
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [build_event](build_event.md) (2 shared connections)
+- [CombatMessagingIntegration](CombatMessagingIntegration.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

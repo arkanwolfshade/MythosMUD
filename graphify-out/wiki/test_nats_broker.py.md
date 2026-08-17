@@ -36,7 +36,7 @@
 - [NATSMessageBroker](NATSMessageBroker.md) (20 shared connections)
 - [nats_broker](nats_broker.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 

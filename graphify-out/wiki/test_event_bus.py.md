@@ -1,50 +1,50 @@
 # test_event_bus.py
 
-> 26 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **test_event_bus.py** (59 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts_multiple_types()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_get_subscriber_stats()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_all_subscriber_counts()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_get_subscriber_count()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_init()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_set_main_loop()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_subscribe_multiple()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_unsubscribe_multiple_handlers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_subscribe_invalid_handler()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_unsubscribe_all_for_service_nonexistent()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Unit tests for event bus. Tests the EventBus class.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.set_main_loop() sets main loop.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.get_all_subscriber_counts() with multiple event types.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test subscribe() raises error for non-callable handler.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus initialization.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe_all_for_service() removes all handlers for a service.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.unsubscribe_all_for_service() with nonexistent service_id.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.subscribe() adds subscriber.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.get_subscriber_stats() returns subscriber statistics.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.subscribe() with multiple handlers.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.get_subscriber_count() returns count.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 1 more nodes in this community*
+- **asyncio** (27 connections)
+- **MockEventClass** (18 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_multiple_subscribers()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_no_subscribers()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_async_subscriber_error()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_no_subscribers()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_sync_subscriber_error()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_no_error()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_with_error()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_queue_full_and_invalid()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_shutdown_cleans_up_service_subscriptions()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_async_subscriber_error_isolation()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_to_same_event()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_isolates_sync_subscriber_errors()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_publish_queue_full_raises()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_and_publish_when_running()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_stop_processing_not_running()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_and_lifecycle_metrics()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_active_task_details_includes_exception()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_ensure_async_processing_no_loop_logs()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (21 shared connections)
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
+- [BaseEvent](BaseEvent.md) (5 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
+- [test_get_subscriber_stats](test_get_subscriber_stats.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [test_event_bus_shutdown](test_event_bus_shutdown.md) (2 shared connections)
+- [test_event_bus_shutdown_idempotent](test_event_bus_shutdown_idempotent.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [test_event_bus_shutdown](test_event_bus_shutdown.md) (1 shared connections)
+- [test_event_bus_set_main_loop](test_event_bus_set_main_loop.md) (1 shared connections)
+- [test_event_bus_unsubscribe_multiple_handlers](test_event_bus_unsubscribe_multiple_handlers.md) (1 shared connections)
 - [test_event_bus_get_all_subscriber_counts_empty](test_event_bus_get_all_subscriber_counts_empty.md) (1 shared connections)
-- [test_event_bus_shutdown_idempotent](test_event_bus_shutdown_idempotent.md) (1 shared connections)
-- [test_subscribe_invalid_event_type](test_subscribe_invalid_event_type.md) (1 shared connections)
-- [test_unsubscribe_invalid_event_type](test_unsubscribe_invalid_event_type.md) (1 shared connections)
-- [test_publish_invalid_event](test_publish_invalid_event.md) (1 shared connections)
-- [event_bus](event_bus.md) (1 shared connections)
-- [test_stop_processing_not_running](test_stop_processing_not_running.md) (1 shared connections)
+- [test_event_bus_get_all_subscriber_counts_multiple_types](test_event_bus_get_all_subscriber_counts_multiple_types.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,8 +52,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 115 (94%)
+- INFERRED: 7 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

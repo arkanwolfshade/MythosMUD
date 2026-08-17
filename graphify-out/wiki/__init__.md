@@ -1,36 +1,37 @@
 # .__init__
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
-- **.get_room_occupants()** (4 connections) — `server/realtime/room_occupant_manager.py`
-- **.separate_occupants_by_type()** (3 connections) — `server/realtime/room_occupant_manager.py`
-- **Any** (3 connections)
-- **UUID** (2 connections)
-- **Separate occupants into players, NPCs, and all occupants lists. Args:…** (1 connections) — `server/realtime/room_occupant_manager.py`
-- **Initialize the room occupant manager. Args: connection_manager:…** (1 connections) — `server/realtime/room_occupant_manager.py`
-- **Get the list of occupants in a room. Args: room_id: The room ID…** (1 connections) — `server/realtime/room_occupant_manager.py`
+- **.__init__()** (7 connections) — `server/npc/population_control.py`
+- **_PopulationLifecycleManager** (6 connections) — `server/npc/population_control.py`
+- **._load_zone_configurations()** (4 connections) — `server/npc/population_control.py`
+- **.clear_population_stats()** (3 connections) — `server/npc/population_control.py`
+- **._subscribe_to_events()** (3 connections) — `server/npc/population_control.py`
+- **.spawn_npc()** (3 connections) — `server/npc/population_control.py`
+- **Protocol** (1 connections)
+- **Initialize the NPC population controller. Args: event_bus: Event bus for…** (1 connections) — `server/npc/population_control.py`
+- **Load zone and sub-zone configurations from PostgreSQL database.** (1 connections) — `server/npc/population_control.py`
+- **Subscribe to relevant game events.** (1 connections) — `server/npc/population_control.py`
+- **Lifecycle manager surface used by NPCPopulationController (avoids import cycle…** (1 connections) — `server/npc/population_control.py`
+- **Clear all population statistics. This ensures a clean state when the server…** (1 connections) — `server/npc/population_control.py`
+- **Spawn an NPC instance; returns (npc_id, None) or (None, failure_reason).** (1 connections) — `server/npc/population_control.py`
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [RoomIDUtils](RoomIDUtils.md) (1 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
-- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [load_zone_configurations](load_zone_configurations.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/room_occupant_manager.py`
+- `server/npc/population_control.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 20 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

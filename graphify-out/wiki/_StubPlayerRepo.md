@@ -1,13 +1,11 @@
 # _StubPlayerRepo
 
-> 18 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **_StubPlayerRepo** (16 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **UUID** (6 connections)
-- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (5 connections) — `server/tests/unit/utils/test_retry.py`
-- **.get_player_by_id()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **.delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **.get_players_batch()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **.soft_delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
@@ -21,23 +19,20 @@
 - **.save_player()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **.save_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
 - **.validate_and_fix_player_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **Retry decorator must not treat wrapped closed-connection as final on attempt 1.** (1 connections) — `server/tests/unit/utils/test_retry.py`
 
 ## Relationships
 
-- [test_protocols.py](test_protocols.py.md) (3 shared connections)
-- [test_retry.py](test_retry.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (3 shared connections)
+- [test_retry_retries_wrapped_connection_closed_then_succeeds](test_retry_retries_wrapped_connection_closed_then_succeeds.md) (2 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/persistence/test_protocols.py`
-- `server/tests/unit/utils/test_retry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

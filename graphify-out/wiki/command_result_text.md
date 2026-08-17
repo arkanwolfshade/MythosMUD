@@ -33,17 +33,18 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (15 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (14 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (14 shared connections)
-- [test_inventory_equip_command.py](test_inventory_equip_command.py.md) (13 shared connections)
-- [AliasStorage](AliasStorage.md) (12 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (3 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (22 shared connections)
+- [pytest.md](pytest.md.md) (18 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (13 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (10 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [InventoryService](InventoryService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [handle_unequip_command](handle_unequip_command.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
+- [inventory_unequip_command.py](inventory_unequip_command.py.md) (2 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 

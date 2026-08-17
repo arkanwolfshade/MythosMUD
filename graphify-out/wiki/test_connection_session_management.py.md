@@ -33,15 +33,15 @@
 
 ## Relationships
 
-- [test_connection_establishment.py](test_connection_establishment.py.md) (11 shared connections)
-- [RateLimiter](RateLimiter.md) (10 shared connections)
-- [ConnectionManager](ConnectionManager.md) (9 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (19 shared connections)
+- [MessageQueue](MessageQueue.md) (8 shared connections)
+- [connection_establishment.py](connection_establishment.py.md) (7 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 - [test_connection_delegates.py](test_connection_delegates.py.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [UUID](UUID.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (2 shared connections)
+- [RateLimiter](RateLimiter.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

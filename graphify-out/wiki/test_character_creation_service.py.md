@@ -1,13 +1,22 @@
 # test_character_creation_service.py
 
-> 51 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **test_character_creation_service.py** (33 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
+- **.create_character_with_stats()** (6 connections) — `server/game/character_creation_service.py`
+- **.validate_character_stats()** (5 connections) — `server/game/character_creation_service.py`
+- **Any** (5 connections)
+- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
+- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
+- **.roll_character_stats()** (4 connections) — `server/game/character_creation_service.py`
 - **character_creation_service()** (4 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **sample_stats()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_character_creation_service_init()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_create_character_with_stats_pydantic_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_create_character_with_stats_validation_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_create_character_with_stats_value_error()** (3 connections) — `server/tests/unit/game/test_character_creation_service.py`
@@ -20,33 +29,24 @@
 - **test_create_character_with_stats_with_user_id()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_available_classes_info()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
 - **test_get_class_description_all_classes()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_class_description_known_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_get_class_description_unknown_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_class_not_available()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_profession_meets_requirements_false()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_with_profession()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_roll_character_stats_without_class_or_profession()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_failed_prerequisites()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- **test_validate_character_stats_with_class()** (2 connections) — `server/tests/unit/game/test_character_creation_service.py`
-- *... and 26 more nodes in this community*
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [CharacterCreationService](CharacterCreationService.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [Stats](Stats.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/character_creation_service.py`
 - `server/tests/unit/game/test_character_creation_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (90%)
-- INFERRED: 7 (10%)
+- EXTRACTED: 89 (91%)
+- INFERRED: 9 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

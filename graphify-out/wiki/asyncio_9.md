@@ -1,50 +1,36 @@
 # asyncio
 
-> 17 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (24 connections)
-- **test_cleanup_empty_subzone_subscriptions_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_subscribe_to_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_cleanup_empty_subzone_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_event_message()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_player_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_event_subjects_partial()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_not_subscribed()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_event_subjects handles partial success.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_event_message delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **asyncio** (6 connections)
+- **test_check_and_cleanup()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_check_and_cleanup_skips_when_not_due()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_dead_connections()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_orphaned_data()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_cleanup_orphaned_data_closes_stale_websocket()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **test_force_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test cleanup_orphaned_data() cleans up orphaned data.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test cleanup_dead_connections() cleans up dead websocket connections.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test cleanup_orphaned_data() closes stale active connections.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test check_and_cleanup() no-ops when memory monitor does not request cleanup.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test force_cleanup() performs forced cleanup.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Test check_and_cleanup() performs cleanup check.** (1 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Relationships
 
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (8 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
-- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
-- [test_handle_npc_attacked_event](test_handle_npc_attacked_event.md) (1 shared connections)
-- [test_handle_npc_died_event](test_handle_npc_died_event.md) (1 shared connections)
-- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
-- [test_handle_player_movement_different_subzone](test_handle_player_movement_different_subzone.md) (1 shared connections)
-- [test_handle_player_movement_error](test_handle_player_movement_error.md) (1 shared connections)
-- [test_handle_player_movement_exception](test_handle_player_movement_exception.md) (1 shared connections)
-- [test_handle_player_movement_new_subzone_none](test_handle_player_movement_new_subzone_none.md) (1 shared connections)
-- [test_handle_player_movement_old_subzone_none](test_handle_player_movement_old_subzone_none.md) (1 shared connections)
+- [test_connection_cleaner.py](test_connection_cleaner.py.md) (6 shared connections)
+- [connection_manager_health_cleanup.py](connection_manager_health_cleanup.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 18 (90%)
+- INFERRED: 2 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

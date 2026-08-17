@@ -34,8 +34,8 @@
 ## Relationships
 
 - [NPCOccupantProcessor](NPCOccupantProcessor.md) (7 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 

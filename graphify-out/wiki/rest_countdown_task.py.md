@@ -23,10 +23,8 @@
 ## Relationships
 
 - [build_event](build_event.md) (4 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 

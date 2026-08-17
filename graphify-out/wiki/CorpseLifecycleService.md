@@ -5,7 +5,6 @@
 ## Key Concepts
 
 - **CorpseLifecycleService** (24 connections) — `server/services/corpse_lifecycle_service.py`
-- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
 - **ContainerComponent** (9 connections)
 - **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
 - **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
@@ -26,6 +25,7 @@
 - **._grace_period_allows_others()** (3 connections) — `server/services/corpse_lifecycle_service.py`
 - **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
 - **fixture** (2 connections)
@@ -33,16 +33,11 @@
 
 ## Relationships
 
-- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [CombatDeathHandler](CombatDeathHandler.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [ContainerLockState](ContainerLockState.md) (1 shared connections)
-- [ContainerSourceType](ContainerSourceType.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [.connection_manager](connection_manager.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 101 (97%)
+- EXTRACTED: 88 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

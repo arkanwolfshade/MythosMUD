@@ -9,6 +9,7 @@
 - **asyncio** (15 connections)
 - **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
 - **get** (14 connections)
+- **get_health_status()** (13 connections) — `server/api/monitoring.py`
 - **get_memory_stats()** (11 connections) — `server/api/monitoring.py`
 - **get_movement_metrics()** (11 connections) — `server/api/monitoring.py`
 - **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
@@ -17,7 +18,7 @@
 - **get_connection_health_stats()** (10 connections) — `server/api/monitoring.py`
 - **get_dual_connection_stats()** (10 connections) — `server/api/monitoring.py`
 - **reset_metrics()** (10 connections) — `server/api/monitoring.py`
-- **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (10 connections) — `server/api/monitoring.py`
 - **get_cache_metrics()** (9 connections) — `server/api/monitoring.py`
 - **get_eventbus_metrics()** (9 connections) — `server/api/monitoring.py`
 - **get_memory_alerts()** (9 connections) — `server/api/monitoring.py`
@@ -27,33 +28,32 @@
 - **get_system_alerts()** (9 connections) — `server/api/monitoring.py`
 - **get_task_metrics()** (9 connections) — `server/api/monitoring.py`
 - **_resolve_cache_manager_from_request()** (9 connections) — `server/api/monitoring.py`
-- **test_dual_connection_and_performance_and_health_stats()** (7 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **MessageResponse** (6 connections) — `server/api/monitoring_models.py`
+- **test_get_health_status_healthy_returns_model()** (9 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
 - *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (44 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [HealthStatus](HealthStatus.md) (14 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (7 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (54 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (18 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (8 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (4 shared connections)
 - [MovementMonitor](MovementMonitor.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
 - `server/tests/unit/api/test_monitoring_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 235 (92%)
-- INFERRED: 20 (8%)
+- EXTRACTED: 241 (91%)
+- INFERRED: 25 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

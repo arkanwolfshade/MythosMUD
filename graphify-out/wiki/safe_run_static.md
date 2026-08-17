@@ -40,7 +40,7 @@
 - [TestRunner](TestRunner.md) (3 shared connections)
 - [compare_linting_results.py](compare_linting_results.py.md) (3 shared connections)
 - [grype.py](grype.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 

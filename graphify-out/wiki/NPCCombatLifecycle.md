@@ -33,15 +33,18 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
 - [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [._handle_npc_death_on_combat_end](_handle_npc_death_on_combat_end.md) (1 shared connections)
 - [NPCCombatMemory](NPCCombatMemory.md) (1 shared connections)
 - [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (1 shared connections)
 - [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
+- [NPCCombatRewards](NPCCombatRewards.md) (1 shared connections)
 - [NPCCombatLucidity](NPCCombatLucidity.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
 
 ## Source Files
 

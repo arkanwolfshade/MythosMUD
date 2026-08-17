@@ -1,47 +1,93 @@
 # Player
 
-> 23 nodes
+> God node · 231 connections · `server/models/player.py`
 
-## Key Concepts
+**Community:** [pytest.md](pytest.md.md)
 
-- **Player** (19 connections)
-- **.apply_corruption()** (3 connections) — `server/async_persistence.py`
-- **.apply_fear()** (3 connections) — `server/async_persistence.py`
-- **.apply_lucidity_loss()** (3 connections) — `server/async_persistence.py`
-- **.async_damage_player()** (3 connections) — `server/async_persistence.py`
-- **.async_heal_player()** (3 connections) — `server/async_persistence.py`
-- **.damage_player()** (3 connections) — `server/async_persistence.py`
-- **.gain_experience()** (3 connections) — `server/async_persistence.py`
-- **.heal_player()** (3 connections) — `server/async_persistence.py`
-- **.save_player()** (3 connections) — `server/async_persistence.py`
-- **.save_players()** (3 connections) — `server/async_persistence.py`
-- **.validate_and_fix_player_room()** (3 connections) — `server/async_persistence.py`
-- **Save a player. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Save multiple players in a single transaction. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Validate and fix player room if needed. Delegates to PlayerRepository.** (1 connections) — `server/async_persistence.py`
-- **Apply lucidity loss to a player. Delegates to ExperienceRepository.** (1 connections) — `server/async_persistence.py`
-- **Apply fear to a player. Delegates to ExperienceRepository.** (1 connections) — `server/async_persistence.py`
-- **Apply corruption to a player. Delegates to ExperienceRepository.** (1 connections) — `server/async_persistence.py`
-- **Award experience to a player atomically. Delegates to ExperienceRepository.** (1 connections) — `server/async_persistence.py`
-- **Heal a player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
-- **Async alias for heal_player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
-- **Damage a player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
-- **Async alias for damage_player. Delegates to HealthRepository.** (1 connections) — `server/async_persistence.py`
+## Connections by Relation
 
-## Relationships
+### calls
+- .create_player_with_stats() `EXTRACTED`
+- .create_player() `EXTRACTED`
+- quest_seed_data() `EXTRACTED`
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (11 shared connections)
-- [._ensure_room_cache_loaded](_ensure_room_cache_loaded.md) (8 shared connections)
+### contains
+- models/player.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/models/__init__.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- models/user.py `EXTRACTED`
+- [look_command.py](look_command.py.md) `EXTRACTED`
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) `EXTRACTED`
+- [test_player_death_service.py](test_player_death_service.py.md) `EXTRACTED`
+- lucidity_service.py `EXTRACTED`
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
+- test_player_model.py `EXTRACTED`
+- test_websocket_initial_state.py `EXTRACTED`
+- [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
+- [websocket_initial_state.py](websocket_initial_state.py.md) `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
+- player_respawn_service.py `EXTRACTED`
+- websocket_helpers.py `EXTRACTED`
+- test_inventory_equip_command.py `EXTRACTED`
+- [service.py](service.py.md) `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- inventory_pickup_command.py `EXTRACTED`
 
-- `server/async_persistence.py`
+### inherits
+- Base `EXTRACTED`
 
-## Audit Trail
+### method
+- .get_stats() `EXTRACTED`
+- .set_stats() `EXTRACTED`
+- .apply_dp_decay() `EXTRACTED`
+- .restore_to_full_health() `EXTRACTED`
+- .apply_dp_change() `EXTRACTED`
+- .is_alive() `EXTRACTED`
+- .is_mortally_wounded() `EXTRACTED`
+- .is_dead() `EXTRACTED`
+- .get_health_state() `EXTRACTED`
+- .get_combat_stats() `EXTRACTED`
+- .get_health_percentage() `EXTRACTED`
+- .set_inventory() `EXTRACTED`
+- .set_equipped_items() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__repr__() `EXTRACTED`
+- .get_inventory() `EXTRACTED`
+- .get_status_effects() `EXTRACTED`
+- .set_status_effects() `EXTRACTED`
+- .get_equipped_items() `EXTRACTED`
+- .add_experience() `EXTRACTED`
 
-- EXTRACTED: 41 (100%)
-- INFERRED: 0 (0%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Player model for game data. Stores all game-specific data for a user including… `EXTRACTED`
+
+### references
+- _convert_legacy_stats_string() `EXTRACTED`
+
+### uses
+- [User](User.md) `INFERRED`
+- PlayerLucidity `INFERRED`
+- Base `INFERRED`
+- [HealthRepository](HealthRepository.md) `INFERRED`
+- PlayerRepository `INFERRED`
+- ExperienceRepository `INFERRED`
+- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
+- [PlayerDeathService](PlayerDeathService.md) `INFERRED`
+- LucidityExposureState `INFERRED`
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
+- LucidityCooldown `INFERRED`
+- LucidityAdjustmentLog `INFERRED`
+- PlayerSpell `INFERRED`
+- row_to_player() `INFERRED`
+- PositionState `INFERRED`
+- PlayerSavePreparer `INFERRED`
+- PlayerSkill `INFERRED`
+- PlayerEffect `INFERRED`
+- validate_and_fix_player_room() `INFERRED`
+- _sample_work() `INFERRED`
 
 ---
 

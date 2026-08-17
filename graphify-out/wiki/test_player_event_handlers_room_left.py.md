@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

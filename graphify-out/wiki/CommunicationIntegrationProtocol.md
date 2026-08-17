@@ -22,8 +22,8 @@
 
 ## Relationships
 
-- [npc_base.py](npc_base.py.md) (3 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # test_command_validator.py
 
-> 114 nodes
+> 110 nodes
 
 ## Key Concepts
 
@@ -10,8 +10,6 @@
 - **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
 - **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
 - **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
-- **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
-- **normalize_command()** (8 connections) — `server/validators/command_validator.py`
 - **.sanitize_for_logging()** (7 connections) — `server/validators/command_validator.py`
 - **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
 - **validate_command_length()** (7 connections) — `server/validators/command_validator.py`
@@ -29,15 +27,17 @@
 - **test_command_validator_sanitize_for_logging_removes_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_sanitize_for_logging_truncates()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
 - **test_command_validator_validate_alias_definition_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- *... and 89 more nodes in this community*
+- **test_command_validator_validate_alias_definition_length_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 85 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (10 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (7 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (15 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [test_command_processing.py](test_command_processing.py.md) (4 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (2 shared connections)
-- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
+- [AliasGraph](AliasGraph.md) (2 shared connections)
 
 ## Source Files
 
@@ -46,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 181 (87%)
+- EXTRACTED: 175 (87%)
 - INFERRED: 26 (13%)
 - AMBIGUOUS: 0 (0%)
 

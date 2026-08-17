@@ -25,10 +25,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [ContainerSourceType](ContainerSourceType.md) (1 shared connections)
-- [ContainerAccessMixin](ContainerAccessMixin.md) (1 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [ContainerService](ContainerService.md) (1 shared connections)
 
 ## Source Files
 

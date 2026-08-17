@@ -31,16 +31,16 @@
 
 - [asyncio](asyncio.md) (9 shared connections)
 - [fixture](fixture.md) (5 shared connections)
+- [GameStateProvider](GameStateProvider.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [GameStateProvider](GameStateProvider.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [test_convert_room_uuids_to_names](test_convert_room_uuids_to_names.md) (1 shared connections)
 - [test_get_room_occupants](test_get_room_occupants.md) (1 shared connections)
 - [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
 - [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
 - [test_convert_room_uuids_to_names_invalid_uuid](test_convert_room_uuids_to_names_invalid_uuid.md) (1 shared connections)
 - [test_get_room_occupants_empty_online_players](test_get_room_occupants_empty_online_players.md) (1 shared connections)
 - [test_get_room_occupants_with_online_players](test_get_room_occupants_with_online_players.md) (1 shared connections)
+- [test_send_initial_game_state_no_player](test_send_initial_game_state_no_player.md) (1 shared connections)
+- [test_send_initial_game_state_send_fails](test_send_initial_game_state_send_fails.md) (1 shared connections)
 
 ## Source Files
 

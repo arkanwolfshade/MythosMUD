@@ -1,69 +1,73 @@
 # User
 
-> 190 nodes
+> 213 nodes
 
 ## Key Concepts
 
 - **User** (293 connections) — `server/models/user.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **register_user()** (32 connections) — `server/auth/endpoints.py`
-- **UserCreate** (24 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (23 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
+- **api/character_creation.py** (67 connections) — `server/api/character_creation.py`
+- **SkillService** (38 connections) — `server/game/skill_service.py`
+- **roll_character_stats()** (26 connections) — `server/api/character_creation.py`
+- **test_character_creation.py** (24 connections) — `server/tests/unit/api/test_character_creation.py`
+- **RollStatsRequest** (23 connections) — `server/schemas/players/player_requests.py`
+- **create_character_with_stats()** (23 connections) — `server/api/character_creation.py`
+- **ProfessionService** (21 connections) — `server/game/profession_service.py`
+- **CreateCharacterRequest** (21 connections) — `server/schemas/players/player_requests.py`
+- **validate_character_stats()** (15 connections) — `server/api/character_creation.py`
 - **asyncio** (14 connections)
+- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
 - **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- **create_invite()** (12 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login_profession.py** (11 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **asyncio** (11 connections)
+- **RollStatsResponse** (12 connections) — `server/schemas/players/character_creation.py`
+- **TestRollCharacterStats** (12 connections) — `server/tests/unit/api/test_character_creation.py`
+- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
+- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
 - **test_user.py** (11 connections) — `server/tests/unit/models/test_user.py`
-- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
+- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
+- **get_profession_service()** (10 connections) — `server/dependencies.py`
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **Any** (9 connections)
+- **TestCreateCharacterWithStats** (8 connections) — `server/tests/unit/api/test_character_creation.py`
 - **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
-- **_prepare_create_character_request()** (8 connections) — `server/api/character_creation.py`
-- **_authenticate_user_credentials()** (8 connections) — `server/auth/endpoints.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- **_generate_jwt_token()** (8 connections) — `server/auth/endpoints.py`
-- **Request** (8 connections)
-- *... and 165 more nodes in this community*
+- *... and 188 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (45 shared connections)
-- [Invite](Invite.md) (32 shared connections)
-- [models/user.py](models-user.py.md) (26 shared connections)
-- [get_logger](get_logger.md) (25 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (24 shared connections)
-- [test_users.py](test_users.py.md) (24 shared connections)
-- [maps.py](maps.py.md) (24 shared connections)
-- [PlayerService](PlayerService.md) (22 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (18 shared connections)
-- [DatabaseError](DatabaseError.md) (12 shared connections)
-- [pytest.md](pytest.md.md) (11 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [get_logger](get_logger.md) (66 shared connections)
+- [PlayerService](PlayerService.md) (49 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (41 shared connections)
+- [login_user](login_user.md) (20 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (19 shared connections)
+- [ExplorationService](ExplorationService.md) (19 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (18 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (17 shared connections)
+- [pytest.md](pytest.md.md) (17 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (15 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (14 shared connections)
+- [test_endpoints_invites.py](test_endpoints_invites.py.md) (11 shared connections)
 
 ## Source Files
 
+- `docs/examples/logging/fastapi_integration.py`
 - `server/api/character_creation.py`
-- `server/auth/endpoints.py`
+- `server/auth/users.py`
 - `server/commands/admin_shutdown_command.py`
+- `server/dependencies.py`
+- `server/game/profession_service.py`
+- `server/game/skill_service.py`
 - `server/models/user.py`
-- `server/schemas/auth/invite.py`
+- `server/schemas/players/character_creation.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/players/stat_values.py`
 - `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
+- `server/tests/unit/api/test_character_creation.py`
+- `server/tests/unit/auth/test_users_current_user_logging.py`
 - `server/tests/unit/models/test_user.py`
 
 ## Audit Trail
 
-- EXTRACTED: 615 (81%)
-- INFERRED: 146 (19%)
+- EXTRACTED: 705 (87%)
+- INFERRED: 106 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

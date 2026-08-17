@@ -25,7 +25,7 @@
 ## Relationships
 
 - [security.ts](security.ts.md) (2 shared connections)
-- [@testing-library/jest-dom/vitest](@testing-library-jest-dom-vitest.md) (1 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
 
 ## Source Files
 

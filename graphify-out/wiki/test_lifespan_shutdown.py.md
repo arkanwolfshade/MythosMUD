@@ -33,9 +33,11 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (10 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_lifespan_helpers.py](test_lifespan_helpers.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

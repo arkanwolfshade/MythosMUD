@@ -1,6 +1,6 @@
 # test_auth_utils.py
 
-> 97 nodes
+> 101 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **verify_password()** (9 connections) — `server/auth_utils.py`
 - **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **setup_jwt_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_jwt_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_create_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
@@ -28,19 +29,16 @@
 - **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_wrong_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_hash_password_authentication_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 72 more nodes in this community*
+- *... and 76 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (26 shared connections)
+- [get_logger](get_logger.md) (29 shared connections)
 - [AttributeError](AttributeError.md) (3 shared connections)
-- [User](User.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [_resolve_player_id](_resolve_player_id.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 - [test_connection_delegates.py](test_connection_delegates.py.md) (2 shared connections)
+- [register_user](register_user.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [setup_jwt_secret](setup_jwt_secret.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 174 (90%)
+- EXTRACTED: 177 (90%)
 - INFERRED: 19 (10%)
 - AMBIGUOUS: 0 (0%)
 

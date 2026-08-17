@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (7 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (6 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (13 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)

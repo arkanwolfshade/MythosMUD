@@ -33,8 +33,8 @@
 ## Relationships
 
 - [safe_run_static](safe_run_static.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [bind_request_context](bind_request_context.md) (1 shared connections)
 
 ## Source Files
 

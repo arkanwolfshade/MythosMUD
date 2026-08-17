@@ -1,12 +1,13 @@
 # gameStore.ts
 
-> 59 nodes
+> 62 nodes
 
 ## Key Concepts
 
 - **gameStore.ts** (37 connections) — `client/src/stores/gameStore.ts`
 - **mapUtils.ts** (27 connections) — `client/src/components/map/utils/mapUtils.ts`
 - **RoomMapViewer.tsx** (25 connections) — `client/src/components/map/RoomMapViewer.tsx`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **useRoomMapData.ts** (22 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
 - **Room** (17 connections) — `client/src/stores/gameStore.ts`
 - **RoomMapViewer.test-utils.tsx** (17 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
@@ -22,34 +23,34 @@
 - **MapControls.tsx** (10 connections) — `client/src/components/map/MapControls.tsx`
 - **RoomMapViewer.data-loading.test.tsx** (10 connections) — `client/src/components/map/__tests__/RoomMapViewer.data-loading.test.tsx`
 - **setupDefaultMocks()** (9 connections) — `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
+- **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **applyGridLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **mapUtils.test.ts** (7 connections) — `client/src/components/map/utils/__tests__/mapUtils.test.ts`
 - **MapControls()** (6 connections) — `client/src/components/map/MapControls.tsx`
 - **theme.test.tsx** (6 connections) — `client/src/components/map/__tests__/theme.test.tsx`
 - **RoomDetailsPanel()** (5 connections) — `client/src/components/map/RoomDetailsPanel.tsx`
-- **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **useRoomMapData.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- *... and 34 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (18 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (15 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (6 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (19 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (13 shared connections)
+- [map/types.ts](map-types.ts.md) (12 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (6 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
-- [map/types.ts](map-types.ts.md) (5 shared connections)
-- [RoomNodeData](RoomNodeData.md) (5 shared connections)
+- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (5 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (4 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
+- [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
 - [utils/config.ts](utils-config.ts.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (3 shared connections)
+- [map/config.ts](map-config.ts.md) (3 shared connections)
 
 ## Source Files
 
 - `client/src/components/map/MapControls.tsx`
 - `client/src/components/map/RoomDetailsPanel.tsx`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - `client/src/components/map/RoomMapViewer.tsx`
 - `client/src/components/map/__tests__/MapControls.test.tsx`
 - `client/src/components/map/__tests__/RoomDetailsPanel.test.tsx`
@@ -59,6 +60,7 @@
 - `client/src/components/map/__tests__/RoomMapViewer.rendering.test.tsx`
 - `client/src/components/map/__tests__/RoomMapViewer.test-utils.tsx`
 - `client/src/components/map/__tests__/theme.test.tsx`
+- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/hooks/useRoomMapData.ts`
@@ -66,12 +68,10 @@
 - `client/src/components/map/utils/layout.ts`
 - `client/src/components/map/utils/mapUtils.ts`
 - `client/src/stores/__tests__/gameStore.test.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 240 (98%)
+- EXTRACTED: 260 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

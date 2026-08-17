@@ -1,6 +1,6 @@
 # message_handler_factory.py
 
-> 76 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -10,8 +10,6 @@
 - **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
 - **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
 - **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
-- **Any** (8 connections)
-- **WebSocket** (8 connections)
 - **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
@@ -19,26 +17,28 @@
 - **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
 - **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
 - **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
 - **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
 - **test_chat_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
 - **test_client_error_report_handler_logs()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- *... and 51 more nodes in this community*
+- **test_command_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_no_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_success()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_unknown_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_ping_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
+- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_message_handlers.py](test_message_handlers.py.md) (12 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
 - [MessageBroker](MessageBroker.md) (1 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [test_combat_integration_base.py](test_combat_integration_base.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 139 (89%)
-- INFERRED: 17 (11%)
+- EXTRACTED: 112 (87%)
+- INFERRED: 17 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

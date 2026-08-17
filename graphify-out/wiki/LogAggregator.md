@@ -1,15 +1,17 @@
 # LogAggregator
 
-> 57 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **LogAggregator** (36 connections) — `server/structured_logging/log_aggregator.py`
 - **LogEntry** (17 connections) — `server/structured_logging/log_aggregator.py`
 - **test_log_aggregator.py** (17 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **log_aggregator.py** (16 connections) — `server/structured_logging/log_aggregator.py`
 - **LogQueryFilter** (11 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
 - **_entry()** (10 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **.export_logs()** (8 connections) — `server/structured_logging/log_aggregator.py`
 - **aggregate_log_entry()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
@@ -27,15 +29,17 @@
 - **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
 - **test_aggregate_log_entry_helper()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **test_filter_error_and_warning_logs()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
-- **test_get_user_and_correlation_logs()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
-- **test_update_stats_via_log_entry()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
-- *... and 32 more nodes in this community*
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (7 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 114 (89%)
-- INFERRED: 14 (11%)
+- EXTRACTED: 130 (90%)
+- INFERRED: 14 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -23,10 +23,11 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
 - [FollowService](FollowService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

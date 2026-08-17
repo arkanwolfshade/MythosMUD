@@ -1,6 +1,6 @@
 # NPCCombatDataProvider
 
-> 36 nodes
+> 34 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **.get_player_combat_data()** (4 connections) — `server/services/npc_combat_data_provider.py`
 - **Any** (4 connections)
 - **.__init__()** (3 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_data_provider()** (3 connections) — `server/services/npc_combat_integration_service.py`
 - **test_get_npc_definition_from_persistence()** (3 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
 - **test_get_player_combat_data()** (3 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
 - **test_get_player_combat_data_missing_player()** (3 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
@@ -29,28 +28,30 @@
 - **test_get_npc_combat_data_with_get_combat_stats()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
 - **test_get_npc_instance_from_lifecycle()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
 - **test_get_npc_instance_returns_none_on_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- *... and 11 more nodes in this community*
+- **fixture** (1 connections)
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (14 shared connections)
+- [CombatService](CombatService.md) (10 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (3 shared connections)
 - [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (2 shared connections)
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
+- [combat_service_attack.py](combat_service_attack.py.md) (2 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
 - [NPCCombatLifecycle](NPCCombatLifecycle.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (1 shared connections)
+- [._handle_npc_death_on_combat_end](_handle_npc_death_on_combat_end.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_integration_service.py`
 - `server/tests/unit/services/test_npc_combat_data_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (80%)
+- EXTRACTED: 63 (80%)
 - INFERRED: 16 (20%)
 - AMBIGUOUS: 0 (0%)
 

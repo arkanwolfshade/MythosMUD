@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (25 shared connections)
+- [CombatService](CombatService.md) (25 shared connections)
 - [CombatInstance](CombatInstance.md) (10 shared connections)
+- [TargetMatch](TargetMatch.md) (8 shared connections)
 - [CombatParticipant](CombatParticipant.md) (8 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [spell_effects_internal.py](spell_effects_internal.py.md) (3 shared connections)
-- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [npc_combat_integration_service.py](npc_combat_integration_service.py.md) (3 shared connections)
 - [UUID](UUID.md) (2 shared connections)
-- [_validate_taunt_context](_validate_taunt_context.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

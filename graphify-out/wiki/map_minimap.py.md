@@ -33,13 +33,10 @@
 
 ## Relationships
 
-- [maps.py](maps.py.md) (8 shared connections)
+- [ExplorationService](ExplorationService.md) (15 shared connections)
 - [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
-- [RoomService](RoomService.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
-- [ExplorationService](ExplorationService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

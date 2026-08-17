@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [PartyService](PartyService.md) (6 shared connections)
-- [build_event](build_event.md) (3 shared connections)
+- [PartyService](PartyService.md) (7 shared connections)
+- [.__post_init__](__post_init__.md) (3 shared connections)
 - [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
 - [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [log_with_context](log_with_context.md) (3 shared connections)
+- [bind_request_context](bind_request_context.md) (3 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 
 ## Source Files

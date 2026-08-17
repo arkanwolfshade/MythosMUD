@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

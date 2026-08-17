@@ -1,13 +1,12 @@
 # PassiveMobNPC
 
-> 61 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **PassiveMobNPC** (59 connections) — `server/npc/passive_mob_npc.py`
 - **test_npc_base.py** (25 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_passive_mob_npc.py** (20 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
-- **.__init__()** (5 connections) — `server/npc/passive_mob_npc.py`
 - **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
 - **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
@@ -29,18 +28,16 @@
 - **test_npc_base_move_simple()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
 - **test_npc_base_remove_missing_item()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
-- *... and 36 more nodes in this community*
+- **test_npc_base_speak_and_listen()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
+- [EventBus](EventBus.md) (8 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (8 shared connections)
-- [npc_base.py](npc_base.py.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 77 (65%)
-- INFERRED: 42 (35%)
+- EXTRACTED: 74 (64%)
+- INFERRED: 42 (36%)
 - AMBIGUOUS: 0 (0%)
 
 ---

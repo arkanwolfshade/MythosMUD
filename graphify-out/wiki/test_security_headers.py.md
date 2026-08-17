@@ -1,16 +1,21 @@
 # test_security_headers.py
 
-> 39 nodes
+> 55 nodes
 
 ## Key Concepts
 
 - **test_security_headers.py** (21 connections) — `server/tests/unit/middleware/test_security_headers.py`
+- **SecurityHeadersMiddleware** (12 connections) — `server/middleware/security_headers.py`
 - **MutableHeaders** (6 connections)
+- **.__call__()** (5 connections) — `server/middleware/security_headers.py`
+- **.dispatch()** (5 connections) — `server/middleware/security_headers.py`
 - **asyncio** (5 connections)
+- **._add_security_headers_to_response()** (4 connections) — `server/middleware/security_headers.py`
 - **test_security_headers_middleware_adds_headers()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_error_handling()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_security_headers_middleware_non_http_scope()** (4 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **._add_security_headers()** (3 connections) — `server/middleware/security_headers.py`
+- **.__init__()** (3 connections) — `server/middleware/security_headers.py`
 - **mock_app()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_csp_policy()** (3 connections) — `server/tests/unit/middleware/test_security_headers.py`
@@ -24,17 +29,13 @@
 - **test_add_security_headers_to_response()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response_hsts_with_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
 - **test_add_security_headers_to_response_hsts_without_subdomains()** (2 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **fixture** (2 connections)
-- **Add all security headers to the response.** (1 connections) — `server/middleware/security_headers.py`
-- **Unit tests for security headers middleware. Tests the SecurityHeadersMiddleware…** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test middleware error handling.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- **Test _add_security_headers_to_response adds headers to Response.** (1 connections) — `server/tests/unit/middleware/test_security_headers.py`
-- *... and 14 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [middleware](middleware.md) (5 shared connections)
+- [middleware](middleware.md) (6 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -44,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (88%)
-- INFERRED: 7 (12%)
+- EXTRACTED: 69 (90%)
+- INFERRED: 8 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -30,7 +30,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 
 ## Source Files
 

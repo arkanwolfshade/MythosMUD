@@ -38,7 +38,7 @@
 - [ChatService](ChatService.md) (3 shared connections)
 - [ChatModeration](ChatModeration.md) (1 shared connections)
 - [PlayerService](PlayerService.md) (1 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [chat_logger](chat_logger.md) (1 shared connections)
 
 ## Source Files
 

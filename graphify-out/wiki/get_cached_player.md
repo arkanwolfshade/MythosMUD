@@ -32,10 +32,10 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [logout_commands.py](logout_commands.py.md) (3 shared connections)
-- [asyncio](asyncio.md) (2 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (5 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (3 shared connections)
+- [test_command_validation.py](test_command_validation.py.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 

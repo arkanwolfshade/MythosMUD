@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
 - [handle_emote_command](handle_emote_command.md) (2 shared connections)
 - [chat_service.py](chat_service.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [normalize_command](normalize_command.md) (1 shared connections)
+- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [alias_storage.py](alias_storage.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

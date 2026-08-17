@@ -24,8 +24,9 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,40 +1,43 @@
 # Any
 
-> 13 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Any** (12 connections)
-- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Get mapping of event types to their handler methods.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Validate that event message has required fields.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle player_left event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle combat_ended event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle player_attacked event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
-- **Handle npc_took_damage event.** (1 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Any** (11 connections)
+- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
+- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
+- **Determine if NPC should be included in room query results. Args: npc_id: The…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Scan active NPCs to find those in the target room. Args: active_npcs_dict:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Process NPC IDs and convert to occupant information. Args: npc_ids: List of NPC…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get NPC's current room ID from instance. Args: npc_instance: The NPC instance…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Validate NPC has room tracking and get room ID. Args: npc_id: The NPC ID…** (1 connections) — `server/realtime/npc_occupant_processor.py`
 
 ## Relationships
 
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (6 shared connections)
-- [._handle_combat_started_event](_handle_combat_started_event.md) (1 shared connections)
-- [._handle_event_message](_handle_event_message.md) (1 shared connections)
-- [._handle_game_tick_event](_handle_game_tick_event.md) (1 shared connections)
-- [._handle_npc_attacked_event](_handle_npc_attacked_event.md) (1 shared connections)
-- [._handle_npc_died_event](_handle_npc_died_event.md) (1 shared connections)
-- [._handle_player_entered_event](_handle_player_entered_event.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (12 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [RoomIDUtils](RoomIDUtils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_subscriptions.py`
+- `server/realtime/npc_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

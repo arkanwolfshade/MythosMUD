@@ -1,78 +1,67 @@
 # ApplicationContainer
 
-> 817 nodes
+> 119 nodes
 
 ## Key Concepts
 
 - **ApplicationContainer** (157 connections) — `server/container/main.py`
-- **server/dependencies.py** (107 connections) — `server/dependencies.py`
-- **time.py** (97 connections) — `server/container/bundles/time.py`
-- **LucidityService** (79 connections) — `server/services/lucidity_service.py`
-- **PlayerLucidity** (69 connections) — `server/models/lucidity.py`
-- **lifespan_startup.py** (64 connections) — `server/app/lifespan_startup.py`
-- **test_player_respawn_service.py** (55 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **lucidity_service.py** (52 connections) — `server/services/lucidity_service.py`
-- **lifecycle_manager.py** (49 connections) — `server/npc/lifecycle_manager.py`
-- **threading.py** (47 connections) — `server/npc/threading.py`
-- **bundles/game.py** (44 connections) — `server/container/bundles/game.py`
-- **lifespan.py** (43 connections) — `server/app/lifespan.py`
-- **test_lifespan_startup.py** (41 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **player_respawn_service.py** (40 connections) — `server/services/player_respawn_service.py`
-- **service.py** (36 connections) — `server/services/passive_lucidity_flux/service.py`
-- **lucidity.py** (35 connections) — `server/models/lucidity.py`
-- **server/models/game.py** (33 connections) — `server/models/game.py`
-- **MemoryLeakMetricsCollector** (30 connections) — `server/monitoring/memory_leak_metrics.py`
-- **LRUCache** (29 connections) — `server/caching/lru_cache.py`
-- **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **api/game.py** (29 connections) — `server/api/game.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **get_mythos_chronicle()** (27 connections) — `server/time/time_service.py`
-- **asyncio** (27 connections)
-- **time_service.py** (27 connections) — `server/time/time_service.py`
-- *... and 792 more nodes in this community*
+- **test_application_container.py** (29 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_main.py** (18 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **reset_container()** (10 connections) — `server/container/main.py`
+- **._create_combat_service_with_nats()** (7 connections) — `server/container/bundles/combat.py`
+- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
+- **.initialize()** (7 connections) — `server/container/bundles/monitoring.py`
+- **.__init__()** (7 connections) — `server/container/main.py`
+- **.reset_instance()** (7 connections) — `server/container/main.py`
+- **_flatten_bundle()** (7 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- **PlayerLifecycleServices** (5 connections) — `server/services/combat_service_types.py`
+- **.initialize()** (5 connections) — `server/container/main.py`
+- **._initialize_secondary_bundles()** (5 connections) — `server/container/main.py`
+- **normalize_path_from_url_or_path()** (5 connections) — `server/container/utils.py`
+- **test_get_and_reset_container_helpers()** (5 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **._sanitarium_failover_callback()** (4 connections) — `server/container/bundles/combat.py`
+- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
+- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
+- **.shutdown()** (4 connections) — `server/container/bundles/core.py`
+- **._decode_json_column()** (4 connections) — `server/container/main.py`
+- **._get_project_root()** (4 connections) — `server/container/main.py`
+- **._normalize_path_from_url_or_path()** (4 connections) — `server/container/main.py`
+- **.set_instance()** (4 connections) — `server/container/main.py`
+- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (154 shared connections)
-- [DatabaseError](DatabaseError.md) (99 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (74 shared connections)
-- [ConnectionManager](ConnectionManager.md) (58 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (56 shared connections)
-- [AliasStorage](AliasStorage.md) (37 shared connections)
-- [test_application_container.py](test_application_container.py.md) (27 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (21 shared connections)
-- [test_lifespan_helpers.py](test_lifespan_helpers.py.md) (20 shared connections)
-- [PlayerService](PlayerService.md) (20 shared connections)
-- [RoomCacheService](RoomCacheService.md) (18 shared connections)
-- [NPCDied](NPCDied.md) (18 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (49 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (13 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (10 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (8 shared connections)
+- [CombatService](CombatService.md) (7 shared connections)
+- [lifespan.py](lifespan.py.md) (5 shared connections)
+- [test_lifespan_shutdown.py](test_lifespan_shutdown.py.md) (4 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
+- [EventBus](EventBus.md) (4 shared connections)
+- [NPCStartupService](NPCStartupService.md) (4 shared connections)
+- [.__post_init__](__post_init__.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/game.py`
-- `server/api/system_monitoring.py`
-- `server/app/game_tick_corpses.py`
-- `server/app/lifespan.py`
-- `server/app/lifespan_magic.py`
-- `server/app/lifespan_startup.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
-- `server/caching/__init__.py`
-- `server/caching/cache_service.py`
-- `server/caching/lru_cache.py`
-- `server/commands/shutdown_process_termination.py`
-- `server/container/__init__.py`
 - `server/container/bundles/combat.py`
 - `server/container/bundles/core.py`
-- `server/container/bundles/game.py`
-- `server/container/bundles/time.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/realtime.py`
 - `server/container/main.py`
 - `server/container/utils.py`
-- `server/dependencies.py`
+- `server/services/combat_service_types.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2678 (94%)
-- INFERRED: 162 (6%)
+- EXTRACTED: 297 (91%)
+- INFERRED: 29 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

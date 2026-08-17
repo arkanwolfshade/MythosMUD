@@ -33,10 +33,13 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
+- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [format_message_content](format_message_content.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
 
 ## Source Files
 

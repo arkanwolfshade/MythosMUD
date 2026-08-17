@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [MessageQueue](MessageQueue.md) (1 shared connections)
 - [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 
 ## Source Files

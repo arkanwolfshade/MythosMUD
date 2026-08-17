@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
 - [FollowService](FollowService.md) (6 shared connections)
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,14 +33,12 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (10 shared connections)
-- [AliasStorage](AliasStorage.md) (9 shared connections)
-- [SpellRegistry](SpellRegistry.md) (4 shared connections)
-- [magic.py](magic.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [SpellTargetingService](SpellTargetingService.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (12 shared connections)
+- [TargetMatch](TargetMatch.md) (11 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [CastingStateManager](CastingStateManager.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

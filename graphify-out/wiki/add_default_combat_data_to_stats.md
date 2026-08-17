@@ -13,8 +13,10 @@
 
 ## Relationships
 
-- [test_combat_schema.py](test_combat_schema.py.md) (6 shared connections)
+- [test_combat_schema.py](test_combat_schema.py.md) (3 shared connections)
 - [migrate_combat_data.py](migrate_combat_data.py.md) (2 shared connections)
+- [combat_schema.py](combat_schema.py.md) (2 shared connections)
+- [add_default_combat_data_to_config](add_default_combat_data_to_config.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,29 +1,29 @@
 # mock_persistence
 
-> 7 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **mock_request()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **mock_user()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
 - **fixture** (3 connections)
-- **Create a mock request with app state and container.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **Create a mock persistence.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **Create a mock player.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
 
 ## Relationships
 
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (89%)
+- INFERRED: 1 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

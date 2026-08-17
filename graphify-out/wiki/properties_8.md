@@ -1,44 +1,47 @@
 # properties
 
-> 23 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **properties** (11 connections) — `db/static/schemas/room.schema.json`
-- **null** (11 connections) — `db/static/schemas/room.schema.json`
-- **string** (11 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **down** (2 connections) — `db/static/schemas/room.schema.json`
-- **east** (2 connections) — `db/static/schemas/room.schema.json`
-- **north** (2 connections) — `db/static/schemas/room.schema.json`
-- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **south** (2 connections) — `db/static/schemas/room.schema.json`
-- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **up** (2 connections) — `db/static/schemas/room.schema.json`
-- **west** (2 connections) — `db/static/schemas/room.schema.json`
+- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [exits](exits.md) (3 shared connections)
+- [type](type.md) (4 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [metadata](metadata.md) (1 shared connections)
+- [prototype_id](prototype_id.md) (1 shared connections)
+- [short_description](short_description.md) (1 shared connections)
+- [long_description](long_description.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [weight](weight.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

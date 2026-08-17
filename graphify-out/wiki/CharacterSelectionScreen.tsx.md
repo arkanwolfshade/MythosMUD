@@ -23,7 +23,7 @@
 - [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
 - [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
+- [logger.ts](logger.ts.md) (2 shared connections)
 
 ## Source Files
 

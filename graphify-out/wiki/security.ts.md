@@ -34,17 +34,17 @@
 ## Relationships
 
 - [useMythosAppActions.ts](useMythosAppActions.ts.md) (10 shared connections)
-- [utils/config.ts](utils-config.ts.md) (8 shared connections)
+- [logger.ts](logger.ts.md) (9 shared connections)
 - [App.tsx](App.tsx.md) (7 shared connections)
 - [useMythosAppState.ts](useMythosAppState.ts.md) (7 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (5 shared connections)
+- [ansiToHtml.ts](ansiToHtml.ts.md) (5 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (5 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (4 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (3 shared connections)
+- [utils/config.ts](utils-config.ts.md) (4 shared connections)
 - [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (2 shared connections)
 - [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [setup.ts](setup.ts.md) (2 shared connections)
 
 ## Source Files
 

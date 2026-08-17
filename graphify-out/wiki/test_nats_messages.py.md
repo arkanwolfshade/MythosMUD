@@ -1,6 +1,6 @@
 # test_nats_messages.py
 
-> 55 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -16,9 +16,6 @@
 - **test_validate_event_message()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_validate_message_chat()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_validate_message_event()** (4 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **.validate_timestamp()** (3 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_channel()** (3 connections) — `server/schemas/realtime/nats_messages.py`
-- **.validate_event_type()** (3 connections) — `server/schemas/realtime/nats_messages.py`
 - **test_base_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_invalid_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_base_message_schema_validate_timestamp()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
@@ -29,14 +26,19 @@
 - **test_chat_message_schema_validate_channel()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
 - **test_event_message_schema_empty_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- *... and 30 more nodes in this community*
+- **test_event_message_schema_validate_event_type()** (3 connections) — `server/tests/unit/schemas/test_nats_messages.py`
+- **Any** (3 connections)
+- **BaseModel** (1 connections)
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
+- [.validate_timestamp](validate_timestamp.md) (3 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [realtime/realtime.py](realtime-realtime.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [NATSMessageProcessingMixin](NATSMessageProcessingMixin.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 84 (85%)
-- INFERRED: 15 (15%)
+- EXTRACTED: 78 (84%)
+- INFERRED: 15 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

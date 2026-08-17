@@ -35,7 +35,7 @@
 
 - [get_logger](get_logger.md) (4 shared connections)
 - [map_minimap.py](map_minimap.py.md) (2 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
+- [ExplorationService](ExplorationService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files

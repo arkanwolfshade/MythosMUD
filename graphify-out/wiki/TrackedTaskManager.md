@@ -1,11 +1,12 @@
 # TrackedTaskManager
 
-> 39 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **TrackedTaskManager** (22 connections) — `server/app/tracked_task_manager.py`
 - **test_tracked_task_manager.py** (20 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
 - **asyncio** (8 connections)
 - **memory_leak_prevention_channel_start_session()** (5 connections) — `server/app/tracked_task_manager.py`
 - **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
@@ -28,28 +29,33 @@
 - **test_global_manager_singleton()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **test_memory_leak_prevention_session_start()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
 - **test_set_task_registry()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **Any** (2 connections)
-- *... and 14 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
 - [get_logger](get_logger.md) (5 shared connections)
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
+- [PerformanceTracker](PerformanceTracker.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [DatabaseManager](DatabaseManager.md) (2 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [DistributedEventBus](DistributedEventBus.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/app/tracked_task_manager.py`
+- `server/container/bundles/core.py`
 - `server/tests/unit/app/test_tracked_task_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (88%)
-- INFERRED: 9 (12%)
+- EXTRACTED: 76 (89%)
+- INFERRED: 9 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

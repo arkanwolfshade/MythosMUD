@@ -1,6 +1,6 @@
 # UserManager
 
-> 96 nodes
+> 93 nodes
 
 ## Key Concepts
 
@@ -29,21 +29,21 @@
 - **._convert_mute_info_timestamps()** (5 connections) — `server/services/user_manager.py`
 - **._get_active_channel_mutes()** (5 connections) — `server/services/user_manager.py`
 - **._get_active_global_mutes()** (5 connections) — `server/services/user_manager.py`
-- *... and 71 more nodes in this community*
+- *... and 68 more nodes in this community*
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
 - [NPCStartupService](NPCStartupService.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ContainerAccessMixin](ContainerAccessMixin.md) (2 shared connections)
+- [_get_proper_data_dir](_get_proper_data_dir.md) (2 shared connections)
+- [._validate_container_access](_validate_container_access.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 - [test_user_manager.py](test_user_manager.py.md) (1 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [FollowService](FollowService.md) (1 shared connections)
 - [ChatLogger](ChatLogger.md) (1 shared connections)
 - [user_manager](user_manager.md) (1 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 218 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 215 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

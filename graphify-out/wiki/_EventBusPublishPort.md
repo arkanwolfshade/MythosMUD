@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [EventHandler](EventHandler.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [.error](error.md) (1 shared connections)
+- [config/models/__init__.py](config-models-__init__.py.md) (4 shared connections)
+- [AppConfig](AppConfig.md) (2 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

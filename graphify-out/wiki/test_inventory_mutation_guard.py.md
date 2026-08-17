@@ -34,7 +34,7 @@
 ## Relationships
 
 - [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
-- [ContainerSourceType](ContainerSourceType.md) (3 shared connections)
+- [ContainerService](ContainerService.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 

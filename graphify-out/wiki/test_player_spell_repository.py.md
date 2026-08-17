@@ -24,10 +24,10 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (2 shared connections)
+- [get_session_maker](get_session_maker.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

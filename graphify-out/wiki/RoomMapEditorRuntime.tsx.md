@@ -1,13 +1,12 @@
 # RoomMapEditorRuntime.tsx
 
-> 46 nodes
+> 45 nodes
 
 ## Key Concepts
 
 - **RoomMapEditorRuntime.tsx** (41 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
 - **RoomMapEditorRuntime.hooks.ts** (38 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **RoomMapEditor()** (13 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **useRoomMapEditorData()** (8 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
 - **useMapEditing()** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
@@ -29,19 +28,18 @@
 - **MapEditToolbar()** (2 connections) — `client/src/components/map/MapEditToolbar.tsx`
 - **buildModalCreateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
 - **buildModalUpdateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- *... and 21 more nodes in this community*
+- **buildModalUpdateRoomHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (18 shared connections)
-- [RoomNodeData](RoomNodeData.md) (11 shared connections)
-- [map/types.ts](map-types.ts.md) (5 shared connections)
-- [edgeModalLogic.ts](edgeModalLogic.ts.md) (4 shared connections)
+- [gameStore.ts](gameStore.ts.md) (19 shared connections)
+- [map/types.ts](map-types.ts.md) (17 shared connections)
 - [utils/config.ts](utils-config.ts.md) (3 shared connections)
+- [map/config.ts](map-config.ts.md) (3 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (1 shared connections)
 
 ## Source Files
 
@@ -61,7 +59,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 130 (100%)
+- EXTRACTED: 126 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

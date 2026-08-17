@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [npc_base.py](npc_base.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

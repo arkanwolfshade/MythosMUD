@@ -33,18 +33,10 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (65 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (2 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
-- [factory](factory.md) (1 shared connections)
-- [CommunicationCommandFactory](CommunicationCommandFactory.md) (1 shared connections)
-- [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (78 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (2 shared connections)
 - [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)
-- [ModerationCommandFactory](ModerationCommandFactory.md) (1 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (1 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
 
 ## Source Files
 

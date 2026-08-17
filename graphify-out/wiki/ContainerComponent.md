@@ -1,12 +1,19 @@
 # ContainerComponent
 
-> 111 nodes
+> 206 nodes
 
 ## Key Concepts
 
 - **ContainerComponent** (100 connections) — `server/models/container.py`
+- **ContainerSourceType** (89 connections) — `server/models/container.py`
+- **test_corpse_lifecycle_service.py** (56 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **ContainerLockState** (42 connections) — `server/models/container.py`
 - **test_container.py** (40 connections) — `server/tests/unit/models/test_container.py`
+- **asyncio** (23 connections)
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **CorpseServiceError** (11 connections) — `server/services/corpse_lifecycle_service.py`
 - **ContainerFactoryOptions** (6 connections) — `server/models/container.py`
+- **CorpseNotFoundError** (6 connections) — `server/services/corpse_lifecycle_service.py`
 - **.create_corpse()** (5 connections) — `server/models/container.py`
 - **.validate_entity_id()** (5 connections) — `server/models/container.py`
 - **.validate_lock_state()** (5 connections) — `server/models/container.py`
@@ -22,39 +29,36 @@
 - **test_container_component_is_locked_when_sealed()** (5 connections) — `server/tests/unit/models/test_container.py`
 - **test_container_component_is_locked_when_unlocked()** (5 connections) — `server/tests/unit/models/test_container.py`
 - **test_container_component_is_unlocked_when_locked()** (5 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_is_unlocked_when_sealed()** (5 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_is_unlocked_when_unlocked()** (5 connections) — `server/tests/unit/models/test_container.py`
-- **test_container_component_would_exceed_capacity()** (5 connections) — `server/tests/unit/models/test_container.py`
-- **Any** (5 connections)
-- **field_validator** (5 connections)
-- **UUID** (5 connections)
-- **.create_environment()** (4 connections) — `server/models/container.py`
-- *... and 86 more nodes in this community*
+- *... and 181 more nodes in this community*
 
 ## Relationships
 
-- [ContainerSourceType](ContainerSourceType.md) (33 shared connections)
-- [ContainerLockState](ContainerLockState.md) (21 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
-- [pytest.md](pytest.md.md) (9 shared connections)
-- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (8 shared connections)
-- [InventoryService](InventoryService.md) (8 shared connections)
-- [container_events.py](container_events.py.md) (7 shared connections)
-- [api/conftest.py](api-conftest.py.md) (2 shared connections)
-- [TestEmitLootAllEvent](TestEmitLootAllEvent.md) (2 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [CorpseLifecycleService](CorpseLifecycleService.md) (1 shared connections)
+- [get_logger](get_logger.md) (53 shared connections)
+- [ContainerService](ContainerService.md) (17 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (9 shared connections)
+- [emit_loot_all_event](emit_loot_all_event.md) (9 shared connections)
+- [CorpseLifecycleService](CorpseLifecycleService.md) (7 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [LootAllRequest](LootAllRequest.md) (5 shared connections)
+- [loot_all_items](loot_all_items.md) (4 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (2 shared connections)
+- [EnvironmentalContainerLoader](EnvironmentalContainerLoader.md) (2 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (2 shared connections)
+- [fixture](fixture.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/container.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/api/test_container_events_loot.py`
 - `server/tests/unit/models/test_container.py`
+- `server/tests/unit/services/test_container_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (61%)
-- INFERRED: 101 (39%)
+- EXTRACTED: 322 (65%)
+- INFERRED: 172 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

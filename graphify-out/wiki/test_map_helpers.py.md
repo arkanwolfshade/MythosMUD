@@ -34,9 +34,8 @@
 ## Relationships
 
 - [map_minimap.py](map_minimap.py.md) (6 shared connections)
-- [maps.py](maps.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [ExplorationService](ExplorationService.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

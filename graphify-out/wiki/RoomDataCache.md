@@ -34,8 +34,8 @@
 ## Relationships
 
 - [Any](Any.md) (7 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
 
 ## Source Files
 

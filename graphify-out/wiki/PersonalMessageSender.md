@@ -26,11 +26,9 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (8 shared connections)
 - [.send_message](send_message.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [MessageBroadcaster](MessageBroadcaster.md) (1 shared connections)
+- [MessageQueue](MessageQueue.md) (1 shared connections)
 - [deque](deque.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

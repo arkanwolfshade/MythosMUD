@@ -1,22 +1,14 @@
 # test_magic_service.py
 
-> 76 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **test_magic_service.py** (48 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **MagicService** (41 connections) — `server/game/magic/magic_service.py`
 - **UUID** (26 connections)
-- **CastingStateManager** (25 connections) — `server/game/magic/casting_state_manager.py`
 - **asyncio** (19 connections)
-- **magic_service()** (14 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_casting_state_manager.py** (12 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **casting_state_manager.py** (11 connections) — `server/game/magic/casting_state_manager.py`
 - **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **StartCastingTarget** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **UUID** (8 connections)
-- **.start_casting()** (6 connections) — `server/game/magic/casting_state_manager.py`
 - **test_can_cast_spell_unknown_and_materials()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_cast_spell_material_consume_failure()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_check_casting_progress_completes()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
@@ -28,35 +20,40 @@
 - **test_interrupt_casting_luck_fail()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_interrupt_casting_luck_pass()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **fixture** (5 connections)
-- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 51 more nodes in this community*
+- **_build_magic_service()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **target_match()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_instant_success()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_not_found()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_cast_spell_roll_failure()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_check_mp_and_lucidity()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_get_player_and_normalized_stats()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_get_player_and_room_missing_player()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **test_interrupt_casting_not_casting()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (15 shared connections)
-- [Spell](Spell.md) (13 shared connections)
-- [SpellEffectType](SpellEffectType.md) (8 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (4 shared connections)
-- [SpellRegistry](SpellRegistry.md) (3 shared connections)
-- [SpellMaterial](SpellMaterial.md) (3 shared connections)
-- [SpellTargetingService](SpellTargetingService.md) (2 shared connections)
-- [magic.py](magic.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (17 shared connections)
+- [SpellEffectType](SpellEffectType.md) (11 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (10 shared connections)
+- [CastingStateManager](CastingStateManager.md) (7 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/magic/casting_state_manager.py`
 - `server/game/magic/magic_service.py`
-- `server/tests/unit/game/magic/test_casting_state_manager.py`
 - `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 181 (74%)
-- INFERRED: 63 (26%)
+- EXTRACTED: 119 (73%)
+- INFERRED: 44 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

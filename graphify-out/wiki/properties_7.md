@@ -1,46 +1,39 @@
 # properties
 
-> 19 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
-- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [type](type.md) (5 shared connections)
-- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
-- [prototype_id](prototype_id.md) (1 shared connections)
-- [short_description](short_description.md) (1 shared connections)
-- [long_description](long_description.md) (1 shared connections)
-- [enum](enum_2.md) (1 shared connections)
-- [weight](weight.md) (1 shared connections)
+- [room_hierarchy_schema.json](room_hierarchy_schema.json.md) (1 shared connections)
+- [name](name.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
+- [zone](zone.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
+- [sub_zone](sub_zone.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [exits](exits.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

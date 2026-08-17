@@ -1,47 +1,43 @@
 # asyncio
 
-> 17 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **asyncio** (16 connections)
-- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_apply_dampening_and_send_message_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_echo_message_to_sender_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier_with_uuid()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **asyncio** (8 connections)
+- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_active_effects_for_player_filters_by_remaining()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_true()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_add_effect_returns_id()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_delete_effect()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_expire_effects_for_tick_returns_expired_and_deletes()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks_none()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_false()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_active_effects_for_player returns only effects with remaining_ticks > 0…** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns True when player has active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns False when no active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns duration - (current_tick - applied_at_tick).** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns None when no matching effect.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **expire_effects_for_tick returns (player_id, effect_type) and deletes rows via…** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a mock PlayerEffect with given fields.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **Build a procedure result row (mappings().all() item) from effect mock.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **add_effect persists effect and returns effect id (via add_player_effect…** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **delete_effect removes effect by id.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (8 shared connections)
-- [test_broadcast_by_channel_type_exception](test_broadcast_by_channel_type_exception.md) (1 shared connections)
-- [test_broadcast_to_room_with_filtering_exception](test_broadcast_to_room_with_filtering_exception.md) (1 shared connections)
-- [test_echo_message_to_sender_exception](test_echo_message_to_sender_exception.md) (1 shared connections)
-- [test_get_player_lucidity_tier_default](test_get_player_lucidity_tier_default.md) (1 shared connections)
-- [test_get_player_lucidity_tier_exception_in_processing](test_get_player_lucidity_tier_exception_in_processing.md) (1 shared connections)
-- [test_process_message_with_retry_failure](test_process_message_with_retry_failure.md) (1 shared connections)
-- [test_send_messages_to_players_no_original_content](test_send_messages_to_players_no_original_content.md) (1 shared connections)
-- [test_send_messages_to_players_with_tags](test_send_messages_to_players_with_tags.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (11 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

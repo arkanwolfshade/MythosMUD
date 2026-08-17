@@ -35,7 +35,7 @@
 
 - [test_logging_handlers.py](test_logging_handlers.py.md) (3 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

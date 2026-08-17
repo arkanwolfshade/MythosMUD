@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (11 shared connections)
-- [channels.ts](channels.ts.md) (10 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (9 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (5 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (24 shared connections)
+- [ansiToHtml.ts](ansiToHtml.ts.md) (6 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
 - [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
 - [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
 - [security.ts](security.ts.md) (2 shared connections)

@@ -1,44 +1,41 @@
 # test_npc_event_handlers.py
 
-> 20 nodes
+> 82 nodes
 
 ## Key Concepts
 
 - **test_npc_event_handlers.py** (46 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **asyncio** (16 connections)
+- **npc_event_handler()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_entered_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_handle_npc_left_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_message_builder()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **mock_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_no_match()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_determine_direction_from_rooms_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_send_room_message_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- **test_send_room_message_no_room_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
 - **test_get_behavior_config_from_instance_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_departure_message_no_instance()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_instance_exception()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_name_no_service()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_npc_spawn_message_no_config()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_dict()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_none()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_parse_behavior_config_string()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Unit tests for NPC event handlers. Tests the NPCEventHandler class.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_instance() handles exceptions gracefully.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with None.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_spawn_message() returns default when no config.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_name() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_npc_departure_message() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_behavior_config_from_instance() with method.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _get_behavior_config_from_instance() when config is not found.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with dict.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with JSON string.** (1 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (9 shared connections)
-- [ConnectionManager](ConnectionManager.md) (5 shared connections)
-- [npc_event_handler](npc_event_handler.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (14 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [test_parse_behavior_config_invalid_json](test_parse_behavior_config_invalid_json.md) (1 shared connections)
-- [test_get_npc_instance_found](test_get_npc_instance_found.md) (1 shared connections)
-- [test_get_npc_instance_no_service](test_get_npc_instance_no_service.md) (1 shared connections)
-- [test_parse_behavior_config_empty_string](test_parse_behavior_config_empty_string.md) (1 shared connections)
-- [test_handle_npc_entered_room_with_npc_instance](test_handle_npc_entered_room_with_npc_instance.md) (1 shared connections)
-- [test_parse_behavior_config_not_dict_or_string](test_parse_behavior_config_not_dict_or_string.md) (1 shared connections)
-- [test_determine_direction_from_rooms_no_persistence](test_determine_direction_from_rooms_no_persistence.md) (1 shared connections)
-- [test_get_npc_departure_message_no_config](test_get_npc_departure_message_no_config.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 105 (90%)
+- INFERRED: 12 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -11,29 +11,29 @@
 - .delete_player() `EXTRACTED`
 
 ### contains
-- alias_storage.py `EXTRACTED`
+- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 
 ### imports
-- command_service.py `EXTRACTED`
-- [test_alias_storage.py](test_alias_storage.py.md) `EXTRACTED`
+- [command_service.py](command_service.py.md) `EXTRACTED`
+- test_alias_storage.py `EXTRACTED`
 - [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) `EXTRACTED`
 - [look_command.py](look_command.py.md) `EXTRACTED`
-- command_handler_unified.py `EXTRACTED`
+- [command_handler_unified.py](command_handler_unified.py.md) `EXTRACTED`
 - player_service.py `EXTRACTED`
 - combat_handler.py `EXTRACTED`
-- inventory_equip_command.py `EXTRACTED`
+- [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
 - [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
-- admin_summon_command.py `EXTRACTED`
+- [admin_summon_command.py](admin_summon_command.py.md) `EXTRACTED`
 - inventory_pickup_command.py `EXTRACTED`
 - admin_commands.py `EXTRACTED`
-- inventory_unequip_command.py `EXTRACTED`
+- [inventory_unequip_command.py](inventory_unequip_command.py.md) `EXTRACTED`
 - rescue_commands.py `EXTRACTED`
 - websocket_handler_commands.py `EXTRACTED`
 - combat_taunt.py `EXTRACTED`
 - admin_setlucidity_command.py `EXTRACTED`
-- [communication_commands.py](communication_commands.py.md) `EXTRACTED`
+- communication_commands.py `EXTRACTED`
 
 ### method
 - .get_player_aliases() `EXTRACTED`
@@ -82,7 +82,7 @@
 - handle_npc_command() `EXTRACTED`
 
 ### uses
-- CombatCommandHandler `INFERRED`
+- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
 - [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
 - MagicCommandHandler `INFERRED`
 - handle_read_command() `INFERRED`

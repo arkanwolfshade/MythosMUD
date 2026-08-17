@@ -34,17 +34,17 @@
 ## Relationships
 
 - [test_npc_startup_service.py](test_npc_startup_service.py.md) (33 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (7 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
 - [.connection_manager](connection_manager.md) (3 shared connections)
 - [UserManager](UserManager.md) (3 shared connections)
-- [CombatDeathHandler](CombatDeathHandler.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 - [HealthService](HealthService.md) (2 shared connections)
-- [test_application_container.py](test_application_container.py.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [MagicServiceHealingMixin](MagicServiceHealingMixin.md) (1 shared connections)
-- [StatsGenerator](StatsGenerator.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
+- [Stats](Stats.md) (1 shared connections)
 
 ## Source Files
 

@@ -15,7 +15,7 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 

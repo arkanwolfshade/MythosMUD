@@ -1,10 +1,11 @@
 # PartyService
 
-> 53 nodes
+> 55 nodes
 
 ## Key Concepts
 
 - **PartyService** (36 connections) — `server/game/party_service.py`
+- **party_service.py** (17 connections) — `server/game/party_service.py`
 - **_str_id()** (16 connections) — `server/game/party_service.py`
 - **UUID** (15 connections)
 - **Any** (10 connections)
@@ -28,19 +29,20 @@
 - **.is_in_same_party()** (5 connections) — `server/game/party_service.py`
 - **.is_leader()** (5 connections) — `server/game/party_service.py`
 - **.get_party_members()** (4 connections) — `server/game/party_service.py`
-- **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
-- *... and 28 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (6 shared connections)
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
-- [test_party_flow.py](test_party_flow.py.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_party_flow.py](test_party_flow.py.md) (8 shared connections)
+- [test_party_service.py](test_party_service.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [send_game_event](send_game_event.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 127 (92%)
-- INFERRED: 11 (8%)
+- EXTRACTED: 140 (93%)
+- INFERRED: 11 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

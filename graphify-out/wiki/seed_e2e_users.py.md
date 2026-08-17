@@ -18,7 +18,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (3 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (1 shared connections)
 
 ## Source Files
 

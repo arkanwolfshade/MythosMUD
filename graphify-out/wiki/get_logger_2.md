@@ -34,22 +34,22 @@
 ### imports
 - server/exceptions.py `EXTRACTED`
 - connection_manager.py `EXTRACTED`
-- command_service.py `EXTRACTED`
-- server/dependencies.py `EXTRACTED`
+- [command_service.py](command_service.py.md) `EXTRACTED`
+- [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - time.py `EXTRACTED`
 - [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - database.py `EXTRACTED`
-- alias_storage.py `EXTRACTED`
+- [alias_storage.py](alias_storage.py.md) `EXTRACTED`
 - players.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
+- api/character_creation.py `EXTRACTED`
+- maps.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- websocket_handler.py `EXTRACTED`
+- [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- lifespan_startup.py `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
+- [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
 - [chat_service.py](chat_service.py.md) `EXTRACTED`
 - models/combat.py `EXTRACTED`
 

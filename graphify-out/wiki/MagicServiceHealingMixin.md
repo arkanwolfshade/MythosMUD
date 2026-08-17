@@ -23,13 +23,12 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
 - [SpellEffectType](SpellEffectType.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [Spell](Spell.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
 - [NPCStartupService](NPCStartupService.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
 
 ## Source Files
 

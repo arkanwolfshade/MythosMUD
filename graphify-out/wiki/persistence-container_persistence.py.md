@@ -1,6 +1,6 @@
 # persistence/container_persistence.py
 
-> 85 nodes
+> 75 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,7 @@
 - **test_container_persistence_extended_row_helpers.py** (54 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 - **persistence/container_helpers.py** (26 connections) — `server/persistence/container_helpers.py`
 - **_container_data_from_row()** (20 connections) — `server/persistence/container_persistence.py`
-- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
-- **delete_container()** (13 connections) — `server/persistence/container_persistence.py`
+- **get_container()** (19 connections) — `server/persistence/container_persistence.py`
 - **parse_jsonb_column()** (11 connections) — `server/persistence/container_helpers.py`
 - **_after_container_insert()** (11 connections) — `server/persistence/container_persistence.py`
 - **_log_and_resolve_created_container()** (11 connections) — `server/persistence/container_persistence.py`
@@ -29,34 +28,33 @@
 - **_metadata_from_row()** (6 connections) — `server/persistence/container_persistence.py`
 - **ContainerData** (6 connections)
 - **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
-- *... and 60 more nodes in this community*
+- **_allowed_roles_from_row()** (5 connections) — `server/persistence/container_persistence.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (48 shared connections)
-- [DatabaseError](DatabaseError.md) (14 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (25 shared connections)
+- [get_logger](get_logger.md) (21 shared connections)
+- [ContainerData](ContainerData.md) (16 shared connections)
+- [update_container](update_container.md) (9 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (6 shared connections)
 - [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (5 shared connections)
-- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (4 shared connections)
-- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
 - [coerce_int](coerce_int.md) (3 shared connections)
-- [container_query_helpers_async.py](container_query_helpers_async.py.md) (3 shared connections)
-- [ContainerRepository](ContainerRepository.md) (1 shared connections)
+- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (3 shared connections)
 - [test_persistence_container_persistence.py](test_persistence_container_persistence.py.md) (1 shared connections)
-- [test_container_persistence_sql_injection.py](test_container_persistence_sql_injection.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/persistence/container_helpers.py`
 - `server/persistence/container_persistence.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (94%)
-- INFERRED: 17 (6%)
+- EXTRACTED: 260 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

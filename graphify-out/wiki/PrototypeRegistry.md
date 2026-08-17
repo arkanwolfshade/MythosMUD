@@ -13,7 +13,7 @@
 - **Path** (5 connections)
 - **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **Any** (4 connections)
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
 - **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
 - **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
 - **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
@@ -27,21 +27,21 @@
 - **Path** (3 connections)
 - **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **ValidationError** (1 connections)
-- **Find all prototypes that have a specific tag. Args: tag: The tag to search for…** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get all prototypes in the registry. Returns: Iterable[ItemPrototypeModel]: An…** (1 connections) — `server/game/items/prototype_registry.py`
 - **Get all invalid entries that failed validation. Returns: list[dict]: List of…** (1 connections) — `server/game/items/prototype_registry.py`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (10 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (14 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (9 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (8 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [validate_prototypes.py](validate_prototypes.py.md) (2 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [_weapon_damage_from_equipped_player](_weapon_damage_from_equipped_player.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

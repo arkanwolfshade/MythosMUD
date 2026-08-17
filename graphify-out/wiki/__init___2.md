@@ -1,27 +1,24 @@
 # .__init__
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
-- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **Any** (2 connections)
-- **Initialize the rewards manager. Args: async_persistence: Async persistence…** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Calculate XP reward from NPC definition. Args: npc_definition: NPC definition…** (1 connections) — `server/services/npc_combat_rewards.py`
+- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
+- **Initialize the periodic orphan auditor. Args: check_interval_seconds: Seconds…** (1 connections) — `server/app/memory_lifespan_coordinator.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
+- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_rewards.py`
+- `server/app/memory_lifespan_coordinator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # handle_transfer_items_exceptions
 
-> 132 nodes
+> 144 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
 - **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
 - **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
+- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
 - **TestHandleTransferItemsExceptions** (12 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **TestHandleLootAllExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **TestHandleOpenContainerExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
@@ -23,34 +24,36 @@
 - **Exception** (6 connections)
 - **TestHandleCloseContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **TestHandleOpenContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **TestCreateErrorContext** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **UUID** (5 connections)
 - **TestTransferItemsExceptionsMutationKeyword** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **.test_handle_close_container_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
 - **.test_handle_loot_all_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **.test_handle_open_container_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **.test_handle_transfer_items_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- *... and 107 more nodes in this community*
+- *... and 119 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (47 shared connections)
+- [get_logger](get_logger.md) (53 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (14 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (13 shared connections)
-- [User](User.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [MythosValidationError](MythosValidationError.md) (2 shared connections)
-- [models/user.py](models-user.py.md) (2 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (11 shared connections)
+- [User](User.md) (8 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
+- [loot_all_items](loot_all_items.md) (1 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/api/test_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (83%)
-- INFERRED: 49 (17%)
+- EXTRACTED: 264 (84%)
+- INFERRED: 50 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

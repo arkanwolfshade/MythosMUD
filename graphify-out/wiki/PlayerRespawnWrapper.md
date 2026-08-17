@@ -26,10 +26,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (7 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_player_respawn_service.py](test_player_respawn_service.py.md) (1 shared connections)
 
 ## Source Files
 

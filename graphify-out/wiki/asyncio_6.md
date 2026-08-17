@@ -1,52 +1,50 @@
 # asyncio
 
-> 19 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **asyncio** (21 connections)
-- **test_get_npc_instance_not_found()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_persistence_no_methods()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_string_player_id()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_npcs_in_room_no_match()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_search_players_in_room_no_match()** (4 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_multiple_matches()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_no_matches()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_resolve_target_sync_get_player_by_id()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_validate_room_exists_async()** (3 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test _search_players_in_room() with no matching players.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test _search_npcs_in_room() with no matching NPCs.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test _get_npc_instance() when NPC not found.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() with string player_id.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() handles sync get_player_by_id.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() when no matches found.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() with multiple matches requires disambiguation.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Async get_room_by_id validates room presence.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **Test resolve_target() when persistence has no get methods.** (1 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **asyncio** (18 connections)
+- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_admin() returns False when container not available.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_admin() returns False when persistence not available.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [test_target_resolution_service.py](test_target_resolution_service.py.md) (9 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (5 shared connections)
-- [test_resolve_target_empty_target_name](test_resolve_target_empty_target_name.md) (1 shared connections)
-- [test_resolve_target_no_persistence_methods](test_resolve_target_no_persistence_methods.md) (1 shared connections)
-- [test_resolve_target_no_room](test_resolve_target_no_room.md) (1 shared connections)
-- [test_resolve_target_player_no_room_id](test_resolve_target_player_no_room_id.md) (1 shared connections)
-- [test_resolve_target_player_not_found](test_resolve_target_player_not_found.md) (1 shared connections)
-- [test_resolve_target_single_match](test_resolve_target_single_match.md) (1 shared connections)
-- [test_resolve_target_uses_get_player_fallback](test_resolve_target_uses_get_player_fallback.md) (1 shared connections)
-- [test_resolve_target_whitespace_target_name](test_resolve_target_whitespace_target_name.md) (1 shared connections)
-- [test_resolve_target_with_disambiguation_suffix](test_resolve_target_with_disambiguation_suffix.md) (1 shared connections)
-- [test_search_npcs_in_room_empty_list](test_search_npcs_in_room_empty_list.md) (1 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (16 shared connections)
+- [test_add_admin_no_persistence](test_add_admin_no_persistence.md) (1 shared connections)
+- [test_remove_admin_no_persistence](test_remove_admin_no_persistence.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (89%)
-- INFERRED: 5 (11%)
+- EXTRACTED: 50 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

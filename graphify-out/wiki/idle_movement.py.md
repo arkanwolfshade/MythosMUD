@@ -1,6 +1,6 @@
 # idle_movement.py
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
 - **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
 - **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
 - **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
 - **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
 - **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
@@ -20,6 +21,7 @@
 - **_cfg_float()** (2 connections) — `server/npc/idle_movement.py`
 - **_resolve_spawn_room()** (2 connections) — `server/npc/idle_movement.py`
 - **NPC Idle Movement Handler for MythosMUD. This module provides idle movement…** (1 connections) — `server/npc/idle_movement.py`
+- **Determine if an NPC should attempt idle movement. Checks multiple conditions: -…** (1 connections) — `server/npc/idle_movement.py`
 - **Get exits from current room that stay within subzone boundaries. Args:…** (1 connections) — `server/npc/idle_movement.py`
 - **Calculate weight for an exit based on distance from spawn. Args:…** (1 connections) — `server/npc/idle_movement.py`
 - **Calculate weights for all exits. Args: valid_exits: Dictionary of direction ->…** (1 connections) — `server/npc/idle_movement.py`
@@ -31,12 +33,11 @@
 ## Relationships
 
 - [IdleMovementHandler](IdleMovementHandler.md) (16 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

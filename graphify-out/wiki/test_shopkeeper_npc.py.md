@@ -33,9 +33,7 @@
 
 ## Relationships
 
-- [npc_base.py](npc_base.py.md) (4 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files

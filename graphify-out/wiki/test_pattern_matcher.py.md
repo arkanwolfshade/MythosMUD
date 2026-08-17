@@ -1,11 +1,12 @@
 # test_pattern_matcher.py
 
-> 48 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **test_pattern_matcher.py** (21 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 - **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
+- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
 - **.matches_any_pattern()** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
 - **pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 - **strict_pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
@@ -28,24 +29,24 @@
 - **test_matches_any_pattern_no_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 - **test_matches_any_pattern_strict_validation()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 - **fixture** (2 connections)
-- **Any** (1 connections)
-- *... and 23 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [SubjectValidator](SubjectValidator.md) (2 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- [SubjectValidator](SubjectValidator.md) (3 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [SubjectManagerMetrics](SubjectManagerMetrics.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/nats_subject_manager/manager.py`
 - `server/services/nats_subject_manager/pattern_matcher.py`
 - `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (92%)
+- EXTRACTED: 58 (92%)
 - INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 

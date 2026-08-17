@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (44 shared connections)
-- [Profession](Profession.md) (18 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (37 shared connections)
+- [Profession](Profession.md) (25 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (10 shared connections)
 - [security.ts](security.ts.md) (10 shared connections)
 - [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (9 shared connections)

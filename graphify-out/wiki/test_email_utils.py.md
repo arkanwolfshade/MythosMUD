@@ -25,7 +25,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (5 shared connections)
-- [test_users.py](test_users.py.md) (1 shared connections)
+- [.on_after_register](on_after_register.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

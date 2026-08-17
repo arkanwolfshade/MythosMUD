@@ -1,12 +1,11 @@
 # ConnectionErrorHandler
 
-> 37 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **ConnectionErrorHandler** (26 connections) — `server/realtime/errors/error_handler.py`
 - **test_connection_error_handler.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **error_handler.py** (12 connections) — `server/realtime/errors/error_handler.py`
 - **asyncio** (9 connections)
 - **.detect_and_handle_error_state()** (8 connections) — `server/realtime/errors/error_handler.py`
 - **UUID** (8 connections)
@@ -29,14 +28,15 @@
 - **test_recover_from_error_full()** (3 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
 - **errors/__init__.py** (3 connections) — `server/realtime/errors/__init__.py`
 - **test_get_error_statistics()** (2 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- *... and 12 more nodes in this community*
+- **fixture** (1 connections)
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [MessageQueue](MessageQueue.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 76 (87%)
-- INFERRED: 11 (13%)
+- EXTRACTED: 68 (86%)
+- INFERRED: 11 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

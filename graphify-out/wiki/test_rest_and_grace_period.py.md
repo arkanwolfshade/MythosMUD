@@ -33,18 +33,18 @@
 
 ## Relationships
 
+- [test_rest_command.py](test_rest_command.py.md) (9 shared connections)
 - [start_grace_period](start_grace_period.md) (8 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [GameStateProvider](GameStateProvider.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
 - [test_look_player.py](test_look_player.py.md) (2 shared connections)
-- [GameStateProvider](GameStateProvider.md) (2 shared connections)
-- [occupant_display.py](occupant_display.py.md) (2 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (1 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [login_grace_period.py](login_grace_period.py.md) (2 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (2 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (2 shared connections)
+- [_check_grace_period_block](_check_grace_period_block.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

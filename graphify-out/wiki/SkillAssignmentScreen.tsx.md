@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [Profession](Profession.md) (7 shared connections)
+- [Profession](Profession.md) (10 shared connections)
 - [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (3 shared connections)
+- [logger.ts](logger.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (2 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
 - [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (2 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 

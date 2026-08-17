@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [middleware](middleware.md) (3 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

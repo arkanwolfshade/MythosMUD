@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [logging_file_setup.py](logging_file_setup.py.md) (3 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (5 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (1 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [bind_request_context](bind_request_context.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

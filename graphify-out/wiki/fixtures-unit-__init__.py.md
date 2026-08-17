@@ -27,8 +27,9 @@
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

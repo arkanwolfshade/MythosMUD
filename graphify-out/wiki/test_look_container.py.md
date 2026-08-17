@@ -34,7 +34,8 @@
 ## Relationships
 
 - [test_look_container_helpers.py](test_look_container_helpers.py.md) (50 shared connections)
-- [look_command.py](look_command.py.md) (5 shared connections)
+- [look_command.py](look_command.py.md) (4 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

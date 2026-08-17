@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (4 shared connections)
-- [CombatPersistenceHandler](CombatPersistenceHandler.md) (2 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

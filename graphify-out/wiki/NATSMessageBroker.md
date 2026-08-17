@@ -34,17 +34,17 @@
 ## Relationships
 
 - [test_nats_broker.py](test_nats_broker.py.md) (20 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [._error_callback](_error_callback.md) (2 shared connections)
 - [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
 - [MessageBroker](MessageBroker.md) (2 shared connections)
-- [SubjectValidator](SubjectValidator.md) (2 shared connections)
+- [config/models/__init__.py](config-models-__init__.py.md) (2 shared connections)
 - [nats_broker](nats_broker.md) (1 shared connections)
 - [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
+- [SubjectValidator](SubjectValidator.md) (1 shared connections)
+- [realtime/realtime.py](realtime-realtime.py.md) (1 shared connections)
 
 ## Source Files
 

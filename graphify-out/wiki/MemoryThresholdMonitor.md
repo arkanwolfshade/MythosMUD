@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [.get_memory_status_report](get_memory_status_report.md) (4 shared connections)
 - [._flush_memory_indexes_cache](_flush_memory_indexes_cache.md) (2 shared connections)
 - [monitor](monitor.md) (2 shared connections)
 - [.__init__](__init__.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

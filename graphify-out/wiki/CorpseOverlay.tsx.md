@@ -1,6 +1,6 @@
 # CorpseOverlay.tsx
 
-> 91 nodes
+> 89 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **useContainerSplitPane.ts** (20 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
 - **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
-- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
 - **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
 - **useContainerStore** (11 connections) — `client/src/stores/containerStore.ts`
 - **ContainerComponent** (10 connections) — `client/src/stores/containerStore.ts`
@@ -29,14 +28,15 @@
 - **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
-- *... and 66 more nodes in this community*
+- **formatTimeRemaining()** (4 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
+- *... and 64 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
-- [gameStore.ts](gameStore.ts.md) (6 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (14 shared connections)
+- [gameStore.ts](gameStore.ts.md) (5 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (4 shared connections)
-- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (3 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
 - [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
@@ -64,7 +64,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 202 (100%)
+- EXTRACTED: 197 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
