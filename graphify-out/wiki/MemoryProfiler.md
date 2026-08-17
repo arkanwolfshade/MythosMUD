@@ -37,7 +37,7 @@
 - [Alias](Alias.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
 - [Stats](Stats.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
 - [spell_effects_status.py](spell_effects_status.py.md) (1 shared connections)
 
 ## Source Files

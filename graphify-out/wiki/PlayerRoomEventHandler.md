@@ -1,12 +1,15 @@
 # PlayerRoomEventHandler
 
-> 62 nodes
+> 99 nodes
 
 ## Key Concepts
 
 - **PlayerRoomEventHandler** (30 connections) — `server/realtime/player_event_handlers_room.py`
 - **player_event_handlers_room.py** (28 connections) — `server/realtime/player_event_handlers_room.py`
+- **realtime/conftest.py** (24 connections) — `server/tests/unit/realtime/conftest.py`
 - **UUID** (15 connections)
+- **fixture** (15 connections)
+- **PlayerRoomEventHandlerDeps** (12 connections) — `server/realtime/player_event_handlers_room.py`
 - **_as_map()** (10 connections) — `server/realtime/player_event_handlers_room.py`
 - **.handle_player_entered()** (10 connections) — `server/realtime/player_event_handlers_room.py`
 - **_snapshot_payload()** (10 connections) — `server/realtime/player_event_handlers_room.py`
@@ -26,29 +29,25 @@
 - **Protocol** (6 connections)
 - **_NamedRoom** (5 connections) — `server/realtime/player_event_handlers_room.py`
 - **_as_occupant_snap()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.log_player_movement()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **._send_room_name_message()** (5 connections) — `server/realtime/player_event_handlers_room.py`
-- **.broadcast_player_entered_message()** (4 connections) — `server/realtime/player_event_handlers_room.py`
-- *... and 37 more nodes in this community*
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (15 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (11 shared connections)
-- [realtime/conftest.py](realtime-conftest.py.md) (5 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (37 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (6 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (3 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (2 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/player_event_handlers_room.py`
+- `server/tests/unit/realtime/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (94%)
-- INFERRED: 10 (6%)
+- EXTRACTED: 214 (92%)
+- INFERRED: 18 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

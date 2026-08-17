@@ -34,7 +34,7 @@
 ## Relationships
 
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [bind_request_context](bind_request_context.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 
 ## Source Files

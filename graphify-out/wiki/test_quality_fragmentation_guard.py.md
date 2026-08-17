@@ -1,6 +1,6 @@
 # test_quality_fragmentation_guard.py
 
-> 31 nodes
+> 40 nodes
 
 ## Key Concepts
 
@@ -18,23 +18,23 @@
 - **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **Protocol** (4 connections)
 - **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
 - **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
 - **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_is_safe_git_ref_accepts_sha_and_branch_like_ref()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_is_safe_git_ref_rejects_suspicious_values()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_parse_lizard_output_maps_function_nodes()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_row_exceeds_params_gate_matches_params_max()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- *... and 6 more nodes in this community*
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (13 shared connections)
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (3 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (16 shared connections)
+- [_collect_python_public_defs_and_tiny](_collect_python_public_defs_and_tiny.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -44,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (83%)
-- INFERRED: 15 (17%)
+- EXTRACTED: 81 (83%)
+- INFERRED: 17 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

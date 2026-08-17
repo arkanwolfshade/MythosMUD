@@ -1,6 +1,6 @@
 # test_lucidity_event_dispatcher.py
 
-> 75 nodes
+> 70 nodes
 
 ## Key Concepts
 
@@ -13,7 +13,6 @@
 - **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
 - **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
 - **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- **send_hallucination_event()** (7 connections) — `server/services/lucidity_event_dispatcher.py`
 - **UUID** (6 connections)
 - **test_send_lucidity_change_event_with_liabilities()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_lucidity_change_event_with_max_lcd()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
@@ -29,18 +28,20 @@
 - **test_format_liabilities_multiple_stacks()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_format_liabilities_single()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 - **test_send_catatonia_event_basic()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
-- *... and 50 more nodes in this community*
+- **test_send_catatonia_event_dispatch_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (13 shared connections)
-- [.app](app.md) (5 shared connections)
-- [test_hallucination_services.py](test_hallucination_services.py.md) (3 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
-- [test_lucidity_trigger_handlers.py](test_lucidity_trigger_handlers.py.md) (2 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [test_lucidity_trigger_handlers.py](test_lucidity_trigger_handlers.py.md) (4 shared connections)
+- [PhantomHostileService](PhantomHostileService.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [rescue_service.py](rescue_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [mock_send_game_event](mock_send_game_event.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 167 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 161 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

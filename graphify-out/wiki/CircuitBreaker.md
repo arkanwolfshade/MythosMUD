@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 
 ## Source Files
 

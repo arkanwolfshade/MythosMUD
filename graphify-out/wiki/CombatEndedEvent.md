@@ -16,11 +16,11 @@
 ## Relationships
 
 - [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
 - [asyncio](asyncio.md) (3 shared connections)
 - [CombatEventHandler](CombatEventHandler.md) (2 shared connections)
 - [CombatEventPublisher](CombatEventPublisher.md) (2 shared connections)
-- [combat_event_publisher.py](combat_event_publisher.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

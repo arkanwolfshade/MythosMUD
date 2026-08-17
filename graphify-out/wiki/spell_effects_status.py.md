@@ -1,6 +1,6 @@
 # spell_effects_status.py
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **_remove_player_status_effect()** (7 connections) — `server/game/magic/spell_effects_status.py`
 - **_parse_status_effect_metadata()** (6 connections) — `server/game/magic/spell_effects_status.py`
 - **UUID** (5 connections)
-- **.remove_status_effect()** (3 connections) — `server/models/game.py`
 - **Status effect spell logic (apply/remove status, force-flee, grace-period…** (1 connections) — `server/game/magic/spell_effects_status.py`
 - **Parse effect_data for status-effect type, duration, intensity, remove flag.…** (1 connections) — `server/game/magic/spell_effects_status.py`
 - **Remove a matching status effect from a player.** (1 connections) — `server/game/magic/spell_effects_status.py`
@@ -26,23 +25,22 @@
 - **True if target is in login grace period and effect is negative (should block).** (1 connections) — `server/game/magic/spell_effects_status.py`
 - **Load player, append status effect, save; return result dict or error if player…** (1 connections) — `server/game/magic/spell_effects_status.py`
 - **Run flee effect when effect_data.force_flee is set; otherwise return None.** (1 connections) — `server/game/magic/spell_effects_status.py`
-- **Remove a status effect from the player. Args: effect_type: Type of effect to…** (1 connections) — `server/models/game.py`
 - **Status effects that can be applied to characters.** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (10 shared connections)
-- [pytest.md](pytest.md.md) (8 shared connections)
-- [Spell](Spell.md) (8 shared connections)
+- [TargetMatch](TargetMatch.md) (9 shared connections)
+- [Spell](Spell.md) (7 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [StatusEffect](StatusEffect.md) (3 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [run_flee_effect](run_flee_effect.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [spell_effects_support.py](spell_effects_support.py.md) (1 shared connections)
-- [get_session_maker](get_session_maker.md) (1 shared connections)
-- [test_damage_grace_period.py](test_damage_grace_period.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
-- [Stats](Stats.md) (1 shared connections)
-- [TargetType](TargetType.md) (1 shared connections)
 
 ## Source Files
 
@@ -51,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 81 (93%)
+- EXTRACTED: 79 (93%)
 - INFERRED: 6 (7%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,36 +1,34 @@
 # properties
 
-> 23 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **properties** (11 connections) — `db/static/schemas/room.schema.json`
-- **null** (11 connections) — `db/static/schemas/room.schema.json`
-- **string** (11 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **down** (2 connections) — `db/static/schemas/room.schema.json`
-- **east** (2 connections) — `db/static/schemas/room.schema.json`
-- **north** (2 connections) — `db/static/schemas/room.schema.json`
-- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **south** (2 connections) — `db/static/schemas/room.schema.json`
-- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **up** (2 connections) — `db/static/schemas/room.schema.json`
-- **west** (2 connections) — `db/static/schemas/room.schema.json`
+- **properties** (10 connections) — `db/static/schemas/room.schema.json`
+- **attributes** (3 connections) — `db/static/schemas/room.schema.json`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
+- **name** (3 connections) — `db/static/schemas/room.schema.json`
+- **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
+- **zone** (3 connections) — `db/static/schemas/room.schema.json`
+- **environment** (2 connections) — `db/static/schemas/room.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [exits](exits.md) (3 shared connections)
+- [required](required.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
+- [exits](exits.md) (1 shared connections)
 
 ## Source Files
 
@@ -38,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # deque
 
-> 61 nodes
+> 63 nodes
 
 ## Key Concepts
 
@@ -29,29 +29,31 @@
 - **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
 - **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 36 more nodes in this community*
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
 - [RateLimiter](RateLimiter.md) (13 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [ErrorMonitor](ErrorMonitor.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
+- [.send_message](send_message.md) (1 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 - [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
 - [NATSMetrics](NATSMetrics.md) (1 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
 
 ## Source Files
 
 - `data/local/mythos_mud_mapbuilder.py`
+- `server/monitoring/memory_leak_metrics.py`
 - `server/realtime/message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (85%)
+- EXTRACTED: 128 (85%)
 - INFERRED: 22 (15%)
 - AMBIGUOUS: 0 (0%)
 

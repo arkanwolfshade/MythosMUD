@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (6 shared connections)
 - [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
-- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
-- [get_session_maker](get_session_maker.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

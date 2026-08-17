@@ -1,47 +1,44 @@
 # message_handler_factory.py
 
-> 25 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **message_handler_factory.py** (24 connections) — `server/realtime/message_handler_factory.py`
 - **test_message_handler_factory.py** (22 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
 - **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
 - **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
 - **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **Any** (8 connections)
+- **WebSocket** (8 connections)
 - **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
 - **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **asyncio** (7 connections)
+- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
 - **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
 - **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
-- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **ABC** (2 connections)
-- **Message Handler Factory for WebSocket message routing. This module implements a…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Initialize the factory with registered handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Abstract base class for message handlers.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for command messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for chat messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for ping messages.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for follow_response messages (accept/decline follow request).** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for party_invite_response messages (accept/decline party invite).** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handler for client_error_report messages (client-reported errors for server…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Unit tests for message handler factory. Tests the message_handler_factory…** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory handles game_command as alias for command.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.get_handler() returns handler when found.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **test_chat_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_client_error_report_handler_logs()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [MessageHandlerFactory](MessageHandlerFactory.md) (12 shared connections)
-- [asyncio](asyncio.md) (11 shared connections)
-- [Any](Any.md) (7 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
-- [ErrorType](ErrorType.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (12 shared connections)
+- [ErrorType](ErrorType.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [MessageBroker](MessageBroker.md) (1 shared connections)
-- [test_nats_broker.py](test_nats_broker.py.md) (1 shared connections)
-- [handle_ping_message](handle_ping_message.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -51,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 80 (91%)
-- INFERRED: 8 (9%)
+- EXTRACTED: 139 (89%)
+- INFERRED: 17 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

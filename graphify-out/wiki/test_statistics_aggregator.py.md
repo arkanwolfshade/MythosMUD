@@ -32,9 +32,8 @@
 
 ## Relationships
 
-- [StatisticsAggregator](StatisticsAggregator.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (1 shared connections)
 
 ## Source Files
 

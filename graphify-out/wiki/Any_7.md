@@ -1,41 +1,46 @@
 # Any
 
-> 19 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance. Args: npc_id: ID of the NPC to despawn reason: Reason…** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room. Args: npc_id: ID of the NPC to move…** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances. Returns: List of NPC instance information** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance. Args: npc_id: ID of the NPC…** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics. Returns: Dictionary with population statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics. Returns: Dictionary with zone statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics. Returns: Dictionary with system statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID. Args: room_id: Room ID like…** (1 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance. Args: definition_id: ID of the NPC definition to…** (1 connections) — `server/services/npc_instance_service.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (12 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

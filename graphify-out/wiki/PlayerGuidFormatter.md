@@ -1,12 +1,13 @@
 # PlayerGuidFormatter
 
-> 58 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **PlayerGuidFormatter** (34 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_player_guid_formatter.py** (25 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **player_guid_formatter.py** (5 connections) — `server/structured_logging/player_guid_formatter.py`
 - **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **formatter()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
@@ -28,15 +29,15 @@
 - **test_player_guid_formatter_init_with_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_not_matching_partial()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- *... and 33 more nodes in this community*
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_utilities.py](test_logging_utilities.py.md) (3 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (3 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 71 (74%)
-- INFERRED: 25 (26%)
+- EXTRACTED: 74 (75%)
+- INFERRED: 25 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

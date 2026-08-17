@@ -1,62 +1,63 @@
 # game_tick_processing.py
 
-> 54 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **game_tick_processing.py** (83 connections) — `server/app/game_tick_processing.py`
-- **_TickContainer** (20 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_player()** (12 connections) — `server/app/game_tick_processing.py`
-- **AsyncSession** (12 connections)
-- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
-- **Player** (11 connections)
-- **_process_mp_regeneration()** (9 connections) — `server/app/game_tick_processing.py`
-- **_process_session_dp_decay_and_death()** (9 connections) — `server/app/game_tick_processing.py`
-- **Protocol** (9 connections)
-- **_handle_player_death_threshold()** (8 connections) — `server/app/game_tick_processing.py`
-- **UUID** (8 connections)
-- **_process_dead_players()** (7 connections) — `server/app/game_tick_processing.py`
-- **_process_passive_lucidity_flux()** (7 connections) — `server/app/game_tick_processing.py`
-- **_process_single_player_mp_regeneration()** (7 connections) — `server/app/game_tick_processing.py`
-- **_TickDeathService** (6 connections) — `server/app/game_tick_processing.py`
-- **_process_mortally_wounded_players()** (6 connections) — `server/app/game_tick_processing.py`
-- **_validate_mp_regeneration_services()** (6 connections) — `server/app/game_tick_processing.py`
-- **_player_in_active_combat()** (5 connections) — `server/app/game_tick_processing.py`
-- **combat_messaging_integration.py** (5 connections) — `server/services/combat_messaging_integration.py`
-- **_TickCombatService** (4 connections) — `server/app/game_tick_processing.py`
-- **_TickMpRegen** (4 connections) — `server/app/game_tick_processing.py`
-- **test_process_single_player_mp_regeneration()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **_TickConnectionManager** (3 connections) — `server/app/game_tick_processing.py`
-- **_TickEventBus** (3 connections) — `server/app/game_tick_processing.py`
-- **_TickMagicService** (3 connections) — `server/app/game_tick_processing.py`
-- *... and 29 more nodes in this community*
+- **game_tick_processing.py** (54 connections) — `server/app/game_tick_processing.py`
+- **game_tick_status_effects.py** (29 connections) — `server/app/game_tick_status_effects.py`
+- **_TickContainer** (23 connections) — `server/app/game_tick_protocols.py`
+- **game_tick_protocols.py** (23 connections) — `server/app/game_tick_protocols.py`
+- **_process_single_effect()** (14 connections) — `server/app/game_tick_status_effects.py`
+- **_validate_app_state_for_status_effects()** (14 connections) — `server/app/game_tick_status_effects.py`
+- **_process_damage_over_time_effect()** (13 connections) — `server/app/game_tick_status_effects.py`
+- **_process_mortally_wounded_player()** (12 connections) — `server/app/game_tick_death.py`
+- **_process_heal_over_time_effect()** (11 connections) — `server/app/game_tick_status_effects.py`
+- **process_status_effects()** (11 connections) — `server/app/game_tick_status_effects.py`
+- **_process_mp_regeneration()** (9 connections) — `server/app/game_tick_death.py`
+- **_process_session_dp_decay_and_death()** (9 connections) — `server/app/game_tick_death.py`
+- **_process_all_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
+- **_update_player_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
+- **_validate_and_get_player()** (9 connections) — `server/app/game_tick_status_effects.py`
+- **FastAPI** (9 connections)
+- **_handle_player_death_threshold()** (8 connections) — `server/app/game_tick_death.py`
+- **process_player_effects_expiration()** (8 connections) — `server/app/game_tick_status_effects.py`
+- **_process_player_status_effects()** (8 connections) — `server/app/game_tick_status_effects.py`
+- **_process_dead_players()** (7 connections) — `server/app/game_tick_death.py`
+- **_process_passive_lucidity_flux()** (7 connections) — `server/app/game_tick_death.py`
+- **_process_status_effects_for_players()** (7 connections) — `server/app/game_tick_status_effects.py`
+- **AsyncSession** (7 connections)
+- **_process_mortally_wounded_players()** (6 connections) — `server/app/game_tick_death.py`
+- **_validate_mp_regeneration_services()** (6 connections) — `server/app/game_tick_death.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
 - [test_game_tick_processing.py](test_game_tick_processing.py.md) (42 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (13 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [coerce_int](coerce_int.md) (5 shared connections)
-- [get_current_tick](get_current_tick.md) (4 shared connections)
-- [test_connection_manager_api.py](test_connection_manager_api.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [HolidayService](HolidayService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
-- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (16 shared connections)
+- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (14 shared connections)
+- [Protocol](Protocol.md) (13 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (8 shared connections)
+- [coerce_int](coerce_int.md) (7 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
 
 ## Source Files
 
+- `server/app/game_tick_death.py`
 - `server/app/game_tick_processing.py`
-- `server/realtime/connection_manager_api.py`
-- `server/services/combat_messaging_integration.py`
+- `server/app/game_tick_protocols.py`
+- `server/app/game_tick_status_effects.py`
 - `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 210 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 217 (86%)
+- INFERRED: 35 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

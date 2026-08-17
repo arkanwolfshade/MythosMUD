@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (6 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
-- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (1 shared connections)
-- [security.ts](security.ts.md) (1 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
+- [security.ts](security.ts.md) (7 shared connections)
+- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [@testing-library/jest-dom/vitest](@testing-library-jest-dom-vitest.md) (1 shared connections)
 
 ## Source Files
 

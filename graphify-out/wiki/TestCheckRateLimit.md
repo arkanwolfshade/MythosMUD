@@ -13,8 +13,8 @@
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (8 shared connections)
+- [npc_base.py](npc_base.py.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [NPCBase](NPCBase.md) (1 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 

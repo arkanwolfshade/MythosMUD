@@ -1,53 +1,50 @@
 # test_message_broadcaster.py
 
-> 78 nodes
+> 35 nodes
 
 ## Key Concepts
 
 - **test_message_broadcaster.py** (23 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **MessageBroadcaster** (19 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster.py** (16 connections) — `server/realtime/messaging/message_broadcaster.py`
 - **asyncio** (15 connections)
-- **UUID** (9 connections)
-- **.broadcast_global()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_stats_counter()** (7 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_to_room()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._deliver_room_broadcast()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_batch_delivery_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._process_global_batch_results()** (6 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._build_target_mapping()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_global_individual()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **._fallback_individual_send()** (5 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_global_targets_and_stats()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_global_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.broadcast_room_event()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **.__init__()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **_narrow_gather_delivery_dict()** (4 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **._prepare_room_targets()** (3 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
-- *... and 53 more nodes in this community*
+- **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster. Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() when no players online.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_room_event() broadcasts room event.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() records invalid subscriber IDs.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (6 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
+- [message_broadcaster](message_broadcaster.md) (3 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/messaging/message_broadcaster.py`
 - `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

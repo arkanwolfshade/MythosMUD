@@ -1,6 +1,6 @@
 # NATSRetryHandler
 
-> 89 nodes
+> 71 nodes
 
 ## Key Concepts
 
@@ -8,8 +8,6 @@
 - **test_nats_retry_handler.py** (35 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
 - **asyncio** (13 connections)
-- **RetryConfig** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **nats_retry_handler.py** (10 connections) — `server/realtime/nats_retry_handler.py`
 - **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
 - **test_retry_async_calls_function()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_async_increments_attempt()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
@@ -27,28 +25,30 @@
 - **test_retry_with_backoff_preserves_exception_type()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_with_backoff_success_after_retries()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
 - **test_retry_with_backoff_success_first_attempt()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.get_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
 - **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- *... and 64 more nodes in this community*
+- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
+- **test_calculate_backoff_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (5 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [RetryConfig](RetryConfig.md) (7 shared connections)
+- [ConnectionManager](ConnectionManager.md) (5 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (2 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/nats_retry_handler.py`
-- `server/tests/unit/realtime/test_nats_message_handler.py`
 - `server/tests/unit/realtime/test_nats_retry_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (76%)
-- INFERRED: 39 (24%)
+- EXTRACTED: 103 (74%)
+- INFERRED: 36 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

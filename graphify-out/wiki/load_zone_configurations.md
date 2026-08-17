@@ -15,8 +15,10 @@
 
 ## Relationships
 
-- [test_zone_config_loader.py](test_zone_config_loader.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [test_zone_config_loader.py](test_zone_config_loader.py.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [zone_config_loader.py](zone_config_loader.py.md) (1 shared connections)
 - [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
 
 ## Source Files

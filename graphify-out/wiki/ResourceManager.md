@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (3 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
 
 ## Source Files
 

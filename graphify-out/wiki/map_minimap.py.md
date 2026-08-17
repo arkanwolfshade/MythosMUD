@@ -1,12 +1,11 @@
 # map_minimap.py
 
-> 53 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
 - **test_map_minimap_helpers.py** (21 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
 - **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
 - **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
 - **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
@@ -29,26 +28,29 @@
 - **.test_admin_gets_grid_layout_for_rooms_without_coords()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **.test_fallback_grid_wraps_by_fallback_grid_width()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
 - **.test_non_admin_gets_fallback_only_for_current_room()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
-- *... and 28 more nodes in this community*
+- **.test_non_admin_uses_stable_id_for_current_room_match()** (3 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (23 shared connections)
-- [test_map_helpers.py](test_map_helpers.py.md) (7 shared connections)
-- [AsciiMapRenderer](AsciiMapRenderer.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [maps.py](maps.py.md) (8 shared connections)
+- [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
+- [ExplorationService](ExplorationService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
 - `server/api/map_minimap.py`
 - `server/tests/unit/api/test_map_minimap_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (90%)
-- INFERRED: 13 (10%)
+- EXTRACTED: 109 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

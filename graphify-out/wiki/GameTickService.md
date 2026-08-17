@@ -1,12 +1,13 @@
 # GameTickService
 
-> 57 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **GameTickService** (30 connections) — `server/services/game_tick_service.py`
 - **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **asyncio** (13 connections)
+- **test_game_tick_service.py** (6 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.start()** (4 connections) — `server/services/game_tick_service.py`
 - **.test_start_already_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.test_start_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
@@ -28,13 +29,13 @@
 - **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
 - **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
 - **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
-- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
-- *... and 32 more nodes in this community*
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (99%)
+- EXTRACTED: 92 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

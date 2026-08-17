@@ -1,45 +1,43 @@
 # CombatConfiguration
 
-> 79 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **CombatConfiguration** (26 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
 - **TestCombatConfiguration** (16 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **test_combat_configuration_service.py** (9 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
-- **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_settings_summary()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.validate_configuration()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
-- **Any** (5 connections)
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.get_active_overrides()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.refresh_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.test_from_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
 - **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 54 more nodes in this community*
+- **.test_validate_invalid_alert_threshold()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_max_participants()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_tick_interval_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_tick_interval_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_timeout_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_timeout_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_xp_multiplier_too_high()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_invalid_xp_multiplier_too_low()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_valid()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.validate()** (2 connections) — `server/services/combat_configuration_service.py`
+- **Combat configuration data class.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Validate configuration and return list of errors.** (1 connections) — `server/services/combat_configuration_service.py`
+- **Test validate catches XP multiplier too high.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test validate catches alert threshold out of range.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test validate catches max participants out of range.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test suite for CombatConfiguration dataclass.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test CombatConfiguration initialization with defaults.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test CombatConfiguration initialization with custom values.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test to_dict converts configuration to dictionary.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Test validate returns empty list for valid configuration.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [TestCombatConfigurationService](TestCombatConfigurationService.md) (7 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [CombatConfigurationService](CombatConfigurationService.md) (4 shared connections)
+- [.update_combat_configuration](update_combat_configuration.md) (4 shared connections)
+- [TestCombatConfigurationService](TestCombatConfigurationService.md) (2 shared connections)
+- [test_combat_configuration_service.py](test_combat_configuration_service.py.md) (2 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 135 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 52 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

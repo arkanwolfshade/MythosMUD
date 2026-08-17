@@ -1,29 +1,30 @@
-# enum
+# Enum
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Enum** (5 connections)
+- **MockEffectType** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockRangeType** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockSchool** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MockTargetType** (3 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Mock spell school enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Mock target type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Mock range type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **Mock effect type enum.** (1 connections) — `server/tests/unit/commands/test_magic_commands.py`
 
 ## Relationships
 
-- [applies_to](applies_to.md) (1 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/commands/test_magic_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

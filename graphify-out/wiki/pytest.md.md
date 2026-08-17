@@ -1,78 +1,68 @@
 # pytest.md
 
-> 771 nodes
+> 133 nodes
 
 ## Key Concepts
 
 - **pytest.md** (515 connections) — `.claude/rules/pytest.md`
-- **Player** (229 connections) — `server/models/player.py`
-- **AsyncPersistenceLayer** (167 connections) — `server/async_persistence.py`
-- **models/player.py** (96 connections) — `server/models/player.py`
-- **test_player_respawn_service.py** (55 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_player_death_service.py** (53 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_async_persistence_delegates.py** (36 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
-- **server/models/game.py** (33 connections) — `server/models/game.py`
-- **test_async_persistence_room_cache.py** (33 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **StatusEffect** (31 connections) — `server/models/game.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **persistence/repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
-- **PlayerRepository** (30 connections) — `server/persistence/repositories/player_repository.py`
-- **player_repository.py** (29 connections) — `server/persistence/repositories/player_repository.py`
-- **asyncio** (27 connections)
-- **Player** (26 connections) — `server/models/game.py`
-- **asyncio** (26 connections)
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **players/player.py** (21 connections) — `server/schemas/players/player.py`
-- **asyncio** (21 connections)
-- **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
-- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **get_async_persistence()** (19 connections) — `server/async_persistence.py`
-- *... and 746 more nodes in this community*
+- **LootAllRequest** (58 connections) — `server/api/container_models.py`
+- **loot_all_items()** (34 connections) — `server/api/container_endpoints_loot.py`
+- **container_endpoints_loot.py** (32 connections) — `server/api/container_endpoints_loot.py`
+- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
+- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
+- **TestLootAllItems** (16 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **TestTransferAllItemsFromContainer** (16 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **asyncio** (14 connections)
+- **test_container_endpoints_loot.py** (13 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **test_container_endpoints_loot_register.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **TestGetContainerAndPlayerForLootAll** (10 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **apply_rate_limiting_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
+- **validate_user_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
+- **asyncio** (9 connections)
+- **.test_loot_all_items_capacity_error()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **.test_loot_all_items_container_not_found()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **.test_loot_all_items_locked_error()** (7 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **.test_transfer_all_items_from_container_capacity_error()** (7 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **asyncio** (7 connections)
+- **TestApplyRateLimitingForLootAll** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **_build_loot_all_response()** (6 connections) — `server/api/container_endpoints_loot.py`
+- **register_loot_endpoints()** (6 connections) — `server/api/container_endpoints_loot.py`
+- *... and 108 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (94 shared connections)
-- [get_session_maker](get_session_maker.md) (41 shared connections)
-- [DatabaseError](DatabaseError.md) (34 shared connections)
-- [User](User.md) (19 shared connections)
-- [Stats](Stats.md) (17 shared connections)
-- [row_to_player](row_to_player.md) (17 shared connections)
-- [LucidityService](LucidityService.md) (17 shared connections)
-- [test_inventory_put_command.py](test_inventory_put_command.py.md) (16 shared connections)
-- [test_async_persistence_core.py](test_async_persistence_core.py.md) (15 shared connections)
-- [coerce_int](coerce_int.md) (15 shared connections)
-- [BaseCommand](BaseCommand.md) (15 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (14 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (38 shared connections)
+- [get_logger](get_logger.md) (33 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (22 shared connections)
+- [ContainerSourceType](ContainerSourceType.md) (21 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (13 shared connections)
+- [ConnectionManager](ConnectionManager.md) (12 shared connections)
+- [User](User.md) (11 shared connections)
+- [DatabaseError](DatabaseError.md) (11 shared connections)
+- [ContainerComponent](ContainerComponent.md) (9 shared connections)
+- [TestEmitLootAllEvent](TestEmitLootAllEvent.md) (8 shared connections)
+- [container_events.py](container_events.py.md) (7 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (7 shared connections)
 
 ## Source Files
 
 - `.claude/rules/pytest.md`
-- `server/async_persistence.py`
-- `server/models/game.py`
-- `server/models/player.py`
-- `server/npc/combat_integration_base.py`
-- `server/npc/idle_movement.py`
-- `server/npc/movement_integration.py`
-- `server/persistence/protocols.py`
-- `server/persistence/repositories/__init__.py`
-- `server/persistence/repositories/experience_repository.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/persistence/repositories/player_repository.py`
-- `server/persistence/repositories/profession_repository.py`
-- `server/schemas/players/class_definition.py`
-- `server/schemas/players/player.py`
-- `server/services/player_death_service.py`
-- `server/services/player_position_service.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/unit/events/test_event_serialization.py`
-- `server/tests/unit/infrastructure/conftest.py`
+- `server/api/container_endpoints_loot.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_helpers.py`
+- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- `server/tests/unit/test_asyncio_run_guardrails.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2095 (90%)
-- INFERRED: 241 (10%)
+- EXTRACTED: 862 (96%)
+- INFERRED: 32 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

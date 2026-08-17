@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [test_nats_broker.py](test_nats_broker.py.md) (2 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
 - [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
 
 ## Source Files

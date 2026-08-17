@@ -1,25 +1,12 @@
 # test_rate_limiter.py
 
-> 88 nodes
+> 61 nodes
 
 ## Key Concepts
 
 - **test_rate_limiter.py** (36 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
-- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
-- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
-- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
-- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
 - **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
-- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
-- **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
-- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
 - **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
-- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
 - **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
@@ -29,24 +16,36 @@
 - **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
 - **test_get_player_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 63 more nodes in this community*
+- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_different_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [RateLimiter](RateLimiter.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
 - `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 68 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

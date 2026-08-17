@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [api/monitoring.py](api-monitoring.py.md) (8 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
+- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (4 shared connections)
 - [test_movement_monitor.py](test_movement_monitor.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 

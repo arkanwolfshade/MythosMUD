@@ -1,6 +1,6 @@
 # test_inventory_display_helpers.py
 
-> 43 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,10 @@
 - **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 - **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 - **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
 - **test_build_container_metadata_with_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
 - **test_build_container_metadata_without_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
 - **test_build_equipped_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
@@ -25,28 +29,24 @@
 - **test_build_inventory_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
 - **test_build_inventory_lines_with_item()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
 - **test_filter_equipped_by_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_filter_keeps_non_equipped_items()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_filter_non_equipped_inventory()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- **test_format_metadata_exception_returns_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
-- *... and 18 more nodes in this community*
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
 - [test_inventory_helpers.py](test_inventory_helpers.py.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
-- [command_result_text](command_result_text.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/inventory_display_helpers.py`
 - `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
 - `server/tests/unit/commands/test_inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (100%)
+- EXTRACTED: 101 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

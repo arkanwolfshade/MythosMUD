@@ -1,10 +1,11 @@
 # utils/layout.ts
 
-> 41 nodes
+> 44 nodes
 
 ## Key Concepts
 
 - **utils/layout.ts** (45 connections) — `client/src/components/map/utils/layout.ts`
+- **useMapLayout.ts** (22 connections) — `client/src/components/map/hooks/useMapLayout.ts`
 - **applyForceLayout()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **runForceSimulationStep()** (7 connections) — `client/src/components/map/utils/layout.ts`
 - **GridLayoutConfig** (6 connections) — `client/src/components/map/utils/layout.ts`
@@ -22,23 +23,25 @@
 - **crossingEdgeForce()** (4 connections) — `client/src/components/map/utils/layout.ts`
 - **doesEdgeCrossNode()** (4 connections) — `client/src/components/map/utils/layout.ts`
 - **repelCrossingEdgePair()** (4 connections) — `client/src/components/map/utils/layout.ts`
+- **useMapLayout.test.ts** (4 connections) — `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - **defaultForceLayoutConfig** (4 connections) — `client/src/components/map/utils/layout.ts`
 - **applyChargeForces()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **applyMutualForce()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **doLineSegmentsIntersect()** (3 connections) — `client/src/components/map/utils/layout.ts`
 - **gridPositionForIndex()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **groupedGridPosition()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- **linkForceReduction()** (3 connections) — `client/src/components/map/utils/layout.ts`
-- *... and 16 more nodes in this community*
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (13 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (6 shared connections)
-- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [gameStore.ts](gameStore.ts.md) (15 shared connections)
+- [RoomNodeData](RoomNodeData.md) (9 shared connections)
+- [map/types.ts](map-types.ts.md) (6 shared connections)
+- [MapPerformanceMonitor](MapPerformanceMonitor.md) (2 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (1 shared connections)
 
 ## Source Files
 
+- `client/src/components/map/hooks/__tests__/useMapLayout.test.ts`
 - `client/src/components/map/hooks/useMapLayout.ts`
 - `client/src/components/map/utils/__tests__/applyForceLayout.test.ts`
 - `client/src/components/map/utils/__tests__/applyGridLayout.test.ts`
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 123 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

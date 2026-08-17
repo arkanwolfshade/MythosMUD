@@ -1,12 +1,11 @@
 # test_command_processor.py
 
-> 80 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **test_command_processor.py** (41 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
 - **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
 - **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
@@ -14,7 +13,6 @@
 - **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
 - **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
 - **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.__init__()** (3 connections) — `server/utils/command_processor.py`
 - **Any** (3 connections)
 - **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
@@ -29,19 +27,19 @@
 - **test_get_command_help_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
 - **test_get_command_help_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 55 more nodes in this community*
+- **test_get_command_help_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_is_combat_command_attack()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [CommandFactory](CommandFactory.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (3 shared connections)
 - [BaseCommand](BaseCommand.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (2 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (1 shared connections)
-- [processing.py](processing.py.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [test_command_service.py](test_command_service.py.md) (1 shared connections)
+- [MythosValidationError](MythosValidationError.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 100 (95%)
+- EXTRACTED: 95 (95%)
 - INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 

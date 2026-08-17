@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [RoomCacheService](RoomCacheService.md) (9 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
 - [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (1 shared connections)
 
 ## Source Files

@@ -1,6 +1,6 @@
 # test_logging_handlers.py
 
-> 66 nodes
+> 71 nodes
 
 ## Key Concepts
 
@@ -18,6 +18,8 @@
 - **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **RotatingFileHandler** (4 connections)
 - **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
+- **temp_log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **temp_log_file()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
@@ -27,9 +29,7 @@
 - **test_safe_rotating_file_handler_open_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **test_safe_rotating_file_handler_open_returns_stringio_on_final_failure()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
 - **test_safe_rotating_file_handler_open_success()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_false()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- **test_safe_rotating_file_handler_should_rollover_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
-- *... and 41 more nodes in this community*
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
@@ -37,7 +37,6 @@
 - [test_logging_utilities.py](test_logging_utilities.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
-- [temp_log_dir](temp_log_dir.md) (2 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (83%)
-- INFERRED: 21 (17%)
+- EXTRACTED: 110 (84%)
+- INFERRED: 21 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

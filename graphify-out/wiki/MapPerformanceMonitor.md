@@ -19,7 +19,8 @@
 
 ## Relationships
 
-- [gameStore.ts](gameStore.ts.md) (3 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (2 shared connections)
+- [gameStore.ts](gameStore.ts.md) (1 shared connections)
 
 ## Source Files
 

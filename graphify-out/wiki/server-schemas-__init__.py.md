@@ -1,6 +1,6 @@
 # server/schemas/__init__.py
 
-> 83 nodes
+> 84 nodes
 
 ## Key Concepts
 
@@ -18,33 +18,33 @@
 - **NPCSpawnRequest** (8 connections) — `server/api/admin/npc_schemas.py`
 - **AdminAuditLogResponse** (8 connections) — `server/schemas/admin/npc_admin.py`
 - **AdminSessionsResponse** (8 connections) — `server/schemas/admin/npc_admin.py`
-- **BroadcastMessageResponse** (8 connections) — `server/schemas/game/game.py`
-- **GameStatusResponse** (8 connections) — `server/schemas/game/game.py`
-- **MythosTimeResponse** (8 connections) — `server/schemas/game/game.py`
-- **game/game.py** (8 connections) — `server/schemas/game/game.py`
-- **schemas/game/__init__.py** (8 connections) — `server/schemas/game/__init__.py`
+- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
+- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
 - **asyncio** (8 connections)
 - **NPCMoveRequest** (7 connections) — `server/api/admin/npc_schemas.py`
 - **AdminCleanupSessionsResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
 - **NPCDespawnResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
 - **NPCMoveResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
 - **NPCPopulationStatsResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
-- *... and 58 more nodes in this community*
+- **NPCSpawnResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCStatsResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
+- **NPCSystemStatusResponse** (7 connections) — `server/schemas/admin/npc_admin.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [get_admin_auth_service](get_admin_auth_service.md) (18 shared connections)
-- [User](User.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
-- [test_game.py](test_game.py.md) (7 shared connections)
-- [test_invite_schemas.py](test_invite_schemas.py.md) (7 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (6 shared connections)
-- [HolidayCollection](HolidayCollection.md) (6 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (6 shared connections)
+- [models/user.py](models-user.py.md) (30 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (6 shared connections)
+- [test_invite_schemas.py](test_invite_schemas.py.md) (6 shared connections)
+- [PlayerService](PlayerService.md) (6 shared connections)
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
-- [ExplorationService](ExplorationService.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (4 shared connections)
+- [maps.py](maps.py.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [test_game.py](test_game.py.md) (4 shared connections)
 
 ## Source Files
 
@@ -54,14 +54,15 @@
 - `server/schemas/admin/__init__.py`
 - `server/schemas/admin/admin_data.py`
 - `server/schemas/admin/npc_admin.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
+- `server/schemas/rooms/__init__.py`
+- `server/schemas/rooms/room.py`
+- `server/schemas/rooms/room_data.py`
 - `server/tests/unit/api/test_npc_instances_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 290 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 286 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

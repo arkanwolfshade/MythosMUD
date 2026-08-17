@@ -1,18 +1,13 @@
 # test_alias_commands.py
 
-> 71 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
 - **asyncio** (23 connections)
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
 - **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
 - **test_handle_alias_command_circular_reference()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_alias_command_create_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_alias_command_create_from_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
@@ -29,15 +24,16 @@
 - **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
 - **test_handle_aliases_command_no_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 46 more nodes in this community*
+- **test_handle_aliases_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_with_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_unalias_command_alias_not_found()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_unalias_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_unalias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [alias_storage.py](alias_storage.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (21 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 141 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 117 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

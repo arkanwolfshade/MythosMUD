@@ -33,9 +33,12 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 - [TaskRegistry](TaskRegistry.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

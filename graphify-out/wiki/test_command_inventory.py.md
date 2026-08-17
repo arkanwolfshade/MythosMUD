@@ -34,7 +34,9 @@
 ## Relationships
 
 - [BaseCommand](BaseCommand.md) (34 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
+- [.create_equip_command](create_equip_command.md) (1 shared connections)
+- [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)
+- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

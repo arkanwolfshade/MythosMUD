@@ -1,64 +1,64 @@
 # command_result_text
 
-> 104 nodes
+> 96 nodes
 
 ## Key Concepts
 
 - **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **test_inventory_equip_command.py** (37 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_inventory_put_command.py** (25 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
 - **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
 - **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
 - **test_inventory_commands_pickup.py** (18 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **handle_equip_command()** (15 connections) — `server/commands/inventory_equip_command.py`
+- **handle_pickup_command()** (17 connections) — `server/commands/inventory_pickup_command.py`
+- **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
 - **asyncio** (14 connections)
-- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
-- **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
+- **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
+- **asyncio** (12 connections)
+- **_put_run_validated()** (10 connections) — `server/commands/inventory_put_command.py`
 - **inventory_commands_test_support.py** (10 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **asyncio** (10 connections)
-- **_equip_success_payload()** (9 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_target_slot_or_error()** (9 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandWork** (8 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_persist_or_rollback()** (8 connections) — `server/commands/inventory_equip_command.py`
 - **test_handle_pickup_command()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
 - **test_handle_pickup_command_inventory_capacity_error()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **_equip_try_inventory_swap()** (7 connections) — `server/commands/inventory_equip_command.py`
+- **PutCommandRuntime** (7 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (7 connections) — `server/commands/inventory_put_command.py`
 - **test_handle_pickup_command_persist_failure_restores_drop_and_inventory()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **CommandResponse** (7 connections)
+- **test_put_run_validated_container_error()** (7 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_put_run_validated_success()** (7 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
 - **asyncio** (7 connections)
-- **EquipCommandInventoryStep** (6 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
-- *... and 79 more nodes in this community*
+- **sample_floor_item_stack()** (6 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **_pickup_with_persist_patch()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- **test_handle_pickup_command_invalid_index()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (27 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (18 shared connections)
-- [test_inventory_put_command.py](test_inventory_put_command.py.md) (15 shared connections)
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [test_inventory_get_command.py](test_inventory_get_command.py.md) (8 shared connections)
-- [test_equipment_helpers.py](test_equipment_helpers.py.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (2 shared connections)
-- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (1 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (15 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (14 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (14 shared connections)
+- [test_inventory_equip_command.py](test_inventory_equip_command.py.md) (13 shared connections)
+- [AliasStorage](AliasStorage.md) (12 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (3 shared connections)
+- [InventoryService](InventoryService.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [handle_unequip_command](handle_unequip_command.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_equip_command.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_pickup_command.py`
+- `server/commands/inventory_put_command.py`
 - `server/tests/unit/commands/inventory_commands_test_support.py`
 - `server/tests/unit/commands/test_inventory_commands.py`
 - `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- `server/tests/unit/commands/test_inventory_equip_command.py`
+- `server/tests/unit/commands/test_inventory_put_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (87%)
-- INFERRED: 42 (13%)
+- EXTRACTED: 249 (83%)
+- INFERRED: 50 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

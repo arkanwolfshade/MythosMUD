@@ -1,17 +1,13 @@
 # ExperienceRepository
 
-> 30 nodes
+> 19 nodes
 
 ## Key Concepts
 
 - **ExperienceRepository** (28 connections) — `server/persistence/repositories/experience_repository.py`
 - **test_experience_repository.py** (17 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **asyncio** (10 connections)
-- **.update_player_xp()** (6 connections) — `server/persistence/repositories/experience_repository.py`
-- **.gain_experience()** (5 connections) — `server/persistence/repositories/experience_repository.py`
-- **.update_player_stat_field()** (5 connections) — `server/persistence/repositories/experience_repository.py`
 - **.gain_occult_knowledge()** (4 connections) — `server/game/mechanics.py`
-- **.__init__()** (4 connections) — `server/persistence/repositories/experience_repository.py`
 - **test_update_player_stat_field_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **test_update_player_xp_player_not_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
@@ -23,24 +19,22 @@
 - **test_update_player_stat_field_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **test_update_player_xp_negative_delta()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **test_update_player_xp_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
-- **UUID** (3 connections)
-- **Any** (1 connections)
-- **Player** (1 connections)
 - **fixture** (1 connections)
 - **Gain occult knowledge (with lucidity loss).** (1 connections) — `server/game/mechanics.py`
-- **Update player experience points atomically. Args: player_id: Player UUID or…** (1 connections) — `server/persistence/repositories/experience_repository.py`
-- *... and 5 more nodes in this community*
+- **Repository for player experience and stats persistence operations. Handles XP…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Unit tests for ExperienceRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (3 shared connections)
-- [log_and_raise](log_and_raise.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (12 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
-- [get_session_maker](get_session_maker.md) (2 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (1 shared connections)
+- [GameMechanicsService](GameMechanicsService.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
+- [.gain_experience](gain_experience.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -50,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (78%)
-- INFERRED: 17 (22%)
+- EXTRACTED: 43 (72%)
+- INFERRED: 17 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

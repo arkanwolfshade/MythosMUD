@@ -1,44 +1,44 @@
 # asyncio
 
-> 21 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (13 connections)
-- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Same persistence name resolution path for player_left.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **publish() returning False should surface as False from EventPublisher.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() with additional metadata.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_left_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **asyncio** (27 connections)
+- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_corruption() applies corruption.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_lucidity_loss() applies lucidity loss.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_fear() applies fear.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [test_event_publisher.py](test_event_publisher.py.md) (13 shared connections)
-- [EventPublisher](EventPublisher.md) (4 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (9 shared connections)
+- [test_apply_corruption_player_not_found](test_apply_corruption_player_not_found.md) (1 shared connections)
+- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
+- [test_damage_player](test_damage_player.md) (1 shared connections)
+- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
+- [test_delete_player_persistence_fails](test_delete_player_persistence_fails.md) (1 shared connections)
+- [test_delete_player_success](test_delete_player_success.md) (1 shared connections)
+- [test_gain_occult_knowledge](test_gain_occult_knowledge.md) (1 shared connections)
+- [test_gain_occult_knowledge_player_not_found](test_gain_occult_knowledge_player_not_found.md) (1 shared connections)
+- [test_get_user_characters](test_get_user_characters.md) (1 shared connections)
+- [test_heal_player](test_heal_player.md) (1 shared connections)
+- [test_heal_player_player_not_found](test_heal_player_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (89%)
-- INFERRED: 4 (11%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

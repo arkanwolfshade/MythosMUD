@@ -1,6 +1,6 @@
 # test_container_persistence_crud.py
 
-> 140 nodes
+> 138 nodes
 
 ## Key Concepts
 
@@ -20,7 +20,6 @@
 - **delete_container()** (10 connections) — `server/container_persistence/container_persistence.py`
 - **_execute_container_update()** (10 connections) — `server/container_persistence/container_persistence.py`
 - **UUID** (10 connections)
-- **container_create_params.py** (9 connections) — `server/persistence/container_create_params.py`
 - **ContainerData** (8 connections)
 - **server/container_persistence/__init__.py** (8 connections) — `server/container_persistence/__init__.py`
 - **fetch_container_items()** (7 connections) — `server/container_persistence/container_helpers.py`
@@ -29,18 +28,21 @@
 - **_map_container_content_row()** (6 connections) — `server/container_persistence/container_helpers.py`
 - **validate_update_lock_state()** (6 connections) — `server/container_persistence/container_helpers.py`
 - **_apply_container_column_updates()** (6 connections) — `server/container_persistence/container_persistence.py`
-- *... and 115 more nodes in this community*
+- **UUID** (6 connections)
+- *... and 113 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (14 shared connections)
-- [ContainerData](ContainerData.md) (10 shared connections)
-- [log_and_raise](log_and_raise.md) (10 shared connections)
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (9 shared connections)
-- [ValidationError](ValidationError.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
+- [DatabaseError](DatabaseError.md) (19 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
+- [ContainerRepository](ContainerRepository.md) (10 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (4 shared connections)
+- [persistence/container_persistence.py](persistence-container_persistence.py.md) (4 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 - [test_container_persistence.py](test_container_persistence.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 305 (90%)
+- EXTRACTED: 299 (90%)
 - INFERRED: 35 (10%)
 - AMBIGUOUS: 0 (0%)
 

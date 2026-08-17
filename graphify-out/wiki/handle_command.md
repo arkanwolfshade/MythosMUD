@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (16 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (12 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

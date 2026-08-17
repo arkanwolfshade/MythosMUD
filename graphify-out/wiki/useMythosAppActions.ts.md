@@ -1,72 +1,73 @@
 # useMythosAppActions.ts
 
-> 57 nodes
+> 83 nodes
 
 ## Key Concepts
 
 - **useMythosAppActions.ts** (34 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
+- **deleteCharacterFlow.ts** (29 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **errorHandler.ts** (28 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorMessage()** (26 connections) — `client/src/utils/errorHandler.ts`
+- **isErrorResponse()** (26 connections) — `client/src/utils/errorHandler.ts`
+- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
+- **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
 - **isServerUnavailable()** (18 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
 - **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
 - **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
+- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
 - **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
 - **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **logoutHandler()** (11 connections) — `client/src/utils/logoutHandler.ts`
 - **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
 - **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
-- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- **runSelectCharacterFlow()** (7 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
-- **runAfterCharacterCreatedFlow()** (6 connections) — `client/src/mythosApp/creationCompleteActions.ts`
-- **executeDeleteCharacterUi()** (6 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
-- **useCharacterHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMotdAndLogoutHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **stringIndicatesServerUnavailable()** (5 connections) — `client/src/mythosApp/serverAvailability.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
-- **errorDetailString()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
-- *... and 32 more nodes in this community*
+- **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **runDeleteCharacterFlow()** (9 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
+- **errorMessageFromApiBody()** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
+- **registerFailureMessage()** (8 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **getErrorType()** (8 connections) — `client/src/utils/errorHandler.ts`
+- **apiErrorMessage.ts** (8 connections) — `client/src/mythosApp/apiErrorMessage.ts`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (28 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (21 shared connections)
-- [security.ts](security.ts.md) (8 shared connections)
-- [utils/config.ts](utils-config.ts.md) (7 shared connections)
-- [App.tsx](App.tsx.md) (6 shared connections)
-- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (3 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [useProfessions.ts](useProfessions.ts.md) (1 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (1 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (1 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (44 shared connections)
+- [Profession](Profession.md) (18 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (10 shared connections)
+- [security.ts](security.ts.md) (10 shared connections)
+- [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (9 shared connections)
+- [utils/config.ts](utils-config.ts.md) (8 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (5 shared connections)
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
-- `client/src/__tests__/LogoutFlow.integration.test.tsx`
 - `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
+- `client/src/mythosApp/apiErrorMessage.ts`
 - `client/src/mythosApp/characterSessionApi.ts`
 - `client/src/mythosApp/creationCompleteActions.ts`
+- `client/src/mythosApp/creationCompleteFlow.ts`
+- `client/src/mythosApp/creationTypes.ts`
 - `client/src/mythosApp/deleteCharacterActions.ts`
+- `client/src/mythosApp/deleteCharacterFlow.ts`
+- `client/src/mythosApp/guards.ts`
+- `client/src/mythosApp/loginFailureMessage.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
 - `client/src/mythosApp/motdContinueFlow.ts`
+- `client/src/mythosApp/registerFailureMessage.ts`
 - `client/src/mythosApp/selectCharacterFlow.ts`
 - `client/src/mythosApp/serverAvailability.ts`
 - `client/src/mythosApp/startLoginGracePeriod.ts`
 - `client/src/mythosApp/useMythosAppActions.ts`
 - `client/src/mythosApp/useMythosSessionChrome.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
-- `client/src/utils/logoutHandler.ts`
-- `client/src/utils/security.ts`
+- `client/src/utils/errorHandler.test.ts`
+- `client/src/utils/errorHandler.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 350 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

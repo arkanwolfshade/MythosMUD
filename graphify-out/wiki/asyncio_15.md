@@ -1,49 +1,49 @@
 # asyncio
 
-> 20 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (27 connections)
-- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_shutdown_cleans_up_service_subscriptions()** (4 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_shutdown()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_shutdown_idempotent()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_multiple_services_subscribe_to_same_event()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_stop_processing_not_running()** (3 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_active_task_details_and_lifecycle_metrics()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_active_task_details_includes_exception()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_ensure_async_processing_no_loop_logs()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_set_main_loop_and_ensure_processing()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_signal_shutdown_and_cancel_helpers()** (2 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() stops processing.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() is idempotent.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test _stop_processing() when not running.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test EventBus.shutdown() automatically cleans up all service subscriptions.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test multiple services subscribing to the same event type.** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Test that service shutdown removes all subscribers for that service. This test…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Integration test: Multiple services subscribing to same events and cleanup.…** (1 connections) — `server/tests/unit/events/test_event_bus.py`
+- **asyncio** (24 connections)
+- **test_get_player_by_user_id_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_update_player_last_active_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_name returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_user_id returns first active player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test update_player_last_active successfully updates timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **Test update_player_last_active with provided timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
 
 ## Relationships
 
-- [test_event_bus.py](test_event_bus.py.md) (13 shared connections)
-- [MockEventClass](MockEventClass.md) (9 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_event_bus_publish_no_subscribers](test_event_bus_publish_no_subscribers.md) (1 shared connections)
-- [test_handle_event_async_async_subscriber_error](test_handle_event_async_async_subscriber_error.md) (1 shared connections)
-- [test_handle_event_async_no_subscribers](test_handle_event_async_no_subscribers.md) (1 shared connections)
-- [test_handle_event_async_sync_subscriber_error](test_handle_event_async_sync_subscriber_error.md) (1 shared connections)
-- [test_handle_task_result_async_with_error](test_handle_task_result_async_with_error.md) (1 shared connections)
+- [test_player_repository.py](test_player_repository.py.md) (10 shared connections)
+- [_make_mock_row](_make_mock_row.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_get_player_by_name_database_error](test_get_player_by_name_database_error.md) (1 shared connections)
+- [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
+- [test_list_players_database_error](test_list_players_database_error.md) (1 shared connections)
+- [test_list_players_empty](test_list_players_empty.md) (1 shared connections)
+- [test_save_player_database_error](test_save_player_database_error.md) (1 shared connections)
+- [test_save_player_success](test_save_player_success.md) (1 shared connections)
+- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
+- [test_soft_delete_player_not_found](test_soft_delete_player_not_found.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/persistence/test_player_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (90%)
-- INFERRED: 5 (10%)
+- EXTRACTED: 40 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,31 +1,42 @@
 # fixture
 
-> 9 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **fixture** (4 connections)
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample room drop item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample inventory item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Create a sample equipped item.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **fixture** (10 connections)
+- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create an async session factory.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock lucidity service.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a lucidity service factory.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a mock event dispatcher.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a RescueService instance.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Create a sample rescuer player.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (4 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (8 shared connections)
+- [rescue_service.py](rescue_service.py.md) (1 shared connections)
+- [sample_lucidity_record](sample_lucidity_record.md) (1 shared connections)
+- [sample_target](sample_target.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/services/test_rescue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

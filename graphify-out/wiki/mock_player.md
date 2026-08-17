@@ -13,7 +13,7 @@
 ## Relationships
 
 - [test_player_repository.py](test_player_repository.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 
 ## Source Files
 

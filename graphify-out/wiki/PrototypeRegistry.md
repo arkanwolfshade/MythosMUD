@@ -1,23 +1,21 @@
 # PrototypeRegistry
 
-> 31 nodes
+> 28 nodes
 
 ## Key Concepts
 
 - **PrototypeRegistry** (47 connections) — `server/game/items/prototype_registry.py`
 - **test_prototype_registry.py** (18 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **validate_prototypes.py** (8 connections) — `server/scripts/validate_prototypes.py`
 - **.load_from_path()** (6 connections) — `server/game/items/prototype_registry.py`
 - **._load_one_prototype()** (6 connections) — `server/game/items/prototype_registry.py`
 - **._record_validation_failure()** (5 connections) — `server/game/items/prototype_registry.py`
 - **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **Path** (5 connections)
-- **main()** (4 connections) — `server/scripts/validate_prototypes.py`
 - **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **Any** (4 connections)
+- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
 - **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
 - **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
-- **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
 - **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
@@ -29,33 +27,32 @@
 - **Path** (3 connections)
 - **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
 - **ValidationError** (1 connections)
-- *... and 6 more nodes in this community*
+- **Find all prototypes that have a specific tag. Args: tag: The tag to search for…** (1 connections) — `server/game/items/prototype_registry.py`
+- **Get all invalid entries that failed validation. Returns: list[dict]: List of…** (1 connections) — `server/game/items/prototype_registry.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (14 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (12 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (8 shared connections)
-- [_weapon_damage_from_equipped_player](_weapon_damage_from_equipped_player.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (10 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
 - [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [get_monitoring_dashboard](get_monitoring_dashboard.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [_weapon_damage_from_equipped_player](_weapon_damage_from_equipped_player.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/items/prototype_registry.py`
-- `server/scripts/validate_prototypes.py`
 - `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (69%)
-- INFERRED: 31 (31%)
+- EXTRACTED: 63 (68%)
+- INFERRED: 30 (32%)
 - AMBIGUOUS: 0 (0%)
 
 ---

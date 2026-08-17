@@ -34,17 +34,16 @@
 ## Relationships
 
 - [test_connection_session_management.py](test_connection_session_management.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [RateLimiter](RateLimiter.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
 - [DatabaseError](DatabaseError.md) (5 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
 - [start_grace_period](start_grace_period.md) (2 shared connections)
-- [PerformanceTracker](PerformanceTracker.md) (2 shared connections)
-- [User](User.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [is_websocket_open_impl](is_websocket_open_impl.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 

@@ -30,9 +30,9 @@
 
 ## Relationships
 
-- [PlayerService](PlayerService.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [TargetType](TargetType.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
 - [TargetMatch](TargetMatch.md) (1 shared connections)
 
 ## Source Files

@@ -1,56 +1,47 @@
 # CatatoniaRegistry
 
-> 65 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **CatatoniaRegistry** (42 connections) — `server/services/catatonia_registry.py`
-- **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **UUID** (6 connections)
-- **test_catatonia_registry.py** (6 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
-- **.test_on_sanitarium_failover_with_async_callback()** (4 connections) — `server/tests/unit/services/test_catatonia_registry.py`
 - **datetime** (4 connections)
 - **.get_snapshot()** (3 connections) — `server/services/catatonia_registry.py`
 - **.on_catatonia_cleared()** (3 connections) — `server/services/catatonia_registry.py`
 - **.on_catatonia_entered()** (3 connections) — `server/services/catatonia_registry.py`
 - **.should_trigger_sanitarium_failover()** (3 connections) — `server/services/catatonia_registry.py`
-- **.test_get_snapshot_empty()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_get_snapshot_is_copy()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_get_snapshot_with_players()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_init_with_failover_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_after_cleared()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_multiple_players_catatonic()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_not_registered()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_entered_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_entered_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- *... and 40 more nodes in this community*
+- **.on_sanitarium_failover()** (2 connections) — `server/services/catatonia_registry.py`
+- **.__init__()** (1 connections) — `server/services/catatonia_registry.py`
+- **Return True if the player is currently registered as catatonic.** (1 connections) — `server/services/catatonia_registry.py`
+- **Return a shallow copy of the current registry for diagnostics.** (1 connections) — `server/services/catatonia_registry.py`
+- **Track players who have entered catatonia and coordinate failover hooks.** (1 connections) — `server/services/catatonia_registry.py`
+- **Return True if we should trigger sanitarium failover for this player (not…** (1 connections) — `server/services/catatonia_registry.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (8 shared connections)
+- [TestCatatoniaRegistry](TestCatatoniaRegistry.md) (7 shared connections)
+- [test_catatonia_registry.py](test_catatonia_registry.py.md) (2 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
+- [.test_get_snapshot_is_copy](test_get_snapshot_is_copy.md) (1 shared connections)
+- [.test_get_snapshot_with_players](test_get_snapshot_with_players.md) (1 shared connections)
+- [.test_init](test_init.md) (1 shared connections)
+- [.test_init_with_failover_callback](test_init_with_failover_callback.md) (1 shared connections)
+- [.test_is_catatonic_after_cleared](test_is_catatonic_after_cleared.md) (1 shared connections)
+- [.test_multiple_players_catatonic](test_multiple_players_catatonic.md) (1 shared connections)
+- [.test_on_catatonia_cleared_not_registered](test_on_catatonia_cleared_not_registered.md) (1 shared connections)
+- [.test_on_catatonia_cleared_with_string](test_on_catatonia_cleared_with_string.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/catatonia_registry.py`
-- `server/tests/unit/services/test_catatonia_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 53 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

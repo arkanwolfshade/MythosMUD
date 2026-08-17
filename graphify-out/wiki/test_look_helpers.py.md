@@ -1,11 +1,11 @@
 # test_look_helpers.py
 
-> 102 nodes
+> 105 nodes
 
 ## Key Concepts
 
 - **test_look_helpers.py** (31 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **look_helpers.py** (23 connections) — `server/commands/look_helpers.py`
+- **look_helpers.py** (24 connections) — `server/commands/look_helpers.py`
 - **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
 - **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
@@ -29,15 +29,15 @@
 - **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **test_is_direction()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
 - **test_is_direction_false()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- *... and 77 more nodes in this community*
+- *... and 80 more nodes in this community*
 
 ## Relationships
 
 - [test_look_player.py](test_look_player.py.md) (7 shared connections)
 - [look_command.py](look_command.py.md) (6 shared connections)
 - [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [WearableContainerService](WearableContainerService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 179 (100%)
+- EXTRACTED: 182 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

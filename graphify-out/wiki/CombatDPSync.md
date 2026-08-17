@@ -1,6 +1,6 @@
 # CombatDPSync
 
-> 18 nodes
+> 22 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,8 @@
 - **UUID** (9 connections)
 - **._persist_player_dp_sync()** (7 connections) — `server/services/combat_hp_sync.py`
 - **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_update_event()** (5 connections) — `server/services/combat_hp_sync.py`
 - **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
 - **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
 - **._verify_player_save()** (4 connections) — `server/services/combat_hp_sync.py`
@@ -21,14 +23,17 @@
 - **Synchronously persist player DP to database. This is the actual persistence…** (1 connections) — `server/services/combat_hp_sync.py`
 - **Handles DP synchronization for combat operations.** (1 connections) — `server/services/combat_hp_sync.py`
 - **Initialize DP sync with reference to parent combat service.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
 - **Persist player DP to database in background (fire-and-forget). This method runs…** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
 - [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [NPCStartupService](NPCStartupService.md) (1 shared connections)
 
 ## Source Files
 
@@ -36,8 +41,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 35 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 41 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

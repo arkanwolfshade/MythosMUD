@@ -21,7 +21,7 @@
 
 - [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 

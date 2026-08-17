@@ -32,9 +32,8 @@
 
 ## Relationships
 
-- [Any](Any.md) (3 shared connections)
+- [ChatModeration](ChatModeration.md) (4 shared connections)
 - [chat_service.py](chat_service.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

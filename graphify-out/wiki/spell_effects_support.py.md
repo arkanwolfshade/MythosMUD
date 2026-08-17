@@ -1,6 +1,6 @@
 # spell_effects_support.py
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **_build_stat_modifications()** (7 connections) — `server/game/magic/spell_effects_support.py`
 - **_create_object_for_room()** (7 connections) — `server/game/magic/spell_effects_support.py`
 - **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **spell_effects_stats.py** (6 connections) — `server/game/magic/spell_effects_stats.py`
 - **Any** (6 connections)
 - **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
 - **test_process_create_object_for_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
@@ -29,16 +28,21 @@
 - **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 - **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 - **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- *... and 13 more nodes in this community*
+- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
-- [Spell](Spell.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (10 shared connections)
+- [Spell](Spell.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [StatusEffect](StatusEffect.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 - [spell_effects_status.py](spell_effects_status.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [SpellEffectType](SpellEffectType.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (95%)
+- EXTRACTED: 99 (95%)
 - INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 

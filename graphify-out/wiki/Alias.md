@@ -1,55 +1,58 @@
 # Alias
 
-> 73 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **Alias** (70 connections) — `server/models/alias.py`
-- **test_alias.py** (30 connections) — `server/tests/unit/models/test_alias.py`
-- **alias.py** (7 connections) — `server/models/alias.py`
-- **test_alias_default_id()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_timestamps()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_default_version()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_ids()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_equality_with_non_alias()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_no_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_get_expanded_command_with_args()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_different_name()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_same_name_and_command()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_hash_usable_in_set()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_case_insensitive()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_false()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_is_reserved_command_true()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_model_dump_timestamps_isoformat()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_repr()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- **test_alias_update_timestamp()** (3 connections) — `server/tests/unit/models/test_alias.py`
-- *... and 48 more nodes in this community*
+- **.model_dump()** (4 connections) — `server/models/alias.py`
+- **test_add_alias_case_insensitive()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_add_alias_new()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_add_alias_updates_existing()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_success()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_delete_player_aliases_existing()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_alias_count()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_alias_existing()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_player_aliases_with_aliases()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_get_player_aliases_with_timestamps()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_list_alias_files_with_files()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_load_alias_data_existing_file()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_remove_alias_nonexistent()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_save_player_aliases()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- **.__eq__()** (2 connections) — `server/models/alias.py`
+- **.get_expanded_command()** (2 connections) — `server/models/alias.py`
+- **.__hash__()** (2 connections) — `server/models/alias.py`
+- **.is_reserved_command()** (2 connections) — `server/models/alias.py`
+- **.__repr__()** (2 connections) — `server/models/alias.py`
+- **.update_timestamp()** (2 connections) — `server/models/alias.py`
+- **.validate_name()** (2 connections) — `server/models/alias.py`
+- **Any** (1 connections)
+- **BaseModel** (1 connections)
+- **Alias model for command aliases. Stores player command aliases for quick access…** (1 connections) — `server/models/alias.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (24 shared connections)
-- [alias_storage.py](alias_storage.py.md) (7 shared connections)
-- [get_session_maker](get_session_maker.md) (2 shared connections)
+- [test_alias.py](test_alias.py.md) (27 shared connections)
+- [test_alias_storage.py](test_alias_storage.py.md) (18 shared connections)
+- [AliasStorage](AliasStorage.md) (15 shared connections)
+- [.get_player_aliases](get_player_aliases.md) (5 shared connections)
 - [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
+- [MonkeyPatch](MonkeyPatch.md) (2 shared connections)
+- [fixture](fixture.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [Path](Path.md) (1 shared connections)
 - [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/models/alias.py`
-- `server/tests/unit/models/test_alias.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (64%)
-- INFERRED: 49 (36%)
+- EXTRACTED: 56 (47%)
+- INFERRED: 63 (53%)
 - AMBIGUOUS: 0 (0%)
 
 ---

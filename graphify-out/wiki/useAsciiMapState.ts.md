@@ -34,9 +34,10 @@
 ## Relationships
 
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
-- [utils/config.ts](utils-config.ts.md) (5 shared connections)
 - [security.ts](security.ts.md) (4 shared connections)
-- [PanelState](PanelState.md) (2 shared connections)
+- [utils/config.ts](utils-config.ts.md) (3 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [gameStore.ts](gameStore.ts.md) (2 shared connections)
 
 ## Source Files

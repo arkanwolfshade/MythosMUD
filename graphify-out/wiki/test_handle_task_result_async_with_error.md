@@ -9,8 +9,7 @@
 
 ## Relationships
 
-- [MockEventClass](MockEventClass.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 - [test_event_bus.py](test_event_bus.py.md) (1 shared connections)
 
 ## Source Files

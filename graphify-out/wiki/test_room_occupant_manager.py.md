@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

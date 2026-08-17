@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

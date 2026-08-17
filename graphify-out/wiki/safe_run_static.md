@@ -35,13 +35,12 @@
 
 - [run_quality_fragmentation_guard.py](run_quality_fragmentation_guard.py.md) (6 shared connections)
 - [pylint.py](pylint.py.md) (5 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (4 shared connections)
 - [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (4 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (3 shared connections)
 - [TestRunner](TestRunner.md) (3 shared connections)
 - [compare_linting_results.py](compare_linting_results.py.md) (3 shared connections)
 - [grype.py](grype.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [quality_fragmentation_lizard.py](quality_fragmentation_lizard.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 - [Result](Result.md) (1 shared connections)
 

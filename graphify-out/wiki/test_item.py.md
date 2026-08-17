@@ -1,12 +1,10 @@
 # test_item.py
 
-> 39 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **ItemComponentState** (13 connections) — `server/models/item.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
 - **.unique_key()** (8 connections) — `server/models/item.py`
 - **test_item_component_state_unique_key()** (4 connections) — `server/tests/unit/models/test_item.py`
 - **test_item_component_state_unique_key_different_instance_same_component()** (4 connections) — `server/tests/unit/models/test_item.py`
@@ -22,18 +20,20 @@
 - **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
 - **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
 - **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **Base** (3 connections)
-- **.apply_flag()** (2 connections) — `server/models/item.py`
-- **Idempotently apply a runtime-only flag override.** (1 connections) — `server/models/item.py`
-- **Per-instance persisted state for modular item components.** (1 connections) — `server/models/item.py`
 - **Convenience helper for composing uniqueness checks in higher layers.** (1 connections) — `server/models/item.py`
-- **Runtime representation of an item spawned from a prototype.** (1 connections) — `server/models/item.py`
 - **Unit tests for item models. Tests the ItemPrototype, ItemInstance, and…** (1 connections) — `server/tests/unit/models/test_item.py`
-- *... and 14 more nodes in this community*
+- **Test unique_key returns different tuples for different inputs.** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test primary_slot returns first wear slot when slots exist.** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test unique_key returns different tuples for same instance, different component.** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test unique_key returns different tuples for different instance, same component.** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test unique_key handles empty strings.** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test unique_key is a static method (can be called without instance).** (1 connections) — `server/tests/unit/models/test_item.py`
+- **Test primary_slot returns the slot when only one exists.** (1 connections) — `server/tests/unit/models/test_item.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_session_maker](get_session_maker.md) (13 shared connections)
+- [DatabaseError](DatabaseError.md) (19 shared connections)
 
 ## Source Files
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (76%)
-- INFERRED: 16 (24%)
+- EXTRACTED: 41 (75%)
+- INFERRED: 14 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

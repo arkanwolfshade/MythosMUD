@@ -1,6 +1,6 @@
 # CorpseOverlay.tsx
 
-> 93 nodes
+> 91 nodes
 
 ## Key Concepts
 
@@ -29,14 +29,14 @@
 - **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
 - **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
-- *... and 68 more nodes in this community*
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
 - [gameStore.ts](gameStore.ts.md) (6 shared connections)
 - [MythosPanel.tsx](MythosPanel.tsx.md) (4 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
+- [useGameClientV2ContainerRefsAndBootstrap.ts](useGameClientV2ContainerRefsAndBootstrap.ts.md) (3 shared connections)
 - [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
@@ -58,14 +58,13 @@
 - `client/src/components/containers/useContainerSplitPane.ts`
 - `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/stores/__tests__/containerStore.test.ts`
-- `client/src/stores/__tests__/gameStore.test.ts`
 - `client/src/stores/containerStore.ts`
 - `client/src/stores/gameStore.ts`
 - `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 204 (100%)
+- EXTRACTED: 202 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

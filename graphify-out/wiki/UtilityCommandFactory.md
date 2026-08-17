@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (31 shared connections)
-- [BaseCommand](BaseCommand.md) (14 shared connections)
+- [get_logger](get_logger.md) (32 shared connections)
+- [BaseCommand](BaseCommand.md) (11 shared connections)
 - [test_command_magic.py](test_command_magic.py.md) (2 shared connections)
-- [HolidayService](HolidayService.md) (2 shared connections)
+- [test_command_admin.py](test_command_admin.py.md) (2 shared connections)
+- [.error](error.md) (2 shared connections)
 - [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
 - [CommandFactory](CommandFactory.md) (1 shared connections)
+- [test_command_alias.py](test_command_alias.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

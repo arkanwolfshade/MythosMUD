@@ -33,7 +33,7 @@ def _create_corpse_lifecycle_service(app: FastAPI) -> CorpseLifecycleService | N
     )
 
 
-class _CorpseLike(Protocol):
+class _CorpseLike(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
     room_id: str | None
     container_id: UUID
 

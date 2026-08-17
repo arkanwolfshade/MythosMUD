@@ -1,50 +1,50 @@
 # EldritchIcon.tsx
 
-> 187 nodes
+> 107 nodes
 
 ## Key Concepts
 
-- **EldritchIcon.tsx** (40 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **ChatHistoryPanel.tsx** (40 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **MythosIcons** (36 connections) — `client/src/components/ui/MythosIcons.ts`
-- **EldritchIcon()** (33 connections) — `client/src/components/ui/EldritchIcon.tsx`
+- **EldritchIcon.tsx** (41 connections) — `client/src/components/ui/EldritchIcon.tsx`
+- **MythosIcons** (37 connections) — `client/src/components/ui/MythosIcons.ts`
+- **EldritchIcon()** (34 connections) — `client/src/components/ui/EldritchIcon.tsx`
 - **ChatPanelRuntimeViewParts.tsx** (29 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **CommandPanel.tsx** (29 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **channels.ts** (27 connections) — `client/src/config/channels.ts`
-- **TerminalButton.tsx** (24 connections) — `client/src/components/ui/TerminalButton.tsx`
-- **TerminalButton** (23 connections) — `client/src/components/ui/TerminalButton.tsx`
+- **TerminalButton.tsx** (25 connections) — `client/src/components/ui/TerminalButton.tsx`
+- **TerminalButton** (24 connections) — `client/src/components/ui/TerminalButton.tsx`
 - **DraggablePanelTest.tsx** (21 connections) — `client/src/components/DraggablePanelTest.tsx`
 - **EldritchEffectsDemo.tsx** (19 connections) — `client/src/components/EldritchEffectsDemo.tsx`
 - **FeedbackForm.tsx** (19 connections) — `client/src/components/ui/FeedbackForm.tsx`
 - **ChannelSelector.tsx** (16 connections) — `client/src/components/ui/ChannelSelector.tsx`
 - **ChatPanelTest.tsx** (15 connections) — `client/src/components/ChatPanelTest.tsx`
-- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - **TailwindTest.tsx** (14 connections) — `client/src/components/TailwindTest.tsx`
-- **CommandPanel()** (13 connections) — `client/src/components/panels/CommandPanel.tsx`
 - **CommandInputPanel.tsx** (13 connections) — `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
 - **TerminalInput.tsx** (11 connections) — `client/src/components/ui/TerminalInput.tsx`
 - **chatPanelHistorySearch.tsx** (10 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **commandPanelSubmit.ts** (10 connections) — `client/src/components/panels/commandPanelSubmit.ts`
 - **TerminalInput** (10 connections) — `client/src/components/ui/TerminalInput.tsx`
 - **eldritchEffectsDemoData.ts** (9 connections) — `client/src/components/eldritchEffectsDemoData.ts`
 - **ChatHeader.tsx** (9 connections) — `client/src/components/panels/chat/ChatHeader.tsx`
-- **ChatMessagesList.tsx** (9 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- *... and 162 more nodes in this community*
+- **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- **ChatStatistics.tsx** (8 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
+- **ChannelSelector()** (7 connections) — `client/src/components/ui/ChannelSelector.tsx`
+- **Channel** (6 connections) — `client/src/components/ui/ChannelSelector.tsx`
+- **ChannelSelector.test.tsx** (6 connections) — `client/src/components/ui/__tests__/ChannelSelector.test.tsx`
+- **ChatPanelTest.test.tsx** (5 connections) — `client/src/components/ChatPanelTest.test.tsx`
+- **ChatExportDialog.tsx** (5 connections) — `client/src/components/panels/ChatExportDialog.tsx`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (20 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (20 shared connections)
-- [security.ts](security.ts.md) (15 shared connections)
-- [MythosPanel.tsx](MythosPanel.tsx.md) (14 shared connections)
+- [channels.ts](channels.ts.md) (23 shared connections)
+- [PanelPosition](PanelPosition.md) (15 shared connections)
 - [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (13 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (11 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (13 shared connections)
+- [MythosPanel.tsx](MythosPanel.tsx.md) (12 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (10 shared connections)
-- [PanelState](PanelState.md) (10 shared connections)
+- [CommandPanel.tsx](CommandPanel.tsx.md) (10 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (9 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (9 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (8 shared connections)
 - [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (7 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (5 shared connections)
-- [types/mythosTime.ts](types-mythosTime.ts.md) (5 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
 
 ## Source Files
 
@@ -56,22 +56,22 @@
 - `client/src/components/EldritchEffectsDemo.tsx`
 - `client/src/components/TailwindTest.test.tsx`
 - `client/src/components/TailwindTest.tsx`
-- `client/src/components/__tests__/CommandPanel.test.tsx`
-- `client/src/components/__tests__/command-panel.test.tsx`
 - `client/src/components/eldritchEffectsDemoData.ts`
 - `client/src/components/panels/ChatExportDialog.tsx`
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRefactoredView.tsx`
 - `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- `client/src/components/panels/CommandPanel.tsx`
-- `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
-- `client/src/components/panels/__tests__/command-panel.spec.tsx`
-- `client/src/components/panels/__tests__/command-panel.test.tsx`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
+- `client/src/components/panels/chat/ChatHeader.tsx`
+- `client/src/components/panels/chat/ChatStatistics.tsx`
+- `client/src/components/panels/chat/__tests__/ChatHeader.test.tsx`
+- `client/src/components/panels/chatPanelHistorySearch.tsx`
+- `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
+- `client/src/components/ui-v2/panels/__tests__/CommandHistoryPanel.test.tsx`
+- `client/src/components/ui-v2/panels/__tests__/CommandInputPanel.test.tsx`
+- `client/src/components/ui/ChannelSelector.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 497 (100%)
+- EXTRACTED: 333 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

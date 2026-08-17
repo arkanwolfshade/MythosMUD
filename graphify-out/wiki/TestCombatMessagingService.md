@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [CombatMessagingService](CombatMessagingService.md) (4 shared connections)
+- [build_event](build_event.md) (4 shared connections)
 
 ## Source Files
 

@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [get_session_maker](get_session_maker.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

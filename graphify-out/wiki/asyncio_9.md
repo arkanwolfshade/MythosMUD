@@ -1,48 +1,50 @@
 # asyncio
 
-> 37 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (18 connections)
-- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing persistence.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing container.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 12 more nodes in this community*
+- **asyncio** (24 connections)
+- **test_cleanup_empty_subzone_subscriptions_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_subscribe_to_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_cleanup_empty_subzone_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_event_message()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_handle_player_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_event_subjects_partial()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_unsubscribe_from_subzone_not_subscribed()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test subscribe_to_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test unsubscribe_from_event_subjects handles partial success.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test _handle_event_message delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **Test unsubscribe_from_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (18 shared connections)
+- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (8 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
+- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
+- [test_handle_npc_attacked_event](test_handle_npc_attacked_event.md) (1 shared connections)
+- [test_handle_npc_died_event](test_handle_npc_died_event.md) (1 shared connections)
+- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
+- [test_handle_player_movement_different_subzone](test_handle_player_movement_different_subzone.md) (1 shared connections)
+- [test_handle_player_movement_error](test_handle_player_movement_error.md) (1 shared connections)
+- [test_handle_player_movement_exception](test_handle_player_movement_exception.md) (1 shared connections)
+- [test_handle_player_movement_new_subzone_none](test_handle_player_movement_new_subzone_none.md) (1 shared connections)
+- [test_handle_player_movement_old_subzone_none](test_handle_player_movement_old_subzone_none.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 40 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

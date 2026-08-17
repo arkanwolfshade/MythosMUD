@@ -1,66 +1,58 @@
 # ExplorationService
 
-> 141 nodes
+> 103 nodes
 
 ## Key Concepts
 
 - **ExplorationService** (77 connections) — `server/services/exploration_service.py`
-- **RoomService** (75 connections) — `server/game/room_service.py`
-- **maps.py** (67 connections) — `server/api/maps.py`
-- **test_maps.py** (55 connections) — `server/tests/unit/api/test_maps.py`
-- **room_service.py** (23 connections) — `server/game/room_service.py`
-- **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
-- **exploration_service.py** (18 connections) — `server/services/exploration_service.py`
-- **asyncio** (18 connections)
-- **get_ascii_map()** (16 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
-- **set_map_origin()** (13 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
-- **test_rooms_exploration_filter.py** (13 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
-- **recalculate_coordinates()** (12 connections) — `server/api/maps.py`
-- **_ensure_coordinates_generated()** (11 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
-- **_run_coordinate_recalculation()** (11 connections) — `server/api/maps.py`
-- **maps/__init__.py** (11 connections) — `server/schemas/maps/__init__.py`
-- **_get_minimap_player_and_room_id()** (10 connections) — `server/api/maps.py`
-- **AsyncSession** (10 connections)
-- **map.py** (10 connections) — `server/schemas/maps/map.py`
-- **SetOriginRequest** (9 connections) — `server/api/maps.py`
-- **_build_ascii_map_response()** (9 connections) — `server/api/maps.py`
-- *... and 116 more nodes in this community*
+- **test_exploration_service.py** (46 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **asyncio** (28 connections)
+- **_row_scalar_one_or_none()** (10 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **._get_room_uuid_by_stable_id()** (7 connections) — `server/services/exploration_service.py`
+- **.mark_room_as_explored()** (7 connections) — `server/services/exploration_service.py`
+- **UUID** (7 connections)
+- **.is_room_explored()** (6 connections) — `server/services/exploration_service.py`
+- **test_get_room_uuid_by_stable_id_no_session()** (6 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **.get_explored_rooms()** (5 connections) — `server/services/exploration_service.py`
+- **._mark_explored_in_session()** (5 connections) — `server/services/exploration_service.py`
+- **_async_session_maker_mock()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_explored_rooms()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_explored_rooms_database_error()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_explored_rooms_empty()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_asyncpg_uuid()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_database_error()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_not_found()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_string_uuid()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_get_room_uuid_by_stable_id_with_session()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_is_room_explored_database_error()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_is_room_explored_database_error_in_query()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_is_room_explored_false()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- **test_is_room_explored_true()** (5 connections) — `server/tests/unit/services/test_exploration_service.py`
+- *... and 78 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (37 shared connections)
-- [test_exploration_service.py](test_exploration_service.py.md) (37 shared connections)
-- [map_minimap.py](map_minimap.py.md) (23 shared connections)
-- [Any](Any.md) (19 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (14 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (9 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (8 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
-- [test_map_helpers.py](test_map_helpers.py.md) (5 shared connections)
+- [maps.py](maps.py.md) (17 shared connections)
+- [DatabaseError](DatabaseError.md) (17 shared connections)
+- [RoomService](RoomService.md) (5 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [map_minimap.py](map_minimap.py.md) (2 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/maps.py`
-- `server/api/rooms.py`
-- `server/game/room_service.py`
-- `server/schemas/maps/__init__.py`
-- `server/schemas/maps/map.py`
 - `server/services/exploration_service.py`
-- `server/tests/unit/api/test_maps.py`
-- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/tests/unit/services/test_exploration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 484 (83%)
-- INFERRED: 101 (17%)
+- EXTRACTED: 187 (77%)
+- INFERRED: 55 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

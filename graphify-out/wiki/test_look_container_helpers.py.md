@@ -1,6 +1,6 @@
 # test_look_container_helpers.py
 
-> 114 nodes
+> 124 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **look_container.py** (45 connections) — `server/commands/look_container.py`
 - **_find_container_in_room()** (24 connections) — `server/commands/look_container.py`
 - **_find_container_wearable()** (23 connections) — `server/commands/look_container.py`
+- **_format_container_display()** (21 connections) — `server/commands/look_container.py`
 - **_find_container_in_room_or_equipped()** (17 connections) — `server/commands/look_container.py`
 - **_try_lookup_container_implicit()** (16 connections) — `server/commands/look_container.py`
 - **_find_container_via_inner_container()** (14 connections) — `server/commands/look_container.py`
@@ -28,14 +29,13 @@
 - **_room_container_maps()** (5 connections) — `server/commands/look_container.py`
 - **_select_match()** (5 connections) — `server/commands/look_container.py`
 - **asyncio** (5 connections)
-- **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- *... and 89 more nodes in this community*
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [test_look_container.py](test_look_container.py.md) (49 shared connections)
+- [test_look_container.py](test_look_container.py.md) (50 shared connections)
 - [look_command.py](look_command.py.md) (6 shared connections)
-- [coerce_int](coerce_int.md) (4 shared connections)
+- [coerce_int](coerce_int.md) (5 shared connections)
 - [test_look_helpers.py](test_look_helpers.py.md) (3 shared connections)
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
@@ -49,7 +49,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 276 (99%)
+- EXTRACTED: 296 (99%)
 - INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 

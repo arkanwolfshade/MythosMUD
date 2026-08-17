@@ -1,6 +1,6 @@
 # test_communication_commands_flows.py
 
-> 47 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -9,8 +9,8 @@
 - **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
 - **flow_say_command()** (11 connections) — `server/commands/communication_commands_flows.py`
 - **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
+- **flow_local_command()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
-- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
 - **_RoomChannelOutcomeConfig** (8 connections) — `server/commands/communication_commands_flows.py`
 - **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
 - **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
@@ -29,12 +29,13 @@
 - **test_global_player_bundle_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **test_player_id_bundle_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
 - **test_room_player_bundle_no_primary_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
-- *... and 22 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [communication_commands_flows.py](communication_commands_flows.py.md) (45 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (1 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (43 shared connections)
+- [communication_commands.py](communication_commands.py.md) (3 shared connections)
+- [test_communication_commands_channels.py](test_communication_commands_channels.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +46,7 @@
 ## Audit Trail
 
 - EXTRACTED: 134 (96%)
-- INFERRED: 5 (4%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

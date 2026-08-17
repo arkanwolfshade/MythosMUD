@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import asyncio
+import time
 from collections.abc import Awaitable, Callable, Coroutine
 from inspect import CORO_CLOSED, getcoroutinestate
 from typing import cast
@@ -13,6 +14,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from server.config.models import NATSConfig
 from server.services.nats_exceptions import NATSUnsubscribeError
 from server.services.nats_service import NATSService
 
@@ -116,8 +118,6 @@ async def test_unsubscribe_missing_subject_raises(svc: NATSService) -> None:
 
 
 def test_build_connect_options_with_token() -> None:
-    from server.config.models import NATSConfig
-
     svc = NATSService(NATSConfig(url="nats://localhost:4222", token="secret"))
     opts = svc._build_connect_options()
     assert opts.get("token") == "secret"
@@ -125,11 +125,9 @@ def test_build_connect_options_with_token() -> None:
 
 @pytest.mark.asyncio
 async def test_initialize_connection_pool_passes_auth_token() -> None:
-    from server.config.models import NATSConfig
-
     svc = NATSService(NATSConfig(url="nats://localhost:4222", token="secret"))
     conn = AsyncMock()
-    with patch("server.services.nats_service_pool.nats.connect", AsyncMock(return_value=conn)) as connect:
+    with patch("server.services.nats_service_connect.nats.connect", AsyncMock(return_value=conn)) as connect:
         svc.pool_size = 1
         await svc._initialize_connection_pool()
     assert connect.await_args is not None
@@ -137,8 +135,6 @@ async def test_initialize_connection_pool_passes_auth_token() -> None:
 
 
 def test_build_connect_options_with_user_password() -> None:
-    from server.config.models import NATSConfig
-
     svc = NATSService(NATSConfig(url="nats://localhost:4222", user="u", password="p"))
     opts = svc._build_connect_options()
     assert opts.get("user") == "u"
@@ -299,8 +295,6 @@ def test_on_reconnect_creates_tracked_task(svc: NATSService) -> None:
 
 
 def test_is_connected_stale_health_check(svc: NATSService) -> None:
-    import time
-
     svc.nc = MagicMock()
     svc._running = True
     svc.config.health_check_interval = 30
@@ -319,10 +313,8 @@ def test_is_connected_too_many_failures(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_initialize_connection_pool_success(svc: NATSService) -> None:
-    from unittest.mock import patch
-
     conn = AsyncMock()
-    with patch("server.services.nats_service_pool.nats.connect", AsyncMock(return_value=conn)):
+    with patch("server.services.nats_service_connect.nats.connect", AsyncMock(return_value=conn)):
         svc.pool_size = 2
         await svc._initialize_connection_pool()
     assert svc._pool_initialized is True
@@ -331,9 +323,7 @@ async def test_initialize_connection_pool_success(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_initialize_connection_pool_all_fail(svc: NATSService) -> None:
-    from unittest.mock import patch
-
-    with patch("server.services.nats_service_pool.nats.connect", AsyncMock(side_effect=OSError("down"))):
+    with patch("server.services.nats_service_connect.nats.connect", AsyncMock(side_effect=OSError("down"))):
         svc.pool_size = 1
         await svc._initialize_connection_pool()
     assert svc._pool_initialized is False
@@ -404,8 +394,6 @@ async def test_subscribe_message_handler_delivers_payload(svc: NATSService) -> N
 
 @pytest.mark.asyncio
 async def test_subscribe_message_handler_bad_json_with_manual_ack(svc: NATSService) -> None:
-    from server.config.models import NATSConfig
-
     svc = NATSService(NATSConfig(url="nats://localhost:4222", manual_ack=True))
     handlers: list[_NatsMsgHandler] = []
 
@@ -461,11 +449,9 @@ def test_configure_tls_adds_ssl_context(svc: NATSService) -> None:
 
 @pytest.mark.asyncio
 async def test_initialize_connection_pool_partial_success(svc: NATSService) -> None:
-    from unittest.mock import patch
-
     conn = AsyncMock()
     with patch(
-        "server.services.nats_service_pool.nats.connect",
+        "server.services.nats_service_connect.nats.connect",
         AsyncMock(side_effect=[conn, OSError("second failed")]),
     ):
         svc.pool_size = 2

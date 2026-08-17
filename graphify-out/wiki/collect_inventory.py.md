@@ -34,7 +34,7 @@
 ## Relationships
 
 - [QuestService](QuestService.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 
 ## Source Files
 

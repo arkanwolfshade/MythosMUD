@@ -1,74 +1,71 @@
 # PlayerService
 
-> 182 nodes
+> 212 nodes
 
 ## Key Concepts
 
 - **PlayerService** (106 connections) — `server/game/player_service.py`
-- **player_service.py** (49 connections) — `server/game/player_service.py`
-- **magic_service.py** (48 connections) — `server/game/magic/magic_service.py`
-- **lifespan_magic.py** (36 connections) — `server/app/lifespan_magic.py`
-- **PlayerSpellRepository** (35 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (32 connections) — `server/game/magic/spell_registry.py`
-- **send_game_event()** (29 connections) — `server/realtime/connection_manager_api.py`
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **spell_learning_service.py** (22 connections) — `server/game/magic/spell_learning_service.py`
-- **player_spell_repository.py** (22 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **MPRegenerationService** (18 connections) — `server/game/magic/mp_regeneration_service.py`
-- **initialize_magic_services()** (15 connections) — `server/app/lifespan_magic.py`
-- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
-- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
+- **players.py** (73 connections) — `server/api/players.py`
+- **test_players_api_coverage.py** (56 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **PlayerRead** (46 connections) — `server/schemas/players/player.py`
+- **_user()** (27 connections) — `server/tests/unit/api/test_players_api_coverage.py`
+- **asyncio** (25 connections)
+- **get_player_quests()** (18 connections) — `server/api/players.py`
+- **_start_login_grace_period_body()** (16 connections) — `server/api/players.py`
+- **FastAPIRequest** (16 connections)
+- **select_character()** (15 connections) — `server/api/players.py`
 - **UUID** (14 connections)
-- **mp_regeneration_service.py** (13 connections) — `server/game/magic/mp_regeneration_service.py`
-- **spell_costs.py** (13 connections) — `server/game/magic/spell_costs.py`
-- **PlayerStateService** (12 connections) — `server/game/player_state_service.py`
-- **_initialize_magic_service()** (11 connections) — `server/app/lifespan_magic.py`
-- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
+- **test_players_quests.py** (14 connections) — `server/tests/unit/api/test_players_quests.py`
+- **delete_player()** (13 connections) — `server/api/players.py`
+- **get_player_skills()** (13 connections) — `server/api/players.py`
+- **_validate_character_access()** (13 connections) — `server/api/players.py`
+- **UUID** (13 connections)
+- **delete_character()** (12 connections) — `server/api/players.py`
+- **get_player()** (12 connections) — `server/api/players.py`
+- **create_player()** (11 connections) — `server/api/players.py`
+- **_disconnect_other_characters()** (11 connections) — `server/api/players.py`
+- **list_players()** (11 connections) — `server/api/players.py`
+- **_validate_player_for_grace_period()** (11 connections) — `server/api/players.py`
 - **Any** (11 connections)
-- **MagicServiceOptionalDeps** (10 connections) — `server/game/magic/magic_service.py`
 - **PlayerSearchService** (10 connections) — `server/game/player_search_service.py`
-- **_initialize_spell_effects()** (10 connections) — `server/app/lifespan_magic.py`
-- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
-- *... and 157 more nodes in this community*
+- **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- *... and 187 more nodes in this community*
 
 ## Relationships
 
-- [Spell](Spell.md) (32 shared connections)
-- [get_logger](get_logger.md) (32 shared connections)
-- [TargetMatch](TargetMatch.md) (20 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (19 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (15 shared connections)
-- [SpellLearningService](SpellLearningService.md) (13 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (13 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (12 shared connections)
-- [test_player_spell_repository.py](test_player_spell_repository.py.md) (12 shared connections)
-- [AliasStorage](AliasStorage.md) (11 shared connections)
+- [get_logger](get_logger.md) (40 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (34 shared connections)
+- [User](User.md) (22 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (20 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (13 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (12 shared connections)
+- [AliasStorage](AliasStorage.md) (9 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (8 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (7 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
+- [QuestService](QuestService.md) (6 shared connections)
+- [PlayerSchemaConverter](PlayerSchemaConverter.md) (5 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/commands/magic_commands.py`
-- `server/game/magic/magic_healing_events.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/magic_service_completion.py`
-- `server/game/magic/mp_regeneration_service.py`
+- `server/api/players.py`
+- `server/app/game_tick_processing.py`
 - `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/player_creation_service.py`
 - `server/game/player_search_service.py`
 - `server/game/player_service.py`
-- `server/game/player_state_service.py`
-- `server/persistence/repositories/player_spell_repository.py`
-- `server/realtime/connection_manager_api.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/schemas/players/player.py`
+- `server/schemas/players/player_requests.py`
+- `server/schemas/quest/__init__.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/api/test_players_api_coverage.py`
+- `server/tests/unit/api/test_players_quests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 605 (90%)
-- INFERRED: 65 (10%)
+- EXTRACTED: 650 (94%)
+- INFERRED: 42 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
 - [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

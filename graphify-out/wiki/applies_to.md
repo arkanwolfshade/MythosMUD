@@ -1,10 +1,11 @@
 # applies_to
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **items** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **items** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **items** (3 connections) — `schemas/calendar/schedule.schema.json`
@@ -13,13 +14,14 @@
 - **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
-- [enum](enum.md) (1 shared connections)
-- [days](days.md) (1 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [enum](enum_2.md) (1 shared connections)
 
 ## Source Files
 
@@ -27,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

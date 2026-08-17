@@ -1,64 +1,54 @@
 # NATSMetrics
 
-> 89 nodes
+> 50 nodes
 
 ## Key Concepts
 
 - **NATSMetrics** (33 connections) — `server/services/nats_metrics.py`
-- **nats_service.py** (33 connections) — `server/services/nats_service.py`
-- **nats_service_pool.py** (20 connections) — `server/services/nats_service_pool.py`
-- **NATSServicePoolMixin** (19 connections) — `server/services/nats_service_pool.py`
-- **.publish_with_pool()** (8 connections) — `server/services/nats_service_pool.py`
-- **Client** (7 connections)
-- **nats_connect()** (6 connections) — `server/services/nats_service_pool.py`
-- **._flush_batch()** (6 connections) — `server/services/nats_service_pool.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **NatsConnectOptions** (5 connections) — `server/services/nats_service_pool.py`
-- **._get_connection()** (5 connections) — `server/services/nats_service_pool.py`
-- **._initialize_connection_pool()** (5 connections) — `server/services/nats_service_pool.py`
-- **.publish_batch()** (5 connections) — `server/services/nats_service_pool.py`
-- **nats_metrics.py** (5 connections) — `server/services/nats_metrics.py`
-- **._batch_timeout()** (4 connections) — `server/services/nats_service_pool.py`
-- **._build_connect_options()** (4 connections) — `server/services/nats_service_pool.py`
-- **._configure_tls()** (4 connections) — `server/services/nats_service_pool.py`
-- **._create_tracked_task()** (4 connections) — `server/services/nats_service_pool.py`
-- **._retry_failed_batch_groups()** (4 connections) — `server/services/nats_service_pool.py`
-- **._return_connection()** (4 connections) — `server/services/nats_service_pool.py`
-- **_NatsConnectFn** (3 connections) — `server/services/nats_service_pool.py`
 - **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
-- **.__call__()** (3 connections) — `server/services/nats_service_pool.py`
-- **.recover_failed_batches()** (3 connections) — `server/services/nats_service_pool.py`
-- *... and 64 more nodes in this community*
+- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
+- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_ack_failure()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_ack_success()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_batch_flush()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_nak()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_publish()** (2 connections) — `server/services/nats_metrics.py`
+- **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
+- **.update_connection_health()** (2 connections) — `server/services/nats_metrics.py`
+- **.update_pool_utilization()** (2 connections) — `server/services/nats_metrics.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [test_nats_service.py](test_nats_service.py.md) (18 shared connections)
-- [NATSService](NATSService.md) (10 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [NATSPublishError](NATSPublishError.md) (6 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (5 shared connections)
-- [JsonMap](JsonMap.md) (5 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (3 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (15 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [NATSConfig](NATSConfig.md) (2 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
 - [deque](deque.md) (1 shared connections)
-- [testing_examples.py](testing_examples.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `docs/examples/logging/websocket_integration.py`
 - `server/services/nats_metrics.py`
-- `server/services/nats_service.py`
-- `server/services/nats_service_pool.py`
 - `server/tests/unit/services/test_nats_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (87%)
-- INFERRED: 23 (13%)
+- EXTRACTED: 54 (75%)
+- INFERRED: 18 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

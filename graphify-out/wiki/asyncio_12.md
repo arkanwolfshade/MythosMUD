@@ -1,38 +1,43 @@
 # asyncio
 
-> 15 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **test_chat_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_client_error_report_handler_logs()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_command_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_no_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_success()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_message_handler_factory_handle_message_unknown_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **test_ping_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() successfully handles message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() sends error for unknown type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test MessageHandlerFactory.handle_message() handles message with no type.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test ClientErrorReportMessageHandler logs via logger.error.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test CommandMessageHandler.handle() calls handle_command_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test ChatMessageHandler.handle() calls handle_chat_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
-- **Test PingMessageHandler.handle() calls handle_ping_message.** (1 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **asyncio** (17 connections)
+- **test_rescue_apply_lucidity_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_delta_zero_or_negative()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_dispatches_events_for_both_players()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_event_dispatcher_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_handles_uuid_strings()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **test_rescue_rescuer_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() returns error when rescuer is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() sets delta to 1 when delta is zero or negative.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles errors during lucidity adjustment.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles event dispatcher errors gracefully.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() dispatches events for both target and rescuer.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **Test rescue() handles player_id as UUID strings.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
 
 ## Relationships
 
-- [message_handler_factory.py](message_handler_factory.py.md) (11 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (3 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (9 shared connections)
+- [test_rescue_delta_calculation](test_rescue_delta_calculation.md) (1 shared connections)
+- [test_rescue_different_rooms](test_rescue_different_rooms.md) (1 shared connections)
+- [test_rescue_metadata_includes_rescuer](test_rescue_metadata_includes_rescuer.md) (1 shared connections)
+- [test_rescue_no_persistence](test_rescue_no_persistence.md) (1 shared connections)
+- [test_rescue_not_catatonic](test_rescue_not_catatonic.md) (1 shared connections)
+- [test_rescue_success](test_rescue_success.md) (1 shared connections)
+- [test_rescue_target_not_found](test_rescue_target_not_found.md) (1 shared connections)
+- [test_rescue_with_player_name](test_rescue_with_player_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_handler_factory.py`
+- `server/tests/unit/services/test_rescue_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (75%)
-- INFERRED: 7 (25%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

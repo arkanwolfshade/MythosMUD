@@ -4,29 +4,28 @@
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
-- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **environment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
 - [properties](properties.md) (1 shared connections)
-- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

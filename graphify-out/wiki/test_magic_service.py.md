@@ -1,6 +1,6 @@
 # test_magic_service.py
 
-> 75 nodes
+> 76 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **UUID** (26 connections)
 - **CastingStateManager** (25 connections) — `server/game/magic/casting_state_manager.py`
 - **asyncio** (19 connections)
+- **magic_service()** (14 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_casting_state_manager.py** (12 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
 - **casting_state_manager.py** (11 connections) — `server/game/magic/casting_state_manager.py`
 - **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
@@ -28,22 +29,22 @@
 - **test_interrupt_casting_luck_pass()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **fixture** (5 connections)
 - **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 50 more nodes in this community*
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [Spell](Spell.md) (23 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (15 shared connections)
+- [Spell](Spell.md) (13 shared connections)
+- [SpellEffectType](SpellEffectType.md) (8 shared connections)
+- [TargetMatch](TargetMatch.md) (5 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [SpellRegistry](SpellRegistry.md) (3 shared connections)
+- [SpellMaterial](SpellMaterial.md) (3 shared connections)
+- [SpellTargetingService](SpellTargetingService.md) (2 shared connections)
+- [magic.py](magic.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [TargetType](TargetType.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +55,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 180 (77%)
-- INFERRED: 55 (23%)
+- EXTRACTED: 181 (74%)
+- INFERRED: 63 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

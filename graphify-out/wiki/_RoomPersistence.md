@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [npc_base.py](npc_base.py.md) (1 shared connections)
 
 ## Source Files
 

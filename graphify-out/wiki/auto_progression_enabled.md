@@ -14,7 +14,7 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
 
 ## Source Files
 

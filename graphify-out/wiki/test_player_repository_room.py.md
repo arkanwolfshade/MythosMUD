@@ -29,9 +29,8 @@
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (9 shared connections)
-- [row_to_player](row_to_player.md) (1 shared connections)
-- [get_session_maker](get_session_maker.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (10 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

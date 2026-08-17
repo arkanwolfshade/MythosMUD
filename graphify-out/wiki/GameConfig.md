@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [config/models/__init__.py](config-models-__init__.py.md) (3 shared connections)
-- [AppConfig](AppConfig.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [.error](error.md) (1 shared connections)
 
 ## Source Files
 

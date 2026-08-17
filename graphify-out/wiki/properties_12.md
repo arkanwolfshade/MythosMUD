@@ -4,31 +4,31 @@
 
 ## Key Concepts
 
-- **properties** (9 connections) — `db/static/schemas/holidays.schema.json`
-- **id** (3 connections) — `db/static/schemas/holidays.schema.json`
-- **name** (3 connections) — `db/static/schemas/holidays.schema.json`
-- **season** (3 connections) — `db/static/schemas/holidays.schema.json`
-- **tradition** (3 connections) — `db/static/schemas/holidays.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
+- [start_hour](start_hour.md) (1 shared connections)
+- [end_hour](end_hour.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
 - [items](items.md) (1 shared connections)
-- [month](month.md) (1 shared connections)
-- [day](day.md) (1 shared connections)
-- [duration_hours](duration_hours.md) (1 shared connections)
-- [bonus_tags](bonus_tags.md) (1 shared connections)
-- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 

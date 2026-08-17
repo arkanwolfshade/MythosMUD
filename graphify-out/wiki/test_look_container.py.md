@@ -1,12 +1,11 @@
 # test_look_container.py
 
-> 112 nodes
+> 102 nodes
 
 ## Key Concepts
 
 - **test_look_container.py** (58 connections) — `server/tests/unit/commands/test_look_container.py`
 - **JsonMap** (22 connections)
-- **_format_container_display()** (21 connections) — `server/commands/look_container.py`
 - **_handle_container_look()** (13 connections) — `server/commands/look_container.py`
 - **asyncio** (13 connections)
 - **ContainerLookArgs** (10 connections) — `server/commands/look_container.py`
@@ -29,24 +28,23 @@
 - **test_find_container_in_room_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
 - **test_find_container_via_inner_container_no_get_container_method()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
-- *... and 87 more nodes in this community*
+- **test_find_container_via_inner_container_no_inner_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (49 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (50 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/look_container.py`
 - `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (98%)
+- EXTRACTED: 202 (98%)
 - INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **ConnectionErrorHandler** (24 connections) — `server/realtime/errors/error_handler.py`
+- **ConnectionErrorHandler** (26 connections) — `server/realtime/errors/error_handler.py`
 - **test_connection_error_handler.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_handler.py`
-- **error_handler.py** (10 connections) — `server/realtime/errors/error_handler.py`
+- **error_handler.py** (12 connections) — `server/realtime/errors/error_handler.py`
 - **asyncio** (9 connections)
 - **.detect_and_handle_error_state()** (8 connections) — `server/realtime/errors/error_handler.py`
 - **UUID** (8 connections)
@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [get_config](get_config.md) (3 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (87%)
+- EXTRACTED: 76 (87%)
 - INFERRED: 11 (13%)
 - AMBIGUOUS: 0 (0%)
 

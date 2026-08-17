@@ -15,7 +15,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 logger = get_logger(__name__)
 
 
-class _WearableContainerServiceHolder:
+class _WearableContainerServiceHolder:  # pylint: disable=too-few-public-methods  # Reason: mutable cache holder, not a behavior class
     """Mutable holder so we can cache the service without a ``global`` statement."""
 
     instance: WearableContainerService | None = None
@@ -39,15 +39,15 @@ class LookRequest(Protocol):  # pylint: disable=too-few-public-methods  # Reason
         ...  # pylint: disable=unnecessary-ellipsis  # Reason: Protocol stub body required by basedpyright
 
 
-class _ContainerWithPersistence(Protocol):
+class _ContainerWithPersistence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
     async_persistence: object | None
 
 
-class _StateWithContainer(Protocol):
+class _StateWithContainer(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
     container: _ContainerWithPersistence | None
 
 
-class _AppWithState(Protocol):
+class _AppWithState(Protocol):  # pylint: disable=too-few-public-methods  # Reason: PEP 544 Protocol stub
     state: _StateWithContainer
 
 

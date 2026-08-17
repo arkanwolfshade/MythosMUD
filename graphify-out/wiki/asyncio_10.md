@@ -1,48 +1,45 @@
 # asyncio
 
-> 25 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (35 connections)
+- **test_get_npc_definition_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_npc_definitions_database_error()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_get_system_statistics_database_error()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_npc_service_init()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_invalid_max_population()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_create_npc_definition_invalid_probability()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definitions() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_npc_definition() returns definition when found.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test create_npc_definition() raises ValueError for invalid probability.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test create_npc_definition() raises ValueError for invalid max population.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test update_npc_definition() successfully updates definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Test get_system_statistics() handles database errors.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (13 shared connections)
+- [_def_row](_def_row.md) (10 shared connections)
+- [_mock_result_mappings_all](_mock_result_mappings_all.md) (9 shared connections)
+- [_spawn_rule_row](_spawn_rule_row.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_create_spawn_rule_invalid_min_population](test_create_spawn_rule_invalid_min_population.md) (1 shared connections)
+- [test_update_npc_definition_invalid_probability](test_update_npc_definition_invalid_probability.md) (1 shared connections)
+- [test_update_npc_definition_invalid_type](test_update_npc_definition_invalid_type.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

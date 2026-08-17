@@ -1,6 +1,6 @@
 # test_logging_processors.py
 
-> 85 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **set_global_player_service()** (17 connections) — `server/structured_logging/logging_processors.py`
 - **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
 - **logging_processors.py** (14 connections) — `server/structured_logging/logging_processors.py`
-- **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
 - **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
 - **configure_enhanced_structlog()** (10 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
@@ -29,16 +28,16 @@
 - **test_enhance_player_ids_short_string()** (4 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **_EnhancePlayerIdsTls** (3 connections) — `server/structured_logging/logging_processors.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 60 more nodes in this community*
+- **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
 - [DatabaseError](DatabaseError.md) (2 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
-- [setup_enhanced_file_logging](setup_enhanced_file_logging.md) (1 shared connections)
-- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -46,13 +45,12 @@
 
 - `server/structured_logging/enhanced_logging_config.py`
 - `server/structured_logging/logging_processors.py`
-- `server/structured_logging/logging_utilities.py`
 - `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 146 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

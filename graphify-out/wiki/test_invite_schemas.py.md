@@ -1,61 +1,57 @@
 # test_invite_schemas.py
 
-> 98 nodes
+> 67 nodes
 
 ## Key Concepts
 
 - **test_invite_schemas.py** (17 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
 - **test_user_schemas.py** (15 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
 - **schemas/auth/__init__.py** (13 connections) — `server/schemas/auth/__init__.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- **create_invite()** (12 connections) — `server/auth/endpoints.py`
 - **InviteBase** (10 connections) — `server/schemas/auth/invite.py`
 - **SecureBaseModel** (10 connections) — `server/schemas/shared/base.py`
 - **auth/user.py** (10 connections) — `server/schemas/auth/user.py`
 - **InviteUpdate** (9 connections) — `server/schemas/auth/invite.py`
 - **UserUpdate** (9 connections) — `server/schemas/auth/user.py`
-- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
 - **auth/invite.py** (9 connections) — `server/schemas/auth/invite.py`
 - **InviteCreate** (8 connections) — `server/schemas/auth/invite.py`
 - **UserBase** (8 connections) — `server/schemas/auth/user.py`
 - **UserCreate** (8 connections) — `server/schemas/auth/user.py`
 - **UserRead** (7 connections) — `server/schemas/auth/user.py`
 - **shared/base.py** (7 connections) — `server/schemas/shared/base.py`
-- **asyncio** (7 connections)
 - **ResponseBaseModel** (6 connections) — `server/schemas/shared/base.py`
-- **test_create_invite()** (5 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **test_create_invite_success()** (5 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **test_get_current_user_info()** (5 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **test_list_invites()** (5 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- *... and 73 more nodes in this community*
+- **test_invite_base()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base_defaults()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_base_validation()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_create()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_create_no_expiry()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_read_with_used_by()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update_all_optional()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- **test_invite_update_validation()** (3 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (21 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (7 shared connections)
+- [User](User.md) (7 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
 - [BaseCommand](BaseCommand.md) (5 shared connections)
-- [Invite](Invite.md) (4 shared connections)
-- [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [register_user](register_user.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
 - `server/schemas/auth/__init__.py`
 - `server/schemas/auth/invite.py`
 - `server/schemas/auth/user.py`
 - `server/schemas/shared/base.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
 - `server/tests/unit/schemas/test_invite_schemas.py`
 - `server/tests/unit/schemas/test_user_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 129 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

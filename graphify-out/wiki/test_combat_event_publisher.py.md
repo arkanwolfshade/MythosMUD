@@ -33,12 +33,13 @@
 
 ## Relationships
 
-- [asyncio](asyncio.md) (14 shared connections)
-- [combat_event_publisher.py](combat_event_publisher.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
+- [asyncio](asyncio.md) (13 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (10 shared connections)
 - [CombatEndedEvent](CombatEndedEvent.md) (5 shared connections)
+- [CombatTimeoutEvent](CombatTimeoutEvent.md) (3 shared connections)
+- [CombatTurnAdvancedEvent](CombatTurnAdvancedEvent.md) (3 shared connections)
 - [combat_event_publisher](combat_event_publisher.md) (3 shared connections)
-- [NATSPublishError](NATSPublishError.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
 - [CombatEventPublisher](CombatEventPublisher.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [test_combat_event_publisher_initialization_with_subject_manager](test_combat_event_publisher_initialization_with_subject_manager.md) (1 shared connections)

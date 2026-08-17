@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (18 shared connections)
-- [gameStore.ts](gameStore.ts.md) (7 shared connections)
+- [RoomNodeData](RoomNodeData.md) (13 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (6 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (5 shared connections)
+- [gameStore.ts](gameStore.ts.md) (5 shared connections)
 - [edgeModalLogic.ts](edgeModalLogic.ts.md) (4 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (4 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (1 shared connections)
 

@@ -34,12 +34,14 @@
 ## Relationships
 
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (8 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (4 shared connections)
 - [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (2 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
 - [extract_player_name](extract_player_name.md) (1 shared connections)
+- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

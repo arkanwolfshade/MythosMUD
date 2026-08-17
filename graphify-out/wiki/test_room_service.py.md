@@ -1,41 +1,48 @@
 # test_room_service.py
 
-> 108 nodes
+> 24 nodes
 
 ## Key Concepts
 
 - **test_room_service.py** (57 connections) — `server/tests/unit/game/test_room_service.py`
-- **asyncio** (37 connections)
-- **fixture** (5 connections)
-- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_null_exit()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_local_chat_scope()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_local_chat_scope_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_info_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_info_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- *... and 83 more nodes in this community*
+- **test_describe_lighting_day()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_describe_lighting_night()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_describe_lighting_unknown_daypart()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_environment_state()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_room_by_name()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_get_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_search_rooms_by_name_empty_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_search_rooms_by_name_not_implemented()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_search_rooms_by_name_short_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_update_environment_state()** (2 connections) — `server/tests/unit/game/test_room_service.py`
+- **Unit tests for room service. Tests the RoomService class for room-related…** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_by_name() returns None (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test update_environment_state() updates environment state.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_environment_state() returns current environment state.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test describe_lighting() returns description for day.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test describe_lighting() returns description for night.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test describe_lighting() returns default for unknown daypart.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test search_rooms_by_name() returns empty list for short search term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test search_rooms_by_name() returns empty list for empty term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test search_rooms_by_name() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (3 shared connections)
-- [HealthStatus](HealthStatus.md) (2 shared connections)
+- [asyncio](asyncio.md) (12 shared connections)
+- [fixture](fixture.md) (4 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
+- [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
+- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
+- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
+- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
+- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
+- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 151 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

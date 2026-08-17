@@ -1,11 +1,12 @@
 # compilerOptions
 
-> 13 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (6 connections) — `client/tests/e2e/tsconfig.json`
+- **compilerOptions** (7 connections) — `client/tests/e2e/tsconfig.json`
 - **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
+- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
 - **types** (2 connections) — `client/tests/e2e/tsconfig.json`
 - **include** (2 connections) — `client/tests/e2e/tsconfig.json`
 - **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
@@ -16,6 +17,7 @@
 - **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
 - **node** (1 connections) — `client/tests/e2e/tsconfig.json`
 - **../../tsconfig.json** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
 - **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
 
 ## Relationships
@@ -28,7 +30,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,40 +1,37 @@
 # UUID
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **Any** (7 connections)
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UUID** (7 connections)
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.is_valid_uuid()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the original string ID from a UUID. Args: uuid_id: The UUID to look up…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get XP value for a UUID. Args: uuid_id: The UUID to look up Returns: XP value…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Check if a string is a valid UUID. Args: uuid_string: String to check Returns:…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Convert string ID to UUID, creating new UUID if needed. For non-UUID string IDs…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-string ID mapping. Args: uuid_id: UUID of the entity string_id:…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Store UUID-to-XP mapping. Args: uuid_id: UUID of the NPC xp_value: XP value for…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **Get the UUID that was stored for a given string ID (reverse of…** (1 connections) — `server/services/npc_combat_uuid_mapping.py`
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (5 shared connections)
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (1 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (7 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/services/npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

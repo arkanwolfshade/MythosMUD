@@ -34,11 +34,10 @@
 ## Relationships
 
 - [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [bind_request_context](bind_request_context.md) (2 shared connections)
-- [NATSMetrics](NATSMetrics.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (3 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 73 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 73 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -11,7 +11,7 @@
 ## Relationships
 
 - [test_event_bus.py](test_event_bus.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

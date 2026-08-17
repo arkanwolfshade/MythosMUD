@@ -1,40 +1,34 @@
 # Any
 
-> 16 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **WebSocket** (8 connections)
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [message_handler_factory.py](message_handler_factory.py.md) (7 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (2 shared connections)
-- [handle_ping_message](handle_ping_message.md) (1 shared connections)
+- [RoomDataCache](RoomDataCache.md) (6 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

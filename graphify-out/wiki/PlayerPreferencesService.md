@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [test_channel_commands.py](test_channel_commands.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [test_player_related_models.py](test_player_related_models.py.md) (2 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (1 shared connections)
 - [test_player_preferences_service.py](test_player_preferences_service.py.md) (1 shared connections)
 - [preferences_service](preferences_service.md) (1 shared connections)
 

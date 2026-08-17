@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (4 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [deque](deque.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

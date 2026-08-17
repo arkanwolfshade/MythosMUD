@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (7 shared connections)
 - [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (4 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [ErrorType](ErrorType.md) (3 shared connections)
 - [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [validate_websocket_message](validate_websocket_message.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

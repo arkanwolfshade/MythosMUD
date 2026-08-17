@@ -1,49 +1,34 @@
 # asyncio
 
-> 45 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (23 connections)
-- **test_get_npc_instances_get_stats_exception()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_despawn_fails()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_despawn_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_no_get_stats()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_no_lifecycle_record()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_stats_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_population_stats_empty()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_population_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_system_stats_idle()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_system_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_zone_stats_empty()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_zone_stats_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_blocked_when_in_combat()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_no_move_method()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_move_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_definition_not_found()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_spawn_fails()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_spawn_npc_instance_success()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test spawn_npc_instance() successfully spawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **Test spawn_npc_instance() raises ValueError when definition not found.** (1 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- *... and 20 more nodes in this community*
+- **asyncio** (6 connections)
+- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (23 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

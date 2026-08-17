@@ -1,12 +1,10 @@
 # CombatPersistenceHandler
 
-> 51 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **CombatPersistenceHandler** (22 connections) — `server/services/combat_persistence_handler.py`
-- **combat_persistence_handler.py** (16 connections) — `server/services/combat_persistence_handler.py`
-- **test_combat_persistence_handler.py** (15 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
 - **UUID** (8 connections)
 - **._persist_player_dp_sync()** (6 connections) — `server/services/combat_persistence_handler.py`
 - **._get_persistence_layer()** (5 connections) — `server/services/combat_persistence_handler.py`
@@ -16,42 +14,37 @@
 - **._persist_player_dp_background()** (4 connections) — `server/services/combat_persistence_handler.py`
 - **._publish_player_dp_correction_event()** (4 connections) — `server/services/combat_persistence_handler.py`
 - **.publish_player_dp_update_event()** (4 connections) — `server/services/combat_persistence_handler.py`
-- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
 - **.__init__()** (3 connections) — `server/services/combat_persistence_handler.py`
-- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
 - **Any** (3 connections)
-- **fixture** (3 connections)
-- **mock_player()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_container_error()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_async_persistence()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_get_persistence_layer_no_container()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_death_threshold()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_log_death_state_changes_mortally_wounded()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- **test_persist_player_dp_background_public_api()** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler.py`
-- *... and 26 more nodes in this community*
+- **Synchronously persist player DP to database. This is the actual persistence…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget). This method runs…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Handles combat-related persistence operations.** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Initialize the persistence handler. Args: combat_service: Reference to the…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Persist player DP to database in background (fire-and-forget). Public API…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a PlayerDPUpdated event for real-time UI updates. Args: player_id: ID…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Get persistence layer from application container. Returns: Persistence layer…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Internal implementation of player DP update event publishing. Args: player_id:…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Publish a correction event when database persistence fails. This sends a…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Verify that player save was successful by reading back from database. Args:…** (1 connections) — `server/services/combat_persistence_handler.py`
+- **Log death state changes (death threshold or mortally wounded). Args: player_id:…** (1 connections) — `server/services/combat_persistence_handler.py`
 
 ## Relationships
 
-- [CombatService](CombatService.md) (4 shared connections)
-- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (4 shared connections)
-- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (3 shared connections)
-- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (3 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
+- [test_combat_persistence_handler.py](test_combat_persistence_handler.py.md) (2 shared connections)
+- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (2 shared connections)
+- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (2 shared connections)
+- [NPCStartupService](NPCStartupService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/combat_persistence_handler.py`
-- `server/tests/unit/services/test_combat_persistence_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 44 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

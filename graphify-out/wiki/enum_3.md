@@ -4,13 +4,13 @@
 
 ## Key Concepts
 
-- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
@@ -18,7 +18,7 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 

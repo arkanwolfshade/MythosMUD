@@ -1,107 +1,79 @@
 # ConnectionManager
 
-> God node · 255 connections · `server/realtime/connection_manager.py`
+> 1105 nodes
 
-**Community:** [ConnectionManager](ConnectionManager.md)
+## Key Concepts
 
-## Connections by Relation
+- **ConnectionManager** (167 connections) — `server/realtime/connection_manager.py`
+- **connection_manager.py** (126 connections) — `server/realtime/connection_manager.py`
+- **event_types.py** (87 connections) — `server/events/event_types.py`
+- **BaseEvent** (81 connections) — `server/events/event_types.py`
+- **PlayerEnteredRoom** (76 connections) — `server/events/event_types.py`
+- **NATSError** (70 connections) — `server/services/nats_exceptions.py`
+- **test_population_control.py** (66 connections) — `server/tests/unit/npc/test_population_control.py`
+- **websocket_handler.py** (65 connections) — `server/realtime/websocket_handler.py`
+- **asyncio.md** (55 connections) — `.claude/rules/asyncio.md`
+- **PlayerLeftRoom** (49 connections) — `server/events/event_types.py`
+- **NPCEnteredRoom** (46 connections) — `server/events/event_types.py`
+- **websocket_initial_state.py** (46 connections) — `server/realtime/websocket_initial_state.py`
+- **NPCLeftRoom** (43 connections) — `server/events/event_types.py`
+- **population_control.py** (42 connections) — `server/npc/population_control.py`
+- **player_event_handlers.py** (42 connections) — `server/realtime/player_event_handlers.py`
+- **test_event_handler.py** (42 connections) — `server/tests/unit/realtime/test_event_handler.py`
+- **test_room_sync_service.py** (41 connections) — `server/tests/unit/services/test_room_sync_service.py`
+- **PlayerDPUpdated** (38 connections) — `server/events/event_types.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
+- **DeadLetterQueue** (37 connections) — `server/realtime/dead_letter_queue.py`
+- **nats_exceptions.py** (37 connections) — `server/services/nats_exceptions.py`
+- **RealTimeEventHandler** (36 connections) — `server/realtime/event_handler.py`
+- **event_handler.py** (36 connections) — `server/realtime/event_handler.py`
+- **nats_message_handler.py** (35 connections) — `server/realtime/nats_message_handler.py`
+- **NATSPublishError** (34 connections) — `server/services/nats_exceptions.py`
+- *... and 1080 more nodes in this community*
 
-### calls
-- .initialize() `EXTRACTED`
+## Relationships
 
-### contains
-- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
+- [get_logger](get_logger.md) (133 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (102 shared connections)
+- [build_event](build_event.md) (59 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (58 shared connections)
+- [npc_base.py](npc_base.py.md) (44 shared connections)
+- [UUID](UUID.md) (42 shared connections)
+- [EventBus](EventBus.md) (41 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (37 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (29 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (26 shared connections)
+- [event_serialization.py](event_serialization.py.md) (25 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (21 shared connections)
 
-### imports
-- [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
-- [websocket_handler.py](websocket_handler.py.md) `EXTRACTED`
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
-- npc_combat_integration_service.py `EXTRACTED`
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
-- combat_handler.py `EXTRACTED`
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) `EXTRACTED`
-- websocket_initial_state.py `EXTRACTED`
-- player_event_handlers.py `EXTRACTED`
-- event_handler.py `EXTRACTED`
-- nats_message_handler.py `EXTRACTED`
-- player_event_handlers_respawn.py `EXTRACTED`
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
-- websocket_room_updates.py `EXTRACTED`
-- api/game.py `EXTRACTED`
-- player_disconnect_handlers.py `EXTRACTED`
-- [test_envelope.py](test_envelope.py.md) `EXTRACTED`
-- websocket_handler_message_loop.py `EXTRACTED`
-- [container_events.py](container_events.py.md) `EXTRACTED`
-- [combat_loader.py](combat_loader.py.md) `EXTRACTED`
+## Source Files
 
-### method
-- .__init__() `EXTRACTED`
-- .event_bus() `EXTRACTED`
-- .check_connection_health() `EXTRACTED`
-- ._get_player() `EXTRACTED`
-- ._track_player_disconnected() `EXTRACTED`
-- .canonical_room_id() `EXTRACTED`
-- .connect_websocket() `EXTRACTED`
-- .disconnect_websocket() `EXTRACTED`
-- .handle_new_game_session() `EXTRACTED`
-- ._get_players_batch() `EXTRACTED`
-- .track_player_connected() `EXTRACTED`
-- .broadcast_connection_message() `EXTRACTED`
-- ._send_initial_game_state() `EXTRACTED`
-- ._is_websocket_open() `EXTRACTED`
-- ._safe_close_websocket() `EXTRACTED`
-- .get_player_websocket_connection_id() `EXTRACTED`
-- .has_websocket_connection() `EXTRACTED`
-- .get_connection_count() `EXTRACTED`
-- .subscribe_to_room() `EXTRACTED`
-- .unsubscribe_from_room() `EXTRACTED`
+- `.claude/rules/asyncio.md`
+- `server/app/tracked_task_manager.py`
+- `server/container/bundles/realtime.py`
+- `server/events/__init__.py`
+- `server/events/distributed_event_bus.py`
+- `server/events/event_bus.py`
+- `server/events/event_types.py`
+- `server/events/nats_event_bridge.py`
+- `server/game/follow_service.py`
+- `server/game/party_service.py`
+- `server/npc/movement_integration.py`
+- `server/npc/population_control.py`
+- `server/npc/population_stats.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/__init__.py`
+- `server/realtime/connection_manager.py`
+- `server/realtime/connection_manager_api.py`
+- `server/realtime/connection_manager_lazy.py`
+- `server/realtime/connection_manager_utils.py`
+- `server/realtime/connection_websocket_close.py`
 
-### rationale_for
-- Manages real-time connections for the game. This refactored version uses… `EXTRACTED`
+## Audit Trail
 
-### references
-- transfer_items() `EXTRACTED`
-- open_container() `EXTRACTED`
-- close_container() `EXTRACTED`
-- emit_loot_all_event() `EXTRACTED`
-- emit_transfer_event() `EXTRACTED`
-- emit_container_opened_events() `EXTRACTED`
-- emit_close_container_event() `EXTRACTED`
-- resolve_connection_manager() `EXTRACTED`
-- force_disconnect_player_impl() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- broadcast_to_room_impl() `EXTRACTED`
-- get_player_impl() `EXTRACTED`
-- get_players_batch_impl() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- broadcast_global_event_impl() `EXTRACTED`
-- broadcast_global_impl() `EXTRACTED`
-- broadcast_room_event_impl() `EXTRACTED`
-- get_message_delivery_stats_impl() `EXTRACTED`
-
-### uses
-- [RateLimiter](RateLimiter.md) `INFERRED`
-- MessageQueue `INFERRED`
-- [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) `INFERRED`
-- FollowService `INFERRED`
-- [PartyService](PartyService.md) `INFERRED`
-- RealtimeBundle `INFERRED`
-- [EventHandler](EventHandler.md) `INFERRED`
-- PlayerRespawnEventHandler `INFERRED`
-- [EventPublisher](EventPublisher.md) `INFERRED`
-- PlayerEventHandler `INFERRED`
-- ConnectionMetadata `INFERRED`
-- PlayerStateEventHandler `INFERRED`
-- [TestEmitLootAllEvent](TestEmitLootAllEvent.md) `INFERRED`
-- TestEmitTransferEvent `INFERRED`
-- TestEmitCloseContainerEvent `INFERRED`
-- _dispatch_player_dp_updated_payload() `INFERRED`
-- _send_combat_participant_updates() `INFERRED`
-- TestEmitContainerOpenedEvents `INFERRED`
-- _npc_died_broadcast_and_bridge() `INFERRED`
+- EXTRACTED: 2964 (88%)
+- INFERRED: 401 (12%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

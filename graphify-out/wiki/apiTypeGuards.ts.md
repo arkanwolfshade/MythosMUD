@@ -33,11 +33,10 @@
 
 ## Relationships
 
-- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (14 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (7 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (10 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (10 shared connections)
+- [Profession](Profession.md) (8 shared connections)
 - [useAsciiMapState.ts](useAsciiMapState.ts.md) (6 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [useProfessions.ts](useProfessions.ts.md) (3 shared connections)
 - [CharacterSelectionScreen.tsx](CharacterSelectionScreen.tsx.md) (3 shared connections)
 - [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (2 shared connections)

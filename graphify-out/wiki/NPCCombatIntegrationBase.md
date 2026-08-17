@@ -1,23 +1,14 @@
 # NPCCombatIntegrationBase
 
-> 49 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
 - **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
-- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
-- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
 - **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
+- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
-- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
 - **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._get_target_stats()** (3 connections) — `server/npc/combat_integration_base.py`
@@ -25,33 +16,37 @@
 - **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
 - **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
-- **test_resolve_npc_combat_service_from_container()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
 - **ABC** (2 connections)
-- **UUID** (2 connections)
-- *... and 24 more nodes in this community*
+- **Handle an NPC attack on a target. This is a thin wrapper around…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Core implementation for handling an NPC attack on a target. When the app has…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Execute the direct NPC attack path (no full combat service available).** (1 connections) — `server/npc/combat_integration_base.py`
+- **Prefer full combat codepath (same as player-initiated combat) when available.…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Get target stats from player or use defaults.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses provide NPC stat defaults for damage resolution.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses publish DP updates after direct NPC damage.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses publish NPCAttacked to the event bus.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Subclasses forward NPC attacks to NATS for clients.** (1 connections) — `server/npc/combat_integration_base.py`
+- **Base implementation: damage, combat effects, and NPC attack orchestration.…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Initialize the NPC combat integration. Args: event_bus: Optional EventBus…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Calculate damage based on attacker and target stats. Args: attacker_stats:…** (1 connections) — `server/npc/combat_integration_base.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [get_config](get_config.md) (3 shared connections)
-- [real_time.py](real_time.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [MessageHandlerFactory](MessageHandlerFactory.md) (1 shared connections)
+- [.apply_combat_effects](apply_combat_effects.md) (10 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/combat_integration_base.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/tests/unit/npc/test_combat_integration_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 51 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

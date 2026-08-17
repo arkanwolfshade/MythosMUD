@@ -1,28 +1,29 @@
 # enum
 
-> 7 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **enum** (5 connections) — `schemas/calendar/holiday.schema.json`
-- **season** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **autumn** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **spring** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **summer** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **winter** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

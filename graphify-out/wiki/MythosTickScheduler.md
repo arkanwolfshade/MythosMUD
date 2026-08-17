@@ -1,12 +1,16 @@
 # MythosTickScheduler
 
-> 35 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **MythosTickScheduler** (30 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (30 connections) — `server/time/time_service.py`
 - **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **tick_scheduler.py** (16 connections) — `server/time/tick_scheduler.py`
 - **asyncio** (9 connections)
+- **time/__init__.py** (8 connections) — `server/time/__init__.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
 - **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
 - **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
 - **._run()** (5 connections) — `server/time/tick_scheduler.py`
@@ -24,32 +28,35 @@
 - **test_truncate_to_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
 - **._sleep_until_next_hour()** (3 connections) — `server/time/tick_scheduler.py`
 - **.start()** (3 connections) — `server/time/tick_scheduler.py`
-- **datetime** (3 connections)
-- **mock_chronicle()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_publish_tick_with_holidays()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- *... and 10 more nodes in this community*
+- **.get_instance()** (3 connections) — `server/time/time_service.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [HolidayService](HolidayService.md) (3 shared connections)
-- [.__post_init__](__post_init__.md) (2 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [datetime](datetime.md) (17 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (8 shared connections)
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
+- [test_time_bundle.py](test_time_bundle.py.md) (4 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (3 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/time/test_tick_scheduler.py`
+- `server/time/__init__.py`
 - `server/time/tick_scheduler.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (79%)
-- INFERRED: 16 (21%)
+- EXTRACTED: 112 (85%)
+- INFERRED: 19 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,10 +4,10 @@
 
 ## Key Concepts
 
-- **start_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
@@ -15,7 +15,7 @@
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 

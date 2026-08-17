@@ -1,62 +1,65 @@
 # Invite
 
-> 88 nodes
+> 147 nodes
 
 ## Key Concepts
 
 - **Invite** (52 connections) — `server/models/invite.py`
 - **InviteManager** (32 connections) — `server/auth/invites.py`
+- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
 - **test_invite_manager.py** (22 connections) — `server/tests/unit/auth/test_invite_manager.py`
+- **auth/dependencies.py** (19 connections) — `server/auth/dependencies.py`
 - **invites.py** (19 connections) — `server/auth/invites.py`
 - **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
+- **asyncio** (14 connections)
+- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
 - **models/invite.py** (13 connections) — `server/models/invite.py`
+- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
 - **asyncio** (12 connections)
+- **require_invite_code()** (11 connections) — `server/auth/dependencies.py`
 - **get_invite_manager()** (11 connections) — `server/auth/invites.py`
-- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
+- **get_current_verified_user()** (8 connections) — `server/auth/dependencies.py`
+- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
+- **server/auth/__init__.py** (7 connections) — `server/auth/__init__.py`
+- **get_optional_current_user()** (6 connections) — `server/auth/dependencies.py`
 - **.validate_invite()** (6 connections) — `server/auth/invites.py`
+- **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
 - **.create_invite()** (6 connections) — `server/models/invite.py`
 - **._generate_invite_code()** (6 connections) — `server/models/invite.py`
-- **.use_invite()** (5 connections) — `server/auth/invites.py`
-- **test_validate_invite_expired()** (5 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **.create_invite()** (4 connections) — `server/auth/invites.py`
-- **.get_user_invites()** (4 connections) — `server/auth/invites.py`
-- **test_cleanup_expired_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_create_invite_explicit_expiry()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_create_invite_with_default_expiry()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_invite_manager_dependency()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_unused_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_get_user_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_list_invites()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_use_invite()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **test_validate_invite_missing_code()** (4 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- *... and 63 more nodes in this community*
+- **test_get_current_superuser_failure()** (6 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_superuser_with_none_user()** (6 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_get_current_verified_user_failure()** (6 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- *... and 122 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (19 shared connections)
-- [get_session_maker](get_session_maker.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
-- [test_invite_schemas.py](test_invite_schemas.py.md) (4 shared connections)
-- [register_user](register_user.md) (4 shared connections)
-- [database_config_helpers.py](database_config_helpers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [User](User.md) (32 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (19 shared connections)
+- [get_logger](get_logger.md) (15 shared connections)
+- [DatabaseError](DatabaseError.md) (15 shared connections)
+- [models/user.py](models-user.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [test_users.py](test_users.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
+- `server/auth/__init__.py`
+- `server/auth/dependencies.py`
 - `server/auth/invites.py`
+- `server/database_config_helpers.py`
 - `server/models/invite.py`
+- `server/tests/unit/auth/test_auth_dependencies.py`
 - `server/tests/unit/auth/test_invite_manager.py`
 - `server/tests/unit/models/test_invite.py`
+- `tools/invite_tools/generate_invites_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (78%)
-- INFERRED: 46 (22%)
+- EXTRACTED: 298 (83%)
+- INFERRED: 61 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

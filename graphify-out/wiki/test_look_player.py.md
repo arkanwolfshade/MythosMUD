@@ -35,14 +35,13 @@
 
 - [test_look_helpers.py](test_look_helpers.py.md) (7 shared connections)
 - [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
 
 ## Source Files
 

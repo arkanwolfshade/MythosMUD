@@ -1,11 +1,11 @@
 # compilerOptions
 
-> 49 nodes
+> 47 nodes
 
 ## Key Concepts
 
 - **compilerOptions** (18 connections) — `client/tsconfig.json`
-- **paths** (9 connections) — `client/tsconfig.json`
+- **paths** (8 connections) — `client/tsconfig.json`
 - **exclude** (8 connections) — `client/tsconfig.json`
 - **client/tsconfig.json** (4 connections) — `client/tsconfig.json`
 - **lib** (4 connections) — `client/tsconfig.json`
@@ -16,7 +16,6 @@
 - **@lib/*** (2 connections) — `client/tsconfig.json`
 - **@stores/*** (2 connections) — `client/tsconfig.json`
 - **@styles/*** (2 connections) — `client/tsconfig.json`
-- **@types/*** (2 connections) — `client/tsconfig.json`
 - **@utils/*** (2 connections) — `client/tsconfig.json`
 - **allowImportingTsExtensions** (1 connections) — `client/tsconfig.json`
 - **baseUrl** (1 connections) — `client/tsconfig.json`
@@ -29,7 +28,8 @@
 - **noUnusedLocals** (1 connections) — `client/tsconfig.json`
 - **noUnusedParameters** (1 connections) — `client/tsconfig.json`
 - **resolveJsonModule** (1 connections) — `client/tsconfig.json`
-- *... and 24 more nodes in this community*
+- **skipLibCheck** (1 connections) — `client/tsconfig.json`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
@@ -41,7 +41,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
+- EXTRACTED: 46 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

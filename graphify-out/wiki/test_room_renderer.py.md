@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (5 shared connections)
+- [build_event](build_event.md) (5 shared connections)
 - [test_look_room.py](test_look_room.py.md) (4 shared connections)
 - [look_command.py](look_command.py.md) (3 shared connections)
 

@@ -1,6 +1,6 @@
 # TestEmitLootAllEvent
 
-> 29 nodes
+> 30 nodes
 
 ## Key Concepts
 
@@ -11,11 +11,12 @@
 - **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **asyncio** (7 connections)
+- **ConnectionManager** (7 connections)
 - **.test_emit_loot_all_event_no_connection_manager()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **.test_emit_loot_all_event_no_room_id()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **_diff_items_from_emit()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **mock_connection_manager()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **sample_container_component()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **mock_connection_manager()** (4 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **sample_container_data()** (4 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **ContainerComponent** (4 connections)
 - **_assert_warning_once()** (3 connections) — `server/tests/unit/api/test_container_events_loot.py`
@@ -28,15 +29,15 @@
 - **Extract diff['items'] from emit_container_updated await kwargs.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **Create a mock connection manager.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
 - **Create sample container data for testing.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Create a ContainerComponent from sample data.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- *... and 4 more nodes in this community*
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [container_events.py](container_events.py.md) (13 shared connections)
 - [ConnectionManager](ConnectionManager.md) (8 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
+- [container_events.py](container_events.py.md) (7 shared connections)
+- [ContainerSourceType](ContainerSourceType.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
 
 ## Source Files
 
@@ -44,7 +45,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 64 (90%)
+- EXTRACTED: 65 (90%)
 - INFERRED: 7 (10%)
 - AMBIGUOUS: 0 (0%)
 

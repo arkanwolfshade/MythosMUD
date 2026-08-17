@@ -33,14 +33,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (15 shared connections)
 - [CombatParticipant](CombatParticipant.md) (5 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [models/combat.py](models-combat.py.md) (3 shared connections)
 - [CombatEndedEvent](CombatEndedEvent.md) (2 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
-- [combat_event_publisher.py](combat_event_publisher.py.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

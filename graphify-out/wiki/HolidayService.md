@@ -1,67 +1,63 @@
 # HolidayService
 
-> 189 nodes
+> 84 nodes
 
 ## Key Concepts
 
 - **HolidayService** (44 connections) — `server/services/holiday_service.py`
-- **MythosChronicle** (30 connections) — `server/time/time_service.py`
+- **HolidayCollection** (40 connections) — `server/schemas/calendar/calendar.py`
 - **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **get_mythos_chronicle()** (27 connections) — `server/time/time_service.py`
-- **time_service.py** (27 connections) — `server/time/time_service.py`
-- **MythosTimeEventConsumer** (25 connections) — `server/time/time_event_consumer.py`
-- **holiday_service.py** (25 connections) — `server/services/holiday_service.py`
-- **time_event_consumer.py** (25 connections) — `server/time/time_event_consumer.py`
-- **test_time_bundle.py** (21 connections) — `server/tests/unit/container/test_time_bundle.py`
-- **datetime** (15 connections)
-- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
 - **ChronicleLike** (12 connections) — `server/time/time_service.py`
-- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
 - **test_holiday_service.py** (10 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **ChronicleState** (9 connections) — `server/time/time_service.py`
-- **._init_temporal_layer()** (9 connections) — `server/container/bundles/game.py`
-- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
-- **_holiday_entry_from_row()** (8 connections) — `server/services/holiday_service.py`
 - **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
 - **.__init__()** (8 connections) — `server/services/holiday_service.py`
-- **.error()** (8 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **.get_daypart()** (8 connections) — `server/time/time_service.py`
-- **._load_state()** (8 connections) — `server/time/time_service.py`
-- **._persist_state()** (8 connections) — `server/time/time_service.py`
-- **time/__init__.py** (8 connections) — `server/time/__init__.py`
-- *... and 164 more nodes in this community*
+- **.refresh_active()** (7 connections) — `server/services/holiday_service.py`
+- **.__init__()** (7 connections) — `server/time/time_event_consumer.py`
+- **_ensure_utc()** (6 connections) — `server/services/holiday_service.py`
+- **.test_init_loads_from_database()** (6 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **datetime** (6 connections)
+- **.get_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_active_holidays()** (5 connections) — `server/services/holiday_service.py`
+- **.get_serialized_upcoming_holidays()** (4 connections) — `server/services/holiday_service.py`
+- **._load_from_database()** (4 connections) — `server/services/holiday_service.py`
+- **.sample_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_collection_property()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_day_ordinal()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holiday_names()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_serialized_active_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_serialized_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- **.test_get_upcoming_holidays_wraps_around()** (4 connections) — `server/tests/unit/services/test_holiday_service.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [HolidayCollection](HolidayCollection.md) (33 shared connections)
-- [get_logger](get_logger.md) (29 shared connections)
-- [bundles/game.py](bundles-game.py.md) (13 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (9 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (6 shared connections)
-- [.__post_init__](__post_init__.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
-- [._build_broadcast_payload](_build_broadcast_payload.md) (5 shared connections)
-- [ExplorationService](ExplorationService.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [lifespan.py](lifespan.py.md) (4 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (4 shared connections)
+- [HolidayEntry](HolidayEntry.md) (17 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (14 shared connections)
+- [_holiday_entry_from_row](_holiday_entry_from_row.md) (7 shared connections)
+- [validate_calendar.py](validate_calendar.py.md) (5 shared connections)
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [datetime](datetime.md) (2 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/game.py`
-- `server/container/bundles/time.py`
+- `server/schemas/calendar/calendar.py`
 - `server/services/holiday_service.py`
-- `server/tests/unit/container/test_time_bundle.py`
 - `server/tests/unit/services/test_holiday_service.py`
-- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- `server/time/__init__.py`
 - `server/time/time_event_consumer.py`
 - `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 440 (94%)
-- INFERRED: 27 (6%)
+- EXTRACTED: 191 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

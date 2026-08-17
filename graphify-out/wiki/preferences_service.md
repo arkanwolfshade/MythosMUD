@@ -18,7 +18,7 @@
 
 - [test_player_preferences_service.py](test_player_preferences_service.py.md) (4 shared connections)
 - [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_player_related_models.py](test_player_related_models.py.md) (1 shared connections)
 
 ## Source Files
 

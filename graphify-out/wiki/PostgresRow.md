@@ -34,7 +34,7 @@
 
 - [Any](Any.md) (4 shared connections)
 - [PostgresCursor](PostgresCursor.md) (3 shared connections)
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
+- [test_postgres_adapter.py](test_postgres_adapter.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files

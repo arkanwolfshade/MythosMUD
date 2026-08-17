@@ -34,17 +34,16 @@
 ## Relationships
 
 - [DatabaseError](DatabaseError.md) (7 shared connections)
-- [extract_player_name](extract_player_name.md) (3 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
 - [build_event](build_event.md) (3 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
+- [extract_player_name](extract_player_name.md) (2 shared connections)
 - [start_grace_period](start_grace_period.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [RealTimeEventHandler](RealTimeEventHandler.md) (1 shared connections)
-- [.app](app.md) (1 shared connections)
-- [real_time.py](real_time.py.md) (1 shared connections)
-- [quest_service](quest_service.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,27 +1,20 @@
 # CircuitBreaker
 
-> 87 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (33 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **CircuitState** (25 connections) — `server/realtime/circuit_breaker.py`
-- **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
 - **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
-- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **asyncio** (8 connections)
-- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
 - **test_call_rejects_when_open()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_call_closes_from_half_open_on_success()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_call_failure_closed_state()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_call_opens_circuit_after_threshold()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_call_reopens_from_half_open_on_failure()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_call_transitions_to_half_open_after_timeout()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
-- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
 - **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_circuit_breaker_init()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_get_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
@@ -29,14 +22,23 @@
 - **test_on_failure_resets_success_count()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_reset()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 62 more nodes in this community*
+- **test_should_attempt_reset_returns_false_before_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_false_when_not_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_should_attempt_reset_returns_true_after_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_remaining_time()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_after_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_time_until_retry_returns_zero_when_not_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_transition_to_updates_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [NATSError](NATSError.md) (8 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (4 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (2 shared connections)
+- [ConnectionManager](ConnectionManager.md) (8 shared connections)
+- [.call](call.md) (8 shared connections)
+- [CircuitBreakerOpen](CircuitBreakerOpen.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [.__init__](__init__.md) (1 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 121 (70%)
-- INFERRED: 51 (30%)
+- EXTRACTED: 96 (67%)
+- INFERRED: 47 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

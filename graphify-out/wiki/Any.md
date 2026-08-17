@@ -1,39 +1,40 @@
 # Any
 
-> 13 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_by_id()** (3 connections) — `server/game/chat_moderation.py`
-- **.resolve_player_name()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
-- **Protocol** (2 connections)
-- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
-- **Resolve player name to player object.** (1 connections) — `server/game/chat_moderation.py`
-- **Get all mutes applied by a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
+- **Any** (7 connections)
+- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_get_app_or_error()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **Parse value from args[2] when value_input is None and args has at least 3…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Parse stat name, target player, and value from command data.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value exceeds DP or MP calculated maximum; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value is outside normal range for stat; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Calculate warnings for stat values that exceed maximums or normal ranges.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Resolve required services and check admin permissions.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return (app, None) if request has app, else (None, error_dict).** (1 connections) — `server/commands/admin_setstat_command.py`
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (5 shared connections)
-- [UserManagerProtocol](UserManagerProtocol.md) (3 shared connections)
-- [._format_mute_entry](_format_mute_entry.md) (2 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [build_event](build_event.md) (8 shared connections)
+- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (4 shared connections)
+- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/commands/admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (6 shared connections)
-- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (6 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
