@@ -5,7 +5,7 @@ This module provides the setup function for configuring file-based logging handl
 with proper categorization, rotation, and Windows safety.
 """
 
-# pylint: disable=too-few-public-methods,too-many-locals,too-many-statements,too-many-lines  # Reason: File setup class with focused responsibility, minimal public interface, and complex setup logic requiring many intermediate variables. File setup legitimately requires many statements for comprehensive logging configuration. Module requires 648 lines to implement comprehensive logging setup with category handlers, aggregator handlers, console handlers, Windows safety, async support, and configuration management; splitting would reduce cohesion
+# pylint: disable=too-few-public-methods,too-many-locals,too-many-statements  # Reason: File setup helpers have focused responsibility; setup uses many locals/statements for category, aggregator, console, and async wiring
 
 import logging
 import queue
@@ -16,18 +16,54 @@ from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
 from typing import cast, override
 
+from server.structured_logging.logging_file_categories import (
+    DEFAULT_LOG_CATEGORIES,
+    LoggerNameFilter,
+    add_handler_to_loggers,
+    create_formatter,
+    create_handler_for_category,
+)
 from server.structured_logging.logging_handlers import SafeRotatingFileHandler, create_aggregator_handler
 from server.structured_logging.logging_utilities import (
     ensure_log_directory,
-    load_player_guid_formatter_class,
     resolve_log_base,
     rotate_log_files,
 )
 
 # Global queue and listener for async logging (initialized once)
+# ponytail: 10k cap; Queue(-1) retained copied LogRecords through Windows rotation stalls (13GB soak).
+LOG_QUEUE_MAXSIZE = 10000
 _log_queue: queue.Queue[logging.LogRecord] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
 _queue_listener: QueueListener | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
 _queue_listener_lock = threading.Lock()
+
+
+class DropOldestQueueHandler(QueueHandler):
+    """Enqueue LogRecords; if the queue is full, drop the oldest instead of growing."""
+
+    def __init__(self, log_queue: queue.Queue[logging.LogRecord]) -> None:
+        super().__init__(log_queue)
+        self._bounded_queue: queue.Queue[logging.LogRecord] = log_queue
+
+    @override
+    def enqueue(self, record: logging.LogRecord) -> None:
+        try:
+            self._bounded_queue.put_nowait(record)
+            return
+        except queue.Full:
+            pass
+        try:
+            _ = self._bounded_queue.get_nowait()
+        except queue.Empty:
+            pass
+        try:
+            self._bounded_queue.put_nowait(record)
+        except queue.Full:
+            pass
+
+
+def _new_log_queue() -> queue.Queue[logging.LogRecord]:
+    return queue.Queue(LOG_QUEUE_MAXSIZE)
 
 
 def _get_or_create_log_queue() -> queue.Queue[logging.LogRecord]:
@@ -41,7 +77,7 @@ def _get_or_create_log_queue() -> queue.Queue[logging.LogRecord]:
 
     with _queue_listener_lock:
         if _log_queue is None:
-            _log_queue = queue.Queue(-1)
+            _log_queue = _new_log_queue()
         return _log_queue
 
 
@@ -66,7 +102,11 @@ def stop_queue_listener() -> None:
     global _queue_listener, _log_queue  # pylint: disable=global-statement  # Reason: Must reset module state for teardown
     with _queue_listener_lock:
         if _queue_listener is not None:
-            _queue_listener.stop()
+            try:
+                _queue_listener.stop()
+            except AttributeError:
+                # QueueListener.stop() sets _thread to None; a second stop must not crash.
+                pass
             _queue_listener = None
         _log_queue = None
 
@@ -100,7 +140,7 @@ def _setup_category_handlers(
 
     for log_file, prefixes in log_categories.items():
         log_path = config.env_log_dir / f"{log_file}.log"
-        handler = _create_handler_for_category(
+        handler = create_handler_for_category(
             log_path,
             config.handler_class,
             config.max_bytes,
@@ -123,7 +163,7 @@ def _setup_category_handlers(
             # Skip _add_handler_to_loggers so we do not add QueueHandlers to child loggers.
             pass
         else:
-            _add_handler_to_loggers(
+            add_handler_to_loggers(
                 handler,
                 prefixes,
                 log_file,
@@ -175,7 +215,7 @@ def _setup_aggregator_handlers(  # pylint: disable=too-many-arguments,too-many-p
     if enable_async and log_queue:
         # Single QueueHandler so each record is queued once; listener
         # dispatches to both warnings_handler and errors_handler.
-        root_logger.addHandler(QueueHandler(log_queue))
+        root_logger.addHandler(DropOldestQueueHandler(log_queue))
     else:
         root_logger.addHandler(warnings_handler)
 
@@ -222,37 +262,7 @@ def _setup_console_handler(
         Console handler created
     """
     console_log_path = config.env_log_dir / "console.log"
-    handler_class: type[RotatingFileHandler] = config.base_handler
-    try:
-        if sys.platform == "win32":
-            # Windows-safe handler also needs directory safety
-            base_win_handler = config.win_safe_handler
-
-            class SafeWinHandlerConsole(base_win_handler):  # type: ignore[misc, valid-type]  # Reason: Dynamic class creation inside conditional block, mypy cannot validate type compatibility at definition time
-                """Windows-safe rotating file handler with directory safety for console logs."""
-
-                @override
-                def shouldRollover(self, record: logging.LogRecord) -> bool:  # noqa: N802  # pylint: disable=invalid-name  # Reason: Method name required by parent class logging.handlers.RotatingFileHandler, cannot change to follow PEP8 naming
-                    """Check if log file should roll over, ensuring directory exists first.
-
-                    Args:
-                        record: Log record to check
-
-                    Returns:
-                        bool: True if rollover should occur, False otherwise
-                    """
-                    if self.baseFilename:
-                        log_path = Path(self.baseFilename)
-                        ensure_log_directory(log_path)
-                    return bool(super().shouldRollover(record))
-
-            handler_class = SafeWinHandlerConsole
-    except Exception:  # pylint: disable=broad-except  # Reason: Defensive fallback for class definition failures, must catch all exceptions to prevent logging setup from failing completely
-        # Defensive fallback: if class definition fails for any reason,
-        # fall back to base handler (e.g., if win_safe_handler is invalid)
-        handler_class = config.base_handler
-
-    # Ensure directory exists right before creating handler to prevent race conditions
+    handler_class = _get_handler_class(config.win_safe_handler, config.base_handler)
     ensure_log_directory(console_log_path)
     try:
         console_handler = handler_class(
@@ -271,34 +281,10 @@ def _setup_console_handler(
             encoding="utf-8",
         )
     console_handler.setLevel(getattr(logging, str(config.log_level).upper(), logging.INFO))
-
-    # Use enhanced formatter for console handler
-    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
-    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
-    console_formatter: logging.Formatter
-    if config.player_service is not None:
-        PlayerGuidFormatter = load_player_guid_formatter_class()
-        console_formatter = PlayerGuidFormatter(
-            player_service=config.player_service,
-            fmt="%(message)s",
-            datefmt=None,
-        )
-    else:
-        console_formatter = logging.Formatter(
-            "%(message)s",
-            datefmt=None,
-        )
-    console_handler.setFormatter(console_formatter)
-
-    if config.enable_async and config.log_queue:
-        # Do not add another QueueHandler to root; root already has one from
-        # aggregator. Adding a second would duplicate every record to the queue.
-        # console_handler is returned and added to all_file_handlers, so the
-        # QueueListener will still write console output.
-        pass
-    else:
+    console_handler.setFormatter(create_formatter(config.player_service))
+    # Async path: root already has a QueueHandler; the listener still writes console.log.
+    if not (config.enable_async and config.log_queue):
         config.root_logger.addHandler(console_handler)
-
     return console_handler
 
 
@@ -322,9 +308,7 @@ def _setup_async_logging_queue(handlers: list[logging.Handler]) -> None:
             return
 
         if _log_queue is None:
-            # Use a larger queue size for better batching performance
-            # -1 means unlimited, but in practice the queue will be bounded by memory
-            _log_queue = queue.Queue(-1)
+            _log_queue = _new_log_queue()
 
         try:
             # Create queue listener with all file handlers
@@ -391,145 +375,6 @@ def _convert_max_size_to_bytes(max_size_str: str | int) -> int:
     return max_size_str
 
 
-def _create_formatter(player_service: object | None) -> logging.Formatter:
-    """Create formatter (with or without PlayerGuidFormatter)."""
-    # Note: Using %(message)s only since structlog already includes all metadata (timestamp, logger name, level)
-    # in the rendered message. Adding %(asctime)s - %(name)s - %(levelname)s would cause duplication.
-    if player_service is not None:
-        PlayerGuidFormatter = load_player_guid_formatter_class()
-        return cast(
-            logging.Formatter,
-            PlayerGuidFormatter(
-                player_service=player_service,
-                fmt="%(message)s",
-                datefmt=None,
-            ),
-        )
-    return logging.Formatter(
-        "%(message)s",
-        datefmt=None,
-    )
-
-
-class LoggerNameFilter(logging.Filter):
-    """
-    Filter that only allows logs from loggers matching specified prefixes.
-
-    This prevents cross-contamination where logs from one subsystem
-    (e.g., server.npc.behavior_engine) end up in the wrong log file
-    (e.g., communications.log instead of npc.log).
-    """
-
-    allowed_prefixes: list[str]
-
-    def __init__(self, allowed_prefixes: list[str]) -> None:
-        """
-        Initialize filter with allowed logger name prefixes.
-
-        Args:
-            allowed_prefixes: List of logger name prefixes to allow
-        """
-        super().__init__()
-        self.allowed_prefixes = allowed_prefixes
-
-    @override
-    def filter(self, record: logging.LogRecord) -> bool:
-        """
-        Check if the log record's logger name matches any allowed prefix.
-
-        Args:
-            record: Log record to check
-
-        Returns:
-            True if logger name matches an allowed prefix, False otherwise
-        """
-        logger_name = record.name
-        # Check if logger name starts with any allowed prefix
-        for prefix in self.allowed_prefixes:
-            if logger_name == prefix or logger_name.startswith(f"{prefix}."):
-                return True
-        return False
-
-
-def _add_handler_to_loggers(
-    handler: logging.Handler, prefixes: list[str], log_file: str, environment: str, log_level: str
-) -> None:
-    """
-    Add handler to loggers that match the prefixes.
-
-    Adds a filter to the handler to ensure it only processes logs from
-    loggers matching the specified prefixes, preventing cross-contamination.
-    """
-    # Add filter to handler to ensure it only processes logs from intended loggers
-    # This prevents logs from other subsystems (e.g., server.npc.behavior_engine)
-    # from being written to the wrong log file (e.g., communications.log)
-    # NOTE: When async logging is enabled, this filter is added to the QueueHandler,
-    # but we also need to add it to the actual file handler (see _setup_category_handlers)
-    handler.addFilter(LoggerNameFilter(prefixes))
-
-    for prefix in prefixes:
-        # Try both the prefix as-is and with "server." prefix for module-based loggers
-        logger_names = [prefix]
-        if not prefix.startswith("server."):
-            logger_names.append(f"server.{prefix}")
-
-        for logger_name in logger_names:
-            target_logger = logging.getLogger(logger_name)
-            target_logger.addHandler(handler)
-            # Set DEBUG level for combat modules in local/debug environments
-            if log_file == "combat" and (environment == "local" or log_level == "DEBUG"):
-                target_logger.setLevel(logging.DEBUG)
-            else:
-                target_logger.setLevel(getattr(logging, str(log_level).upper(), logging.INFO))
-            target_logger.propagate = True
-
-
-def _create_handler_for_category(
-    log_path: Path,
-    handler_class: type[RotatingFileHandler],
-    max_bytes: int,
-    backup_count: int,
-    player_service: object | None,
-) -> logging.Handler:
-    """
-    Create handler for a log category with graceful error handling.
-
-    If handler creation fails, returns a NullHandler to prevent logging
-    failures from crashing the application.
-    """
-    try:
-        ensure_log_directory(log_path)
-        try:
-            handler: logging.Handler = handler_class(
-                log_path,
-                maxBytes=max_bytes,
-                backupCount=backup_count,
-                encoding="utf-8",
-            )
-        except (FileNotFoundError, OSError):
-            # If directory doesn't exist or was deleted, recreate it and try again
-            ensure_log_directory(log_path)
-            handler = handler_class(
-                log_path,
-                maxBytes=max_bytes,
-                backupCount=backup_count,
-                encoding="utf-8",
-            )
-        handler.setLevel(logging.DEBUG)
-        formatter = _create_formatter(player_service)
-        handler.setFormatter(formatter)
-        return handler
-    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Defensive fallback for handler creation failures, must catch all exceptions to prevent logging setup from crashing the application
-        # Graceful fallback: if handler creation fails, use NullHandler
-        # This prevents logging setup failures from crashing the application
-        # Log the error to stderr as a last resort
-        print(
-            f"Warning: Failed to create log handler for {log_path}: {type(e).__name__}: {e}",
-            file=sys.stderr,
-        )
-        return logging.NullHandler()
-
-
 def _get_handler_classes() -> tuple[type[RotatingFileHandler], type[RotatingFileHandler]]:
     """Resolve Windows-safe and base handler classes for file logging."""
     win_safe: type[RotatingFileHandler] = RotatingFileHandler
@@ -573,112 +418,6 @@ def _prepare_log_environment(log_config: dict[str, object], environment: str, lo
     return (env_log_dir, max_bytes, backup_count)
 
 
-DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
-    "server": ["server", "uvicorn", "server.app.factory"],
-    "persistence": ["persistence", "server.persistence", "PersistenceLayer", "asyncpg", "database"],
-    "authentication": ["auth"],
-    "inventory": [
-        "inventory",
-        "server.services.inventory",
-        "server.services.inventory_mutation_guard",
-        "server.services.container",
-        "server.services.container_service",
-        "server.services.wearable_container_service",
-        "server.services.equipment_service",
-        "services.inventory",
-        "services.inventory_mutation_guard",
-        "services.container",
-        "services.container_service",
-        "services.wearable_container_service",
-        "services.equipment_service",
-    ],
-    "npc": [
-        "npc",
-        "server.npc",
-        "services.npc",
-        "services.npc_service",
-        "services.npc_instance_service",
-        "services.npc_startup_service",
-    ],
-    "game": [
-        "game",
-        "server.game",
-        "server.services.player",
-        "server.services.room_sync",
-        "server.world_loader",
-        "server.game.movement_service",
-        "server.game.room_service",
-        "server.game.player_service",
-        "server.game.mechanics",
-        "services.player",
-        "services.room_sync",
-        "world_loader",
-        "game.movement_service",
-        "game.room_service",
-        "game.player_service",
-        "game.mechanics",
-    ],
-    "api": ["api", "server.api"],
-    "middleware": ["middleware", "server.middleware"],
-    "monitoring": ["monitoring", "server.monitoring", "server.api.monitoring", "performance", "metrics"],
-    "time": [
-        "time",
-        "server.time",
-        "services.game_tick",
-        "services.game_tick_service",
-        "services.schedule",
-        "server.services.schedule_service",
-    ],
-    "caching": ["caching", "server.caching"],
-    "communications": ["realtime", "communications"],
-    "commands": [
-        "commands",
-        "server.commands",
-        "server.utils.command_parser",
-        "server.utils.command_processor",
-    ],
-    "events": ["events", "EventBus"],
-    "infrastructure": ["infrastructure", "server.infrastructure"],
-    "validators": ["validators", "server.validators"],
-    "combat": [
-        "services.combat_service",
-        "services.combat_turn_processor",
-        "services.combat_event_publisher",
-        "services.npc_combat_integration_service",
-        "services.player_combat_service",
-        "validators.combat_validator",
-        "logging.combat_audit",
-    ],
-    "magic": ["server.game.magic", "game.magic", "magic"],
-    "party": [
-        "server.game.party_service",
-        "server.commands.party_commands",
-        "server.realtime.channel_broadcasting_strategies",
-    ],
-    "quests": [
-        "server.game.quest",
-        "server.persistence.repositories.quest_definition_repository",
-        "server.persistence.repositories.quest_instance_repository",
-        "server.commands.quest_commands",
-    ],
-    "access": ["access", "uvicorn.access"],
-    "security": [
-        "security",
-        "server.security_utils",
-        "server.utils.audit_logger",
-        "server.structured_logging.admin_actions_logger",
-        "server.middleware.security_headers",
-        "server.validators.optimized_security_validator",
-        "audit",
-    ],
-}
-
-
-def _get_default_log_categories() -> dict[str, list[str]]:
-    """Return enhanced log categories by subsystem (one log file per subsystem)."""
-    return DEFAULT_LOG_CATEGORIES
-
-
 def setup_enhanced_file_logging(
     environment: str,
     log_config: dict[str, object],
@@ -693,7 +432,7 @@ def setup_enhanced_file_logging(
     log_queue = _get_or_create_log_queue() if enable_async else None
     handler_class = _get_handler_class(win_safe_handler, base_handler)
     all_file_handlers = _setup_category_handlers(
-        _get_default_log_categories(),
+        DEFAULT_LOG_CATEGORIES,
         _CategoryHandlerConfig(
             env_log_dir=env_log_dir,
             handler_class=handler_class,

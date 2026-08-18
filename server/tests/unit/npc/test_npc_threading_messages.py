@@ -1,5 +1,10 @@
 """Unit tests for NPC threading message serialization."""
 
+# pyright: reportPrivateUsage=false
+# Reason: unit tests call NPCThreadManager._process_npc_message directly.
+
+from __future__ import annotations
+
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -14,7 +19,7 @@ from server.npc.threading import (
 )
 
 
-def test_npc_action_message_round_trip():
+def test_npc_action_message_round_trip() -> None:
     msg = NPCActionMessage(
         action_type=NPCActionType.SPEAK,
         npc_id="npc-1",
@@ -30,21 +35,21 @@ def test_npc_action_message_round_trip():
     assert restored.channel == "say"
 
 
-def test_npc_action_message_json_round_trip():
+def test_npc_action_message_json_round_trip() -> None:
     msg = NPCActionMessage(action_type=NPCActionType.IDLE, npc_id="npc-3", timestamp=2.0)
     restored = NPCActionMessage.from_json(msg.to_json())
     assert restored.action_type == NPCActionType.IDLE
     assert restored.npc_id == "npc-3"
 
 
-def test_npc_action_message_to_dict_uses_enum_value():
+def test_npc_action_message_to_dict_uses_enum_value() -> None:
     msg = NPCActionMessage(action_type=NPCActionType.MOVE, npc_id="npc-2", timestamp=1.0, target_room="room-1")
     data = msg.to_dict()
     assert data["action_type"] == "move"
     assert data["target_room"] == "room-1"
 
 
-def test_npc_message_queue_add_get_clear():
+def test_npc_message_queue_add_get_clear() -> None:
     queue = NPCMessageQueue(max_messages_per_npc=2)
     assert queue.add_message("npc-1", {"type": "ping"}) is True
     assert queue.get_queue_size("npc-1") == 1
@@ -55,11 +60,35 @@ def test_npc_message_queue_add_get_clear():
     assert queue.get_queue_size("npc-1") == 0
 
 
-def test_npc_message_queue_trims_oldest():
+def test_clear_messages_removes_retired_npc_key() -> None:
+    queue = NPCMessageQueue()
+    assert queue.add_message("npc-gone", {"type": "x"}) is True
+    assert "npc-gone" in queue.pending_messages
+    assert queue.clear_messages("npc-gone") is True
+    assert "npc-gone" not in queue.pending_messages
+
+
+@pytest.mark.asyncio
+async def test_thread_stop_and_shutdown_drop_pending_keys() -> None:
+    manager = NPCThreadManager()
+    _ = await manager.start()
+    _ = manager.message_queue.add_message("npc-1", {"type": "ping"})
+    _ = manager.message_queue.add_message("npc-2", {"type": "ping"})
+    with patch.object(manager, "_npc_thread_worker", new_callable=AsyncMock):
+        definition: MagicMock = MagicMock()
+        definition.name = "Guard"
+        assert await manager.start_npc_thread("npc-1", definition) is True
+        assert await manager.stop_npc_thread("npc-1") is True
+    assert "npc-1" not in manager.message_queue.pending_messages
+    assert await manager.stop() is True
+    assert manager.message_queue.pending_messages == {}
+
+
+def test_npc_message_queue_trims_oldest() -> None:
     queue = NPCMessageQueue(max_messages_per_npc=2)
-    queue.add_message("npc-1", {"type": "a"})
-    queue.add_message("npc-1", {"type": "b"})
-    queue.add_message("npc-1", {"type": "c"})
+    _ = queue.add_message("npc-1", {"type": "a"})
+    _ = queue.add_message("npc-1", {"type": "b"})
+    _ = queue.add_message("npc-1", {"type": "c"})
     messages = queue.get_messages("npc-1")
     assert len(messages) == 2
     assert messages[0]["type"] == "b"
@@ -67,7 +96,7 @@ def test_npc_message_queue_trims_oldest():
 
 
 @pytest.mark.asyncio
-async def test_npc_thread_manager_start_stop():
+async def test_npc_thread_manager_start_stop() -> None:
     manager = NPCThreadManager()
     assert await manager.start() is True
     assert manager.is_running is True
@@ -79,7 +108,7 @@ async def test_npc_thread_manager_start_stop():
 
 
 @pytest.mark.asyncio
-async def test_npc_communication_bridge_messages():
+async def test_npc_communication_bridge_messages() -> None:
     bridge = NPCCommunicationBridge()
     assert await bridge.send_message_to_npc("npc-1", {"type": "order"}) is True
     incoming = await bridge.get_messages_for_npc("npc-1")
@@ -91,9 +120,9 @@ async def test_npc_communication_bridge_messages():
 
 
 @pytest.mark.asyncio
-async def test_npc_thread_manager_start_stop_npc_thread():
+async def test_npc_thread_manager_start_stop_npc_thread() -> None:
     manager = NPCThreadManager()
-    definition = MagicMock()
+    definition: MagicMock = MagicMock()
     definition.name = "Guard"
     assert await manager.start_npc_thread("npc-1", definition) is False
     assert await manager.start() is True
@@ -107,20 +136,20 @@ async def test_npc_thread_manager_start_stop_npc_thread():
 
 
 @pytest.mark.asyncio
-async def test_npc_thread_manager_restart_npc_thread():
+async def test_npc_thread_manager_restart_npc_thread() -> None:
     manager = NPCThreadManager()
-    definition = MagicMock()
+    definition: MagicMock = MagicMock()
     definition.name = "Guard"
-    await manager.start()
+    _ = await manager.start()
     with patch.object(manager, "_npc_thread_worker", new_callable=AsyncMock):
-        await manager.start_npc_thread("npc-2", definition)
+        _ = await manager.start_npc_thread("npc-2", definition)
         assert await manager.restart_npc_thread("npc-2", definition) is True
 
 
 @pytest.mark.asyncio
-async def test_npc_thread_manager_stop_cancels_running_task():
+async def test_npc_thread_manager_stop_cancels_running_task() -> None:
     manager = NPCThreadManager()
-    await manager.start()
+    _ = await manager.start()
 
     async def sleeper() -> None:
         await asyncio.sleep(5)
@@ -133,7 +162,7 @@ async def test_npc_thread_manager_stop_cancels_running_task():
 
 
 @pytest.mark.asyncio
-async def test_process_npc_message_dispatches_wander():
+async def test_process_npc_message_dispatches_wander() -> None:
     manager = NPCThreadManager()
     with patch.object(manager, "_process_wander_action", new_callable=AsyncMock) as wander:
         await manager._process_npc_message("npc-1", {"action_type": "wander"})
@@ -141,20 +170,20 @@ async def test_process_npc_message_dispatches_wander():
 
 
 @pytest.mark.asyncio
-async def test_process_npc_message_handles_errors():
+async def test_process_npc_message_handles_errors() -> None:
     manager = NPCThreadManager()
     with patch.object(manager, "_process_wander_action", new_callable=AsyncMock, side_effect=RuntimeError("bad")):
         await manager._process_npc_message("npc-1", {"action_type": "wander"})
 
 
-def test_npc_message_queue_add_message_failure():
+def test_npc_message_queue_add_message_failure() -> None:
     queue = NPCMessageQueue()
     with patch.object(queue, "pending_messages", create=True) as pending:
         pending.__getitem__ = MagicMock(side_effect=RuntimeError("broken"))
         assert queue.add_message("npc-1", {"type": "fail"}) is False
 
 
-def test_npc_message_queue_clear_messages_failure():
+def test_npc_message_queue_clear_messages_failure() -> None:
     queue = NPCMessageQueue()
     queue.pending_messages["npc-1"] = [{"type": "x"}]
     with patch.object(queue, "_lock") as lock:
@@ -163,16 +192,16 @@ def test_npc_message_queue_clear_messages_failure():
 
 
 @pytest.mark.asyncio
-async def test_bridge_receive_message_failure():
+async def test_bridge_receive_message_failure() -> None:
     bridge = NPCCommunicationBridge()
-    bad_message = MagicMock()
+    bad_message: MagicMock = MagicMock()
     bad_message.__setitem__ = MagicMock(side_effect=TypeError("immutable"))
     assert await bridge.receive_message_from_npc("npc-1", bad_message) is False
 
 
 @pytest.mark.asyncio
-async def test_bridge_broadcast_failure():
+async def test_bridge_broadcast_failure() -> None:
     bridge = NPCCommunicationBridge()
-    bad_message = MagicMock()
+    bad_message: MagicMock = MagicMock()
     bad_message.__setitem__ = MagicMock(side_effect=TypeError("immutable"))
     assert await bridge.broadcast_to_all_npcs(bad_message) is False

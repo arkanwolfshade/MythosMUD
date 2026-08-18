@@ -1,3 +1,6 @@
+# pyright: reportAny=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportUnknownMemberType=false
+# Reason: json.loads returns Any; NPC message payloads normalize dict keys to str at parse boundary.
+
 """
 NPC threading and message queue infrastructure for MythosMUD.
 
@@ -10,185 +13,26 @@ for maintaining the delicate balance between order and chaos in our eldritch
 processing systems.
 """
 
-# pylint: disable=too-many-lines  # Reason: NPC threading requires extensive threading infrastructure for comprehensive thread management and message queue operations
-
 import asyncio
 import json
-import threading
 import time
 from collections import defaultdict
-from dataclasses import asdict, dataclass
-from enum import Enum
-from typing import Any
 
 from anyio import Lock, sleep
 
 from ..models.npc import NPCDefinition
 from ..structured_logging.enhanced_logging_config import get_logger
+from .threading_messages import NPCActionMessage, NPCActionType, NPCMessageQueue
 
 logger = get_logger(__name__)
 
-
-class NPCActionType(Enum):
-    """Enumeration of NPC action types."""
-
-    MOVE = "move"
-    ATTACK = "attack"
-    SPEAK = "speak"
-    INTERACT = "interact"
-    WANDER = "wander"
-    HUNT = "hunt"
-    FLEE = "flee"
-    IDLE = "idle"
-    CUSTOM = "custom"
-
-
-@dataclass
-class NPCActionMessage:  # pylint: disable=too-many-instance-attributes  # Reason: NPC action message requires many fields to capture complete action context
-    """
-    Message structure for NPC actions.
-
-    This class represents a single action that an NPC can perform,
-    with all necessary metadata for execution and tracking.
-    """
-
-    action_type: NPCActionType
-    npc_id: str
-    timestamp: float
-
-    # Optional fields for different action types
-    target_room: str | None = None
-    target_player: str | None = None
-    target_npc: str | None = None
-    message: str | None = None
-    channel: str | None = None
-    damage: int | None = None
-    item_id: str | None = None
-    custom_data: dict[str, Any] | None = None
-
-    def to_dict(self) -> dict[str, Any]:
-        """Convert message to dictionary for serialization."""
-        data = asdict(self)
-        data["action_type"] = self.action_type.value
-        return data
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "NPCActionMessage":
-        """Create message from dictionary."""
-        data = data.copy()
-        data["action_type"] = NPCActionType(data["action_type"])
-        return cls(**data)
-
-    def to_json(self) -> str:
-        """Convert message to JSON string."""
-        return json.dumps(self.to_dict())
-
-    @classmethod
-    def from_json(cls, json_str: str) -> "NPCActionMessage":
-        """Create message from JSON string."""
-        data = json.loads(json_str)
-        return cls.from_dict(data)
-
-
-class NPCMessageQueue:
-    """
-    Thread-safe message queue for NPC actions.
-
-    This queue handles pending actions for NPCs, ensuring reliable
-    delivery and proper ordering of actions.
-    """
-
-    def __init__(self, max_messages_per_npc: int = 1000) -> None:
-        """
-        Initialize the NPC message queue.
-
-        Args:
-            max_messages_per_npc: Maximum number of pending messages per NPC
-        """
-        self.pending_messages: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        self.max_messages_per_npc = max_messages_per_npc
-        self._lock = threading.RLock()
-
-        logger.info("NPC message queue initialized", max_messages_per_npc=max_messages_per_npc)
-
-    def add_message(self, npc_id: str, message: dict[str, Any]) -> bool:
-        """
-        Add a message to an NPC's pending message queue.
-
-        Args:
-            npc_id: The NPC's ID
-            message: The message to queue
-
-        Returns:
-            bool: True if message was added successfully, False otherwise
-        """
-        try:
-            with self._lock:
-                # Add timestamp if not present
-                if "timestamp" not in message:
-                    message["timestamp"] = time.time()
-
-                self.pending_messages[npc_id].append(message)
-
-                # Limit queue size
-                if len(self.pending_messages[npc_id]) > self.max_messages_per_npc:
-                    self.pending_messages[npc_id] = self.pending_messages[npc_id][-self.max_messages_per_npc :]
-                    logger.warning(
-                        "NPC message queue limit reached, dropping oldest messages",
-                        npc_id=npc_id,
-                        max_messages=self.max_messages_per_npc,
-                    )
-
-                logger.debug("Added message to NPC queue", npc_id=npc_id, message_type=message.get("type"))
-                return True
-
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message queue errors unpredictable, must return False
-            logger.error("Error adding message to NPC queue", npc_id=npc_id, error=str(e))
-            return False
-
-    def get_messages(self, npc_id: str) -> list[dict[str, Any]]:
-        """
-        Get all pending messages for an NPC.
-
-        Args:
-            npc_id: The NPC's ID
-
-        Returns:
-            List of pending messages
-        """
-        with self._lock:
-            return self.pending_messages[npc_id].copy()
-
-    def clear_messages(self, npc_id: str) -> bool:
-        """
-        Clear all pending messages for an NPC.
-
-        Args:
-            npc_id: The NPC's ID
-
-        Returns:
-            bool: True if messages were cleared successfully
-        """
-        try:
-            with self._lock:
-                if npc_id in self.pending_messages:
-                    message_count = len(self.pending_messages[npc_id])
-                    self.pending_messages[npc_id].clear()
-                    logger.debug("Cleared NPC messages", npc_id=npc_id, message_count=message_count)
-                return True
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message clearing errors unpredictable, must return False
-            logger.error("Error clearing NPC messages", npc_id=npc_id, error=str(e))
-            return False
-
-    def get_queue_size(self, npc_id: str) -> int:
-        """Get the number of pending messages for an NPC."""
-        with self._lock:
-            return len(self.pending_messages.get(npc_id, []))
-
-    def get_total_queue_size(self) -> int:
-        """Get the total number of pending messages across all NPCs."""
-        with self._lock:
-            return sum(len(messages) for messages in self.pending_messages.values())
+__all__ = [
+    "NPCActionMessage",
+    "NPCActionType",
+    "NPCCommunicationBridge",
+    "NPCMessageQueue",
+    "NPCThreadManager",
+]
 
 
 class NPCThreadManager:
@@ -201,11 +45,11 @@ class NPCThreadManager:
 
     def __init__(self) -> None:
         """Initialize the NPC thread manager."""
-        self.active_threads: dict[str, asyncio.Task[Any]] = {}
+        self.active_threads: dict[str, asyncio.Task[object]] = {}
         self.npc_definitions: dict[str, NPCDefinition] = {}
-        self.message_queue = NPCMessageQueue()
-        self.is_running = False
-        self._lock = Lock()
+        self.message_queue: NPCMessageQueue = NPCMessageQueue()
+        self.is_running: bool = False
+        self._lock: Lock = Lock()
 
         logger.info("NPC thread manager initialized")
 
@@ -250,10 +94,11 @@ class NPCThreadManager:
                         stop_tasks.append(self._stop_npc_thread_internal(npc_id))
 
                 if stop_tasks:
-                    await asyncio.gather(*stop_tasks, return_exceptions=True)
+                    _ = await asyncio.gather(*stop_tasks, return_exceptions=True)
 
                 self.active_threads.clear()
                 self.npc_definitions.clear()
+                self.message_queue.clear_all_messages()
 
             logger.info("NPC thread manager stopped")
             return True
@@ -319,7 +164,7 @@ class NPCThreadManager:
 
         task = self.active_threads[npc_id]
         if not task.done():
-            task.cancel()
+            _ = task.cancel()
             try:
                 await task
             except asyncio.CancelledError:
@@ -330,7 +175,7 @@ class NPCThreadManager:
             del self.npc_definitions[npc_id]
 
         # Clear any pending messages for this NPC
-        self.message_queue.clear_messages(npc_id)
+        _ = self.message_queue.clear_messages(npc_id)
 
         logger.info("Stopped NPC thread", npc_id=npc_id)
         return True
@@ -348,7 +193,7 @@ class NPCThreadManager:
         """
         try:
             # Stop the existing thread
-            await self.stop_npc_thread(npc_id)
+            _ = await self.stop_npc_thread(npc_id)
 
             # Start a new thread
             return await self.start_npc_thread(npc_id, npc_definition)
@@ -382,7 +227,7 @@ class NPCThreadManager:
 
                 # Clear processed messages
                 if messages:
-                    self.message_queue.clear_messages(npc_id)
+                    _ = self.message_queue.clear_messages(npc_id)
 
                 # Execute NPC behavior (placeholder for now)
                 await self._execute_npc_behavior(npc_id, npc_definition)
@@ -397,7 +242,7 @@ class NPCThreadManager:
         finally:
             logger.info("NPC thread worker ended", npc_id=npc_id)
 
-    async def _process_npc_message(self, npc_id: str, message: dict[str, Any]) -> None:
+    async def _process_npc_message(self, npc_id: str, message: dict[str, object]) -> None:
         """Process a message for an NPC."""
         try:
             message_type = message.get("type")
@@ -412,7 +257,7 @@ class NPCThreadManager:
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Message processing errors unpredictable, must handle gracefully
             logger.error("Error processing NPC message", npc_id=npc_id, error=str(e))
 
-    def _resolve_wander_npc(self, npc_id: str) -> tuple[Any, Any] | None:
+    def _resolve_wander_npc(self, npc_id: str) -> tuple[object, object] | None:
         """Resolve active NPC instance and definition for a WANDER action."""
         from ..services.npc_instance_service import get_npc_instance_service
 
@@ -434,18 +279,20 @@ class NPCThreadManager:
         return lifecycle_manager.active_npcs[npc_id], npc_definition
 
     @staticmethod
-    def _parse_behavior_config(npc_instance: Any) -> dict[str, Any]:
+    def _parse_behavior_config(npc_instance: object) -> dict[str, object]:
         """Parse NPC behavior config from instance attribute (dict or JSON string)."""
         behavior_config = getattr(npc_instance, "_behavior_config", {})
         if not isinstance(behavior_config, str):
             return behavior_config if isinstance(behavior_config, dict) else {}
         try:
-            parsed = json.loads(behavior_config)
+            parsed_obj: object = json.loads(behavior_config)
         except json.JSONDecodeError:
             return {}
-        return parsed if isinstance(parsed, dict) else {}
+        if isinstance(parsed_obj, dict):
+            return {str(key): value for key, value in parsed_obj.items()}
+        return {}
 
-    def _execute_wander_movement(self, npc_id: str, npc_instance: Any, npc_definition: Any) -> None:
+    def _execute_wander_movement(self, npc_id: str, npc_instance: object, npc_definition: object) -> None:
         """Run idle movement for a resolved wander NPC."""
         from ..container import ApplicationContainer
         from .idle_movement import IdleMovementHandler
@@ -464,12 +311,12 @@ class NPCThreadManager:
         success = movement_handler.execute_idle_movement(npc_instance, npc_definition, behavior_config)
         if success:
             if hasattr(npc_instance, "_last_idle_movement_time"):
-                npc_instance._last_idle_movement_time = time.time()  # pylint: disable=protected-access  # Reason: Internal state tracking required
+                object.__setattr__(npc_instance, "_last_idle_movement_time", time.time())
             logger.debug("WANDER action executed successfully", npc_id=npc_id)
         else:
             logger.debug("WANDER action did not result in movement", npc_id=npc_id)
 
-    async def _process_wander_action(self, npc_id: str, _message: dict[str, Any]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
+    async def _process_wander_action(self, npc_id: str, _message: dict[str, object]) -> None:  # pylint: disable=unused-argument  # Reason: Parameter required for action signature, message content not used
         """
         Process a WANDER action for idle movement.
 
@@ -505,9 +352,9 @@ class NPCThreadManager:
             npc_instance = lifecycle_manager.active_npcs[npc_id]
 
             # Execute NPC behavior with empty context (NPC will add its own context)
-            context: dict[str, Any] = {}
+            context: dict[str, object] = {}
             try:
-                await npc_instance.execute_behavior(context)
+                _ = await npc_instance.execute_behavior(context)
                 logger.debug(
                     "Executed NPC behavior", npc_id=npc_id, npc_type=getattr(npc_instance, "npc_type", "unknown")
                 )
@@ -528,14 +375,14 @@ class NPCCommunicationBridge:
 
     def __init__(self) -> None:
         """Initialize the communication bridge."""
-        self.outgoing_messages: list[dict[str, Any]] = []
-        self.incoming_messages: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        self._outgoing_lock = Lock()
-        self._incoming_lock = Lock()
+        self.outgoing_messages: list[dict[str, object]] = []
+        self.incoming_messages: dict[str, list[dict[str, object]]] = defaultdict(list)
+        self._outgoing_lock: Lock = Lock()
+        self._incoming_lock: Lock = Lock()
 
         logger.info("NPC communication bridge initialized")
 
-    async def send_message_to_npc(self, npc_id: str, message: dict[str, Any]) -> bool:
+    async def send_message_to_npc(self, npc_id: str, message: dict[str, object]) -> bool:
         """
         Send a message to a specific NPC.
 
@@ -560,7 +407,7 @@ class NPCCommunicationBridge:
             logger.error("Error sending message to NPC", npc_id=npc_id, error=str(e))
             return False
 
-    async def receive_message_from_npc(self, npc_id: str, message: dict[str, Any]) -> bool:
+    async def receive_message_from_npc(self, npc_id: str, message: dict[str, object]) -> bool:
         """
         Receive a message from a specific NPC.
 
@@ -585,7 +432,7 @@ class NPCCommunicationBridge:
             logger.error("Error receiving message from NPC", npc_id=npc_id, error=str(e))
             return False
 
-    async def broadcast_to_all_npcs(self, message: dict[str, Any]) -> bool:
+    async def broadcast_to_all_npcs(self, message: dict[str, object]) -> bool:
         """
         Broadcast a message to all NPCs.
 
@@ -610,14 +457,14 @@ class NPCCommunicationBridge:
             logger.error("Error broadcasting message to NPCs", error=str(e))
             return False
 
-    async def get_pending_messages(self) -> list[dict[str, Any]]:
+    async def get_pending_messages(self) -> list[dict[str, object]]:
         """Get all pending outgoing messages from NPCs."""
         async with self._outgoing_lock:
             messages = self.outgoing_messages.copy()
             self.outgoing_messages.clear()
             return messages
 
-    async def get_messages_for_npc(self, npc_id: str) -> list[dict[str, Any]]:
+    async def get_messages_for_npc(self, npc_id: str) -> list[dict[str, object]]:
         """Get pending messages for a specific NPC."""
         async with self._incoming_lock:
             messages = self.incoming_messages[npc_id].copy()

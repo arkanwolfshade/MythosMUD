@@ -190,6 +190,20 @@ async def test_broadcast_tick_event() -> None:
 
 
 @pytest.mark.asyncio
+async def test_broadcast_tick_event_skips_when_no_players() -> None:
+    app = FastAPI()
+    app.state = MagicMock()
+    manager: MagicMock = MagicMock()
+    manager.player_websockets = {}
+    app.state.container = MagicMock(connection_manager=manager)
+    with patch("server.app.game_tick_processing.get_mythos_chronicle") as chronicle:
+        with patch("server.app.game_tick_processing.broadcast_game_event", new_callable=AsyncMock) as mock_broadcast:
+            await broadcast_tick_event(app, tick_count=10)
+    mock_broadcast.assert_not_awaited()
+    chronicle.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_game_tick_loop_cancelled_on_sleep() -> None:
     app = FastAPI()
     app.state = MagicMock()

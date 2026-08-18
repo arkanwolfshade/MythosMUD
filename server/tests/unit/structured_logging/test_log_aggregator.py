@@ -1,5 +1,8 @@
 """Unit tests for LogAggregator."""
 
+# pyright: reportPrivateUsage=false
+# Reason: unit tests call LogAggregator._update_stats directly.
+
 from __future__ import annotations
 
 import json
@@ -90,14 +93,27 @@ def test_export_logs_json(tmp_path: Path):
     out = tmp_path / "logs.json"
     path = aggregator.export_logs(str(out), format_type="json")
     assert Path(path).exists()
-    payload = json.loads(Path(path).read_text(encoding="utf-8"))
-    assert isinstance(payload, list)
+    assert isinstance(json.loads(Path(path).read_text(encoding="utf-8")), list)
 
 
 def test_aggregate_log_entry_helper():
     aggregator = LogAggregator(max_entries=50, aggregation_interval=3600.0)
     aggregate_log_entry(_entry("INFO", "helper", "via helper"), aggregator=aggregator)
     assert aggregator.get_stats().total_entries >= 1
+
+
+def test_production_logging_does_not_feed_in_memory_log_aggregator() -> None:
+    """File aggregators (warnings.log/errors.log) are not LogAggregator."""
+    import server.structured_logging.enhanced_logging_config as logging_config
+    import server.structured_logging.logging_file_setup as file_setup
+    import server.structured_logging.logging_handlers as logging_handlers
+
+    for module in (logging_config, file_setup, logging_handlers):
+        module_file = module.__file__
+        assert module_file is not None
+        source = Path(module_file).read_text(encoding="utf-8")
+        assert "from server.structured_logging.log_aggregator" not in source
+        assert "aggregate_log_entry" not in source
 
 
 def test_shutdown_stops_thread():

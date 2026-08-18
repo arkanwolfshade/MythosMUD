@@ -1,6 +1,6 @@
 # assign
 
-> 47 nodes
+> 48 nodes
 
 ## Key Concepts
 
@@ -29,7 +29,7 @@
 - **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
 - **AST** (2 connections)
-- *... and 22 more nodes in this community*
+- *... and 23 more nodes in this community*
 
 ## Relationships
 

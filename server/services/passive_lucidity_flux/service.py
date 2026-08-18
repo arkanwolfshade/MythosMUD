@@ -584,7 +584,7 @@ class LucidityFluxService:  # pylint: disable=too-many-instance-attributes  # Re
         error: str | None = None,
     ) -> None:
         if self._performance_monitor is not None:
-            metadata: dict[str, int | str] = {
+            metadata: dict[str, object] = {
                 "evaluated_players": evaluated_players,
                 "applied_adjustments": applied_adjustments,
             }
