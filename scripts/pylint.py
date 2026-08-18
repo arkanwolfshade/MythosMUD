@@ -126,7 +126,7 @@ def main() -> int:
     # Note: Complexity checking is handled by ruff (C901), not pylint
     cmd = pylint_cmd + [
         "server",
-        "--ignore=tests,scripts,docs,alembic,stubs",
+        "--ignore=tests,scripts,docs,alembic,stubs,graphify-out,.venv",
         "--max-line-length=120",
         "--disable=all",
         "--enable=E,W,F,C,R",  # E=Error, W=Warning, F=Fatal, C=Convention, R=Refactor

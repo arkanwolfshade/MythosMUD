@@ -1,0 +1,24 @@
+{
+  "servers": {
+    "obsidian": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "obsidian-mcp-server@latest"],
+      "envFile": "${workspaceFolder}/.env.mcp.local"
+    },
+    "jcodemunch": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/jgravelle/jcodemunch-mcp", "jcodemunch-mcp"],
+      "envFile": "${workspaceFolder}/.env.mcp.local",
+      "env": {
+        "JCODEMUNCH_MAX_FOLDER_FILES": "4000"
+      }
+    },
+    "graphify": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--from", "graphifyy[mcp]", "graphify-mcp", "${workspaceFolder}/graphify-out/graph.json"]
+    }
+  }
+}

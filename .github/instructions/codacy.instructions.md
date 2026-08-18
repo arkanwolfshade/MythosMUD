@@ -1,17 +1,10 @@
 ---
     description: Configuration for AI behavior when interacting with Codacy's MCP Server
-    globs:
-    alwaysApply: true
+    applyTo: '**'
+---
 ---
 # Codacy Rules
 Configuration for AI behavior when interacting with Codacy's MCP Server
-
-## using any tool that accepts the arguments: `provider`, `organization`, or `repository`
-- ALWAYS use:
- - provider: gh
- - organization: arkanwolfshade
- - repository: MythosMUD
-- Avoid calling `git remote -v` unless really necessary
 
 ## CRITICAL: After ANY successful `edit_file` or `reapply` operation
 - YOU MUST IMMEDIATELY run the `codacy_cli_analyze` tool from Codacy's MCP Server for each file that was edited, with:
@@ -28,7 +21,7 @@ Configuration for AI behavior when interacting with Codacy's MCP Server
 - Wait for the user to respond before proceeding with any other actions
 
 ## After every response
-- If you made any file edits in this conversation, verify you ran `codacy_cli_analyze` tool from Codacy's MCP Server 
+- If you made any file edits in this conversation, verify you ran `codacy_cli_analyze` tool from Codacy's MCP Server
 
 ## When there are no Codacy MCP Server tools available, or the MCP Server is not reachable
 - Suggest the user the following troubleshooting steps:
@@ -76,3 +69,4 @@ Configuration for AI behavior when interacting with Codacy's MCP Server
 - If the user accepts, run the `codacy_setup_repository` tool
 - Do not ever try to run the `codacy_setup_repository` tool on your own
 - After setup, immediately retry the action that failed (only retry once)
+---

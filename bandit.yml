@@ -54,3 +54,10 @@ hardcoded_password_string:
 # they must be embedded in SQL strings. This is safe and documented with nosec comments.
 skips:
   - B608
+
+# Generated graphify dumps and nested virtualenvs are not product code.
+# Bandit treats these as substring matches on the file path (bandit.core.manager).
+exclude_dirs:
+  - graphify-out
+  - .venv
+  - site-packages

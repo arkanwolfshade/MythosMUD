@@ -91,7 +91,7 @@ include = ["server*"]
 
 [tool.vulture]
 paths = ["server", "vulture_allowlist.py"]
-exclude = ["server/tests", "*/tests/*", "*/__pycache__/*"]
+exclude = ["server/tests", "*/tests/*", "*/__pycache__/*", "*/graphify-out/*", "*/.venv/*"]
 # Ignore FastAPI/router convention: route handlers receive request (or _request) for side effect
 ignore_names = ["_request", "request", "app", "_", "db", "_db"]
 min_confidence = 80

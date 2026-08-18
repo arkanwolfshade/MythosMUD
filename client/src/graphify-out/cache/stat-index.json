@@ -1,1 +1,3708 @@
-{"App.integration.test.tsx":{"size":16675,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948177775100,"word_count":1458},"App.tsx":{"size":213,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948184774000,"word_count":26},"AppRouter.tsx":{"size":1888,"mtime_ns":1786659773626370600,"indexed_at_ns":1787076948192776300,"word_count":184},"__tests__/App.demo.test.tsx":{"size":1459,"mtime_ns":1781564103849982200,"indexed_at_ns":1787076948201776000,"word_count":135},"__tests__/App.formState.test.tsx":{"size":1976,"mtime_ns":1781564103856982900,"indexed_at_ns":1787076948210282800,"word_count":179},"__tests__/App.keyboard.test.tsx":{"size":5675,"mtime_ns":1781564103872007900,"indexed_at_ns":1787076948218282100,"word_count":523},"__tests__/App.loading.test.tsx":{"size":4784,"mtime_ns":1781564103882405800,"indexed_at_ns":1787076948227790900,"word_count":422},"__tests__/App.login.test.tsx":{"size":4980,"mtime_ns":1781564103895203500,"indexed_at_ns":1787076948235792300,"word_count":421},"__tests__/App.logout.test.tsx":{"size":18780,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948245510100,"word_count":1580},"__tests__/App.logoutError.test.tsx":{"size":3459,"mtime_ns":1781564103927798900,"indexed_at_ns":1787076948253510100,"word_count":302},"__tests__/App.motd.test.tsx":{"size":3682,"mtime_ns":1781564103934064700,"indexed_at_ns":1787076948262510500,"word_count":348},"__tests__/App.registration.test.tsx":{"size":5758,"mtime_ns":1781564103944447400,"indexed_at_ns":1787076948270514300,"word_count":495},"__tests__/App.statsRolling.test.tsx":{"size":6720,"mtime_ns":1781564103953446600,"indexed_at_ns":1787076948279513500,"word_count":626},"__tests__/App.tokenValidation.test.tsx":{"size":5387,"mtime_ns":1781564103974119100,"indexed_at_ns":1787076948289145700,"word_count":505},"__tests__/AppRouter.test.tsx":{"size":1701,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948300511900,"word_count":207},"__tests__/CharacterCreationNavigation.test.tsx":{"size":18667,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948309023200,"word_count":1520},"__tests__/LogoutFlow.integration.test.tsx":{"size":18988,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948318023300,"word_count":1588},"__tests__/ProfessionPersistence.test.tsx":{"size":23084,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948326023600,"word_count":1799},"__tests__/ProfessionSelectionVariants.test.tsx":{"size":18555,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948336025700,"word_count":1614},"__tests__/ProfessionSystemErrorHandling.test.tsx":{"size":16607,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948345022100,"word_count":1292},"__tests__/StatRollingWithProfessionRequirements.test.tsx":{"size":23641,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948354024000,"word_count":1921},"__tests__/app.test.helpers.ts":{"size":1524,"mtime_ns":1781564103961093800,"indexed_at_ns":1787076948363023200,"word_count":144},"__tests__/app.test.mocks.tsx":{"size":1643,"mtime_ns":1781564103968120400,"indexed_at_ns":1787076948372023000,"word_count":162},"__tests__/professionSystemErrorHandling.test.helpers.ts":{"size":4723,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948380022000,"word_count":471},"api/__tests__/dialogue.test.ts":{"size":1549,"mtime_ns":1786659773626892400,"indexed_at_ns":1787076948390021900,"word_count":174},"api/__tests__/maps.test.ts":{"size":5302,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948399997500,"word_count":509},"api/dialogue.ts":{"size":4090,"mtime_ns":1786659773627414400,"indexed_at_ns":1787076948408815900,"word_count":452},"api/maps.ts":{"size":4879,"mtime_ns":1786571994831547400,"indexed_at_ns":1787076948417819900,"word_count":601},"assets/react.svg":{"size":4128,"mtime_ns":1775192600376197800,"indexed_at_ns":1787077174340724800,"word_count":366,"hashes":{"assets/react.svg":"7b3015fc786dac7aadddef9a2c175f6b58e65df08830da7f46a705036608123b"}},"components/ChannelSelectorTest.tsx":{"size":0,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948435834300,"word_count":0},"components/CharacterNameScreen.tsx":{"size":5386,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948443612700,"word_count":484},"components/CharacterSelectionScreen.tsx":{"size":10324,"mtime_ns":1786571994831547400,"indexed_at_ns":1787076948460608900,"word_count":832},"components/ChatPanelTest.test.tsx":{"size":11477,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948469608900,"word_count":934},"components/ChatPanelTest.tsx":{"size":18307,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948478854400,"word_count":1302},"components/CommandPanelTest.categories.tsx":{"size":561,"mtime_ns":1786467369446283300,"indexed_at_ns":1787076948487035800,"word_count":43},"components/CommandPanelTest.constants.ts":{"size":2459,"mtime_ns":1786467369450338400,"indexed_at_ns":1787076948496617400,"word_count":306},"components/CommandPanelTest.controls.tsx":{"size":1486,"mtime_ns":1786467369453339000,"indexed_at_ns":1787076948505618500,"word_count":104},"components/CommandPanelTest.examples.tsx":{"size":606,"mtime_ns":1786467369457515100,"indexed_at_ns":1787076948513742100,"word_count":46},"components/CommandPanelTest.features.tsx":{"size":743,"mtime_ns":1786467369460955600,"indexed_at_ns":1787076948522745500,"word_count":62},"components/CommandPanelTest.layout.tsx":{"size":1703,"mtime_ns":1786467369463973700,"indexed_at_ns":1787076948532742800,"word_count":127},"components/CommandPanelTest.panels.tsx":{"size":282,"mtime_ns":1786467369466976500,"indexed_at_ns":1787076948542591800,"word_count":24},"components/CommandPanelTest.sidebar.tsx":{"size":825,"mtime_ns":1786467369469779100,"indexed_at_ns":1787076948555321100,"word_count":64},"components/CommandPanelTest.stats.tsx":{"size":1356,"mtime_ns":1786467369473900000,"indexed_at_ns":1787076948570830300,"word_count":112},"components/CommandPanelTest.test.tsx":{"size":13162,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948591115100,"word_count":948},"components/CommandPanelTest.tsx":{"size":1864,"mtime_ns":1786571994832547800,"indexed_at_ns":1787076948609630900,"word_count":142},"components/CommandPanelTest.types.ts":{"size":470,"mtime_ns":1786467369493242300,"indexed_at_ns":1787076948618631100,"word_count":49},"components/DeathInterstitial.tsx":{"size":1810,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948637674400,"word_count":165},"components/DeliriumInterstitial.tsx":{"size":1876,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948648676800,"word_count":167},"components/DraggablePanel.tsx":{"size":120,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948660676800,"word_count":13},"components/DraggablePanelCore.tsx":{"size":2156,"mtime_ns":1786571994832547800,"indexed_at_ns":1787076948673681800,"word_count":169},"components/DraggablePanelResizeHandles.tsx":{"size":2732,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948686888000,"word_count":244},"components/DraggablePanelTest.test.tsx":{"size":13664,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948698847700,"word_count":940},"components/DraggablePanelTest.tsx":{"size":8908,"mtime_ns":1786571994833552300,"indexed_at_ns":1787076948712495300,"word_count":792},"components/DraggablePanelView.tsx":{"size":6071,"mtime_ns":1786663202693974300,"indexed_at_ns":1787076948723495600,"word_count":480},"components/EldritchEffectsDemo.test.tsx":{"size":5972,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948733494900,"word_count":484},"components/EldritchEffectsDemo.tsx":{"size":5729,"mtime_ns":1786571994834553400,"indexed_at_ns":1787076948744503200,"word_count":418},"components/GameTerminal.test.tsx":{"size":5522,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948754640900,"word_count":474},"components/GameTerminal.tsx":{"size":22753,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948765043300,"word_count":1593},"components/GameTerminalContainer.tsx":{"size":649,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948775047400,"word_count":76},"components/GameTerminalPresentation.tsx":{"size":14368,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948786796300,"word_count":944},"components/MainMenuModal.tsx":{"size":7132,"mtime_ns":1786659773628980800,"indexed_at_ns":1787076948796802400,"word_count":681},"components/MapView.tsx":{"size":3873,"mtime_ns":1786571994835057700,"indexed_at_ns":1787076948808311900,"word_count":365},"components/MotdContent.tsx":{"size":3629,"mtime_ns":1786571994835057700,"indexed_at_ns":1787076948819650900,"word_count":345},"components/MotdInterstitialScreen.tsx":{"size":2386,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948829846600,"word_count":212},"components/MythosTimeHud.tsx":{"size":4406,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948838846500,"word_count":308},"components/PanelManager.tsx":{"size":228,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948851846900,"word_count":25},"components/ProfessionCard.test.tsx":{"size":5785,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948863850700,"word_count":532},"components/ProfessionCard.tsx":{"size":2304,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948875851600,"word_count":193},"components/ProfessionSelectionScreen.test.tsx":{"size":13473,"mtime_ns":1780609217897329100,"indexed_at_ns":1787076948886354800,"word_count":1113},"components/ProfessionSelectionScreen.tsx":{"size":4021,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948899366500,"word_count":305},"components/RoomInfoPanel.test.tsx":{"size":7116,"mtime_ns":1775192600376197800,"indexed_at_ns":1787076948930876800,"word_count":614},"components/RoomInfoPanel.tsx":{"size":9537,"mtime_ns":1786571994836063100,"indexed_at_ns":1787076948942878400,"word_count":864},"components/SkillAssignmentScreen.helpers.tsx":{"size":4804,"mtime_ns":1786571994836063100,"indexed_at_ns":1787076948951879600,"word_count":472},"components/SkillAssignmentScreen.tsx":{"size":7735,"mtime_ns":1786571994836063100,"indexed_at_ns":1787076948963443500,"word_count":684},"components/StatsRollingScreen.test.tsx":{"size":12946,"mtime_ns":1780609217897900100,"indexed_at_ns":1787076948986537500,"word_count":1009},"components/StatsRollingScreen.tsx":{"size":5601,"mtime_ns":1786571994837063400,"indexed_at_ns":1787076948996541800,"word_count":513},"components/TailwindTest.test.tsx":{"size":8939,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949006045300,"word_count":628},"components/TailwindTest.tsx":{"size":12897,"mtime_ns":1786571994837063400,"indexed_at_ns":1787076949016053700,"word_count":852},"components/__tests__/ChatPanel.edgeCases.test.tsx":{"size":3027,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949033250800,"word_count":268},"components/__tests__/ChatPanel.test.tsx":{"size":18187,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949049251000,"word_count":1522},"components/__tests__/CommandPanel.test.tsx":{"size":24676,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949069253800,"word_count":2161},"components/__tests__/DeathInterstitial.test.tsx":{"size":3604,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949083258900,"word_count":309},"components/__tests__/DraggablePanel.grid-positioning.test.tsx":{"size":8510,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949099772300,"word_count":773},"components/__tests__/DraggablePanel.test.tsx":{"size":11085,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949117287200,"word_count":945},"components/__tests__/GameTerminal.test.tsx":{"size":15079,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949131293000,"word_count":1119},"components/__tests__/GameTerminalContainer.test.tsx":{"size":9727,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949143802700,"word_count":754},"components/__tests__/GameTerminalPresentation.test.tsx":{"size":26852,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949154805000,"word_count":1955},"components/__tests__/LogoutFlow.integration.test.tsx":{"size":16083,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949164311300,"word_count":1521},"components/__tests__/MainMenuModal.test.tsx":{"size":13563,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949175310600,"word_count":1184},"components/__tests__/MotdContent.test.tsx":{"size":2425,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949185310800,"word_count":202},"components/__tests__/MotdInterstitialScreen.test.tsx":{"size":2103,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949195315100,"word_count":201},"components/__tests__/MythosTimeHud.test.tsx":{"size":2183,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949206313100,"word_count":179},"components/__tests__/PanelManager.test.tsx":{"size":1403,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949215829400,"word_count":130},"components/__tests__/RoomInfoPanel.test.tsx":{"size":14367,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949225829600,"word_count":1126},"components/__tests__/chatPanelTestHelpers.ts":{"size":1196,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949235339900,"word_count":120},"components/__tests__/chatPanelTestSetup.tsx":{"size":3394,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949246341300,"word_count":323},"components/__tests__/command-panel.test.tsx":{"size":8981,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949257348500,"word_count":770},"components/__tests__/game-log-panel.test.tsx":{"size":14716,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949267551700,"word_count":1279},"components/__tests__/game-terminal-integration.spec.tsx":{"size":14267,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949277557200,"word_count":1241},"components/__tests__/game-terminal-integration.test.tsx":{"size":14405,"mtime_ns":1784484398280722500,"indexed_at_ns":1787076949289072400,"word_count":1257},"components/__tests__/performance.test.tsx":{"size":16810,"mtime_ns":1785101303634739400,"indexed_at_ns":1787076949300077000,"word_count":1606},"components/common/SafeHtml.tsx":{"size":1546,"mtime_ns":1785165445677654900,"indexed_at_ns":1787076949311590600,"word_count":190},"components/common/__tests__/SafeHtml.test.tsx":{"size":5946,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949323588400,"word_count":530},"components/containers/BackpackTab.tsx":{"size":5358,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949335586700,"word_count":521},"components/containers/ContainerSplitPane.tsx":{"size":1667,"mtime_ns":1786571994838063700,"indexed_at_ns":1787076949347586400,"word_count":153},"components/containers/ContainerSplitPaneView.tsx":{"size":10243,"mtime_ns":1786729341443531100,"indexed_at_ns":1787076949357587100,"word_count":776},"components/containers/CorpseOverlay.tsx":{"size":6405,"mtime_ns":1786571994838063700,"indexed_at_ns":1787076949367586600,"word_count":557},"components/containers/__tests__/BackpackTab.test.tsx":{"size":8104,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949379585600,"word_count":734},"components/containers/__tests__/ContainerDragAndDrop.test.tsx":{"size":16165,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949390586000,"word_count":1205},"components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx":{"size":18597,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949401589500,"word_count":1621},"components/containers/__tests__/ContainerSplitPane.test.tsx":{"size":10831,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949412642600,"word_count":937},"components/containers/__tests__/CorpseOverlay.test.tsx":{"size":17034,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949423417700,"word_count":1649},"components/containers/corpseOverlayUtils.ts":{"size":2346,"mtime_ns":1786370246291969600,"indexed_at_ns":1787076949433170000,"word_count":261},"components/containers/useContainerSplitPane.ts":{"size":8610,"mtime_ns":1786662248672864200,"indexed_at_ns":1787076949444173500,"word_count":773},"components/draggablePanelUtils.ts":{"size":1756,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949453683500,"word_count":246},"components/eldritchEffectsDemoData.ts":{"size":2313,"mtime_ns":1786481162282643800,"indexed_at_ns":1787076949464688000,"word_count":249},"components/health/HealthMeter.tsx":{"size":3984,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949483196200,"word_count":323},"components/health/IncapacitatedBanner.tsx":{"size":1460,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949496212400,"word_count":131},"components/health/__tests__/HealthMeter.test.tsx":{"size":1268,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949509808000,"word_count":123},"components/layout/GridLayoutManager.tsx":{"size":6140,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949521808700,"word_count":698},"components/layout/__tests__/GridLayoutManager.test.tsx":{"size":6997,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949534809900,"word_count":638},"components/lucidity/HallucinationTicker.tsx":{"size":2996,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949546810800,"word_count":193},"components/lucidity/LucidityMeter.tsx":{"size":5242,"mtime_ns":1786571994839063400,"indexed_at_ns":1787076949562818000,"word_count":463},"components/lucidity/RescueStatusBanner.tsx":{"size":3910,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949574002100,"word_count":323},"components/lucidity/__tests__/HallucinationTicker.test.tsx":{"size":1458,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949587007300,"word_count":135},"components/lucidity/__tests__/LucidityMeter.test.tsx":{"size":1561,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949598009600,"word_count":144},"components/lucidity/__tests__/RescueStatusBanner.test.tsx":{"size":1365,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949611036000,"word_count":126},"components/magic/MagicPointsMeter.tsx":{"size":2491,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949629544100,"word_count":201},"components/magic/__tests__/MagicPointsMeter.test.tsx":{"size":5689,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949644093500,"word_count":503},"components/map/AsciiMapEditor.tsx":{"size":4595,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949655092800,"word_count":436},"components/map/AsciiMapViewer.tsx":{"size":3939,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949667092500,"word_count":389},"components/map/AsciiMapViewerViews.tsx":{"size":4535,"mtime_ns":1786571994839063400,"indexed_at_ns":1787076949677095400,"word_count":352},"components/map/AsciiMinimap.tsx":{"size":5965,"mtime_ns":1786571994840064500,"indexed_at_ns":1787076949688603400,"word_count":595},"components/map/EdgeCreationModal.tsx":{"size":2020,"mtime_ns":1786571994840064500,"indexed_at_ns":1787076949697604500,"word_count":255},"components/map/EdgeCreationModalParts.tsx":{"size":11169,"mtime_ns":1786138611932196700,"indexed_at_ns":1787076949708110300,"word_count":795},"components/map/EdgeDetailsPanel.tsx":{"size":7857,"mtime_ns":1786571994841063300,"indexed_at_ns":1787076949718111100,"word_count":659},"components/map/MapControls.tsx":{"size":3808,"mtime_ns":1786571994841063300,"indexed_at_ns":1787076949728110100,"word_count":360},"components/map/MapEditToolbar.tsx":{"size":3620,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949738110100,"word_count":362},"components/map/RoomDetailsPanel.tsx":{"size":4621,"mtime_ns":1786571994842570100,"indexed_at_ns":1787076949748641400,"word_count":350},"components/map/RoomEditModal.tsx":{"size":6107,"mtime_ns":1786729862125460100,"indexed_at_ns":1787076949758313100,"word_count":501},"components/map/RoomEditModalForm.tsx":{"size":9527,"mtime_ns":1786729862102228900,"indexed_at_ns":1787076949768742200,"word_count":735},"components/map/RoomEditModalTabs.tsx":{"size":1485,"mtime_ns":1786752337404362800,"indexed_at_ns":1787076949778741700,"word_count":109},"components/map/RoomMapEditor.tsx":{"size":116,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949790740700,"word_count":13},"components/map/RoomMapEditorCore.tsx":{"size":122,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949800743900,"word_count":13},"components/map/RoomMapEditorFeature.tsx":{"size":118,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949811252700,"word_count":13},"components/map/RoomMapEditorImpl.tsx":{"size":116,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949821255900,"word_count":13},"components/map/RoomMapEditorRuntime.hooks.ts":{"size":12670,"mtime_ns":1786475924545668100,"indexed_at_ns":1787076949831766200,"word_count":1065},"components/map/RoomMapEditorRuntime.tsx":{"size":11268,"mtime_ns":1786662563284225500,"indexed_at_ns":1787076949840774000,"word_count":805},"components/map/RoomMapEditorScene.tsx":{"size":122,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949850773300,"word_count":13},"components/map/RoomMapViewer.tsx":{"size":7561,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949861770800,"word_count":749},"components/map/__tests__/EdgeCreationModal.test.tsx":{"size":4725,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949872771400,"word_count":476},"components/map/__tests__/EdgeDetailsPanel.test.tsx":{"size":4944,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949883774300,"word_count":406},"components/map/__tests__/MapControls.test.tsx":{"size":10207,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949897288000,"word_count":899},"components/map/__tests__/MapView.test.tsx":{"size":3657,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949908791700,"word_count":359},"components/map/__tests__/ReactFlowConfig.test.tsx":{"size":2794,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949922795000,"word_count":274},"components/map/__tests__/RoomDetailsPanel.test.tsx":{"size":12936,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949933796500,"word_count":1045},"components/map/__tests__/RoomEditModal.test.tsx":{"size":3420,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949944796600,"word_count":331},"components/map/__tests__/RoomMapEditor.test.tsx":{"size":7846,"mtime_ns":1775192600391932900,"indexed_at_ns":1787076949955794700,"word_count":637},"components/map/__tests__/RoomMapEditorAliases.test.ts":{"size":970,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076949968095200,"word_count":78},"components/map/__tests__/RoomMapViewer.data-loading.test.tsx":{"size":5633,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076949979371800,"word_count":466},"components/map/__tests__/RoomMapViewer.interactions.test.tsx":{"size":9732,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076949991369700,"word_count":810},"components/map/__tests__/RoomMapViewer.map-controls.test.tsx":{"size":9910,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950002379300,"word_count":856},"components/map/__tests__/RoomMapViewer.rendering.test.tsx":{"size":9933,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950014889600,"word_count":822},"components/map/__tests__/RoomMapViewer.test-utils.tsx":{"size":2111,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950026894700,"word_count":258},"components/map/__tests__/asciiMapViewerUtils.test.ts":{"size":4367,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950038413700,"word_count":386},"components/map/__tests__/lazyLoading.test.tsx":{"size":1658,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950050413900,"word_count":163},"components/map/__tests__/performance.test.ts":{"size":4033,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950062416500,"word_count":353},"components/map/__tests__/roomMapEditorTestSetup.tsx":{"size":7077,"mtime_ns":1780609217899989100,"indexed_at_ns":1787076950073416700,"word_count":685},"components/map/__tests__/theme.test.tsx":{"size":6572,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950086418300,"word_count":580},"components/map/__tests__/useAsciiMap.test.ts":{"size":3387,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950097435400,"word_count":302},"components/map/asciiMapViewerUtils.ts":{"size":1322,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950109454200,"word_count":116},"components/map/config.ts":{"size":1473,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950119454900,"word_count":224},"components/map/edgeModalLogic.ts":{"size":6129,"mtime_ns":1786370246865321700,"indexed_at_ns":1787076950129453400,"word_count":597},"components/map/edges/ExitEdge.tsx":{"size":2976,"mtime_ns":1786662315914048200,"indexed_at_ns":1787076950140453500,"word_count":308},"components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx":{"size":2195,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950153562500,"word_count":249},"components/map/edges/__tests__/ExitEdge.interactions.test.tsx":{"size":3635,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950165357200,"word_count":359},"components/map/edges/__tests__/ExitEdge.rendering.test.tsx":{"size":12334,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950178361100,"word_count":1292},"components/map/edges/__tests__/ExitEdge.test-fixtures.tsx":{"size":572,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950191099500,"word_count":71},"components/map/hooks/__tests__/useMapEditing.test.ts":{"size":5494,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950202848300,"word_count":529},"components/map/hooks/__tests__/useMapLayout.test.ts":{"size":4813,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950214354000,"word_count":467},"components/map/hooks/__tests__/useRoomMapData.test.ts":{"size":7606,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950226360400,"word_count":691},"components/map/hooks/useMapEditing.ts":{"size":14868,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950237176200,"word_count":1385},"components/map/hooks/useMapLayout.ts":{"size":11080,"mtime_ns":1780609217901083800,"indexed_at_ns":1787076950248804100,"word_count":1203},"components/map/hooks/useRoomMapData.ts":{"size":4958,"mtime_ns":1786571994844638900,"indexed_at_ns":1787076950260805200,"word_count":580},"components/map/nodes/IntersectionNode.tsx":{"size":3051,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950276959200,"word_count":270},"components/map/nodes/RoomNode.tsx":{"size":4172,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950288339400,"word_count":413},"components/map/nodes/__tests__/IntersectionNode.test.tsx":{"size":7702,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950300720100,"word_count":692},"components/map/nodes/__tests__/RoomNode.test.tsx":{"size":8084,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950314226800,"word_count":815},"components/map/types.ts":{"size":2416,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950325699800,"word_count":356},"components/map/useAsciiMap.ts":{"size":939,"mtime_ns":1786571994845143700,"indexed_at_ns":1787076950340654000,"word_count":84},"components/map/useAsciiMapState.ts":{"size":6897,"mtime_ns":1786463532914523900,"indexed_at_ns":1787076950350652200,"word_count":584},"components/map/useEdgeCreationModal.ts":{"size":3971,"mtime_ns":1786138446358755900,"indexed_at_ns":1787076950362648700,"word_count":290},"components/map/useRoomEditModal.ts":{"size":5602,"mtime_ns":1786370247131126700,"indexed_at_ns":1787076950373742200,"word_count":596},"components/map/utils/__tests__/applyForceLayout.test.ts":{"size":10411,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950386264100,"word_count":1153},"components/map/utils/__tests__/applyGridLayout.test.ts":{"size":1842,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950398269400,"word_count":202},"components/map/utils/__tests__/calculateGridPosition.test.ts":{"size":8192,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950411773700,"word_count":883},"components/map/utils/__tests__/layout-config.test.ts":{"size":1404,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950424780700,"word_count":72},"components/map/utils/__tests__/layout.test-fixtures.ts":{"size":466,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950437295700,"word_count":67},"components/map/utils/__tests__/mapUtils.test.ts":{"size":18361,"mtime_ns":1775192600407560600,"indexed_at_ns":1787076950451479200,"word_count":1507},"components/map/utils/__tests__/saveMapChanges.test.ts":{"size":4248,"mtime_ns":1780609217902119500,"indexed_at_ns":1787076950464803100,"word_count":422},"components/map/utils/layout.ts":{"size":20849,"mtime_ns":1786571994845764800,"indexed_at_ns":1787076950475801300,"word_count":2843},"components/map/utils/mapUtils.ts":{"size":8172,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950487455300,"word_count":1032},"components/map/utils/performance.ts":{"size":4241,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950499460300,"word_count":547},"components/map/utils/saveMapChanges.ts":{"size":5466,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950513325800,"word_count":690},"components/panels/ChatExportDialog.tsx":{"size":5038,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950525479600,"word_count":393},"components/panels/ChatPanel.tsx":{"size":100,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950537484100,"word_count":13},"components/panels/ChatPanelCore.tsx":{"size":106,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950550388400,"word_count":13},"components/panels/ChatPanelMessagesLog.tsx":{"size":6766,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950560810300,"word_count":531},"components/panels/ChatPanelRefactored.tsx":{"size":1112,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950570835200,"word_count":100},"components/panels/ChatPanelRefactoredToolbar.tsx":{"size":1292,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950581049700,"word_count":85},"components/panels/ChatPanelRefactoredView.tsx":{"size":2420,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950592050000,"word_count":171},"components/panels/ChatPanelRuntime.tsx":{"size":463,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950602053200,"word_count":49},"components/panels/ChatPanelRuntimeView.tsx":{"size":357,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950613562400,"word_count":30},"components/panels/ChatPanelRuntimeViewParts.tsx":{"size":8297,"mtime_ns":1786571994846307400,"indexed_at_ns":1787076950623563500,"word_count":471},"components/panels/CommandPanel.tsx":{"size":7713,"mtime_ns":1786729033609630000,"indexed_at_ns":1787076950634564200,"word_count":606},"components/panels/ConnectionPanel.tsx":{"size":1397,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950646074300,"word_count":120},"components/panels/GameLogMessagesList.tsx":{"size":3273,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950656071800,"word_count":246},"components/panels/GameLogPanel.tsx":{"size":2042,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950667072700,"word_count":130},"components/panels/GameLogPanelSections.tsx":{"size":7620,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950678071100,"word_count":509},"components/panels/MonitoringPanel.tsx":{"size":10710,"mtime_ns":1786571994848074400,"indexed_at_ns":1787076950702559900,"word_count":737},"components/panels/PlayerPanel.tsx":{"size":243,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950713647700,"word_count":28},"components/panels/RoomPanel.tsx":{"size":235,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950723646900,"word_count":28},"components/panels/__tests__/ChatPanelRefactored.test.tsx":{"size":14240,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950735283300,"word_count":1086},"components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx":{"size":12875,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950747167500,"word_count":1072},"components/panels/__tests__/ConnectionPanel.test.tsx":{"size":4614,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950759168000,"word_count":389},"components/panels/__tests__/GameLogPanel.test.tsx":{"size":7716,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950770167700,"word_count":738},"components/panels/__tests__/MonitoringPanel.test.tsx":{"size":5008,"mtime_ns":1780609217903172700,"indexed_at_ns":1787076950782167600,"word_count":467},"components/panels/__tests__/chat-panel.spec.tsx":{"size":14311,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950793170000,"word_count":1221},"components/panels/__tests__/chat-panel.test.tsx":{"size":6581,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950806176100,"word_count":598},"components/panels/__tests__/chatPanelRefactoredDerived.test.ts":{"size":2712,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950817685900,"word_count":271},"components/panels/__tests__/chatPanelRuntimeUtils.test.ts":{"size":8232,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950828690900,"word_count":783},"components/panels/__tests__/command-panel.spec.tsx":{"size":15425,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950842205300,"word_count":1331},"components/panels/__tests__/command-panel.test.tsx":{"size":9052,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950854546100,"word_count":780},"components/panels/__tests__/game-log-panel.spec.tsx":{"size":14657,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950865700200,"word_count":1282},"components/panels/__tests__/game-log-panel.test.tsx":{"size":9489,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950876698300,"word_count":799},"components/panels/__tests__/gameLogPanelUtils.test.ts":{"size":1957,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076950887119600,"word_count":83},"components/panels/__tests__/monitoringPanelTestFixtures.ts":{"size":6241,"mtime_ns":1780609217903698100,"indexed_at_ns":1787076950899654700,"word_count":481},"components/panels/chatPanelChannelFilter.ts":{"size":429,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950909197800,"word_count":32},"components/panels/chatPanelChannelVisibility.ts":{"size":1808,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950919198700,"word_count":166},"components/panels/chatPanelExportFormat.ts":{"size":2139,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950929197100,"word_count":166},"components/panels/chatPanelHistorySearch.tsx":{"size":6245,"mtime_ns":1786370247520035400,"indexed_at_ns":1787076950939197700,"word_count":407},"components/panels/chatPanelMessageClass.ts":{"size":1564,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950949827300,"word_count":161},"components/panels/chatPanelRefactoredDerived.ts":{"size":2440,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950959159300,"word_count":225},"components/panels/chatPanelRefactoredTypes.ts":{"size":434,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950968717800,"word_count":51},"components/panels/chatPanelRuntimeUtils.ts":{"size":5572,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950979178400,"word_count":507},"components/panels/chatPanelRuntimeViewTypes.ts":{"size":1164,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950989255100,"word_count":109},"components/panels/chatPanelUnreadBump.ts":{"size":1438,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076950998255300,"word_count":125},"components/panels/chatPanelUnreadCounts.ts":{"size":631,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951008764900,"word_count":62},"components/panels/chat/ChannelActivityIndicators.tsx":{"size":2869,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951020771300,"word_count":247},"components/panels/chat/ChannelSelectorSection.tsx":{"size":1123,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951031768900,"word_count":85},"components/panels/chat/ChatHeader.tsx":{"size":1286,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951042951100,"word_count":105},"components/panels/chat/ChatHistoryToggle.tsx":{"size":1641,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951053951400,"word_count":113},"components/panels/chat/ChatMessage.tsx":{"size":3683,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951064955200,"word_count":306},"components/panels/chat/ChatMessagesList.tsx":{"size":1220,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951075954900,"word_count":111},"components/panels/chat/ChatStatistics.tsx":{"size":2299,"mtime_ns":1775192600415547300,"indexed_at_ns":1787076951086467600,"word_count":169},"components/panels/chat/__tests__/ChatHeader.test.tsx":{"size":4108,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951098468200,"word_count":438},"components/panels/chat/__tests__/ChatMessage.test.tsx":{"size":7839,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951110532800,"word_count":703},"components/panels/chat/__tests__/ChatMessagesList.test.tsx":{"size":3314,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951122536400,"word_count":300},"components/panels/commandPanelSubmit.ts":{"size":2132,"mtime_ns":1786729458744477900,"indexed_at_ns":1787076951133044000,"word_count":194},"components/panels/gameLogPanelUtils.ts":{"size":4056,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951142292900,"word_count":331},"components/panels/useChatPanelRefactored.ts":{"size":2853,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951152292700,"word_count":219},"components/panels/useChatPanelRuntime.ts":{"size":6618,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951161829200,"word_count":523},"components/panels/useGameLogPanelState.ts":{"size":1643,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951171829300,"word_count":139},"components/ui-v2/GameClientV2.tsx":{"size":11416,"mtime_ns":1786571994848593300,"indexed_at_ns":1787076951181638800,"word_count":1020},"components/ui-v2/GameClientV2AuxiliaryPanels.tsx":{"size":5926,"mtime_ns":1786659773629507400,"indexed_at_ns":1787076951192266300,"word_count":357},"components/ui-v2/GameClientV2Container.tsx":{"size":715,"mtime_ns":1781981784117944000,"indexed_at_ns":1787076951202266400,"word_count":75},"components/ui-v2/GameClientV2ContainerView.tsx":{"size":8002,"mtime_ns":1786571994849840700,"indexed_at_ns":1787076951212312300,"word_count":520},"components/ui-v2/GameClientV2Minimap.tsx":{"size":1278,"mtime_ns":1786571994850358900,"indexed_at_ns":1787076951221314400,"word_count":153},"components/ui-v2/GameClientV2MinimapSection.tsx":{"size":3449,"mtime_ns":1786370248242521200,"indexed_at_ns":1787076951231316300,"word_count":269},"components/ui-v2/HeaderBar.tsx":{"size":6395,"mtime_ns":1786769924051989100,"indexed_at_ns":1787076951240986200,"word_count":531},"components/ui-v2/LoginGracePeriodBanner.tsx":{"size":2824,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951249989000,"word_count":289},"components/ui-v2/PanelSystem/ExpandedPanelBody.tsx":{"size":1771,"mtime_ns":1786990777914657800,"indexed_at_ns":1787076951260492800,"word_count":179},"components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx":{"size":1862,"mtime_ns":1786990777920658500,"indexed_at_ns":1787076951273041300,"word_count":148},"components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx":{"size":2192,"mtime_ns":1786990777924659200,"indexed_at_ns":1787076951284545600,"word_count":174},"components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx":{"size":1387,"mtime_ns":1786990777928972300,"indexed_at_ns":1787076951295550200,"word_count":111},"components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx":{"size":1775,"mtime_ns":1786990777932968700,"indexed_at_ns":1787076951307464800,"word_count":164},"components/ui-v2/PanelSystem/PanelContainer.tsx":{"size":1468,"mtime_ns":1786987142448901400,"indexed_at_ns":1787076951318089000,"word_count":101},"components/ui-v2/PanelSystem/PanelContainerShared.tsx":{"size":1163,"mtime_ns":1786372434075218100,"indexed_at_ns":1787076951328838100,"word_count":125},"components/ui-v2/PanelSystem/PanelContainerViews.tsx":{"size":6108,"mtime_ns":1786662309650618800,"indexed_at_ns":1787076951339837100,"word_count":444},"components/ui-v2/PanelSystem/PanelManager.tsx":{"size":596,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951350838700,"word_count":51},"components/ui-v2/PanelSystem/PanelManagerContext.tsx":{"size":841,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951360837200,"word_count":95},"components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx":{"size":410,"mtime_ns":1786990777989486000,"indexed_at_ns":1787076951371837100,"word_count":42},"components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx":{"size":15141,"mtime_ns":1786978027413816300,"indexed_at_ns":1787076951383837200,"word_count":1244},"components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx":{"size":8768,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951395843800,"word_count":840},"components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts":{"size":4926,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951408345400,"word_count":470},"components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts":{"size":7395,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951419349000,"word_count":895},"components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts":{"size":3285,"mtime_ns":1784482413963267900,"indexed_at_ns":1787076951431353000,"word_count":292},"components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts":{"size":12959,"mtime_ns":1784482413963788100,"indexed_at_ns":1787076951442861900,"word_count":1211},"components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts":{"size":2876,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951454862500,"word_count":210},"components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts":{"size":7894,"mtime_ns":1784482413964308000,"indexed_at_ns":1787076951466865400,"word_count":700},"components/ui-v2/PanelSystem/panelLayoutBootstrap.ts":{"size":1573,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951478657800,"word_count":164},"components/ui-v2/PanelSystem/panelLayoutClamp.ts":{"size":3437,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951489737600,"word_count":431},"components/ui-v2/PanelSystem/panelLayoutTypes.ts":{"size":153,"mtime_ns":1786990777959975800,"indexed_at_ns":1787076951499748000,"word_count":13},"components/ui-v2/PanelSystem/panelLayoutValidation.ts":{"size":1102,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951510264400,"word_count":121},"components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts":{"size":1503,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951522263400,"word_count":166},"components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts":{"size":543,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951533263500,"word_count":71},"components/ui-v2/PanelSystem/panelManagerReducer.ts":{"size":2065,"mtime_ns":1784482413964825300,"indexed_at_ns":1787076951545263500,"word_count":205},"components/ui-v2/PanelSystem/panelMinimizeDock.ts":{"size":2563,"mtime_ns":1784482413965339100,"indexed_at_ns":1787076951556886800,"word_count":280},"components/ui-v2/PanelSystem/panelReducerHandlers.ts":{"size":6585,"mtime_ns":1784482413965862900,"indexed_at_ns":1787076951567889200,"word_count":703},"components/ui-v2/PanelSystem/usePanelContainerBody.ts":{"size":3761,"mtime_ns":1786371684953033700,"indexed_at_ns":1787076951579404600,"word_count":391},"components/ui-v2/PanelSystem/usePanelContainerLayout.ts":{"size":3608,"mtime_ns":1786816370656706000,"indexed_at_ns":1787076951591407800,"word_count":373},"components/ui-v2/PanelSystem/usePanelContainerView.ts":{"size":2310,"mtime_ns":1786990777999487600,"indexed_at_ns":1787076951604811900,"word_count":228},"components/ui-v2/PanelSystem/usePanelManager.ts":{"size":472,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951621458100,"word_count":59},"components/ui-v2/PanelSystem/usePanelManagerProviderState.ts":{"size":2971,"mtime_ns":1784482413966379000,"indexed_at_ns":1787076951641862800,"word_count":325},"components/ui-v2/TabbedInterface.tsx":{"size":3772,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951658580200,"word_count":358},"components/ui-v2/TentacleBackdrop.tsx":{"size":1714,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951668585300,"word_count":167},"components/ui-v2/__tests__/GameClientV2.test.tsx":{"size":8561,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951679581600,"word_count":798},"components/ui-v2/__tests__/GameClientV2Container.test.tsx":{"size":6819,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951691274900,"word_count":664},"components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx":{"size":3873,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951703093300,"word_count":372},"components/ui-v2/__tests__/GameClientV2Dock.test.tsx":{"size":5894,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951714762100,"word_count":555},"components/ui-v2/__tests__/HeaderBar.test.tsx":{"size":8401,"mtime_ns":1781981784119943200,"indexed_at_ns":1787076951725761800,"word_count":659},"components/ui-v2/__tests__/TabbedInterface.test.tsx":{"size":2959,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951736762700,"word_count":267},"components/ui-v2/__tests__/TentacleBackdrop.test.tsx":{"size":1389,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951747761900,"word_count":111},"components/ui-v2/__tests__/useTabbedInterface.test.ts":{"size":6690,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951758762500,"word_count":563},"components/ui-v2/components/TabbedInterfaceOverlay.tsx":{"size":2888,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951770454300,"word_count":228},"components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx":{"size":4356,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951783149000,"word_count":358},"components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts":{"size":15057,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951794768900,"word_count":1267},"components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts":{"size":4346,"mtime_ns":1786659773631594000,"indexed_at_ns":1787076951806769600,"word_count":376},"components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts":{"size":11102,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951819015900,"word_count":961},"components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts":{"size":2740,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951830871700,"word_count":238},"components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts":{"size":2004,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951843221900,"word_count":190},"components/ui-v2/eventHandlers/__tests__/index.test.ts":{"size":3645,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951855219900,"word_count":292},"components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts":{"size":2726,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951867735100,"word_count":314},"components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts":{"size":23632,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951882651600,"word_count":2095},"components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts":{"size":48602,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951900698100,"word_count":4497},"components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts":{"size":26640,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951917902600,"word_count":2354},"components/ui-v2/eventHandlers/combatHandlers.ts":{"size":4820,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951931321100,"word_count":485},"components/ui-v2/eventHandlers/index.ts":{"size":4394,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951942709900,"word_count":371},"components/ui-v2/eventHandlers/messageHandlers.ts":{"size":7263,"mtime_ns":1786659773632109800,"indexed_at_ns":1787076951954993300,"word_count":738},"components/ui-v2/eventHandlers/playerHandlers.ts":{"size":8000,"mtime_ns":1786663137064255900,"indexed_at_ns":1787076951964993200,"word_count":797},"components/ui-v2/eventHandlers/roomHandlers.ts":{"size":15792,"mtime_ns":1786663137064255900,"indexed_at_ns":1787076951975993200,"word_count":1762},"components/ui-v2/eventHandlers/systemHandlers.ts":{"size":5386,"mtime_ns":1786571994854564800,"indexed_at_ns":1787076951987246600,"word_count":503},"components/ui-v2/eventHandlers/types.ts":{"size":4330,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076951998478500,"word_count":613},"components/ui-v2/eventLog/EVENTS_SCHEMA.md":{"size":4798,"mtime_ns":1775192600423377700,"indexed_at_ns":1787077174336725900,"word_count":469,"hashes":{"components/ui-v2/eventlog/events_schema.md":"fd681ca58fd1d3a13ec566e61018b814908b3b5f75b44c29f983c14fa7515be1"}},"components/ui-v2/eventLog/HANDOFFS.md":{"size":2778,"mtime_ns":1775192600423377700,"indexed_at_ns":1787077174338724400,"word_count":363,"hashes":{"components/ui-v2/eventlog/handoffs.md":"a64e7238d754415a1043a87be5de123cc99e546867553314145c468a76e49667"}},"components/ui-v2/eventLog/__tests__/eventStore.test.ts":{"size":1051,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952034082600,"word_count":111},"components/ui-v2/eventLog/__tests__/messageMapper.test.ts":{"size":2620,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952047260400,"word_count":239},"components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts":{"size":13780,"mtime_ns":1786659773632635800,"indexed_at_ns":1787076952059611400,"word_count":1195},"components/ui-v2/eventLog/__tests__/projector.projectState.test.ts":{"size":12956,"mtime_ns":1786659773633147400,"indexed_at_ns":1787076952071477300,"word_count":1145},"components/ui-v2/eventLog/__tests__/projector.test.ts":{"size":22276,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952083982600,"word_count":1907},"components/ui-v2/eventLog/eventStore.ts":{"size":1127,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952093986400,"word_count":161},"components/ui-v2/eventLog/index.ts":{"size":582,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952104986900,"word_count":86},"components/ui-v2/eventLog/messageMapper.ts":{"size":2997,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952115326900,"word_count":404},"components/ui-v2/eventLog/projector.ts":{"size":2319,"mtime_ns":1786659773633675200,"indexed_at_ns":1787076952127326300,"word_count":278},"components/ui-v2/eventLog/projectorConstants.ts":{"size":1476,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952138327000,"word_count":122},"components/ui-v2/eventLog/projectorHandlersMessages.ts":{"size":12389,"mtime_ns":1785211754028906100,"indexed_at_ns":1787076952149326000,"word_count":1168},"components/ui-v2/eventLog/projectorHandlersState.ts":{"size":10852,"mtime_ns":1775192600423377700,"indexed_at_ns":1787076952160326500,"word_count":1092},"components/ui-v2/eventLog/projectorMessageUtils.ts":{"size":1677,"mtime_ns":1785211754029908900,"indexed_at_ns":1787076952171553200,"word_count":192},"components/ui-v2/eventLog/projectorRoom.ts":{"size":9971,"mtime_ns":1786571994854564800,"indexed_at_ns":1787076952181860200,"word_count":1016},"components/ui-v2/eventLog/types.ts":{"size":461,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952192898800,"word_count":70},"components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts":{"size":12687,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952205805200,"word_count":1127},"components/ui-v2/hooks/__tests__/useEventProcessing.test.ts":{"size":26556,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952217315000,"word_count":2652},"components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts":{"size":9921,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952229315600,"word_count":912},"components/ui-v2/hooks/emptyOccupantsDiagnostics.ts":{"size":2401,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952240331400,"word_count":296},"components/ui-v2/hooks/gameClientLogout.ts":{"size":1611,"mtime_ns":1786659773634201800,"indexed_at_ns":1787076952251569000,"word_count":177},"components/ui-v2/hooks/gameClientV2ContainerActiveEffects.ts":{"size":621,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952261744300,"word_count":54},"components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts":{"size":3288,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952273747600,"word_count":215},"components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts":{"size":2533,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952285258700,"word_count":175},"components/ui-v2/hooks/gameClientV2ContainerTypes.ts":{"size":659,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952296263700,"word_count":54},"components/ui-v2/hooks/useCommandHandlers.ts":{"size":3178,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952308262900,"word_count":308},"components/ui-v2/hooks/useEventProcessing.ts":{"size":3405,"mtime_ns":1780609217904219000,"indexed_at_ns":1787076952319848900,"word_count":326},"components/ui-v2/hooks/useGameClientV2Container.ts":{"size":1597,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952330796400,"word_count":115},"components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts":{"size":1525,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952341517500,"word_count":133},"components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts":{"size":664,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952351778800,"word_count":71},"components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts":{"size":704,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952365675100,"word_count":61},"components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts":{"size":1861,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952375702700,"word_count":128},"components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts":{"size":1390,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952386702300,"word_count":103},"components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts":{"size":2044,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952397783200,"word_count":148},"components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts":{"size":1088,"mtime_ns":1786571994855570100,"indexed_at_ns":1787076952407783400,"word_count":79},"components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts":{"size":3632,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952419291500,"word_count":269},"components/ui-v2/hooks/useGameClientV2ContainerState.ts":{"size":2909,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952430295500,"word_count":243},"components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts":{"size":774,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952440461500,"word_count":73},"components/ui-v2/hooks/useGameConnectionManagement.ts":{"size":3655,"mtime_ns":1781560010232879300,"indexed_at_ns":1787076952452113600,"word_count":333},"components/ui-v2/hooks/useHallucinationFeedCleanup.ts":{"size":759,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952462384600,"word_count":77},"components/ui-v2/hooks/useMythosTimeBootstrap.ts":{"size":2159,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952473389300,"word_count":216},"components/ui-v2/hooks/usePanelManager.ts":{"size":111,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952484898900,"word_count":11},"components/ui-v2/hooks/usePlayerStatusEffects.ts":{"size":4061,"mtime_ns":1786662370376926000,"indexed_at_ns":1787076952494902100,"word_count":410},"components/ui-v2/hooks/useRefSynchronization.ts":{"size":2491,"mtime_ns":1786571994857324300,"indexed_at_ns":1787076952505902000,"word_count":217},"components/ui-v2/hooks/useRespawnHandlers.ts":{"size":6989,"mtime_ns":1786571994857835100,"indexed_at_ns":1787076952517827200,"word_count":644},"components/ui-v2/panels/CharacterInfoPanel.tsx":{"size":6152,"mtime_ns":1786633064380450300,"indexed_at_ns":1787076952528830600,"word_count":516},"components/ui-v2/panels/ChatHistoryPanel.tsx":{"size":10517,"mtime_ns":1786662190263433800,"indexed_at_ns":1787076952540828400,"word_count":842},"components/ui-v2/panels/CommandHistoryPanel.tsx":{"size":2114,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952554829100,"word_count":164},"components/ui-v2/panels/CommandInputPanel.tsx":{"size":3409,"mtime_ns":1786577737576886300,"indexed_at_ns":1787076952568228900,"word_count":289},"components/ui-v2/panels/GameInfoPanel.tsx":{"size":7927,"mtime_ns":1780609217904744200,"indexed_at_ns":1787076952579048600,"word_count":629},"components/ui-v2/panels/LocationPanel.tsx":{"size":2421,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952589047900,"word_count":213},"components/ui-v2/panels/OccupantsPanel.tsx":{"size":2356,"mtime_ns":1786902872556517400,"indexed_at_ns":1787076952600051200,"word_count":252},"components/ui-v2/panels/QuestLogPanel.tsx":{"size":2751,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952610557500,"word_count":278},"components/ui-v2/panels/RoomDescriptionPanel.tsx":{"size":891,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952621561300,"word_count":96},"components/ui-v2/panels/__tests__/CharacterInfoPanel.test.tsx":{"size":4460,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952633561200,"word_count":440},"components/ui-v2/panels/__tests__/ChatHistoryPanel.test.tsx":{"size":5723,"mtime_ns":1786577737601001700,"indexed_at_ns":1787076952645813500,"word_count":505},"components/ui-v2/panels/__tests__/CommandHistoryPanel.test.tsx":{"size":3098,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952657809900,"word_count":255},"components/ui-v2/panels/__tests__/CommandInputPanel.test.tsx":{"size":3735,"mtime_ns":1786577737615119600,"indexed_at_ns":1787076952669812700,"word_count":306},"components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx":{"size":4305,"mtime_ns":1780609217905802700,"indexed_at_ns":1787076952681813700,"word_count":359},"components/ui-v2/panels/__tests__/LocationPanel.test.tsx":{"size":4634,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952693323600,"word_count":409},"components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx":{"size":2354,"mtime_ns":1786902466698659100,"indexed_at_ns":1787076952706159200,"word_count":227},"components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx":{"size":2951,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952718342200,"word_count":299},"components/ui-v2/types.ts":{"size":3326,"mtime_ns":1786659773634201800,"indexed_at_ns":1787076952727858900,"word_count":381},"components/ui-v2/useTabbedInterface.ts":{"size":1341,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952737483800,"word_count":156},"components/ui-v2/utils/__tests__/characterInfoPanelOutline.test.ts":{"size":3533,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952749697900,"word_count":362},"components/ui-v2/utils/__tests__/messageUtils.test.ts":{"size":4819,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952760783100,"word_count":449},"components/ui-v2/utils/__tests__/panelLayout.test.ts":{"size":8902,"mtime_ns":1786659773635208300,"indexed_at_ns":1787076952772783100,"word_count":513},"components/ui-v2/utils/__tests__/roomMergeUtils.test.ts":{"size":8962,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952785189300,"word_count":973},"components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts":{"size":15822,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952796270500,"word_count":1544},"components/ui-v2/utils/characterInfoPanelOutline.ts":{"size":2304,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952808271700,"word_count":289},"components/ui-v2/utils/messageUtils.ts":{"size":2515,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952823782700,"word_count":299},"components/ui-v2/utils/panelLayout.ts":{"size":4933,"mtime_ns":1786659856113484200,"indexed_at_ns":1787076952833787400,"word_count":580},"components/ui-v2/utils/roomMergeUtils.ts":{"size":3171,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952844466800,"word_count":397},"components/ui-v2/utils/stateUpdateUtils.ts":{"size":7619,"mtime_ns":1786571994862249000,"indexed_at_ns":1787076952856469800,"word_count":855},"components/ui/ChannelSelector.tsx":{"size":7304,"mtime_ns":1786571994863719100,"indexed_at_ns":1787076952865467400,"word_count":543},"components/ui/DismissButton.tsx":{"size":1120,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952875471600,"word_count":108},"components/ui/EldritchIcon.tsx":{"size":2470,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952885983000,"word_count":277},"components/ui/FeedbackForm.tsx":{"size":7780,"mtime_ns":1786571994863719100,"indexed_at_ns":1787076952894987800,"word_count":735},"components/ui/LogoutButton.tsx":{"size":2737,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952904986700,"word_count":247},"components/ui/ModalContainer.tsx":{"size":5903,"mtime_ns":1786571994864725200,"indexed_at_ns":1787076952914496300,"word_count":477},"components/ui/MythosIcons.ts":{"size":1211,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952924496800,"word_count":138},"components/ui/MythosPanel.test.tsx":{"size":2446,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952935268100,"word_count":189},"components/ui/MythosPanel.tsx":{"size":3527,"mtime_ns":1786571994864725200,"indexed_at_ns":1787076952944017800,"word_count":313},"components/ui/README.md":{"size":5530,"mtime_ns":1775192600439063900,"indexed_at_ns":1787077174338724400,"word_count":646,"hashes":{"components/ui/readme.md":"95871d0c592d3289b9c8a3d64c849bfdae11a2f0ef56f98c1f0b4bd1e9d82ca9"}},"components/ui/RoomInfo.tsx":{"size":8801,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952964280700,"word_count":787},"components/ui/StatusPanel.tsx":{"size":7482,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076952974281300,"word_count":833},"components/ui/StyleGuide.tsx":{"size":3537,"mtime_ns":1786571994865872400,"indexed_at_ns":1787076952984281100,"word_count":314},"components/ui/StyleGuideSections.tsx":{"size":13484,"mtime_ns":1786662205379858100,"indexed_at_ns":1787076952993281400,"word_count":930},"components/ui/TerminalButton.test.tsx":{"size":4106,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953003722600,"word_count":319},"components/ui/TerminalButton.tsx":{"size":2959,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953012783500,"word_count":203},"components/ui/TerminalCard.tsx":{"size":1087,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953022784000,"word_count":91},"components/ui/TerminalInput.tsx":{"size":2321,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953032792100,"word_count":184},"components/ui/VirtualizedMessageList.tsx":{"size":2735,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953042471300,"word_count":270},"components/ui/__tests__/ChannelSelector.test.tsx":{"size":7915,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953054475800,"word_count":637},"components/ui/__tests__/EldritchIcon.test.tsx":{"size":6639,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953066476100,"word_count":549},"components/ui/__tests__/LogoutButton.test.tsx":{"size":8683,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953076479600,"word_count":712},"components/ui/__tests__/RoomInfo.test.tsx":{"size":11655,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953087984500,"word_count":863},"components/ui/__tests__/StatusPanel.test.tsx":{"size":11429,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953098987000,"word_count":735},"components/ui/__tests__/TerminalCard.test.tsx":{"size":2338,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953110499200,"word_count":192},"components/ui/__tests__/TerminalInput.test.tsx":{"size":5186,"mtime_ns":1775192600439063900,"indexed_at_ns":1787076953121531400,"word_count":489},"components/ui/__tests__/designTokens.test.ts":{"size":9743,"mtime_ns":1786659773636605700,"indexed_at_ns":1787076953132533100,"word_count":645},"components/ui/designTokens.ts":{"size":7616,"mtime_ns":1786659773636605700,"indexed_at_ns":1787076953142533600,"word_count":794},"components/useDraggablePanelInteractions.ts":{"size":13529,"mtime_ns":1786571994866377600,"indexed_at_ns":1787076953151848300,"word_count":1257},"components/useDraggablePanelLayout.ts":{"size":7610,"mtime_ns":1786463489024002300,"indexed_at_ns":1787076953160621700,"word_count":793},"config/__tests__/channels.test.ts":{"size":7634,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953172141600,"word_count":587},"config/channels.ts":{"size":3203,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953180139500,"word_count":359},"constants/layout.ts":{"size":281,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953189148800,"word_count":42},"contexts/GameTerminalContext.tsx":{"size":2252,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953197653100,"word_count":228},"contexts/PanelContext.tsx":{"size":6321,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953207298500,"word_count":713},"contexts/PanelContextRuntime.tsx":{"size":5987,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953216809300,"word_count":659},"contexts/ThemeContext.tsx":{"size":3614,"mtime_ns":1781981784120944200,"indexed_at_ns":1787076953224807800,"word_count":343},"contexts/__tests__/GameTerminalContext.test.tsx":{"size":15157,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953234812100,"word_count":1076},"contexts/__tests__/PanelContext.test.tsx":{"size":9834,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953244987200,"word_count":935},"contexts/__tests__/PanelContextRuntime.test.tsx":{"size":3078,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953254857800,"word_count":275},"contexts/__tests__/ThemeContext.test.tsx":{"size":12720,"mtime_ns":1781981784121944200,"indexed_at_ns":1787076953264377200,"word_count":1166},"contexts/hooks/__tests__/usePanelContext.test.tsx":{"size":5515,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953276373500,"word_count":566},"contexts/hooks/useGameTerminalContext.ts":{"size":1590,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953289373700,"word_count":156},"contexts/hooks/usePanelContext.ts":{"size":1565,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953299379500,"word_count":179},"contexts/hooks/useThemeContext.ts":{"size":2407,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953309377400,"word_count":276},"hooks/__tests__/useComponentLifecycleTracking.test.ts":{"size":1333,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953320613400,"word_count":116},"hooks/__tests__/useConnectionState.test.ts":{"size":7180,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953330976000,"word_count":666},"hooks/__tests__/useConnectionStateMachine.test.ts":{"size":15913,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953340916600,"word_count":1571},"hooks/__tests__/useGameConnection.export.test.ts":{"size":388,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953351915800,"word_count":39},"hooks/__tests__/useGridLayout.test.ts":{"size":15485,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953361916600,"word_count":1504},"hooks/__tests__/usePerformanceMonitor.test.ts":{"size":13122,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953371915700,"word_count":1243},"hooks/__tests__/useSessionManagement.test.ts":{"size":5243,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953381918100,"word_count":500},"hooks/__tests__/useStoreSubscriptionTracking.test.ts":{"size":922,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953391935600,"word_count":81},"hooks/__tests__/useWebSocketConnection.callbacks.test.ts":{"size":1956,"mtime_ns":1780609217905802700,"indexed_at_ns":1787076953401535300,"word_count":192},"hooks/__tests__/useWebSocketConnection.cleanup.test.ts":{"size":3348,"mtime_ns":1780609217906322100,"indexed_at_ns":1787076953411039100,"word_count":294},"hooks/__tests__/useWebSocketConnection.connection.test.ts":{"size":10912,"mtime_ns":1780609217906851900,"indexed_at_ns":1787076953420935000,"word_count":974},"hooks/__tests__/useWebSocketConnection.errorHandling.test.ts":{"size":3217,"mtime_ns":1780609217907372900,"indexed_at_ns":1787076953431302400,"word_count":310},"hooks/__tests__/useWebSocketConnection.messageHandling.test.ts":{"size":8991,"mtime_ns":1780609217907372900,"indexed_at_ns":1787076953441308200,"word_count":793},"hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts":{"size":7125,"mtime_ns":1780609217908378200,"indexed_at_ns":1787076953452077300,"word_count":671},"hooks/__tests__/useWebSocketConnectionTestFixtures.ts":{"size":6196,"mtime_ns":1780609217908378200,"indexed_at_ns":1787076953461939200,"word_count":631},"hooks/useComponentLifecycleTracking.ts":{"size":1897,"mtime_ns":1780609217908378200,"indexed_at_ns":1787076953470943000,"word_count":204},"hooks/useConnectionState.ts":{"size":3687,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953483322700,"word_count":453},"hooks/useConnectionStateMachine.test.ts":{"size":14096,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953497484800,"word_count":1398},"hooks/useConnectionStateMachine.ts":{"size":7801,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953506001800,"word_count":845},"hooks/useGameConnection.test.ts":{"size":13310,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953515258500,"word_count":1369},"hooks/useGameConnection.ts":{"size":98,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953525896400,"word_count":8},"hooks/useGameConnectionRefactored.ts":{"size":16906,"mtime_ns":1781560010234091300,"indexed_at_ns":1787076953535896000,"word_count":1624},"hooks/useGameTerminal.test.ts":{"size":30887,"mtime_ns":1786731049038643000,"indexed_at_ns":1787076953545898200,"word_count":2644},"hooks/useGameTerminal.ts":{"size":7835,"mtime_ns":1786571994867390200,"indexed_at_ns":1787076953554897600,"word_count":732},"hooks/useGridLayout.ts":{"size":6842,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953562900500,"word_count":832},"hooks/usePerformanceMonitor.ts":{"size":3619,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953572901300,"word_count":385},"hooks/useProfessions.ts":{"size":5773,"mtime_ns":1786571994867894800,"indexed_at_ns":1787076953581430200,"word_count":587},"hooks/useSessionManagement.ts":{"size":2925,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953590430500,"word_count":321},"hooks/useStatsRolling.ts":{"size":2504,"mtime_ns":1786571994867894800,"indexed_at_ns":1787076953598436900,"word_count":235},"hooks/useStatsRollingActions.ts":{"size":6658,"mtime_ns":1786662131377661700,"indexed_at_ns":1787076953607434500,"word_count":719},"hooks/useStoreSubscriptionTracking.ts":{"size":1308,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953616941900,"word_count":158},"hooks/useWebSocketConnection.ts":{"size":11048,"mtime_ns":1780609217910377400,"indexed_at_ns":1787076953625943600,"word_count":1087},"main.tsx":{"size":481,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953640946500,"word_count":48},"mythosApp/1774539086359-useMythosAppState.ts":{"size":6581,"mtime_ns":1786571994868901300,"indexed_at_ns":1787076953649946000,"word_count":506},"mythosApp/AppCreationFlowViews.tsx":{"size":2764,"mtime_ns":1786571994868901300,"indexed_at_ns":1787076953658717200,"word_count":202},"mythosApp/AppDemoView.tsx":{"size":500,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953667717200,"word_count":46},"mythosApp/AppRootViews.tsx":{"size":2137,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953676718000,"word_count":139},"mythosApp/AppSessionOutroViews.tsx":{"size":1482,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953685717200,"word_count":107},"mythosApp/MythosLoginForm.tsx":{"size":4075,"mtime_ns":1786571994869901200,"indexed_at_ns":1787076953694716700,"word_count":301},"mythosApp/__tests__/useMythosAppState.test.ts":{"size":1638,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953704719200,"word_count":139},"mythosApp/__tests__/useMythosSessionChrome.test.ts":{"size":4197,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953714228100,"word_count":265},"mythosApp/apiErrorMessage.ts":{"size":647,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953723227900,"word_count":69},"mythosApp/appLazyScreens.tsx":{"size":1508,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953732229000,"word_count":129},"mythosApp/applyAuthenticatedSession.ts":{"size":1540,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953742229800,"word_count":125},"mythosApp/characterSessionApi.ts":{"size":2581,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953750227900,"word_count":244},"mythosApp/creationCompleteActions.ts":{"size":2567,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953759229300,"word_count":202},"mythosApp/creationCompleteFlow.ts":{"size":2568,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953768228100,"word_count":259},"mythosApp/creationTypes.ts":{"size":150,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953777228900,"word_count":25},"mythosApp/deleteCharacterActions.ts":{"size":2186,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953786232800,"word_count":199},"mythosApp/deleteCharacterFlow.ts":{"size":4288,"mtime_ns":1786571994869901200,"indexed_at_ns":1787076953794231500,"word_count":421},"mythosApp/guards.ts":{"size":158,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953802737900,"word_count":21},"mythosApp/loginFailureMessage.ts":{"size":608,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953812749100,"word_count":67},"mythosApp/mapServerCharacters.ts":{"size":608,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953822137900,"word_count":59},"mythosApp/motdContinueFlow.ts":{"size":1351,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953830707500,"word_count":134},"mythosApp/mythosAppViewModel.ts":{"size":2530,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953839492800,"word_count":269},"mythosApp/mythosAppViewModelFactory.ts":{"size":2987,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953849603800,"word_count":161},"mythosApp/registerFailureMessage.ts":{"size":2962,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953859161500,"word_count":309},"mythosApp/selectCharacterFlow.ts":{"size":1707,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953868646300,"word_count":186},"mythosApp/serverAvailability.ts":{"size":1770,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953877955300,"word_count":187},"mythosApp/startLoginGracePeriod.ts":{"size":393,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953886747200,"word_count":29},"mythosApp/submitAuth.ts":{"size":2981,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953897753200,"word_count":288},"mythosApp/useAuthSessionRestore.ts":{"size":3550,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953906752000,"word_count":266},"mythosApp/useMythosApp.tsx":{"size":454,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953915520400,"word_count":42},"mythosApp/useMythosAppActions.ts":{"size":9879,"mtime_ns":1786571994870902000,"indexed_at_ns":1787076953923701900,"word_count":706},"mythosApp/useMythosAppState.ts":{"size":9285,"mtime_ns":1786571994870902000,"indexed_at_ns":1787076953932701900,"word_count":689},"mythosApp/useMythosAuthForm.ts":{"size":1850,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953941952100,"word_count":175},"mythosApp/useMythosSessionChrome.ts":{"size":5821,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953950592400,"word_count":449},"pages/DialogueEditorPage.tsx":{"size":10592,"mtime_ns":1786731059507836800,"indexed_at_ns":1787076953959870000,"word_count":917},"pages/MapPage.tsx":{"size":639,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076953968087300,"word_count":86},"pages/SkillsPage.tsx":{"size":5154,"mtime_ns":1780609217911378200,"indexed_at_ns":1787076953979648000,"word_count":469},"pages/__tests__/MapPage.test.tsx":{"size":5643,"mtime_ns":1780609217912377200,"indexed_at_ns":1787076953991648800,"word_count":560},"pages/__tests__/SkillsPage.test.tsx":{"size":2457,"mtime_ns":1780609217912377200,"indexed_at_ns":1787076954002287400,"word_count":228},"pages/mapPageRenderer.tsx":{"size":2445,"mtime_ns":1775192600454713500,"indexed_at_ns":1787076954012158000,"word_count":202},"pages/mapPageState.ts":{"size":2645,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954022779900,"word_count":290},"pages/mapPageStatusViews.tsx":{"size":1678,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954032780400,"word_count":130},"stores/__tests__/commandStore.test.ts":{"size":28113,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954045782400,"word_count":2468},"stores/__tests__/connectionStore.test.ts":{"size":14556,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954056972600,"word_count":1155},"stores/__tests__/containerStore.test.ts":{"size":18797,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954067192600,"word_count":1248},"stores/__tests__/gameStore.test.ts":{"size":21727,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954079467900,"word_count":2022},"stores/__tests__/sessionStore.test.ts":{"size":15528,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954092077700,"word_count":1254},"stores/__tests__/stateManagementIntegration.test.ts":{"size":16787,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954106080200,"word_count":1317},"stores/__tests__/stateNormalization.basic.test.ts":{"size":5127,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954117298700,"word_count":713},"stores/__tests__/stateNormalization.edgeCases.test.ts":{"size":4969,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954131301000,"word_count":495},"stores/__tests__/stateNormalization.normalize.test.ts":{"size":8165,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954140299500,"word_count":798},"stores/__tests__/stateNormalization.query.test.ts":{"size":3666,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954151613700,"word_count":378},"stores/__tests__/stateNormalization.update.test.ts":{"size":3910,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954163699000,"word_count":414},"stores/commandStore.ts":{"size":12453,"mtime_ns":1786571994871901400,"indexed_at_ns":1787076954172153500,"word_count":1287},"stores/connectionStore.ts":{"size":9944,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954182982400,"word_count":1058},"stores/containerStore.ts":{"size":9406,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954191985800,"word_count":961},"stores/gameStore.ts":{"size":10410,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954200985700,"word_count":1229},"stores/sessionStore.ts":{"size":8037,"mtime_ns":1786571994871901400,"indexed_at_ns":1787076954210553000,"word_count":882},"stores/stateNormalization.ts":{"size":10253,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954219533900,"word_count":1317},"test/domPurifyTestWindow.ts":{"size":574,"mtime_ns":1781621391336823500,"indexed_at_ns":1787076954239286500,"word_count":61},"test/e2e-bootstrap.test.ts":{"size":1278,"mtime_ns":1781560010234608800,"indexed_at_ns":1787076954248534300,"word_count":87},"test/e2e-bootstrap.ts":{"size":5312,"mtime_ns":1781560010235124200,"indexed_at_ns":1787076954258344700,"word_count":608},"test/message-match.test.ts":{"size":632,"mtime_ns":1786633065396758300,"indexed_at_ns":1787076954267342200,"word_count":54},"test/multiplayer-browser-helpers.test.ts":{"size":2153,"mtime_ns":1786900295733056000,"indexed_at_ns":1787076954275853400,"word_count":165},"test/setup.ts":{"size":4074,"mtime_ns":1781621149158881700,"indexed_at_ns":1787076954285944900,"word_count":454},"test/vitest-jest-dom.d.ts":{"size":237,"mtime_ns":1780609217914378900,"indexed_at_ns":1787076954295945600,"word_count":23},"theme/__tests__/mythosTheme.test.ts":{"size":458,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954306903000,"word_count":32},"theme/mythosTheme.ts":{"size":6794,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954316519600,"word_count":707},"types/__tests__/health.test.ts":{"size":4343,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954326519500,"word_count":356},"types/__tests__/lucidity.test.ts":{"size":8022,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954336515900,"word_count":640},"types/auth.ts":{"size":484,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954345516000,"word_count":52},"types/health.ts":{"size":1906,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954354517400,"word_count":249},"types/lucidity.ts":{"size":1429,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954363516600,"word_count":163},"types/mythosTime.ts":{"size":2122,"mtime_ns":1786571994872906800,"indexed_at_ns":1787076954372516600,"word_count":218},"utils/__tests__/apiTypeGuards.test.ts":{"size":15763,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954383518500,"word_count":1436},"utils/__tests__/clientErrorReporter.test.ts":{"size":1977,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954393518400,"word_count":169},"utils/__tests__/clientMetricsCollector.test.ts":{"size":1731,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954403522400,"word_count":123},"utils/__tests__/config.test.ts":{"size":3587,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954413028900,"word_count":425},"utils/__tests__/csrfProtection.test.ts":{"size":3273,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954423035500,"word_count":236},"utils/__tests__/deathVoidLocation.test.ts":{"size":1190,"mtime_ns":1786653647223619800,"indexed_at_ns":1787076954433035500,"word_count":121},"utils/__tests__/debugLogger.test.ts":{"size":15526,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954443039400,"word_count":1442},"utils/__tests__/domPurifyClient.test.ts":{"size":1626,"mtime_ns":1781620903679567500,"indexed_at_ns":1787076954453038800,"word_count":150},"utils/__tests__/feedbackManager.test.ts":{"size":20925,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954462732800,"word_count":1813},"utils/__tests__/gameLogFilter.test.ts":{"size":2654,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954472736800,"word_count":269},"utils/__tests__/healthEventUtils.test.ts":{"size":12385,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954484732100,"word_count":1159},"utils/__tests__/inputSanitizer.test.ts":{"size":6797,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954496731800,"word_count":490},"utils/__tests__/localStorageShim.test.ts":{"size":8882,"mtime_ns":1786659773638638100,"indexed_at_ns":1787076954506736100,"word_count":687},"utils/__tests__/logoutHandler.test.ts":{"size":23181,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954516764400,"word_count":1950},"utils/__tests__/lucidityEventUtils.test.ts":{"size":18890,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954526764500,"word_count":2272},"utils/__tests__/memoryLeakDetector.test.ts":{"size":11523,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954536772500,"word_count":1119},"utils/__tests__/memoryMonitor.test.ts":{"size":11928,"mtime_ns":1781568319943759600,"indexed_at_ns":1787076954547284200,"word_count":1031},"utils/__tests__/messageBatcher.test.ts":{"size":13453,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954557282600,"word_count":1274},"utils/__tests__/messageTypeUtils.test.ts":{"size":8935,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954567285800,"word_count":994},"utils/__tests__/mythosTime.test.ts":{"size":7774,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954577965400,"word_count":729},"utils/__tests__/performanceTester.test.ts":{"size":14945,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954587660500,"word_count":1420},"utils/__tests__/resourceCleanup.test.ts":{"size":15668,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954597964800,"word_count":1258},"utils/__tests__/secureTokenStorage.test.ts":{"size":17675,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954609688000,"word_count":1241},"utils/__tests__/security.test-utils.ts":{"size":764,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954620193100,"word_count":82},"utils/__tests__/sessionManager.test.ts":{"size":8839,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954631194500,"word_count":593},"utils/__tests__/statusParser.test.ts":{"size":9554,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954643198500,"word_count":822},"utils/__tests__/xstateInspector.test.ts":{"size":4298,"mtime_ns":1781568320212273400,"indexed_at_ns":1787076954655992400,"word_count":461},"utils/ansiToHtml.test.ts":{"size":5259,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954665429200,"word_count":534},"utils/ansiToHtml.ts":{"size":4186,"mtime_ns":1786662157315969700,"indexed_at_ns":1787076954674429500,"word_count":501},"utils/apiTypeGuards.ts":{"size":16254,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954683428600,"word_count":1884},"utils/clientErrorReporter.ts":{"size":1055,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954692429000,"word_count":133},"utils/clientMetricsCollector.ts":{"size":4775,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954701433600,"word_count":416},"utils/config.ts":{"size":1531,"mtime_ns":1780609217914378900,"indexed_at_ns":1787076954709433500,"word_count":228},"utils/deathVoidLocation.ts":{"size":712,"mtime_ns":1786653647460556200,"indexed_at_ns":1787076954718945600,"word_count":100},"utils/debugLogger.ts":{"size":6147,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954729775500,"word_count":581},"utils/domPurifyClient.ts":{"size":4395,"mtime_ns":1781621391615653500,"indexed_at_ns":1787076954741093600,"word_count":473},"utils/errorHandler.test.ts":{"size":17195,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954754308700,"word_count":1625},"utils/errorHandler.ts":{"size":7171,"mtime_ns":1786571994874411900,"indexed_at_ns":1787076954765765900,"word_count":780},"utils/feedbackManager.ts":{"size":8659,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954775765900,"word_count":838},"utils/gameLogFilter.ts":{"size":2191,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954784766500,"word_count":262},"utils/healthEventUtils.ts":{"size":4252,"mtime_ns":1786571994874411900,"indexed_at_ns":1787076954793763500,"word_count":509},"utils/localStorageShim.ts":{"size":2675,"mtime_ns":1786659773639641600,"indexed_at_ns":1787076954802765700,"word_count":337},"utils/logger.test.ts":{"size":12528,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954815783200,"word_count":1132},"utils/logger.ts":{"size":4665,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954824312800,"word_count":514},"utils/logoutHandler.ts":{"size":8010,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954833311500,"word_count":933},"utils/lucidityEventUtils.ts":{"size":6329,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954843044700,"word_count":703},"utils/memoryLeakDetector.ts":{"size":7315,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954852043800,"word_count":710},"utils/memoryMonitor.ts":{"size":11464,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954861201800,"word_count":1104},"utils/messageBatcher.ts":{"size":3696,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954870200800,"word_count":410},"utils/messageTypeUtils.ts":{"size":11119,"mtime_ns":1786571994875417300,"indexed_at_ns":1787076954879201500,"word_count":1386},"utils/mythosTime.ts":{"size":3485,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954887973900,"word_count":472},"utils/performanceTester.ts":{"size":7639,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954896207100,"word_count":781},"utils/resourceCleanup.ts":{"size":5690,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954906210400,"word_count":612},"utils/security.ts":{"size":16339,"mtime_ns":1781567765902722300,"indexed_at_ns":1787076954915719000,"word_count":1885},"utils/statusParser.ts":{"size":5318,"mtime_ns":1786571994875417300,"indexed_at_ns":1787076954923717600,"word_count":559},"utils/testAnsi.ts":{"size":600,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954932717300,"word_count":52},"utils/xstateInspector.ts":{"size":1855,"mtime_ns":1775192600470359300,"indexed_at_ns":1787076954941717100,"word_count":250},"vite-env.d.ts":{"size":260,"mtime_ns":1781620902896389700,"indexed_at_ns":1787076954949431000,"word_count":30}}
+{
+  "App.integration.test.tsx": {
+    "size": 16675,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948177775100,
+    "word_count": 1458
+  },
+  "App.tsx": { "size": 213, "mtime_ns": 1775192600376197800, "indexed_at_ns": 1787076948184774000, "word_count": 26 },
+  "AppRouter.tsx": {
+    "size": 1888,
+    "mtime_ns": 1786659773626370600,
+    "indexed_at_ns": 1787076948192776300,
+    "word_count": 184
+  },
+  "__tests__/App.demo.test.tsx": {
+    "size": 1459,
+    "mtime_ns": 1781564103849982200,
+    "indexed_at_ns": 1787076948201776000,
+    "word_count": 135
+  },
+  "__tests__/App.formState.test.tsx": {
+    "size": 1976,
+    "mtime_ns": 1781564103856982900,
+    "indexed_at_ns": 1787076948210282800,
+    "word_count": 179
+  },
+  "__tests__/App.keyboard.test.tsx": {
+    "size": 5675,
+    "mtime_ns": 1781564103872007900,
+    "indexed_at_ns": 1787076948218282100,
+    "word_count": 523
+  },
+  "__tests__/App.loading.test.tsx": {
+    "size": 4784,
+    "mtime_ns": 1781564103882405800,
+    "indexed_at_ns": 1787076948227790900,
+    "word_count": 422
+  },
+  "__tests__/App.login.test.tsx": {
+    "size": 4980,
+    "mtime_ns": 1781564103895203500,
+    "indexed_at_ns": 1787076948235792300,
+    "word_count": 421
+  },
+  "__tests__/App.logout.test.tsx": {
+    "size": 18780,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948245510100,
+    "word_count": 1580
+  },
+  "__tests__/App.logoutError.test.tsx": {
+    "size": 3459,
+    "mtime_ns": 1781564103927798900,
+    "indexed_at_ns": 1787076948253510100,
+    "word_count": 302
+  },
+  "__tests__/App.motd.test.tsx": {
+    "size": 3682,
+    "mtime_ns": 1781564103934064700,
+    "indexed_at_ns": 1787076948262510500,
+    "word_count": 348
+  },
+  "__tests__/App.registration.test.tsx": {
+    "size": 5758,
+    "mtime_ns": 1781564103944447400,
+    "indexed_at_ns": 1787076948270514300,
+    "word_count": 495
+  },
+  "__tests__/App.statsRolling.test.tsx": {
+    "size": 6720,
+    "mtime_ns": 1781564103953446600,
+    "indexed_at_ns": 1787076948279513500,
+    "word_count": 626
+  },
+  "__tests__/App.tokenValidation.test.tsx": {
+    "size": 5387,
+    "mtime_ns": 1781564103974119100,
+    "indexed_at_ns": 1787076948289145700,
+    "word_count": 505
+  },
+  "__tests__/AppRouter.test.tsx": {
+    "size": 1701,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948300511900,
+    "word_count": 207
+  },
+  "__tests__/CharacterCreationNavigation.test.tsx": {
+    "size": 18667,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948309023200,
+    "word_count": 1520
+  },
+  "__tests__/LogoutFlow.integration.test.tsx": {
+    "size": 18988,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948318023300,
+    "word_count": 1588
+  },
+  "__tests__/ProfessionPersistence.test.tsx": {
+    "size": 23084,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948326023600,
+    "word_count": 1799
+  },
+  "__tests__/ProfessionSelectionVariants.test.tsx": {
+    "size": 18555,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948336025700,
+    "word_count": 1614
+  },
+  "__tests__/ProfessionSystemErrorHandling.test.tsx": {
+    "size": 16607,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948345022100,
+    "word_count": 1292
+  },
+  "__tests__/StatRollingWithProfessionRequirements.test.tsx": {
+    "size": 23641,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948354024000,
+    "word_count": 1921
+  },
+  "__tests__/app.test.helpers.ts": {
+    "size": 1524,
+    "mtime_ns": 1781564103961093800,
+    "indexed_at_ns": 1787076948363023200,
+    "word_count": 144
+  },
+  "__tests__/app.test.mocks.tsx": {
+    "size": 1643,
+    "mtime_ns": 1781564103968120400,
+    "indexed_at_ns": 1787076948372023000,
+    "word_count": 162
+  },
+  "__tests__/professionSystemErrorHandling.test.helpers.ts": {
+    "size": 4723,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948380022000,
+    "word_count": 471
+  },
+  "api/__tests__/dialogue.test.ts": {
+    "size": 1549,
+    "mtime_ns": 1786659773626892400,
+    "indexed_at_ns": 1787076948390021900,
+    "word_count": 174
+  },
+  "api/__tests__/maps.test.ts": {
+    "size": 5302,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948399997500,
+    "word_count": 509
+  },
+  "api/dialogue.ts": {
+    "size": 4090,
+    "mtime_ns": 1786659773627414400,
+    "indexed_at_ns": 1787076948408815900,
+    "word_count": 452
+  },
+  "api/maps.ts": {
+    "size": 4879,
+    "mtime_ns": 1786571994831547400,
+    "indexed_at_ns": 1787076948417819900,
+    "word_count": 601
+  },
+  "assets/react.svg": {
+    "size": 4128,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787077174340724800,
+    "word_count": 366,
+    "hashes": { "assets/react.svg": "7b3015fc786dac7aadddef9a2c175f6b58e65df08830da7f46a705036608123b" }
+  },
+  "components/ChannelSelectorTest.tsx": {
+    "size": 0,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948435834300,
+    "word_count": 0
+  },
+  "components/CharacterNameScreen.tsx": {
+    "size": 5386,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948443612700,
+    "word_count": 484
+  },
+  "components/CharacterSelectionScreen.tsx": {
+    "size": 10324,
+    "mtime_ns": 1786571994831547400,
+    "indexed_at_ns": 1787076948460608900,
+    "word_count": 832
+  },
+  "components/ChatPanelTest.test.tsx": {
+    "size": 11477,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948469608900,
+    "word_count": 934
+  },
+  "components/ChatPanelTest.tsx": {
+    "size": 18307,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948478854400,
+    "word_count": 1302
+  },
+  "components/CommandPanelTest.categories.tsx": {
+    "size": 561,
+    "mtime_ns": 1786467369446283300,
+    "indexed_at_ns": 1787076948487035800,
+    "word_count": 43
+  },
+  "components/CommandPanelTest.constants.ts": {
+    "size": 2459,
+    "mtime_ns": 1786467369450338400,
+    "indexed_at_ns": 1787076948496617400,
+    "word_count": 306
+  },
+  "components/CommandPanelTest.controls.tsx": {
+    "size": 1486,
+    "mtime_ns": 1786467369453339000,
+    "indexed_at_ns": 1787076948505618500,
+    "word_count": 104
+  },
+  "components/CommandPanelTest.examples.tsx": {
+    "size": 606,
+    "mtime_ns": 1786467369457515100,
+    "indexed_at_ns": 1787076948513742100,
+    "word_count": 46
+  },
+  "components/CommandPanelTest.features.tsx": {
+    "size": 743,
+    "mtime_ns": 1786467369460955600,
+    "indexed_at_ns": 1787076948522745500,
+    "word_count": 62
+  },
+  "components/CommandPanelTest.layout.tsx": {
+    "size": 1703,
+    "mtime_ns": 1786467369463973700,
+    "indexed_at_ns": 1787076948532742800,
+    "word_count": 127
+  },
+  "components/CommandPanelTest.panels.tsx": {
+    "size": 282,
+    "mtime_ns": 1786467369466976500,
+    "indexed_at_ns": 1787076948542591800,
+    "word_count": 24
+  },
+  "components/CommandPanelTest.sidebar.tsx": {
+    "size": 825,
+    "mtime_ns": 1786467369469779100,
+    "indexed_at_ns": 1787076948555321100,
+    "word_count": 64
+  },
+  "components/CommandPanelTest.stats.tsx": {
+    "size": 1356,
+    "mtime_ns": 1786467369473900000,
+    "indexed_at_ns": 1787076948570830300,
+    "word_count": 112
+  },
+  "components/CommandPanelTest.test.tsx": {
+    "size": 13162,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948591115100,
+    "word_count": 948
+  },
+  "components/CommandPanelTest.tsx": {
+    "size": 1864,
+    "mtime_ns": 1786571994832547800,
+    "indexed_at_ns": 1787076948609630900,
+    "word_count": 142
+  },
+  "components/CommandPanelTest.types.ts": {
+    "size": 470,
+    "mtime_ns": 1786467369493242300,
+    "indexed_at_ns": 1787076948618631100,
+    "word_count": 49
+  },
+  "components/DeathInterstitial.tsx": {
+    "size": 1810,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948637674400,
+    "word_count": 165
+  },
+  "components/DeliriumInterstitial.tsx": {
+    "size": 1876,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948648676800,
+    "word_count": 167
+  },
+  "components/DraggablePanel.tsx": {
+    "size": 120,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948660676800,
+    "word_count": 13
+  },
+  "components/DraggablePanelCore.tsx": {
+    "size": 2156,
+    "mtime_ns": 1786571994832547800,
+    "indexed_at_ns": 1787076948673681800,
+    "word_count": 169
+  },
+  "components/DraggablePanelResizeHandles.tsx": {
+    "size": 2732,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948686888000,
+    "word_count": 244
+  },
+  "components/DraggablePanelTest.test.tsx": {
+    "size": 13664,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948698847700,
+    "word_count": 940
+  },
+  "components/DraggablePanelTest.tsx": {
+    "size": 8908,
+    "mtime_ns": 1786571994833552300,
+    "indexed_at_ns": 1787076948712495300,
+    "word_count": 792
+  },
+  "components/DraggablePanelView.tsx": {
+    "size": 6071,
+    "mtime_ns": 1786663202693974300,
+    "indexed_at_ns": 1787076948723495600,
+    "word_count": 480
+  },
+  "components/EldritchEffectsDemo.test.tsx": {
+    "size": 5972,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948733494900,
+    "word_count": 484
+  },
+  "components/EldritchEffectsDemo.tsx": {
+    "size": 5729,
+    "mtime_ns": 1786571994834553400,
+    "indexed_at_ns": 1787076948744503200,
+    "word_count": 418
+  },
+  "components/GameTerminal.test.tsx": {
+    "size": 5522,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948754640900,
+    "word_count": 474
+  },
+  "components/GameTerminal.tsx": {
+    "size": 22753,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948765043300,
+    "word_count": 1593
+  },
+  "components/GameTerminalContainer.tsx": {
+    "size": 649,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948775047400,
+    "word_count": 76
+  },
+  "components/GameTerminalPresentation.tsx": {
+    "size": 14368,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948786796300,
+    "word_count": 944
+  },
+  "components/MainMenuModal.tsx": {
+    "size": 7132,
+    "mtime_ns": 1786659773628980800,
+    "indexed_at_ns": 1787076948796802400,
+    "word_count": 681
+  },
+  "components/MapView.tsx": {
+    "size": 3873,
+    "mtime_ns": 1786571994835057700,
+    "indexed_at_ns": 1787076948808311900,
+    "word_count": 365
+  },
+  "components/MotdContent.tsx": {
+    "size": 3629,
+    "mtime_ns": 1786571994835057700,
+    "indexed_at_ns": 1787076948819650900,
+    "word_count": 345
+  },
+  "components/MotdInterstitialScreen.tsx": {
+    "size": 2386,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948829846600,
+    "word_count": 212
+  },
+  "components/MythosTimeHud.tsx": {
+    "size": 4406,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948838846500,
+    "word_count": 308
+  },
+  "components/PanelManager.tsx": {
+    "size": 228,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948851846900,
+    "word_count": 25
+  },
+  "components/ProfessionCard.test.tsx": {
+    "size": 5785,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948863850700,
+    "word_count": 532
+  },
+  "components/ProfessionCard.tsx": {
+    "size": 2304,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948875851600,
+    "word_count": 193
+  },
+  "components/ProfessionSelectionScreen.test.tsx": {
+    "size": 13473,
+    "mtime_ns": 1780609217897329100,
+    "indexed_at_ns": 1787076948886354800,
+    "word_count": 1113
+  },
+  "components/ProfessionSelectionScreen.tsx": {
+    "size": 4021,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948899366500,
+    "word_count": 305
+  },
+  "components/RoomInfoPanel.test.tsx": {
+    "size": 7116,
+    "mtime_ns": 1775192600376197800,
+    "indexed_at_ns": 1787076948930876800,
+    "word_count": 614
+  },
+  "components/RoomInfoPanel.tsx": {
+    "size": 9537,
+    "mtime_ns": 1786571994836063100,
+    "indexed_at_ns": 1787076948942878400,
+    "word_count": 864
+  },
+  "components/SkillAssignmentScreen.helpers.tsx": {
+    "size": 4804,
+    "mtime_ns": 1786571994836063100,
+    "indexed_at_ns": 1787076948951879600,
+    "word_count": 472
+  },
+  "components/SkillAssignmentScreen.tsx": {
+    "size": 7735,
+    "mtime_ns": 1786571994836063100,
+    "indexed_at_ns": 1787076948963443500,
+    "word_count": 684
+  },
+  "components/StatsRollingScreen.test.tsx": {
+    "size": 12946,
+    "mtime_ns": 1780609217897900100,
+    "indexed_at_ns": 1787076948986537500,
+    "word_count": 1009
+  },
+  "components/StatsRollingScreen.tsx": {
+    "size": 5601,
+    "mtime_ns": 1786571994837063400,
+    "indexed_at_ns": 1787076948996541800,
+    "word_count": 513
+  },
+  "components/TailwindTest.test.tsx": {
+    "size": 8939,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949006045300,
+    "word_count": 628
+  },
+  "components/TailwindTest.tsx": {
+    "size": 12897,
+    "mtime_ns": 1786571994837063400,
+    "indexed_at_ns": 1787076949016053700,
+    "word_count": 852
+  },
+  "components/__tests__/ChatPanel.edgeCases.test.tsx": {
+    "size": 3027,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949033250800,
+    "word_count": 268
+  },
+  "components/__tests__/ChatPanel.test.tsx": {
+    "size": 18187,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949049251000,
+    "word_count": 1522
+  },
+  "components/__tests__/CommandPanel.test.tsx": {
+    "size": 24676,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949069253800,
+    "word_count": 2161
+  },
+  "components/__tests__/DeathInterstitial.test.tsx": {
+    "size": 3604,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949083258900,
+    "word_count": 309
+  },
+  "components/__tests__/DraggablePanel.grid-positioning.test.tsx": {
+    "size": 8510,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949099772300,
+    "word_count": 773
+  },
+  "components/__tests__/DraggablePanel.test.tsx": {
+    "size": 11085,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949117287200,
+    "word_count": 945
+  },
+  "components/__tests__/GameTerminal.test.tsx": {
+    "size": 15079,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949131293000,
+    "word_count": 1119
+  },
+  "components/__tests__/GameTerminalContainer.test.tsx": {
+    "size": 9727,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949143802700,
+    "word_count": 754
+  },
+  "components/__tests__/GameTerminalPresentation.test.tsx": {
+    "size": 26852,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949154805000,
+    "word_count": 1955
+  },
+  "components/__tests__/LogoutFlow.integration.test.tsx": {
+    "size": 16083,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949164311300,
+    "word_count": 1521
+  },
+  "components/__tests__/MainMenuModal.test.tsx": {
+    "size": 13563,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949175310600,
+    "word_count": 1184
+  },
+  "components/__tests__/MotdContent.test.tsx": {
+    "size": 2425,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949185310800,
+    "word_count": 202
+  },
+  "components/__tests__/MotdInterstitialScreen.test.tsx": {
+    "size": 2103,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949195315100,
+    "word_count": 201
+  },
+  "components/__tests__/MythosTimeHud.test.tsx": {
+    "size": 2183,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949206313100,
+    "word_count": 179
+  },
+  "components/__tests__/PanelManager.test.tsx": {
+    "size": 1403,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949215829400,
+    "word_count": 130
+  },
+  "components/__tests__/RoomInfoPanel.test.tsx": {
+    "size": 14367,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949225829600,
+    "word_count": 1126
+  },
+  "components/__tests__/chatPanelTestHelpers.ts": {
+    "size": 1196,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949235339900,
+    "word_count": 120
+  },
+  "components/__tests__/chatPanelTestSetup.tsx": {
+    "size": 3394,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949246341300,
+    "word_count": 323
+  },
+  "components/__tests__/command-panel.test.tsx": {
+    "size": 8981,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949257348500,
+    "word_count": 770
+  },
+  "components/__tests__/game-log-panel.test.tsx": {
+    "size": 14716,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949267551700,
+    "word_count": 1279
+  },
+  "components/__tests__/game-terminal-integration.spec.tsx": {
+    "size": 14267,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949277557200,
+    "word_count": 1241
+  },
+  "components/__tests__/game-terminal-integration.test.tsx": {
+    "size": 14405,
+    "mtime_ns": 1784484398280722500,
+    "indexed_at_ns": 1787076949289072400,
+    "word_count": 1257
+  },
+  "components/__tests__/performance.test.tsx": {
+    "size": 16810,
+    "mtime_ns": 1785101303634739400,
+    "indexed_at_ns": 1787076949300077000,
+    "word_count": 1606
+  },
+  "components/common/SafeHtml.tsx": {
+    "size": 1546,
+    "mtime_ns": 1785165445677654900,
+    "indexed_at_ns": 1787076949311590600,
+    "word_count": 190
+  },
+  "components/common/__tests__/SafeHtml.test.tsx": {
+    "size": 5946,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949323588400,
+    "word_count": 530
+  },
+  "components/containers/BackpackTab.tsx": {
+    "size": 5358,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949335586700,
+    "word_count": 521
+  },
+  "components/containers/ContainerSplitPane.tsx": {
+    "size": 1667,
+    "mtime_ns": 1786571994838063700,
+    "indexed_at_ns": 1787076949347586400,
+    "word_count": 153
+  },
+  "components/containers/ContainerSplitPaneView.tsx": {
+    "size": 10243,
+    "mtime_ns": 1786729341443531100,
+    "indexed_at_ns": 1787076949357587100,
+    "word_count": 776
+  },
+  "components/containers/CorpseOverlay.tsx": {
+    "size": 6405,
+    "mtime_ns": 1786571994838063700,
+    "indexed_at_ns": 1787076949367586600,
+    "word_count": 557
+  },
+  "components/containers/__tests__/BackpackTab.test.tsx": {
+    "size": 8104,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949379585600,
+    "word_count": 734
+  },
+  "components/containers/__tests__/ContainerDragAndDrop.test.tsx": {
+    "size": 16165,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949390586000,
+    "word_count": 1205
+  },
+  "components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx": {
+    "size": 18597,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949401589500,
+    "word_count": 1621
+  },
+  "components/containers/__tests__/ContainerSplitPane.test.tsx": {
+    "size": 10831,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949412642600,
+    "word_count": 937
+  },
+  "components/containers/__tests__/CorpseOverlay.test.tsx": {
+    "size": 17034,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949423417700,
+    "word_count": 1649
+  },
+  "components/containers/corpseOverlayUtils.ts": {
+    "size": 2346,
+    "mtime_ns": 1786370246291969600,
+    "indexed_at_ns": 1787076949433170000,
+    "word_count": 261
+  },
+  "components/containers/useContainerSplitPane.ts": {
+    "size": 8610,
+    "mtime_ns": 1786662248672864200,
+    "indexed_at_ns": 1787076949444173500,
+    "word_count": 773
+  },
+  "components/draggablePanelUtils.ts": {
+    "size": 1756,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949453683500,
+    "word_count": 246
+  },
+  "components/eldritchEffectsDemoData.ts": {
+    "size": 2313,
+    "mtime_ns": 1786481162282643800,
+    "indexed_at_ns": 1787076949464688000,
+    "word_count": 249
+  },
+  "components/health/HealthMeter.tsx": {
+    "size": 3984,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949483196200,
+    "word_count": 323
+  },
+  "components/health/IncapacitatedBanner.tsx": {
+    "size": 1460,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949496212400,
+    "word_count": 131
+  },
+  "components/health/__tests__/HealthMeter.test.tsx": {
+    "size": 1268,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949509808000,
+    "word_count": 123
+  },
+  "components/layout/GridLayoutManager.tsx": {
+    "size": 6140,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949521808700,
+    "word_count": 698
+  },
+  "components/layout/__tests__/GridLayoutManager.test.tsx": {
+    "size": 6997,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949534809900,
+    "word_count": 638
+  },
+  "components/lucidity/HallucinationTicker.tsx": {
+    "size": 2996,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949546810800,
+    "word_count": 193
+  },
+  "components/lucidity/LucidityMeter.tsx": {
+    "size": 5242,
+    "mtime_ns": 1786571994839063400,
+    "indexed_at_ns": 1787076949562818000,
+    "word_count": 463
+  },
+  "components/lucidity/RescueStatusBanner.tsx": {
+    "size": 3910,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949574002100,
+    "word_count": 323
+  },
+  "components/lucidity/__tests__/HallucinationTicker.test.tsx": {
+    "size": 1458,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949587007300,
+    "word_count": 135
+  },
+  "components/lucidity/__tests__/LucidityMeter.test.tsx": {
+    "size": 1561,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949598009600,
+    "word_count": 144
+  },
+  "components/lucidity/__tests__/RescueStatusBanner.test.tsx": {
+    "size": 1365,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949611036000,
+    "word_count": 126
+  },
+  "components/magic/MagicPointsMeter.tsx": {
+    "size": 2491,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949629544100,
+    "word_count": 201
+  },
+  "components/magic/__tests__/MagicPointsMeter.test.tsx": {
+    "size": 5689,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949644093500,
+    "word_count": 503
+  },
+  "components/map/AsciiMapEditor.tsx": {
+    "size": 4595,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949655092800,
+    "word_count": 436
+  },
+  "components/map/AsciiMapViewer.tsx": {
+    "size": 3939,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949667092500,
+    "word_count": 389
+  },
+  "components/map/AsciiMapViewerViews.tsx": {
+    "size": 4535,
+    "mtime_ns": 1786571994839063400,
+    "indexed_at_ns": 1787076949677095400,
+    "word_count": 352
+  },
+  "components/map/AsciiMinimap.tsx": {
+    "size": 5965,
+    "mtime_ns": 1786571994840064500,
+    "indexed_at_ns": 1787076949688603400,
+    "word_count": 595
+  },
+  "components/map/EdgeCreationModal.tsx": {
+    "size": 2020,
+    "mtime_ns": 1786571994840064500,
+    "indexed_at_ns": 1787076949697604500,
+    "word_count": 255
+  },
+  "components/map/EdgeCreationModalParts.tsx": {
+    "size": 11169,
+    "mtime_ns": 1786138611932196700,
+    "indexed_at_ns": 1787076949708110300,
+    "word_count": 795
+  },
+  "components/map/EdgeDetailsPanel.tsx": {
+    "size": 7857,
+    "mtime_ns": 1786571994841063300,
+    "indexed_at_ns": 1787076949718111100,
+    "word_count": 659
+  },
+  "components/map/MapControls.tsx": {
+    "size": 3808,
+    "mtime_ns": 1786571994841063300,
+    "indexed_at_ns": 1787076949728110100,
+    "word_count": 360
+  },
+  "components/map/MapEditToolbar.tsx": {
+    "size": 3620,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949738110100,
+    "word_count": 362
+  },
+  "components/map/RoomDetailsPanel.tsx": {
+    "size": 4621,
+    "mtime_ns": 1786571994842570100,
+    "indexed_at_ns": 1787076949748641400,
+    "word_count": 350
+  },
+  "components/map/RoomEditModal.tsx": {
+    "size": 6107,
+    "mtime_ns": 1786729862125460100,
+    "indexed_at_ns": 1787076949758313100,
+    "word_count": 501
+  },
+  "components/map/RoomEditModalForm.tsx": {
+    "size": 9527,
+    "mtime_ns": 1786729862102228900,
+    "indexed_at_ns": 1787076949768742200,
+    "word_count": 735
+  },
+  "components/map/RoomEditModalTabs.tsx": {
+    "size": 1485,
+    "mtime_ns": 1786752337404362800,
+    "indexed_at_ns": 1787076949778741700,
+    "word_count": 109
+  },
+  "components/map/RoomMapEditor.tsx": {
+    "size": 116,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949790740700,
+    "word_count": 13
+  },
+  "components/map/RoomMapEditorCore.tsx": {
+    "size": 122,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949800743900,
+    "word_count": 13
+  },
+  "components/map/RoomMapEditorFeature.tsx": {
+    "size": 118,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949811252700,
+    "word_count": 13
+  },
+  "components/map/RoomMapEditorImpl.tsx": {
+    "size": 116,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949821255900,
+    "word_count": 13
+  },
+  "components/map/RoomMapEditorRuntime.hooks.ts": {
+    "size": 12670,
+    "mtime_ns": 1786475924545668100,
+    "indexed_at_ns": 1787076949831766200,
+    "word_count": 1065
+  },
+  "components/map/RoomMapEditorRuntime.tsx": {
+    "size": 11268,
+    "mtime_ns": 1786662563284225500,
+    "indexed_at_ns": 1787076949840774000,
+    "word_count": 805
+  },
+  "components/map/RoomMapEditorScene.tsx": {
+    "size": 122,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949850773300,
+    "word_count": 13
+  },
+  "components/map/RoomMapViewer.tsx": {
+    "size": 7561,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949861770800,
+    "word_count": 749
+  },
+  "components/map/__tests__/EdgeCreationModal.test.tsx": {
+    "size": 4725,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949872771400,
+    "word_count": 476
+  },
+  "components/map/__tests__/EdgeDetailsPanel.test.tsx": {
+    "size": 4944,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949883774300,
+    "word_count": 406
+  },
+  "components/map/__tests__/MapControls.test.tsx": {
+    "size": 10207,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949897288000,
+    "word_count": 899
+  },
+  "components/map/__tests__/MapView.test.tsx": {
+    "size": 3657,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949908791700,
+    "word_count": 359
+  },
+  "components/map/__tests__/ReactFlowConfig.test.tsx": {
+    "size": 2794,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949922795000,
+    "word_count": 274
+  },
+  "components/map/__tests__/RoomDetailsPanel.test.tsx": {
+    "size": 12936,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949933796500,
+    "word_count": 1045
+  },
+  "components/map/__tests__/RoomEditModal.test.tsx": {
+    "size": 3420,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949944796600,
+    "word_count": 331
+  },
+  "components/map/__tests__/RoomMapEditor.test.tsx": {
+    "size": 7846,
+    "mtime_ns": 1775192600391932900,
+    "indexed_at_ns": 1787076949955794700,
+    "word_count": 637
+  },
+  "components/map/__tests__/RoomMapEditorAliases.test.ts": {
+    "size": 970,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076949968095200,
+    "word_count": 78
+  },
+  "components/map/__tests__/RoomMapViewer.data-loading.test.tsx": {
+    "size": 5633,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076949979371800,
+    "word_count": 466
+  },
+  "components/map/__tests__/RoomMapViewer.interactions.test.tsx": {
+    "size": 9732,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076949991369700,
+    "word_count": 810
+  },
+  "components/map/__tests__/RoomMapViewer.map-controls.test.tsx": {
+    "size": 9910,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950002379300,
+    "word_count": 856
+  },
+  "components/map/__tests__/RoomMapViewer.rendering.test.tsx": {
+    "size": 9933,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950014889600,
+    "word_count": 822
+  },
+  "components/map/__tests__/RoomMapViewer.test-utils.tsx": {
+    "size": 2111,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950026894700,
+    "word_count": 258
+  },
+  "components/map/__tests__/asciiMapViewerUtils.test.ts": {
+    "size": 4367,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950038413700,
+    "word_count": 386
+  },
+  "components/map/__tests__/lazyLoading.test.tsx": {
+    "size": 1658,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950050413900,
+    "word_count": 163
+  },
+  "components/map/__tests__/performance.test.ts": {
+    "size": 4033,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950062416500,
+    "word_count": 353
+  },
+  "components/map/__tests__/roomMapEditorTestSetup.tsx": {
+    "size": 7077,
+    "mtime_ns": 1780609217899989100,
+    "indexed_at_ns": 1787076950073416700,
+    "word_count": 685
+  },
+  "components/map/__tests__/theme.test.tsx": {
+    "size": 6572,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950086418300,
+    "word_count": 580
+  },
+  "components/map/__tests__/useAsciiMap.test.ts": {
+    "size": 3387,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950097435400,
+    "word_count": 302
+  },
+  "components/map/asciiMapViewerUtils.ts": {
+    "size": 1322,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950109454200,
+    "word_count": 116
+  },
+  "components/map/config.ts": {
+    "size": 1473,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950119454900,
+    "word_count": 224
+  },
+  "components/map/edgeModalLogic.ts": {
+    "size": 6129,
+    "mtime_ns": 1786370246865321700,
+    "indexed_at_ns": 1787076950129453400,
+    "word_count": 597
+  },
+  "components/map/edges/ExitEdge.tsx": {
+    "size": 2976,
+    "mtime_ns": 1786662315914048200,
+    "indexed_at_ns": 1787076950140453500,
+    "word_count": 308
+  },
+  "components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx": {
+    "size": 2195,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950153562500,
+    "word_count": 249
+  },
+  "components/map/edges/__tests__/ExitEdge.interactions.test.tsx": {
+    "size": 3635,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950165357200,
+    "word_count": 359
+  },
+  "components/map/edges/__tests__/ExitEdge.rendering.test.tsx": {
+    "size": 12334,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950178361100,
+    "word_count": 1292
+  },
+  "components/map/edges/__tests__/ExitEdge.test-fixtures.tsx": {
+    "size": 572,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950191099500,
+    "word_count": 71
+  },
+  "components/map/hooks/__tests__/useMapEditing.test.ts": {
+    "size": 5494,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950202848300,
+    "word_count": 529
+  },
+  "components/map/hooks/__tests__/useMapLayout.test.ts": {
+    "size": 4813,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950214354000,
+    "word_count": 467
+  },
+  "components/map/hooks/__tests__/useRoomMapData.test.ts": {
+    "size": 7606,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950226360400,
+    "word_count": 691
+  },
+  "components/map/hooks/useMapEditing.ts": {
+    "size": 14868,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950237176200,
+    "word_count": 1385
+  },
+  "components/map/hooks/useMapLayout.ts": {
+    "size": 11080,
+    "mtime_ns": 1780609217901083800,
+    "indexed_at_ns": 1787076950248804100,
+    "word_count": 1203
+  },
+  "components/map/hooks/useRoomMapData.ts": {
+    "size": 4958,
+    "mtime_ns": 1786571994844638900,
+    "indexed_at_ns": 1787076950260805200,
+    "word_count": 580
+  },
+  "components/map/nodes/IntersectionNode.tsx": {
+    "size": 3051,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950276959200,
+    "word_count": 270
+  },
+  "components/map/nodes/RoomNode.tsx": {
+    "size": 4172,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950288339400,
+    "word_count": 413
+  },
+  "components/map/nodes/__tests__/IntersectionNode.test.tsx": {
+    "size": 7702,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950300720100,
+    "word_count": 692
+  },
+  "components/map/nodes/__tests__/RoomNode.test.tsx": {
+    "size": 8084,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950314226800,
+    "word_count": 815
+  },
+  "components/map/types.ts": {
+    "size": 2416,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950325699800,
+    "word_count": 356
+  },
+  "components/map/useAsciiMap.ts": {
+    "size": 939,
+    "mtime_ns": 1786571994845143700,
+    "indexed_at_ns": 1787076950340654000,
+    "word_count": 84
+  },
+  "components/map/useAsciiMapState.ts": {
+    "size": 6897,
+    "mtime_ns": 1786463532914523900,
+    "indexed_at_ns": 1787076950350652200,
+    "word_count": 584
+  },
+  "components/map/useEdgeCreationModal.ts": {
+    "size": 3971,
+    "mtime_ns": 1786138446358755900,
+    "indexed_at_ns": 1787076950362648700,
+    "word_count": 290
+  },
+  "components/map/useRoomEditModal.ts": {
+    "size": 5602,
+    "mtime_ns": 1786370247131126700,
+    "indexed_at_ns": 1787076950373742200,
+    "word_count": 596
+  },
+  "components/map/utils/__tests__/applyForceLayout.test.ts": {
+    "size": 10411,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950386264100,
+    "word_count": 1153
+  },
+  "components/map/utils/__tests__/applyGridLayout.test.ts": {
+    "size": 1842,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950398269400,
+    "word_count": 202
+  },
+  "components/map/utils/__tests__/calculateGridPosition.test.ts": {
+    "size": 8192,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950411773700,
+    "word_count": 883
+  },
+  "components/map/utils/__tests__/layout-config.test.ts": {
+    "size": 1404,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950424780700,
+    "word_count": 72
+  },
+  "components/map/utils/__tests__/layout.test-fixtures.ts": {
+    "size": 466,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950437295700,
+    "word_count": 67
+  },
+  "components/map/utils/__tests__/mapUtils.test.ts": {
+    "size": 18361,
+    "mtime_ns": 1775192600407560600,
+    "indexed_at_ns": 1787076950451479200,
+    "word_count": 1507
+  },
+  "components/map/utils/__tests__/saveMapChanges.test.ts": {
+    "size": 4248,
+    "mtime_ns": 1780609217902119500,
+    "indexed_at_ns": 1787076950464803100,
+    "word_count": 422
+  },
+  "components/map/utils/layout.ts": {
+    "size": 20849,
+    "mtime_ns": 1786571994845764800,
+    "indexed_at_ns": 1787076950475801300,
+    "word_count": 2843
+  },
+  "components/map/utils/mapUtils.ts": {
+    "size": 8172,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950487455300,
+    "word_count": 1032
+  },
+  "components/map/utils/performance.ts": {
+    "size": 4241,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950499460300,
+    "word_count": 547
+  },
+  "components/map/utils/saveMapChanges.ts": {
+    "size": 5466,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950513325800,
+    "word_count": 690
+  },
+  "components/panels/ChatExportDialog.tsx": {
+    "size": 5038,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950525479600,
+    "word_count": 393
+  },
+  "components/panels/ChatPanel.tsx": {
+    "size": 100,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950537484100,
+    "word_count": 13
+  },
+  "components/panels/ChatPanelCore.tsx": {
+    "size": 106,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950550388400,
+    "word_count": 13
+  },
+  "components/panels/ChatPanelMessagesLog.tsx": {
+    "size": 6766,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950560810300,
+    "word_count": 531
+  },
+  "components/panels/ChatPanelRefactored.tsx": {
+    "size": 1112,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950570835200,
+    "word_count": 100
+  },
+  "components/panels/ChatPanelRefactoredToolbar.tsx": {
+    "size": 1292,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950581049700,
+    "word_count": 85
+  },
+  "components/panels/ChatPanelRefactoredView.tsx": {
+    "size": 2420,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950592050000,
+    "word_count": 171
+  },
+  "components/panels/ChatPanelRuntime.tsx": {
+    "size": 463,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950602053200,
+    "word_count": 49
+  },
+  "components/panels/ChatPanelRuntimeView.tsx": {
+    "size": 357,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950613562400,
+    "word_count": 30
+  },
+  "components/panels/ChatPanelRuntimeViewParts.tsx": {
+    "size": 8297,
+    "mtime_ns": 1786571994846307400,
+    "indexed_at_ns": 1787076950623563500,
+    "word_count": 471
+  },
+  "components/panels/CommandPanel.tsx": {
+    "size": 7713,
+    "mtime_ns": 1786729033609630000,
+    "indexed_at_ns": 1787076950634564200,
+    "word_count": 606
+  },
+  "components/panels/ConnectionPanel.tsx": {
+    "size": 1397,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950646074300,
+    "word_count": 120
+  },
+  "components/panels/GameLogMessagesList.tsx": {
+    "size": 3273,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950656071800,
+    "word_count": 246
+  },
+  "components/panels/GameLogPanel.tsx": {
+    "size": 2042,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950667072700,
+    "word_count": 130
+  },
+  "components/panels/GameLogPanelSections.tsx": {
+    "size": 7620,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950678071100,
+    "word_count": 509
+  },
+  "components/panels/MonitoringPanel.tsx": {
+    "size": 10710,
+    "mtime_ns": 1786571994848074400,
+    "indexed_at_ns": 1787076950702559900,
+    "word_count": 737
+  },
+  "components/panels/PlayerPanel.tsx": {
+    "size": 243,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950713647700,
+    "word_count": 28
+  },
+  "components/panels/RoomPanel.tsx": {
+    "size": 235,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950723646900,
+    "word_count": 28
+  },
+  "components/panels/__tests__/ChatPanelRefactored.test.tsx": {
+    "size": 14240,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950735283300,
+    "word_count": 1086
+  },
+  "components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx": {
+    "size": 12875,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950747167500,
+    "word_count": 1072
+  },
+  "components/panels/__tests__/ConnectionPanel.test.tsx": {
+    "size": 4614,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950759168000,
+    "word_count": 389
+  },
+  "components/panels/__tests__/GameLogPanel.test.tsx": {
+    "size": 7716,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950770167700,
+    "word_count": 738
+  },
+  "components/panels/__tests__/MonitoringPanel.test.tsx": {
+    "size": 5008,
+    "mtime_ns": 1780609217903172700,
+    "indexed_at_ns": 1787076950782167600,
+    "word_count": 467
+  },
+  "components/panels/__tests__/chat-panel.spec.tsx": {
+    "size": 14311,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950793170000,
+    "word_count": 1221
+  },
+  "components/panels/__tests__/chat-panel.test.tsx": {
+    "size": 6581,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950806176100,
+    "word_count": 598
+  },
+  "components/panels/__tests__/chatPanelRefactoredDerived.test.ts": {
+    "size": 2712,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950817685900,
+    "word_count": 271
+  },
+  "components/panels/__tests__/chatPanelRuntimeUtils.test.ts": {
+    "size": 8232,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950828690900,
+    "word_count": 783
+  },
+  "components/panels/__tests__/command-panel.spec.tsx": {
+    "size": 15425,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950842205300,
+    "word_count": 1331
+  },
+  "components/panels/__tests__/command-panel.test.tsx": {
+    "size": 9052,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950854546100,
+    "word_count": 780
+  },
+  "components/panels/__tests__/game-log-panel.spec.tsx": {
+    "size": 14657,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950865700200,
+    "word_count": 1282
+  },
+  "components/panels/__tests__/game-log-panel.test.tsx": {
+    "size": 9489,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950876698300,
+    "word_count": 799
+  },
+  "components/panels/__tests__/gameLogPanelUtils.test.ts": {
+    "size": 1957,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076950887119600,
+    "word_count": 83
+  },
+  "components/panels/__tests__/monitoringPanelTestFixtures.ts": {
+    "size": 6241,
+    "mtime_ns": 1780609217903698100,
+    "indexed_at_ns": 1787076950899654700,
+    "word_count": 481
+  },
+  "components/panels/chatPanelChannelFilter.ts": {
+    "size": 429,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950909197800,
+    "word_count": 32
+  },
+  "components/panels/chatPanelChannelVisibility.ts": {
+    "size": 1808,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950919198700,
+    "word_count": 166
+  },
+  "components/panels/chatPanelExportFormat.ts": {
+    "size": 2139,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950929197100,
+    "word_count": 166
+  },
+  "components/panels/chatPanelHistorySearch.tsx": {
+    "size": 6245,
+    "mtime_ns": 1786370247520035400,
+    "indexed_at_ns": 1787076950939197700,
+    "word_count": 407
+  },
+  "components/panels/chatPanelMessageClass.ts": {
+    "size": 1564,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950949827300,
+    "word_count": 161
+  },
+  "components/panels/chatPanelRefactoredDerived.ts": {
+    "size": 2440,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950959159300,
+    "word_count": 225
+  },
+  "components/panels/chatPanelRefactoredTypes.ts": {
+    "size": 434,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950968717800,
+    "word_count": 51
+  },
+  "components/panels/chatPanelRuntimeUtils.ts": {
+    "size": 5572,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950979178400,
+    "word_count": 507
+  },
+  "components/panels/chatPanelRuntimeViewTypes.ts": {
+    "size": 1164,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950989255100,
+    "word_count": 109
+  },
+  "components/panels/chatPanelUnreadBump.ts": {
+    "size": 1438,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076950998255300,
+    "word_count": 125
+  },
+  "components/panels/chatPanelUnreadCounts.ts": {
+    "size": 631,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951008764900,
+    "word_count": 62
+  },
+  "components/panels/chat/ChannelActivityIndicators.tsx": {
+    "size": 2869,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951020771300,
+    "word_count": 247
+  },
+  "components/panels/chat/ChannelSelectorSection.tsx": {
+    "size": 1123,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951031768900,
+    "word_count": 85
+  },
+  "components/panels/chat/ChatHeader.tsx": {
+    "size": 1286,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951042951100,
+    "word_count": 105
+  },
+  "components/panels/chat/ChatHistoryToggle.tsx": {
+    "size": 1641,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951053951400,
+    "word_count": 113
+  },
+  "components/panels/chat/ChatMessage.tsx": {
+    "size": 3683,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951064955200,
+    "word_count": 306
+  },
+  "components/panels/chat/ChatMessagesList.tsx": {
+    "size": 1220,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951075954900,
+    "word_count": 111
+  },
+  "components/panels/chat/ChatStatistics.tsx": {
+    "size": 2299,
+    "mtime_ns": 1775192600415547300,
+    "indexed_at_ns": 1787076951086467600,
+    "word_count": 169
+  },
+  "components/panels/chat/__tests__/ChatHeader.test.tsx": {
+    "size": 4108,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951098468200,
+    "word_count": 438
+  },
+  "components/panels/chat/__tests__/ChatMessage.test.tsx": {
+    "size": 7839,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951110532800,
+    "word_count": 703
+  },
+  "components/panels/chat/__tests__/ChatMessagesList.test.tsx": {
+    "size": 3314,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951122536400,
+    "word_count": 300
+  },
+  "components/panels/commandPanelSubmit.ts": {
+    "size": 2132,
+    "mtime_ns": 1786729458744477900,
+    "indexed_at_ns": 1787076951133044000,
+    "word_count": 194
+  },
+  "components/panels/gameLogPanelUtils.ts": {
+    "size": 4056,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951142292900,
+    "word_count": 331
+  },
+  "components/panels/useChatPanelRefactored.ts": {
+    "size": 2853,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951152292700,
+    "word_count": 219
+  },
+  "components/panels/useChatPanelRuntime.ts": {
+    "size": 6618,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951161829200,
+    "word_count": 523
+  },
+  "components/panels/useGameLogPanelState.ts": {
+    "size": 1643,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951171829300,
+    "word_count": 139
+  },
+  "components/ui-v2/GameClientV2.tsx": {
+    "size": 11416,
+    "mtime_ns": 1786571994848593300,
+    "indexed_at_ns": 1787076951181638800,
+    "word_count": 1020
+  },
+  "components/ui-v2/GameClientV2AuxiliaryPanels.tsx": {
+    "size": 5926,
+    "mtime_ns": 1786659773629507400,
+    "indexed_at_ns": 1787076951192266300,
+    "word_count": 357
+  },
+  "components/ui-v2/GameClientV2Container.tsx": {
+    "size": 715,
+    "mtime_ns": 1781981784117944000,
+    "indexed_at_ns": 1787076951202266400,
+    "word_count": 75
+  },
+  "components/ui-v2/GameClientV2ContainerView.tsx": {
+    "size": 8002,
+    "mtime_ns": 1786571994849840700,
+    "indexed_at_ns": 1787076951212312300,
+    "word_count": 520
+  },
+  "components/ui-v2/GameClientV2Minimap.tsx": {
+    "size": 1278,
+    "mtime_ns": 1786571994850358900,
+    "indexed_at_ns": 1787076951221314400,
+    "word_count": 153
+  },
+  "components/ui-v2/GameClientV2MinimapSection.tsx": {
+    "size": 3449,
+    "mtime_ns": 1786370248242521200,
+    "indexed_at_ns": 1787076951231316300,
+    "word_count": 269
+  },
+  "components/ui-v2/HeaderBar.tsx": {
+    "size": 6395,
+    "mtime_ns": 1786769924051989100,
+    "indexed_at_ns": 1787076951240986200,
+    "word_count": 531
+  },
+  "components/ui-v2/LoginGracePeriodBanner.tsx": {
+    "size": 2824,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951249989000,
+    "word_count": 289
+  },
+  "components/ui-v2/PanelSystem/ExpandedPanelBody.tsx": {
+    "size": 1771,
+    "mtime_ns": 1786990777914657800,
+    "indexed_at_ns": 1787076951260492800,
+    "word_count": 179
+  },
+  "components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx": {
+    "size": 1862,
+    "mtime_ns": 1786990777920658500,
+    "indexed_at_ns": 1787076951273041300,
+    "word_count": 148
+  },
+  "components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx": {
+    "size": 2192,
+    "mtime_ns": 1786990777924659200,
+    "indexed_at_ns": 1787076951284545600,
+    "word_count": 174
+  },
+  "components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx": {
+    "size": 1387,
+    "mtime_ns": 1786990777928972300,
+    "indexed_at_ns": 1787076951295550200,
+    "word_count": 111
+  },
+  "components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx": {
+    "size": 1775,
+    "mtime_ns": 1786990777932968700,
+    "indexed_at_ns": 1787076951307464800,
+    "word_count": 164
+  },
+  "components/ui-v2/PanelSystem/PanelContainer.tsx": {
+    "size": 1468,
+    "mtime_ns": 1786987142448901400,
+    "indexed_at_ns": 1787076951318089000,
+    "word_count": 101
+  },
+  "components/ui-v2/PanelSystem/PanelContainerShared.tsx": {
+    "size": 1163,
+    "mtime_ns": 1786372434075218100,
+    "indexed_at_ns": 1787076951328838100,
+    "word_count": 125
+  },
+  "components/ui-v2/PanelSystem/PanelContainerViews.tsx": {
+    "size": 6108,
+    "mtime_ns": 1786662309650618800,
+    "indexed_at_ns": 1787076951339837100,
+    "word_count": 444
+  },
+  "components/ui-v2/PanelSystem/PanelManager.tsx": {
+    "size": 596,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951350838700,
+    "word_count": 51
+  },
+  "components/ui-v2/PanelSystem/PanelManagerContext.tsx": {
+    "size": 841,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951360837200,
+    "word_count": 95
+  },
+  "components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx": {
+    "size": 410,
+    "mtime_ns": 1786990777989486000,
+    "indexed_at_ns": 1787076951371837100,
+    "word_count": 42
+  },
+  "components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx": {
+    "size": 15141,
+    "mtime_ns": 1786978027413816300,
+    "indexed_at_ns": 1787076951383837200,
+    "word_count": 1244
+  },
+  "components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx": {
+    "size": 8768,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951395843800,
+    "word_count": 840
+  },
+  "components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts": {
+    "size": 4926,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951408345400,
+    "word_count": 470
+  },
+  "components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts": {
+    "size": 7395,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951419349000,
+    "word_count": 895
+  },
+  "components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts": {
+    "size": 3285,
+    "mtime_ns": 1784482413963267900,
+    "indexed_at_ns": 1787076951431353000,
+    "word_count": 292
+  },
+  "components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts": {
+    "size": 12959,
+    "mtime_ns": 1784482413963788100,
+    "indexed_at_ns": 1787076951442861900,
+    "word_count": 1211
+  },
+  "components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts": {
+    "size": 2876,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951454862500,
+    "word_count": 210
+  },
+  "components/ui-v2/PanelSystem/__tests__/usePanelManagerProviderState.test.ts": {
+    "size": 7894,
+    "mtime_ns": 1784482413964308000,
+    "indexed_at_ns": 1787076951466865400,
+    "word_count": 700
+  },
+  "components/ui-v2/PanelSystem/panelLayoutBootstrap.ts": {
+    "size": 1573,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951478657800,
+    "word_count": 164
+  },
+  "components/ui-v2/PanelSystem/panelLayoutClamp.ts": {
+    "size": 3437,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951489737600,
+    "word_count": 431
+  },
+  "components/ui-v2/PanelSystem/panelLayoutTypes.ts": {
+    "size": 153,
+    "mtime_ns": 1786990777959975800,
+    "indexed_at_ns": 1787076951499748000,
+    "word_count": 13
+  },
+  "components/ui-v2/PanelSystem/panelLayoutValidation.ts": {
+    "size": 1102,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951510264400,
+    "word_count": 121
+  },
+  "components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts": {
+    "size": 1503,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951522263400,
+    "word_count": 166
+  },
+  "components/ui-v2/PanelSystem/panelLayoutValidationTypeCheckImpl.ts": {
+    "size": 543,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951533263500,
+    "word_count": 71
+  },
+  "components/ui-v2/PanelSystem/panelManagerReducer.ts": {
+    "size": 2065,
+    "mtime_ns": 1784482413964825300,
+    "indexed_at_ns": 1787076951545263500,
+    "word_count": 205
+  },
+  "components/ui-v2/PanelSystem/panelMinimizeDock.ts": {
+    "size": 2563,
+    "mtime_ns": 1784482413965339100,
+    "indexed_at_ns": 1787076951556886800,
+    "word_count": 280
+  },
+  "components/ui-v2/PanelSystem/panelReducerHandlers.ts": {
+    "size": 6585,
+    "mtime_ns": 1784482413965862900,
+    "indexed_at_ns": 1787076951567889200,
+    "word_count": 703
+  },
+  "components/ui-v2/PanelSystem/usePanelContainerBody.ts": {
+    "size": 3761,
+    "mtime_ns": 1786371684953033700,
+    "indexed_at_ns": 1787076951579404600,
+    "word_count": 391
+  },
+  "components/ui-v2/PanelSystem/usePanelContainerLayout.ts": {
+    "size": 3608,
+    "mtime_ns": 1786816370656706000,
+    "indexed_at_ns": 1787076951591407800,
+    "word_count": 373
+  },
+  "components/ui-v2/PanelSystem/usePanelContainerView.ts": {
+    "size": 2310,
+    "mtime_ns": 1786990777999487600,
+    "indexed_at_ns": 1787076951604811900,
+    "word_count": 228
+  },
+  "components/ui-v2/PanelSystem/usePanelManager.ts": {
+    "size": 472,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951621458100,
+    "word_count": 59
+  },
+  "components/ui-v2/PanelSystem/usePanelManagerProviderState.ts": {
+    "size": 2971,
+    "mtime_ns": 1784482413966379000,
+    "indexed_at_ns": 1787076951641862800,
+    "word_count": 325
+  },
+  "components/ui-v2/TabbedInterface.tsx": {
+    "size": 3772,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951658580200,
+    "word_count": 358
+  },
+  "components/ui-v2/TentacleBackdrop.tsx": {
+    "size": 1714,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951668585300,
+    "word_count": 167
+  },
+  "components/ui-v2/__tests__/GameClientV2.test.tsx": {
+    "size": 8561,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951679581600,
+    "word_count": 798
+  },
+  "components/ui-v2/__tests__/GameClientV2Container.test.tsx": {
+    "size": 6819,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951691274900,
+    "word_count": 664
+  },
+  "components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx": {
+    "size": 3873,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951703093300,
+    "word_count": 372
+  },
+  "components/ui-v2/__tests__/GameClientV2Dock.test.tsx": {
+    "size": 5894,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951714762100,
+    "word_count": 555
+  },
+  "components/ui-v2/__tests__/HeaderBar.test.tsx": {
+    "size": 8401,
+    "mtime_ns": 1781981784119943200,
+    "indexed_at_ns": 1787076951725761800,
+    "word_count": 659
+  },
+  "components/ui-v2/__tests__/TabbedInterface.test.tsx": {
+    "size": 2959,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951736762700,
+    "word_count": 267
+  },
+  "components/ui-v2/__tests__/TentacleBackdrop.test.tsx": {
+    "size": 1389,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951747761900,
+    "word_count": 111
+  },
+  "components/ui-v2/__tests__/useTabbedInterface.test.ts": {
+    "size": 6690,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951758762500,
+    "word_count": 563
+  },
+  "components/ui-v2/components/TabbedInterfaceOverlay.tsx": {
+    "size": 2888,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951770454300,
+    "word_count": 228
+  },
+  "components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx": {
+    "size": 4356,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951783149000,
+    "word_count": 358
+  },
+  "components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts": {
+    "size": 15057,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951794768900,
+    "word_count": 1267
+  },
+  "components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts": {
+    "size": 4346,
+    "mtime_ns": 1786659773631594000,
+    "indexed_at_ns": 1787076951806769600,
+    "word_count": 376
+  },
+  "components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts": {
+    "size": 11102,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951819015900,
+    "word_count": 961
+  },
+  "components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts": {
+    "size": 2740,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951830871700,
+    "word_count": 238
+  },
+  "components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts": {
+    "size": 2004,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951843221900,
+    "word_count": 190
+  },
+  "components/ui-v2/eventHandlers/__tests__/index.test.ts": {
+    "size": 3645,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951855219900,
+    "word_count": 292
+  },
+  "components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts": {
+    "size": 2726,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951867735100,
+    "word_count": 314
+  },
+  "components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts": {
+    "size": 23632,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951882651600,
+    "word_count": 2095
+  },
+  "components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts": {
+    "size": 48602,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951900698100,
+    "word_count": 4497
+  },
+  "components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts": {
+    "size": 26640,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951917902600,
+    "word_count": 2354
+  },
+  "components/ui-v2/eventHandlers/combatHandlers.ts": {
+    "size": 4820,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951931321100,
+    "word_count": 485
+  },
+  "components/ui-v2/eventHandlers/index.ts": {
+    "size": 4394,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951942709900,
+    "word_count": 371
+  },
+  "components/ui-v2/eventHandlers/messageHandlers.ts": {
+    "size": 7263,
+    "mtime_ns": 1786659773632109800,
+    "indexed_at_ns": 1787076951954993300,
+    "word_count": 738
+  },
+  "components/ui-v2/eventHandlers/playerHandlers.ts": {
+    "size": 8000,
+    "mtime_ns": 1786663137064255900,
+    "indexed_at_ns": 1787076951964993200,
+    "word_count": 797
+  },
+  "components/ui-v2/eventHandlers/roomHandlers.ts": {
+    "size": 15792,
+    "mtime_ns": 1786663137064255900,
+    "indexed_at_ns": 1787076951975993200,
+    "word_count": 1762
+  },
+  "components/ui-v2/eventHandlers/systemHandlers.ts": {
+    "size": 5386,
+    "mtime_ns": 1786571994854564800,
+    "indexed_at_ns": 1787076951987246600,
+    "word_count": 503
+  },
+  "components/ui-v2/eventHandlers/types.ts": {
+    "size": 4330,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076951998478500,
+    "word_count": 613
+  },
+  "components/ui-v2/eventLog/EVENTS_SCHEMA.md": {
+    "size": 4798,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787077174336725900,
+    "word_count": 469,
+    "hashes": {
+      "components/ui-v2/eventlog/events_schema.md": "fd681ca58fd1d3a13ec566e61018b814908b3b5f75b44c29f983c14fa7515be1"
+    }
+  },
+  "components/ui-v2/eventLog/HANDOFFS.md": {
+    "size": 2778,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787077174338724400,
+    "word_count": 363,
+    "hashes": {
+      "components/ui-v2/eventlog/handoffs.md": "a64e7238d754415a1043a87be5de123cc99e546867553314145c468a76e49667"
+    }
+  },
+  "components/ui-v2/eventLog/__tests__/eventStore.test.ts": {
+    "size": 1051,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952034082600,
+    "word_count": 111
+  },
+  "components/ui-v2/eventLog/__tests__/messageMapper.test.ts": {
+    "size": 2620,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952047260400,
+    "word_count": 239
+  },
+  "components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts": {
+    "size": 13780,
+    "mtime_ns": 1786659773632635800,
+    "indexed_at_ns": 1787076952059611400,
+    "word_count": 1195
+  },
+  "components/ui-v2/eventLog/__tests__/projector.projectState.test.ts": {
+    "size": 12956,
+    "mtime_ns": 1786659773633147400,
+    "indexed_at_ns": 1787076952071477300,
+    "word_count": 1145
+  },
+  "components/ui-v2/eventLog/__tests__/projector.test.ts": {
+    "size": 22276,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952083982600,
+    "word_count": 1907
+  },
+  "components/ui-v2/eventLog/eventStore.ts": {
+    "size": 1127,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952093986400,
+    "word_count": 161
+  },
+  "components/ui-v2/eventLog/index.ts": {
+    "size": 582,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952104986900,
+    "word_count": 86
+  },
+  "components/ui-v2/eventLog/messageMapper.ts": {
+    "size": 2997,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952115326900,
+    "word_count": 404
+  },
+  "components/ui-v2/eventLog/projector.ts": {
+    "size": 2319,
+    "mtime_ns": 1786659773633675200,
+    "indexed_at_ns": 1787076952127326300,
+    "word_count": 278
+  },
+  "components/ui-v2/eventLog/projectorConstants.ts": {
+    "size": 1476,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952138327000,
+    "word_count": 122
+  },
+  "components/ui-v2/eventLog/projectorHandlersMessages.ts": {
+    "size": 12389,
+    "mtime_ns": 1785211754028906100,
+    "indexed_at_ns": 1787076952149326000,
+    "word_count": 1168
+  },
+  "components/ui-v2/eventLog/projectorHandlersState.ts": {
+    "size": 10852,
+    "mtime_ns": 1775192600423377700,
+    "indexed_at_ns": 1787076952160326500,
+    "word_count": 1092
+  },
+  "components/ui-v2/eventLog/projectorMessageUtils.ts": {
+    "size": 1677,
+    "mtime_ns": 1785211754029908900,
+    "indexed_at_ns": 1787076952171553200,
+    "word_count": 192
+  },
+  "components/ui-v2/eventLog/projectorRoom.ts": {
+    "size": 9971,
+    "mtime_ns": 1786571994854564800,
+    "indexed_at_ns": 1787076952181860200,
+    "word_count": 1016
+  },
+  "components/ui-v2/eventLog/types.ts": {
+    "size": 461,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952192898800,
+    "word_count": 70
+  },
+  "components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts": {
+    "size": 12687,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952205805200,
+    "word_count": 1127
+  },
+  "components/ui-v2/hooks/__tests__/useEventProcessing.test.ts": {
+    "size": 26556,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952217315000,
+    "word_count": 2652
+  },
+  "components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts": {
+    "size": 9921,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952229315600,
+    "word_count": 912
+  },
+  "components/ui-v2/hooks/emptyOccupantsDiagnostics.ts": {
+    "size": 2401,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952240331400,
+    "word_count": 296
+  },
+  "components/ui-v2/hooks/gameClientLogout.ts": {
+    "size": 1611,
+    "mtime_ns": 1786659773634201800,
+    "indexed_at_ns": 1787076952251569000,
+    "word_count": 177
+  },
+  "components/ui-v2/hooks/gameClientV2ContainerActiveEffects.ts": {
+    "size": 621,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952261744300,
+    "word_count": 54
+  },
+  "components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts": {
+    "size": 3288,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952273747600,
+    "word_count": 215
+  },
+  "components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts": {
+    "size": 2533,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952285258700,
+    "word_count": 175
+  },
+  "components/ui-v2/hooks/gameClientV2ContainerTypes.ts": {
+    "size": 659,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952296263700,
+    "word_count": 54
+  },
+  "components/ui-v2/hooks/useCommandHandlers.ts": {
+    "size": 3178,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952308262900,
+    "word_count": 308
+  },
+  "components/ui-v2/hooks/useEventProcessing.ts": {
+    "size": 3405,
+    "mtime_ns": 1780609217904219000,
+    "indexed_at_ns": 1787076952319848900,
+    "word_count": 326
+  },
+  "components/ui-v2/hooks/useGameClientV2Container.ts": {
+    "size": 1597,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952330796400,
+    "word_count": 115
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts": {
+    "size": 1525,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952341517500,
+    "word_count": 133
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts": {
+    "size": 664,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952351778800,
+    "word_count": 71
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts": {
+    "size": 704,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952365675100,
+    "word_count": 61
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts": {
+    "size": 1861,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952375702700,
+    "word_count": 128
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts": {
+    "size": 1390,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952386702300,
+    "word_count": 103
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts": {
+    "size": 2044,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952397783200,
+    "word_count": 148
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts": {
+    "size": 1088,
+    "mtime_ns": 1786571994855570100,
+    "indexed_at_ns": 1787076952407783400,
+    "word_count": 79
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts": {
+    "size": 3632,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952419291500,
+    "word_count": 269
+  },
+  "components/ui-v2/hooks/useGameClientV2ContainerState.ts": {
+    "size": 2909,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952430295500,
+    "word_count": 243
+  },
+  "components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts": {
+    "size": 774,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952440461500,
+    "word_count": 73
+  },
+  "components/ui-v2/hooks/useGameConnectionManagement.ts": {
+    "size": 3655,
+    "mtime_ns": 1781560010232879300,
+    "indexed_at_ns": 1787076952452113600,
+    "word_count": 333
+  },
+  "components/ui-v2/hooks/useHallucinationFeedCleanup.ts": {
+    "size": 759,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952462384600,
+    "word_count": 77
+  },
+  "components/ui-v2/hooks/useMythosTimeBootstrap.ts": {
+    "size": 2159,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952473389300,
+    "word_count": 216
+  },
+  "components/ui-v2/hooks/usePanelManager.ts": {
+    "size": 111,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952484898900,
+    "word_count": 11
+  },
+  "components/ui-v2/hooks/usePlayerStatusEffects.ts": {
+    "size": 4061,
+    "mtime_ns": 1786662370376926000,
+    "indexed_at_ns": 1787076952494902100,
+    "word_count": 410
+  },
+  "components/ui-v2/hooks/useRefSynchronization.ts": {
+    "size": 2491,
+    "mtime_ns": 1786571994857324300,
+    "indexed_at_ns": 1787076952505902000,
+    "word_count": 217
+  },
+  "components/ui-v2/hooks/useRespawnHandlers.ts": {
+    "size": 6989,
+    "mtime_ns": 1786571994857835100,
+    "indexed_at_ns": 1787076952517827200,
+    "word_count": 644
+  },
+  "components/ui-v2/panels/CharacterInfoPanel.tsx": {
+    "size": 6152,
+    "mtime_ns": 1786633064380450300,
+    "indexed_at_ns": 1787076952528830600,
+    "word_count": 516
+  },
+  "components/ui-v2/panels/ChatHistoryPanel.tsx": {
+    "size": 10517,
+    "mtime_ns": 1786662190263433800,
+    "indexed_at_ns": 1787076952540828400,
+    "word_count": 842
+  },
+  "components/ui-v2/panels/CommandHistoryPanel.tsx": {
+    "size": 2114,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952554829100,
+    "word_count": 164
+  },
+  "components/ui-v2/panels/CommandInputPanel.tsx": {
+    "size": 3409,
+    "mtime_ns": 1786577737576886300,
+    "indexed_at_ns": 1787076952568228900,
+    "word_count": 289
+  },
+  "components/ui-v2/panels/GameInfoPanel.tsx": {
+    "size": 7927,
+    "mtime_ns": 1780609217904744200,
+    "indexed_at_ns": 1787076952579048600,
+    "word_count": 629
+  },
+  "components/ui-v2/panels/LocationPanel.tsx": {
+    "size": 2421,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952589047900,
+    "word_count": 213
+  },
+  "components/ui-v2/panels/OccupantsPanel.tsx": {
+    "size": 2356,
+    "mtime_ns": 1786902872556517400,
+    "indexed_at_ns": 1787076952600051200,
+    "word_count": 252
+  },
+  "components/ui-v2/panels/QuestLogPanel.tsx": {
+    "size": 2751,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952610557500,
+    "word_count": 278
+  },
+  "components/ui-v2/panels/RoomDescriptionPanel.tsx": {
+    "size": 891,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952621561300,
+    "word_count": 96
+  },
+  "components/ui-v2/panels/__tests__/CharacterInfoPanel.test.tsx": {
+    "size": 4460,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952633561200,
+    "word_count": 440
+  },
+  "components/ui-v2/panels/__tests__/ChatHistoryPanel.test.tsx": {
+    "size": 5723,
+    "mtime_ns": 1786577737601001700,
+    "indexed_at_ns": 1787076952645813500,
+    "word_count": 505
+  },
+  "components/ui-v2/panels/__tests__/CommandHistoryPanel.test.tsx": {
+    "size": 3098,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952657809900,
+    "word_count": 255
+  },
+  "components/ui-v2/panels/__tests__/CommandInputPanel.test.tsx": {
+    "size": 3735,
+    "mtime_ns": 1786577737615119600,
+    "indexed_at_ns": 1787076952669812700,
+    "word_count": 306
+  },
+  "components/ui-v2/panels/__tests__/GameInfoPanel.test.tsx": {
+    "size": 4305,
+    "mtime_ns": 1780609217905802700,
+    "indexed_at_ns": 1787076952681813700,
+    "word_count": 359
+  },
+  "components/ui-v2/panels/__tests__/LocationPanel.test.tsx": {
+    "size": 4634,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952693323600,
+    "word_count": 409
+  },
+  "components/ui-v2/panels/__tests__/OccupantsPanel.test.tsx": {
+    "size": 2354,
+    "mtime_ns": 1786902466698659100,
+    "indexed_at_ns": 1787076952706159200,
+    "word_count": 227
+  },
+  "components/ui-v2/panels/__tests__/RoomDescriptionPanel.test.tsx": {
+    "size": 2951,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952718342200,
+    "word_count": 299
+  },
+  "components/ui-v2/types.ts": {
+    "size": 3326,
+    "mtime_ns": 1786659773634201800,
+    "indexed_at_ns": 1787076952727858900,
+    "word_count": 381
+  },
+  "components/ui-v2/useTabbedInterface.ts": {
+    "size": 1341,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952737483800,
+    "word_count": 156
+  },
+  "components/ui-v2/utils/__tests__/characterInfoPanelOutline.test.ts": {
+    "size": 3533,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952749697900,
+    "word_count": 362
+  },
+  "components/ui-v2/utils/__tests__/messageUtils.test.ts": {
+    "size": 4819,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952760783100,
+    "word_count": 449
+  },
+  "components/ui-v2/utils/__tests__/panelLayout.test.ts": {
+    "size": 8902,
+    "mtime_ns": 1786659773635208300,
+    "indexed_at_ns": 1787076952772783100,
+    "word_count": 513
+  },
+  "components/ui-v2/utils/__tests__/roomMergeUtils.test.ts": {
+    "size": 8962,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952785189300,
+    "word_count": 973
+  },
+  "components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts": {
+    "size": 15822,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952796270500,
+    "word_count": 1544
+  },
+  "components/ui-v2/utils/characterInfoPanelOutline.ts": {
+    "size": 2304,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952808271700,
+    "word_count": 289
+  },
+  "components/ui-v2/utils/messageUtils.ts": {
+    "size": 2515,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952823782700,
+    "word_count": 299
+  },
+  "components/ui-v2/utils/panelLayout.ts": {
+    "size": 4933,
+    "mtime_ns": 1786659856113484200,
+    "indexed_at_ns": 1787076952833787400,
+    "word_count": 580
+  },
+  "components/ui-v2/utils/roomMergeUtils.ts": {
+    "size": 3171,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952844466800,
+    "word_count": 397
+  },
+  "components/ui-v2/utils/stateUpdateUtils.ts": {
+    "size": 7619,
+    "mtime_ns": 1786571994862249000,
+    "indexed_at_ns": 1787076952856469800,
+    "word_count": 855
+  },
+  "components/ui/ChannelSelector.tsx": {
+    "size": 7304,
+    "mtime_ns": 1786571994863719100,
+    "indexed_at_ns": 1787076952865467400,
+    "word_count": 543
+  },
+  "components/ui/DismissButton.tsx": {
+    "size": 1120,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952875471600,
+    "word_count": 108
+  },
+  "components/ui/EldritchIcon.tsx": {
+    "size": 2470,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952885983000,
+    "word_count": 277
+  },
+  "components/ui/FeedbackForm.tsx": {
+    "size": 7780,
+    "mtime_ns": 1786571994863719100,
+    "indexed_at_ns": 1787076952894987800,
+    "word_count": 735
+  },
+  "components/ui/LogoutButton.tsx": {
+    "size": 2737,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952904986700,
+    "word_count": 247
+  },
+  "components/ui/ModalContainer.tsx": {
+    "size": 5903,
+    "mtime_ns": 1786571994864725200,
+    "indexed_at_ns": 1787076952914496300,
+    "word_count": 477
+  },
+  "components/ui/MythosIcons.ts": {
+    "size": 1211,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952924496800,
+    "word_count": 138
+  },
+  "components/ui/MythosPanel.test.tsx": {
+    "size": 2446,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952935268100,
+    "word_count": 189
+  },
+  "components/ui/MythosPanel.tsx": {
+    "size": 3527,
+    "mtime_ns": 1786571994864725200,
+    "indexed_at_ns": 1787076952944017800,
+    "word_count": 313
+  },
+  "components/ui/README.md": {
+    "size": 5530,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787077174338724400,
+    "word_count": 646,
+    "hashes": { "components/ui/readme.md": "95871d0c592d3289b9c8a3d64c849bfdae11a2f0ef56f98c1f0b4bd1e9d82ca9" }
+  },
+  "components/ui/RoomInfo.tsx": {
+    "size": 8801,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952964280700,
+    "word_count": 787
+  },
+  "components/ui/StatusPanel.tsx": {
+    "size": 7482,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076952974281300,
+    "word_count": 833
+  },
+  "components/ui/StyleGuide.tsx": {
+    "size": 3537,
+    "mtime_ns": 1786571994865872400,
+    "indexed_at_ns": 1787076952984281100,
+    "word_count": 314
+  },
+  "components/ui/StyleGuideSections.tsx": {
+    "size": 13484,
+    "mtime_ns": 1786662205379858100,
+    "indexed_at_ns": 1787076952993281400,
+    "word_count": 930
+  },
+  "components/ui/TerminalButton.test.tsx": {
+    "size": 4106,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953003722600,
+    "word_count": 319
+  },
+  "components/ui/TerminalButton.tsx": {
+    "size": 2959,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953012783500,
+    "word_count": 203
+  },
+  "components/ui/TerminalCard.tsx": {
+    "size": 1087,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953022784000,
+    "word_count": 91
+  },
+  "components/ui/TerminalInput.tsx": {
+    "size": 2321,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953032792100,
+    "word_count": 184
+  },
+  "components/ui/VirtualizedMessageList.tsx": {
+    "size": 2735,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953042471300,
+    "word_count": 270
+  },
+  "components/ui/__tests__/ChannelSelector.test.tsx": {
+    "size": 7915,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953054475800,
+    "word_count": 637
+  },
+  "components/ui/__tests__/EldritchIcon.test.tsx": {
+    "size": 6639,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953066476100,
+    "word_count": 549
+  },
+  "components/ui/__tests__/LogoutButton.test.tsx": {
+    "size": 8683,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953076479600,
+    "word_count": 712
+  },
+  "components/ui/__tests__/RoomInfo.test.tsx": {
+    "size": 11655,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953087984500,
+    "word_count": 863
+  },
+  "components/ui/__tests__/StatusPanel.test.tsx": {
+    "size": 11429,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953098987000,
+    "word_count": 735
+  },
+  "components/ui/__tests__/TerminalCard.test.tsx": {
+    "size": 2338,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953110499200,
+    "word_count": 192
+  },
+  "components/ui/__tests__/TerminalInput.test.tsx": {
+    "size": 5186,
+    "mtime_ns": 1775192600439063900,
+    "indexed_at_ns": 1787076953121531400,
+    "word_count": 489
+  },
+  "components/ui/__tests__/designTokens.test.ts": {
+    "size": 9743,
+    "mtime_ns": 1786659773636605700,
+    "indexed_at_ns": 1787076953132533100,
+    "word_count": 645
+  },
+  "components/ui/designTokens.ts": {
+    "size": 7616,
+    "mtime_ns": 1786659773636605700,
+    "indexed_at_ns": 1787076953142533600,
+    "word_count": 794
+  },
+  "components/useDraggablePanelInteractions.ts": {
+    "size": 13529,
+    "mtime_ns": 1786571994866377600,
+    "indexed_at_ns": 1787076953151848300,
+    "word_count": 1257
+  },
+  "components/useDraggablePanelLayout.ts": {
+    "size": 7610,
+    "mtime_ns": 1786463489024002300,
+    "indexed_at_ns": 1787076953160621700,
+    "word_count": 793
+  },
+  "config/__tests__/channels.test.ts": {
+    "size": 7634,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953172141600,
+    "word_count": 587
+  },
+  "config/channels.ts": {
+    "size": 3203,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953180139500,
+    "word_count": 359
+  },
+  "constants/layout.ts": {
+    "size": 281,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953189148800,
+    "word_count": 42
+  },
+  "contexts/GameTerminalContext.tsx": {
+    "size": 2252,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953197653100,
+    "word_count": 228
+  },
+  "contexts/PanelContext.tsx": {
+    "size": 6321,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953207298500,
+    "word_count": 713
+  },
+  "contexts/PanelContextRuntime.tsx": {
+    "size": 5987,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953216809300,
+    "word_count": 659
+  },
+  "contexts/ThemeContext.tsx": {
+    "size": 3614,
+    "mtime_ns": 1781981784120944200,
+    "indexed_at_ns": 1787076953224807800,
+    "word_count": 343
+  },
+  "contexts/__tests__/GameTerminalContext.test.tsx": {
+    "size": 15157,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953234812100,
+    "word_count": 1076
+  },
+  "contexts/__tests__/PanelContext.test.tsx": {
+    "size": 9834,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953244987200,
+    "word_count": 935
+  },
+  "contexts/__tests__/PanelContextRuntime.test.tsx": {
+    "size": 3078,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953254857800,
+    "word_count": 275
+  },
+  "contexts/__tests__/ThemeContext.test.tsx": {
+    "size": 12720,
+    "mtime_ns": 1781981784121944200,
+    "indexed_at_ns": 1787076953264377200,
+    "word_count": 1166
+  },
+  "contexts/hooks/__tests__/usePanelContext.test.tsx": {
+    "size": 5515,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953276373500,
+    "word_count": 566
+  },
+  "contexts/hooks/useGameTerminalContext.ts": {
+    "size": 1590,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953289373700,
+    "word_count": 156
+  },
+  "contexts/hooks/usePanelContext.ts": {
+    "size": 1565,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953299379500,
+    "word_count": 179
+  },
+  "contexts/hooks/useThemeContext.ts": {
+    "size": 2407,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953309377400,
+    "word_count": 276
+  },
+  "hooks/__tests__/useComponentLifecycleTracking.test.ts": {
+    "size": 1333,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953320613400,
+    "word_count": 116
+  },
+  "hooks/__tests__/useConnectionState.test.ts": {
+    "size": 7180,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953330976000,
+    "word_count": 666
+  },
+  "hooks/__tests__/useConnectionStateMachine.test.ts": {
+    "size": 15913,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953340916600,
+    "word_count": 1571
+  },
+  "hooks/__tests__/useGameConnection.export.test.ts": {
+    "size": 388,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953351915800,
+    "word_count": 39
+  },
+  "hooks/__tests__/useGridLayout.test.ts": {
+    "size": 15485,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953361916600,
+    "word_count": 1504
+  },
+  "hooks/__tests__/usePerformanceMonitor.test.ts": {
+    "size": 13122,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953371915700,
+    "word_count": 1243
+  },
+  "hooks/__tests__/useSessionManagement.test.ts": {
+    "size": 5243,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953381918100,
+    "word_count": 500
+  },
+  "hooks/__tests__/useStoreSubscriptionTracking.test.ts": {
+    "size": 922,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953391935600,
+    "word_count": 81
+  },
+  "hooks/__tests__/useWebSocketConnection.callbacks.test.ts": {
+    "size": 1956,
+    "mtime_ns": 1780609217905802700,
+    "indexed_at_ns": 1787076953401535300,
+    "word_count": 192
+  },
+  "hooks/__tests__/useWebSocketConnection.cleanup.test.ts": {
+    "size": 3348,
+    "mtime_ns": 1780609217906322100,
+    "indexed_at_ns": 1787076953411039100,
+    "word_count": 294
+  },
+  "hooks/__tests__/useWebSocketConnection.connection.test.ts": {
+    "size": 10912,
+    "mtime_ns": 1780609217906851900,
+    "indexed_at_ns": 1787076953420935000,
+    "word_count": 974
+  },
+  "hooks/__tests__/useWebSocketConnection.errorHandling.test.ts": {
+    "size": 3217,
+    "mtime_ns": 1780609217907372900,
+    "indexed_at_ns": 1787076953431302400,
+    "word_count": 310
+  },
+  "hooks/__tests__/useWebSocketConnection.messageHandling.test.ts": {
+    "size": 8991,
+    "mtime_ns": 1780609217907372900,
+    "indexed_at_ns": 1787076953441308200,
+    "word_count": 793
+  },
+  "hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts": {
+    "size": 7125,
+    "mtime_ns": 1780609217908378200,
+    "indexed_at_ns": 1787076953452077300,
+    "word_count": 671
+  },
+  "hooks/__tests__/useWebSocketConnectionTestFixtures.ts": {
+    "size": 6196,
+    "mtime_ns": 1780609217908378200,
+    "indexed_at_ns": 1787076953461939200,
+    "word_count": 631
+  },
+  "hooks/useComponentLifecycleTracking.ts": {
+    "size": 1897,
+    "mtime_ns": 1780609217908378200,
+    "indexed_at_ns": 1787076953470943000,
+    "word_count": 204
+  },
+  "hooks/useConnectionState.ts": {
+    "size": 3687,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953483322700,
+    "word_count": 453
+  },
+  "hooks/useConnectionStateMachine.test.ts": {
+    "size": 14096,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953497484800,
+    "word_count": 1398
+  },
+  "hooks/useConnectionStateMachine.ts": {
+    "size": 7801,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953506001800,
+    "word_count": 845
+  },
+  "hooks/useGameConnection.test.ts": {
+    "size": 13310,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953515258500,
+    "word_count": 1369
+  },
+  "hooks/useGameConnection.ts": {
+    "size": 98,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953525896400,
+    "word_count": 8
+  },
+  "hooks/useGameConnectionRefactored.ts": {
+    "size": 16906,
+    "mtime_ns": 1781560010234091300,
+    "indexed_at_ns": 1787076953535896000,
+    "word_count": 1624
+  },
+  "hooks/useGameTerminal.test.ts": {
+    "size": 30887,
+    "mtime_ns": 1786731049038643000,
+    "indexed_at_ns": 1787076953545898200,
+    "word_count": 2644
+  },
+  "hooks/useGameTerminal.ts": {
+    "size": 7835,
+    "mtime_ns": 1786571994867390200,
+    "indexed_at_ns": 1787076953554897600,
+    "word_count": 732
+  },
+  "hooks/useGridLayout.ts": {
+    "size": 6842,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953562900500,
+    "word_count": 832
+  },
+  "hooks/usePerformanceMonitor.ts": {
+    "size": 3619,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953572901300,
+    "word_count": 385
+  },
+  "hooks/useProfessions.ts": {
+    "size": 5773,
+    "mtime_ns": 1786571994867894800,
+    "indexed_at_ns": 1787076953581430200,
+    "word_count": 587
+  },
+  "hooks/useSessionManagement.ts": {
+    "size": 2925,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953590430500,
+    "word_count": 321
+  },
+  "hooks/useStatsRolling.ts": {
+    "size": 2504,
+    "mtime_ns": 1786571994867894800,
+    "indexed_at_ns": 1787076953598436900,
+    "word_count": 235
+  },
+  "hooks/useStatsRollingActions.ts": {
+    "size": 6658,
+    "mtime_ns": 1786662131377661700,
+    "indexed_at_ns": 1787076953607434500,
+    "word_count": 719
+  },
+  "hooks/useStoreSubscriptionTracking.ts": {
+    "size": 1308,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953616941900,
+    "word_count": 158
+  },
+  "hooks/useWebSocketConnection.ts": {
+    "size": 11048,
+    "mtime_ns": 1780609217910377400,
+    "indexed_at_ns": 1787076953625943600,
+    "word_count": 1087
+  },
+  "main.tsx": { "size": 481, "mtime_ns": 1775192600454713500, "indexed_at_ns": 1787076953640946500, "word_count": 48 },
+  "mythosApp/1774539086359-useMythosAppState.ts": {
+    "size": 6581,
+    "mtime_ns": 1786571994868901300,
+    "indexed_at_ns": 1787076953649946000,
+    "word_count": 506
+  },
+  "mythosApp/AppCreationFlowViews.tsx": {
+    "size": 2764,
+    "mtime_ns": 1786571994868901300,
+    "indexed_at_ns": 1787076953658717200,
+    "word_count": 202
+  },
+  "mythosApp/AppDemoView.tsx": {
+    "size": 500,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953667717200,
+    "word_count": 46
+  },
+  "mythosApp/AppRootViews.tsx": {
+    "size": 2137,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953676718000,
+    "word_count": 139
+  },
+  "mythosApp/AppSessionOutroViews.tsx": {
+    "size": 1482,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953685717200,
+    "word_count": 107
+  },
+  "mythosApp/MythosLoginForm.tsx": {
+    "size": 4075,
+    "mtime_ns": 1786571994869901200,
+    "indexed_at_ns": 1787076953694716700,
+    "word_count": 301
+  },
+  "mythosApp/__tests__/useMythosAppState.test.ts": {
+    "size": 1638,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953704719200,
+    "word_count": 139
+  },
+  "mythosApp/__tests__/useMythosSessionChrome.test.ts": {
+    "size": 4197,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953714228100,
+    "word_count": 265
+  },
+  "mythosApp/apiErrorMessage.ts": {
+    "size": 647,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953723227900,
+    "word_count": 69
+  },
+  "mythosApp/appLazyScreens.tsx": {
+    "size": 1508,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953732229000,
+    "word_count": 129
+  },
+  "mythosApp/applyAuthenticatedSession.ts": {
+    "size": 1540,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953742229800,
+    "word_count": 125
+  },
+  "mythosApp/characterSessionApi.ts": {
+    "size": 2581,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953750227900,
+    "word_count": 244
+  },
+  "mythosApp/creationCompleteActions.ts": {
+    "size": 2567,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953759229300,
+    "word_count": 202
+  },
+  "mythosApp/creationCompleteFlow.ts": {
+    "size": 2568,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953768228100,
+    "word_count": 259
+  },
+  "mythosApp/creationTypes.ts": {
+    "size": 150,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953777228900,
+    "word_count": 25
+  },
+  "mythosApp/deleteCharacterActions.ts": {
+    "size": 2186,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953786232800,
+    "word_count": 199
+  },
+  "mythosApp/deleteCharacterFlow.ts": {
+    "size": 4288,
+    "mtime_ns": 1786571994869901200,
+    "indexed_at_ns": 1787076953794231500,
+    "word_count": 421
+  },
+  "mythosApp/guards.ts": {
+    "size": 158,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953802737900,
+    "word_count": 21
+  },
+  "mythosApp/loginFailureMessage.ts": {
+    "size": 608,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953812749100,
+    "word_count": 67
+  },
+  "mythosApp/mapServerCharacters.ts": {
+    "size": 608,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953822137900,
+    "word_count": 59
+  },
+  "mythosApp/motdContinueFlow.ts": {
+    "size": 1351,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953830707500,
+    "word_count": 134
+  },
+  "mythosApp/mythosAppViewModel.ts": {
+    "size": 2530,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953839492800,
+    "word_count": 269
+  },
+  "mythosApp/mythosAppViewModelFactory.ts": {
+    "size": 2987,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953849603800,
+    "word_count": 161
+  },
+  "mythosApp/registerFailureMessage.ts": {
+    "size": 2962,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953859161500,
+    "word_count": 309
+  },
+  "mythosApp/selectCharacterFlow.ts": {
+    "size": 1707,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953868646300,
+    "word_count": 186
+  },
+  "mythosApp/serverAvailability.ts": {
+    "size": 1770,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953877955300,
+    "word_count": 187
+  },
+  "mythosApp/startLoginGracePeriod.ts": {
+    "size": 393,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953886747200,
+    "word_count": 29
+  },
+  "mythosApp/submitAuth.ts": {
+    "size": 2981,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953897753200,
+    "word_count": 288
+  },
+  "mythosApp/useAuthSessionRestore.ts": {
+    "size": 3550,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953906752000,
+    "word_count": 266
+  },
+  "mythosApp/useMythosApp.tsx": {
+    "size": 454,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953915520400,
+    "word_count": 42
+  },
+  "mythosApp/useMythosAppActions.ts": {
+    "size": 9879,
+    "mtime_ns": 1786571994870902000,
+    "indexed_at_ns": 1787076953923701900,
+    "word_count": 706
+  },
+  "mythosApp/useMythosAppState.ts": {
+    "size": 9285,
+    "mtime_ns": 1786571994870902000,
+    "indexed_at_ns": 1787076953932701900,
+    "word_count": 689
+  },
+  "mythosApp/useMythosAuthForm.ts": {
+    "size": 1850,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953941952100,
+    "word_count": 175
+  },
+  "mythosApp/useMythosSessionChrome.ts": {
+    "size": 5821,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953950592400,
+    "word_count": 449
+  },
+  "pages/DialogueEditorPage.tsx": {
+    "size": 10592,
+    "mtime_ns": 1786731059507836800,
+    "indexed_at_ns": 1787076953959870000,
+    "word_count": 917
+  },
+  "pages/MapPage.tsx": {
+    "size": 639,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076953968087300,
+    "word_count": 86
+  },
+  "pages/SkillsPage.tsx": {
+    "size": 5154,
+    "mtime_ns": 1780609217911378200,
+    "indexed_at_ns": 1787076953979648000,
+    "word_count": 469
+  },
+  "pages/__tests__/MapPage.test.tsx": {
+    "size": 5643,
+    "mtime_ns": 1780609217912377200,
+    "indexed_at_ns": 1787076953991648800,
+    "word_count": 560
+  },
+  "pages/__tests__/SkillsPage.test.tsx": {
+    "size": 2457,
+    "mtime_ns": 1780609217912377200,
+    "indexed_at_ns": 1787076954002287400,
+    "word_count": 228
+  },
+  "pages/mapPageRenderer.tsx": {
+    "size": 2445,
+    "mtime_ns": 1775192600454713500,
+    "indexed_at_ns": 1787076954012158000,
+    "word_count": 202
+  },
+  "pages/mapPageState.ts": {
+    "size": 2645,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954022779900,
+    "word_count": 290
+  },
+  "pages/mapPageStatusViews.tsx": {
+    "size": 1678,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954032780400,
+    "word_count": 130
+  },
+  "stores/__tests__/commandStore.test.ts": {
+    "size": 28113,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954045782400,
+    "word_count": 2468
+  },
+  "stores/__tests__/connectionStore.test.ts": {
+    "size": 14556,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954056972600,
+    "word_count": 1155
+  },
+  "stores/__tests__/containerStore.test.ts": {
+    "size": 18797,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954067192600,
+    "word_count": 1248
+  },
+  "stores/__tests__/gameStore.test.ts": {
+    "size": 21727,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954079467900,
+    "word_count": 2022
+  },
+  "stores/__tests__/sessionStore.test.ts": {
+    "size": 15528,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954092077700,
+    "word_count": 1254
+  },
+  "stores/__tests__/stateManagementIntegration.test.ts": {
+    "size": 16787,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954106080200,
+    "word_count": 1317
+  },
+  "stores/__tests__/stateNormalization.basic.test.ts": {
+    "size": 5127,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954117298700,
+    "word_count": 713
+  },
+  "stores/__tests__/stateNormalization.edgeCases.test.ts": {
+    "size": 4969,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954131301000,
+    "word_count": 495
+  },
+  "stores/__tests__/stateNormalization.normalize.test.ts": {
+    "size": 8165,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954140299500,
+    "word_count": 798
+  },
+  "stores/__tests__/stateNormalization.query.test.ts": {
+    "size": 3666,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954151613700,
+    "word_count": 378
+  },
+  "stores/__tests__/stateNormalization.update.test.ts": {
+    "size": 3910,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954163699000,
+    "word_count": 414
+  },
+  "stores/commandStore.ts": {
+    "size": 12453,
+    "mtime_ns": 1786571994871901400,
+    "indexed_at_ns": 1787076954172153500,
+    "word_count": 1287
+  },
+  "stores/connectionStore.ts": {
+    "size": 9944,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954182982400,
+    "word_count": 1058
+  },
+  "stores/containerStore.ts": {
+    "size": 9406,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954191985800,
+    "word_count": 961
+  },
+  "stores/gameStore.ts": {
+    "size": 10410,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954200985700,
+    "word_count": 1229
+  },
+  "stores/sessionStore.ts": {
+    "size": 8037,
+    "mtime_ns": 1786571994871901400,
+    "indexed_at_ns": 1787076954210553000,
+    "word_count": 882
+  },
+  "stores/stateNormalization.ts": {
+    "size": 10253,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954219533900,
+    "word_count": 1317
+  },
+  "test/domPurifyTestWindow.ts": {
+    "size": 574,
+    "mtime_ns": 1781621391336823500,
+    "indexed_at_ns": 1787076954239286500,
+    "word_count": 61
+  },
+  "test/e2e-bootstrap.test.ts": {
+    "size": 1278,
+    "mtime_ns": 1781560010234608800,
+    "indexed_at_ns": 1787076954248534300,
+    "word_count": 87
+  },
+  "test/e2e-bootstrap.ts": {
+    "size": 5312,
+    "mtime_ns": 1781560010235124200,
+    "indexed_at_ns": 1787076954258344700,
+    "word_count": 608
+  },
+  "test/message-match.test.ts": {
+    "size": 632,
+    "mtime_ns": 1786633065396758300,
+    "indexed_at_ns": 1787076954267342200,
+    "word_count": 54
+  },
+  "test/multiplayer-browser-helpers.test.ts": {
+    "size": 2153,
+    "mtime_ns": 1786900295733056000,
+    "indexed_at_ns": 1787076954275853400,
+    "word_count": 165
+  },
+  "test/setup.ts": {
+    "size": 4074,
+    "mtime_ns": 1781621149158881700,
+    "indexed_at_ns": 1787076954285944900,
+    "word_count": 454
+  },
+  "test/vitest-jest-dom.d.ts": {
+    "size": 237,
+    "mtime_ns": 1780609217914378900,
+    "indexed_at_ns": 1787076954295945600,
+    "word_count": 23
+  },
+  "theme/__tests__/mythosTheme.test.ts": {
+    "size": 458,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954306903000,
+    "word_count": 32
+  },
+  "theme/mythosTheme.ts": {
+    "size": 6794,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954316519600,
+    "word_count": 707
+  },
+  "types/__tests__/health.test.ts": {
+    "size": 4343,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954326519500,
+    "word_count": 356
+  },
+  "types/__tests__/lucidity.test.ts": {
+    "size": 8022,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954336515900,
+    "word_count": 640
+  },
+  "types/auth.ts": {
+    "size": 484,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954345516000,
+    "word_count": 52
+  },
+  "types/health.ts": {
+    "size": 1906,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954354517400,
+    "word_count": 249
+  },
+  "types/lucidity.ts": {
+    "size": 1429,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954363516600,
+    "word_count": 163
+  },
+  "types/mythosTime.ts": {
+    "size": 2122,
+    "mtime_ns": 1786571994872906800,
+    "indexed_at_ns": 1787076954372516600,
+    "word_count": 218
+  },
+  "utils/__tests__/apiTypeGuards.test.ts": {
+    "size": 15763,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954383518500,
+    "word_count": 1436
+  },
+  "utils/__tests__/clientErrorReporter.test.ts": {
+    "size": 1977,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954393518400,
+    "word_count": 169
+  },
+  "utils/__tests__/clientMetricsCollector.test.ts": {
+    "size": 1731,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954403522400,
+    "word_count": 123
+  },
+  "utils/__tests__/config.test.ts": {
+    "size": 3587,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954413028900,
+    "word_count": 425
+  },
+  "utils/__tests__/csrfProtection.test.ts": {
+    "size": 3273,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954423035500,
+    "word_count": 236
+  },
+  "utils/__tests__/deathVoidLocation.test.ts": {
+    "size": 1190,
+    "mtime_ns": 1786653647223619800,
+    "indexed_at_ns": 1787076954433035500,
+    "word_count": 121
+  },
+  "utils/__tests__/debugLogger.test.ts": {
+    "size": 15526,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954443039400,
+    "word_count": 1442
+  },
+  "utils/__tests__/domPurifyClient.test.ts": {
+    "size": 1626,
+    "mtime_ns": 1781620903679567500,
+    "indexed_at_ns": 1787076954453038800,
+    "word_count": 150
+  },
+  "utils/__tests__/feedbackManager.test.ts": {
+    "size": 20925,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954462732800,
+    "word_count": 1813
+  },
+  "utils/__tests__/gameLogFilter.test.ts": {
+    "size": 2654,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954472736800,
+    "word_count": 269
+  },
+  "utils/__tests__/healthEventUtils.test.ts": {
+    "size": 12385,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954484732100,
+    "word_count": 1159
+  },
+  "utils/__tests__/inputSanitizer.test.ts": {
+    "size": 6797,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954496731800,
+    "word_count": 490
+  },
+  "utils/__tests__/localStorageShim.test.ts": {
+    "size": 8882,
+    "mtime_ns": 1786659773638638100,
+    "indexed_at_ns": 1787076954506736100,
+    "word_count": 687
+  },
+  "utils/__tests__/logoutHandler.test.ts": {
+    "size": 23181,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954516764400,
+    "word_count": 1950
+  },
+  "utils/__tests__/lucidityEventUtils.test.ts": {
+    "size": 18890,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954526764500,
+    "word_count": 2272
+  },
+  "utils/__tests__/memoryLeakDetector.test.ts": {
+    "size": 11523,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954536772500,
+    "word_count": 1119
+  },
+  "utils/__tests__/memoryMonitor.test.ts": {
+    "size": 11928,
+    "mtime_ns": 1781568319943759600,
+    "indexed_at_ns": 1787076954547284200,
+    "word_count": 1031
+  },
+  "utils/__tests__/messageBatcher.test.ts": {
+    "size": 13453,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954557282600,
+    "word_count": 1274
+  },
+  "utils/__tests__/messageTypeUtils.test.ts": {
+    "size": 8935,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954567285800,
+    "word_count": 994
+  },
+  "utils/__tests__/mythosTime.test.ts": {
+    "size": 7774,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954577965400,
+    "word_count": 729
+  },
+  "utils/__tests__/performanceTester.test.ts": {
+    "size": 14945,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954587660500,
+    "word_count": 1420
+  },
+  "utils/__tests__/resourceCleanup.test.ts": {
+    "size": 15668,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954597964800,
+    "word_count": 1258
+  },
+  "utils/__tests__/secureTokenStorage.test.ts": {
+    "size": 17675,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954609688000,
+    "word_count": 1241
+  },
+  "utils/__tests__/security.test-utils.ts": {
+    "size": 764,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954620193100,
+    "word_count": 82
+  },
+  "utils/__tests__/sessionManager.test.ts": {
+    "size": 8839,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954631194500,
+    "word_count": 593
+  },
+  "utils/__tests__/statusParser.test.ts": {
+    "size": 9554,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954643198500,
+    "word_count": 822
+  },
+  "utils/__tests__/xstateInspector.test.ts": {
+    "size": 4298,
+    "mtime_ns": 1781568320212273400,
+    "indexed_at_ns": 1787076954655992400,
+    "word_count": 461
+  },
+  "utils/ansiToHtml.test.ts": {
+    "size": 5259,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954665429200,
+    "word_count": 534
+  },
+  "utils/ansiToHtml.ts": {
+    "size": 4186,
+    "mtime_ns": 1786662157315969700,
+    "indexed_at_ns": 1787076954674429500,
+    "word_count": 501
+  },
+  "utils/apiTypeGuards.ts": {
+    "size": 16254,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954683428600,
+    "word_count": 1884
+  },
+  "utils/clientErrorReporter.ts": {
+    "size": 1055,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954692429000,
+    "word_count": 133
+  },
+  "utils/clientMetricsCollector.ts": {
+    "size": 4775,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954701433600,
+    "word_count": 416
+  },
+  "utils/config.ts": {
+    "size": 1531,
+    "mtime_ns": 1780609217914378900,
+    "indexed_at_ns": 1787076954709433500,
+    "word_count": 228
+  },
+  "utils/deathVoidLocation.ts": {
+    "size": 712,
+    "mtime_ns": 1786653647460556200,
+    "indexed_at_ns": 1787076954718945600,
+    "word_count": 100
+  },
+  "utils/debugLogger.ts": {
+    "size": 6147,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954729775500,
+    "word_count": 581
+  },
+  "utils/domPurifyClient.ts": {
+    "size": 4395,
+    "mtime_ns": 1781621391615653500,
+    "indexed_at_ns": 1787076954741093600,
+    "word_count": 473
+  },
+  "utils/errorHandler.test.ts": {
+    "size": 17195,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954754308700,
+    "word_count": 1625
+  },
+  "utils/errorHandler.ts": {
+    "size": 7171,
+    "mtime_ns": 1786571994874411900,
+    "indexed_at_ns": 1787076954765765900,
+    "word_count": 780
+  },
+  "utils/feedbackManager.ts": {
+    "size": 8659,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954775765900,
+    "word_count": 838
+  },
+  "utils/gameLogFilter.ts": {
+    "size": 2191,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954784766500,
+    "word_count": 262
+  },
+  "utils/healthEventUtils.ts": {
+    "size": 4252,
+    "mtime_ns": 1786571994874411900,
+    "indexed_at_ns": 1787076954793763500,
+    "word_count": 509
+  },
+  "utils/localStorageShim.ts": {
+    "size": 2675,
+    "mtime_ns": 1786659773639641600,
+    "indexed_at_ns": 1787076954802765700,
+    "word_count": 337
+  },
+  "utils/logger.test.ts": {
+    "size": 12528,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954815783200,
+    "word_count": 1132
+  },
+  "utils/logger.ts": {
+    "size": 4665,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954824312800,
+    "word_count": 514
+  },
+  "utils/logoutHandler.ts": {
+    "size": 8010,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954833311500,
+    "word_count": 933
+  },
+  "utils/lucidityEventUtils.ts": {
+    "size": 6329,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954843044700,
+    "word_count": 703
+  },
+  "utils/memoryLeakDetector.ts": {
+    "size": 7315,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954852043800,
+    "word_count": 710
+  },
+  "utils/memoryMonitor.ts": {
+    "size": 11464,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954861201800,
+    "word_count": 1104
+  },
+  "utils/messageBatcher.ts": {
+    "size": 3696,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954870200800,
+    "word_count": 410
+  },
+  "utils/messageTypeUtils.ts": {
+    "size": 11119,
+    "mtime_ns": 1786571994875417300,
+    "indexed_at_ns": 1787076954879201500,
+    "word_count": 1386
+  },
+  "utils/mythosTime.ts": {
+    "size": 3485,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954887973900,
+    "word_count": 472
+  },
+  "utils/performanceTester.ts": {
+    "size": 7639,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954896207100,
+    "word_count": 781
+  },
+  "utils/resourceCleanup.ts": {
+    "size": 5690,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954906210400,
+    "word_count": 612
+  },
+  "utils/security.ts": {
+    "size": 16339,
+    "mtime_ns": 1781567765902722300,
+    "indexed_at_ns": 1787076954915719000,
+    "word_count": 1885
+  },
+  "utils/statusParser.ts": {
+    "size": 5318,
+    "mtime_ns": 1786571994875417300,
+    "indexed_at_ns": 1787076954923717600,
+    "word_count": 559
+  },
+  "utils/testAnsi.ts": {
+    "size": 600,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954932717300,
+    "word_count": 52
+  },
+  "utils/xstateInspector.ts": {
+    "size": 1855,
+    "mtime_ns": 1775192600470359300,
+    "indexed_at_ns": 1787076954941717100,
+    "word_count": 250
+  },
+  "vite-env.d.ts": {
+    "size": 260,
+    "mtime_ns": 1781620902896389700,
+    "indexed_at_ns": 1787076954949431000,
+    "word_count": 30
+  }
+}

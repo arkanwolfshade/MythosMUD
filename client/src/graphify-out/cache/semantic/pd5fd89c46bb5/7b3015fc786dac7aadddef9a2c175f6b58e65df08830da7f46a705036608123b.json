@@ -1,1 +1,18 @@
-{"nodes": [{"id": "assets_react", "label": "React Logo", "file_type": "image", "source_file": "assets/react.svg", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null, "rationale": null}], "edges": [], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "assets_react",
+      "label": "React Logo",
+      "file_type": "image",
+      "source_file": "assets/react.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": null
+    }
+  ],
+  "edges": [],
+  "hyperedges": []
+}

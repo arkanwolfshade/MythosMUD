@@ -4,16 +4,21 @@ Guardrail: forbid asyncio.run() in server library code (AnyIO best practice).
 
 Scans server/ for asyncio.run( in .py files. Exits 0 if none found, 1 otherwise.
 Comments and string literals are excluded so only actual code is flagged.
+Generated graphify dumps and virtualenvs are not server library code and are skipped.
 
 Usage: python scripts/check_asyncio_run_guardrails.py
 """
 
+import os
 import re
 import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SERVER_DIR = PROJECT_ROOT / "server"
+
+# Nested graphify dumps and venvs are not product code (same idea as _is_graphify_path).
+_SKIP_DIR_NAMES = frozenset({".venv", "graphify-out", "site-packages"})
 
 # Pattern: asyncio.run( as executable code (not inside string or comment)
 # Simple approach: line contains asyncio.run( and is not a comment
@@ -33,6 +38,26 @@ def _strip_string_literals(line: str) -> str:
     line = re.sub(r'"[^"]*"', '""', line)
     line = re.sub(r"'[^']*'", "''", line)
     return line
+
+
+def is_skipped_scan_path(path: Path) -> bool:
+    """True when path is under a generated dump or vendored tree."""
+    return any(part in _SKIP_DIR_NAMES for part in path.parts)
+
+
+def _iter_server_library_python_files() -> list[Path]:
+    """Walk server/*.py, pruning graphify dumps and virtualenvs."""
+    collected: list[Path] = []
+    for dirpath, dirnames, filenames in os.walk(SERVER_DIR):
+        dirnames[:] = [name for name in dirnames if name not in _SKIP_DIR_NAMES]
+        for name in filenames:
+            if not name.endswith(".py"):
+                continue
+            path = Path(dirpath) / name
+            if not is_skipped_scan_path(path):
+                collected.append(path)
+    collected.sort()
+    return collected
 
 
 def check_file(path: Path) -> list[tuple[int, str]]:
@@ -56,7 +81,7 @@ def check_file(path: Path) -> list[tuple[int, str]]:
 def main() -> int:
     """Return 0 if no asyncio.run( in server/, else 1."""
     violations: list[tuple[Path, int, str]] = []
-    for py_path in sorted(SERVER_DIR.rglob("*.py")):
+    for py_path in _iter_server_library_python_files():
         for line_no, line in check_file(py_path):
             rel = py_path.relative_to(PROJECT_ROOT)
             violations.append((rel, line_no, line))
