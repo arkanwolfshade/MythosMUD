@@ -1,0 +1,176 @@
+{
+  "databases/databases.sql": {
+    "mtime": 1775192600.4859889,
+    "seen": 1787077293.1076298,
+    "ast_hash": "80e17103e91b80d05f97a384491dc8d3",
+    "semantic_hash": "80e17103e91b80d05f97a384491dc8d3"
+  },
+  "migrations/20260227_add_arena_zone_type_constraint.sql": {
+    "mtime": 1775192600.4859889,
+    "seen": 1787077293.1076298,
+    "ast_hash": "1ed1eb452e0ab9646da1955c4d35659e",
+    "semantic_hash": "1ed1eb452e0ab9646da1955c4d35659e"
+  },
+  "mythos_dev_ddl.sql": {
+    "mtime": 1786659773.6604269,
+    "seen": 1787077293.1076298,
+    "ast_hash": "393bfce45e339daba13d08b309f27414",
+    "semantic_hash": "393bfce45e339daba13d08b309f27414"
+  },
+  "mythos_e2e_ddl.sql": {
+    "mtime": 1786659773.6614692,
+    "seen": 1787077293.1076298,
+    "ast_hash": "4a47c709f1604a52598329dcbb8672ac",
+    "semantic_hash": "4a47c709f1604a52598329dcbb8672ac"
+  },
+  "mythos_unit_ddl.sql": {
+    "mtime": 1786659773.6619923,
+    "seen": 1787077293.1076298,
+    "ast_hash": "21a333c33117a297df44098658722d6e",
+    "semantic_hash": "21a333c33117a297df44098658722d6e"
+  },
+  "procedures/containers.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "d7910ffd8922a276b56c22047ca14ac5",
+    "semantic_hash": "d7910ffd8922a276b56c22047ca14ac5"
+  },
+  "procedures/dialogues.sql": {
+    "mtime": 1786659773.662519,
+    "seen": 1787077293.1076298,
+    "ast_hash": "cc023b300a52b9fddfb35ad58865fe15",
+    "semantic_hash": "cc023b300a52b9fddfb35ad58865fe15"
+  },
+  "procedures/experience.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "4cd349d57d6a764d0172f147671ee497",
+    "semantic_hash": "4cd349d57d6a764d0172f147671ee497"
+  },
+  "procedures/health.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "e1875d2ac0da607394bd8a9771032924",
+    "semantic_hash": "e1875d2ac0da607394bd8a9771032924"
+  },
+  "procedures/items.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "c5885db0eb6aed0a24ed4f8f1ec45658",
+    "semantic_hash": "c5885db0eb6aed0a24ed4f8f1ec45658"
+  },
+  "procedures/npcs.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "d7799586d4d6396ebc03aab066ded07a",
+    "semantic_hash": "d7799586d4d6396ebc03aab066ded07a"
+  },
+  "procedures/player_effects.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "8fa95f8beb2dea77a6c6162f50053f81",
+    "semantic_hash": "8fa95f8beb2dea77a6c6162f50053f81"
+  },
+  "procedures/players.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "351b55be74f2a9596e6055d3aa340671",
+    "semantic_hash": "351b55be74f2a9596e6055d3aa340671"
+  },
+  "procedures/professions.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "43b4cfc161189268b8927420684b5ca0",
+    "semantic_hash": "43b4cfc161189268b8927420684b5ca0"
+  },
+  "procedures/quests.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "61c0d896e1fb55204f187f926821a417",
+    "semantic_hash": "61c0d896e1fb55204f187f926821a417"
+  },
+  "procedures/rooms.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "3ce63de2d45f8a6a90654051eb68f944",
+    "semantic_hash": "3ce63de2d45f8a6a90654051eb68f944"
+  },
+  "procedures/skills.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "b98036da3ea8d7ac075626dc5a4d73c0",
+    "semantic_hash": "b98036da3ea8d7ac075626dc5a4d73c0"
+  },
+  "procedures/spells.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "d60b4548681715b3d0f9693231ad4cd8",
+    "semantic_hash": "d60b4548681715b3d0f9693231ad4cd8"
+  },
+  "roles/roles.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "e79769c59244ccba1eca124a51f6802a",
+    "semantic_hash": "e79769c59244ccba1eca124a51f6802a"
+  },
+  "static/schemas/emotes.schema.json": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "b9f2b1cf1edd3ec2e592ee57a2d260c0",
+    "semantic_hash": "b9f2b1cf1edd3ec2e592ee57a2d260c0"
+  },
+  "static/schemas/holidays.schema.json": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "337daa544ad71f4a2cd52f2350c78753",
+    "semantic_hash": "337daa544ad71f4a2cd52f2350c78753"
+  },
+  "static/schemas/npc_schedules.schema.json": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "5c451b2efee39177db1ec400f5535a86",
+    "semantic_hash": "5c451b2efee39177db1ec400f5535a86"
+  },
+  "static/schemas/room.schema.json": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "ac30d0aad0b55efe7b95208a80573650",
+    "semantic_hash": "ac30d0aad0b55efe7b95208a80573650"
+  },
+  "verification/users_players.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "32ef25e1428fa8ee165dcd018656aa14",
+    "semantic_hash": "32ef25e1428fa8ee165dcd018656aa14"
+  },
+  "verification/verify_ddl.sql": {
+    "mtime": 1775192600.5016565,
+    "seen": 1787077293.1076298,
+    "ast_hash": "d65b312f4bfb498f64dd3310e9d19f02",
+    "semantic_hash": "d65b312f4bfb498f64dd3310e9d19f02"
+  },
+  "LEGACY_FILES.md": {
+    "mtime": 1775192600.4859889,
+    "seen": 1787077293.1076298,
+    "ast_hash": "8cb330f386b7e2001d2bb60fff55824a",
+    "semantic_hash": "8cb330f386b7e2001d2bb60fff55824a"
+  },
+  "README.md": {
+    "mtime": 1775192600.4859889,
+    "seen": 1787077293.1076298,
+    "ast_hash": "e6b9ad6a1739d213fbbbd85db9950ef6",
+    "semantic_hash": "e6b9ad6a1739d213fbbbd85db9950ef6"
+  },
+  "databases/README.md": {
+    "mtime": 1775192600.4859889,
+    "seen": 1787077293.1076298,
+    "ast_hash": "747d295dc6959c1e1bd48883075e943d",
+    "semantic_hash": "747d295dc6959c1e1bd48883075e943d"
+  },
+  "procedures/README.md": {
+    "mtime": 1781560010.2434564,
+    "seen": 1787077293.1076298,
+    "ast_hash": "0b8eac068cb0fe1b19b46886f743a9ee",
+    "semantic_hash": "0b8eac068cb0fe1b19b46886f743a9ee"
+  }
+}

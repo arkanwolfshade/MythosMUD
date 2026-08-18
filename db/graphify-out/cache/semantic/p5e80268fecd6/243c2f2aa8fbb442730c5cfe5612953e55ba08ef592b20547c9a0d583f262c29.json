@@ -1,0 +1,1 @@
+{"nodes": [{"id": "procedures_readme", "label": "PostgreSQL Procedures and Functions", "file_type": "document", "source_file": "procedures/README.md", "rationale": "Defines the policy that all CRUD operations must use stored procedures/functions."}], "edges": [], "hyperedges": []}
