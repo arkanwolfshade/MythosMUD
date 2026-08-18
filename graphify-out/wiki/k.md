@@ -1,4 +1,4 @@
-# k
+# K
 
 > 20 nodes
 
@@ -27,8 +27,8 @@
 
 ## Relationships
 
-- [server caching cache service](server_caching_cache_service.md) (9 shared connections)
-- [server commands container helpers inventory](server_commands_container_helpers_inventory.md) (1 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (1 shared connections)
 
 ## Source Files
 

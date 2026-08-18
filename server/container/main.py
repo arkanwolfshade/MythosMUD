@@ -4,6 +4,9 @@ ApplicationContainer main module - orchestrates domain bundles and preserves pub
 Phase 1: Bundles own initialization; container delegates and flattens attributes.
 """
 
+# pyright: reportAny=false, reportExplicitAny=false
+# Reason: Flattened DI bag; bundle attributes are Any|None by design (narrow at call sites).
+
 # pylint: disable=too-many-instance-attributes,too-many-statements  # Reason: DI container requires many service instances; __init__ declares all attributes for backward compatibility
 import threading
 from pathlib import Path
@@ -173,10 +176,15 @@ class ApplicationContainer:
         self._init_extended_attributes()
 
         self._initialized: bool = False
-        self._initialization_lock = Lock()
+        self._initialization_lock: Lock = Lock()
         self._project_root: Path | None = None
 
         logger.info("ApplicationContainer created (not yet initialized)")
+
+    @classmethod
+    def peek_instance(cls) -> "ApplicationContainer | None":
+        """Return the live singleton without constructing one."""
+        return cls._instance
 
     @classmethod
     def get_instance(cls) -> "ApplicationContainer":

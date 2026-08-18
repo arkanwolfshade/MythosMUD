@@ -1,3 +1,7 @@
+# pyright: reportAny=false, reportImplicitStringConcatenation=false, reportPrivateUsage=false, reportUnknownArgumentType=false, reportUnknownVariableType=false
+# Reason: ApplicationContainer fields are intentionally Any|None (container/main.py DI flattening).
+# Startup assigns legacy app.state bindings; service types are validated at runtime in bundles.
+
 """Application startup initialization functions.
 
 This module handles all startup logic for the MythosMUD server,
@@ -7,8 +11,8 @@ including container initialization, service setup, and dependency wiring.
 import asyncio
 import logging as stdlib_logging
 import uuid as uuid_lib
-from collections.abc import Iterable
-from typing import Any
+from collections.abc import Iterable, Sized
+from typing import cast
 
 from anyio import sleep
 from fastapi import FastAPI
@@ -16,7 +20,7 @@ from fastapi import FastAPI
 from ..container import ApplicationContainer
 from ..game.chat_service import ChatService
 from ..npc.lifecycle_manager import NPCLifecycleManager
-from ..npc.population_control import NPCPopulationController
+from ..npc.population_control import NPCPopulationController, _PopulationLifecycleManager
 from ..npc.spawning_service import NPCSpawningService
 from ..npc_database import get_npc_session
 from ..services.catatonia_registry import CatatoniaRegistry
@@ -32,11 +36,12 @@ from ..services.player_respawn_service import PlayerRespawnService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..time.time_event_consumer import MythosTimeEventConsumer
 from ..time.time_service import get_mythos_chronicle
+from .lifespan_protocols import nats_is_connected
 
 logger = get_logger("server.lifespan.startup")
 
 
-async def _get_item_prototype_entries(registry: Any) -> Any:
+async def _get_item_prototype_entries(registry: object) -> object | None:
     """Return raw entries from the item prototype registry, or None on error."""
     if registry is None:
         return None
@@ -50,24 +55,23 @@ async def _get_item_prototype_entries(registry: Any) -> Any:
             entries = await entries
         except Exception:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Startup code must handle all exceptions gracefully to prevent application failure during initialization. Item registry errors are non-critical and should not block startup.
             return None
-    return entries
+    result: object | None = entries
+    return result
 
 
-async def _get_item_prototype_count(registry: Any) -> int:
+async def _get_item_prototype_count(registry: object) -> int:
     """Get count of item prototypes from registry."""
     entries = await _get_item_prototype_entries(registry)
     if isinstance(entries, Iterable):
         return sum(1 for _ in entries)
     if entries is None:
         return 0
-    try:
+    if isinstance(entries, Sized):
         return len(entries)
-    except TypeError:
-        logger.debug("Item registry returned non-iterable entries; defaulting prototype count to zero")
-        return 0
+    return 0
 
 
-def _legacy_service_bindings(container: ApplicationContainer) -> list[tuple[str, Any, str]]:
+def _legacy_service_bindings(container: ApplicationContainer) -> list[tuple[str, object, str]]:
     """Return (app.state attr, service value, display name) for legacy service bindings."""
     return [
         ("player_service", container.player_service, "Player service"),
@@ -143,6 +147,7 @@ async def setup_connection_manager(app: FastAPI, container: ApplicationContainer
     container.connection_manager.start_health_checks()
     container.connection_manager.message_queue.pending_messages.clear()
     logger.info("Cleared stale pending messages from previous server sessions")
+    await container.connection_manager.memory_monitor.start_idle_sampler()
 
     from .lifespan_event_subscriptions import subscribe_quest_events, subscribe_room_occupants_refresh
 
@@ -167,27 +172,28 @@ def _create_npc_services_on_app(app: FastAPI, container: ApplicationContainer) -
         if container.async_persistence
         else None
     )
-    app.state.npc_spawning_service = NPCSpawningService(
-        container.event_bus, None, combat_integration=combat_integration
-    )
-    app.state.npc_lifecycle_manager = NPCLifecycleManager(
+    spawning_service = NPCSpawningService(container.event_bus, None, combat_integration=combat_integration)
+    app.state.npc_spawning_service = spawning_service
+    lifecycle_manager = NPCLifecycleManager(
         event_bus=container.event_bus,
         population_controller=None,
-        spawning_service=app.state.npc_spawning_service,
+        spawning_service=spawning_service,
         persistence=container.persistence,
     )
-    app.state.npc_population_controller = NPCPopulationController(
+    app.state.npc_lifecycle_manager = lifecycle_manager
+    population_controller = NPCPopulationController(
         container.event_bus,
-        app.state.npc_spawning_service,
-        app.state.npc_lifecycle_manager,
+        spawning_service,
+        cast(_PopulationLifecycleManager, cast(object, lifecycle_manager)),
         async_persistence=container.async_persistence,
     )
-    app.state.npc_spawning_service.population_controller = app.state.npc_population_controller
-    app.state.npc_lifecycle_manager.population_controller = app.state.npc_population_controller
+    app.state.npc_population_controller = population_controller
+    spawning_service.population_controller = population_controller
+    lifecycle_manager.population_controller = population_controller
     initialize_npc_instance_service(
-        lifecycle_manager=app.state.npc_lifecycle_manager,
-        spawning_service=app.state.npc_spawning_service,
-        population_controller=app.state.npc_population_controller,
+        lifecycle_manager=lifecycle_manager,
+        spawning_service=spawning_service,
+        population_controller=population_controller,
         event_bus=container.event_bus,
     )
 
@@ -224,7 +230,7 @@ async def _start_npc_thread_manager_and_pending(app: FastAPI) -> None:
                 logger.debug("Started queued NPC thread", npc_id=npc_id)
             except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
                 logger.warning("Failed to start queued NPC thread", npc_id=npc_id, error=str(e))
-        pending_starts.clear()
+        _ = pending_starts.clear()
     except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
         logger.error("Failed to start NPC thread manager", error=str(e))
 
@@ -294,7 +300,7 @@ async def initialize_combat_services(app: FastAPI, container: ApplicationContain
         async with session_maker() as session:
             try:
                 # Clear all active hallucination timers per spec requirement
-                player_id_uuid = uuid_lib.UUID(player_id) if isinstance(player_id, str) else player_id
+                player_id_uuid = uuid_lib.UUID(player_id)
                 lucidity_service = LucidityService(session)
                 timers_cleared = await lucidity_service.clear_hallucination_timers(player_id_uuid)
                 logger.debug(
@@ -387,9 +393,10 @@ async def _ensure_room_cache_before_npc_startup() -> None:
     )
 
 
-def _log_npc_startup_errors(startup_results: dict[str, Any]) -> None:
+def _log_npc_startup_errors(startup_results: dict[str, object]) -> None:
     """Log any errors from NPC startup spawning results."""
-    errors = startup_results.get("errors") or []
+    errors_raw = startup_results.get("errors")
+    errors: list[object] = list(errors_raw) if isinstance(errors_raw, list) else []
     if not errors:
         return
     logger.warning("NPC startup spawning had errors", error_count=len(errors))
@@ -419,6 +426,47 @@ async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
     logger.info("NPC startup spawning completed - NPCs should now be present in the world")
 
 
+def _attach_combat_service(app: FastAPI, container: ApplicationContainer) -> None:
+    """Wire CombatService onto app.state and the player service."""
+    # Lazy import to avoid circular dependency with combat_service
+    from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import required to avoid circular dependency with combat_service module
+        CombatService,
+        PlayerLifecycleServices,
+        set_combat_service,
+    )
+
+    app.state.combat_service = CombatService(
+        app.state.player_combat_service,
+        container.nats_service,
+        player_lifecycle_services=PlayerLifecycleServices(
+            app.state.player_death_service,
+            app.state.player_respawn_service,
+        ),
+        event_bus=container.event_bus,
+    )
+    set_combat_service(app.state.combat_service)
+    if container.player_service is None:
+        raise RuntimeError("PlayerService must be initialized")
+    container.player_service.combat_service = app.state.combat_service
+    container.player_service.player_combat_service = app.state.player_combat_service
+    logger.info("Combat service initialized and added to app.state")
+
+
+async def _start_nats_message_handler(app: FastAPI, container: ApplicationContainer) -> None:
+    """Start the container NATS message handler, or record that it is unavailable."""
+    try:
+        if container.nats_message_handler:
+            await container.nats_message_handler.start()
+            app.state.nats_message_handler = container.nats_message_handler
+            logger.info("NATS message handler started successfully from container")
+            return
+        logger.warning("NATS message handler not available in container (NATS disabled or failed)")
+        app.state.nats_message_handler = None
+    except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
+        logger.error("Error starting NATS message handler", error=str(e))
+        app.state.nats_message_handler = None
+
+
 async def initialize_nats_and_combat_services(app: FastAPI, container: ApplicationContainer) -> None:
     """
     Initialize NATS-dependent services including combat service.
@@ -431,54 +479,19 @@ async def initialize_nats_and_combat_services(app: FastAPI, container: Applicati
         raise RuntimeError("Config must be initialized")
     is_testing = container.config.logging.environment == "unit_test"
 
-    if container.nats_service is not None and container.nats_service.is_connected():
+    if container.nats_service is not None and nats_is_connected(container.nats_service):
         logger.info("NATS service available from container")
         app.state.nats_service = container.nats_service
-
-        # Lazy import to avoid circular dependency with combat_service
-        from ..services.combat_service import (  # noqa: E402  # pylint: disable=wrong-import-position  # Reason: Lazy import required to avoid circular dependency with combat_service module
-            CombatService,
-            PlayerLifecycleServices,
-            set_combat_service,
-        )
-
-        app.state.combat_service = CombatService(
-            app.state.player_combat_service,
-            container.nats_service,
-            player_lifecycle_services=PlayerLifecycleServices(
-                app.state.player_death_service,
-                app.state.player_respawn_service,
-            ),
-            event_bus=container.event_bus,
-        )
-
-        set_combat_service(app.state.combat_service)
-
-        if container.player_service is None:
-            raise RuntimeError("PlayerService must be initialized")
-        container.player_service.combat_service = app.state.combat_service
-        container.player_service.player_combat_service = app.state.player_combat_service
-        logger.info("Combat service initialized and added to app.state")
-
-        try:
-            if container.nats_message_handler:
-                await container.nats_message_handler.start()
-                app.state.nats_message_handler = container.nats_message_handler
-                logger.info("NATS message handler started successfully from container")
-            else:
-                logger.warning("NATS message handler not available in container (NATS disabled or failed)")
-                app.state.nats_message_handler = None
-        except (ValueError, TypeError, AttributeError, KeyError, RuntimeError) as e:
-            logger.error("Error starting NATS message handler", error=str(e))
-            app.state.nats_message_handler = None
-    else:
-        if is_testing:
-            logger.warning("NATS service not available in test environment - using mock NATS service")
-            app.state.nats_service = None
-            app.state.nats_message_handler = None
-        else:
-            logger.error("NATS service not available - NATS is required for chat functionality")
-            raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
+        _attach_combat_service(app, container)
+        await _start_nats_message_handler(app, container)
+        return
+    if is_testing:
+        logger.warning("NATS service not available in test environment - using mock NATS service")
+        app.state.nats_service = None
+        app.state.nats_message_handler = None
+        return
+    logger.error("NATS service not available - NATS is required for chat functionality")
+    raise RuntimeError("NATS connection failed - NATS is mandatory for chat system")
 
 
 async def initialize_chat_service(app: FastAPI, container: ApplicationContainer) -> None:
@@ -509,7 +522,8 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
         subject_manager=subject_manager,
     )
 
-    if app.state.chat_service.nats_service and app.state.chat_service.nats_service.is_connected():
+    nats_service_obj = app.state.chat_service.nats_service
+    if nats_service_obj and nats_is_connected(nats_service_obj):
         logger.info("Chat service NATS connection verified")
     elif is_testing:
         logger.info("Chat service running in test mode without NATS connection")
@@ -518,6 +532,3 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
         raise RuntimeError("Chat service NATS connection failed - NATS is mandatory for chat system")
 
     logger.info("Chat service initialized")
-
-
-# Re-export for backward compatibility (deprecated path; tests use this)

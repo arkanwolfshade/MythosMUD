@@ -1,5 +1,8 @@
 """Unit tests for server.monitoring.performance_monitor."""
 
+# pyright: reportPrivateUsage=false, reportUnusedFunction=false
+# Reason: autouse fixture resets perf_mod._performance_monitor; tests touch module private state.
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock
@@ -10,7 +13,6 @@ import server.monitoring.performance_monitor as perf_mod
 from server.monitoring.performance_monitor import (
     PerformanceMonitor,
     get_performance_monitor,
-    get_performance_stats,
     measure_performance,
     record_performance_metric,
     reset_performance_metrics,
@@ -63,7 +65,7 @@ def test_slow_and_failed_operations() -> None:
 
 def test_alert_callback_and_callback_error_is_swallowed() -> None:
     monitor = PerformanceMonitor(alert_threshold_ms=1.0)
-    callback = MagicMock(side_effect=RuntimeError("boom"))
+    callback: MagicMock = MagicMock(side_effect=RuntimeError("boom"))
     monitor.add_alert_callback(callback)
     monitor.record_metric("slow_op", 5.0)
     callback.assert_called_once()
@@ -98,12 +100,25 @@ def test_measure_performance_success_and_failure() -> None:
     assert any(m.operation == "bad_op" for m in failed)
 
 
+def test_operation_stats_drop_metrics_evicted_from_primary_history() -> None:
+    monitor = PerformanceMonitor(max_metrics=3, alert_threshold_ms=10_000.0)
+    monitor.record_metric("old", 1.0)
+    monitor.record_metric("keep", 1.0)
+    monitor.record_metric("keep", 1.0)
+    monitor.record_metric("keep", 1.0)
+    assert len(monitor.metrics) == 3
+    assert all(metric.operation == "keep" for metric in monitor.metrics)
+    assert "old" not in monitor.operation_stats
+    assert sum(len(values) for values in monitor.operation_stats.values()) == 3
+
+
 def test_module_level_helpers_use_global_monitor() -> None:
+    monitor = get_performance_monitor()
     record_performance_metric("helper_op", 12.0, success=True)
-    stats = get_performance_stats("helper_op")
+    stats = monitor.get_operation_stats("helper_op")
     assert stats is not None
     assert stats.count == 1
-    all_stats = get_performance_stats()
+    all_stats = monitor.get_all_stats()
     assert "helper_op" in all_stats
     reset_performance_metrics()
-    assert get_performance_stats("helper_op") is None
+    assert monitor.get_operation_stats("helper_op") is None

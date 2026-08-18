@@ -10,10 +10,10 @@ of our systems is essential for maintaining their stability and efficiency.
 
 import time
 from collections import defaultdict, deque
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TypedDict
 
 import numpy as np
 
@@ -30,7 +30,7 @@ class PerformanceMetric:
     duration_ms: float
     timestamp: float
     success: bool
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, object] = field(default_factory=dict)
 
 
 @dataclass
@@ -45,6 +45,25 @@ class PerformanceStats:  # pylint: disable=too-many-instance-attributes  # Reaso
     max_duration_ms: float
     success_rate: float
     error_rate: float
+
+
+class RecentMetricExport(TypedDict):
+    """One exported performance metric row."""
+
+    operation: str
+    duration_ms: float
+    timestamp: float
+    success: bool
+    metadata: dict[str, object]
+
+
+class ExportMetrics(TypedDict):
+    """Metrics export payload."""
+
+    total_metrics: int
+    operations: list[str]
+    stats: dict[str, PerformanceStats | None]
+    recent_metrics: list[RecentMetricExport]
 
 
 class PerformanceMonitor:
@@ -63,16 +82,16 @@ class PerformanceMonitor:
             max_metrics: Maximum number of metrics to keep in memory
             alert_threshold_ms: Threshold for performance alerts (milliseconds)
         """
-        self.max_metrics = max_metrics
-        self.alert_threshold_ms = alert_threshold_ms
+        self.max_metrics: int = max_metrics
+        self.alert_threshold_ms: float = alert_threshold_ms
         self.metrics: deque[PerformanceMetric] = deque(maxlen=max_metrics)
         self.operation_stats: dict[str, list[PerformanceMetric]] = defaultdict(list)
-        self.alert_callbacks: list[Callable[[PerformanceMetric, dict[str, Any]], None]] = []
+        self.alert_callbacks: list[Callable[[PerformanceMetric, dict[str, object]], None]] = []
 
         logger.info("Performance monitor initialized", max_metrics=max_metrics, alert_threshold_ms=alert_threshold_ms)
 
     def record_metric(
-        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, Any] | None = None
+        self, operation: str, duration_ms: float, success: bool = True, metadata: dict[str, object] | None = None
     ) -> None:
         """
         Record a performance metric.
@@ -90,9 +109,10 @@ class PerformanceMonitor:
             operation=operation, duration_ms=duration_ms, timestamp=time.time(), success=success, metadata=metadata
         )
 
-        # Store the metric
+        evicted = self.metrics[0] if len(self.metrics) == self.max_metrics else None
         self.metrics.append(metric)
         self.operation_stats[operation].append(metric)
+        self._evict_operation_stats(evicted)
 
         # Check for alerts
         if duration_ms > self.alert_threshold_ms:
@@ -109,6 +129,20 @@ class PerformanceMonitor:
             metadata=metadata,
             alert_triggered=duration_ms > self.alert_threshold_ms,
         )
+
+    def _evict_operation_stats(self, evicted: PerformanceMetric | None) -> None:
+        """Drop an evicted primary-history metric from the per-operation view."""
+        if evicted is None:
+            return
+        bucket = self.operation_stats.get(evicted.operation)
+        if not bucket:
+            return
+        if bucket[0] is evicted:
+            del bucket[0]
+        elif evicted in bucket:
+            bucket.remove(evicted)
+        if not bucket:
+            del self.operation_stats[evicted.operation]
 
     def get_operation_stats(self, operation: str) -> PerformanceStats | None:
         """
@@ -187,7 +221,7 @@ class PerformanceMonitor:
         """
         return [m for m in self.metrics if not m.success]
 
-    def add_alert_callback(self, callback: Callable[[PerformanceMetric, dict[str, Any]], None]) -> None:
+    def add_alert_callback(self, callback: Callable[[PerformanceMetric, dict[str, object]], None]) -> None:
         """
         Add an alert callback function.
 
@@ -203,7 +237,7 @@ class PerformanceMonitor:
         Args:
             metric: The performance metric that triggered the alert
         """
-        alert_data = {
+        alert_data: dict[str, object] = {
             "operation": metric.operation,
             "duration_ms": metric.duration_ms,
             "threshold_ms": self.alert_threshold_ms,
@@ -233,7 +267,7 @@ class PerformanceMonitor:
 
         logger.info("Performance metrics reset")
 
-    def export_metrics(self) -> dict[str, Any]:
+    def export_metrics(self) -> ExportMetrics:
         """
         Export metrics data for external monitoring systems.
 
@@ -261,6 +295,14 @@ class PerformanceMonitor:
 _performance_monitor: PerformanceMonitor | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
 
 
+def peek_performance_monitor() -> PerformanceMonitor | None:
+    """Return the live singleton, or None if it was never constructed.
+
+    Idle sampling uses this so metrics collection is not created as a side effect.
+    """
+    return _performance_monitor
+
+
 def get_performance_monitor() -> PerformanceMonitor:
     """
     Get the global performance monitor instance.
@@ -276,8 +318,8 @@ def get_performance_monitor() -> PerformanceMonitor:
 
 @contextmanager
 def measure_performance(
-    operation: str, metadata: dict[str, Any] | None = None, monitor: PerformanceMonitor | None = None
-) -> Iterator[None]:
+    operation: str, metadata: dict[str, object] | None = None, monitor: PerformanceMonitor | None = None
+) -> Generator[None, None, None]:
     """
     Context manager for measuring operation performance.
 
@@ -322,7 +364,7 @@ def record_performance_metric(
     operation: str,
     duration_ms: float,
     success: bool = True,
-    metadata: dict[str, Any] | None = None,
+    metadata: dict[str, object] | None = None,
     monitor: PerformanceMonitor | None = None,
 ) -> None:
     """
@@ -341,7 +383,9 @@ def record_performance_metric(
     monitor.record_metric(operation, duration_ms, success, metadata)
 
 
-def get_performance_stats(operation: str | None = None, monitor: PerformanceMonitor | None = None) -> Any:
+def get_performance_stats(
+    operation: str | None = None, monitor: PerformanceMonitor | None = None
+) -> PerformanceStats | None | dict[str, PerformanceStats | None]:
     """
     Get performance statistics.
 

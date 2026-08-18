@@ -128,23 +128,17 @@ async def process_npc_maintenance(app: FastAPI, tick_count: int) -> None:
         logger.error("Error during NPC maintenance", tick_count=tick_count, error=str(e))
 
 
-async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
-    """Broadcast game tick event to all connected players."""
+def _tick_broadcast_payload(tick_count: int, websocket_count: int) -> dict[str, object]:
+    """Build game_tick event payload (Mythos clock + calendar)."""
     chronicle = get_mythos_chronicle()
     mythos_dt = chronicle.get_current_mythos_datetime()
     components = chronicle.get_calendar_components(mythos_dt)
-    mythos_clock = chronicle.format_clock(mythos_dt)
-
-    container = _app_container(app)
-    manager = None if container is None else container.connection_manager
-    websocket_count = 0 if manager is None else len(manager.player_websockets)
-
-    tick_data: dict[str, object] = {
+    return {
         "tick_number": tick_count,
         "timestamp": datetime.datetime.now(datetime.UTC).isoformat(),
         "active_players": websocket_count,
         "mythos_datetime": mythos_dt.isoformat(),
-        "mythos_clock": mythos_clock,
+        "mythos_clock": chronicle.format_clock(mythos_dt),
         "month_name": components.month_name,
         "day_of_month": components.day_of_month,
         "day_name": components.day_name,
@@ -154,6 +148,18 @@ async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
         "is_daytime": components.is_daytime,
         "is_witching_hour": components.is_witching_hour,
     }
+
+
+async def broadcast_tick_event(app: FastAPI, tick_count: int) -> None:
+    """Broadcast game tick event to all connected players."""
+    container = _app_container(app)
+    manager = None if container is None else container.connection_manager
+    websocket_count = 0 if manager is None else len(manager.player_websockets)
+    if not websocket_count:
+        logger.debug("Skipping game tick broadcast; no connected players", tick_count=tick_count)
+        return
+
+    tick_data = _tick_broadcast_payload(tick_count, websocket_count)
     logger.debug(
         "Broadcasting game tick",
         tick_count=tick_count,

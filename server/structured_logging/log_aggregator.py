@@ -18,7 +18,6 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .log_time_formats import LOG_EXPORT_TIMESTAMP, LOG_HOUR_BUCKET
@@ -34,7 +33,7 @@ class LogEntry:  # pylint: disable=too-many-instance-attributes  # Reason: Log e
     level: str
     logger_name: str
     message: str
-    data: dict[str, Any] = field(default_factory=dict)
+    data: dict[str, object] = field(default_factory=dict)
     correlation_id: str | None = None
     user_id: str | None = None
     session_id: str | None = None
@@ -65,6 +64,29 @@ class LogQueryFilter:
     limit: int = 1000
 
 
+def _query_filter_from_mapping(filters: dict[str, object]) -> LogQueryFilter:
+    """Build a LogQueryFilter from untyped export filter keys."""
+    limit_raw = filters.get("limit", 1000)
+    limit = limit_raw if isinstance(limit_raw, int) else 1000
+    return LogQueryFilter(
+        level=_optional_str_from_object(filters.get("level")),
+        logger_name=_optional_str_from_object(filters.get("logger_name")),
+        user_id=_optional_str_from_object(filters.get("user_id")),
+        correlation_id=_optional_str_from_object(filters.get("correlation_id")),
+        start_time=_optional_datetime_from_object(filters.get("start_time")),
+        end_time=_optional_datetime_from_object(filters.get("end_time")),
+        limit=limit,
+    )
+
+
+def _optional_str_from_object(value: object) -> str | None:
+    return value if isinstance(value, str) else None
+
+
+def _optional_datetime_from_object(value: object) -> datetime | None:
+    return value if isinstance(value, datetime) else None
+
+
 class LogAggregator:
     """
     Centralized log aggregation and collection system.
@@ -84,16 +106,16 @@ class LogAggregator:
             aggregation_interval: Interval for log aggregation (seconds)
             export_path: Path for log export files
         """
-        self.max_entries = max_entries
-        self.aggregation_interval = aggregation_interval
-        self.export_path = Path(export_path) if export_path else None
+        self.max_entries: int = max_entries
+        self.aggregation_interval: float = aggregation_interval
+        self.export_path: Path | None = Path(export_path) if export_path else None
 
         # Log storage
         self.log_entries: queue.Queue[LogEntry] = queue.Queue(maxsize=max_entries)
         self.aggregated_logs: list[LogEntry] = []
 
         # Statistics
-        self.stats = LogAggregationStats(
+        self.stats: LogAggregationStats = LogAggregationStats(
             total_entries=0,
             entries_by_level=defaultdict(int),
             entries_by_logger=defaultdict(int),
@@ -104,7 +126,7 @@ class LogAggregator:
 
         # Processing
         self.processing_thread: threading.Thread | None = None
-        self.shutdown_event = threading.Event()
+        self.shutdown_event: threading.Event = threading.Event()
         self.aggregation_callbacks: list[Callable[[LogEntry], None]] = []
 
         # Start processing thread
@@ -123,7 +145,7 @@ class LogAggregator:
             self.log_entries.put_nowait(log_entry)
         except queue.Full:
             try:
-                self.log_entries.get_nowait()
+                _ = self.log_entries.get_nowait()
                 self.log_entries.put_nowait(log_entry)
             except queue.Empty:
                 pass
@@ -217,7 +239,7 @@ class LogAggregator:
         self,
         file_path: str | None = None,
         format_type: str = "json",
-        filters: dict[str, Any] | None = None,  # pylint: disable=redefined-builtin  # noqa: F811  # Reason: 'format' renamed to 'format_type' to avoid builtin shadowing
+        filters: dict[str, object] | None = None,  # pylint: disable=redefined-builtin  # noqa: F811  # Reason: 'format' renamed to 'format_type' to avoid builtin shadowing
     ) -> str:
         """
         Export logs to a file.
@@ -243,7 +265,7 @@ class LogAggregator:
 
         # Get logs to export
         if filters:
-            logs = self.get_logs(LogQueryFilter(**filters))
+            logs = self.get_logs(_query_filter_from_mapping(filters))
         else:
             logs = self.aggregated_logs
 
@@ -326,7 +348,7 @@ class LogAggregator:
 
     def _export_json(self, file_path: Path, logs: list[LogEntry]) -> None:
         """Export logs in JSON format."""
-        export_data = []
+        export_data: list[dict[str, object]] = []
         for log_entry in logs:
             export_data.append(
                 {
@@ -371,6 +393,14 @@ class LogAggregator:
 
 # Global log aggregator instance
 _log_aggregator: LogAggregator | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
+
+
+def peek_log_aggregator() -> LogAggregator | None:
+    """Return the live singleton, or None if it was never constructed.
+
+    Idle sampling uses this so the in-memory aggregator is not created as a side effect.
+    """
+    return _log_aggregator
 
 
 def get_log_aggregator() -> LogAggregator:

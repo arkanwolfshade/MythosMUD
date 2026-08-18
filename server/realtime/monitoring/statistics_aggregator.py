@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from fastapi import WebSocket
 
     from ..connection_models import ConnectionMetadata
-    from ..memory_monitor import MemoryMonitor
+    from ..memory_monitor import ConnectionStatsSnapshot, MemoryMonitor
     from ..message_queue import MessageQueue
     from ..rate_limiter import RateLimiter
     from ..room_subscription_manager import RoomSubscriptionManager
@@ -551,7 +551,7 @@ class StatisticsAggregator:
                 if now_ts - timestamp > max_connection_age:
                     stale_connections += 1
 
-            connection_stats = {
+            connection_stats: ConnectionStatsSnapshot = {
                 "connection_attempts": len(self.rate_limiter.connection_attempts),
                 "pending_messages": len(self.message_queue.pending_messages),
                 "stale_connections": stale_connections,

@@ -6,8 +6,8 @@
     "organization": "arkanwolfshade",
     "repositoryId": "809353",
     "repositoryName": "mythosmud_data",
-    "createdAt": "2026-08-17T16:16:23.774Z",
-    "updatedAt": "2026-08-17T16:16:23.774Z",
+    "createdAt": "2026-08-17T22:23:19.883Z",
+    "updatedAt": "2026-08-17T22:23:19.883Z",
     "languages": [
       "HTML",
       "JSON",
@@ -46,7 +46,7 @@
     },
     {
       "toolId": "Semgrep",
-      "localConfigurationFile": "c:\\projects\\MythosMUD\\.semgrep.yml",
+      "localConfigurationFile": "C:\\projects\\MythosMUD\\.semgrep.yml",
       "patterns": [
         {
           "patternId": "Semgrep_codacy.bash.security.hard-coded-password"

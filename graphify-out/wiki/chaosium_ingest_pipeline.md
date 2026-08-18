@@ -1,4 +1,4 @@
-# chaosium ingest pipeline
+# Chaosium Ingest Pipeline
 
 > 2 nodes
 

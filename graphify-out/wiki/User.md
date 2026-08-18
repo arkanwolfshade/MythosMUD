@@ -2,12 +2,22 @@
 
 > God node · 293 connections · `server/models/user.py`
 
-**Community:** [claude rules fastapi](claude_rules_fastapi.md)
+**Community:** [pytest.md](pytest.md.md)
 
 ## Connections by Relation
 
 ### calls
+- _admin_user() `EXTRACTED`
+- _create_user_object() `EXTRACTED`
 - quest_seed_data() `EXTRACTED`
+- test_user_get_display_name_all_empty() `EXTRACTED`
+- test_user_get_display_name_falls_back_to_id() `EXTRACTED`
+- test_user_get_display_name_with_display_name() `EXTRACTED`
+- test_user_get_display_name_with_empty_display_name() `EXTRACTED`
+- test_user_get_display_name_without_display_name() `EXTRACTED`
+- test_user_is_authenticated_when_active() `EXTRACTED`
+- test_user_is_authenticated_when_inactive() `EXTRACTED`
+- test_user_repr() `EXTRACTED`
 - .create_user() `INFERRED`
 - .verify_token() `INFERRED`
 - .verify_token() `INFERRED`
@@ -16,25 +26,25 @@
 - models/user.py `EXTRACTED`
 
 ### imports
-- models/player.py `EXTRACTED`
+- [models/player.py](models-player.py.md) `EXTRACTED`
 - server/models/__init__.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
-- api/character_creation.py `EXTRACTED`
+- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - maps.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- container_endpoints_basic.py `EXTRACTED`
-- test_admin_auth_service.py `EXTRACTED`
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
 - test_maps.py `EXTRACTED`
-- test_users.py `EXTRACTED`
+- [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- test_metrics_endpoints.py `EXTRACTED`
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - api/player_effects.py `EXTRACTED`
-- test_npc_definitions_api.py `EXTRACTED`
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
 - npc_definitions_api.py `EXTRACTED`
 
 ### inherits
@@ -76,7 +86,6 @@
 - Base `INFERRED`
 - Invite `INFERRED`
 - _admin_user() `INFERRED`
-- _admin_user() `INFERRED`
 - test_lucidity_adjustment_round_trip() `INFERRED`
 - test_add_player_effect_generates_id() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
@@ -92,6 +101,7 @@
 - test_get_ascii_minimap_success() `INFERRED`
 - test_get_current_superuser_failure() `INFERRED`
 - test_get_current_superuser_with_none_user() `INFERRED`
+- test_get_current_verified_user_failure() `INFERRED`
 
 ---
 
