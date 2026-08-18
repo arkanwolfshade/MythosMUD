@@ -1,64 +1,110 @@
 # Player
 
-> 159 nodes
+> God node · 231 connections · `server/models/player.py`
 
-## Key Concepts
+**Community:** [server async persistence](server_async_persistence.md)
 
-- **Player** (231 connections) — `server/models/player.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **health_repository.py** (18 connections) — `server/persistence/repositories/health_repository.py`
-- **asyncio** (9 connections)
-- **test_health_repository_cold_resistance.py** (8 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
-- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
-- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
-- **test_cold_damage_resistance_reduces_damage()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **test_damage_defaults_current_dp_to_20_when_missing()** (5 connections) — `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- **Player** (5 connections)
-- **_convert_legacy_stats_string()** (4 connections) — `server/models/player.py`
-- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
-- **test_damage_player_logs_and_reraises_on_unexpected_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_damage_player_rejects_negative()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_heal_player_logs_and_reraises_on_unexpected_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_heal_player_max_dp_fallback_when_zero()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_heal_player_no_op_when_already_full()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_heal_player_rejects_negative()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- *... and 134 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- row_to_player() `EXTRACTED`
+- .create_player_with_stats() `EXTRACTED`
+- .create_player() `EXTRACTED`
+- quest_seed_data() `EXTRACTED`
+- test_player_add_experience() `EXTRACTED`
+- test_player_add_experience_zero() `EXTRACTED`
+- test_player_apply_dp_change_became_dead() `EXTRACTED`
+- test_player_apply_dp_change_became_mortally_wounded() `EXTRACTED`
+- test_player_apply_dp_change_updates_dp() `EXTRACTED`
+- test_player_apply_dp_decay_caps_at_negative_10() `EXTRACTED`
+- test_player_apply_dp_decay_changes_posture_when_crossing_zero() `EXTRACTED`
+- test_player_apply_dp_decay_reduces_dp() `EXTRACTED`
+- test_player_creation() `EXTRACTED`
+- test_player_defaults() `EXTRACTED`
+- test_player_get_combat_stats() `EXTRACTED`
+- test_player_get_combat_stats_defaults() `EXTRACTED`
+- test_player_get_equipped_items() `EXTRACTED`
+- test_player_get_equipped_items_empty() `EXTRACTED`
+- test_player_get_health_percentage() `EXTRACTED`
+- test_player_get_health_percentage_full() `EXTRACTED`
 
-- [get_logger](get_logger.md) (29 shared connections)
-- [DatabaseError](DatabaseError.md) (22 shared connections)
-- [LucidityService](LucidityService.md) (21 shared connections)
-- [models/player.py](models-player.py.md) (18 shared connections)
-- [command_result_text](command_result_text.md) (13 shared connections)
-- [coerce_int](coerce_int.md) (11 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (10 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (7 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (6 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (5 shared connections)
-- [test_player_repository_room.py](test_player_repository_room.py.md) (4 shared connections)
+### contains
+- models/player.py `EXTRACTED`
 
-## Source Files
+### imports
+- server/models/__init__.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- models/user.py `EXTRACTED`
+- look_command.py `EXTRACTED`
+- test_player_respawn_service.py `EXTRACTED`
+- test_player_death_service.py `EXTRACTED`
+- lucidity_service.py `EXTRACTED`
+- inventory_command_helpers.py `EXTRACTED`
+- test_player_model.py `EXTRACTED`
+- test_websocket_initial_state.py `EXTRACTED`
+- inventory_equip_command.py `EXTRACTED`
+- websocket_initial_state.py `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- test_player_repository.py `EXTRACTED`
+- player_respawn_service.py `EXTRACTED`
+- websocket_helpers.py `EXTRACTED`
+- test_inventory_equip_command.py `EXTRACTED`
+- service.py `EXTRACTED`
+- test_async_persistence_delegates.py `EXTRACTED`
+- inventory_pickup_command.py `EXTRACTED`
 
-- `server/models/player.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+### inherits
+- Base `EXTRACTED`
 
-## Audit Trail
+### method
+- .get_stats() `EXTRACTED`
+- .set_stats() `EXTRACTED`
+- .apply_dp_decay() `EXTRACTED`
+- .restore_to_full_health() `EXTRACTED`
+- .apply_dp_change() `EXTRACTED`
+- .is_alive() `EXTRACTED`
+- .is_mortally_wounded() `EXTRACTED`
+- .is_dead() `EXTRACTED`
+- .get_health_state() `EXTRACTED`
+- .get_combat_stats() `EXTRACTED`
+- .get_health_percentage() `EXTRACTED`
+- .set_inventory() `EXTRACTED`
+- .set_equipped_items() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__repr__() `EXTRACTED`
+- .get_inventory() `EXTRACTED`
+- .get_status_effects() `EXTRACTED`
+- .set_status_effects() `EXTRACTED`
+- .get_equipped_items() `EXTRACTED`
+- .add_experience() `EXTRACTED`
 
-- EXTRACTED: 341 (76%)
-- INFERRED: 107 (24%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Player model for game data. Stores all game-specific data for a user including… `EXTRACTED`
+
+### references
+- _convert_legacy_stats_string() `EXTRACTED`
+
+### uses
+- [User](User.md) `INFERRED`
+- PlayerLucidity `INFERRED`
+- Base `INFERRED`
+- HealthRepository `INFERRED`
+- PlayerRepository `INFERRED`
+- ExperienceRepository `INFERRED`
+- SpellTargetingService `INFERRED`
+- PlayerDeathService `INFERRED`
+- LucidityExposureState `INFERRED`
+- PlayerRepositoryProtocol `INFERRED`
+- LucidityCooldown `INFERRED`
+- LucidityAdjustmentLog `INFERRED`
+- PlayerSpell `INFERRED`
+- PositionState `INFERRED`
+- PlayerSavePreparer `INFERRED`
+- PlayerSkill `INFERRED`
+- PlayerEffect `INFERRED`
+- validate_and_fix_player_room() `INFERRED`
+- _sample_work() `INFERRED`
+- should_skip_room_validation() `INFERRED`
 
 ---
 

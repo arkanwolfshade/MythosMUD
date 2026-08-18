@@ -1,51 +1,61 @@
-# MemoryMonitor
+# memorymonitor
 
-> 53 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **MemoryMonitor** (26 connections) — `client/src/utils/memoryMonitor.ts`
-- **MemoryLeakDetector** (16 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **memoryMonitor.ts** (11 connections) — `client/src/utils/memoryMonitor.ts`
-- **useMemoryMonitor()** (8 connections) — `client/src/utils/memoryMonitor.ts`
-- **memoryLeakDetector.ts** (8 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **MemorySnapshot** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **useMemoryLeakDetector()** (7 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.generateReport()** (7 connections) — `client/src/utils/memoryMonitor.ts`
-- **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
-- **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
-- **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
-- **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
-- **.calculateGrowthRate()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.checkMemory()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.detectMemoryLeak()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.getMemoryStats()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.setCallbacks()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.start()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
-- **.getComponentStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.getOverallStats()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 28 more nodes in this community*
+- **lifespan_protocols.py** (30 connections) — `server/app/lifespan_protocols.py`
+- **test_lifespan_shutdown.py** (27 connections) — `server/tests/unit/app/test_lifespan_shutdown.py`
+- **lifespan_shutdown.py** (24 connections) — `server/app/lifespan_shutdown.py`
+- **container/__init__.py** (18 connections) — `server/container/__init__.py`
+- **shutdown_services()** (14 connections) — `server/app/lifespan_shutdown.py`
+- **asyncio** (14 connections)
+- **_resolve_service()** (10 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_connection_manager()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (9 connections)
+- **_shutdown_event_bus()** (8 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (8 connections)
+- **lifespan_connection_manager()** (7 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_mythos_chronicle()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **lifespan_event_bus()** (6 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_memory_monitor()** (6 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_nats_handler()** (6 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_task_registry()** (6 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_tick_scheduler()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_resolve_container_field()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_container_attr()** (5 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_container()** (5 connections) — `server/app/lifespan_protocols.py`
+- **FastAPI** (5 connections)
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (3 shared connections)
+- [server app lifespan startup legacy](server_app_lifespan_startup_legacy.md) (11 shared connections)
+- [claude rules asyncio](claude_rules_asyncio.md) (5 shared connections)
+- [server app lifespan](server_app_lifespan.md) (4 shared connections)
+- [server realtime event handlers](server_realtime_event_handlers.md) (3 shared connections)
+- [server app task registry](server_app_task_registry.md) (3 shared connections)
+- [server container bundles game gamebundle](server_container_bundles_game_gamebundle.md) (3 shared connections)
+- [moduletype](moduletype.md) (2 shared connections)
+- [server tests unit time test](server_tests_unit_time_test.md) (2 shared connections)
+- [server realtime connection error methods](server_realtime_connection_error_methods.md) (2 shared connections)
+- [server app lifespan startup](server_app_lifespan_startup.md) (2 shared connections)
+- [server realtime memory monitor memorymonitor](server_realtime_memory_monitor_memorymonitor.md) (1 shared connections)
+- [server app lifespan protocols nats](server_app_lifespan_protocols_nats.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/memoryLeakDetector.test.ts`
-- `client/src/utils/__tests__/memoryMonitor.test.ts`
-- `client/src/utils/memoryLeakDetector.ts`
-- `client/src/utils/memoryMonitor.ts`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_shutdown.py`
+- `server/container/__init__.py`
+- `server/tests/unit/app/test_lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (99%)
+- EXTRACTED: 195 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

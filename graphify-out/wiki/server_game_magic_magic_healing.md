@@ -1,0 +1,57 @@
+# server game magic magic healing
+
+> 32 nodes
+
+## Key Concepts
+
+- **MagicServiceHealingMixin** (14 connections) — `server/game/magic/magic_healing_events.py`
+- **_HealingService** (12 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
+- **UUID** (6 connections)
+- **asyncio** (6 connections)
+- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **Any** (5 connections)
+- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
+- **test_publish_dp_event_fallback_send_game_event()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_dp_event_uses_event_bus()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_or_send_dp_update_no_player()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_or_send_dp_update_publishes_event()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_send_healing_update_event_skips_without_healing()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_effect_result_has_healing()** (3 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **.__init__()** (1 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Mixin for MagicService: send DP update events when spells apply healing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True when healing was applied to another player (heal-other, not steal-life or…** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **True if effect result indicates healing was applied (success, effect_applied,…** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Send player_dp_updated event for the healed player (target for heal other,…** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Load player stats and delegate DP event publishing.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- *... and 7 more nodes in this community*
+
+## Relationships
+
+- [server game magic spell materials](server_game_magic_spell_materials.md) (13 shared connections)
+- [server api character creation](server_api_character_creation.md) (2 shared connections)
+- [server events event types playerdeliriumrespawnedevent](server_events_event_types_playerdeliriumrespawnedevent.md) (2 shared connections)
+- [server game magic casting state](server_game_magic_casting_state.md) (1 shared connections)
+- [server game magic magic service](server_game_magic_magic_service.md) (1 shared connections)
+- [server container main applicationcontainer get](server_container_main_applicationcontainer_get.md) (1 shared connections)
+- [followtargetvalue](followtargetvalue.md) (1 shared connections)
+
+## Source Files
+
+- `server/game/magic/magic_healing_events.py`
+- `server/tests/unit/game/magic/test_magic_healing_events.py`
+
+## Audit Trail
+
+- EXTRACTED: 66 (97%)
+- INFERRED: 2 (3%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

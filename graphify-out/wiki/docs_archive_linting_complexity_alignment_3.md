@@ -1,0 +1,36 @@
+# docs archive linting complexity alignment
+
+> 12 nodes
+
+## Key Concepts
+
+- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Configuration** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **What It Measures** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Why It's Useful** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+
+## Relationships
+
+- [docs archive linting complexity alignment](docs_archive_linting_complexity_alignment.md) (2 shared connections)
+
+## Source Files
+
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+
+## Audit Trail
+
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

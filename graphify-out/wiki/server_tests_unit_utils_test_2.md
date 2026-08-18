@@ -1,0 +1,57 @@
+# server tests unit utils test
+
+> 84 nodes
+
+## Key Concepts
+
+- **test_command_processor.py** (41 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
+- **get_command_processor()** (7 connections) — `server/utils/command_processor.py`
+- **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
+- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
+- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
+- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
+- **test_get_command_help_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_attribute_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **.__init__()** (3 connections) — `server/utils/command_processor.py`
+- **Any** (3 connections)
+- **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_combat_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_multiple_attributes()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_player_name()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_extract_command_data_with_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **test_get_command_help_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
+- *... and 59 more nodes in this community*
+
+## Relationships
+
+- [claude rules pydantic](claude_rules_pydantic.md) (6 shared connections)
+- [server tests unit utils test](server_tests_unit_utils_test.md) (3 shared connections)
+- [attributeerror](attributeerror.md) (2 shared connections)
+- [mythosvalidationerror](mythosvalidationerror.md) (2 shared connections)
+- [server command handler processing](server_command_handler_processing.md) (1 shared connections)
+- [claude rules pytest](claude_rules_pytest.md) (1 shared connections)
+- [claude rules sqlalchemy](claude_rules_sqlalchemy.md) (1 shared connections)
+
+## Source Files
+
+- `server/tests/unit/utils/test_command_processor.py`
+- `server/utils/command_processor.py`
+
+## Audit Trail
+
+- EXTRACTED: 103 (94%)
+- INFERRED: 6 (6%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

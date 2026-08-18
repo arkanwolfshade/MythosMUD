@@ -1,0 +1,29 @@
+# server alembic versions 2026 02
+
+> 5 nodes
+
+## Key Concepts
+
+- **2026_02_09_add_player_effects_table.py** (3 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+
+## Relationships
+
+- [claude rules sqlalchemy](claude_rules_sqlalchemy.md) (1 shared connections)
+
+## Source Files
+
+- `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+
+## Audit Trail
+
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

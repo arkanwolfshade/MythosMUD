@@ -1,0 +1,52 @@
+# scripts ci quality fragmentation ai
+
+> 40 nodes
+
+## Key Concepts
+
+- **test_quality_fragmentation_guard.py** (25 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **Path** (8 connections)
+- **test_collect_repo_texts_reports_unreadable_files()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_emit_results_does_not_print_failure_or_warning_bodies()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_does_not_flag_tiny_function_with_two_usages()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_flags_single_use_for_non_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_flags_tiny_single_use_function()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **Protocol** (4 connections)
+- **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
+- *... and 15 more nodes in this community*
+
+## Relationships
+
+- [scripts ci quality fragmentation ai](scripts_ci_quality_fragmentation_ai.md) (17 shared connections)
+- [claude rules pytest](claude_rules_pytest.md) (1 shared connections)
+
+## Source Files
+
+- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `server/tests/unit/test_quality_fragmentation_guard.py`
+
+## Audit Trail
+
+- EXTRACTED: 81 (83%)
+- INFERRED: 17 (17%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*

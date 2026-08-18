@@ -2,7 +2,7 @@
 
 > God node · 196 connections · `server/utils/error_logging.py`
 
-**Community:** [DatabaseError](DatabaseError.md)
+**Community:** [claude rules sqlalchemy](claude_rules_sqlalchemy.md)
 
 ## Connections by Relation
 
@@ -33,19 +33,19 @@
 
 ### imports
 - database.py `EXTRACTED`
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) `EXTRACTED`
+- persistence/container_persistence.py `EXTRACTED`
 - container_persistence/container_persistence.py `EXTRACTED`
 - container_persistence_async.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
 - container_service_transfer_to.py `EXTRACTED`
-- [npc_database.py](npc_database.py.md) `EXTRACTED`
+- npc_database.py `EXTRACTED`
 - player_repository.py `EXTRACTED`
 - container_service_session.py `EXTRACTED`
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) `EXTRACTED`
+- persistence/container_helpers.py `EXTRACTED`
 - container_service_lock.py `EXTRACTED`
 - container_service_transfer_from.py `EXTRACTED`
 - container_persistence/container_helpers.py `EXTRACTED`
-- [database_config_helpers.py](database_config_helpers.py.md) `EXTRACTED`
+- database_config_helpers.py `EXTRACTED`
 - container_query_helpers_async.py `EXTRACTED`
 - test_error_logging.py `EXTRACTED`
 - player_effect_repository.py `EXTRACTED`
@@ -57,8 +57,8 @@
 - Log and raise; uses legacy behavior (no skip_log for ValidationError).… `EXTRACTED`
 
 ### references
-- [MythosMUDError](MythosMUDError.md) `EXTRACTED`
-- [Any](Any.md) `EXTRACTED`
+- MythosMUDError `EXTRACTED`
+- Any `EXTRACTED`
 - NoReturn `EXTRACTED`
 
 ---

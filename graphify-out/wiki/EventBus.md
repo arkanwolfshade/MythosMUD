@@ -1,64 +1,129 @@
 # EventBus
 
-> 195 nodes
+> God node · 207 connections · `server/events/event_bus.py`
 
-## Key Concepts
+**Community:** [moduletype](moduletype.md)
 
-- **EventBus** (207 connections) — `server/events/event_bus.py`
-- **BaseEvent** (93 connections) — `server/events/event_types.py`
-- **test_event_bus.py** (60 connections) — `server/tests/unit/events/test_event_bus.py`
-- **asyncio** (28 connections)
-- **MockEventClass** (19 connections) — `server/tests/unit/events/test_event_bus.py`
-- **UUID** (9 connections)
-- **._handle_event_async()** (8 connections) — `server/events/event_bus.py`
-- **._stop_processing()** (7 connections) — `server/events/event_bus.py`
-- **._ensure_async_processing()** (6 connections) — `server/events/event_bus.py`
-- **test_handle_event_async_async_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_event_async_sync_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_no_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_handle_task_result_async_with_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_inject_queue_full_and_invalid()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_queue_depth_grows_when_consumer_blocked()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
-- **Any** (6 connections)
-- **._abandon_pending_tasks()** (5 connections) — `server/events/event_bus.py`
-- **._cancel_and_wait_for_active_tasks()** (5 connections) — `server/events/event_bus.py`
-- **._cancel_task_quietly()** (5 connections) — `server/events/event_bus.py`
-- **._create_async_subscriber_tasks()** (5 connections) — `server/events/event_bus.py`
-- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_update_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **test_async_subscriber_error_isolation()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_inject_dispatches_to_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- **test_event_bus_publish()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
-- *... and 170 more nodes in this community*
+## Connections by Relation
 
-## Relationships
+### calls
+- _make_manager() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- ._publish_player_dp_correction_event() `EXTRACTED`
+- ._publish_player_dp_update_event() `EXTRACTED`
+- ._init_persistence_and_event_bus() `EXTRACTED`
+- integration() `EXTRACTED`
+- test_spawning_service_npc_room_event_handlers() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- event_bus() `EXTRACTED`
+- event_bus() `EXTRACTED`
+- integration() `EXTRACTED`
+- test_spawning_service_handle_player_entered_room() `EXTRACTED`
+- test_spawning_service_maybe_add_required_npc_request() `EXTRACTED`
+- test_spawning_service_process_spawn_queue_with_request() `EXTRACTED`
+- test_spawning_service_queue_and_stats() `EXTRACTED`
+- test_del_warns_when_running() `EXTRACTED`
+- test_create_npc_instance_passive() `EXTRACTED`
+- test_create_npc_instance_unknown_type() `EXTRACTED`
 
-- [NPCDefinition](NPCDefinition.md) (57 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (20 shared connections)
-- [get_logger](get_logger.md) (15 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (15 shared connections)
-- [DistributedEventBus](DistributedEventBus.md) (11 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (8 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (8 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (6 shared connections)
-- [test_party_flow.py](test_party_flow.py.md) (5 shared connections)
-- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (5 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
+### contains
+- event_bus.py `EXTRACTED`
 
-## Source Files
+### imports
+- connection_manager.py `EXTRACTED`
+- combat_service.py `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- test_population_control.py `EXTRACTED`
+- test_event_bus.py `EXTRACTED`
+- test_npc_instance_service.py `EXTRACTED`
+- npc_combat_integration_service.py `EXTRACTED`
+- lifecycle_manager.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
+- test_npc_combat_integration_class.py `EXTRACTED`
+- npc_base.py `EXTRACTED`
+- population_control.py `EXTRACTED`
+- test_spawning_modules.py `EXTRACTED`
+- spawning_service.py `EXTRACTED`
+- memory_monitor.py `EXTRACTED`
+- event_handler.py `EXTRACTED`
+- movement_service.py `EXTRACTED`
+- chat_npc_system.py `EXTRACTED`
+- models/room.py `EXTRACTED`
+- npc_instance_service.py `EXTRACTED`
 
-- `server/events/event_bus.py`
-- `server/events/event_types.py`
-- `server/npc/event_reaction_system.py`
-- `server/services/combat_hp_sync.py`
-- `server/tests/unit/events/test_event_bus.py`
+### inherits
+- DistributedEventBus `EXTRACTED`
 
-## Audit Trail
+### method
+- ._handle_event_async() `EXTRACTED`
+- ._stop_processing() `EXTRACTED`
+- ._ensure_async_processing() `EXTRACTED`
+- ._cancel_task_quietly() `EXTRACTED`
+- ._abandon_pending_tasks() `EXTRACTED`
+- ._cancel_and_wait_for_active_tasks() `EXTRACTED`
+- ._create_async_subscriber_tasks() `EXTRACTED`
+- ._process_events_async() `EXTRACTED`
+- ._separate_subscribers() `EXTRACTED`
+- ._process_sync_subscribers() `EXTRACTED`
+- ._wait_for_async_subscribers() `EXTRACTED`
+- .publish() `EXTRACTED`
+- .inject() `EXTRACTED`
+- .unsubscribe() `EXTRACTED`
+- .unsubscribe_all_for_service() `EXTRACTED`
+- .get_subscriber_stats() `EXTRACTED`
+- .shutdown() `EXTRACTED`
+- .set_main_loop() `EXTRACTED`
+- ._ensure_processing_started() `EXTRACTED`
+- ._signal_shutdown() `EXTRACTED`
 
-- EXTRACTED: 447 (82%)
-- INFERRED: 101 (18%)
-- AMBIGUOUS: 0 (0%)
+### rationale_for
+- Pure asyncio event bus for MythosMUD. This class provides a purely async… `EXTRACTED`
+
+### references
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .event_bus() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- subscribe_npc_spoke_to_chat() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- lifespan_event_bus() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
+
+### uses
+- CombatService `INFERRED`
+- BaseEvent `INFERRED`
+- NPCLifecycleManager `INFERRED`
+- NPCSpawningService `INFERRED`
+- NPCPopulationController `INFERRED`
+- CombatCommandHandler `INFERRED`
+- FollowService `INFERRED`
+- PartyService `INFERRED`
+- MythosTickScheduler `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
+- NPCInstanceService `INFERRED`
+- create_npc_instance() `INFERRED`
+- initialize_npc_instance_service() `INFERRED`
+- _LifecycleManagerForDeath `INFERRED`
+- _instantiate_by_type() `INFERRED`
+- _build_aggressive() `INFERRED`
+- _build_passive() `INFERRED`
+- _build_shopkeeper() `INFERRED`
+- test_handle_event_async_async_subscriber_error() `INFERRED`
+- test_handle_event_async_sync_subscriber_error() `INFERRED`
 
 ---
 

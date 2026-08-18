@@ -29,12 +29,7 @@
     "graphify": {
       "type": "stdio",
       "command": "uvx",
-      "args": [
-        "--from",
-        "graphifyy[mcp]",
-        "graphify-mcp",
-        "${workspaceFolder}/graphify-out/graph.json"
-      ]
+      "args": ["--from", "graphifyy[mcp]", "graphify-mcp", "${workspaceFolder}/graphify-out/graph.json"]
     }
   }
 }
