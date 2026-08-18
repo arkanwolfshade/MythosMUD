@@ -25,6 +25,16 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"],
       "envFile": "${workspaceFolder}/.env.mcp.local"
+    },
+    "graphify": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "graphifyy[mcp]",
+        "graphify-mcp",
+        "${workspaceFolder}/graphify-out/graph.json"
+      ]
     }
   }
 }

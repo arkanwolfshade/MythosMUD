@@ -28,11 +28,12 @@ bodies).
 - **PostgreSQL access via procedures/functions:** For all new persistence work, call stored procedures and functions
   defined under `db/procedures/` instead of adding inline CRUD or ad-hoc SQL in Python; follow ADR-015 and
   `db/procedures/README.md` for patterns.
-- **Project MCP (Cursor):** [`.cursor/mcp.json`](.cursor/mcp.json) registers **jcodemunch**, **codacy**, **playwright**, and
-  **context7**. **Codacy** and **Context7** load credentials from **`.env.mcp.local`** (gitignored; copy from
-  [`.env.mcp.local.example`](.env.mcp.local.example)). Requires `uv`/`uvx`, `npx`, and Node on `PATH`. After MCP changes,
-  **restart Cursor**. **Slack** and other marketplace MCPs stay separate unless you add them in user MCP settings. For
-  jCodeMunch usage, see [QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
+- **Project MCP (Cursor):** [`.cursor/mcp.json`](.cursor/mcp.json) registers **jcodemunch**, **codacy**, **playwright**,
+  **context7**, and **graphify**. **Codacy** and **Context7** load credentials from **`.env.mcp.local`** (gitignored; copy
+  from [`.env.mcp.local.example`](.env.mcp.local.example)). Graphify serves `graphify-out/graph.json` via `graphify-mcp`
+  (`uv tool install 'graphifyy[mcp]'` if `uvx` cannot find it). Requires `uv`/`uvx`, `npx`, and Node on `PATH`. After MCP
+  changes, **restart Cursor**. **Slack** and other marketplace MCPs stay separate unless you add them in user MCP
+  settings. For jCodeMunch usage, see [QUICKSTART](https://github.com/jgravelle/jcodemunch-mcp/blob/main/QUICKSTART.md).
 - **Token efficiency over speed:** Prefer targeted retrieval over dumping large files; see
   `.cursor/rules/token-efficiency.mdc` (pairs with `jcodemunch.mdc`) and `USER_RULES.md`.
 - **basedpyright `Any`:** Do not introduce `typing.Any` or suppress `reportAny` / `reportExplicitAny`.
