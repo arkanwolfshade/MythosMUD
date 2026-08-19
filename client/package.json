@@ -36,7 +36,7 @@
     "react-router-dom": "7.18.2",
     "reactflow": "^11.11.4",
     "xstate": "^5.32.5",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
