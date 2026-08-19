@@ -90,8 +90,19 @@ design record rather than only in an audit artifact:
 2. `server/realtime/message_validator.py` returns `True` when both the message token and the expected
    token are `None` ("backward compatibility"). Because path 1 produces a connection with no token, the
    auth bypass and the #472 CSRF gap are **the same hole**, not two.
-3. A second route `/ws/{player_id}` is registered and marked deprecated. Whether it authenticates before
-   trusting the path parameter was **not verified** by the audit and must be confirmed.
+3. A second route `/ws/{player_id}` is registered and marked deprecated. **Verified 2026-08-19: it does
+   not authenticate at all, and is the more severe of the two paths.**
+
+   - `_resolve_player_id_from_path_or_token` does `return uuid.UUID(player_id)` on the **path parameter**
+     first, and only falls through to the token branch if that value is not a valid UUID. Any well-formed
+     UUID in the path is accepted as identity. Unlike the `/ws` fallback, it does not even confirm the
+     player record exists.
+   - The route calls `handle_websocket_connection(websocket, resolved_player_id, session_id,
+     connection_manager=connection_manager)` — **without `token=`**. The `/ws` route passes `token=token`.
+     So `metadata.token` is `None`, `expected_token` is `None`, and the fail-open branch in item 2 skips
+     CSRF validation for the entire connection.
+
+   This route should be removed rather than repaired; its own docstring already marks it for removal.
 
 ## 7. Related ADRs
 

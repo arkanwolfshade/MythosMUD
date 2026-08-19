@@ -1,6 +1,6 @@
 # API OpenAPI/Swagger Specification
 
-**Version 1.1.0** · MythosMUD · 2026-07-30
+**Version 1.2.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -103,13 +103,16 @@ Endpoints are grouped by tag in the specification:
 | containers | Unified container system: environmental, wearable, corpse storage |
 | rooms | Room data and exploration |
 | maps | ASCII map rendering and exploration views |
-| realtime | WebSocket connection and real-time game events |
+| realtime | HTTP endpoints for connection and session management (`/v1/api/connections/*`) |
 | monitoring | Health checks, performance metrics, observability |
 | metrics | NATS and system metrics |
 | admin | Administrative endpoints: NPC management, teleport |
 | npc | NPC spawn and lifecycle administration |
 | nats | NATS subject management (admin) |
 | subjects | NATS subject inspection and management |
+| command | Command submission and processing |
+| dialogue | NPC dialogue definitions (admin) |
+| skills | Skill catalog and per-character skill data |
 | system | System-level monitoring and diagnostics |
 
 ---
@@ -123,7 +126,13 @@ API routes call into **service layer** components. Service boundaries and contra
 - **Event ownership:** [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md)
 - **Container API reference:** [CONTAINER_SYSTEM_API_REFERENCE.md](../CONTAINER_SYSTEM_API_REFERENCE.md)
 
-The OpenAPI spec documents the **HTTP/WebSocket contracts** (request/response shapes, auth). Internal Python service interfaces are described in the bounded contexts document.
+The OpenAPI spec documents the **HTTP contracts only** (request/response shapes, auth). FastAPI does not
+emit WebSocket routes into an OpenAPI document, so the WebSocket endpoint (`/v1/api/ws`) and its message
+shapes are **not** described here — the `realtime` tag covers only the HTTP connection-management
+endpoints. The WebSocket authentication model is recorded in
+[ADR-020](decisions/ADR-020-websocket-authentication-and-csrf.md); the message-shape contract is not
+currently documented anywhere. Internal Python service interfaces are described in the bounded contexts
+document.
 
 ---
 
@@ -174,3 +183,4 @@ npx @openapitools/openapi-generator-cli generate \
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-19 | Record the /v1 versioning scheme; renumber sections |
+| 1.2.0 | 2026-08-19 | Add missing tags (command, dialogue, skills); correct the false claim that the spec documents WebSocket contracts |

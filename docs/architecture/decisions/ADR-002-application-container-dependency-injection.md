@@ -1,6 +1,6 @@
 # ADR-002: ApplicationContainer for Dependency Injection
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -36,7 +36,28 @@ Implement a single **ApplicationContainer** class in the `server/container/` pac
 - Manages all service lifecycle and dependency resolution
 - Provides thread-safe initialization with explicit phases
 - Exposes services as attributes (e.g., `container.player_service`)
-- Replaces all global singleton access with container injection
+- Replaces global singleton access with container injection **for services the container constructs**
+
+**Access patterns (clarified 2026-08-19).** Two are sanctioned, and the distinction is whether the
+container builds the thing:
+
+- **Injection (required)** for anything the container constructs. If a bundle builds it, the bundle
+  passes it what it needs. A container-constructed service reaching back into the container at call time
+  is **debt**, not design.
+- **Service location (permitted, bounded)** via `ApplicationContainer.get_instance()` for types the
+  container does **not** construct - domain entities and models such as `NPCBase`, and module-level
+  utility functions. These have no constructor the container can inject through, so a call-time lookup is
+  the only option available to them.
+
+The deciding question for any new call site: *does the container construct this?* If yes, inject. If no,
+`get_instance()` is acceptable.
+
+**Root cause worth naming.** Most current `get_instance()` sites are written as function-local lazy
+imports carrying comments such as `# Reason: lazy load avoids container import cycle`. The pattern is
+therefore largely a **symptom of import cycles**, not a deliberate architectural choice. Reducing those
+cycles is what would let the debt population migrate to injection; see also the `TYPE_CHECKING`
+consequence in section 5.
+
 - Ensures dependency inversion: services depend on abstractions, container wires concrete implementations
 
 The container is initialized once at application startup and passed (or accessed via a single accessor) where services are needed.
@@ -55,6 +76,11 @@ The container is initialized once at application startup and passed (or accessed
 
 - **Positive**: Eliminated global singletons; explicit dependency graph; testable services via mock injection; proper lifecycle management
 - **Negative**: Some circular dependencies handled with TYPE_CHECKING; orchestration lives in `main.py`, domain logic in bundles under `server/container/bundles/`
+- **Negative (measured 2026-08-19)**: `ApplicationContainer.get_instance()` is used as a runtime service
+  locator at roughly 31 call sites across 21 modules. Some are legitimate under the rule above; others are
+  container-constructed services that could take the dependency at construction - `UserManager`, for
+  example, is built as `UserManager(data_dir=...)` and then reaches back to the container for persistence.
+  That subset is tracked as debt, not sanctioned.
 - **Neutral**: Initialization order is explicit but complex; document initialization phases for maintainers
 
 ## 6. Related ADRs
@@ -78,3 +104,4 @@ The container is initialized once at application startup and passed (or accessed
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Clarify sanctioned access patterns: injection for container-constructed services, bounded service location for entities; record the locator debt |
