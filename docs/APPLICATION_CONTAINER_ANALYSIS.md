@@ -21,7 +21,7 @@ The container is implemented as a **package**: `server/container/`. The orchestr
 
 ### 2.1 Attribute Inventory by Domain
 
-Attributes in `ApplicationContainer.__init__` (lines 104-205) and their logical domains:
+Attributes and their logical domains. Note that these are no longer set in `__init__` directly: they are split across `_init_core_attributes`, `_init_realtime_attributes`, `_init_game_attributes` and `_init_extended_attributes` in `server/container/main.py`.
 
 | Domain               | Attributes                                                                                                                                         | Count |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
@@ -46,7 +46,7 @@ Attributes in `ApplicationContainer.__init__` (lines 104-205) and their logical 
 
 ### 2.2 Initialization Order and Dependencies
 
-Current `initialize()` phases (lines 258-568):
+Initialization phases. `initialize()` is now a thin orchestrator that delegates to `_initialize_primary_bundles`, `_initialize_secondary_bundles` and `_link_cross_bundle_services`; the original flat phase list is retained below as the logical order:
 
 | Phase    | Description                                                                                | Depends on                                                                        |
 | -------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
@@ -208,8 +208,8 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 
 ## 6. Success Criteria
 
-- ApplicationContainer file size reduced from ~1,251 lines to ~200-350 lines (orchestration only).
-- Each domain bundle in a single file of ~100-250 lines with a clear, documented responsibility.
+- `ApplicationContainer` reduced to orchestration only, with service construction living in the bundles.
+- Each domain bundle has a single, clearly documented responsibility.
 - Initialization order and dependency graph documented and enforced by bundle init order.
 - All existing tests pass without modification.
 - No change to consumer-facing API or lifespan wiring.

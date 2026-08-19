@@ -1,6 +1,6 @@
 # ADR-015: PostgreSQL Procedures and Functions for Data Access
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -46,6 +46,27 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 - **Schema resolution**: Connections use `search_path` set from the database name (mythos_dev, mythos_unit, mythos_e2e) so procedure names are unqualified in SQL; `database.py` normalizes `search_path` for these databases.
 - **Naming**: `verb_entity` (e.g. `get_player_by_id`, `upsert_player`, `get_rooms_with_exits`). Functions return rows (SETOF or single row); procedures used where multi-statement mutations with OUT parameters are needed.
 
+- **Scope (binding, 2026-08-19):** **all** database interactions in server code go through stored
+  procedures and functions. **Raw SQL is banned in server code without exception.** Raw SQL **is**
+  permitted in database migration scripts (Alembic revisions, `db/`, `data/db/migrations/`), which are
+  not server code.
+
+- **SQLAlchemy ORM** is permitted **only** where a third-party dependency requires it. Each such site is
+  named here as a bounded exception; new ORM usage anywhere else in first-party server code is a
+  violation of this ADR.
+
+  **Named exceptions:**
+  - `fastapi-users` requires `SQLAlchemyUserDatabase` (`server/auth/users.py`). This cannot be routed
+    through a procedure without replacing the authentication library.
+
+- **Direct `asyncpg.connect()` from services is banned.** Where it exists today it works around an
+  event-loop boundary (a synchronous constructor calling `asyncio.new_event_loop()`); the fix is to make
+  the caller async and use the injected session, not to keep the standalone connection.
+
+- **Enforcement:** the `.semgrep.yml` rules are being made functional and wired into CI (issue #618).
+  Their allowlist is a **shrinking migration backlog with an end state of zero**, not a permanent
+  exemption.
+
 ## 4. Alternatives Considered
 
 **[SPEC]**
@@ -84,3 +105,4 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Scope affirmed as binding: procedures only, raw SQL banned in server code (permitted in migrations), ORM only where a library requires it |

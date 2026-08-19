@@ -1,6 +1,6 @@
 # ADR-005: Repository Pattern for Data Access
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -38,7 +38,10 @@ Adopt the **Repository Pattern** for all data access:
 - **Atomic operations** - Repositories use atomic JSONB updates, transactions, and async/await
 - **Clear ownership** - Each repository owns queries for its domain entity
 
-Services depend on AsyncPersistenceLayer or specific repositories via ApplicationContainer. Repositories encapsulate SQL/SQLAlchemy; services never construct raw queries. RoomRepository uses cache-based reads where appropriate; HealthRepository and ExperienceRepository use atomic updates to prevent race conditions.
+Services depend on AsyncPersistenceLayer or specific repositories via ApplicationContainer. Repositories encapsulate data access by calling **stored procedures and functions** (see
+[ADR-015](ADR-015-postgresql-procedures-migration.md), which is binding). **Raw SQL is not constructed
+anywhere in server code — repositories included.** SQLAlchemy ORM is permitted only at the sites ADR-015
+names as bounded exceptions. RoomRepository uses cache-based reads where appropriate; HealthRepository and ExperienceRepository use atomic updates to prevent race conditions.
 
 ## 4. Alternatives Considered
 
@@ -54,8 +57,14 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 **[SPEC]**
 
 - **Positive**: Clear separation of data access; testable services via repository mocks; atomic operations prevent race conditions; async-first design
-- **Negative**: Some repositories use `asyncio.to_thread()` wrappers (ContainerRepository, ItemRepository) for sync legacy code; full async migration planned
-- **Neutral**: Repository interfaces could be more explicit (protocols); current implementation relies on concrete classes
+- **Negative**: ~~Some repositories use `asyncio.to_thread()` wrappers (ContainerRepository, ItemRepository)
+  for sync legacy code; full async migration planned~~ **Resolved (verified 2026-08-19):** the wrappers are
+  gone. `ContainerRepository` and `ItemRepository` delegate to `container_persistence_async.py` and
+  `item_instance_persistence_async.py` respectively. A vestigial `persistence_layer` parameter remains on
+  `ItemRepository.__init__` from the removed wrapper.
+- **Neutral**: Repository interfaces are **partly** explicit. `server/persistence/protocols.py` defines
+  `PlayerRepositoryProtocol` and `RoomRepositoryProtocol`; the remaining repositories are still concrete
+  classes. (Corrected 2026-08-19 — this bullet previously stated no protocols existed.)
 
 ## 6. Related ADRs
 
@@ -79,3 +88,4 @@ Services depend on AsyncPersistenceLayer or specific repositories via Applicatio
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Align data-access mechanism with the binding procedures-only rule in ADR-015; correct two stale Consequences bullets (to_thread wrappers removed, protocols partly adopted) |

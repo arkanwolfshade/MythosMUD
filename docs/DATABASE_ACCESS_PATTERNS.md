@@ -1,6 +1,6 @@
 # Database Access Patterns
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 2.0.0** · MythosMUD · 2026-08-19
 
 ---
 
@@ -14,333 +14,105 @@ Read `[NOTE]` only if additional context is needed.
 
 ## 1. Overview
 
-**[NOTE]**
-This document explains when to use each database access pattern in the MythosMUD codebase and provides guidance on
-migrating between patterns.
+**[SPEC]**
+**Status:** Binding
+**Supersedes:** version 1.x of this document, which described two sanctioned access patterns and advised
+preferring SQLAlchemy ORM for new code. **That guidance is reversed.**
+**Authority:** [ADR-015](architecture/decisions/ADR-015-postgresql-procedures-migration.md)
 
-## 2. Overview
+## 2. The rule
 
 **[SPEC]**
-The codebase currently uses two database access patterns:
+**All database interactions in server code occur through stored procedures and functions.**
 
-1. **AsyncPersistenceLayer** (async asyncpg) - Performance-critical operations, direct database access
-2. **SQLAlchemy ORM** (async) - Preferred for new code, relationships, complex queries
+- **Raw SQL is banned in server code, without exception.**
+- **Direct `asyncpg.connect()` from services is banned.**
+- **SQLAlchemy ORM is permitted only where a third-party dependency requires it**, and only at the sites
+  named in §4.
+- Raw SQL **is** permitted in database migration scripts — Alembic revisions, `db/`, and
+  `data/db/migrations/`. Those are not server code.
 
-**Note**: The legacy `PersistenceLayer` (synchronous psycopg2) has been removed. All code now uses async patterns.
-
-## 3. Pattern 1: AsyncPersistenceLayer (Asynchronous asyncpg)
+## 3. The sanctioned pattern
 
 **[SPEC]**
-**Location**: `server/async_persistence.py`
-
-**When to Use**:
-
-- Performance-critical operations
-- When you need async but don't need ORM features
-- Direct asyncpg connection pool access
-- Simple queries without relationships
-
-**Characteristics**:
-
-- Uses `asyncpg` for true async PostgreSQL operations
-- Raw SQL queries with parameterized placeholders (`$1`, `$2`, etc.)
-- Connection pooling with configurable pool size
-- Non-blocking event loop operations
-- Access via `ApplicationContainer.async_persistence` (container from `server/container/` package)
-
-**Example**:
+Call a procedure through the injected async session, with an explicit column list:
 
 ```python
-from server.container import ApplicationContainer  # server/container/ package
-
-container = ApplicationContainer.get_instance()
-async_persistence = container.async_persistence
-player = await async_persistence.get_player_by_id(player_id)
+result = await session.execute(
+    text("SELECT player_id, name, current_dp FROM get_player_by_id(:player_id)"),
+    {"player_id": player_id},
+)
+row = result.mappings().one_or_none()
 ```
 
-**Advantages**:
+- **`SELECT *` is not allowed in Python.** Column lists are explicit, so a procedure's return shape
+  changing is a visible failure rather than a silent one.
+- Results are consumed with `result.mappings().all()` or `.scalar()` and mapped to domain objects in
+  Python.
+- **Transactions stay in Python** — `await session.commit()` / `await session.rollback()`.
+- Procedures live one file per domain under `db/procedures/`, applied by
+  `scripts/apply_procedures.ps1`. `make build` runs `apply-procedures` first.
+- Naming is `verb_entity`: `get_player_by_id`, `upsert_player`, `get_rooms_with_exits`.
+- `search_path` is normalised from the database name in `server/database.py`, so procedure names are
+  unqualified at the call site.
 
-- True async (doesn't block event loop)
-- High performance for simple operations
-- Connection pooling built-in
-
-**Limitations**:
-
-- No eager loading support (raw SQL)
-- Manual relationship handling
-- More verbose than ORM
-
-**Migration Path**:
-Migrate to SQLAlchemy ORM when you need relationships or complex queries
-
-## 4. Pattern 2: SQLAlchemy ORM (Asynchronous)
+## 4. Named exceptions
 
 **[SPEC]**
-**Location**: `server/database.py`, `server/services/`, `server/game/`
+Each exception is listed individually. Anything not on this list is a violation.
 
-**When to Use**:
-**Preferred for all new code**
-
-- When you need relationship access (e.g., `Player.user`)
-- Complex queries with joins
-- When you want eager loading to prevent N+1 queries
-- Type-safe queries with IDE autocomplete
-
-**Characteristics**:
-
-- Uses SQLAlchemy 2.0 async ORM
-- Async session management via `get_async_session()` dependency
-- Eager loading support (`selectinload`, `joinedload`)
-- Type-safe model access
-
-**Example**:
-
-```python
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from server.database import get_async_session
-from server.models.player import Player
-
-async for session in get_async_session():
-    # Eagerly load user relationship to prevent N+1 queries
-
-    stmt = select(Player).options(
-        selectinload(Player.user)
-    ).where(Player.player_id == player_id)
-
-    result = await session.execute(stmt)
-    player = result.scalar_one_or_none()
-```
-
-**Advantages**:
-
-- Eager loading prevents N+1 queries
-- Type-safe with IDE support
-- Relationship handling automatic
-- Complex queries easier to write
-- Follows SQLAlchemy best practices
-
-**Limitations**:
-
-- Slightly more overhead than raw SQL
-- Requires understanding of SQLAlchemy ORM
-
-## 5. Decision Tree
+| Site | Reason |
+| --- | --- |
+| `server/auth/users.py` — `SQLAlchemyUserDatabase` | `fastapi-users` requires it. Cannot be routed through a procedure without replacing the authentication library. |
 
 **[NOTE]**
+Adding an exception requires amending ADR-015, not just this table.
 
-```
-Do you need relationships (e.g., Player.user)?
-├─ Yes → Use SQLAlchemy ORM (Pattern 2)
-└─ No → Use AsyncPersistenceLayer (Pattern 1)
-```
+## 5. Migration status
 
-## 6. Migration Strategy
+**[SPEC]**
+The codebase does not yet satisfy §2. The following are known non-conforming and are being migrated;
+the `.semgrep.yml` allowlist tracks them and its end state is **zero entries** (issue #618).
+
+| Category | Approx. sites | Notes |
+| --- | --- | --- |
+| Raw SQL in services, API routers, auth | ~15 | Includes `server/api/rooms.py`, `server/auth/endpoints.py`, `server/services/exploration_service.py`, `server/services/npc_service/` |
+| Direct `asyncpg.connect()` in services | 4 | `emote_service`, `schedule_service`, `holiday_service`, `zone_config_loader`. In `emote_service` the underlying cause is a synchronous `__init__` calling `asyncio.new_event_loop()` (issue #624) — fix the async boundary, not the SQL string |
+| SQLAlchemy ORM `select()` in first-party code | ~28 | Auth, player preferences, lucidity, death/respawn, quest paths |
 
 **[NOTE]**
+Counts are from the 2026-08 design/implementation audit and are indicative, not a tracked inventory.
 
-### From AsyncPersistenceLayer to SQLAlchemy ORM
+## 6. Error handling
 
-**When**: You need relationships or want better query capabilities
+**[SPEC]**
+A procedure call that raises surfaces as a SQLAlchemy exception. Wrap at the repository boundary and
+translate to a domain exception; do not let driver exceptions escape into services. Transaction rollback
+is explicit — see §3.
 
-**Steps**:
+## 7. Rationale
 
-1. Replace raw SQL with SQLAlchemy `select()` statements
-2. Use `get_async_session()` dependency for session management
-3. Add eager loading with `selectinload()` where needed
-4. Use model classes instead of raw dictionaries
+**[NOTE]**
+Query logic lives in one place, the procedure's return shape is a stated contract, integration tests can
+assert against that contract, and dev/test/e2e databases receive the same procedures through the same
+script. The cost is that procedure definitions must be kept in step with table schema, and type
+mismatches surface at the call site until corrected in the procedure.
 
-**Example**:
-
-```python
-# Before (AsyncPersistenceLayer)
-
-from server.container import ApplicationContainer
-
-async def get_player(player_id: str) -> Player | None:
-    container = ApplicationContainer.get_instance()
-    return await container.async_persistence.get_player_by_id(player_id)
-
-# After (ORM with eager loading)
-
-async def get_player(
-    player_id: str,
-    session: AsyncSession = Depends(get_async_session)
-) -> Player | None:
-    from sqlalchemy import select
-    from sqlalchemy.orm import selectinload
-
-    stmt = select(Player).options(
-        selectinload(Player.user)
-    ).where(Player.player_id == player_id)
-
-    result = await session.execute(stmt)
-    return result.scalar_one_or_none()
-```
-
-## 7. Performance Considerations
+## 8. References
 
 **[SPEC]**
 
-### AsyncPersistenceLayer (Pattern 1)
+- [ADR-015: PostgreSQL Procedures and Functions for Data Access](architecture/decisions/ADR-015-postgresql-procedures-migration.md) — the authority for this document
+- [ADR-005: Repository Pattern for Data Access](architecture/decisions/ADR-005-repository-pattern-data-access.md)
+- [ADR-006: PostgreSQL as Primary Datastore](architecture/decisions/ADR-006-postgresql-primary-datastore.md)
+- [PERSISTENCE_REPOSITORY_ARCHITECTURE.md](PERSISTENCE_REPOSITORY_ARCHITECTURE.md)
+- [SQLALCHEMY_ASYNC_BEST_PRACTICES.md](SQLALCHEMY_ASYNC_BEST_PRACTICES.md) — applies to the §4 exceptions
 
-**Pros**: Fastest execution, direct database access
-
-**Cons**: No relationship handling, manual query optimization
-
-**Use When**: Simple queries, performance-critical paths, no relationships needed
-
-### SQLAlchemy ORM (Pattern 2)
-
-**Pros**: Relationship handling, eager loading, type safety
-
-**Cons**: Slight overhead, requires ORM knowledge
-
-**Use When**: Relationships needed, complex queries, maintainability important
-
-## 8. Error Handling Patterns
-
-**[NOTE]**
-
-### AsyncPersistenceLayer (Async)
-
-```python
-try:
-    player = await async_persistence.get_player_by_name(name)
-except asyncpg.PostgresError as e:
-    log_and_raise(DatabaseError, f"Database error: {e}")
-```
-
-### SQLAlchemy ORM (Async)
-
-```python
-try:
-    result = await session.execute(stmt)
-    player = result.scalar_one_or_none()
-except Exception as e:
-    await session.rollback()
-    log_and_raise(DatabaseError, f"Database error: {e}")
-```
-
-## 9. Eager Loading Best Practices
-
-**[NOTE]**
-Always use eager loading when accessing relationships:
-
-```python
-from sqlalchemy.orm import selectinload
-
-# Good: Eagerly load relationships
-
-stmt = select(Player).options(
-    selectinload(Player.user),
-    selectinload(Player.lucidity),  # if relationship exists
-).where(Player.player_id == player_id)
-
-# Bad: Lazy loading (causes N+1 queries)
-
-stmt = select(Player).where(Player.player_id == player_id)
-# Later: player.user  # This triggers additional query!
-
-```
-
-## 10. Common Patterns
-
-**[NOTE]**
-
-### Getting a Single Player with User
-
-```python
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from server.models.player import Player
-
-stmt = select(Player).options(
-    selectinload(Player.user)
-).where(Player.player_id == player_id)
-
-result = await session.execute(stmt)
-player = result.scalar_one_or_none()
-```
-
-### Listing Players with Eager Loading
-
-```python
-stmt = select(Player).options(
-    selectinload(Player.user)
-).order_by(Player.name)
-
-result = await session.execute(stmt)
-players = result.scalars().all()
-```
-
-### Complex Query with Joins
-
-```python
-from sqlalchemy import select
-from server.models.player import Player
-from server.models.lucidity import PlayerLucidity
-
-stmt = select(Player, PlayerLucidity).join(
-    PlayerLucidity, Player.player_id == PlayerLucidity.player_id
-).where(Player.level > 5)
-
-result = await session.execute(stmt)
-for player, lucidity in result:
-    # Both objects loaded in single query
-
-    pass
-```
-
-## 11. Future Migration Goals
-
-**[SPEC]**
-
-1. **Short-term**: Document patterns and migration paths ✅ **COMPLETE**
-2. **Medium-term**: Migrate f-string SQL to ORM (in progress - see notes below)
-3. **Long-term**: Consolidate to SQLAlchemy ORM for all operations
-
-## 12. F-String SQL Migration Status
-
-**[SPEC]**
-**Current State**: Persistence layers use f-strings with compile-time constants (e.g., `PLAYER_COLUMNS`). These are safe
-from SQL injection but represent an anti-pattern.
-
-**Limitation**: Full migration to SQLAlchemy ORM requires architectural changes:
-
-- `AsyncPersistenceLayer` uses `asyncpg` directly (not SQLAlchemy)
-- Would need to be refactored to use SQLAlchemy sessions for full ORM migration
-
-**Current Approach**:
-
-- F-strings separated from execution for better readability
-- Documentation added explaining why f-strings are safe (constants)
-- Future ORM migration noted in code comments
-
-**Next Steps**:
-
-- Incrementally migrate new code to SQLAlchemy ORM
-- Refactor persistence layers to use SQLAlchemy when feasible
-- Prefer ORM for all new database operations
-
-## 13. References
-
-**[SPEC]**
-[SQLAlchemy Best Practices](./.cursor/rules/sqlalchemy.mdc)
-
-- [SQLAlchemy Async Best Practices](./SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
-- [SQLAlchemy Code Review](./archive/SQLALCHEMY_CODE_REVIEW.md)
-
----
-
-*"In the restricted archives, we learn that different incantations serve different purposes. The raw SQL rituals provide
-direct power, while the ORM ceremonies offer safety and convenience. Choose wisely based on your needs, but always
-prefer the ORM for new work, lest you summon the N+1 query demon."*
-
-## 14. Changelog
+## 9. Changelog
 
 **[SPEC]**
 
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 2.0.0 | 2026-08-19 | **Reversal.** Replaced the two-pattern model and the "prefer SQLAlchemy ORM for new code" guidance with the binding procedures-only rule from ADR-015. Removed the asyncpg `$1`-placeholder and `PLAYER_COLUMNS` f-string material, which described a mechanism no longer present in the code. Added named exceptions and the migration backlog. |
