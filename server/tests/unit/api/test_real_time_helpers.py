@@ -10,8 +10,9 @@ from server.api import real_time
 from server.exceptions import LoggedHTTPException
 
 
-def test_extract_bearer_token_with_marker() -> None:
-    assert real_time._extract_bearer_token(["bearer", "token-abc"]) == "token-abc"
+def test_websocket_player_id_fallback_allowed_default_off(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("MYTHOSMUD_ALLOW_WEBSOCKET_PLAYER_ID_FALLBACK", raising=False)
+    assert real_time.websocket_player_id_fallback_allowed() is False
 
 
 def test_extract_bearer_token_last_part() -> None:
@@ -118,17 +119,45 @@ async def test_resolve_player_id_missing_token_and_player_id() -> None:
 
 
 @pytest.mark.asyncio
+async def test_resolve_player_id_query_rejected_when_fallback_off(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("MYTHOSMUD_ALLOW_WEBSOCKET_PLAYER_ID_FALLBACK", "")
+    player_id = uuid.uuid4()
+    websocket = MagicMock()
+    websocket.query_params = {"player_id": str(player_id)}
+    with pytest.raises(LoggedHTTPException) as exc:
+        await real_time._resolve_player_id(websocket, None, MagicMock())
+    assert exc.value.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_resolve_player_id_query_allowed_when_fallback_on(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("MYTHOSMUD_ALLOW_WEBSOCKET_PLAYER_ID_FALLBACK", "true")
+    player_id = uuid.uuid4()
+    player = MagicMock(player_id=player_id)
+    persistence = MagicMock()
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    websocket = MagicMock()
+    websocket.query_params = {"player_id": str(player_id)}
+    with (
+        patch("server.api.real_time.decode_access_token", return_value=None),
+        patch("server.async_persistence.get_async_persistence", return_value=persistence),
+    ):
+        resolved = await real_time._resolve_player_id(websocket, None, MagicMock())
+    assert resolved == player_id
+
+
+@pytest.mark.asyncio
 async def test_get_connection_statistics() -> None:
     from server.schemas.realtime.presence_data import ErrorStatistics, PresenceStatistics, SessionStatistics
 
     request = MagicMock()
     cm = MagicMock()
-    cm.get_presence_statistics.return_value = PresenceStatistics(online_players=1)
+    cm.get_presence_statistics.return_value = PresenceStatistics(total_online=1)
     cm.get_session_stats.return_value = SessionStatistics(active_sessions=1)
     cm.get_error_statistics.return_value = ErrorStatistics(total_errors=0)
     with patch("server.api.real_time._ensure_connection_manager", return_value=cm):
         stats = await real_time.get_connection_statistics(request)
-    assert stats.presence.online_players == 1
+    assert stats.presence.total_online == 1
 
 
 @pytest.mark.asyncio
@@ -189,9 +218,32 @@ async def test_handle_new_game_session_invalid_json() -> None:
 
 
 @pytest.mark.asyncio
-async def test_resolve_player_id_from_path_or_token_uuid() -> None:
+async def test_resolve_player_id_from_path_or_token_uuid_without_jwt_rejected() -> None:
     player_id = uuid.uuid4()
     resolved = await real_time._resolve_player_id_from_path_or_token(str(player_id), None)
+    assert resolved is None
+
+
+@pytest.mark.asyncio
+async def test_resolve_player_id_from_path_or_token_uuid_jwt_mismatch_rejected() -> None:
+    path_id = uuid.uuid4()
+    token_player = uuid.uuid4()
+    user_id = str(uuid.uuid4())
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=MagicMock(player_id=token_player))
+    with patch("server.api.real_time.decode_access_token", return_value={"sub": user_id}):
+        resolved = await real_time._resolve_player_id_from_path_or_token(str(path_id), "token", persistence)
+    assert resolved is None
+
+
+@pytest.mark.asyncio
+async def test_resolve_player_id_from_path_or_token_uuid_jwt_match() -> None:
+    player_id = uuid.uuid4()
+    user_id = str(uuid.uuid4())
+    persistence = MagicMock()
+    persistence.get_player_by_user_id = AsyncMock(return_value=MagicMock(player_id=player_id))
+    with patch("server.api.real_time.decode_access_token", return_value={"sub": user_id}):
+        resolved = await real_time._resolve_player_id_from_path_or_token(str(player_id), "token", persistence)
     assert resolved == player_id
 
 
@@ -214,7 +266,7 @@ async def test_websocket_endpoint_route_unresolved_player() -> None:
     with (
         patch("server.api.real_time._validate_websocket_connection_manager", new_callable=AsyncMock, return_value=cm),
         patch("server.api.real_time._resolve_player_id_from_path_or_token", new_callable=AsyncMock, return_value=None),
-        patch("server.api.real_time.handle_websocket_connection", new_callable=AsyncMock),
+        patch("server.realtime.websocket_handler.handle_websocket_connection", new_callable=AsyncMock),
     ):
         with pytest.raises(LoggedHTTPException):
             await real_time.websocket_endpoint_route(websocket, "bad-id")

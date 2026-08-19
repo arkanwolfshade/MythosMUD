@@ -81,6 +81,12 @@ def test_validate_csrf_missing_when_expected(validator: WebSocketMessageValidato
     assert exc.value.error_type == "csrf_token_missing"
 
 
+def test_validate_csrf_both_none_rejected(validator: WebSocketMessageValidator) -> None:
+    with pytest.raises(MessageValidationError) as exc:
+        _ = validator.validate_csrf({"type": "cmd"}, "player-1", None)
+    assert exc.value.error_type == "csrf_token_missing"
+
+
 def test_validate_csrf_mismatch(validator: WebSocketMessageValidator) -> None:
     with pytest.raises(MessageValidationError) as exc:
         _ = validator.validate_csrf(
@@ -137,9 +143,18 @@ def test_parse_and_validate_inner_json_inherits_outer_csrf(validator: WebSocketM
 
 def test_parse_and_validate_unwraps_string_inner_message() -> None:
     v = WebSocketMessageValidator(max_message_size=4096, max_json_depth=10)
+    inner = json.dumps({"type": "command", "data": {}, "csrfToken": "tok"})
+    raw = json.dumps({"message": inner})
+    assert v.parse_and_validate(raw, "pid", schema=None, csrf_token="tok").get("type") == "command"
+
+
+def test_parse_and_validate_unwraps_without_csrf_rejected() -> None:
+    v = WebSocketMessageValidator(max_message_size=4096, max_json_depth=10)
     inner = json.dumps({"type": "command", "data": {}})
     raw = json.dumps({"message": inner})
-    assert v.parse_and_validate(raw, "pid", schema=None, csrf_token=None).get("type") == "command"
+    with pytest.raises(MessageValidationError) as exc:
+        _ = v.parse_and_validate(raw, "pid", schema=None, csrf_token=None)
+    assert exc.value.error_type == "csrf_token_missing"
 
 
 def test_parse_and_validate_inner_json_depth_exceeded() -> None:

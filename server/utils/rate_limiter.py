@@ -112,3 +112,4 @@ class RateLimiter:
 # Global rate limiters for different endpoints
 stats_roll_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 10 rolls per minute
 character_creation_limiter = RateLimiter(max_requests=5, window_seconds=300)  # 5 creations per 5 minutes
+auth_login_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 10 login/register attempts per IP per minute

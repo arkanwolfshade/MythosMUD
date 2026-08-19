@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest
 
 from server.exceptions import RateLimitError
-from server.utils.rate_limiter import RateLimiter, character_creation_limiter, stats_roll_limiter
+from server.utils.rate_limiter import RateLimiter, auth_login_limiter, character_creation_limiter, stats_roll_limiter
 
 
 @pytest.fixture
@@ -191,3 +191,8 @@ def test_character_creation_limiter_initialized():
     """Test character_creation_limiter is initialized with correct defaults."""
     assert character_creation_limiter.max_requests == 5
     assert character_creation_limiter.window_seconds == 300
+
+
+def test_auth_login_limiter_initialized():
+    assert auth_login_limiter.max_requests == 10
+    assert auth_login_limiter.window_seconds == 60

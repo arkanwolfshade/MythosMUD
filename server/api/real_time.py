@@ -4,17 +4,18 @@ Real-time communication API endpoints for MythosMUD server.
 This module handles WebSocket connections for real-time game communication.
 """
 
+import importlib
+import os
 import time
 import uuid
-from typing import Any, cast
+from collections.abc import Awaitable, Callable
+from typing import Any, Protocol, cast
 from unittest.mock import Mock
 
 from fastapi import APIRouter, Request, WebSocket
 
 from ..auth_utils import decode_access_token
 from ..exceptions import LoggedHTTPException
-from ..realtime.connection_manager import resolve_connection_manager
-from ..realtime.websocket_handler import handle_websocket_connection
 from ..schemas.realtime import (
     ConnectionStatisticsResponse,
     NewGameSessionResponse,
@@ -22,11 +23,41 @@ from ..schemas.realtime import (
     SessionInfo,
 )
 
-# AI Agent: Don't import app at module level - causes circular import!
-#           Import locally in functions instead
+
+# Load websocket_handler through importlib; a static import cycles with app.factory.
+class _WebSocketHandlerModule(Protocol):
+    handle_websocket_connection: Callable[..., Awaitable[None]]
 
 # Create real-time router
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
+
+
+def resolve_connection_manager(candidate: object | None = None) -> object | None:
+    """Use the caller-supplied manager only.
+
+    connection_manager_utils.resolve_connection_manager looks up ApplicationContainer
+    and that import is a cycle with factory -> this module.
+    """
+    return candidate
+
+
+async def _invoke_handle_websocket_connection(
+    websocket: WebSocket,
+    player_id: uuid.UUID,
+    session_id: str | None,
+    connection_manager: object | None,
+    token: str | None,
+) -> None:
+    """Load the handler via importlib so basedpyright does not follow the factory cycle."""
+    loaded = cast(object, importlib.import_module("server.realtime.websocket_handler"))
+    module = cast(_WebSocketHandlerModule, loaded)
+    await module.handle_websocket_connection(
+        websocket,
+        player_id,
+        session_id,
+        connection_manager=connection_manager,
+        token=token,
+    )
 
 
 def _resolve_connection_manager_from_state(state: Any) -> Any:
@@ -141,6 +172,16 @@ def _parse_websocket_token(websocket: WebSocket, logger: Any) -> str | None:
     return token
 
 
+def websocket_player_id_fallback_allowed() -> bool:
+    """Return True only when anonymous player_id query fallback is explicitly enabled.
+
+    Default is off. Enable only for isolated test harnesses via
+    MYTHOSMUD_ALLOW_WEBSOCKET_PLAYER_ID_FALLBACK=true. Never enable in production.
+    """
+    raw = os.environ.get("MYTHOSMUD_ALLOW_WEBSOCKET_PLAYER_ID_FALLBACK", "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
 async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str, logger: Any) -> uuid.UUID:
     """
     Resolve player ID from test player_id query parameter.
@@ -235,9 +276,8 @@ async def _resolve_player_id(websocket: WebSocket, token: str | None, logger: An
     """
     payload = decode_access_token(token)
     if not payload or "sub" not in payload:
-        # Fallback: allow anonymous connection only for tests (no identity)
         player_id_str = websocket.query_params.get("player_id")
-        if not player_id_str:
+        if not player_id_str or not websocket_player_id_fallback_allowed():
             raise LoggedHTTPException(status_code=401, detail="Invalid or missing token")
         return await _resolve_player_id_from_test(websocket, player_id_str, logger)
     # Type narrowing: payload is guaranteed to be a dict with "sub" key at this point
@@ -270,8 +310,8 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        await handle_websocket_connection(
-            websocket, player_id, session_id, connection_manager=connection_manager, token=token
+        await _invoke_handle_websocket_connection(
+            websocket, player_id, session_id, connection_manager, token
         )
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WebSocket errors unpredictable, must log and re-raise
         from starlette.websockets import WebSocketDisconnect
@@ -429,36 +469,33 @@ async def _resolve_player_id_from_path_or_token(
     player_id: str, token: str | None, async_persistence: Any | None = None
 ) -> uuid.UUID | None:
     """
-    Resolve player ID from path parameter or token.
+    Resolve player ID from a valid JWT. Path UUID is an identity check, not a credential.
 
     Args:
         player_id: Player ID from path parameter
-        token: JWT token from query parameters
-        async_persistence: Async persistence layer (from container/connection_manager). Required for token resolution.
+        token: JWT token from query parameters or subprotocol
+        async_persistence: Async persistence layer. Required.
 
     Returns:
-        Resolved player UUID or None if resolution fails
+        Resolved player UUID or None if authentication fails
     """
-    # Try to convert path parameter player_id to UUID
+    if not token or async_persistence is None:
+        return None
+    payload = decode_access_token(token)
+    if not payload or "sub" not in payload:
+        return None
+    user_id = str(payload["sub"]).strip()
+    player = await async_persistence.get_player_by_user_id(user_id)
+    if not player:
+        return None
+    resolved = uuid.UUID(str(player.player_id))
     try:
-        return uuid.UUID(player_id)
+        path_uuid = uuid.UUID(player_id)
     except (ValueError, AttributeError, TypeError):
-        # If conversion fails, try to resolve from token
-        pass
-
-    # Try to resolve from token
-    if token and async_persistence:
-        payload = decode_access_token(token)
-        if payload and "sub" in payload:
-            user_id = str(payload["sub"]).strip()
-            player = await async_persistence.get_player_by_user_id(user_id)
-            if player:
-                # player.player_id is a SQLAlchemy Column[str] but returns UUID at runtime
-                # Convert to UUID for type safety - always convert to string first
-                player_id_value = player.player_id
-                return uuid.UUID(str(player_id_value))
-
-    return None
+        return resolved
+    if path_uuid != resolved:
+        return None
+    return resolved
 
 
 @realtime_router.websocket("/ws/{player_id}")
@@ -488,7 +525,7 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
         if connection_manager is None:
             return
 
-        token = websocket.query_params.get("token")
+        token = _parse_websocket_token(websocket, logger)
         resolved_player_id = await _resolve_player_id_from_path_or_token(
             player_id, token, async_persistence=getattr(connection_manager, "async_persistence", None)
         )
@@ -496,8 +533,12 @@ async def websocket_endpoint_route(websocket: WebSocket, player_id: str) -> None
         if not resolved_player_id:
             raise LoggedHTTPException(status_code=401, detail="Unable to resolve player ID")
 
-        await handle_websocket_connection(
-            websocket, resolved_player_id, session_id, connection_manager=connection_manager
+        await _invoke_handle_websocket_connection(
+            websocket,
+            resolved_player_id,
+            session_id,
+            connection_manager,
+            token,
         )
     except Exception as e:
         # Structlog handles UUID objects automatically, no need to convert to string

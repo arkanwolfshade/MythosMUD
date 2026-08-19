@@ -14,6 +14,7 @@ from structlog.stdlib import BoundLogger
 from ..error_types import ErrorMessages, ErrorType, create_websocket_error_response
 from ..structured_logging.enhanced_logging_config import get_logger
 from .envelope import build_event
+from .running_app import connection_manager_from_running_app
 from .websocket_handler_app_state import resolve_and_setup_app_state_services
 from .websocket_helpers import is_client_disconnected_exception
 
@@ -32,11 +33,7 @@ def resolve_websocket_connection_manager(connection_manager: "ConnectionManager 
     """
     if connection_manager is not None:
         return connection_manager
-    from ..main import app
-
-    st = cast(object | None, getattr(app, "state", None))
-    container = cast(object | None, getattr(st, "container", None)) if st is not None else None
-    cm = cast(object | None, getattr(container, "connection_manager", None)) if container is not None else None
+    cm = connection_manager_from_running_app()
     return cast("ConnectionManager", cm)
 
 

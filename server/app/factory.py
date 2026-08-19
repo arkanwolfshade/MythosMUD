@@ -36,6 +36,7 @@ from ..config.models.cors import CORSConfig
 
 # ARCHITECTURE FIX Phase 2.1: Removed AllowedCORSMiddleware import (duplicate functionality)
 # from ..middleware.allowed_cors import AllowedCORSMiddleware
+from ..middleware.auth_rate_limit import AuthRateLimitMiddleware
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware
@@ -307,6 +308,7 @@ def create_app() -> FastAPI:
     # Add security and logging first (inner layers)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(ComprehensiveLoggingMiddleware)
+    app.add_middleware(AuthRateLimitMiddleware)
 
     # Add single CORS middleware with environment-aware configuration
     # SecurityHeadersMiddleware handles all security headers
