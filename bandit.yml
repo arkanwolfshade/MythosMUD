@@ -54,3 +54,8 @@ hardcoded_password_string:
 # they must be embedded in SQL strings. This is safe and documented with nosec comments.
 skips:
   - B608
+
+# Nested graphify trees and venvs are not product code (same idea as ruff extend-exclude).
+exclude_dirs:
+  - graphify-out
+  - .venv

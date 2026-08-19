@@ -17,6 +17,7 @@ EXCLUDE_DIRS: frozenset[str] = frozenset(
         ".git",
         "__pycache__",
         ".venv",
+        "graphify-out",
         "htmlcov",
         "coverage",
         ".mypy_cache",

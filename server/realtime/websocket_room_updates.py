@@ -5,13 +5,14 @@ This module handles room updates and broadcasting to players.
 """
 
 import uuid
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from ..services.npc_instance_service import get_npc_instance_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.room_renderer import build_room_drop_summary, clone_room_drops
 from .envelope import build_event
 from .occupant_display import format_occupant_display_name
+from .running_app import connection_manager_from_running_app
 from .websocket_helpers import convert_uuids_to_strings, get_npc_name_from_instance
 
 if TYPE_CHECKING:
@@ -243,12 +244,11 @@ async def broadcast_room_update(  # pylint: disable=too-many-locals,too-many-sta
     logger.debug("broadcast_room_update called", player_id=player_id, room_id=room_id)
     try:
         if connection_manager is None:
-            # Import inside function to avoid circular import (main.py imports websocket_room_updates indirectly)
-            from ..main import (
-                app,  # pylint: disable=import-outside-toplevel  # Reason: Import inside function to avoid circular import, main.py imports websocket_room_updates indirectly
-            )
-
-            connection_manager = app.state.container.connection_manager
+            resolved = connection_manager_from_running_app()
+            if resolved is None:
+                logger.warning("Connection manager not available for room update")
+                return
+            connection_manager = cast("ConnectionManager", resolved)
 
         async_persistence = getattr(connection_manager, "async_persistence", None) if connection_manager else None
         if not async_persistence:

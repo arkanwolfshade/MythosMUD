@@ -36,6 +36,7 @@ from ..config.models.cors import CORSConfig
 
 # ARCHITECTURE FIX Phase 2.1: Removed AllowedCORSMiddleware import (duplicate functionality)
 # from ..middleware.allowed_cors import AllowedCORSMiddleware
+from ..middleware.auth_rate_limit import AuthRateLimitMiddleware, assert_auth_rate_limit_paths_registered
 from ..middleware.comprehensive_logging import ComprehensiveLoggingMiddleware
 from ..middleware.error_handling_middleware import setup_error_handling
 from ..middleware.security_headers import SecurityHeadersMiddleware
@@ -304,8 +305,10 @@ def create_app() -> FastAPI:
     # Configure CORS settings (precedence: ENV > CONFIG > DEFAULTS)
     cors_config = _configure_cors()
 
-    # Add security and logging first (inner layers)
+    # Starlette last-added is outermost. AuthRateLimit must sit inside logging so 429s
+    # still pass through send_with_logging (brute-force telemetry).
     app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(AuthRateLimitMiddleware)
     app.add_middleware(ComprehensiveLoggingMiddleware)
 
     # Add single CORS middleware with environment-aware configuration
@@ -328,5 +331,6 @@ def create_app() -> FastAPI:
     setup_error_handling(app, include_details=include_details)
 
     _register_v1_routers(app)
+    assert_auth_rate_limit_paths_registered(app)
 
     return app

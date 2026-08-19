@@ -225,6 +225,9 @@ class WebSocketMessageValidator:
         """
         Validate CSRF token in message.
 
+        Fail closed: both the message token and the connection expected token are required.
+        Production client traffic always includes csrfToken (useWebSocketConnection send and ping).
+
         Args:
             message: Parsed JSON message
             player_id: Player ID for token validation
@@ -239,34 +242,23 @@ class WebSocketMessageValidator:
         # Extract CSRF token from message (only string values count as tokens)
         csrf_token = self._extract_csrf_token_string(message)
 
-        # If no token is present and no token is expected, allow (for backward compatibility)
-        if csrf_token is None and expected_token is None:
-            logger.debug("No CSRF token in message, allowing (backward compatibility)", player_id=player_id)
-            return True
-
-        # If token is expected but not present, reject
-        if expected_token is not None and csrf_token is None:
-            logger.warning("CSRF token missing from message", player_id=player_id)
+        if csrf_token is None or expected_token is None:
+            logger.warning(
+                "CSRF token missing from message or connection",
+                player_id=player_id,
+                has_message_token=csrf_token is not None,
+                has_expected_token=expected_token is not None,
+            )
             raise MessageValidationError("CSRF token is required", error_type="csrf_token_missing")
 
-        # If token is present, validate it
-        if csrf_token is not None:
-            if expected_token is None:
-                logger.warning(
-                    "CSRF token present but no expected token available",
-                    player_id=player_id,
-                    has_token=True,
-                )
-                raise MessageValidationError("CSRF token cannot be validated", error_type="csrf_token_missing")
-
-            if csrf_token != expected_token:
-                logger.warning(
-                    "CSRF token mismatch",
-                    player_id=player_id,
-                    token_present=True,
-                    expected_present=bool(expected_token),
-                )
-                raise MessageValidationError("CSRF token mismatch", error_type="csrf_token_invalid")
+        if csrf_token != expected_token:
+            logger.warning(
+                "CSRF token mismatch",
+                player_id=player_id,
+                token_present=True,
+                expected_present=True,
+            )
+            raise MessageValidationError("CSRF token mismatch", error_type="csrf_token_invalid")
 
         return True
 

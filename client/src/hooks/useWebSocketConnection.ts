@@ -135,10 +135,14 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
         // Outer csrfToken must match the JWT used on the WebSocket URL; validator copies it into
         // the inner payload when the inner JSON omits csrfToken (message_validator._unwrap_*).
         const tokenForCsrf = authTokenRef.current;
+        if (!tokenForCsrf) {
+          logger.warn('WebSocketConnection', 'Cannot send: missing CSRF token');
+          return;
+        }
         const outbound = JSON.stringify({
           message: sanitizedMessage,
           timestamp: Date.now(),
-          ...(tokenForCsrf ? { csrfToken: tokenForCsrf } : {}),
+          csrfToken: tokenForCsrf,
         });
 
         websocketRef.current.send(outbound);
@@ -212,11 +216,11 @@ export function useWebSocketConnection(options: WebSocketConnectionOptions): Web
           if (ws.readyState === WebSocket.OPEN) {
             // Send ping to WebSocket (same csrf field as other realtime messages)
             const tokenNow = authTokenRef.current;
-            const pingPayload: { type: string; csrfToken?: string } = { type: 'ping' };
-            if (tokenNow) {
-              pingPayload.csrfToken = tokenNow;
+            if (!tokenNow) {
+              logger.warn('WebSocketConnection', 'Skipping ping: missing CSRF token');
+              return;
             }
-            ws.send(JSON.stringify(pingPayload));
+            ws.send(JSON.stringify({ type: 'ping', csrfToken: tokenNow }));
 
             // DEV-only: check NATS health via server
             if (import.meta.env.DEV) {

@@ -121,6 +121,9 @@ engines:
       - "**/conftest.py"
       # OpenAPI example strings in Pydantic schemas are documentation only, not real secrets.
       - "server/schemas/**"
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/.venv/**"
   pylintpython3:
     # Pydantic/schema models are data holders; R0903 "too few public methods" is expected.
     exclude_paths:
@@ -128,6 +131,9 @@ engines:
       - "**/Makefile"
       - "server/schemas/**"
       - "server/models/**"
+      - "graphify-out/**"
+      - "**/graphify-out/**"
+      - "**/.venv/**"
   # Codacy Cloud tool-level excludes (see root exclude_paths for Makefile too).
   # Note: Codacy CLI v2 may still run Pylint/Revive on an opened Makefile; see .vscode/settings.json.
   revive:
