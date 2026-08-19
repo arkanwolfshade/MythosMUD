@@ -1,6 +1,6 @@
 # ADR-010: Quest Subsystem Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-19
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This ADR set was authored after the
+systems it describes: the structural architecture documents it draws on predate it by months, and
+`DOCUMENTATION_AUDIT.md` records that the design documentation was reverse-engineered with code treated as
+the source of truth. Read it as a description of a decision already in force, not a record made at decision
+time.
 
 ## 2. Context
 
@@ -54,7 +59,7 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
    events drive progress for complete_activity and kill_n goals. Completion (auto_complete or
    turn_in) applies rewards and sets instance state to completed.
 
-5. **API and commands**: GET /api/players/{player_id}/quests returns the quest log (auth and
+5. **API and commands**: GET /v1/api/players/{player_id}/quests returns the quest log (auth and
    character ownership enforced). Commands `journal` and `quests` (alias) return formatted
    quest log; `quest abandon <name>` abandons by common name. Initial WebSocket game_state
    includes quest_log so the client Journal panel can render without a separate API call.
@@ -93,3 +98,4 @@ provided by the server (game_state.quest_log or GET /api/players/{id}/quests).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Correct quest log path to /v1 prefix |

@@ -415,7 +415,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         """Async alias for damage_player. Delegates to HealthRepository."""
         await self._health_repo.damage_player(player, amount, damage_type)
 
-    # Player effects (ADR-009)
+    # Player effects (ADR-019)
     async def add_player_effect(
         self,
         player_id: uuid.UUID | str,

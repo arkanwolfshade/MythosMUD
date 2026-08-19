@@ -127,8 +127,7 @@ flowchart LR
   move; verify save_player is called.
 
 See also [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md),
-[SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [ADR-009](../architecture/decisions/
-ADR-009-instanced-rooms.md) (no_death).
+[SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [ADR-009](../architecture/decisions/ADR-009-instanced-rooms.md) (no_death).
 
 ## 8. Related docs
 

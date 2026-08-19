@@ -1,6 +1,6 @@
 # ConnectionManager Modular Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -21,7 +21,7 @@ Read `[NOTE]` only if additional context is needed.
 ## 2. Overview
 
 **[NOTE]**
-The ConnectionManager has been successfully refactored from a 3,653-line monolithic module into a well-structured,
+The ConnectionManager has been successfully refactored from a monolithic module into a well-structured,
 modular system following the Facade design pattern. This document describes the new architecture and how components
 interact.
 
@@ -32,7 +32,7 @@ interact.
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                      ConnectionManager                          │
-│                    (Facade - 2,382 lines)                       │
+│                          (Facade)                               │
 │                                                                 │
 │  Core Responsibilities:                                         │
 │  • WebSocket lifecycle (connect/disconnect)                     │
@@ -237,7 +237,7 @@ self.message_broadcaster = MessageBroadcaster(
 
 ### 1. **Improved Maintainability**
 
-Each component has 200-400 lines (vs. 3,653 monolithic)
+Each component is small and single-purpose (vs. the original monolith)
 
 - Changes localized to specific modules
 - Clear ownership of responsibilities
@@ -318,7 +318,7 @@ Public API remains unchanged
 Some tests updated to reflect new architecture
 
 - Mock strategies adjusted for component delegation
-- 99.8% test pass rate maintained throughout refactoring
+- Test suite kept passing throughout the refactoring
 
 ### Performance Impact
 
@@ -351,17 +351,12 @@ While significant improvements were achieved, additional refinement could includ
 ## 11. Metrics
 
 **[SPEC]**
-**Original Size**: 3,653 lines
+**Original Size**: a single monolithic module
 
-**Current Size**: 2,382 lines
-
-**Reduction**: 35% (1,271 lines extracted)
+**Current Size**: a thin facade delegating to the modules below. Line counts are deliberately not recorded here — they rot on every commit; measure the file directly.
 
 **Components**: 7 specialized modules
 
-**Test Pass Rate**: 99.8%
-
-- **Linting**: ✅ All passed
 - **Refactoring Duration**: December 4, 2025
 
 ## 12. Changelog
@@ -371,3 +366,4 @@ While significant improvements were achieved, additional refinement could includ
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Remove hard-coded line counts and point-in-time CI metrics |

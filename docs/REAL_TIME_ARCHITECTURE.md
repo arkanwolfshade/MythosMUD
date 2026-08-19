@@ -1,6 +1,6 @@
 # 🚀 MythosMUD Real-Time Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -204,11 +204,9 @@ server/realtime/
 
 **Refactoring Metrics**:
 
-- Original: 3,653 lines (monolithic)
-- Current: 2,382 lines (modular facade)
+- Current: a modular facade over seven specialized modules (see CONNECTION_MANAGER_ARCHITECTURE.md)
 - Reduction: 35% (1,271 lines extracted)
 - Components: 7 specialized modules
-- Test Coverage: 99.8% maintained
 
 See `archive/REFACTORING_SUMMARY.md` for complete details.
 
@@ -428,3 +426,4 @@ a multiplayer game. Future enhancements can be added incrementally without disru
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Remove hard-coded line counts and coverage figure |

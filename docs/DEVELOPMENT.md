@@ -501,7 +501,7 @@ curl http://localhost:54768/game/status
 
 **[SPEC]**
 
-- Read [PLANNING.md](PLANNING.md) for project architecture and priorities
+- Read [PLANNING.md](../PLANNING.md) for project architecture and priorities
 - Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
 - Review security requirements and COPPA compliance guidelines
 - Contributors: [CONTRIBUTING.md](../CONTRIBUTING.md)

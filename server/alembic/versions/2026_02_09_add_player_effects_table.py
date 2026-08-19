@@ -1,4 +1,4 @@
-"""Add player_effects table (ADR-009 effects system)
+"""Add player_effects table (ADR-019 effects system)
 
 Revision ID: add_player_effects_table
 Revises: ensure_item_instance_fks
@@ -24,7 +24,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    """Create player_effects table and indexes (ADR-009 effects system)."""
+    """Create player_effects table and indexes (ADR-019 effects system)."""
     op.create_table(
         "player_effects",
         sa.Column(

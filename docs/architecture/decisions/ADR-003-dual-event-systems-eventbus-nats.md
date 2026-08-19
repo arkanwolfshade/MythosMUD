@@ -1,6 +1,6 @@
 # ADR-003: Dual Event Systems (EventBus + NATS)
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This ADR set was authored after the
+systems it describes: the structural architecture documents it draws on predate it by months, and
+`DOCUMENTATION_AUDIT.md` records that the design documentation was reverse-engineered with code treated as
+the source of truth. Read it as a description of a decision already in force, not a record made at decision
+time.
 
 ## 2. Context
 
@@ -37,10 +42,14 @@ Maintain **two event systems** with clear separation of responsibility:
    - Pure asyncio implementation
    - Events: PlayerEnteredRoom, CombatStartedEvent, PlayerDiedEvent, etc.
    - Subscribers: RealTimeEventHandler, logging, internal handlers
-   - Single process only; no network
+   - In-memory by default; **networked when the NATS bridge is active**. The container constructs
+     `DistributedEventBus` (`server/container/bundles/core.py`) and attaches the bridge once NATS connects
+     (`server/container/bundles/realtime.py`), and NATS is enabled by default — so the networked path is the
+     production default. The pure in-process path applies only when NATS is disabled. See §3 item 2 below and
+     [DISTRIBUTED_EVENTBUS_NATS.md](../DISTRIBUTED_EVENTBUS_NATS.md).
 
 2. **NATS** (`server/services/nats_service.py`) - Distributed pub/sub for real-time messaging
-   - Subject-based routing: `chat.say.{room_id}`, `combat.{room_id}`, `events.player_entered.{room_id}`
+   - Subject-based routing: `chat.say.room.{room_id}`, `combat.attack.{room_id}`, `events.player_entered.{room_id}`
    - Used for: chat, combat broadcasts, cross-instance coordination
    - Supports horizontal scaling and multiple subscribers
 
@@ -84,3 +93,4 @@ Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Correct 3.1 (EventBus is networked via the NATS bridge); correct NATS subject forms |

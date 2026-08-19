@@ -64,7 +64,7 @@ class StatusEffectType(StrEnum):
     CORRUPTED = "corrupted"
     DELIRIOUS = "delirious"
     BUFF = "buff"
-    # Effects system (ADR-009): game-entry warded (login grace period)
+    # Effects system (ADR-019): game-entry warded (login grace period)
     LOGIN_WARDED = "login_warded"
     # CoC spell-driven status effects
     DOMINATED = "dominated"

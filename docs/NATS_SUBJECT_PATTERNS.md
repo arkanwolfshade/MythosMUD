@@ -1,6 +1,6 @@
 # NATS Subject Pattern Management
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -164,7 +164,7 @@ for pattern in chat_patterns:
 | `event_player_left`             | `events.player_left.{room_id}`             | room_id    | Player left room events    |
 | `event_game_tick`               | `events.game_tick`                         | -          | Global game tick events    |
 | `event_player_mortally_wounded` | `events.player_mortally_wounded.{room_id}` | room_id    | Player mortally wounded    |
-| `event_player_hp_decay`         | `events.player_hp_decay.{room_id}`         | room_id    | Player HP decay events     |
+| `event_player_dp_decay`         | `events.player_dp_decay.{room_id}`         | room_id    | Player DP decay events     |
 | `event_player_died`             | `events.player_died.{room_id}`             | room_id    | Player death events        |
 | `event_player_respawned`        | `events.player_respawned.{room_id}`        | room_id    | Player respawn events      |
 
@@ -178,6 +178,16 @@ for pattern in chat_patterns:
 | `combat_started`      | `combat.started.{room_id}`      | room_id    | Combat started events |
 | `combat_ended`        | `combat.ended.{room_id}`        | room_id    | Combat ended events   |
 | `combat_npc_died`     | `combat.npc_died.{room_id}`     | room_id    | NPC death events      |
+| `combat_damage`       | `combat.damage.{room_id}`       | room_id    | Combat damage events  |
+| `combat_turn`         | `combat.turn.{room_id}`         | room_id    | Combat turn events    |
+| `combat_timeout`      | `combat.timeout.{room_id}`      | room_id    | Combat timeout events |
+| `combat_dp_update`    | `combat.dp_update.{player_id}`  | player_id  | Player DP updates     |
+
+### Domain Event Patterns
+
+| Pattern Name    | Subject Template                | Parameters | Description                          |
+| --------------- | ------------------------------- | ---------- | ------------------------------------ |
+| `events_domain` | `events.domain.{event_type}`    | event_type | Distributed EventBus bridge subject. See [DISTRIBUTED_EVENTBUS_NATS.md](architecture/DISTRIBUTED_EVENTBUS_NATS.md) |
 
 ## 6. Dynamic Pattern Registration
 
@@ -768,3 +778,4 @@ The following utility functions are marked as deprecated:
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Fix player_dp_decay typo; backfill 5 patterns missing from section 5 |

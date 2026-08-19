@@ -714,7 +714,7 @@ test("should log user actions correctly", async () => {
 [Playwright Documentation](https://playwright.dev/docs/intro)
 
 - [MCP Scenario Documentation](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
-- [Scenario Conversion Guide](./SCENARIO_CONVERSION_GUIDE.md)
+- [Scenario Conversion Guide](./archive/SCENARIO_CONVERSION_GUIDE.md)
 - [Test Data Constants](../client/tests/e2e/runtime/fixtures/test-data.ts)
 
 ## 15. Changelog

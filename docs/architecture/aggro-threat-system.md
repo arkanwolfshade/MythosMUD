@@ -124,7 +124,7 @@ The following were decided and are fixed for implementation:
 **[SPEC]**
 
 - ADR-016: Aggro and Threat Management System
-- [Aggro and Threat Implementation Plan](aggro-threat-implementation-plan.md) – implementation summary and key files
+- [Aggro and Threat Implementation Plan](../archive/aggro-threat-implementation-plan.md) – implementation summary and key files
 - Context and comparison (Diku/ROM vs LPMud, modern MUDs, social aggro): see discussion that led to this design.
 
 ## 12. Changelog

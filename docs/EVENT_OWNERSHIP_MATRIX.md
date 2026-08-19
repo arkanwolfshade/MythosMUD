@@ -1,6 +1,6 @@
 # Event Ownership Matrix
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -74,11 +74,11 @@ NATS subject-based messages for inter-service communication:
 
 | Subject Pattern            | Publisher             | Purpose          | Subscribers         |
 | -------------------------- | --------------------- | ---------------- | ------------------- |
-| `chat.say.{room_id}`       | ChatService           | Room-based chat  | Players in room     |
-| `chat.whisper.{player_id}` | ChatService           | Private messages | Target player       |
+| `chat.say.room.{room_id}`  | ChatService           | Room-based chat  | Players in room     |
+| `chat.whisper.player.{player_id}` | ChatService           | Private messages | Target player       |
 | `chat.global`              | ChatService (planned) | Server-wide chat | All players         |
-| `chat.local.{subzone}`     | ChatService (planned) | Sub-zone chat    | Players in sub-zone |
-| `combat.{room_id}`         | CombatEventPublisher  | Combat events    | Players in room     |
+| `chat.local.subzone.{subzone}`| ChatService (planned) | Sub-zone chat    | Players in sub-zone |
+| `combat.attack.{room_id}`  | CombatEventPublisher  | Combat events    | Players in room     |
 
 ## 4. Duplicate Event Analysis
 
@@ -125,7 +125,7 @@ Direct broadcast_room_update() calls after movement have been removed. Teleport 
 ### Paths
 
 1. `CombatService` publishes `CombatStartedEvent` to EventBus
-2. `CombatEventPublisher` subscribes to events and publishes to NATS `combat.{room_id}` subject
+2. `CombatEventPublisher` subscribes to events and publishes to NATS `combat.attack.{room_id}` subject
 3. `NATSMessageHandler` subscribes to NATS and sends to clients
 
 This appears intentional (event sourcing + message delivery) but creates complexity.
@@ -262,7 +262,7 @@ This document represents the audit results.
 - `server/realtime/event_handler.py` - Event → Message transformation
 - `server/realtime/connection_manager.py` - WebSocket message delivery
 - `server/realtime/nats_message_handler.py` - NATS → Client messages
-- `docs/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation (archived)
 
 ## 10. Changelog
 
@@ -271,3 +271,4 @@ This document represents the audit results.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Correct deprecated NATS subject forms |

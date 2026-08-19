@@ -1,5 +1,5 @@
 """
-Player effect repository for the effects system (ADR-009).
+Player effect repository for the effects system (ADR-019).
 
 Async persistence for player_effects table via PostgreSQL stored procedures:
 add, delete, get active, has_effect, remaining_ticks, and expire effects by current tick.

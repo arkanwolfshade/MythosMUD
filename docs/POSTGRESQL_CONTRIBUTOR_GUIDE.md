@@ -67,7 +67,7 @@ rationale, see [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc).
 **[SPEC]**
 
 - Full rules: [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc)
-- Audit report: [docs/POSTGRESQL_AUDIT_REPORT_2026.md](POSTGRESQL_AUDIT_REPORT_2026.md)
+- Audit report: [docs/POSTGRESQL_AUDIT_REPORT_2026.md](archive/POSTGRESQL_AUDIT_REPORT_2026.md)
 
 ## 8. Changelog
 

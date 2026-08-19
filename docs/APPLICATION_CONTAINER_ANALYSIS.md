@@ -3,6 +3,10 @@
 **Document Version:** 1.1
 **Date:** January 2026
 **Status:** Implemented (Phase 1 and Phase 2 complete)
+**Provenance:** Authored after implementation. Restored from `docs/archive/` to `docs/` on 2026-08-19 by the
+design/implementation audit: ADR-002 §4 and §7, `architecture/decisions/README.md` §4, and
+`BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md` §2 and §7 all cite this document as authoritative, so it is not
+archival. Treat its description as derived from the implementation rather than as a design that preceded it.
 **Purpose:** Analyze the ApplicationContainer and document the domain-specific container split per the Architecture Review Plan.
 
 ## Current state (architecture-cleanup)
@@ -190,7 +194,7 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 
 1. Helper methods moved to `server/container/utils.py` (`decode_json_column`, `normalize_path_from_url_or_path`). ApplicationContainer delegates. **Done**
 2. Keep `get_instance()`, `set_instance()`, `reset_instance()`, `get_service()`, `is_initialized`, and state flags in ApplicationContainer. **Done**
-3. ApplicationContainer ~219 lines (target 200-300). **Done**
+3. ApplicationContainer reduced to orchestration only (target 200-350 lines). **Done**
 
 ### Phase 3: (Optional) Extract service factories
 

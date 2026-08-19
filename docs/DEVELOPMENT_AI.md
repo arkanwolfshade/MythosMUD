@@ -189,9 +189,9 @@ When generating code, AI agents MUST ensure:
 
 ### **Logging Documentation References**
 
-**Complete Guide**: [LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md)
+**Complete Guide**: [LOGGING_BEST_PRACTICES.md](archive/LOGGING_BEST_PRACTICES.md)
 
-**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](docs/LOGGING_QUICK_REFERENCE.md)
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](archive/LOGGING_QUICK_REFERENCE.md)
 
 **Migration Guide**: Included in LOGGING_BEST_PRACTICES.md
 

@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This ADR set was authored after the
+systems it describes: the structural architecture documents it draws on predate it by months, and
+`DOCUMENTATION_AUDIT.md` records that the design documentation was reverse-engineered with code treated as
+the source of truth. Read it as a description of a decision already in force, not a record made at decision
+time.
 
 ## 2. Context
 

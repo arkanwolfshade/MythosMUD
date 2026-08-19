@@ -7,7 +7,7 @@ Tests the complete login grace period flow including:
 - Combat prevention during grace period
 - Damage blocking during grace period
 - Visual indicator display
-- Effect-based flow (ADR-009): start grace -> effect added -> tick expiration clears in-memory
+- Effect-based flow (ADR-019): start grace -> effect added -> tick expiration clears in-memory
 """
 
 import asyncio
@@ -192,7 +192,7 @@ async def test_grace_period_start_time_tracking(
 async def test_effect_based_grace_start_then_tick_expiration_clears_in_memory(
     mock_connection_manager: FakeGraceManager,
 ) -> None:  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name
-    """Start grace with effect (ADR-009); simulate tick expiration; in-memory state is cleared."""
+    """Start grace with effect (ADR-019); simulate tick expiration; in-memory state is cleared."""
     player_id = uuid.uuid4()
     mock_persistence: MagicMock = MagicMock()
     mock_persistence.add_player_effect = AsyncMock(return_value=str(uuid.uuid4()))

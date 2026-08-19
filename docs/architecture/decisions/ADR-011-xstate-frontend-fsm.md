@@ -1,6 +1,6 @@
 # ADR-011: XState for Frontend Connection State Machine
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-07-30
 
 ---
 
@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This document states 2025-10-11 but
+first appears in this repository on 2026-02-26; its Context line notes it was **recovered from `.agent-os`**,
+so the stated date is most likely the original decision date under earlier tooling and the later date is when
+the record was transcribed here. Its section structure differs from ADR-001–010, consistent with that
+separate origin. Unlike much of this ADR set, this one may well be a genuine contemporaneous decision record.
 **Decision Makers**: Prof. Wolfshade, AI Assistant
 **Context**: CRITICAL-1 Connection State Machine Implementation (recovered from .agent-os)
 
@@ -192,7 +197,7 @@ export function useConnectionState(options?: {
 ### Positive
 
 - **Eliminated Implicit State Bugs**: Impossible states are now prevented by the FSM
-- **Improved Testability**: 13 comprehensive tests verify all state transitions
+- **Improved Testability**: the state machine is covered by unit tests verifying its transitions
 - **Visual Debugging**: XState Inspector provides real-time state visualization
 - **Type Safety**: TypeScript catches invalid state transitions at compile time
 - **Maintainability**: Clear, explicit state machine logic replaces 750 lines of ad-hoc state management
@@ -250,3 +255,4 @@ export function useConnectionState(options?: {
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-19 | Provenance note; remove hard-coded test count |

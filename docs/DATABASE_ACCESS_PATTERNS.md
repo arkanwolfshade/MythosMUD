@@ -328,8 +328,8 @@ from SQL injection but represent an anti-pattern.
 **[SPEC]**
 [SQLAlchemy Best Practices](./.cursor/rules/sqlalchemy.mdc)
 
-- [SQLAlchemy Async Best Practices](./docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
-- [SQLAlchemy Code Review](./docs/SQLALCHEMY_CODE_REVIEW.md)
+- [SQLAlchemy Async Best Practices](./SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
+- [SQLAlchemy Code Review](./archive/SQLALCHEMY_CODE_REVIEW.md)
 
 ---
 

@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This ADR set was authored after the
+systems it describes: the structural architecture documents it draws on predate it by months, and
+`DOCUMENTATION_AUDIT.md` records that the design documentation was reverse-engineered with code treated as
+the source of truth. Read it as a description of a decision already in force, not a record made at decision
+time.
 
 ## 2. Context
 
@@ -65,7 +70,7 @@ All I/O-bound operations use `async def` and `await`. Synchronous code is wrappe
 
 **[SPEC]**
 
-- [Async Persistence Migration Plan](../../ASYNC_PERSISTENCE_MIGRATION_PLAN.md)
+- [Async Persistence Migration Plan](../../archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md)
 - [SQLAlchemy Async Best Practices](../../SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
 
 ## 8. Changelog

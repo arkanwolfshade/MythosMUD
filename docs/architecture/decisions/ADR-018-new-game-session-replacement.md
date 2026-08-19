@@ -1,6 +1,6 @@
 # ADR-018: New Game Session vs Grace Reconnect
 
-**Version 1.0.0** · MythosMUD · 2026-08-14
+**Version 1.1.0** · MythosMUD · 2026-08-14
 
 ---
 
@@ -59,7 +59,7 @@ and differs from `manager.player_sessions.get(player_id)`, call existing
 - Same `session_id`, or missing `session_id` (grace recover): append only.
 - First connect (`player_sessions` has no entry): append only; do not run full
   session replacement (avoids room-unsubscribe then re-subscribe).
-- `POST /connections/{player_id}/session` remains. It must be **idempotent**:
+- `POST /v1/api/connections/{player_id}/session` remains. It must be **idempotent**:
   if `player_sessions[player_id] == new_session_id`, do not disconnect the live
   socket (HTTP after WS must not kill the new tab).
 - Reuse `_disconnect_all_connections_for_session`. Do not add a second
@@ -117,3 +117,4 @@ and differs from `manager.player_sessions.get(player_id)`, call existing
 | Version | Date       | Change                                                      |
 | ------- | ---------- | ----------------------------------------------------------- |
 | 1.0.0   | 2026-08-14 | Initial decision for session replacement vs grace reconnect |
+| 1.1.0 | 2026-08-19 | Correct session endpoint path to /v1 prefix |
