@@ -14,6 +14,8 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SERVER_DIR = PROJECT_ROOT / "server"
+# Generated graphs / nested venvs are not MythosMUD library code.
+_SKIP_PATH_PARTS = frozenset({"graphify-out", ".venv"})
 
 # Pattern: asyncio.run( as executable code (not inside string or comment)
 # Simple approach: line contains asyncio.run( and is not a comment
@@ -57,6 +59,8 @@ def main() -> int:
     """Return 0 if no asyncio.run( in server/, else 1."""
     violations: list[tuple[Path, int, str]] = []
     for py_path in sorted(SERVER_DIR.rglob("*.py")):
+        if any(part in _SKIP_PATH_PARTS for part in py_path.parts):
+            continue
         for line_no, line in check_file(py_path):
             rel = py_path.relative_to(PROJECT_ROOT)
             violations.append((rel, line_no, line))

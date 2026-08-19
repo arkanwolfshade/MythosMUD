@@ -225,6 +225,9 @@ class WebSocketMessageValidator:
         """
         Validate CSRF token in message.
 
+        Fail closed: both the message token and the connection expected token are required.
+        Production client traffic always includes csrfToken (useWebSocketConnection send and ping).
+
         Args:
             message: Parsed JSON message
             player_id: Player ID for token validation
@@ -239,7 +242,6 @@ class WebSocketMessageValidator:
         # Extract CSRF token from message (only string values count as tokens)
         csrf_token = self._extract_csrf_token_string(message)
 
-        # Fail closed: missing message token or missing expected token is invalid.
         if csrf_token is None or expected_token is None:
             logger.warning(
                 "CSRF token missing from message or connection",

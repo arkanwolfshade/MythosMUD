@@ -24,21 +24,30 @@ from ..schemas.realtime import (
 )
 
 
+class _ConnectionManagerUtilsModule(Protocol):
+    def resolve_connection_manager(self, candidate: object | None = None) -> object | None: ...
+
+
 # Load websocket_handler through importlib; a static import cycles with app.factory.
 class _WebSocketHandlerModule(Protocol):
     handle_websocket_connection: Callable[..., Awaitable[None]]
+
 
 # Create real-time router
 realtime_router = APIRouter(prefix="/api", tags=["realtime"])
 
 
 def resolve_connection_manager(candidate: object | None = None) -> object | None:
-    """Use the caller-supplied manager only.
+    """Prefer the supplied manager; otherwise the container singleton.
 
-    connection_manager_utils.resolve_connection_manager looks up ApplicationContainer
-    and that import is a cycle with factory -> this module.
+    Static import of connection_manager_utils cycles factory -> this module.
+    importlib keeps the lookup that API routes used before the GHSA cycle break.
     """
-    return candidate
+    if candidate is not None:
+        return candidate
+    loaded = cast(object, importlib.import_module("server.realtime.connection_manager_utils"))
+    utils = cast(_ConnectionManagerUtilsModule, loaded)
+    return utils.resolve_connection_manager(None)
 
 
 async def _invoke_handle_websocket_connection(
@@ -310,9 +319,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     logger.info("WebSocket connection attempt", player_id=player_id, session_id=session_id)
 
     try:
-        await _invoke_handle_websocket_connection(
-            websocket, player_id, session_id, connection_manager, token
-        )
+        await _invoke_handle_websocket_connection(websocket, player_id, session_id, connection_manager, token)
     except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: WebSocket errors unpredictable, must log and re-raise
         from starlette.websockets import WebSocketDisconnect
 

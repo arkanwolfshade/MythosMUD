@@ -24,7 +24,7 @@ const jsxA11yRecommendedWarnRules = Object.fromEntries(
 const jsxA11yRulesOff = Object.fromEntries(Object.keys(jsxA11y.rules).map(name => [`jsx-a11y/${name}`, 'off']));
 
 export default tseslint.config([
-  globalIgnores(['dist', 'playwright-report/**']),
+  globalIgnores(['dist', 'playwright-report/**', 'graphify-out/**']),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

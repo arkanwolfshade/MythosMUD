@@ -35,6 +35,20 @@ def test_resolve_connection_manager_from_state() -> None:
         assert real_time._resolve_connection_manager_from_state(state) is cm
 
 
+def test_resolve_connection_manager_returns_candidate() -> None:
+    cm = MagicMock()
+    assert real_time.resolve_connection_manager(cm) is cm
+
+
+def test_resolve_connection_manager_delegates_when_none() -> None:
+    sentinel = MagicMock()
+    fake = MagicMock()
+    fake.resolve_connection_manager.return_value = sentinel
+    with patch("server.api.real_time.importlib.import_module", return_value=fake) as mocked:
+        assert real_time.resolve_connection_manager(None) is sentinel
+        mocked.assert_called_once_with("server.realtime.connection_manager_utils")
+
+
 def test_ensure_connection_manager_missing() -> None:
     request = MagicMock()
     request.app.state = MagicMock(container=MagicMock(connection_manager=None))
