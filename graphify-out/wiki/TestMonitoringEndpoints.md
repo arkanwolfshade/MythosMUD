@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (13 shared connections)
+- [get_monitoring_dashboard](get_monitoring_dashboard.md) (13 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 

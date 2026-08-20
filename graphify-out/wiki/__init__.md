@@ -1,24 +1,28 @@
 # .__init__
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/circuit_breaker.py`
-- **timedelta** (1 connections)
-- **Initialize circuit breaker. Args: failure_threshold: Number of failures before…** (1 connections) — `server/realtime/circuit_breaker.py`
+- **.__init__()** (7 connections) — `server/services/nats_exceptions.py`
+- **Exception** (6 connections)
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
+- **.__init__()** (3 connections) — `server/services/nats_exceptions.py`
 
 ## Relationships
 
-- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
+- [NATSError](NATSError.md) (4 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/realtime/circuit_breaker.py`
+- `server/services/nats_exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

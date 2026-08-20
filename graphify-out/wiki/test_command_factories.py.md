@@ -21,9 +21,8 @@
 
 ## Relationships
 
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [CommandFactory](CommandFactory.md) (1 shared connections)
-- [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
 - [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
 - [test_create_go_command](test_create_go_command.md) (1 shared connections)
 - [test_create_stand_command](test_create_stand_command.md) (1 shared connections)
@@ -33,6 +32,7 @@
 - [test_create_put_command](test_create_put_command.md) (1 shared connections)
 - [test_create_get_command](test_create_get_command.md) (1 shared connections)
 - [factory](factory.md) (1 shared connections)
+- [test_create_equip_command](test_create_equip_command.md) (1 shared connections)
 
 ## Source Files
 

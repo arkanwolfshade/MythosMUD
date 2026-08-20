@@ -1,56 +1,63 @@
 # test_container_persistence_extended_crud.py
 
-> 60 nodes
+> 113 nodes
 
 ## Key Concepts
 
 - **test_container_persistence_extended_crud.py** (42 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **ContainerData** (41 connections) — `server/persistence/container_data.py`
+- **server/persistence/__init__.py** (32 connections) — `server/persistence/__init__.py`
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **ContainerDataCore** (24 connections) — `server/persistence/container_data.py`
 - **container_query_helpers.py** (21 connections) — `server/persistence/container_query_helpers.py`
+- **ContainerDataExtras** (18 connections) — `server/persistence/container_data.py`
 - **get_decayed_containers()** (13 connections) — `server/persistence/container_query_helpers.py`
+- **persistence/container_data.py** (13 connections) — `server/persistence/container_data.py`
 - **_build_container_data_from_row()** (12 connections) — `server/persistence/container_query_helpers.py`
 - **get_containers_by_entity_id()** (12 connections) — `server/persistence/container_query_helpers.py`
 - **get_containers_by_room_id()** (12 connections) — `server/persistence/container_query_helpers.py`
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_create_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_uuid_string_conversion()** (6 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_missing_item_instance_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_only_prototype_id()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_uuid_string_conversion()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_container_data_to_dict()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_to_dict_none_values()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 - **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
 - **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Any** (4 connections)
-- **ContainerData** (4 connections)
-- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_entity_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_containers_by_room_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- *... and 35 more nodes in this community*
+- **test_container_data_init()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (20 shared connections)
-- [ContainerData](ContainerData.md) (17 shared connections)
-- [DatabaseError](DatabaseError.md) (16 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (4 shared connections)
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) (3 shared connections)
-- [test_container_persistence_crud.py](test_container_persistence_crud.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [container_persistence.py](container_persistence.py.md) (39 shared connections)
+- [get_logger](get_logger.md) (29 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (13 shared connections)
+- [ContainerRepository](ContainerRepository.md) (12 shared connections)
+- [test_container_query_helpers_async.py](test_container_query_helpers_async.py.md) (6 shared connections)
+- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (4 shared connections)
+- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (3 shared connections)
+- [fetch_container_items](fetch_container_items.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [_container_data_to_dict](_container_data_to_dict.md) (1 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (1 shared connections)
+- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/persistence/__init__.py`
+- `server/persistence/container_data.py`
 - `server/persistence/container_query_helpers.py`
 - `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 269 (93%)
+- INFERRED: 20 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

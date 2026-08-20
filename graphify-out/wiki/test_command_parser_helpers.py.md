@@ -33,12 +33,9 @@
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (10 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

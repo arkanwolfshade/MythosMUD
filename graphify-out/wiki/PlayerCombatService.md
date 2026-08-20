@@ -1,6 +1,6 @@
 # PlayerCombatService
 
-> 111 nodes
+> 113 nodes
 
 ## Key Concepts
 
@@ -29,31 +29,32 @@
 - **test_award_xp_on_npc_death_delegates_to_rewards_when_available()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **test_award_xp_on_npc_death_error()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
 - **test_award_xp_on_npc_death_no_player_combat_service()** (4 connections) — `server/tests/unit/services/test_player_combat_service.py`
-- *... and 86 more nodes in this community*
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [test_event_handler.py](test_event_handler.py.md) (10 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (7 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (3 shared connections)
+- [player_combat_service_support.py](player_combat_service_support.py.md) (3 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 - [combat_loader.py](combat_loader.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (1 shared connections)
+- [SpellTargetingService](SpellTargetingService.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/combat_service.py`
 - `server/services/player_combat_service.py`
 - `server/tests/unit/services/test_player_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 189 (81%)
+- EXTRACTED: 191 (81%)
 - INFERRED: 44 (19%)
 - AMBIGUOUS: 0 (0%)
 

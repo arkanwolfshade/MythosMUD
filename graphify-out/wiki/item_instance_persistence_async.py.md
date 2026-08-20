@@ -1,6 +1,6 @@
 # item_instance_persistence_async.py
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -26,23 +26,23 @@
 - **test_create_item_instance_async_db_error()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
 - **test_create_item_instance_async_missing_id()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
 - **AsyncSession** (4 connections)
-- **.create_item_instance()** (3 connections) — `server/async_persistence.py`
 - **repository()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
 - **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
-- *... and 26 more nodes in this community*
+- **test_ensure_item_instance_delegates()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (16 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [server/persistence/__init__.py](server-persistence-__init__.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (28 shared connections)
+- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (4 shared connections)
 - [ValidationError](ValidationError.md) (3 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
 - [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
 - `server/async_persistence_constants.py`
 - `server/persistence/item_instance_persistence_async.py`
 - `server/persistence/repositories/item_repository.py`
@@ -51,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 134 (94%)
+- EXTRACTED: 132 (94%)
 - INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 

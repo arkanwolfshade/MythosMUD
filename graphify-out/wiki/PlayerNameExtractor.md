@@ -1,6 +1,6 @@
 # PlayerNameExtractor
 
-> 162 nodes
+> 164 nodes
 
 ## Key Concepts
 
@@ -25,21 +25,20 @@
 - **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
 - **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
 - **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
 - **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
 - **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
-- **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
-- *... and 137 more nodes in this community*
+- *... and 139 more nodes in this community*
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (16 shared connections)
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [RoomOccupantManager](RoomOccupantManager.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
-- [test_look_player.py](test_look_player.py.md) (2 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (12 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (10 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (4 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 281 (96%)
-- INFERRED: 12 (4%)
+- EXTRACTED: 282 (96%)
+- INFERRED: 13 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

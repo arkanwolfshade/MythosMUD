@@ -37,14 +37,14 @@
 - [NATSSubjectManager](NATSSubjectManager.md) (8 shared connections)
 - [subject_controller.py](subject_controller.py.md) (8 shared connections)
 - [manager.py](manager.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [test_manager.py](test_manager.py.md) (2 shared connections)
 - [test_metrics.py](test_metrics.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 

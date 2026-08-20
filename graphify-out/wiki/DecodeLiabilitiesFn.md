@@ -17,9 +17,9 @@
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
 
 ## Source Files
 

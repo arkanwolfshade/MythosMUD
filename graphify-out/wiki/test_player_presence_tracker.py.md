@@ -1,6 +1,6 @@
 # test_player_presence_tracker.py
 
-> 96 nodes
+> 94 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **track_player_disconnected_impl()** (30 connections) — `server/realtime/player_presence_tracker.py`
 - **asyncio** (17 connections)
 - **track_player_connected_impl()** (15 connections) — `server/realtime/player_presence_tracker.py`
-- **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
 - **Any** (11 connections)
 - **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
 - **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
@@ -29,34 +28,34 @@
 - **test_track_player_disconnected_mid_rest_skips_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 - **test_track_player_disconnected_removes_from_intentional_set()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 - **test_track_player_disconnected_unintentional_starts_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- *... and 71 more nodes in this community*
+- **test_acquire_disconnect_lock_already_disconnecting()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (6 shared connections)
+- [connection_manager.py](connection_manager.py.md) (5 shared connections)
 - [extract_player_name](extract_player_name.md) (5 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
-- [start_grace_period](start_grace_period.md) (3 shared connections)
-- [UUID](UUID.md) (3 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (3 shared connections)
-- [handle_new_connection_setup](handle_new_connection_setup.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (3 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
+- [test_instance_manager.py](test_instance_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_disconnect_handlers.py`
 - `server/realtime/player_presence_tracker.py`
 - `server/tests/unit/realtime/test_player_presence_tracker.py`
 - `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 226 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 218 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

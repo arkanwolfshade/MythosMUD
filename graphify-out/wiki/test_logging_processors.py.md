@@ -1,6 +1,6 @@
 # test_logging_processors.py
 
-> 79 nodes
+> 83 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,8 @@
 - **sanitize_sensitive_data()** (14 connections) — `server/structured_logging/logging_processors.py`
 - **logging_processors.py** (14 connections) — `server/structured_logging/logging_processors.py`
 - **add_request_context()** (11 connections) — `server/structured_logging/logging_processors.py`
+- **configure_enhanced_structlog()** (10 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **add_correlation_id()** (8 connections) — `server/structured_logging/logging_processors.py`
 - **test_enhance_player_ids_persistence_error()** (5 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **EventDict** (5 connections)
 - **_database_error_type()** (4 connections) — `server/structured_logging/logging_processors.py`
@@ -27,27 +29,28 @@
 - **_EnhancePlayerIdsTls** (3 connections) — `server/structured_logging/logging_processors.py`
 - **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 - **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_correlation_id_existing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **test_add_correlation_id_missing()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- *... and 54 more nodes in this community*
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
 - [lifespan.py](lifespan.py.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/structured_logging/enhanced_logging_config.py`
 - `server/structured_logging/logging_processors.py`
 - `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (97%)
-- INFERRED: 5 (3%)
+- EXTRACTED: 146 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

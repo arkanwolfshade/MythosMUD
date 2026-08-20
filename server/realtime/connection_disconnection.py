@@ -200,6 +200,12 @@ def _cleanup_player_data(player_id: uuid.UUID, manager: _DisconnectConnectionMan
     if session_id is not None:
         _ = manager.session_connections.pop(session_id, None)
 
+    # #625: a phantom hostile is meaningless once its owning player is gone -- clear it here so
+    # it doesn't linger in the registry until a later tier change happens to sweep it.
+    from ..services.phantom_hostile_service import phantom_hostile_service
+
+    phantom_hostile_service.clear_all_phantoms(player_id)
+
 
 async def _apply_disconnect_side_effects(
     player_id: uuid.UUID,

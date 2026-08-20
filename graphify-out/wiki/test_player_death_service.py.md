@@ -1,6 +1,6 @@
 # test_player_death_service.py
 
-> 121 nodes
+> 123 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **asyncio** (26 connections)
 - **PlayerDeathService** (25 connections) — `server/services/player_death_service.py`
 - **player_death_service.py** (20 connections) — `server/services/player_death_service.py`
+- **PositionState** (17 connections) — `server/models/game.py`
 - **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **.handle_player_death()** (9 connections) — `server/services/player_death_service.py`
 - **._publish_death_event()** (7 connections) — `server/services/player_death_service.py`
@@ -28,26 +29,26 @@
 - **AsyncSession** (4 connections)
 - **.__init__()** (3 connections) — `server/services/player_death_service.py`
 - **mock_event_bus()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- **mock_player_combat_service()** (3 connections) — `server/tests/unit/services/test_player_death_service.py`
-- *... and 96 more nodes in this community*
+- *... and 98 more nodes in this community*
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (5 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (13 shared connections)
+- [NATSError](NATSError.md) (10 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [server/models/game.py](server-models-game.py.md) (4 shared connections)
 - [CombatService](CombatService.md) (4 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [test_enhanced_logging_config.py](test_enhanced_logging_config.py.md) (3 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
 - [lifespan.py](lifespan.py.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
 
 ## Source Files
 
+- `server/models/game.py`
 - `server/services/combat_service_types.py`
 - `server/services/player_death_service.py`
 - `server/structured_logging/enhanced_logging_config.py`
@@ -55,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 215 (95%)
-- INFERRED: 12 (5%)
+- EXTRACTED: 229 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

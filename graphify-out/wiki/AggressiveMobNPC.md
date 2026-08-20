@@ -1,47 +1,61 @@
 # AggressiveMobNPC
 
-> 14 nodes
+> 72 nodes
 
 ## Key Concepts
 
 - **AggressiveMobNPC** (31 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_aggressive_mob_npc.py** (24 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **aggressive_mob_npc.py** (19 connections) — `server/npc/aggressive_mob_npc.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
+- **_RoomPersistence** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **._enrich_behavior_context()** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
 - **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._log_context_enriched()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
 - **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_attack_via_create_task_with_running_loop()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
 - **test_enrich_behavior_context_sets_false_when_no_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **test_get_attack_damage_invalid_string_falls_back_to_one()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **.get_behavior_rules()** (2 connections) — `server/npc/aggressive_mob_npc.py`
-- **Aggressive mob NPC type with hunting and territorial behaviors.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Initialize aggressive mob NPC.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Setup aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Get aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **_enrich_behavior_context sets False when current_room is None.** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **Non-digit attack_damage string in behavior_config falls back to 1.** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
-- **_enrich_behavior_context sets player_in_range and enemy_nearby False when room…** (1 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [test_aggressive_mob_npc.py](test_aggressive_mob_npc.py.md) (5 shared connections)
-- [._attack_target_impl](_attack_target_impl.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (4 shared connections)
-- [._compute_player_context](_compute_player_context.md) (3 shared connections)
-- [._handle_hunt_target](_handle_hunt_target.md) (2 shared connections)
-- [.flee](flee.md) (2 shared connections)
-- [._handle_patrol_territory](_handle_patrol_territory.md) (2 shared connections)
-- [test_enrich_behavior_context_sets_player_in_range_when_players_in_room](test_enrich_behavior_context_sets_player_in_range_when_players_in_room.md) (1 shared connections)
-- [test_enrich_behavior_context_swallows_compute_errors](test_enrich_behavior_context_swallows_compute_errors.md) (1 shared connections)
-- [test_get_attack_damage_from_behavior_config](test_get_attack_damage_from_behavior_config.md) (1 shared connections)
-- [test_hunt_target_avoids_duplicate_ids](test_hunt_target_avoids_duplicate_ids.md) (1 shared connections)
+- [EventBus](EventBus.md) (8 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (6 shared connections)
+- [NPCBase](NPCBase.md) (3 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (3 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (2 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/aggressive_mob_npc.py`
+- `server/npc/behaviors.py`
 - `server/tests/unit/npc/test_aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 136 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

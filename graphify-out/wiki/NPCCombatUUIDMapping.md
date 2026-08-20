@@ -1,6 +1,6 @@
 # NPCCombatUUIDMapping
 
-> 63 nodes
+> 61 nodes
 
 ## Key Concepts
 
@@ -9,7 +9,6 @@
 - **UUID** (7 connections)
 - **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
 - **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
 - **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
@@ -29,23 +28,23 @@
 - **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_large_xp_value()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 - **.test_multiple_mappings()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
-- *... and 38 more nodes in this community*
+- **.test_negative_xp_value()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [CombatService](CombatService.md) (5 shared connections)
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
 - [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
 - `server/services/npc_combat_uuid_mapping.py`
 - `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (97%)
+- EXTRACTED: 93 (97%)
 - INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 

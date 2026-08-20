@@ -5,7 +5,7 @@
 ## Key Concepts
 
 - **server/main.py** (17 connections) — `server/main.py`
-- **create_app()** (12 connections) — `server/app/factory.py`
+- **create_app()** (15 connections) — `server/app/factory.py`
 - **main()** (4 connections) — `scripts/generate_openapi_spec.py`
 - **_register_v1_routers()** (4 connections) — `server/app/factory.py`
 - **_create_get_app()** (4 connections) — `server/main.py`
@@ -16,7 +16,7 @@
 - **generate_openapi_spec.py** (3 connections) — `scripts/generate_openapi_spec.py`
 - **FastAPI** (3 connections)
 - **FastAPI** (3 connections)
-- **uvicorn.md** (3 connections) — `.claude/rules/uvicorn.md`
+- **test_create_app_auth_rate_limit_paths_match()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
 - **get** (2 connections)
 - **Any** (1 connections)
 - **Replace auth token examples with clearly fake placeholders.** (1 connections) — `scripts/generate_openapi_spec.py`
@@ -31,23 +31,27 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (2 shared connections)
 - [middleware](middleware.md) (2 shared connections)
+- [CORSConfigDict](CORSConfigDict.md) (1 shared connections)
 - [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (1 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
 - [lifespan.py](lifespan.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [Uvicorn ASGI Server Best Practices](Uvicorn_ASGI_Server_Best_Practices.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [server/config/__init__.py](server-config-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/uvicorn.md`
 - `scripts/generate_openapi_spec.py`
 - `server/app/factory.py`
 - `server/main.py`
+- `server/tests/unit/middleware/test_auth_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
+- EXTRACTED: 49 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

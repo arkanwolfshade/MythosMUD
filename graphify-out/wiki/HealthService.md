@@ -1,6 +1,6 @@
 # HealthService
 
-> 44 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -22,33 +22,34 @@
 - **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
 - **.get_server_uptime()** (4 connections) — `server/services/health_service.py`
 - **._status_from_query_ms()** (4 connections) — `server/services/health_service.py`
-- **health_service()** (4 connections) — `server/tests/unit/services/test_health_service.py`
 - **.get_cpu_usage()** (3 connections) — `server/services/health_service.py`
 - **.get_memory_usage()** (3 connections) — `server/services/health_service.py`
 - **.__init__()** (3 connections) — `server/services/health_service.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
 - **HealthStatus** (3 connections)
-- **fixture** (2 connections)
-- *... and 19 more nodes in this community*
+- **Async database health check.** (1 connections) — `server/services/health_service.py`
+- **check_database_health.** (1 connections) — `server/services/health_service.py`
+- **Check connection manager health.** (1 connections) — `server/services/health_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [HealthStatus](HealthStatus.md) (14 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [test_room_service.py](test_room_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [HealthStatus](HealthStatus.md) (12 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
+- [health_service](health_service.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [fixture](fixture.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (1 shared connections)
 - [RoomService](RoomService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/services/health_service.py`
 - `server/tests/unit/game/test_room_service.py`
-- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (95%)
-- INFERRED: 5 (5%)
+- EXTRACTED: 80 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

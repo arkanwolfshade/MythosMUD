@@ -1,67 +1,78 @@
 # ValidationError
 
-> 166 nodes
+> 1375 nodes
 
 ## Key Concepts
 
-- **ValidationError** (337 connections) — `server/exceptions.py`
-- **InventoryCommandFactory** (76 connections) — `server/utils/command_factories_inventory.py`
-- **test_command_factories_inventory.py** (49 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_command_factories_inventory_helpers.py** (23 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **.create_pickup_command()** (19 connections) — `server/utils/command_factories_inventory.py`
-- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
-- **command_factories_inventory.py** (15 connections) — `server/utils/command_factories_inventory.py`
-- **.create_put_command()** (14 connections) — `server/utils/command_factories_inventory.py`
-- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
-- **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
-- **MythosValidationError** (10 connections)
-- **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
-- **.create_inventory_command()** (6 connections) — `server/utils/command_factories_inventory.py`
-- **test_process_validated_command_validation_error()** (5 connections) — `server/tests/unit/commands/test_command_service.py`
-- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_inventory_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_drop_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_drop_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_empty_search_term()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- *... and 141 more nodes in this community*
+- **ValidationError** (330 connections) — `server/exceptions.py`
+- **BaseCommand** (152 connections) — `server/models/command_base.py`
+- **pydantic.md** (117 connections) — `.claude/rules/pydantic.md`
+- **command.py** (98 connections) — `server/models/command.py`
+- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
+- **CommandType** (96 connections) — `server/models/command_base.py`
+- **CommandFactory** (83 connections) — `server/utils/command_factories.py`
+- **UtilityCommandFactory** (65 connections) — `server/utils/command_factories_utility.py`
+- **ExplorationCommandFactory** (59 connections) — `server/utils/command_factories_exploration.py`
+- **test_command_factories_utility.py** (52 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
+- **test_command_factories_exploration.py** (49 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_command_communication.py** (47 connections) — `server/tests/unit/models/test_command_communication.py`
+- **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **command_parser.py** (47 connections) — `server/utils/command_parser.py`
+- **test_command_admin.py** (44 connections) — `server/tests/unit/models/test_command_admin.py`
+- **PlayerStateCommandFactory** (40 connections) — `server/utils/command_factories_player_state.py`
+- **test_command_moderation.py** (40 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **CommunicationCommandFactory** (39 connections) — `server/utils/command_factories_communication.py`
+- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
+- **security_validator.py** (36 connections) — `server/validators/security_validator.py`
+- **test_command_combat.py** (33 connections) — `server/tests/unit/models/test_command_combat.py`
+- **test_command_factories_communication.py** (30 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
+- **test_command_factories_moderation.py** (30 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_command_magic.py** (29 connections) — `server/tests/unit/models/test_command_magic.py`
+- **Direction** (28 connections) — `server/models/command_base.py`
+- *... and 1350 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseManager](DatabaseManager.md) (19 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (19 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (17 shared connections)
-- [CommunicationCommandFactory](CommunicationCommandFactory.md) (16 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (16 shared connections)
-- [ExplorationCommandFactory](ExplorationCommandFactory.md) (15 shared connections)
-- [api/player_respawn.py](api-player_respawn.py.md) (13 shared connections)
-- [DatabaseError](DatabaseError.md) (13 shared connections)
-- [ModerationCommandFactory](ModerationCommandFactory.md) (13 shared connections)
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (11 shared connections)
-- [PlayerStateCommandFactory](PlayerStateCommandFactory.md) (10 shared connections)
-- [test_exceptions.py](test_exceptions.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (83 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (69 shared connections)
+- [test_command_inventory.py](test_command_inventory.py.md) (34 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (24 shared connections)
+- [DatabaseManager](DatabaseManager.md) (23 shared connections)
+- [ErrorType](ErrorType.md) (17 shared connections)
+- [pytest.md](pytest.md.md) (17 shared connections)
+- [get_username_from_user](get_username_from_user.md) (13 shared connections)
+- [InventoryCommandFactory](InventoryCommandFactory.md) (13 shared connections)
+- [MythosMUDError](MythosMUDError.md) (12 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (12 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
 
 ## Source Files
 
+- `.claude/rules/pydantic.md`
 - `server/exceptions.py`
-- `server/game/profession_service.py`
-- `server/tests/unit/commands/test_command_service.py`
-- `server/tests/unit/game/test_character_creation_service.py`
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/tests/unit/utils/test_command_parser.py`
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_factories_inventory.py`
+- `server/models/command.py`
+- `server/models/command_admin.py`
+- `server/models/command_alias.py`
+- `server/models/command_base.py`
+- `server/models/command_channel.py`
+- `server/models/command_combat.py`
+- `server/models/command_communication.py`
+- `server/models/command_exploration.py`
+- `server/models/command_follow.py`
+- `server/models/command_inventory.py`
+- `server/models/command_magic.py`
+- `server/models/command_moderation.py`
+- `server/models/command_party.py`
+- `server/models/command_player_state.py`
+- `server/models/command_utility.py`
+- `server/tests/unit/models/test_command_admin.py`
+- `server/tests/unit/models/test_command_alias.py`
+- `server/tests/unit/models/test_command_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 396 (59%)
-- INFERRED: 272 (41%)
+- EXTRACTED: 2708 (85%)
+- INFERRED: 486 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

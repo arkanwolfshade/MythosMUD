@@ -1,14 +1,17 @@
 # test_connection_statistics.py
 
-> 45 nodes
+> 52 nodes
 
 ## Key Concepts
 
 - **test_connection_statistics.py** (25 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
+- **connection_statistics.py** (11 connections) — `server/realtime/connection_statistics.py`
 - **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
 - **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
+- **get_session_stats_impl()** (9 connections) — `server/realtime/connection_statistics.py`
 - **get_presence_statistics_impl()** (8 connections) — `server/realtime/connection_statistics.py`
+- **get_online_player_by_display_name_method()** (5 connections) — `server/realtime/connection_manager_methods.py`
 - **Any** (5 connections)
 - **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
@@ -26,26 +29,26 @@
 - **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
 - **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_online_but_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **Get online player information by display name.** (1 connections) — `server/realtime/connection_statistics.py`
-- **Get detailed presence information for a player.** (1 connections) — `server/realtime/connection_statistics.py`
-- *... and 20 more nodes in this community*
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (9 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
+- [ConnectionManager](ConnectionManager.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/connection_manager_methods.py`
 - `server/realtime/connection_statistics.py`
+- `server/tests/unit/realtime/test_connection_manager_methods.py`
 - `server/tests/unit/realtime/test_connection_statistics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 80 (100%)
+- EXTRACTED: 94 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

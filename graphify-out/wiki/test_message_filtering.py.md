@@ -34,9 +34,9 @@
 ## Relationships
 
 - [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

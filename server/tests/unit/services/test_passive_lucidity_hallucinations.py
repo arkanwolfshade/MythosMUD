@@ -12,8 +12,10 @@ from server.services.passive_lucidity_flux import hallucinations as hall
 async def test_handle_phantom_hostile_hallucination() -> None:
     player_id = uuid.uuid4()
     phantom_data = {"name": "Shadow", "phantom_id": "ph-1", "is_non_damaging": True}
-    with patch("server.services.phantom_hostile_service.PhantomHostileService") as svc_cls:
-        svc_cls.return_value.create_phantom_hostile_data.return_value = phantom_data
+    with patch(
+        "server.services.phantom_hostile_service.phantom_hostile_service.create_phantom_hostile_data",
+        return_value=phantom_data,
+    ):
         with patch(
             "server.services.lucidity_event_dispatcher.send_hallucination_event", new_callable=AsyncMock
         ) as send:
@@ -75,8 +77,10 @@ async def test_handle_hallucination_triggers_phantom_path() -> None:
     record = MagicMock(current_tier="fractured", current_lcd=-25)
     with patch("server.services.hallucination_frequency_service.HallucinationFrequencyService") as freq_cls:
         freq_cls.return_value.check_time_based_hallucination = AsyncMock(return_value=True)
-        with patch("server.services.phantom_hostile_service.PhantomHostileService") as phantom_cls:
-            phantom_cls.return_value.should_spawn_phantom_hostile.return_value = True
+        with patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.should_spawn_phantom_hostile",
+            return_value=True,
+        ):
             with patch.object(hall, "handle_phantom_hostile_hallucination", new_callable=AsyncMock) as phantom:
                 await hall.handle_hallucination_triggers(
                     player_id, str(player_id), "room-a", {str(player_id): record}, MagicMock()

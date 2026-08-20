@@ -36,7 +36,7 @@
 - [PostgresConnection](PostgresConnection.md) (1 shared connections)
 - [fixture](fixture.md) (1 shared connections)
 - [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,61 +1,67 @@
 # TargetResolutionService
 
-> 127 nodes
+> 209 nodes
 
 ## Key Concepts
 
-- **TargetResolutionService** (50 connections) — `server/services/target_resolution_service.py`
-- **test_target_resolution_service.py** (41 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **test_target_resolution_service.py** (43 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetType** (42 connections) — `server/schemas/shared/target_resolution.py`
+- **target_resolution_service.py** (29 connections) — `server/services/target_resolution_service.py`
+- **test_party_commands.py** (23 connections) — `server/tests/unit/commands/test_party_commands.py`
+- **handle_party_command()** (21 connections) — `server/commands/party_commands.py`
+- **party_commands.py** (21 connections) — `server/commands/party_commands.py`
 - **asyncio** (21 connections)
-- **TargetMetadata** (14 connections) — `server/schemas/shared/target_metadata.py`
+- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **TargetMetadata** (15 connections) — `server/schemas/shared/target_metadata.py`
+- **asyncio** (13 connections)
+- **target_resolution.py** (12 connections) — `server/schemas/shared/target_resolution.py`
+- **_party_request()** (11 connections) — `server/tests/unit/commands/test_party_commands.py`
 - **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **Any** (9 connections)
+- **._gather_room_target_matches()** (8 connections) — `server/services/target_resolution_service.py`
 - **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
 - **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
-- **._gather_room_target_matches()** (7 connections) — `server/services/target_resolution_service.py`
+- **_handle_party_chat()** (7 connections) — `server/commands/party_commands.py`
 - **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
+- **._search_phantoms_in_room()** (7 connections) — `server/services/target_resolution_service.py`
 - **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
-- **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
-- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
-- **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
-- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
-- **UUID** (6 connections)
-- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
-- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
-- **._add_disambiguation_suffixes()** (5 connections) — `server/services/target_resolution_service.py`
-- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
-- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
-- **._get_npc_instance()** (5 connections) — `server/services/target_resolution_service.py`
-- **._get_npcs_from_lifecycle_manager()** (5 connections) — `server/services/target_resolution_service.py`
-- **test_add_disambiguation_suffixes()** (5 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_build_target_result_disambiguation_suffix_match()** (5 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **test_build_target_result_single_match()** (5 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- *... and 102 more nodes in this community*
+- **UUID** (7 connections)
+- *... and 184 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (11 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (7 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (6 shared connections)
-- [TargetType](TargetType.md) (5 shared connections)
-- [test_party_commands.py](test_party_commands.py.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
-- [handle_teach_command](handle_teach_command.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (23 shared connections)
+- [TargetMatch](TargetMatch.md) (22 shared connections)
+- [get_logger](get_logger.md) (10 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (8 shared connections)
+- [CombatService](CombatService.md) (6 shared connections)
+- [handle_teach_command](handle_teach_command.md) (5 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (3 shared connections)
+- [magic_service.py](magic_service.py.md) (3 shared connections)
 
 ## Source Files
 
+- `server/commands/combat_handler.py`
+- `server/commands/party_commands.py`
+- `server/schemas/shared/__init__.py`
 - `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
 - `server/services/target_resolution_service.py`
+- `server/tests/unit/commands/test_party_commands.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
 - `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 224 (90%)
-- INFERRED: 26 (10%)
+- EXTRACTED: 496 (94%)
+- INFERRED: 30 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

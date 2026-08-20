@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [test_nats_service.py](test_nats_service.py.md) (15 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (17 shared connections)
 - [NATSConfig](NATSConfig.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [NATSService](NATSService.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
 
 ## Source Files
 

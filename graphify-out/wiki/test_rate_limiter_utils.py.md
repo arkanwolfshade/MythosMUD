@@ -1,18 +1,12 @@
 # test_rate_limiter_utils.py
 
-> 50 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **test_rate_limiter_utils.py** (23 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **RateLimiter** (10 connections) — `server/utils/rate_limiter.py`
-- **rate_limiter()** (5 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **.enforce_rate_limit()** (5 connections) — `server/utils/rate_limiter.py`
-- **.get_rate_limit_info()** (4 connections) — `server/utils/rate_limiter.py`
+- **test_rate_limiter_utils.py** (24 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **.check_rate_limit()** (3 connections) — `server/utils/rate_limiter.py`
-- **server/utils/__init__.py** (3 connections) — `server/utils/__init__.py`
 - **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
@@ -27,28 +21,31 @@
 - **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 - **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
-- **.__init__()** (2 connections) — `server/utils/rate_limiter.py`
-- **fixture** (1 connections)
-- *... and 25 more nodes in this community*
+- **test_auth_login_limiter_initialized()** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info calculates reset time correctly.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info calculates retry_after correctly.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info filters out old requests.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test enforce_rate_limit allows request within limit.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test enforce_rate_limit raises RateLimitError when limit exceeded.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test enforce_rate_limit includes retry_after in error.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [api/character_creation.py](api-character_creation.py.md) (7 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
+- [RateLimiter](RateLimiter.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_rate_limiter_utils.py`
-- `server/utils/__init__.py`
-- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 40 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

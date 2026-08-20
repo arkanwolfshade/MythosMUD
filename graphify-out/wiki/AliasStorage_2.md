@@ -30,14 +30,14 @@
 - [inventory_equip_command.py](inventory_equip_command.py.md) `EXTRACTED`
 - [quest_commands.py](quest_commands.py.md) `EXTRACTED`
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) `EXTRACTED`
+- admin_shutdown_command.py `EXTRACTED`
 - admin_summon_command.py `EXTRACTED`
 - inventory_pickup_command.py `EXTRACTED`
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - admin_commands.py `EXTRACTED`
 - inventory_unequip_command.py `EXTRACTED`
-- rescue_commands.py `EXTRACTED`
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
+- [rescue_commands.py](rescue_commands.py.md) `EXTRACTED`
 - admin_setlucidity_command.py `EXTRACTED`
 - communication_commands.py `EXTRACTED`
 

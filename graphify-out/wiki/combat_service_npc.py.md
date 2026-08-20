@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (26 shared connections)
-- [CombatParticipant](CombatParticipant.md) (12 shared connections)
+- [CombatService](CombatService.md) (27 shared connections)
 - [CombatInstance](CombatInstance.md) (10 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [TargetType](TargetType.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (8 shared connections)
+- [CombatParticipant](CombatParticipant.md) (8 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

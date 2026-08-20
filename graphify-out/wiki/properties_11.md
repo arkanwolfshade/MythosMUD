@@ -20,10 +20,11 @@
 
 ## Relationships
 
-- [applies_to](applies_to.md) (3 shared connections)
+- [days](days.md) (2 shared connections)
 - [required](required.md) (1 shared connections)
 - [id](id.md) (1 shared connections)
 - [start_hour](start_hour.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # MemoryMonitor
 
-> 53 nodes
+> 55 nodes
 
 ## Key Concepts
 
@@ -15,6 +15,8 @@
 - **memoryLeakDetector.test.ts** (7 connections) — `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - **memoryMonitor.test.ts** (7 connections) — `client/src/utils/__tests__/memoryMonitor.test.ts`
 - **.registerComponent()** (6 connections) — `client/src/utils/memoryMonitor.ts`
+- **useGameClientV2MemoryMonitorEffect.ts** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
+- **useGameClientV2MemoryMonitorEffect()** (5 connections) — `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - **.constructor()** (4 connections) — `client/src/utils/memoryMonitor.ts`
 - **.calculateGrowthRate()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
 - **.checkMemory()** (3 connections) — `client/src/utils/memoryLeakDetector.ts`
@@ -27,17 +29,17 @@
 - **.handleComponentMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleComponentMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
 - **.handleMemoryCritical()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.handleMemoryWarning()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- **.startReporting()** (3 connections) — `client/src/utils/memoryMonitor.ts`
-- *... and 28 more nodes in this community*
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
-- [CorpseOverlay.tsx](CorpseOverlay.tsx.md) (3 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 
 ## Source Files
 
+- `client/src/components/ui-v2/hooks/useGameClientV2MemoryMonitorEffect.ts`
 - `client/src/utils/__tests__/memoryLeakDetector.test.ts`
 - `client/src/utils/__tests__/memoryMonitor.test.ts`
 - `client/src/utils/memoryLeakDetector.ts`
@@ -45,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 97 (99%)
+- EXTRACTED: 104 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

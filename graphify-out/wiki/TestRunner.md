@@ -33,8 +33,8 @@
 ## Relationships
 
 - [safe_run_static](safe_run_static.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # test_player_occupant_processor.py
 
-> 48 nodes
+> 50 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **asyncio** (4 connections)
 - **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_process_players_for_occupants()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_process_players_for_occupants_with_invalid_name()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_process_players_for_occupants_with_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
@@ -28,15 +29,13 @@
 - **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - **test_ensure_player_included_in_list_none()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- **test_processor_init()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
-- *... and 23 more nodes in this community*
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [PlayerOccupantProcessor](PlayerOccupantProcessor.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (3 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 56 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 57 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

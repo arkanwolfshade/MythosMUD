@@ -1,16 +1,21 @@
 # test_websocket_initial_state.py
 
-> 107 nodes
+> 119 nodes
 
 ## Key Concepts
 
 - **test_websocket_initial_state.py** (47 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 - **websocket_initial_state.py** (46 connections) — `server/realtime/websocket_initial_state.py`
+- **.app()** (33 connections) — `server/commands/look_helpers.py`
+- **player_event_handlers_respawn.py** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **models/room.py** (32 connections) — `server/models/room.py`
 - **asyncio** (21 connections)
+- **get_container_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **send_initial_room_state()** (19 connections) — `server/realtime/websocket_initial_state.py`
 - **send_initial_game_state()** (15 connections) — `server/realtime/websocket_initial_state.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
 - **check_and_send_death_notification()** (14 connections) — `server/realtime/websocket_initial_state.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
 - **send_game_state_event_safely()** (10 connections) — `server/realtime/websocket_initial_state.py`
 - **get_event_handler_for_initial_state()** (9 connections) — `server/realtime/websocket_initial_state.py`
 - **prepare_room_data_with_occupants()** (9 connections) — `server/realtime/websocket_initial_state.py`
@@ -24,38 +29,37 @@
 - **mock_connection_manager()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 - **test_check_and_send_death_notification_in_limbo()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
 - **test_check_and_send_death_notification_player_alive()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_check_and_send_death_notification_player_dead()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **test_send_initial_game_state_success()** (5 connections) — `server/tests/unit/realtime/test_websocket_initial_state.py`
-- **WebSocket** (5 connections)
-- **_NpcLifecycleManagerForOccupants** (4 connections) — `server/realtime/websocket_initial_state.py`
-- **_get_death_location_name()** (4 connections) — `server/realtime/websocket_initial_state.py`
-- *... and 82 more nodes in this community*
+- *... and 94 more nodes in this community*
 
 ## Relationships
 
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (14 shared connections)
 - [get_logger](get_logger.md) (13 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (11 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (12 shared connections)
+- [pytest.md](pytest.md.md) (12 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (11 shared connections)
 - [build_event](build_event.md) (7 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (6 shared connections)
-- [Player](Player.md) (6 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (6 shared connections)
+- [real_time.py](real_time.py.md) (5 shared connections)
+- [coerce_int](coerce_int.md) (5 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (4 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [Room](Room.md) (3 shared connections)
-- [coerce_int](coerce_int.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
 
 ## Source Files
 
+- `server/async_persistence.py`
+- `server/commands/look_helpers.py`
+- `server/models/room.py`
+- `server/realtime/player_event_handlers_respawn.py`
 - `server/realtime/websocket_helpers.py`
 - `server/realtime/websocket_initial_state.py`
 - `server/tests/unit/realtime/test_websocket_initial_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 247 (96%)
-- INFERRED: 9 (4%)
+- EXTRACTED: 334 (90%)
+- INFERRED: 39 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

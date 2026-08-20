@@ -23,8 +23,9 @@
 ## Relationships
 
 - [build_event](build_event.md) (4 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

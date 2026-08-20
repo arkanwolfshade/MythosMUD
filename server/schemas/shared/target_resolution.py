@@ -18,6 +18,7 @@ class TargetType(StrEnum):
     PLAYER = "player"
     NPC = "npc"
     ROOM = "room"
+    PHANTOM = "phantom"  # #625: hallucinated hostile, visible only to the hallucinating player
 
 
 class TargetMatch(BaseModel):

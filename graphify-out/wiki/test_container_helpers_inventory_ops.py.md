@@ -1,6 +1,6 @@
 # test_container_helpers_inventory_ops.py
 
-> 93 nodes
+> 95 nodes
 
 ## Key Concepts
 
@@ -29,18 +29,18 @@
 - **.__init__()** (6 connections) — `server/models/lucidity.py`
 - **test_transfer_item_from_container_no_transfer_from()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 - **test_transfer_item_from_container_persist_failure_returns_error()** (6 connections) — `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
-- *... and 68 more nodes in this community*
+- *... and 70 more nodes in this community*
 
 ## Relationships
 
 - [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (15 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
 - [inventory_get_command.py](inventory_get_command.py.md) (5 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (4 shared connections)
 - [command_result_text](command_result_text.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
-- [Player](Player.md) (3 shared connections)
 - [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) (2 shared connections)
 - [test_shutdown_sequence.py](test_shutdown_sequence.py.md) (2 shared connections)
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (2 shared connections)
@@ -50,11 +50,12 @@
 
 - `server/commands/container_helpers_inventory_ops.py`
 - `server/models/lucidity.py`
+- `server/tests/unit/command_handler/test_command_execution_request.py`
 - `server/tests/unit/commands/test_container_helpers_inventory_ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 237 (81%)
+- EXTRACTED: 240 (81%)
 - INFERRED: 57 (19%)
 - AMBIGUOUS: 0 (0%)
 

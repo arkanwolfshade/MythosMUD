@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [lifecycle_manager.py](lifecycle_manager.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 

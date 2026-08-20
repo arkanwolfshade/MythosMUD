@@ -11,7 +11,7 @@
 ## Relationships
 
 - [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
-- [test_connection_establishment_ws.py](test_connection_establishment_ws.py.md) (1 shared connections)
+- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
 
 ## Source Files
 

@@ -25,7 +25,7 @@
 
 - [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 

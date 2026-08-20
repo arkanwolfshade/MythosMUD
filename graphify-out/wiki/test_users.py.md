@@ -1,6 +1,6 @@
 # test_users.py
 
-> 151 nodes
+> 141 nodes
 
 ## Key Concepts
 
@@ -12,32 +12,33 @@
 - **get_user_db()** (11 connections) — `server/auth/users.py`
 - **asyncio** (11 connections)
 - **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **test_jwt_strategy.py** (10 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 - **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
 - **UsernameAuthenticationBackend** (8 connections) — `server/auth/users.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
 - **auth/conftest.py** (8 connections) — `server/tests/unit/auth/conftest.py`
 - **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
-- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
 - **UUID** (7 connections)
 - **.login()** (6 connections) — `server/auth/users.py`
-- **validate_jwt_secret()** (6 connections) — `server/auth/users.py`
 - **test_read_token_accepts_matching_epoch()** (6 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 - **test_username_authentication_backend_login()** (6 connections) — `server/tests/unit/auth/test_users.py`
 - **.__init__()** (5 connections) — `server/auth/users.py`
 - **test_read_token_rejects_missing_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 - **test_read_token_rejects_wrong_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
 - **test_get_user_manager()** (5 connections) — `server/tests/unit/auth/test_users.py`
-- *... and 126 more nodes in this community*
+- **test_user_manager_on_after_forgot_password()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password_with_request()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_no_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_non_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- *... and 116 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (32 shared connections)
-- [DatabaseError](DatabaseError.md) (16 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (31 shared connections)
+- [User](User.md) (19 shared connections)
+- [login_user](login_user.md) (3 shared connections)
+- [lifespan.py](lifespan.py.md) (2 shared connections)
 - [UnknownChannelStrategy](UnknownChannelStrategy.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 
@@ -50,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 261 (90%)
-- INFERRED: 30 (10%)
+- EXTRACTED: 240 (89%)
+- INFERRED: 30 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

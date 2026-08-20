@@ -1,12 +1,13 @@
 # CircuitBreaker
 
-> 79 nodes
+> 87 nodes
 
 ## Key Concepts
 
 - **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
 - **test_circuit_breaker.py** (33 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **CircuitState** (25 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
 - **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
 - **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
 - **asyncio** (8 connections)
@@ -28,18 +29,14 @@
 - **test_on_failure_resets_success_count()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_on_success_increments_success_count_half_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 - **test_reset()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- **test_should_attempt_reset_returns_false_before_timeout()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
-- *... and 54 more nodes in this community*
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [CircuitBreakerOpen](CircuitBreakerOpen.md) (5 shared connections)
-- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
-- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (8 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (4 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 132 (82%)
-- INFERRED: 29 (18%)
+- EXTRACTED: 140 (81%)
+- INFERRED: 32 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

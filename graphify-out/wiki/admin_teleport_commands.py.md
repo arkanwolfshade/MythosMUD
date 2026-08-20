@@ -36,15 +36,15 @@
 - [test_goto_helpers.py](test_goto_helpers.py.md) (21 shared connections)
 - [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (15 shared connections)
 - [test_admin_commands_helpers.py](test_admin_commands_helpers.py.md) (14 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
 - [build_event](build_event.md) (4 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
 - [validate_admin_permission](validate_admin_permission.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 - [AliasStorage](AliasStorage.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 

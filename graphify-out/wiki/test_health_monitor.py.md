@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [build_event](build_event.md) (3 shared connections)
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

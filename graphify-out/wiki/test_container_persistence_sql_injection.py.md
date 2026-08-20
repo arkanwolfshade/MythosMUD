@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [persistence/container_persistence.py](persistence-container_persistence.py.md) (6 shared connections)
+- [container_persistence.py](container_persistence.py.md) (6 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

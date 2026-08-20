@@ -281,6 +281,65 @@ async def test_resolve_combat_target_rejects_dead_npc(mock_persistence: MagicMoc
 
 
 @pytest.mark.asyncio
+async def test_resolve_combat_target_accepts_live_phantom(mock_persistence: MagicMock) -> None:
+    """#625: a phantom match with live registry data resolves without an NPC lookup."""
+    h = _handler_with_persistence(mock_persistence)
+    tm = TargetMatch(
+        target_id="phantom_p1_abcd1234",
+        target_name="Shambling Horror",
+        target_type=TargetType.PHANTOM,
+        room_id="r1",
+    )
+    h.target_resolution_service.resolve_target = AsyncMock(
+        return_value=TargetResolutionResult(
+            success=True,
+            matches=[tm],
+            error_message=None,
+            disambiguation_required=False,
+            search_term="shambling",
+            room_id="r1",
+        )
+    )
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    with patch(
+        "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
+        return_value={"phantom_id": "phantom_p1_abcd1234", "name": "Shambling Horror"},
+    ):
+        match, err = await h.resolve_combat_target(player, "shambling")
+    assert err is None
+    assert match is tm
+
+
+@pytest.mark.asyncio
+async def test_resolve_combat_target_rejects_dissipated_phantom(mock_persistence: MagicMock) -> None:
+    """#625: a phantom no longer in the registry (already dissipated) is rejected cleanly."""
+    h = _handler_with_persistence(mock_persistence)
+    tm = TargetMatch(
+        target_id="phantom_p1_abcd1234",
+        target_name="Shambling Horror",
+        target_type=TargetType.PHANTOM,
+        room_id="r1",
+    )
+    h.target_resolution_service.resolve_target = AsyncMock(
+        return_value=TargetResolutionResult(
+            success=True,
+            matches=[tm],
+            error_message=None,
+            disambiguation_required=False,
+            search_term="shambling",
+            room_id="r1",
+        )
+    )
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
+        match, err = await h.resolve_combat_target(player, "shambling")
+    assert match is None and err is not None
+    assert "dissipated" in err["result"].lower()
+
+
+@pytest.mark.asyncio
 async def test_validate_combat_action(mock_persistence: MagicMock) -> None:
     """_validate_combat_action returns valid flag for well-formed args."""
     h = _handler_with_persistence(mock_persistence)

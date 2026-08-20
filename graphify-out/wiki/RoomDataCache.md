@@ -1,36 +1,41 @@
 # RoomDataCache
 
-> 12 nodes
+> 73 nodes
 
 ## Key Concepts
 
 - **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
+- **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
 - **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_not_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_empty()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_with_fresh_and_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_default_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_both_have_timestamps()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_new_has_timestamp_old_doesnt()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_is_newer_data_old_newer_than_new()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.clear_cache()** (2 connections) — `server/services/room_data_cache.py`
-- **.__init__()** (2 connections) — `server/services/room_data_cache.py`
-- **Manages room data caching and freshness validation.** (1 connections) — `server/services/room_data_cache.py`
-- **Initialize the room data cache. Args: freshness_threshold_seconds: Threshold in…** (1 connections) — `server/services/room_data_cache.py`
-- **Clear room data cache. Args: room_id: Specific room ID to clear, or None to…** (1 connections) — `server/services/room_data_cache.py`
-- **Unit tests for room data cache. Tests the RoomDataCache class for caching and…** (1 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **Test _is_newer_data when old is newer than new.** (1 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **Test is_room_data_fresh with custom threshold parameter.** (1 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [TestRoomDataCache](TestRoomDataCache.md) (11 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [.test_clear_cache_all](test_clear_cache_all.md) (1 shared connections)
-- [.test_clear_cache_specific_room](test_clear_cache_specific_room.md) (1 shared connections)
-- [.test_get_cache_not_found](test_get_cache_not_found.md) (1 shared connections)
-- [.test_get_cache_stats_empty](test_get_cache_stats_empty.md) (1 shared connections)
-- [.test_init_custom_threshold](test_init_custom_threshold.md) (1 shared connections)
-- [.test_init_default_threshold](test_init_default_threshold.md) (1 shared connections)
-- [.test_is_newer_data_both_have_timestamps](test_is_newer_data_both_have_timestamps.md) (1 shared connections)
-- [.test_is_newer_data_new_has_timestamp_old_doesnt](test_is_newer_data_new_has_timestamp_old_doesnt.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
@@ -39,8 +44,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 47 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 107 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

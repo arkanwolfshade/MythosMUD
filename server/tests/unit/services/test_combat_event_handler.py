@@ -93,6 +93,52 @@ async def test_publish_attack_events_player_target() -> None:
 
 
 @pytest.mark.asyncio
+async def test_publish_attack_events_skips_phantom_target() -> None:
+    """#625: no room-scoped NATS event fires when the player attacks a phantom."""
+    publisher = MagicMock()
+    publisher.publish_npc_attacked = AsyncMock()
+    publisher.publish_npc_took_damage = AsyncMock()
+    combat_service = MagicMock(_combat_event_publisher=publisher)
+    handler = CombatEventHandler(combat_service)
+    player = _participant("Investigator", CombatParticipantType.PLAYER)
+    phantom = _participant("Shambling Horror", CombatParticipantType.PHANTOM)
+    combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
+    await handler._publish_attack_events(player, phantom, 1, combat)
+    publisher.publish_npc_attacked.assert_not_awaited()
+    publisher.publish_npc_took_damage.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_publish_attack_events_skips_phantom_attacker() -> None:
+    """#625: no room-scoped NATS event fires when a phantom attacks the player."""
+    publisher = MagicMock()
+    publisher.publish_player_attacked = AsyncMock()
+    combat_service = MagicMock(_combat_event_publisher=publisher)
+    handler = CombatEventHandler(combat_service)
+    phantom = _participant("Shambling Horror", CombatParticipantType.PHANTOM)
+    player = _participant("Investigator", CombatParticipantType.PLAYER)
+    combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
+    await handler._publish_attack_events(phantom, player, 1, combat)
+    publisher.publish_player_attacked.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_handle_attack_events_and_xp_phantom_target_no_xp() -> None:
+    """#625: a defeated phantom awards no XP and doesn't touch NPC death handling."""
+    publisher = MagicMock()
+    death_handler = MagicMock()
+    death_handler.handle_npc_death = AsyncMock()
+    combat_service = MagicMock(_combat_event_publisher=publisher, _death_handler=death_handler)
+    handler = CombatEventHandler(combat_service)
+    player = _participant("Investigator", CombatParticipantType.PLAYER)
+    phantom = _participant("Shambling Horror", CombatParticipantType.PHANTOM)
+    combat = MagicMock(room_id="room-a", combat_id=uuid.uuid4())
+    xp = await handler.handle_attack_events_and_xp(player, phantom, 1, combat, True, phantom.participant_id)
+    assert xp is None
+    death_handler.handle_npc_death.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_calculate_xp_reward_default() -> None:
     handler = CombatEventHandler(MagicMock(_player_combat_service=None))
     assert await handler._calculate_xp_reward(uuid.uuid4()) == 0

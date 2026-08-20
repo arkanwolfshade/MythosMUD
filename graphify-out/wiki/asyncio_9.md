@@ -1,59 +1,48 @@
 # asyncio
 
-> 37 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (41 connections)
-- **test_create_player_preferences_already_exists()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_create_player_preferences_with_string_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_muted_channels_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_get_player_preferences_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_is_channel_muted_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_mute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_mute_channel_system_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_invalid_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_not_found()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_not_muted()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_unmute_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_database_error()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_invalid_channel()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **test_update_default_channel_success()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences with string UUID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test creating player preferences when they already exist.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test getting player preferences successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel successfully.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test updating default channel with invalid channel name.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Test muting system channel (should fail).** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- *... and 12 more nodes in this community*
+- **asyncio** (16 connections)
+- **test_echo_message_to_sender_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_echo_message_to_sender_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_with_uuid()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players skips blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _send_messages_to_players handles invalid player_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender echoes message.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _echo_message_to_sender handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles blocked messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _apply_dampening_and_send_message handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier handles UUID objects.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Test _get_player_lucidity_tier gets tier.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Relationships
 
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (26 shared connections)
-- [test_create_player_preferences_integrity_error](test_create_player_preferences_integrity_error.md) (1 shared connections)
-- [test_create_player_preferences_success](test_create_player_preferences_success.md) (1 shared connections)
-- [test_delete_player_preferences_not_found](test_delete_player_preferences_not_found.md) (1 shared connections)
-- [test_delete_player_preferences_success](test_delete_player_preferences_success.md) (1 shared connections)
-- [test_get_muted_channels_success](test_get_muted_channels_success.md) (1 shared connections)
-- [test_get_player_preferences_invalid_id](test_get_player_preferences_invalid_id.md) (1 shared connections)
-- [test_get_player_preferences_not_found](test_get_player_preferences_not_found.md) (1 shared connections)
-- [test_is_channel_muted_invalid_channel](test_is_channel_muted_invalid_channel.md) (1 shared connections)
-- [test_is_channel_muted_invalid_id](test_is_channel_muted_invalid_id.md) (1 shared connections)
-- [test_is_channel_muted_not_found](test_is_channel_muted_not_found.md) (1 shared connections)
-- [test_mute_channel_already_muted](test_mute_channel_already_muted.md) (1 shared connections)
+- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (8 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
+- [test_apply_dampening_and_send_message_exception](test_apply_dampening_and_send_message_exception.md) (1 shared connections)
+- [test_broadcast_by_channel_type_exception](test_broadcast_by_channel_type_exception.md) (1 shared connections)
+- [test_broadcast_to_room_with_filtering_exception](test_broadcast_to_room_with_filtering_exception.md) (1 shared connections)
+- [test_get_player_lucidity_tier_default](test_get_player_lucidity_tier_default.md) (1 shared connections)
+- [test_get_player_lucidity_tier_exception_in_processing](test_get_player_lucidity_tier_exception_in_processing.md) (1 shared connections)
+- [test_process_message_with_retry_failure](test_process_message_with_retry_failure.md) (1 shared connections)
+- [test_send_messages_to_players_no_original_content](test_send_messages_to_players_no_original_content.md) (1 shared connections)
+- [test_send_messages_to_players_with_tags](test_send_messages_to_players_with_tags.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

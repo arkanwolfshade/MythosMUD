@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (3 shared connections)
-- [AuthenticationError](AuthenticationError.md) (3 shared connections)
+- [ErrorType](ErrorType.md) (6 shared connections)
 
 ## Source Files
 

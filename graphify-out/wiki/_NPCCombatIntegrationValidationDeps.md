@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
+- [CombatService](CombatService.md) (14 shared connections)
 - [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (2 shared connections)
 - [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 - [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
 
 ## Source Files

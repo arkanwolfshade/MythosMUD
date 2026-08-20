@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [RoomOccupantManager](RoomOccupantManager.md) (3 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
 
 ## Source Files
 

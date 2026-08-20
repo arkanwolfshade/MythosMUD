@@ -27,7 +27,7 @@
 
 ## Relationships
 
-- [test_rest_command.py](test_rest_command.py.md) (6 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (6 shared connections)
 
 ## Source Files
 

@@ -1,49 +1,41 @@
 # Any
 
-> 23 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Any** (13 connections)
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the profession cache service. Args: persistence: Persistence layer…** (1 connections) — `server/caching/cache_service.py`
-- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
-- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
+- **Any** (8 connections)
+- **WebSocket** (8 connections)
+- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a WebSocket message using the appropriate handler. Args: websocket: The…** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
-- [RoomCacheService](RoomCacheService.md) (3 shared connections)
-- [CacheService](CacheService.md) (2 shared connections)
-- [cached](cached.md) (1 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (9 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
+- `server/realtime/message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

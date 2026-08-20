@@ -1,13 +1,17 @@
 # MetricsCollector
 
-> 27 nodes
+> 34 nodes
 
 ## Key Concepts
 
 - **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
+- **Lock** (8 connections)
 - **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
 - **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
 - **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/npc/threading.py`
+- **.get_lock()** (3 connections) — `server/services/inventory_mutation_guard.py`
 - **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
 - **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
@@ -25,26 +29,29 @@
 - **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
 - **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get concise metrics summary. Returns: High-level metrics summary AI: For quick…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a successfully processed message. Args: channel: Message channel for…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a failed message. Args: channel: Message channel error_type: Type of…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record a message retry attempt. Args: channel: Message channel attempt: Retry…** (1 connections) — `server/middleware/metrics_collector.py`
-- *... and 2 more nodes in this community*
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [Lock](Lock.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 
 ## Source Files
 
 - `server/middleware/metrics_collector.py`
+- `server/npc/threading.py`
+- `server/services/inventory_mutation_guard.py`
 - `server/tests/unit/middleware/test_metrics_collector.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (88%)
+- INFERRED: 6 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

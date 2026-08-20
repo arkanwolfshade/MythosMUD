@@ -1,63 +1,58 @@
 # PrototypeRegistry
 
-> 48 nodes
+> 30 nodes
 
 ## Key Concepts
 
 - **PrototypeRegistry** (47 connections) — `server/game/items/prototype_registry.py`
-- **resolve_weapon_attack_from_equipped()** (25 connections) — `server/game/weapons.py`
-- **prototype_registry.py** (23 connections) — `server/game/items/prototype_registry.py`
-- **test_weapons.py** (18 connections) — `server/tests/unit/game/test_weapons.py`
-- **weapons.py** (17 connections) — `server/game/weapons.py`
-- **test_combat_weapon_resolution.py** (13 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **items/models.py** (11 connections) — `server/game/items/models.py`
-- **WeaponAttackInfo** (9 connections) — `server/game/weapons.py`
-- **_prototype_from_equipped_stack()** (6 connections) — `server/game/weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_returns_info_in_range()** (6 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_empty_damage_types_uses_physical()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_no_weapon_metadata_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_registry_error_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_missing_min_max_returns_none()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_weapon_with_modifier()** (5 connections) — `server/tests/unit/game/test_weapons.py`
-- **registry_with_switchblade()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **switchblade_prototype()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_weapon_resolution_switchblade_damage_in_range()** (4 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_resolve_weapon_attack_from_equipped_missing_prototype_id_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
-- **test_resolve_weapon_attack_from_equipped_none_stack_returns_none()** (4 connections) — `server/tests/unit/game/test_weapons.py`
-- **_roll_weapon_attack()** (3 connections) — `server/game/weapons.py`
-- **test_weapon_resolution_switchblade_no_main_hand_returns_none()** (3 connections) — `server/tests/integration/test_combat_weapon_resolution.py`
-- **test_resolve_weapon_attack_from_equipped_none_registry_returns_none()** (3 connections) — `server/tests/unit/game/test_weapons.py`
-- **_weapon_damage_bounds()** (2 connections) — `server/game/weapons.py`
-- **PrototypeRegistry** (2 connections)
-- *... and 23 more nodes in this community*
+- **test_prototype_registry.py** (18 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **.load_from_path()** (6 connections) — `server/game/items/prototype_registry.py`
+- **._load_one_prototype()** (6 connections) — `server/game/items/prototype_registry.py`
+- **._record_validation_failure()** (5 connections) — `server/game/items/prototype_registry.py`
+- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (5 connections)
+- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Any** (4 connections)
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (3 connections)
+- **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **ValidationError** (1 connections)
+- **Find all prototypes that have a specific tag. Args: tag: The tag to search for…** (1 connections) — `server/game/items/prototype_registry.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [ItemPrototypeModel](ItemPrototypeModel.md) (17 shared connections)
-- [test_prototype_registry.py](test_prototype_registry.py.md) (13 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (12 shared connections)
-- [CombatParticipant](CombatParticipant.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [.load_from_path](load_from_path.md) (5 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
-- [validate_prototypes.py](validate_prototypes.py.md) (3 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (3 shared connections)
-- [combat_attack.py](combat_attack.py.md) (3 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (10 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
+- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_monitoring_dashboard](get_monitoring_dashboard.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/models.py`
 - `server/game/items/prototype_registry.py`
-- `server/game/weapons.py`
-- `server/tests/integration/test_combat_weapon_resolution.py`
-- `server/tests/unit/game/test_weapons.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (81%)
-- INFERRED: 32 (19%)
+- EXTRACTED: 70 (74%)
+- INFERRED: 25 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

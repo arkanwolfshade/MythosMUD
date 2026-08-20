@@ -1,10 +1,11 @@
 # coerce_int
 
-> 40 nodes
+> 42 nodes
 
 ## Key Concepts
 
 - **coerce_int()** (51 connections) — `server/utils/int_coercion.py`
+- **int_coercion.py** (17 connections) — `server/utils/int_coercion.py`
 - **_stats_int()** (14 connections) — `server/models/player.py`
 - **.get_stats()** (13 connections) — `server/models/player.py`
 - **test_inventory_command_coercion.py** (13 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
@@ -28,23 +29,22 @@
 - **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
 - **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
 - **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
-- **parametrize** (1 connections)
-- *... and 15 more nodes in this community*
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (11 shared connections)
-- [LucidityService](LucidityService.md) (9 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (8 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (4 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (4 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [persistence/container_helpers.py](persistence-container_helpers.py.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (17 shared connections)
+- [LucidityService](LucidityService.md) (6 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (5 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (5 shared connections)
+- [test_look_container.py](test_look_container.py.md) (5 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (5 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (4 shared connections)
+- [command_result_text](command_result_text.md) (4 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (3 shared connections)
 - [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
+- [magic_service.py](magic_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
@@ -54,8 +54,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 108 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 121 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

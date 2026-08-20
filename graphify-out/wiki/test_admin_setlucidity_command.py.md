@@ -33,15 +33,13 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (10 shared connections)
-- [LucidityService](LucidityService.md) (7 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
+- [LucidityService](LucidityService.md) (6 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (4 shared connections)
 - [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [command_service.py](command_service.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

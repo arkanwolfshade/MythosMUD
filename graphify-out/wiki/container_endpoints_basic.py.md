@@ -1,6 +1,6 @@
 # container_endpoints_basic.py
 
-> 472 nodes
+> 453 nodes
 
 ## Key Concepts
 
@@ -29,26 +29,25 @@
 - **asyncio** (17 connections)
 - **TestLootAllItems** (16 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
 - **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- *... and 447 more nodes in this community*
+- *... and 428 more nodes in this community*
 
 ## Relationships
 
 - [ContainerServiceError](ContainerServiceError.md) (62 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (53 shared connections)
-- [get_logger](get_logger.md) (40 shared connections)
-- [ContainerService](ContainerService.md) (37 shared connections)
-- [pytest.md](pytest.md.md) (37 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (28 shared connections)
-- [DatabaseError](DatabaseError.md) (17 shared connections)
-- [ContainerComponent](ContainerComponent.md) (14 shared connections)
-- [test_container_events_loot.py](test_container_events_loot.py.md) (10 shared connections)
-- [asyncio](asyncio.md) (10 shared connections)
-- [PlayerService](PlayerService.md) (8 shared connections)
-- [BaseCommand](BaseCommand.md) (5 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (52 shared connections)
+- [models/container.py](models-container.py.md) (41 shared connections)
+- [get_logger](get_logger.md) (33 shared connections)
+- [transfer_all_items_from_container](transfer_all_items_from_container.md) (31 shared connections)
+- [User](User.md) (31 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (27 shared connections)
+- [ContainerComponent](ContainerComponent.md) (26 shared connections)
+- [ValidationError](ValidationError.md) (8 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (6 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
+- [ErrorType](ErrorType.md) (5 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
 - `server/api/container_endpoints_basic.py`
 - `server/api/container_endpoints_loot.py`
 - `server/api/container_exception_handlers.py`
@@ -66,8 +65,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 1104 (89%)
-- INFERRED: 132 (11%)
+- EXTRACTED: 1074 (89%)
+- INFERRED: 127 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

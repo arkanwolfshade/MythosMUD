@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [QuestService](QuestService.md) (2 shared connections)
 - [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (2 shared connections)
 

@@ -1,12 +1,11 @@
 # PydanticErrorHandler
 
-> 43 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **.handle_validation_error()** (13 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
 - **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
 - **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
 - **convert_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
@@ -28,26 +27,26 @@
 - **StandardizedErrorResponseDict** (3 connections)
 - **TypedDict** (2 connections)
 - **TypedDict** (1 connections)
-- **Error handlers package for MythosMUD. This package provides specialized error…** (1 connections) — `server/error_handlers/__init__.py`
-- *... and 18 more nodes in this community*
+- **Handle a Pydantic ValidationError and convert it to a standardized response.…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **Extract structured information from a Pydantic ValidationError. Args: error:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (18 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (8 shared connections)
-- [test_exceptions.py](test_exceptions.py.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (17 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (7 shared connections)
+- [MythosMUDError](MythosMUDError.md) (3 shared connections)
+- [test_command_service.py](test_command_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/__init__.py`
 - `server/error_handlers/pydantic_error_handler.py`
 - `server/exceptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (98%)
+- EXTRACTED: 98 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

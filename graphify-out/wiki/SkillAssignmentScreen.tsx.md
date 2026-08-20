@@ -1,6 +1,6 @@
 # SkillAssignmentScreen.tsx
 
-> 45 nodes
+> 44 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **MotdInterstitialScreen.tsx** (8 connections) — `client/src/components/MotdInterstitialScreen.tsx`
 - **MotdContent.tsx** (6 connections) — `client/src/components/MotdContent.tsx`
 - **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **getCreateCharacterErrorMessage()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **SkillAssignmentScreen()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
 - **useSkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
@@ -25,19 +24,20 @@
 - **renderPersonalInterestSlots()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **renderSkillInstructions()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
 - **useSkillCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **CreateCharacterPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
 - **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- *... and 20 more nodes in this community*
+- **buildCreateCharacterPayload()** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
+- **MotdInterstitialScreen()** (2 connections) — `client/src/components/MotdInterstitialScreen.tsx`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppState.ts](useMythosAppState.ts.md) (10 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (5 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (7 shared connections)
+- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (6 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
 - [logger.ts](logger.ts.md) (4 shared connections)
 - [App.tsx](App.tsx.md) (2 shared connections)
-- [useProfessions.ts](useProfessions.ts.md) (2 shared connections)
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
 - [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 102 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

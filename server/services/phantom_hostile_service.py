@@ -51,6 +51,8 @@ class PhantomHostileService:
         logger.info("PhantomHostileService initialized")
         # Track active phantom hostiles per player (player_id -> list of phantom_ids)
         self._active_phantoms: dict[str, list[str]] = {}
+        # Full phantom data by phantom_id, for target-resolution/combat lookups (#625)
+        self._phantom_data: dict[str, dict[str, Any]] = {}
 
     def should_spawn_phantom_hostile(self, tier: str) -> bool:
         """
@@ -101,7 +103,7 @@ class PhantomHostileService:
             self._active_phantoms[player_id_str] = []
         self._active_phantoms[player_id_str].append(phantom_id)
 
-        return {
+        data = {
             "phantom_id": phantom_id,
             "player_id": str(player_id),
             "room_id": room_id,
@@ -111,6 +113,26 @@ class PhantomHostileService:
             "current_dp": 1,
             "is_non_damaging": tier == "fractured",  # Fractured tier: non-damaging combat
         }
+        self._phantom_data[phantom_id] = data
+        return data
+
+    def get_phantom_data(self, phantom_id: str) -> dict[str, Any] | None:
+        """Return the full data dict for one phantom, or None if it's gone (#625)."""
+        return self._phantom_data.get(phantom_id)
+
+    def find_phantom_by_name_in_room(self, player_id: uuid.UUID, room_id: str, name: str) -> dict[str, Any] | None:
+        """
+        Find one of the player's active phantoms by (case-insensitive) name, scoped to a room (#625).
+
+        Used by target resolution for both `attack <name>` and `look <name>` -- a phantom is only
+        a valid target while the owning player remains in the room it spawned in.
+        """
+        name_lower = name.strip().lower()
+        for phantom_id in self.get_active_phantoms(player_id):
+            data = self._phantom_data.get(phantom_id)
+            if data and data["room_id"] == room_id and name_lower in data["name"].lower():
+                return data
+        return None
 
     def remove_phantom(self, player_id: uuid.UUID, phantom_id: str) -> bool:
         """
@@ -127,6 +149,7 @@ class PhantomHostileService:
         if player_id_str in self._active_phantoms:
             if phantom_id in self._active_phantoms[player_id_str]:
                 self._active_phantoms[player_id_str].remove(phantom_id)
+                self._phantom_data.pop(phantom_id, None)
                 logger.debug("Phantom hostile removed", player_id=player_id, phantom_id=phantom_id)
                 return True
         return False
@@ -154,8 +177,15 @@ class PhantomHostileService:
         player_id_str = str(player_id)
         if player_id_str in self._active_phantoms:
             count = len(self._active_phantoms[player_id_str])
+            for phantom_id in self._active_phantoms[player_id_str]:
+                self._phantom_data.pop(phantom_id, None)
             del self._active_phantoms[player_id_str]
             logger.debug("All phantoms cleared for player", player_id=player_id, count=count)
 
 
-__all__ = ["PhantomHostileService", "PHANTOM_HOSTILE_NAMES"]
+# Module-level singleton (#625) -- callers MUST use this shared instance, not construct their own.
+# _active_phantoms/_phantom_data are in-memory runtime state; a fresh instance per call (the prior
+# bug) discards tracking the moment the constructing coroutine returns.
+phantom_hostile_service = PhantomHostileService()
+
+__all__ = ["PhantomHostileService", "PHANTOM_HOSTILE_NAMES", "phantom_hostile_service"]

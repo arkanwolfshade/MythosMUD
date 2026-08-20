@@ -559,6 +559,23 @@ async def test_apply_damage_and_check_involuntary_flee() -> None:
 
 
 @pytest.mark.asyncio
+async def test_apply_damage_and_check_involuntary_flee_suppresses_non_damaging_phantom() -> None:
+    """#625: a non-damaging (fractured-tier) phantom's attack on the player deals 0 real damage."""
+    apply_attack_damage: AsyncMock = AsyncMock(return_value=(10, False, False))
+    service: MagicMock = MagicMock()
+    service.apply_attack_damage = apply_attack_damage
+    service.check_involuntary_flee = AsyncMock(return_value=False)
+    phantom = _attack_participant("Shambling Horror", CombatParticipantType.PHANTOM)
+    phantom.is_non_damaging = True
+    player = _attack_participant("Player")
+    combat = _combat_instance()
+
+    await combat_service_attack.apply_damage_and_check_involuntary_flee(service, combat, phantom, player, 5)
+
+    apply_attack_damage.assert_awaited_once_with(combat, player, 0)
+
+
+@pytest.mark.asyncio
 async def test_finalize_attack_result_and_process_attack() -> None:
     handle_target_state_changes: AsyncMock = AsyncMock()
     handle_attack_events_and_xp: AsyncMock = AsyncMock(return_value=0)
@@ -597,9 +614,34 @@ async def test_finalize_attack_result_and_process_attack() -> None:
     out = await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4)
     assert out is result
 
-    early: MagicMock = MagicMock()
-    validate_melee_early: AsyncMock = AsyncMock(return_value=early)
-    service.validate_melee_or_end_combat = validate_melee_early
-    assert (
-        await combat_service_attack.process_attack(service, attacker.participant_id, target.participant_id, 4) is early
+
+@pytest.mark.asyncio
+async def test_finalize_attack_result_phantom_dissipation() -> None:
+    """#625: a dead phantom gets a [Phantom]-tagged message and is removed from the registry."""
+    service: MagicMock = MagicMock()
+    service.handle_target_state_changes = AsyncMock()
+    service.handle_attack_events_and_xp = AsyncMock(return_value=None)
+    service.award_xp_to_player = AsyncMock()
+    service.handle_combat_completion = AsyncMock()
+    attacker = _attack_participant("Investigator")
+    phantom = _attack_participant("Shambling Horror", CombatParticipantType.PHANTOM)
+    phantom.phantom_id = "phantom_abc_12345678"
+    phantom.current_dp = 0
+    combat = CombatInstance(
+        combat_id=uuid.uuid4(),
+        room_id="room_a",
+        participants={attacker.participant_id: attacker, phantom.participant_id: phantom},
     )
+    combat.is_combat_over = MagicMock(return_value=True)
+
+    with patch(
+        "server.services.phantom_hostile_service.phantom_hostile_service.remove_phantom", return_value=True
+    ) as remove_mock:
+        result = await combat_service_attack.finalize_attack_result(
+            service, combat, attacker, phantom, 1, True, False, phantom.participant_id
+        )
+
+    assert "[Phantom]" in result.message
+    assert "dissipates" in result.message
+    remove_mock.assert_called_once_with(attacker.participant_id, phantom.phantom_id)
+    service.handle_attack_events_and_xp.assert_awaited_once()

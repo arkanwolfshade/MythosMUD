@@ -1,64 +1,63 @@
 # MythosMUDError
 
-> 51 nodes
+> 144 nodes
 
 ## Key Concepts
 
 - **MythosMUDError** (66 connections) — `server/exceptions.py`
-- **test_error_logging.py** (25 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
-- **create_context_from_request()** (10 connections) — `server/utils/error_logging.py`
-- **wrap_third_party_exception()** (8 connections) — `server/utils/error_logging.py`
-- **create_context_from_websocket()** (7 connections) — `server/utils/error_logging.py`
-- **create_logged_http_exception()** (7 connections) — `server/utils/error_logging.py`
-- **log_error_with_context()** (7 connections) — `server/utils/error_logging.py`
-- **log_and_raise_http()** (6 connections) — `server/utils/error_logging.py`
-- **Any** (5 connections)
-- **.to_dict()** (3 connections) — `server/exceptions.py`
-- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_mythos_mud_error_with_details()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_mythos_mud_error_with_user_friendly()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_create_error_context()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_error_context_with_metadata()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_error_context_to_dict()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_log_and_raise_delegates_to_enhanced()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_wrap_third_party_exception_delegates()** (3 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **._log_error()** (2 connections) — `server/exceptions.py`
-- **test_create_context_from_request_none()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_context_from_request_with_state()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_context_from_websocket()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_create_logged_http_exception_delegates()** (2 connections) — `server/tests/unit/utils/test_error_logging.py`
-- *... and 26 more nodes in this community*
+- **test_exceptions.py** (44 connections) — `server/tests/unit/test_exceptions.py`
+- **ErrorContext** (43 connections) — `server/exceptions.py`
+- **create_error_context()** (35 connections) — `server/exceptions.py`
+- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **LoggedException** (20 connections) — `server/exceptions.py`
+- **.__init__()** (15 connections) — `server/exceptions.py`
+- **handle_exception()** (13 connections) — `server/exceptions.py`
+- **Any** (13 connections)
+- **.__init__()** (7 connections) — `server/exceptions.py`
+- **.mark_logged()** (5 connections) — `server/exceptions.py`
+- **test_handle_exception_standard_exception()** (5 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **test_handle_exception_mythosmud_error()** (4 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **test_mythosmud_error()** (4 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- *... and 119 more nodes in this community*
 
 ## Relationships
 
-- [test_exceptions.py](test_exceptions.py.md) (20 shared connections)
-- [DatabaseError](DatabaseError.md) (20 shared connections)
-- [AuthenticationError](AuthenticationError.md) (11 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (9 shared connections)
-- [ErrorType](ErrorType.md) (9 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
+- [ErrorType](ErrorType.md) (47 shared connections)
+- [get_logger](get_logger.md) (31 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (13 shared connections)
+- [ValidationError](ValidationError.md) (12 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (8 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (7 shared connections)
+- [subject_controller.py](subject_controller.py.md) (6 shared connections)
+- [legacy_error_sanitization.py](legacy_error_sanitization.py.md) (5 shared connections)
+- [TestErrorHandlers](TestErrorHandlers.md) (5 shared connections)
 - [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (4 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [PydanticErrorHandler](PydanticErrorHandler.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/player_helpers.py`
+- `server/error_handlers/pydantic_error_handler.py`
 - `server/exceptions.py`
-- `server/tests/unit/api/test_player_helpers.py`
 - `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 - `server/tests/unit/utils/test_error_logging.py`
-- `server/utils/error_logging.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (93%)
-- INFERRED: 11 (7%)
+- EXTRACTED: 351 (95%)
+- INFERRED: 19 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

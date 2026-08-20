@@ -1,42 +1,40 @@
 # Any
 
-> 19 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **Despawn an NPC instance. Args: npc_id: ID of the NPC to despawn reason: Reason…** (1 connections) — `server/services/npc_instance_service.py`
-- **Move an NPC instance to a different room. Args: npc_id: ID of the NPC to move…** (1 connections) — `server/services/npc_instance_service.py`
-- **Get all active NPC instances. Returns: List of NPC instance information** (1 connections) — `server/services/npc_instance_service.py`
-- **Get detailed stats for a specific NPC instance. Args: npc_id: ID of the NPC…** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC population statistics. Returns: Dictionary with population statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Get NPC zone statistics. Returns: Dictionary with zone statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Get system-wide NPC statistics. Returns: Dictionary with system statistics** (1 connections) — `server/services/npc_instance_service.py`
-- **Extract zone key from room ID. Args: room_id: Room ID like…** (1 connections) — `server/services/npc_instance_service.py`
-- **Spawn a new NPC instance. Args: definition_id: ID of the NPC definition to…** (1 connections) — `server/services/npc_instance_service.py`
+- **Any** (7 connections)
+- **_calculate_stat_warnings()** (6 connections) — `server/commands/admin_setstat_command.py`
+- **_get_app_or_error()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_notify_player_stat_change()** (5 connections) — `server/commands/admin_setstat_command.py`
+- **_resolve_admin_services_and_permissions()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_cap_stat()** (4 connections) — `server/commands/admin_setstat_command.py`
+- **_warning_for_stat_range()** (3 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value exceeds DP or MP calculated maximum; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return warning message if value is outside normal range for stat; else empty…** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Calculate warnings for stat values that exceed maximums or normal ranges.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Notify target player of stat change and send player update event.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Resolve required services and check admin permissions.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **Return (app, None) if request has app, else (None, error_dict).** (1 connections) — `server/commands/admin_setstat_command.py`
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (9 shared connections)
-- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (3 shared connections)
+- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (2 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [_parse_set_stat_args](_parse_set_stat_args.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
+- `server/commands/admin_setstat_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -255,6 +255,27 @@ def test_cleanup_player_data_has_connection(mock_manager: MagicMock):
     remove_player_data_mock.assert_not_called()
 
 
+def test_cleanup_player_data_clears_phantoms(
+    mock_manager: MagicMock,
+    remove_player_data_mock: MagicMock,
+    remove_player_messages_mock: MagicMock,
+):
+    """#625: a player's last disconnect clears any lingering phantom hostiles."""
+    player_id = uuid.uuid4()
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock:
+        _cleanup_player_data(player_id, mock_manager)
+    clear_mock.assert_called_once_with(player_id)
+
+
+def test_cleanup_player_data_has_connection_does_not_clear_phantoms(mock_manager: MagicMock):
+    """#625: phantoms are untouched while the player still has a live connection."""
+    player_id = uuid.uuid4()
+    mock_manager.has_websocket_connection = MagicMock(return_value=True)
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock:
+        _cleanup_player_data(player_id, mock_manager)
+    clear_mock.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_disconnect_all_websockets(mock_manager: MagicMock):
     """Test disconnect_all_websockets_impl() disconnects all websockets."""

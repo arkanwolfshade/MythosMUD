@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (6 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
 
 ## Source Files
 

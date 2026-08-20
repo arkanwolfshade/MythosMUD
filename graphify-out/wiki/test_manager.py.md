@@ -1,11 +1,10 @@
 # test_manager.py
 
-> 71 nodes
+> 69 nodes
 
 ## Key Concepts
 
 - **test_manager.py** (49 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **subject_manager()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **subject_manager_no_cache()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **subject_manager_no_metrics()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **fixture** (3 connections)
@@ -29,16 +28,15 @@
 - **test_get_subscription_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_clears_cache()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_register_pattern_duplicate_name()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- *... and 46 more nodes in this community*
+- **test_register_pattern_invalid_format()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (10 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
 - [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (2 shared connections)
 - [test_validation.py](test_validation.py.md) (2 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
-- [subscribe_npc_spoke_to_chat](subscribe_npc_spoke_to_chat.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [subscribe_npc_spoke_to_chat](subscribe_npc_spoke_to_chat.md) (2 shared connections)
 - [subject_controller.py](subject_controller.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [manager.py](manager.py.md) (1 shared connections)
@@ -49,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 86 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 85 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

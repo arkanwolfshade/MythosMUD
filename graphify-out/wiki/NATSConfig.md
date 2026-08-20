@@ -1,6 +1,6 @@
 # NATSConfig
 
-> 26 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -15,6 +15,8 @@
 - **test_nats_service_init_message_batch()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
 - **.validate_max_payload()** (3 connections) — `server/config/models/nats.py`
 - **.validate_positive()** (3 connections) — `server/config/models/nats.py`
+- **test_build_connect_options_with_token()** (3 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_build_connect_options_with_user_password()** (3 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
 - **field_validator** (3 connections)
 - **fixture** (2 connections)
 - **Any** (1 connections)
@@ -27,15 +29,13 @@
 - **Test NATSService initialization with NATSConfig.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 - **Test NATSService initialization with subject manager.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
 - **Test NATSService initializes connection pool structures.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Test NATSService initializes message batching structures.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 1 more nodes in this community*
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (11 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [NATSService](NATSService.md) (13 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_nats_service_health.py](test_nats_service_health.py.md) (3 shared connections)
 - [config/models/__init__.py](config-models-__init__.py.md) (2 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
@@ -51,10 +51,11 @@
 - `server/config/models/nats.py`
 - `server/services/nats_service.py`
 - `server/tests/unit/services/test_nats_service.py`
+- `server/tests/unit/services/test_nats_service_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (96%)
+- EXTRACTED: 70 (96%)
 - INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 

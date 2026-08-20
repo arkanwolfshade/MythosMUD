@@ -30,8 +30,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [Room](Room.md) (1 shared connections)
 - [validate_room_data](validate_room_data.md) (1 shared connections)
 

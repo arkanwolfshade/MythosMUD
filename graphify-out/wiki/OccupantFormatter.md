@@ -11,7 +11,6 @@
 - **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
 - **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
 - **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **occupant_formatter.py** (6 connections) — `server/realtime/occupant_formatter.py`
 - **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
 - **Any** (5 connections)
 - **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
@@ -20,6 +19,7 @@
 - **test_occupant_formatter_is_uuid_string_invalid_dashes()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_invalid_length()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_valid()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
 - **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
@@ -33,10 +33,8 @@
 
 ## Relationships
 
-- [RoomOccupantManager](RoomOccupantManager.md) (2 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -45,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 122 (96%)
+- EXTRACTED: 120 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

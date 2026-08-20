@@ -1,6 +1,6 @@
 # inventory_equip_command.py
 
-> 77 nodes
+> 78 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,19 @@
 - **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
 - **_equip_inventory_rollback_snapshot()** (6 connections) — `server/commands/inventory_equip_command.py`
 - **test_equip_run_mutation_swap_error()** (6 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- *... and 52 more nodes in this community*
+- *... and 53 more nodes in this community*
 
 ## Relationships
 
+- [server/services/__init__.py](server-services-__init__.py.md) (22 shared connections)
 - [test_inventory_helpers.py](test_inventory_helpers.py.md) (20 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (19 shared connections)
-- [command_result_text](command_result_text.md) (13 shared connections)
-- [equipment_service.py](equipment_service.py.md) (8 shared connections)
-- [Player](Player.md) (7 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (4 shared connections)
-- [InventoryService](InventoryService.md) (4 shared connections)
+- [command_result_text](command_result_text.md) (18 shared connections)
+- [pytest.md](pytest.md.md) (11 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
 
 ## Source Files
 
@@ -55,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 262 (97%)
+- EXTRACTED: 263 (97%)
 - INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 

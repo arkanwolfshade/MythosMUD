@@ -33,11 +33,14 @@
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
 - [MovementService](MovementService.md) (1 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

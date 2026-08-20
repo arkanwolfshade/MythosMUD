@@ -1,6 +1,6 @@
 # NATSMessageBroker
 
-> 52 nodes
+> 56 nodes
 
 ## Key Concepts
 
@@ -28,21 +28,21 @@
 - **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
 - **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
 - **._validate_publish_subject()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
-- *... and 27 more nodes in this community*
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
 - [test_nats_broker.py](test_nats_broker.py.md) (20 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [._error_callback](_error_callback.md) (2 shared connections)
-- [._disconnected_callback](_disconnected_callback.md) (2 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
 - [NATSConfig](NATSConfig.md) (2 shared connections)
 - [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
 - [MessageBroker](MessageBroker.md) (2 shared connections)
 - [nats_broker](nats_broker.md) (1 shared connections)
-- [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 - [test_validation.py](test_validation.py.md) (1 shared connections)
 - [config/models/__init__.py](config-models-__init__.py.md) (1 shared connections)
 
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (87%)
+- EXTRACTED: 121 (87%)
 - INFERRED: 18 (13%)
 - AMBIGUOUS: 0 (0%)
 

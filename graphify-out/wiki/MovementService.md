@@ -1,6 +1,6 @@
 # MovementService
 
-> 58 nodes
+> 62 nodes
 
 ## Key Concepts
 
@@ -22,39 +22,40 @@
 - **._validate_add_player_ids()** (5 connections) — `server/game/movement_service.py`
 - **._validate_move_params()** (5 connections) — `server/game/movement_service.py`
 - **._validate_remove_player_params()** (5 connections) — `server/game/movement_service.py`
+- **.movement_service()** (4 connections) — `server/game/magic/spell_effects.py`
 - **.get_player_room()** (4 connections) — `server/game/movement_service.py`
 - **._handle_tutorial_exit_if_applicable()** (4 connections) — `server/game/movement_service.py`
 - **._log_successful_move_timing()** (4 connections) — `server/game/movement_service.py`
 - **._mark_room_explored()** (4 connections) — `server/game/movement_service.py`
 - **._persist_added_player_room()** (4 connections) — `server/game/movement_service.py`
 - **._persist_player_location()** (4 connections) — `server/game/movement_service.py`
-- **._record_move_validation_failure()** (4 connections) — `server/game/movement_service.py`
-- *... and 33 more nodes in this community*
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [DatabaseError](DatabaseError.md) (9 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (11 shared connections)
 - [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
 - [TargetMatch](TargetMatch.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (2 shared connections)
 - [ValidationError](ValidationError.md) (2 shared connections)
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [InstanceManager](InstanceManager.md) (1 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
-- [movement_service](movement_service.md) (1 shared connections)
+- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_spell_effects.py](test_spell_effects.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/magic/spell_effects.py`
 - `server/game/movement_service.py`
 - `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 136 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

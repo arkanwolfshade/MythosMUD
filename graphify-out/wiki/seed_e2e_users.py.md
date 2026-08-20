@@ -17,8 +17,8 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (1 shared connections)
 
 ## Source Files
 

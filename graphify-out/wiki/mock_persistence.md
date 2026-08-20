@@ -1,24 +1,28 @@
 # mock_persistence
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **fixture** (1 connections)
-- **Async persistence mock with player/room lookups wired for handler tests.** (1 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **fixture** (3 connections)
+- **Create a mock request with app state and container.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Create a mock persistence.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Relationships
 
-- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_handler.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

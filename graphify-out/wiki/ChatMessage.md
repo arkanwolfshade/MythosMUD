@@ -1,6 +1,6 @@
 # ChatMessage
 
-> 45 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -29,16 +29,16 @@
 - **test_chat_message_init_with_target()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_chat_message_log_message()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
 - **test_chat_message_to_dict()** (3 connections) — `server/tests/unit/game/test_chat_service.py`
-- *... and 20 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (25 shared connections)
+- [chat_service.py](chat_service.py.md) (22 shared connections)
 - [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (20 shared connections)
 - [ChatService](ChatService.md) (10 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (7 shared connections)
+- [test_chat_validator.py](test_chat_validator.py.md) (6 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (3 shared connections)
-- [test_chat_validator.py](test_chat_validator.py.md) (3 shared connections)
 - [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -51,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 143 (87%)
+- EXTRACTED: 141 (87%)
 - INFERRED: 21 (13%)
 - AMBIGUOUS: 0 (0%)
 

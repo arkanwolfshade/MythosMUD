@@ -1,6 +1,6 @@
 # fixtures/integration/__init__.py
 
-> 45 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
 - **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
 - **_delete_mutable_integration_test_rows()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
+- **test_db_connectivity_create_and_read_user()** (6 connections) — `server/tests/integration/test_db_connectivity.py`
 - **test_get_npc_system_statistics_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_player_by_id_return_shape_and_not_found()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
 - **test_get_rooms_with_exits_includes_arena_zone_rooms()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
@@ -28,31 +29,27 @@
 - **FixtureRequest** (3 connections)
 - **AsyncSession** (3 connections)
 - **async_sessionmaker** (2 connections)
-- **_IntegrationState** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- *... and 20 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (6 shared connections)
-- [models/player.py](models-player.py.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [database_config_helpers.py](database_config_helpers.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [pytest.md](pytest.md.md) (10 shared connections)
+- [User](User.md) (3 shared connections)
 - [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/fixtures/integration/__init__.py`
 - `server/tests/fixtures/integration/db.py`
+- `server/tests/integration/test_db_connectivity.py`
 - `server/tests/integration/test_procedures_return_shape.py`
 - `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (86%)
-- INFERRED: 14 (14%)
+- EXTRACTED: 91 (86%)
+- INFERRED: 15 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

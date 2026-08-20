@@ -35,7 +35,7 @@
 
 - [test_look_player.py](test_look_player.py.md) (7 shared connections)
 - [look_command.py](look_command.py.md) (6 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
+- [test_look_container.py](test_look_container.py.md) (3 shared connections)
 - [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

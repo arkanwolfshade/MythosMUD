@@ -1,6 +1,6 @@
 # test_logout_commands.py
 
-> 84 nodes
+> 106 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **logout_commands.py** (26 connections) — `server/commands/logout_commands.py`
 - **handle_logout_command()** (24 connections) — `server/commands/logout_commands.py`
 - **asyncio** (18 connections)
+- **test_logout_commands_helpers.py** (15 connections) — `server/tests/unit/commands/test_logout_commands_helpers.py`
 - **_get_player_position_from_connection_manager()** (14 connections) — `server/commands/logout_commands.py`
 - **_get_player_for_logout()** (13 connections) — `server/commands/logout_commands.py`
 - **handle_quit_command()** (13 connections) — `server/commands/logout_commands.py`
@@ -28,31 +29,31 @@
 - **test_get_player_for_logout_from_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
 - **test_get_player_for_logout_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
 - **test_get_player_for_logout_persistence_returns_coroutine()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- *... and 59 more nodes in this community*
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [test_logout_commands_helpers.py](test_logout_commands_helpers.py.md) (14 shared connections)
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
 - [fixture](fixture.md) (4 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/logout_commands.py`
 - `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 195 (94%)
-- INFERRED: 12 (6%)
+- EXTRACTED: 216 (95%)
+- INFERRED: 12 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

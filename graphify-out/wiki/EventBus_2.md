@@ -1,6 +1,6 @@
 # EventBus
 
-> God node · 207 connections · `server/events/event_bus.py`
+> God node · 189 connections · `server/events/event_bus.py`
 
 **Community:** [EventBus](EventBus.md)
 
@@ -12,7 +12,6 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - ._publish_player_dp_correction_event() `EXTRACTED`
-- ._publish_player_dp_update_event() `EXTRACTED`
 - ._init_persistence_and_event_bus() `EXTRACTED`
 - integration() `EXTRACTED`
 - test_spawning_service_npc_room_event_handlers() `EXTRACTED`
@@ -24,26 +23,27 @@
 - test_spawning_service_maybe_add_required_npc_request() `EXTRACTED`
 - test_spawning_service_process_spawn_queue_with_request() `EXTRACTED`
 - test_spawning_service_queue_and_stats() `EXTRACTED`
-- test_del_warns_when_running() `EXTRACTED`
 - test_create_npc_instance_passive() `EXTRACTED`
 - test_create_npc_instance_unknown_type() `EXTRACTED`
+- test_spawning_service_calculate_priority_required() `EXTRACTED`
+- test_spawning_service_check_spawn_requirements_queues() `EXTRACTED`
 
 ### contains
 - event_bus.py `EXTRACTED`
 
 ### imports
-- connection_manager.py `EXTRACTED`
+- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
-- test_population_control.py `EXTRACTED`
+- [test_population_control.py](test_population_control.py.md) `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
 - test_npc_instance_service.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- lifecycle_manager.py `EXTRACTED`
+- [lifecycle_manager.py](lifecycle_manager.py.md) `EXTRACTED`
 - combat_handler.py `EXTRACTED`
 - test_npc_combat_integration_class.py `EXTRACTED`
 - npc_base.py `EXTRACTED`
-- population_control.py `EXTRACTED`
+- [population_control.py](population_control.py.md) `EXTRACTED`
 - test_spawning_modules.py `EXTRACTED`
 - spawning_service.py `EXTRACTED`
 - memory_monitor.py `EXTRACTED`
@@ -55,28 +55,23 @@
 
 ### inherits
 - [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`
+- [EventBusLifecycleMixin](EventBusLifecycleMixin.md) `EXTRACTED`
+- EventBusProcessingMixin `EXTRACTED`
 
 ### method
-- ._handle_event_async() `EXTRACTED`
-- ._stop_processing() `EXTRACTED`
-- ._ensure_async_processing() `EXTRACTED`
-- ._cancel_task_quietly() `EXTRACTED`
-- ._abandon_pending_tasks() `EXTRACTED`
-- ._cancel_and_wait_for_active_tasks() `EXTRACTED`
-- ._create_async_subscriber_tasks() `EXTRACTED`
-- ._process_events_async() `EXTRACTED`
-- ._separate_subscribers() `EXTRACTED`
-- ._process_sync_subscribers() `EXTRACTED`
-- ._wait_for_async_subscribers() `EXTRACTED`
-- .publish() `EXTRACTED`
-- .inject() `EXTRACTED`
 - .unsubscribe() `EXTRACTED`
-- .unsubscribe_all_for_service() `EXTRACTED`
 - .get_subscriber_stats() `EXTRACTED`
-- .shutdown() `EXTRACTED`
 - .set_main_loop() `EXTRACTED`
+- .subscribe() `EXTRACTED`
+- .get_subscriber_count() `EXTRACTED`
+- .get_all_subscriber_counts() `EXTRACTED`
+- .get_subscriber_lifecycle_metrics() `EXTRACTED`
+- .unsubscribe_all_for_service() `EXTRACTED`
+- .__init__() `EXTRACTED`
 - ._ensure_processing_started() `EXTRACTED`
-- ._signal_shutdown() `EXTRACTED`
+- .get_active_task_count() `EXTRACTED`
+- .get_queue_depth() `EXTRACTED`
+- .get_active_task_details() `EXTRACTED`
 
 ### rationale_for
 - Pure asyncio event bus for MythosMUD. This class provides a purely async… `EXTRACTED`
@@ -93,9 +88,9 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
 - lifespan_event_bus() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
@@ -106,14 +101,14 @@
 ### uses
 - [CombatService](CombatService.md) `INFERRED`
 - BaseEvent `INFERRED`
-- NPCLifecycleManager `INFERRED`
+- [NPCLifecycleManager](NPCLifecycleManager.md) `INFERRED`
 - [NPCSpawningService](NPCSpawningService.md) `INFERRED`
 - NPCPopulationController `INFERRED`
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
 - FollowService `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
 - NPCInstanceService `INFERRED`
 - create_npc_instance() `INFERRED`
 - initialize_npc_instance_service() `INFERRED`

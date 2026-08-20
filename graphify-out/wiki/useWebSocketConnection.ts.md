@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (7 shared connections)
+- [logger.ts](logger.ts.md) (4 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
 - [ResourceManager](ResourceManager.md) (3 shared connections)
 - [security.ts](security.ts.md) (3 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)

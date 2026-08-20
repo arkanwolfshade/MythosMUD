@@ -1,15 +1,15 @@
 # PlayerRespawnService
 
-> 63 nodes
+> 64 nodes
 
 ## Key Concepts
 
 - **PlayerRespawnService** (36 connections) — `server/services/player_respawn_service.py`
 - **UUID** (16 connections)
 - **._prepare_sanitarium_respawn()** (13 connections) — `server/services/player_respawn_service.py`
+- **encode_liabilities()** (12 connections) — `server/services/lucidity_helpers.py`
 - **._apply_sanitarium_liability_update()** (11 connections) — `server/services/player_respawn_service.py`
 - **.respawn_player()** (9 connections) — `server/services/player_respawn_service.py`
-- **.initialize()** (8 connections) — `server/container/bundles/combat.py`
 - **.respawn_player_from_delirium()** (8 connections) — `server/services/player_respawn_service.py`
 - **.respawn_player_from_sanitarium()** (8 connections) — `server/services/player_respawn_service.py`
 - **Player** (8 connections)
@@ -29,33 +29,33 @@
 - **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
 - **.move_player_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
 - **._publish_delirium_respawn_event()** (5 connections) — `server/services/player_respawn_service.py`
-- *... and 38 more nodes in this community*
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (21 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (13 shared connections)
+- [LucidityService](LucidityService.md) (11 shared connections)
+- [test_lucidity_service.py](test_lucidity_service.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (2 shared connections)
 - [coerce_int](coerce_int.md) (2 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
-- [api/player_respawn.py](api-player_respawn.py.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (1 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/combat.py`
+- `server/services/lucidity_helpers.py`
 - `server/services/player_respawn_service.py`
 - `server/tests/unit/services/test_player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 143 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 148 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

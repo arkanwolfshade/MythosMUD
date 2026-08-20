@@ -4,12 +4,15 @@ Unit tests for server.commands.combat_attack (attack preconditions and execution
 
 from __future__ import annotations
 
+import uuid
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from server.commands import combat_attack
+from server.models.combat import CombatResult
+from server.schemas.shared.target_resolution import TargetType
 
 # pylint: disable=redefined-outer-name,protected-access
 # Reason: pytest fixtures; tests call combat_attack private helpers (no public test seam).
@@ -191,3 +194,78 @@ async def test_run_handle_attack_command_success_path(mock_handler: MagicMock) -
             "hero",
         )
     assert "slap" in out["result"].lower() and "orc" in out["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_execute_phantom_combat_action_success(mock_handler: MagicMock) -> None:
+    """#625: attacking a live phantom starts combat directly, bypassing npc_combat_service."""
+    player = MagicMock()
+    player.player_id = uuid.uuid4()
+    persistence: MagicMock = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    persistence.get_player_by_id = AsyncMock(return_value=player)
+    player.get_combat_stats = MagicMock(return_value={"current_dp": 10, "max_dp": 20, "dexterity": 10})
+    mock_handler.persistence = persistence
+    combat_service: MagicMock = MagicMock()
+    combat_service.start_combat = AsyncMock()
+    combat_service.process_attack = AsyncMock(
+        return_value=CombatResult(success=True, damage=1, target_died=True, combat_ended=True, message="dissipates")
+    )
+    mock_handler.combat_service = combat_service
+    phantom_data = {
+        "phantom_id": "phantom_p1_1",
+        "name": "Shambling Horror",
+        "current_dp": 1,
+        "max_dp": 1,
+        "is_non_damaging": False,
+    }
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
+            return_value=phantom_data,
+        ),
+        patch("server.commands.combat_attack._resolve_combat_damage", return_value=5),
+    ):
+        out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
+    combat_service.start_combat.assert_awaited_once()
+    combat_service.process_attack.assert_awaited_once()
+    assert "Shambling Horror" in out["result"]
+
+
+@pytest.mark.asyncio
+async def test_execute_phantom_combat_action_already_dissipated(mock_handler: MagicMock) -> None:
+    """#625: attacking a phantom that's already gone from the registry fails cleanly."""
+    player = MagicMock()
+    player.player_id = "player-uuid"
+    persistence: MagicMock = MagicMock()
+    persistence.get_player_by_name = AsyncMock(return_value=player)
+    mock_handler.persistence = persistence
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
+        out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
+    assert "dissipated" in out["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_run_handle_attack_command_routes_phantom_target(mock_handler: MagicMock) -> None:
+    """#625: a PHANTOM target_match dispatches to the phantom execution path, not the NPC one."""
+    mock_handler.check_and_interrupt_rest = AsyncMock(return_value=None)
+    pl = MagicMock()
+    pl.get_stats = MagicMock(return_value={"current_dp": 5})
+    pl.current_room_id = "r9"
+    mock_handler.get_player_and_room = AsyncMock(return_value=(pl, MagicMock(), None))
+    tm = MagicMock()
+    tm.target_id = "phantom_p1_1"
+    tm.target_type = TargetType.PHANTOM
+    mock_handler.resolve_combat_target = AsyncMock(return_value=(tm, None))
+    req = MagicMock()
+    req.app = MagicMock()
+    with patch(
+        "server.commands.combat_attack._execute_phantom_combat_action",
+        new_callable=AsyncMock,
+        return_value={"result": "You attack Shambling Horror!"},
+    ) as phantom_exec:
+        out = await combat_attack.run_handle_attack_command(
+            mock_handler, {"target_player": "shambling"}, {"username": "u"}, req, None, "hero"
+        )
+    phantom_exec.assert_awaited_once()
+    assert "Shambling Horror" in out["result"]

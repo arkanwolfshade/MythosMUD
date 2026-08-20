@@ -1,16 +1,15 @@
 # test_logging_utilities.py
 
-> 92 nodes
+> 88 nodes
 
 ## Key Concepts
 
 - **test_logging_utilities.py** (41 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **ensure_log_directory()** (24 connections) — `server/structured_logging/logging_utilities.py`
 - **logging_utilities.py** (23 connections) — `server/structured_logging/logging_utilities.py`
 - **Path** (23 connections)
 - **rotate_log_files()** (19 connections) — `server/structured_logging/logging_utilities.py`
+- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
 - **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
-- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **_rotate_single_log_file()** (6 connections) — `server/structured_logging/logging_utilities.py`
 - **Path** (6 connections)
 - **_rename_or_copy_log_file()** (5 connections) — `server/structured_logging/logging_utilities.py`
@@ -29,29 +28,33 @@
 - **test_resolve_log_base_relative_path_no_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_resolve_log_base_relative_path_with_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
 - **test_rotate_log_files_empty_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- *... and 67 more nodes in this community*
+- **test_rotate_log_files_handles_jsonl_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (20 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (11 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (6 shared connections)
-- [load_player_guid_formatter_class](load_player_guid_formatter_class.md) (4 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (12 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (5 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (2 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
+- [logging_file_categories.py](logging_file_categories.py.md) (2 shared connections)
 - [RoomLoader](RoomLoader.md) (2 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_file_setup.py`
 - `server/structured_logging/logging_utilities.py`
 - `server/tests/unit/structured_logging/test_logging_utilities.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 178 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

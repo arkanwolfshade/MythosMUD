@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
 
 ## Source Files
 

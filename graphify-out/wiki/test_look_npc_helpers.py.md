@@ -1,6 +1,6 @@
 # test_look_npc_helpers.py
 
-> 50 nodes
+> 44 nodes
 
 ## Key Concepts
 
@@ -10,9 +10,6 @@
 - **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_fallback()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_npc_description_no_description()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
 - **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
@@ -29,11 +26,15 @@
 - **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
 - **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 25 more nodes in this community*
+- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
+- **Unit tests for look_npc helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- **Test _format_other_stats() returns empty list when no other stats.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (28 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (24 shared connections)
+- [_format_npc_description](_format_npc_description.md) (4 shared connections)
 - [_get_npc_room_id](_get_npc_room_id.md) (4 shared connections)
 - [_should_include_npc](_should_include_npc.md) (4 shared connections)
 
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
+- EXTRACTED: 84 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

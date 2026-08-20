@@ -1,11 +1,13 @@
 # AliasStorage
 
-> 175 nodes
+> 249 nodes
 
 ## Key Concepts
 
 - **AliasStorage** (264 connections) — `server/alias_storage.py`
+- **Alias** (70 connections) — `server/models/alias.py`
 - **test_alias_storage.py** (68 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_alias.py** (30 connections) — `server/tests/unit/models/test_alias.py`
 - **Path** (11 connections)
 - **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
 - **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
@@ -27,34 +29,35 @@
 - **.get_alias()** (4 connections) — `server/alias_storage.py`
 - **.get_alias_count()** (4 connections) — `server/alias_storage.py`
 - **.remove_alias()** (4 connections) — `server/alias_storage.py`
-- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
-- **_get_alias_validator()** (4 connections) — `server/alias_storage.py`
-- *... and 150 more nodes in this community*
+- *... and 224 more nodes in this community*
 
 ## Relationships
 
-- [command_service.py](command_service.py.md) (32 shared connections)
-- [Alias](Alias.md) (28 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (19 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (23 shared connections)
+- [get_logger](get_logger.md) (22 shared connections)
 - [test_magic_commands.py](test_magic_commands.py.md) (12 shared connections)
+- [command_service.py](command_service.py.md) (10 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (8 shared connections)
-- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [request_with_app_container](request_with_app_container.md) (8 shared connections)
 - [combat_loader.py](combat_loader.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (5 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (4 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (7 shared connections)
+- [server/commands/__init__.py](server-commands-__init__.py.md) (7 shared connections)
+- [test_alias_commands.py](test_alias_commands.py.md) (6 shared connections)
+- [command_result_text](command_result_text.md) (6 shared connections)
+- [.state](state.md) (5 shared connections)
 
 ## Source Files
 
 - `server/alias_storage.py`
+- `server/models/alias.py`
+- `server/realtime/request_context.py`
+- `server/tests/unit/models/test_alias.py`
 - `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 410 (82%)
-- INFERRED: 93 (18%)
+- EXTRACTED: 515 (84%)
+- INFERRED: 95 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---
