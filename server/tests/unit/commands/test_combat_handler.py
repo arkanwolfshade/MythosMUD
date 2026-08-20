@@ -333,9 +333,7 @@ async def test_resolve_combat_target_rejects_dissipated_phantom(mock_persistence
     )
     player = MagicMock()
     player.player_id = uuid.uuid4()
-    with patch(
-        "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None
-    ):
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
         match, err = await h.resolve_combat_target(player, "shambling")
     assert match is None and err is not None
     assert "dissipated" in err["result"].lower()
