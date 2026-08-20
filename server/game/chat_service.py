@@ -15,6 +15,7 @@ from ..services.rate_limiter import rate_limiter
 from ..services.user_manager import user_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_channel_message_senders import (
+    ChatEmoteService,
     ChatLogger,
     ChatPlayerService,
     ChatRateLimiter,
@@ -147,6 +148,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         nats_service: object | None = None,
         user_manager_instance: object | None = None,
         subject_manager: object | None = None,
+        emote_service: object | None = None,
     ) -> None:
         """
         Initialize chat service.
@@ -158,6 +160,9 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             nats_service: NATS service instance (optional, defaults to global instance)
             user_manager_instance: Optional user manager instance (defaults to global instance)
             subject_manager: NATSSubjectManager instance (optional, for standardized subject patterns)
+            emote_service: Container-loaded EmoteService (server/container/bundles/game.py),
+                          used by send_predefined_emote (#624). Optional so the 12+ existing
+                          positional test constructions of ChatService are unaffected.
         """
         self.persistence = persistence
         self.room_service = room_service
@@ -193,6 +198,9 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
 
         # Rate limiter for message throttling
         self.rate_limiter = rate_limiter
+
+        # Predefined-emote lookup, container-loaded (#624)
+        self.emote_service = emote_service
 
         logger.info("ChatService initialized with NATS integration and AI-ready logging")
 
@@ -499,6 +507,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             cast(ChatLogger, cast(object, self.chat_logger)),
             self.nats_service,
             self.subject_manager,
+            cast(ChatEmoteService | None, self.emote_service),
         )
 
     async def mute_channel(self, player_id: uuid.UUID | str, channel: str) -> bool:

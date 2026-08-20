@@ -6,6 +6,7 @@ import uuid
 
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_channel_message_senders import (
+    ChatEmoteService,
     ChatLogger,
     ChatPlayerService,
     ChatRateLimiter,
@@ -132,6 +133,7 @@ async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-
     chat_logger: ChatLogger,
     nats_service: object | None,
     subject_manager: object | None,
+    emote_service: ChatEmoteService | None,
 ) -> dict[str, object]:
     """
     Send a predefined emote message using the EmoteService.
@@ -148,6 +150,7 @@ async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-
         chat_logger: Chat logger instance
         nats_service: NATS service instance
         subject_manager: NATS subject manager instance (optional)
+        emote_service: Container-loaded EmoteService (server/container/bundles/game.py)
 
     Returns:
         Dictionary with success status and message details
@@ -157,11 +160,9 @@ async def send_predefined_emote(  # pylint: disable=too-many-arguments,too-many-
         "=== CHAT SERVICE DEBUG: send_predefined_emote called ===", player_id=player_id, emote_command=emote_command
     )
 
-    # Import EmoteService here to avoid circular imports
-    from .emote_service import EmoteService
-
-    # Initialize emote service
-    emote_service = EmoteService()
+    if emote_service is None:
+        logger.warning("EmoteService not available for predefined emote")
+        return {"success": False, "error": "Emote functionality is not available."}
 
     # Check if this is a valid emote command
     if not emote_service.is_emote_alias(emote_command):

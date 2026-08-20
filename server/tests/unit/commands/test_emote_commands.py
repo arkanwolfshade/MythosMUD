@@ -26,6 +26,7 @@ async def test_handle_emote_command():
     mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
     mock_state.chat_service = mock_chat_service
     mock_state.player_service = mock_player_service
+    mock_state.emote_service = None  # "smiles" falls through to the custom-emote path
     mock_app.state = mock_state
     mock_request.app = mock_app
 
@@ -33,6 +34,35 @@ async def test_handle_emote_command():
 
     assert "result" in result
     mock_chat_service.send_emote_message.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_emote_command_predefined_emote():
+    """Test handle_emote_command() formats a predefined emote via the injected EmoteService."""
+    mock_request = MagicMock()
+    mock_app = MagicMock()
+    mock_state = MagicMock()
+    mock_chat_service = AsyncMock()
+    mock_chat_service.send_emote_message = AsyncMock(return_value={"success": True})
+    mock_player_service = AsyncMock()
+    mock_player = MagicMock()
+    mock_player.current_room_id = "room_001"
+    mock_player.id = "player_id_001"
+    mock_player_service.resolve_player_name = AsyncMock(return_value=mock_player)
+    mock_emote_service = MagicMock()
+    mock_emote_service.is_emote_alias.return_value = True
+    mock_emote_service.format_emote_messages.return_value = ("You twibble.", "TestPlayer twibbles.")
+    mock_state.chat_service = mock_chat_service
+    mock_state.player_service = mock_player_service
+    mock_state.emote_service = mock_emote_service
+    mock_app.state = mock_state
+    mock_request.app = mock_app
+
+    result = await handle_emote_command({"action": "twibble"}, {"name": "TestPlayer"}, mock_request, None, "TestPlayer")
+
+    assert result == {"result": "You twibble."}
+    mock_emote_service.is_emote_alias.assert_called_with("twibble")
+    mock_chat_service.send_emote_message.assert_awaited_once_with("player_id_001", "twibbles.")
 
 
 @pytest.mark.asyncio

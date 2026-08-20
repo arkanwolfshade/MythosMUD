@@ -56,6 +56,7 @@ class ChatBundle:  # pylint: disable=too-few-public-methods
             nats_service=nats_service,
             user_manager_instance=container.user_manager,
             subject_manager=subject_manager,
+            emote_service=getattr(container, "emote_service", None),
         )
 
         if self.chat_service.nats_service and self.chat_service.nats_service.is_connected():

@@ -6,15 +6,10 @@ with simple commands like 'twibble' or 'dance', automatically expanding them
 to appropriate messages for both the player and room occupants.
 """
 
-import asyncio
-import os
-import threading
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict
 
-import asyncpg
-
-from ..database_config_helpers import get_asyncpg_server_settings_for_database_url
 from ..exceptions import ValidationError
+from ..persistence.repositories.emote_repository import EmoteRepository
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 
@@ -54,11 +49,6 @@ def _get_emote_validator() -> "SchemaValidator | None":
     return _emote_validator
 
 
-class _EmoteRowData(TypedDict):
-    self_message: str
-    other_message: str
-
-
 class EmoteDefinition(TypedDict):
     """Public emote payload returned by EmoteService lookups."""
 
@@ -67,55 +57,43 @@ class EmoteDefinition(TypedDict):
     aliases: list[str]
 
 
-class _EmoteLoadResult(TypedDict):
-    emotes: dict[str, _EmoteRowData]
-    aliases: dict[str, list[str]]
-    error: BaseException | None
-
-
 class EmoteService:
-    """Service for managing predefined emote actions and their messages."""
+    """Service for managing predefined emote actions and their messages.
 
-    def __init__(self, emote_file_path: str | None = None) -> None:
+    Construction is synchronous and does not load anything; call `await load_emotes()` once after
+    construction (see server/container/bundles/game.py, matching SpellRegistry's pattern) before
+    relying on emote lookups. This replaces the previous synchronous constructor's
+    thread+new-event-loop workaround for the sync/async boundary (#624) -- construction no longer
+    needs a workaround because it no longer does any I/O itself.
+    """
+
+    def __init__(self, emote_repository: EmoteRepository, emote_file_path: str | None = None) -> None:
         """
         Initialize the EmoteService.
 
         Args:
-            emote_file_path: DEPRECATED - kept for backward compatibility only.
-                            Emotes are now loaded from PostgreSQL database.
+            emote_repository: Repository used by load_emotes() to fetch predefined emotes/aliases.
+            emote_file_path: DEPRECATED - kept for backward compatibility only. Used solely as a
+                            label in schema-validation error messages for custom emotes; unrelated
+                            to predefined-emote loading.
         """
-        # Keep emote_file_path for backward compatibility but don't use it
+        self._emote_repository = emote_repository
         self.emote_file_path: str | None = emote_file_path
         self.emotes: dict[str, EmoteDefinition] = {}
         self.alias_to_emote: dict[str, str] = {}
 
-        self._load_emotes()
+    async def load_emotes(self) -> None:
+        """Load predefined emote definitions from the database via the injected repository.
 
-    def _load_emotes(self) -> None:
-        """Load emote definitions from PostgreSQL database."""
-        result_container: _EmoteLoadResult = {"emotes": {}, "aliases": {}, "error": None}
-
-        def run_async() -> None:
-            new_loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(new_loop)
-            try:
-                new_loop.run_until_complete(self._async_load_emotes(result_container))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Emote loading errors unpredictable, must allow graceful degradation
-                # Catch exception and store in result_container instead of raising
-                # This allows graceful degradation when database table doesn't exist
-                result_container["error"] = e
-            finally:
-                new_loop.close()
-
-        thread = threading.Thread(target=run_async)
-        thread.start()
-        thread.join()
-
-        error = result_container.get("error")
-        if error is not None:
-            # Log warning but don't raise - allow custom emotes to work even without database
-            # This is important for tests and environments where the emotes table may not exist
-            error_str = str(error)
+        Errors (including a missing emotes table) are logged and swallowed, not raised -- this
+        allows custom emotes to keep working, and tests/environments without the emotes table to
+        still function, matching the previous behavior.
+        """
+        try:
+            emote_rows = await self._emote_repository.get_emotes()
+            alias_rows = await self._emote_repository.get_emote_aliases()
+        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Emote loading errors unpredictable, must allow graceful degradation
+            error_str = str(e)
             if "does not exist" in error_str or "relation" in error_str.lower():
                 logger.warning(
                     "Emotes table not found in database - custom emotes will still work",
@@ -123,92 +101,39 @@ class EmoteService:
                 )
             else:
                 logger.warning("Failed to load emotes from database - custom emotes will still work", error=error_str)
-            # Continue with empty emotes - custom emotes don't need the database
+            self.emotes = {}
+            self.alias_to_emote = {}
+            return
 
-        # Build emotes dictionary in expected format
-        self.emotes = {}
-        for stable_id, emote_data in result_container["emotes"].items():
-            aliases = result_container["aliases"].get(stable_id, [])
-            self.emotes[stable_id] = {
-                "self_message": emote_data["self_message"],
-                "other_message": emote_data["other_message"],
-                "aliases": aliases,
+        aliases_by_stable_id: dict[str, list[str]] = {}
+        for row in alias_rows:
+            aliases_by_stable_id.setdefault(row["stable_id"], []).append(row["alias"])
+
+        emotes: dict[str, EmoteDefinition] = {}
+        for row in emote_rows:
+            stable_id = row["stable_id"]
+            emotes[stable_id] = {
+                "self_message": row["self_message"],
+                "other_message": row["other_message"],
+                "aliases": aliases_by_stable_id.get(stable_id, []),
             }
+        self.emotes = emotes
 
         # Build alias mapping
-        self.alias_to_emote = {}
+        alias_to_emote: dict[str, str] = {}
         for emote_name, emote_data in self.emotes.items():
             # The emote name itself is also an alias
-            self.alias_to_emote[emote_name] = emote_name
+            alias_to_emote[emote_name] = emote_name
 
             # Add explicit aliases
-            aliases = emote_data.get("aliases", [])
-            for alias in aliases:
-                if alias in self.alias_to_emote:
-                    logger.warning("Duplicate emote alias", alias=alias, existing_emote=self.alias_to_emote[alias])
+            for alias in emote_data.get("aliases", []):
+                if alias in alias_to_emote:
+                    logger.warning("Duplicate emote alias", alias=alias, existing_emote=alias_to_emote[alias])
                 else:
-                    self.alias_to_emote[alias] = emote_name
+                    alias_to_emote[alias] = emote_name
+        self.alias_to_emote = alias_to_emote
 
         logger.info("Loaded emotes from database", emote_count=len(self.emotes), alias_count=len(self.alias_to_emote))
-
-    async def _async_load_emotes(self, result_container: _EmoteLoadResult) -> None:
-        """Async helper to load emotes from PostgreSQL database."""
-        try:
-            # Get database URL from environment
-            database_url = os.getenv("DATABASE_URL")
-            if not database_url:
-                raise ValueError("DATABASE_URL environment variable not set")
-
-            # Convert SQLAlchemy-style URL to asyncpg-compatible format
-            if database_url.startswith("postgresql+asyncpg://"):
-                database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
-
-            server_settings = get_asyncpg_server_settings_for_database_url(database_url)
-            # Use asyncpg directly to avoid event loop conflicts; match engine search_path
-            conn = await asyncpg.connect(database_url, server_settings=server_settings)
-            try:
-                # Query emotes
-                emotes_query = """
-                    SELECT
-                        stable_id,
-                        self_message,
-                        other_message
-                    FROM emotes
-                    ORDER BY stable_id
-                """
-                emote_rows = await conn.fetch(emotes_query)
-
-                # Query emote aliases
-                aliases_query = """
-                    SELECT
-                        e.stable_id,
-                        ea.alias
-                    FROM emote_aliases ea
-                    JOIN emotes e ON ea.emote_id = e.id
-                    ORDER BY e.stable_id, ea.alias
-                """
-                alias_rows = await conn.fetch(aliases_query)
-
-                # Build emotes dictionary
-                for row in emote_rows:
-                    stable_id = cast(str, row["stable_id"])
-                    result_container["emotes"][stable_id] = {
-                        "self_message": cast(str, row["self_message"]),
-                        "other_message": cast(str, row["other_message"]),
-                    }
-                    result_container["aliases"][stable_id] = []
-
-                # Build aliases dictionary
-                for row in alias_rows:
-                    stable_id = cast(str, row["stable_id"])
-                    alias = cast(str, row["alias"])
-                    if stable_id in result_container["aliases"]:
-                        result_container["aliases"][stable_id].append(alias)
-            finally:
-                await conn.close()
-        except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database connection errors unpredictable, must store in container
-            # Store error in result_container - don't raise, let _load_emotes handle it
-            result_container["error"] = e
 
     def is_emote_alias(self, command: str) -> bool:
         """
@@ -281,10 +206,10 @@ class EmoteService:
             result[emote_name] = aliases
         return result
 
-    def reload_emotes(self) -> None:
-        """Reload emote definitions from the file."""
+    async def reload_emotes(self) -> None:
+        """Reload predefined emote definitions from the database."""
         logger.info("Reloading emote definitions")
-        self._load_emotes()
+        await self.load_emotes()
 
     def _validate_emote_payload(self, data: dict[str, object]) -> list[str]:
         """

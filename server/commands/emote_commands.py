@@ -33,21 +33,22 @@ def _extract_emote_action(command_data: dict[str, Any]) -> str | None:
     return None
 
 
-def _get_emote_services(request: Any) -> tuple[Any, Any]:
+def _get_emote_services(request: Any) -> tuple[Any, Any, Any]:
     """
-    Get chat service and player service from app state.
+    Get chat service, player service, and emote service from app state.
 
     Args:
         request: FastAPI request object
 
     Returns:
-        Tuple of (chat_service, player_service) or (None, None) if not available
+        Tuple of (chat_service, player_service, emote_service); any may be None if unavailable.
     """
     app = request.app if request else None
     state = getattr(app, "state", None) if app else None
     chat_service = getattr(state, "chat_service", None) if state else None
     player_service = getattr(state, "player_service", None) if state else None
-    return chat_service, player_service
+    emote_service = getattr(state, "emote_service", None) if state else None
+    return chat_service, player_service, emote_service
 
 
 async def _validate_player_for_emote(
@@ -79,22 +80,21 @@ async def _validate_player_for_emote(
     return player_obj, current_room_id, player_id, None
 
 
-def _format_emote_messages(action: str, player_name: str) -> tuple[str, str]:
+def _format_emote_messages(action: str, player_name: str, emote_service: Any = None) -> tuple[str, str]:
     """
     Format emote messages for predefined or custom emotes.
 
     Args:
         action: Emote action string
         player_name: Player name
+        emote_service: Container-loaded EmoteService (server/container/bundles/game.py). When
+                       unavailable, every action is treated as a custom emote, matching the
+                       previous graceful-degradation behavior.
 
     Returns:
         Tuple of (self_message, formatted_action)
     """
-    from ..game.emote_service import EmoteService
-
-    emote_service = EmoteService()
-
-    if emote_service.is_emote_alias(action):
+    if emote_service is not None and emote_service.is_emote_alias(action):
         # Predefined emote - format messages
         self_message, _ = emote_service.format_emote_messages(action, player_name)
         _, formatted_action = emote_service.format_emote_messages(action, player_name)
@@ -167,7 +167,7 @@ async def handle_emote_command(
 
     logger.debug("Player performing emote", player=player_name)
 
-    chat_service, player_service = _get_emote_services(request)
+    chat_service, player_service, emote_service = _get_emote_services(request)
     if not chat_service or not player_service:
         logger.warning("Chat service or player service not available for emote command", player=player_name)
         return {"result": "Emote functionality is not available."}
@@ -177,7 +177,7 @@ async def handle_emote_command(
         if error_message:
             return {"result": error_message}
 
-        self_message, formatted_action = _format_emote_messages(action, player_name)
+        self_message, formatted_action = _format_emote_messages(action, player_name, emote_service)
 
         result = await chat_service.send_emote_message(player_id, formatted_action)
         return _handle_emote_result(result, self_message, player_name, current_room_id)

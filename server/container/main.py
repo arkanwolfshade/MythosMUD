@@ -89,6 +89,8 @@ class ApplicationContainer:
     quest_definition_repository: Any
     quest_instance_repository: Any
     quest_service: Any
+    emote_repository: Any
+    emote_service: Any
     npc_lifecycle_manager: Any
     npc_spawning_service: Any
     npc_population_controller: Any
@@ -154,6 +156,8 @@ class ApplicationContainer:
         self.quest_definition_repository = None
         self.quest_instance_repository = None
         self.quest_service = None
+        self.emote_repository = None
+        self.emote_service = None
         self.npc_lifecycle_manager = None
         self.npc_spawning_service = None
         self.npc_population_controller = None

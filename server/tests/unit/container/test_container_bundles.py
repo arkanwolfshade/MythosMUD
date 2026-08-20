@@ -118,6 +118,32 @@ def test_game_bundle_initialize_caching_services_failure() -> None:
 
 
 @pytest.mark.asyncio
+async def test_game_bundle_init_emote_service_loads_once() -> None:
+    """#624: GameBundle constructs EmoteRepository/EmoteService and loads once at init time,
+    matching SpellRegistry's pattern -- not reconstructed/reloaded per command."""
+    bundle = GameBundle()
+    mock_repo_instance = MagicMock()
+    mock_repo_instance.get_emotes = AsyncMock(return_value=[])
+    mock_repo_instance.get_emote_aliases = AsyncMock(return_value=[])
+    with (
+        patch("server.persistence.repositories.emote_repository.EmoteRepository", return_value=mock_repo_instance),
+    ):
+        await bundle._init_emote_service()
+
+    assert bundle.emote_repository is mock_repo_instance
+    assert bundle.emote_service is not None
+    mock_repo_instance.get_emotes.assert_awaited_once()
+    mock_repo_instance.get_emote_aliases.assert_awaited_once()
+
+
+def test_game_attrs_includes_emote_service() -> None:
+    """#624: emote_repository/emote_service must be in GAME_ATTRS or _flatten_bundle never copies
+    them onto ApplicationContainer, and every app.state/container.emote_service read breaks."""
+    assert "emote_repository" in GAME_ATTRS
+    assert "emote_service" in GAME_ATTRS
+
+
+@pytest.mark.asyncio
 async def test_core_bundle_shutdown() -> None:
     bundle = CoreBundle()
     bundle.event_bus = AsyncMock()

@@ -201,11 +201,19 @@ async def test_send_global_message_player_not_found():
 @pytest.mark.asyncio
 async def test_send_predefined_emote_unknown():
     player_service: MagicMock = MagicMock()
-    with patch("server.game.emote_service.EmoteService") as mock_emote_cls:
-        _attr(_attr(mock_emote_cls, "return_value"), "is_emote_alias").return_value = False
-        result = await send_predefined_emote(
-            uuid.uuid4(), "not_an_emote", player_service, MagicMock(), MagicMock(), MagicMock(), MagicMock(), None
-        )
+    emote_service: MagicMock = MagicMock()
+    _attr(emote_service, "is_emote_alias").return_value = False
+    result = await send_predefined_emote(
+        uuid.uuid4(),
+        "not_an_emote",
+        player_service,
+        MagicMock(),
+        MagicMock(),
+        MagicMock(),
+        MagicMock(),
+        None,
+        emote_service,
+    )
     assert result["success"] is False
 
 
@@ -306,18 +314,25 @@ async def test_send_predefined_emote_success():
     rate_limiter: MagicMock = MagicMock()
     _attr(rate_limiter, "check_rate_limit").return_value = True
     chat_logger: MagicMock = MagicMock()
-    with patch("server.game.emote_service.EmoteService") as mock_emote_cls:
-        emote: MagicMock = _attr(mock_emote_cls, "return_value")
-        _attr(emote, "is_emote_alias").return_value = True
-        _attr(emote, "format_emote_messages").return_value = ("You twibble.", "Armitage twibbles.")
-        with patch(
-            "server.game.chat_message_senders.publish_chat_message_to_nats",
-            new_callable=AsyncMock,
-            return_value=True,
-        ):
-            result = await send_predefined_emote(
-                uuid.uuid4(), "twibble", player_service, user_manager, rate_limiter, chat_logger, MagicMock(), None
-            )
+    emote_service: MagicMock = MagicMock()
+    _attr(emote_service, "is_emote_alias").return_value = True
+    _attr(emote_service, "format_emote_messages").return_value = ("You twibble.", "Armitage twibbles.")
+    with patch(
+        "server.game.chat_message_senders.publish_chat_message_to_nats",
+        new_callable=AsyncMock,
+        return_value=True,
+    ):
+        result = await send_predefined_emote(
+            uuid.uuid4(),
+            "twibble",
+            player_service,
+            user_manager,
+            rate_limiter,
+            chat_logger,
+            MagicMock(),
+            None,
+            emote_service,
+        )
     assert result["success"] is True
     assert result["self_message"] == "You twibble."
 

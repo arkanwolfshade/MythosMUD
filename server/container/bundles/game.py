@@ -48,6 +48,8 @@ GAME_ATTRS = (
     "quest_definition_repository",
     "quest_instance_repository",
     "quest_service",
+    "emote_repository",
+    "emote_service",
 )
 
 
@@ -76,6 +78,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     quest_definition_repository: Any = None
     quest_instance_repository: Any = None
     quest_service: Any = None
+    emote_repository: Any = None
+    emote_service: Any = None
 
     @staticmethod
     def _require_core_services(container: ApplicationContainer) -> None:
@@ -266,6 +270,21 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         self._init_quest_service(container)
         logger.info("Container, level, skill and quest services initialized")
 
+    async def _init_emote_service(self) -> None:
+        """Create the emote repository/service and load predefined emotes once, at startup.
+
+        Matches SpellRegistry's pattern (server/container/bundles/magic.py): construct, then
+        await load once here rather than reconstructing and reloading on every emote command
+        (#624 -- the previous EmoteService reloaded from a hand-rolled connection on every call).
+        """
+        from server.game.emote_service import EmoteService
+        from server.persistence.repositories.emote_repository import EmoteRepository
+
+        self.emote_repository = EmoteRepository()
+        self.emote_service = EmoteService(self.emote_repository)
+        await self.emote_service.load_emotes()
+        logger.info("EmoteService initialized and loaded", emote_count=len(self.emote_service.emotes))
+
     async def initialize(self, container: ApplicationContainer) -> None:
         """Initialize game services. Requires Core and Realtime."""
         self._require_core_services(container)
@@ -281,6 +300,8 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         self._wire_item_registry_to_player_service()
         logger.debug("Initializing caching services...")
         self._initialize_caching_services(container.persistence)
+        logger.debug("Initializing emote service...")
+        await self._init_emote_service()
 
     def _handle_item_prototypes_db_error(self, exc: Exception) -> None:
         """On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item registry/factory."""

@@ -70,6 +70,15 @@ def test_flags_bare_table_select_from() -> None:
     assert mod._find_raw_sql_lines('text("SELECT stable_id FROM rooms WHERE id = :id")') == [1]
 
 
+def test_flags_bare_table_select_from_split_across_lines() -> None:
+    """Regression test for the gap #624 found: a naive per-line matcher can't see SELECT and FROM
+    on separate lines, which is how emote_service.py's own queries -- and roughly a dozen other
+    files' -- were written. The line reported is where SELECT starts."""
+    mod = _load_script()
+    content = 'query = """\n    SELECT\n        stable_id\n    FROM rooms\n    ORDER BY stable_id\n"""'
+    assert mod._find_raw_sql_lines(content) == [2]
+
+
 def test_does_not_flag_procedure_call_no_from() -> None:
     """ADR-015 procedure call: SELECT fn(:arg) -- no FROM at all."""
     mod = _load_script()
