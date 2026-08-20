@@ -273,6 +273,13 @@ class CombatCommandHandler:  # pylint: disable=too-few-public-methods  # Reason:
         target_match = target_result.get_single_match()
         if not target_match:
             return None, {"result": target_result.error_message or "No valid target found"}
+        if target_match.target_type == TargetType.PHANTOM:
+            # #625: phantom liveness lives in PhantomHostileService, not the NPC lifecycle manager.
+            from ..services.phantom_hostile_service import phantom_hostile_service
+
+            if not phantom_hostile_service.get_phantom_data(target_match.target_id):
+                return None, {"result": "It has already dissipated."}
+            return target_match, None
         if target_match.target_type != TargetType.NPC:
             return None, {"result": f"You can only attack NPCs, not {target_match.target_type}s."}
         npc_instance = self._get_npc_instance(target_match.target_id)

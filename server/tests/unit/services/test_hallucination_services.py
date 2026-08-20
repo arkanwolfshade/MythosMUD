@@ -190,3 +190,44 @@ def test_phantom_create_track_remove_clear() -> None:
     service.create_phantom_hostile_data(player_id, "room_003", "deranged")
     service.clear_all_phantoms(player_id)
     assert service.get_active_phantoms(player_id) == []
+
+
+def test_phantom_get_data_and_find_by_name_in_room() -> None:
+    """#625: get_phantom_data and find_phantom_by_name_in_room support target resolution."""
+    service = PhantomHostileService()
+    player_id = uuid.uuid4()
+    data = service.create_phantom_hostile_data(player_id, "room_005", "deranged")
+
+    assert service.get_phantom_data(data["phantom_id"]) == data
+    assert service.get_phantom_data("missing") is None
+
+    found = service.find_phantom_by_name_in_room(player_id, "room_005", data["name"].upper())
+    assert found == data
+    assert service.find_phantom_by_name_in_room(player_id, "room_999", data["name"]) is None
+    assert service.find_phantom_by_name_in_room(player_id, "room_005", "no such phantom") is None
+
+
+def test_phantom_remove_clears_phantom_data() -> None:
+    """#625: remove_phantom/clear_all_phantoms also drop the full-data registry entry."""
+    service = PhantomHostileService()
+    player_id = uuid.uuid4()
+    data = service.create_phantom_hostile_data(player_id, "room_006", "fractured")
+
+    service.remove_phantom(player_id, data["phantom_id"])
+    assert service.get_phantom_data(data["phantom_id"]) is None
+
+    data2 = service.create_phantom_hostile_data(player_id, "room_006", "fractured")
+    service.clear_all_phantoms(player_id)
+    assert service.get_phantom_data(data2["phantom_id"]) is None
+
+
+def test_phantom_hostile_service_module_singleton() -> None:
+    """#625: the module-level instance persists state across separate call sites."""
+    from server.services.phantom_hostile_service import phantom_hostile_service
+
+    player_id = uuid.uuid4()
+    data = phantom_hostile_service.create_phantom_hostile_data(player_id, "room_007", "deranged")
+    try:
+        assert data["phantom_id"] in phantom_hostile_service.get_active_phantoms(player_id)
+    finally:
+        phantom_hostile_service.clear_all_phantoms(player_id)

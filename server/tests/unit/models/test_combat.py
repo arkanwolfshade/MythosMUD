@@ -68,7 +68,7 @@ def test_combat_participant_type_enum_values():
 
 def test_combat_participant_type_enum_all_types():
     """Test CombatParticipantType enum contains all expected types."""
-    expected_types = {"player", "npc"}
+    expected_types = {"player", "npc", "phantom"}
     actual_types = {t.value for t in CombatParticipantType}
     assert actual_types == expected_types
 

@@ -191,6 +191,9 @@ async def apply_damage_and_check_involuntary_flee(
     damage: int,
 ) -> tuple[bool, bool, CombatResult | None]:
     """Apply attack damage and check for involuntary flee. Returns (target_died, mortally_wounded, early_result)."""
+    # #625: fractured-tier phantoms deal no real damage to the player they're haunting.
+    if current_participant.participant_type == CombatParticipantType.PHANTOM and current_participant.is_non_damaging:
+        damage = 0
     _, target_died, target_mortally_wounded = await service.apply_attack_damage(combat, target, damage)
     if target.participant_type != CombatParticipantType.PLAYER:
         return (target_died, target_mortally_wounded, None)
@@ -238,7 +241,15 @@ async def finalize_attack_result(
         )
     combat_ended = combat.is_combat_over()
     health_info = f" ({target.current_dp}/{target.max_dp} DP)"
-    attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"
+    if target.participant_type == CombatParticipantType.PHANTOM and target_died:
+        # FR-2.4: tag appears only on the dissipation line, after the name.
+        attack_message = f"{target.name} [Phantom] dissipates into nothingness."
+        if target.phantom_id:
+            from server.services.phantom_hostile_service import phantom_hostile_service
+
+            phantom_hostile_service.remove_phantom(current_participant.participant_id, target.phantom_id)
+    else:
+        attack_message = f"{current_participant.name} attacks {target.name} for {damage} damage{health_info}"
     result = CombatResult(
         success=True,
         damage=damage,

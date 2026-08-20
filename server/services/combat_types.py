@@ -24,3 +24,5 @@ class CombatParticipantData:
     # ADR-016 + behavior_config: per-NPC aggro; only set for NPCs
     npc_type: str | None = None
     aggression_level: int | None = None  # 0-10; None = full threat
+    is_non_damaging: bool = False  # #625: only set for PHANTOM participants
+    phantom_id: str | None = None  # #625: PhantomHostileService's own id, not the synthetic UUID above

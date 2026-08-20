@@ -43,6 +43,11 @@ class CombatParticipantType(Enum):
 
     PLAYER = "player"
     NPC = "npc"
+    # Ephemeral, single-player-visible hallucinated hostile (#625). Deliberately distinct from
+    # NPC so the many `participant_type == NPC` checks across combat (XP award, corpse creation,
+    # ADR-016 threat lists, room-wide NATS broadcasts, NPC respawn-failure logging) do NOT fire
+    # for phantoms -- they fall through those checks doing nothing, by construction.
+    PHANTOM = "phantom"
 
 
 @dataclass
@@ -60,6 +65,14 @@ class CombatParticipant:  # pylint: disable=too-many-instance-attributes  # Reas
     # ADR-016 + behavior_config: per-NPC aggro; only set for NPCs
     npc_type: str | None = None
     aggression_level: int | None = None  # 0-10; None = full threat
+    # #625: only set for PHANTOM participants. Fractured-tier phantoms deal no real damage to the
+    # player -- checked at the attack-resolution chokepoint (combat_service_attack.py), not here,
+    # since suppressing an attack requires knowing who the *attacker* is, not just this target.
+    is_non_damaging: bool = False
+    # #625: the phantom's real id (`f"phantom_{player_id}_{hex8}"`, not a UUID) for looking it back
+    # up in PhantomHostileService on death. participant_id is a synthetic UUID for combat bookkeeping
+    # only -- phantom_id is the one PhantomHostileService actually tracks.
+    phantom_id: str | None = None
 
     def is_alive(self) -> bool:
         """

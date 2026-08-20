@@ -16,10 +16,9 @@ async def handle_phantom_hostile_hallucination(
 ) -> None:
     """Handle phantom hostile spawn hallucination."""
     from ...services.lucidity_event_dispatcher import send_hallucination_event
-    from ...services.phantom_hostile_service import PhantomHostileService
+    from ...services.phantom_hostile_service import phantom_hostile_service
 
-    phantom_service = PhantomHostileService()
-    phantom_data = phantom_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
+    phantom_data = phantom_hostile_service.create_phantom_hostile_data(player_id_uuid, room_id, tier)
     await send_hallucination_event(
         player_id_uuid,
         hallucination_type="phantom_hostile_spawn",
@@ -102,7 +101,7 @@ async def handle_hallucination_triggers(
 ) -> None:
     """Check and handle time-based hallucination triggers."""
     from ...services.hallucination_frequency_service import HallucinationFrequencyService
-    from ...services.phantom_hostile_service import PhantomHostileService
+    from ...services.phantom_hostile_service import phantom_hostile_service
 
     frequency_service = HallucinationFrequencyService()
     lucidity_record = lucidity_records.get(player_id_str)
@@ -115,8 +114,7 @@ async def handle_hallucination_triggers(
     should_trigger = await frequency_service.check_time_based_hallucination(player_id_uuid, current_lcd, session)
     if not should_trigger:
         return
-    phantom_service = PhantomHostileService()
-    if phantom_service.should_spawn_phantom_hostile(tier):
+    if phantom_hostile_service.should_spawn_phantom_hostile(tier):
         await handle_phantom_hostile_hallucination(player_id_uuid, room_id, tier, current_lcd)
     else:
         await handle_fake_hallucination(player_id_uuid, room_id, tier, current_lcd)

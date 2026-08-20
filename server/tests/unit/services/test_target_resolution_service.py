@@ -425,3 +425,47 @@ def test_build_target_result_disambiguation_suffix_match(target_service):
     result = target_service._build_target_result(matches, "bob-2", "room_001", "-2")
     assert result.success is True
     assert result.matches[0].target_id == "p2"
+
+
+def test_search_phantoms_in_room_matches_own_active_phantom(target_service):
+    """#625: finds the calling player's own active phantom by partial, case-insensitive name."""
+    from unittest.mock import patch
+
+    from server.schemas.shared.target_resolution import TargetType
+
+    player_id = uuid.uuid4()
+    phantom_data = {"phantom_id": "phantom_x_1", "room_id": "room_001", "name": "Shambling Horror"}
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            return_value=["phantom_x_1"],
+        ),
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
+            return_value=phantom_data,
+        ),
+    ):
+        matches = target_service._search_phantoms_in_room(player_id, "room_001", "shambling")
+    assert len(matches) == 1
+    assert matches[0].target_type == TargetType.PHANTOM
+    assert matches[0].target_id == "phantom_x_1"
+
+
+def test_search_phantoms_in_room_ignores_other_room(target_service):
+    """#625: a phantom is not a valid target once the player has left its room."""
+    from unittest.mock import patch
+
+    player_id = uuid.uuid4()
+    phantom_data = {"phantom_id": "phantom_x_1", "room_id": "room_002", "name": "Shambling Horror"}
+    with (
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_active_phantoms",
+            return_value=["phantom_x_1"],
+        ),
+        patch(
+            "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data",
+            return_value=phantom_data,
+        ),
+    ):
+        matches = target_service._search_phantoms_in_room(player_id, "room_001", "shambling")
+    assert matches == []

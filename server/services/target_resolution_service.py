@@ -205,7 +205,9 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         npc_matches = await self._search_npcs_in_room(room_id, clean_target, disambiguation_suffix)
         logger.debug("NPC search completed", room_id=room_id, matches_count=len(npc_matches))
 
-        matches = player_matches + npc_matches
+        phantom_matches = self._search_phantoms_in_room(player_id_uuid, room_id, clean_target)
+
+        matches = player_matches + npc_matches + phantom_matches
         logger.debug(
             "Target resolution completed",
             player_id=player_id_uuid,
@@ -518,6 +520,37 @@ class TargetResolutionService:  # pylint: disable=too-few-public-methods  # Reas
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: NPC search errors unpredictable, must return empty list
             logger.error("Error searching NPCs in room", room_id=room_id, error=str(e))
             return []
+
+    def _search_phantoms_in_room(self, player_id: uuid.UUID, room_id: str, target_name: str) -> list[TargetMatch]:
+        """
+        Search the player's own active phantom hostiles in this room by name (#625).
+
+        Deliberately bypasses the NPC lifecycle-manager lookup chain entirely -- a phantom is
+        never a real NPC, and short-circuiting here keeps phantom handling isolated instead of
+        threading fake-NPC awareness through code that hard-assumes every id is a real NPC.
+        Only ever searches the *calling* player's own phantoms (FR-3.1): other players' phantoms
+        are never visible here regardless of room.
+        """
+        from ..services.phantom_hostile_service import phantom_hostile_service
+
+        normalized_target = self._normalize_name_for_matching(target_name)
+        matches: list[TargetMatch] = []
+        for phantom_id in phantom_hostile_service.get_active_phantoms(player_id):
+            data = phantom_hostile_service.get_phantom_data(phantom_id)
+            if not data or data["room_id"] != room_id:
+                continue
+            normalized_name = self._normalize_name_for_matching(data["name"])
+            if normalized_target in normalized_name:
+                matches.append(
+                    TargetMatch(
+                        target_id=phantom_id,
+                        target_name=data["name"],
+                        target_type=TargetType.PHANTOM,
+                        room_id=room_id,
+                        metadata=TargetMetadata(additional_info={"phantom_id": phantom_id}),
+                    )
+                )
+        return matches
 
     def _get_npc_instance(self, npc_id: str) -> NPCBase | None:
         """Get NPC instance from the spawning service."""

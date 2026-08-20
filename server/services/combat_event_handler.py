@@ -75,6 +75,14 @@ class CombatEventHandler:
         attacker_name = self._resolve_participant_display_name(current_participant)
         target_name = self._resolve_participant_display_name(target)
 
+        # #625: neither direction of a phantom fight is room-visible -- other players in the room
+        # cannot see the phantom, so no room-scoped NATS combat event may name it either way.
+        if (
+            current_participant.participant_type == CombatParticipantType.PHANTOM
+            or target.participant_type == CombatParticipantType.PHANTOM
+        ):
+            return
+
         # When the target is a player, always publish player_attacked so the victim sees "X attacks you"
         if target.participant_type == CombatParticipantType.PLAYER:
             attack_event = PlayerAttackedEvent(
@@ -90,7 +98,10 @@ class CombatEventHandler:
                 target_max_dp=target.max_dp,  # Event field name kept for backward compatibility
             )
             await combat_event_publisher.publish_player_attacked(attack_event)
-        elif current_participant.participant_type == CombatParticipantType.PLAYER:
+        elif (
+            current_participant.participant_type == CombatParticipantType.PLAYER
+            and target.participant_type == CombatParticipantType.NPC
+        ):
             # Player attacked NPC - publish npc_attacked for room
             npc_attack_event = NPCAttackedEvent(
                 combat_id=combat.combat_id,
@@ -143,6 +154,12 @@ class CombatEventHandler:
         """
         try:
             await self._publish_attack_events(current_participant, target, damage, combat)
+
+            # #625: phantoms award no XP, have no NPC-death event/respawn tracking, and are
+            # removed from the phantom registry (not the NPC lifecycle) on death -- handled by
+            # the caller (finalize_attack_result), not here.
+            if target.participant_type == CombatParticipantType.PHANTOM:
+                return None
 
             if target_died:
                 xp_awarded = await self._calculate_xp_reward(target_id)
