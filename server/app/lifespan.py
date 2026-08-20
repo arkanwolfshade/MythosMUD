@@ -27,6 +27,7 @@ from ..monitoring.exception_tracker import get_exception_tracker
 from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
 from ..monitoring.monitoring_dashboard import get_monitoring_dashboard
 from ..monitoring.performance_monitor import get_performance_monitor
+from ..realtime.dead_letter_queue import DeadLetterQueue
 from ..structured_logging.enhanced_logging_config import (
     get_logger,
     log_exception_once,
@@ -131,6 +132,28 @@ async def _log_memory_metrics_periodically(collector: MemoryLeakMetricsCollector
         logger.error("Error in periodic memory metrics logging", error=str(e), exc_info=True)
 
 
+async def _cleanup_dead_letter_queue_periodically(dlq: DeadLetterQueue, interval_seconds: int = 86400) -> None:
+    """
+    Periodically prune old dead-letter-queue files.
+
+    Args:
+        dlq: DeadLetterQueue instance to clean up
+        interval_seconds: Interval between cleanup runs (default 24 hours)
+    """
+    try:
+        while True:
+            await asyncio.sleep(interval_seconds)
+            removed_count = await asyncio.to_thread(dlq.cleanup_old_messages)
+            logger.info(
+                "Dead letter queue cleanup (periodic)", removed_count=removed_count, interval_seconds=interval_seconds
+            )
+    except asyncio.CancelledError:
+        logger.debug("Periodic dead letter queue cleanup cancelled")
+        raise
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Periodic cleanup errors unpredictable, must not crash lifespan
+        logger.error("Error in periodic dead letter queue cleanup", error=str(e), exc_info=True)
+
+
 async def _initialize_enhanced_systems() -> Any:
     """
     Initialize enhanced logging and monitoring systems.
@@ -221,6 +244,15 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
         "lifecycle",
     )
     logger.info("Periodic memory metrics logging started (5 minute interval)")
+
+    # Start periodic dead-letter-queue cleanup task (24 hour interval, #619)
+    if container.nats_message_handler is not None:
+        container.task_registry.register_task(
+            _cleanup_dead_letter_queue_periodically(container.nats_message_handler.dead_letter_queue),
+            "lifecycle/dlq_cleanup",
+            "lifecycle",
+        )
+        logger.info("Periodic dead letter queue cleanup started (24 hour interval)")
 
     logger.info("MythosMUD server started successfully with ApplicationContainer")
     return container

@@ -1,5 +1,6 @@
 """Unit tests for lifespan helper functions."""
 
+import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -7,6 +8,7 @@ import pytest
 from server.app.lifespan import (
     _calculate_metrics_delta,
     _cleanup_container_on_error,
+    _cleanup_dead_letter_queue_periodically,
     _persist_metrics_to_file,
     _persist_mythos_state_on_error,
 )
@@ -51,6 +53,42 @@ async def test_cleanup_container_on_error_none() -> None:
 
 
 @pytest.mark.asyncio
+async def test_cleanup_dead_letter_queue_periodically_runs_cleanup() -> None:
+    """Each wake-up should invoke cleanup_old_messages via to_thread; cancellation re-raises."""
+    mock_dlq = MagicMock()
+    mock_dlq.cleanup_old_messages.return_value = 3
+
+    call_count = 0
+
+    async def fake_sleep(_seconds: float) -> None:
+        nonlocal call_count
+        call_count += 1
+        if call_count > 1:
+            raise asyncio.CancelledError()
+
+    with patch("server.app.lifespan.asyncio.sleep", new=fake_sleep):
+        with pytest.raises(asyncio.CancelledError):
+            await _cleanup_dead_letter_queue_periodically(mock_dlq, interval_seconds=0)
+
+    mock_dlq.cleanup_old_messages.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_cleanup_dead_letter_queue_periodically_swallows_cleanup_errors() -> None:
+    """A failing cleanup run must be logged and not crash/raise out of the periodic task."""
+    mock_dlq = MagicMock()
+    mock_dlq.cleanup_old_messages.side_effect = RuntimeError("disk error")
+
+    async def fake_sleep(_seconds: float) -> None:
+        return None
+
+    with patch("server.app.lifespan.asyncio.sleep", new=fake_sleep):
+        await _cleanup_dead_letter_queue_periodically(mock_dlq, interval_seconds=0)
+
+    mock_dlq.cleanup_old_messages.assert_called_once()
+
+
+@pytest.mark.asyncio
 async def test_initialize_enhanced_systems() -> None:
     from server.app.lifespan import _initialize_enhanced_systems
 
@@ -75,6 +113,7 @@ async def test_startup_application_minimal() -> None:
     mock_container.event_bus = MagicMock()
     mock_container.task_registry = MagicMock()
     mock_container.mythos_tick_scheduler = None
+    mock_container.nats_message_handler = None
     mock_container.initialize = AsyncMock()
     mock_container.player_service = MagicMock()
 
@@ -89,6 +128,37 @@ async def test_startup_application_minimal() -> None:
     ):
         result = await _startup_application(mock_app)
     assert result is mock_container
+    # nats_message_handler is None (NATS disabled) -> no dlq_cleanup task registered
+    registered_task_names = [call.args[1] for call in mock_container.task_registry.register_task.call_args_list]
+    assert "lifecycle/dlq_cleanup" not in registered_task_names
+
+
+@pytest.mark.asyncio
+async def test_startup_application_registers_dlq_cleanup_when_nats_available() -> None:
+    from server.app.lifespan import _startup_application
+
+    mock_app = MagicMock()
+    mock_app.state = MagicMock()
+    mock_container = MagicMock()
+    mock_container.event_bus = MagicMock()
+    mock_container.task_registry = MagicMock()
+    mock_container.mythos_tick_scheduler = None
+    mock_container.nats_message_handler = MagicMock()
+    mock_container.initialize = AsyncMock()
+    mock_container.player_service = MagicMock()
+
+    with (
+        patch("server.app.lifespan.ApplicationContainer", return_value=mock_container),
+        patch("server.app.lifespan.set_auth_epoch"),
+        patch("server.app.lifespan.initialize_container_and_legacy_services", new=AsyncMock()),
+        patch("server.app.lifespan.setup_connection_manager", new=AsyncMock()),
+        patch("server.app.lifespan.initialize_npc_startup_spawning", new=AsyncMock()),
+        patch("server.app.lifespan.update_logging_with_player_service"),
+        patch("server.app.lifespan.game_tick_loop", return_value=AsyncMock()),
+    ):
+        await _startup_application(mock_app)
+    registered_task_names = [call.args[1] for call in mock_container.task_registry.register_task.call_args_list]
+    assert "lifecycle/dlq_cleanup" in registered_task_names
 
 
 @pytest.mark.asyncio
