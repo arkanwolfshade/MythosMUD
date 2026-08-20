@@ -21,7 +21,6 @@ CRITICAL_FILES = {
     "server/auth/users.py": 90,
     "server/middleware/security_headers.py": 90,
     "server/persistence/container_persistence.py": 90,
-    "server/container_persistence/container_persistence.py": 90,
     "server/database.py": 90,
     "server/async_persistence.py": 90,
     "server/services/admin_auth_service.py": 90,
