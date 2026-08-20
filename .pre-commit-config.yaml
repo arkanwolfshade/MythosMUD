@@ -78,6 +78,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: raw-sql-in-python-lint
+        name: Raw SQL in Python Guard
+        entry: python scripts/lint_raw_sql_in_python.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: fstring-logging-lint
         name: F-String Logging Anti-Pattern Detector
         entry: python scripts/check_logging_patterns.py
