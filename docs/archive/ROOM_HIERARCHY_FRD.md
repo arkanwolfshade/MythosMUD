@@ -1,5 +1,10 @@
 # Room Hierarchy Feature Requirements Document
 
+> **Archived — superseded.** The `environment` enum below (`indoors`, `outdoors`, `underwater`) is stale;
+> `arena`, `void`, `intersection`, and `street_paved` were added afterward. See
+> [`docs/ROOM_ENVIRONMENT_REFERENCE.md`](../ROOM_ENVIRONMENT_REFERENCE.md) for the current, authoritative
+> list. This document is kept for historical context on the plane/zone/sub-zone hierarchy design.
+
 ## Overview
 
 This document outlines the requirements for extending the MythosMUD room schema to support a hierarchical world structure with enhanced environmental and zone type classifications. The new system will provide better organization for complex world-building while maintaining backward compatibility.

@@ -90,6 +90,19 @@ describe('RoomEditModal', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
+  it('should offer arena and void environment options (#623)', () => {
+    render(<RoomEditModal {...defaultProps} />);
+    const propertiesTab = screen.getByText(/properties/i);
+    fireEvent.click(propertiesTab);
+
+    const environmentSelect = screen.getByLabelText(/environment/i) as HTMLSelectElement;
+    const values = Array.from(environmentSelect.options).map(option => option.value);
+
+    expect(values).toEqual(
+      expect.arrayContaining(['indoors', 'outdoors', 'underwater', 'intersection', 'street_paved', 'arena', 'void'])
+    );
+  });
+
   it('should reset form when room changes', () => {
     const { rerender } = render(<RoomEditModal {...defaultProps} />);
 
