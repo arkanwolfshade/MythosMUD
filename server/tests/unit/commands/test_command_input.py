@@ -4,7 +4,7 @@ Unit tests for command input processing.
 Tests command normalization, cleaning, and emote detection.
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 from server.command_handler.command_input import (
     _is_predefined_emote,
@@ -12,6 +12,13 @@ from server.command_handler.command_input import (
     normalize_command,
     should_treat_as_emote,
 )
+
+
+def _mock_request(emote_service):
+    """Build a mock request whose app.state.emote_service is the given value."""
+    request = MagicMock()
+    request.app.state.emote_service = emote_service
+    return request
 
 
 class TestCommandNormalization:
@@ -71,31 +78,42 @@ class TestCommandNormalization:
 class TestEmoteDetection:
     """Test emote detection functions."""
 
-    @patch("server.command_handler.command_input.EmoteService")
-    def test_is_predefined_emote_true(self, mock_emote_service_class):
+    def test_is_predefined_emote_true(self):
         """Test _is_predefined_emote() returns True for predefined emote."""
         mock_service = MagicMock()
-        mock_service.is_emote_alias = Mock(return_value=True)
-        mock_emote_service_class.return_value = mock_service
+        mock_service.is_emote_alias.return_value = True
+        request = _mock_request(mock_service)
 
-        result = _is_predefined_emote("smile")
+        result = _is_predefined_emote("smile", request)
         assert result is True
 
-    @patch("server.command_handler.command_input.EmoteService")
-    def test_is_predefined_emote_false(self, mock_emote_service_class):
+    def test_is_predefined_emote_false(self):
         """Test _is_predefined_emote() returns False for non-emote."""
         mock_service = MagicMock()
-        mock_service.is_emote_alias = Mock(return_value=False)
-        mock_emote_service_class.return_value = mock_service
+        mock_service.is_emote_alias.return_value = False
+        request = _mock_request(mock_service)
 
-        result = _is_predefined_emote("look")
+        result = _is_predefined_emote("look", request)
         assert result is False
 
-    @patch("server.command_handler.command_input.EmoteService")
-    def test_is_predefined_emote_handles_error(self, mock_emote_service_class):
-        """Test _is_predefined_emote() handles errors gracefully."""
-        mock_emote_service_class.side_effect = ImportError("Module not found")
+    def test_is_predefined_emote_no_request(self):
+        """Test _is_predefined_emote() returns False when no request is available."""
         result = _is_predefined_emote("test")
+        assert result is False
+
+    def test_is_predefined_emote_no_emote_service(self):
+        """Test _is_predefined_emote() returns False when app.state has no emote_service."""
+        request = _mock_request(None)
+        result = _is_predefined_emote("test", request)
+        assert result is False
+
+    def test_is_predefined_emote_handles_error(self):
+        """Test _is_predefined_emote() handles errors from the emote service gracefully."""
+        mock_service = MagicMock()
+        mock_service.is_emote_alias.side_effect = RuntimeError("boom")
+        request = _mock_request(mock_service)
+
+        result = _is_predefined_emote("test", request)
         assert result is False
 
     def test_should_treat_as_emote_system_command(self):

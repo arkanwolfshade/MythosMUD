@@ -9,9 +9,9 @@ before they are parsed and executed.
 import re
 
 from ..config import get_config
-from ..game.emote_service import EmoteService
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..validators.command_validator import CommandValidator
+from .command_execution_request import CommandExecutionRequest, command_request_app_state
 
 logger = get_logger(__name__)
 
@@ -139,26 +139,31 @@ def normalize_command(command: str) -> str:
     return command
 
 
-def _is_predefined_emote(command: str) -> bool:
+def _is_predefined_emote(command: str, request: CommandExecutionRequest | None = None) -> bool:
     """
     Check if a command is a predefined emote alias.
 
     Args:
         command: The command to check
+        request: Current request, used to reach the container-loaded EmoteService via
+                 app.state. Falls back to False (not an emote) when unavailable, matching
+                 the previous behavior for tests/environments without a wired service.
 
     Returns:
         True if the command is a predefined emote, False otherwise
     """
     try:
-        emote_service = EmoteService()
-        return emote_service.is_emote_alias(command)
-    except (ImportError, AttributeError, TypeError, RuntimeError, Exception) as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Service initialization errors unpredictable, must handle gracefully
-        # Catch all exceptions to handle test errors and service failures gracefully
+        state = command_request_app_state(request) if request is not None else None
+        emote_service = getattr(state, "emote_service", None)
+        if emote_service is None:
+            return False
+        return bool(emote_service.is_emote_alias(command))
+    except (AttributeError, TypeError, RuntimeError) as e:
         logger.warning("Error checking predefined emote", error=str(e))
         return False
 
 
-def should_treat_as_emote(command: str) -> bool:
+def should_treat_as_emote(command: str, request: CommandExecutionRequest | None = None) -> bool:
     """
     Check if a single word command should be treated as an emote.
 
@@ -167,6 +172,8 @@ def should_treat_as_emote(command: str) -> bool:
 
     Args:
         command: The command to check
+        request: Current request, passed through to _is_predefined_emote to reach the
+                 container-loaded EmoteService.
 
     Returns:
         True if the command should be treated as an emote, False otherwise
@@ -176,7 +183,7 @@ def should_treat_as_emote(command: str) -> bool:
         return False
 
     # If it's a predefined emote, treat as emote
-    if _is_predefined_emote(command):
+    if _is_predefined_emote(command, request):
         return True
 
     # Only treat as emote if it's a predefined emote

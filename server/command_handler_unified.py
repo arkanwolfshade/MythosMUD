@@ -146,7 +146,7 @@ async def _handle_special_command_routing(  # pylint: disable=too-many-arguments
     if alias_result:
         return alias_result
 
-    if not args and should_treat_as_emote(cmd):
+    if not args and should_treat_as_emote(cmd, request):
         logger.debug(
             "Single word emote detected, converting to emote command",
             player=player_name,

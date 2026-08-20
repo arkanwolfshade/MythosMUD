@@ -1,8 +1,8 @@
-"""Unit tests for EmoteService lookup and formatting."""
+"""Unit tests for EmoteService lookup, formatting, and async loading (#624)."""
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -24,11 +24,50 @@ def _service_with_emotes() -> EmoteService:
     return svc
 
 
-def test_emote_service_init_loads_via_mock() -> None:
-    with patch.object(EmoteService, "_load_emotes") as load_mock:
-        svc = EmoteService()
-    load_mock.assert_called_once()
+def test_emote_service_init_does_not_load() -> None:
+    """Construction is synchronous and does no I/O -- the sync/async boundary #624 fixes.
+    load_emotes() must be awaited separately (see server/container/bundles/game.py)."""
+    mock_repo = MagicMock()
+    mock_repo.get_emotes = AsyncMock()
+    mock_repo.get_emote_aliases = AsyncMock()
+    svc = EmoteService(mock_repo)
     assert svc.emotes == {}
+    assert svc.alias_to_emote == {}
+    mock_repo.get_emotes.assert_not_called()
+    mock_repo.get_emote_aliases.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_load_emotes_populates_from_repository() -> None:
+    mock_repo = MagicMock()
+    mock_repo.get_emotes = AsyncMock(
+        return_value=[
+            {"stable_id": "twibble", "self_message": "You twibble.", "other_message": "{player_name} twibbles."}
+        ]
+    )
+    mock_repo.get_emote_aliases = AsyncMock(return_value=[{"stable_id": "twibble", "alias": "tw"}])
+    svc = EmoteService(mock_repo)
+
+    await svc.load_emotes()
+
+    assert svc.emotes["twibble"]["self_message"] == "You twibble."
+    assert svc.emotes["twibble"]["aliases"] == ["tw"]
+    assert svc.alias_to_emote == {"twibble": "twibble", "tw": "twibble"}
+
+
+@pytest.mark.asyncio
+async def test_load_emotes_handles_missing_table_gracefully() -> None:
+    """A missing emotes table (e.g. in test/dev environments) logs a warning and leaves emotes
+    empty rather than raising -- custom emotes must keep working without the DB table."""
+    mock_repo = MagicMock()
+    mock_repo.get_emotes = AsyncMock(side_effect=RuntimeError('relation "emotes" does not exist'))
+    mock_repo.get_emote_aliases = AsyncMock()
+    svc = EmoteService(mock_repo)
+
+    await svc.load_emotes()
+
+    assert svc.emotes == {}
+    assert svc.alias_to_emote == {}
 
 
 def test_is_emote_alias_and_get_definition() -> None:
@@ -60,11 +99,12 @@ def test_list_available_emotes() -> None:
     assert "tw" in listing["twibble"]
 
 
-def test_reload_emotes_calls_load() -> None:
+@pytest.mark.asyncio
+async def test_reload_emotes_calls_load() -> None:
     svc = _service_with_emotes()
-    with patch.object(svc, "_load_emotes") as load_mock:
-        svc.reload_emotes()
-    load_mock.assert_called_once()
+    with patch.object(svc, "load_emotes", new_callable=AsyncMock) as load_mock:
+        await svc.reload_emotes()
+    load_mock.assert_awaited_once()
 
 
 def test_validate_emote_payload_no_validator() -> None:

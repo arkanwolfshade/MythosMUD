@@ -93,6 +93,18 @@ class WhisperTracker(Protocol):  # pylint: disable=too-few-public-methods  # Rea
         """Remember who last whispered to target_name."""
 
 
+class ChatEmoteService(Protocol):
+    """Predefined-emote lookup used by chat message senders (#624)."""
+
+    def is_emote_alias(self, command: str) -> bool:
+        """Return True if command is a predefined emote alias."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires a body on Protocol stubs
+
+    def format_emote_messages(self, command: str, player_name: str) -> tuple[str, str]:
+        """Return (self_message, other_message) for a predefined emote command."""
+        ...  # pylint: disable=unnecessary-ellipsis  # Reason: basedpyright requires a body on Protocol stubs
+
+
 class ChatSendServices(TypedDict):
     """Shared chat delivery services for channel senders."""
 

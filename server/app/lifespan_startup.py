@@ -84,6 +84,7 @@ def _legacy_service_bindings(container: ApplicationContainer) -> list[tuple[str,
         ("magic_service", container.magic_service, "Magic service"),
         ("spell_registry", container.spell_registry, "Spell registry"),
         ("spell_learning_service", container.spell_learning_service, "Spell learning service"),
+        ("emote_service", container.emote_service, "Emote service"),
     ]
 
 
@@ -520,6 +521,7 @@ async def initialize_chat_service(app: FastAPI, container: ApplicationContainer)
         nats_service=nats_service,
         user_manager_instance=container.user_manager,
         subject_manager=subject_manager,
+        emote_service=getattr(container, "emote_service", None),
     )
 
     nats_service_obj = app.state.chat_service.nats_service
