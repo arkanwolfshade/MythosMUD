@@ -19,6 +19,7 @@ from server.structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from server.events.combat_events import NPCDiedEvent
+    from server.events.event_types import PlayerDiedEvent, PlayerMortallyWoundedEvent
 
 
 class _ConnectionManagerLike(Protocol):
@@ -47,6 +48,14 @@ class _CombatServiceDeps(Protocol):
 
     async def publish_npc_died_event_to_nats(self, event: "NPCDiedEvent") -> bool:
         """Publish NPCDiedEvent to NATS."""
+        raise NotImplementedError
+
+    async def publish_player_died_event_to_nats(self, event: "PlayerDiedEvent") -> bool:
+        """Publish PlayerDiedEvent to NATS (#634)."""
+        raise NotImplementedError
+
+    async def publish_player_mortally_wounded_event_to_nats(self, event: "PlayerMortallyWoundedEvent") -> bool:
+        """Publish PlayerMortallyWoundedEvent to NATS (#634)."""
         raise NotImplementedError
 
 
@@ -81,6 +90,7 @@ class CombatDeathHandler:
     async def _handle_player_death_events(self, target: CombatParticipant, combat: CombatInstance) -> None:
         """Handle player death events including mortally wounded, death, and corpse creation."""
         try:
+            from ..events.event_types import PlayerDiedEvent
             from ..services.combat_messaging_integration import combat_messaging_integration
 
             # CRITICAL: Always send current_dp=-10 for death events, never use target.current_dp
@@ -92,6 +102,16 @@ class CombatDeathHandler:
                 room_id=combat.room_id,
                 death_location=combat.room_id,
                 current_dp=-10,  # Always -10 for death events (client gates modal on current_dp <= -10)
+            )
+            # NATS-consumable in addition to the direct room broadcast above (#634)
+            _ = await self._combat_service.publish_player_died_event_to_nats(
+                PlayerDiedEvent(
+                    player_id=target.participant_id,
+                    player_name=target.name,
+                    room_id=combat.room_id,
+                    combat_id=str(combat.combat_id),
+                    death_location=combat.room_id,
+                )
             )
             logger.info("Player death event published", player_id=target.participant_id, player_name=target.name)
 
@@ -281,6 +301,7 @@ class CombatDeathHandler:
         """
         if target_mortally_wounded and target.participant_type == CombatParticipantType.PLAYER:
             try:
+                from ..events.event_types import PlayerMortallyWoundedEvent
                 from ..services.combat_messaging_integration import combat_messaging_integration
 
                 attacker_name = current_participant.name if current_participant else None
@@ -289,6 +310,17 @@ class CombatDeathHandler:
                     player_name=target.name,
                     attacker_name=attacker_name,
                     room_id=combat.room_id,
+                )
+                # NATS-consumable in addition to the direct room broadcast above (#634)
+                _ = await self._combat_service.publish_player_mortally_wounded_event_to_nats(
+                    PlayerMortallyWoundedEvent(
+                        player_id=str(target.participant_id),
+                        player_name=target.name,
+                        room_id=combat.room_id,
+                        attacker_id=str(current_participant.participant_id) if current_participant else None,
+                        attacker_name=attacker_name,
+                        combat_id=str(combat.combat_id),
+                    )
                 )
                 logger.info(
                     "Player mortally wounded event published",

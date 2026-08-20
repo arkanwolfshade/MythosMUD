@@ -10,8 +10,9 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from server.config import get_config
-from server.events.combat_events import CombatStartedEvent, NPCDiedEvent, NPCTookDamageEvent
+from server.events.combat_events import CombatStartedEvent, CombatTargetSwitchEvent, NPCDiedEvent, NPCTookDamageEvent
 from server.events.event_bus import EventBus
+from server.events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerMortallyWoundedEvent
 from server.models.combat import (
     CombatInstance,
     CombatParticipant,
@@ -533,6 +534,22 @@ class CombatService:  # pylint: disable=too-many-instance-attributes  # Reason: 
     async def publish_npc_died_event_to_nats(self, event: NPCDiedEvent) -> bool:
         """Publish NPC died event to NATS."""
         return await self._combat_event_publisher.publish_npc_died(event)
+
+    async def publish_player_died_event_to_nats(self, event: PlayerDiedEvent) -> bool:
+        """Publish player died event to NATS (#634)."""
+        return await self._combat_event_publisher.publish_player_died(event)
+
+    async def publish_player_mortally_wounded_event_to_nats(self, event: PlayerMortallyWoundedEvent) -> bool:
+        """Publish player mortally wounded event to NATS (#634)."""
+        return await self._combat_event_publisher.publish_player_mortally_wounded(event)
+
+    async def publish_combat_target_switch_event_to_nats(self, event: CombatTargetSwitchEvent) -> bool:
+        """Publish combat target switch event to NATS (#634)."""
+        return await self._combat_event_publisher.publish_combat_target_switch(event)
+
+    async def publish_player_dp_decay_event_to_nats(self, event: PlayerDPDecayEvent) -> bool:
+        """Publish player DP decay tick event to NATS (#634)."""
+        return await self._combat_event_publisher.publish_player_dp_decay(event)
 
     def cleanup_combat_tracking(self, combat: CombatInstance) -> None:
         """Remove combat from tracking dictionaries."""

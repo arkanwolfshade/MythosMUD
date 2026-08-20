@@ -35,16 +35,23 @@ Maintain **two event systems** with clear separation of responsibility:
 
 1. **EventBus** (`server/events/event_bus.py`) - In-memory pub/sub for domain events
    - Pure asyncio implementation
-   - Events: PlayerEnteredRoom, CombatStartedEvent, PlayerDiedEvent, etc.
+   - Events: PlayerEnteredRoom, PlayerDiedEvent, etc. (**not** combat's own event classes — see below)
    - Subscribers: RealTimeEventHandler, logging, internal handlers
    - Single process only; no network
 
 2. **NATS** (`server/services/nats_service.py`) - Distributed pub/sub for real-time messaging
-   - Subject-based routing: `chat.say.{room_id}`, `combat.{room_id}`, `events.player_entered.{room_id}`
+   - Subject-based routing: `chat.say.{room_id}`, `combat.attack.{room_id}` (and 9 sibling `combat.*` subjects, see EVENT_OWNERSHIP_MATRIX.md), `events.player_entered.{room_id}`
    - Used for: chat, combat broadcasts, cross-instance coordination
    - Supports horizontal scaling and multiple subscribers
 
-Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally) NATS → WebSocket. Chat flows: ChatService → NATS → NATSMessageHandler → WebSocket.
+Domain events flow: Domain → EventBus → RealTimeEventHandler → (optionally) NATS → WebSocket. Chat
+flows: ChatService → NATS → NATSMessageHandler → WebSocket. **Combat is a third, separate flow
+(corrected 2026-08, #634):** `CombatService`/`CombatEventHandler`/`CombatDeathHandler` call
+`CombatEventPublisher` directly and imperatively — never via EventBus — which publishes straight to
+NATS; in parallel, `combat_messaging` calls `ConnectionManager` directly for the room. Combat's own
+event classes (`CombatStartedEvent`, `PlayerAttackedEvent`, etc.) are `BaseEvent` subclasses but are
+never actually put on the EventBus queue. See EVENT_OWNERSHIP_MATRIX.md §4 for the full correction
+and rationale for keeping this as two paths rather than merging through EventBus.
 
 ## 4. Alternatives Considered
 

@@ -6,7 +6,6 @@ event system to handle combat actions and state changes.
 """
 
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Any
 from uuid import UUID
 
@@ -92,21 +91,10 @@ class NPCDiedEvent(BaseEvent):
 
 
 @dataclass
-class CombatTurnAdvancedEvent(BaseEvent):
-    """Event fired when combat turn advances."""
+class CombatTargetSwitchEvent(BaseEvent):
+    """Event fired when an NPC switches aggro target (ADR-016, #634)."""
 
     combat_id: UUID
     room_id: str
-    current_turn: int
-    combat_round: int
-    next_participant: str
-
-
-@dataclass
-class CombatTimeoutEvent(BaseEvent):
-    """Event fired when combat times out."""
-
-    combat_id: UUID
-    room_id: str
-    timeout_minutes: int
-    last_activity: datetime
+    npc_name: str
+    new_target_name: str

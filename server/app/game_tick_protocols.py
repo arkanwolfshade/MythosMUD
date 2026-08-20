@@ -15,6 +15,7 @@ from ..structured_logging.enhanced_logging_config import get_logger
 
 if TYPE_CHECKING:
     from ..async_persistence import AsyncPersistenceLayer
+    from ..events.event_types import PlayerDPDecayEvent
     from ..models.combat import CombatInstance
     from ..models.player import Player
     from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
@@ -46,6 +47,8 @@ class _TickCombatService(Protocol):
     async def process_game_tick(self, current_tick: int) -> None: ...
 
     async def get_combat_by_participant(self, participant_id: uuid.UUID) -> CombatInstance | None: ...
+
+    async def publish_player_dp_decay_event_to_nats(self, event: PlayerDPDecayEvent) -> bool: ...
 
 
 class _TickMagicService(Protocol):

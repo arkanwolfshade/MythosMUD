@@ -294,34 +294,65 @@ async def test_publish_npc_died_success(combat_event_publisher, mock_nats_servic
 
 
 @pytest.mark.asyncio
-async def test_publish_combat_turn_advanced_success(combat_event_publisher, mock_nats_service):
-    """Test publish_combat_turn_advanced() successfully publishes."""
-    from server.events.combat_events import CombatTurnAdvancedEvent
+async def test_publish_player_died_success(combat_event_publisher, mock_nats_service):
+    """Test publish_player_died() successfully publishes (#634)."""
+    from server.events.event_types import PlayerDiedEvent
 
-    combat_id = uuid.uuid4()
-    event = CombatTurnAdvancedEvent(
-        combat_id=combat_id, room_id="room_001", current_turn=1, combat_round=1, next_participant="player_001"
+    event = PlayerDiedEvent(
+        player_id=uuid.uuid4(),
+        player_name="Armitage",
+        room_id="room_001",
+        combat_id="combat_001",
+        killer_id="npc_001",
+        killer_name="Ghoul",
     )
-    result = await combat_event_publisher.publish_combat_turn_advanced(event)
+    result = await combat_event_publisher.publish_player_died(event)
     assert result is True
     mock_nats_service.publish.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_publish_combat_timeout_success(combat_event_publisher, mock_nats_service):
-    """Test publish_combat_timeout() successfully publishes."""
-    from server.events.combat_events import CombatTimeoutEvent
+async def test_publish_player_mortally_wounded_success(combat_event_publisher, mock_nats_service):
+    """Test publish_player_mortally_wounded() successfully publishes (#634)."""
+    from server.events.event_types import PlayerMortallyWoundedEvent
 
-    combat_id = uuid.uuid4()
-    event = CombatTimeoutEvent(
-        combat_id=combat_id,
+    event = PlayerMortallyWoundedEvent(
+        player_id="player_001",
+        player_name="Armitage",
         room_id="room_001",
-        timeout_minutes=5,
-        last_activity=None,  # type: ignore[arg-type]
+        attacker_id="npc_001",
+        attacker_name="Ghoul",
+        combat_id="combat_001",
     )
-    result = await combat_event_publisher.publish_combat_timeout(event)
+    result = await combat_event_publisher.publish_player_mortally_wounded(event)
     assert result is True
     mock_nats_service.publish.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_publish_combat_target_switch_success(combat_event_publisher, mock_nats_service):
+    """Test publish_combat_target_switch() successfully publishes (#634)."""
+    from server.events.combat_events import CombatTargetSwitchEvent
+
+    event = CombatTargetSwitchEvent(
+        combat_id=uuid.uuid4(), room_id="room_001", npc_name="Ghoul", new_target_name="Armitage"
+    )
+    result = await combat_event_publisher.publish_combat_target_switch(event)
+    assert result is True
+    mock_nats_service.publish.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_publish_player_dp_decay_success(combat_event_publisher, mock_nats_service):
+    """Test publish_player_dp_decay() successfully publishes to a player-scoped subject (#634)."""
+    from server.events.event_types import PlayerDPDecayEvent
+
+    event = PlayerDPDecayEvent(player_id=uuid.uuid4(), old_dp=-1, new_dp=-2, room_id="room_001")
+    result = await combat_event_publisher.publish_player_dp_decay(event)
+    assert result is True
+    mock_nats_service.publish.assert_awaited_once()
+    mock_subject_manager_call = combat_event_publisher.subject_manager.build_subject
+    mock_subject_manager_call.assert_any_call("combat_dp_decay", player_id=str(event.player_id))
 
 
 @pytest.mark.asyncio
@@ -427,27 +458,30 @@ def _npc_died_event():
     )
 
 
-def _turn_advanced_event():
-    from server.events.combat_events import CombatTurnAdvancedEvent
+def _player_died_event():
+    from server.events.event_types import PlayerDiedEvent
 
-    return CombatTurnAdvancedEvent(
-        combat_id=uuid.uuid4(),
-        room_id="room_001",
-        current_turn=2,
-        combat_round=1,
-        next_participant="player_001",
+    return PlayerDiedEvent(player_id=uuid.uuid4(), player_name="Armitage", room_id="room_001")
+
+
+def _player_mortally_wounded_event():
+    from server.events.event_types import PlayerMortallyWoundedEvent
+
+    return PlayerMortallyWoundedEvent(player_id="player_001", player_name="Armitage", room_id="room_001")
+
+
+def _target_switch_event():
+    from server.events.combat_events import CombatTargetSwitchEvent
+
+    return CombatTargetSwitchEvent(
+        combat_id=uuid.uuid4(), room_id="room_001", npc_name="Ghoul", new_target_name="Armitage"
     )
 
 
-def _timeout_event():
-    from server.events.combat_events import CombatTimeoutEvent
+def _dp_decay_event():
+    from server.events.event_types import PlayerDPDecayEvent
 
-    return CombatTimeoutEvent(
-        combat_id=uuid.uuid4(),
-        room_id="room_001",
-        timeout_minutes=5,
-        last_activity=None,  # type: ignore[arg-type]
-    )
+    return PlayerDPDecayEvent(player_id=uuid.uuid4(), old_dp=-1, new_dp=-2, room_id="room_001")
 
 
 def _ended_event():
@@ -470,8 +504,10 @@ async def test_publish_paths_not_connected(combat_event_publisher, mock_nats_ser
     assert await combat_event_publisher.publish_npc_attacked(_npc_attacked_event()) is False
     assert await combat_event_publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
     assert await combat_event_publisher.publish_npc_died(_npc_died_event()) is False
-    assert await combat_event_publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
-    assert await combat_event_publisher.publish_combat_timeout(_timeout_event()) is False
+    assert await combat_event_publisher.publish_player_died(_player_died_event()) is False
+    assert await combat_event_publisher.publish_player_mortally_wounded(_player_mortally_wounded_event()) is False
+    assert await combat_event_publisher.publish_combat_target_switch(_target_switch_event()) is False
+    assert await combat_event_publisher.publish_player_dp_decay(_dp_decay_event()) is False
 
 
 @pytest.mark.asyncio
@@ -481,8 +517,10 @@ async def test_publish_paths_no_nats_service():
     assert await publisher.publish_npc_attacked(_npc_attacked_event()) is False
     assert await publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
     assert await publisher.publish_npc_died(_npc_died_event()) is False
-    assert await publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
-    assert await publisher.publish_combat_timeout(_timeout_event()) is False
+    assert await publisher.publish_player_died(_player_died_event()) is False
+    assert await publisher.publish_player_mortally_wounded(_player_mortally_wounded_event()) is False
+    assert await publisher.publish_combat_target_switch(_target_switch_event()) is False
+    assert await publisher.publish_player_dp_decay(_dp_decay_event()) is False
 
 
 @pytest.mark.asyncio
@@ -496,8 +534,10 @@ async def test_publish_paths_nats_publish_error(combat_event_publisher, mock_nat
     assert await combat_event_publisher.publish_npc_attacked(_npc_attacked_event()) is False
     assert await combat_event_publisher.publish_npc_took_damage(_npc_took_damage_event()) is False
     assert await combat_event_publisher.publish_npc_died(_npc_died_event()) is False
-    assert await combat_event_publisher.publish_combat_turn_advanced(_turn_advanced_event()) is False
-    assert await combat_event_publisher.publish_combat_timeout(_timeout_event()) is False
+    assert await combat_event_publisher.publish_player_died(_player_died_event()) is False
+    assert await combat_event_publisher.publish_player_mortally_wounded(_player_mortally_wounded_event()) is False
+    assert await combat_event_publisher.publish_combat_target_switch(_target_switch_event()) is False
+    assert await combat_event_publisher.publish_player_dp_decay(_dp_decay_event()) is False
 
 
 @pytest.mark.asyncio
