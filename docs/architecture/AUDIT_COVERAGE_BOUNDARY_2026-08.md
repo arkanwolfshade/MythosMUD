@@ -55,6 +55,14 @@ index is not evidence — see the close rule in §5.
 **Consequence.** Per the locked ranking (`issue_ranking_618-639_466453ee.plan.md:41`): *"#625–#628
 stay provisional until the verification pass; a false finding reshuffles only those four."*
 
+**Completed 2026-08-20.** All four **CONFIRMED TRUE**, static analysis, no false findings — the
+ranked plan's slots are unchanged. Verdicts, itemized sub-claims, and code citations posted as
+comments on each issue: [#625](https://github.com/arkanwolfshade/MythosMUD/issues/625#issuecomment-5349648181)
+· [#626](https://github.com/arkanwolfshade/MythosMUD/issues/626#issuecomment-5349651575)
+· [#627](https://github.com/arkanwolfshade/MythosMUD/issues/627#issuecomment-5349655333)
+· [#628](https://github.com/arkanwolfshade/MythosMUD/issues/628#issuecomment-5349664533). One
+citation correction surfaced in #628 (wrong plan-doc filename); substance unaffected.
+
 ## 3. Enumeration method
 
 **[SPEC]**
