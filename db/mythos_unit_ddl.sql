@@ -1356,7 +1356,8 @@ CREATE TABLE mythos_unit.rooms (
     map_y numeric(10,2),
     map_origin_zone boolean DEFAULT false NOT NULL,
     map_symbol text,
-    map_style text
+    map_style text,
+    CONSTRAINT chk_rooms_environment CHECK ((((attributes ->> 'environment'::text) IS NULL) OR ((attributes ->> 'environment'::text) = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'intersection'::text, 'street_paved'::text, 'arena'::text, 'void'::text]))))
 );
 
 
@@ -1535,7 +1536,7 @@ CREATE TABLE mythos_unit.subzones (
     environment text,
     description text,
     special_rules jsonb DEFAULT '{}'::jsonb,
-    CONSTRAINT chk_subzones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text]))))
+    CONSTRAINT chk_subzones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'intersection'::text, 'street_paved'::text, 'arena'::text, 'void'::text]))))
 );
 
 
@@ -1611,7 +1612,7 @@ CREATE TABLE mythos_unit.zones (
     description text,
     weather_patterns jsonb DEFAULT '[]'::jsonb,
     special_rules jsonb DEFAULT '{}'::jsonb,
-    CONSTRAINT chk_zones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'void'::text])))),
+    CONSTRAINT chk_zones_environment CHECK (((environment IS NULL) OR (environment = ANY(ARRAY['indoors'::text, 'outdoors'::text, 'underwater'::text, 'intersection'::text, 'street_paved'::text, 'arena'::text, 'void'::text])))),
     CONSTRAINT chk_zones_zone_type CHECK (((zone_type IS NULL) OR (zone_type = ANY(ARRAY['city'::text, 'countryside'::text, 'mountains'::text, 'swamp'::text, 'tundra'::text, 'desert'::text, 'death'::text, 'arena'::text]))))
 );
 

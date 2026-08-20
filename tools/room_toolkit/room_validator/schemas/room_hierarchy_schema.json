@@ -37,7 +37,7 @@
     },
     "environment": {
       "type": "string",
-      "enum": ["indoors", "outdoors", "underwater"],
+      "enum": ["indoors", "outdoors", "underwater", "intersection", "street_paved", "arena", "void"],
       "description": "Environmental classification for this room (overrides inherited values)"
     },
     "exits": {

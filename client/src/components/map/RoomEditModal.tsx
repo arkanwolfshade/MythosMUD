@@ -22,6 +22,8 @@ const ENVIRONMENT_OPTIONS: EnvironmentOption[] = [
   { value: 'underwater', label: 'Underwater', description: 'Submerged aquatic environment' },
   { value: 'intersection', label: 'Intersection', description: 'Street or path intersection' },
   { value: 'street_paved', label: 'Street (Paved)', description: 'Paved road or street' },
+  { value: 'arena', label: 'Arena', description: 'Combat arena cell' },
+  { value: 'void', label: 'Void', description: 'Liminal space between life and death' },
 ];
 
 const RoomEditModalHeader = (props: { roomId: string; onClose: () => void }): React.ReactElement => (

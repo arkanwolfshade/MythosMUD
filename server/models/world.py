@@ -12,6 +12,22 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 
+# Canonical environment values, shared by zones, subzones, and rooms so the inheritance
+# chain in world_loader.get_room_environment() is valid at every level. See
+# docs/ROOM_ENVIRONMENT_REFERENCE.md for what each value means and how to add a new one.
+ROOM_ENVIRONMENTS: tuple[str, ...] = (
+    "indoors",
+    "outdoors",
+    "underwater",
+    "intersection",
+    "street_paved",
+    "arena",
+    "void",
+)
+
+_ENVIRONMENT_SQL_LIST = ", ".join(f"'{value}'" for value in ROOM_ENVIRONMENTS)
+_ENVIRONMENT_CHECK_SQL = f"(environment IS NULL) OR (environment IN ({_ENVIRONMENT_SQL_LIST}))"
+
 
 class Zone(Base):
     """Represent a major area or plane of existence."""
@@ -19,7 +35,7 @@ class Zone(Base):
     __tablename__ = "zones"
     __table_args__ = (
         CheckConstraint(
-            "(environment IS NULL) OR (environment IN ('indoors', 'outdoors', 'underwater', 'void'))",
+            _ENVIRONMENT_CHECK_SQL,
             name="chk_zones_environment",
         ),
         CheckConstraint(
@@ -46,7 +62,7 @@ class Subzone(Base):
     __tablename__ = "subzones"
     __table_args__ = (
         CheckConstraint(
-            "(environment IS NULL) OR (environment IN ('indoors', 'outdoors', 'underwater', 'void'))",
+            _ENVIRONMENT_CHECK_SQL,
             name="chk_subzones_environment",
         ),
     )

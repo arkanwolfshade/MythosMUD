@@ -284,7 +284,7 @@ class TestHierarchicalSchema(unittest.TestCase):
 
     def test_valid_environment_values(self) -> None:
         """Test that valid environment values pass validation."""
-        valid_environments = ["indoors", "outdoors", "underwater"]
+        valid_environments = ["indoors", "outdoors", "underwater", "intersection", "street_paved", "arena", "void"]
 
         for env in valid_environments:
             room_data = {
