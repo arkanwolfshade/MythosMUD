@@ -4,11 +4,15 @@ Attack command flow: validation and execution.
 Extracted from combat.py to reduce file nloc (Lizard limit 500).
 """
 
+import uuid
 from typing import Any, cast
 
+from server.app.game_tick_counter import get_current_tick
 from server.config import get_config
 from server.game.weapons import resolve_weapon_attack_from_equipped
+from server.models.combat import CombatParticipantType
 from server.npc.combat_integration import NPCCombatIntegration
+from server.schemas.shared import TargetType
 from server.structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -172,6 +176,68 @@ async def _execute_combat_action(
         return {"result": f"Error executing {command} command"}
 
 
+async def _execute_phantom_combat_action(
+    handler: Any,
+    player_name: str,
+    phantom_id: str,
+    command: str,
+    room_id: str,
+) -> dict[str, str]:
+    """
+    Execute an attack against a phantom hostile (#625).
+
+    Deliberately bypasses handler.npc_combat_service entirely -- that whole stack (validation
+    mixin, data provider, lifecycle lookups) hard-assumes a real NPC at every layer. A phantom
+    is never a real NPC, so combat is started/processed directly against CombatService instead,
+    matching start_new_combat_for_mixin's own call shape (NPCCombatIntegrationCombatMixin) without
+    routing through any of its NPC-specific validation.
+    """
+    from server.services.combat_types import CombatParticipantData
+    from server.services.npc_combat_data_provider import NPCCombatDataProvider
+    from server.services.phantom_hostile_service import phantom_hostile_service
+
+    try:
+        player = await handler.persistence.get_player_by_name(player_name)
+        if not player:
+            logger.error("Player not found for phantom combat action", player_name=player_name)
+            return {"result": "You are not recognized by the cosmic forces."}
+        phantom_data = phantom_hostile_service.get_phantom_data(phantom_id)
+        if not phantom_data:
+            return {"result": "It has already dissipated."}
+
+        player_id = str(player.player_id)
+        data_provider = NPCCombatDataProvider(handler.persistence)
+        attacker_data = await data_provider.get_player_combat_data(player_id, player.player_id, player_name)
+        phantom_uuid = uuid.uuid4()
+        target_data = CombatParticipantData(
+            participant_id=phantom_uuid,
+            name=phantom_data["name"],
+            current_dp=phantom_data["current_dp"],
+            max_dp=phantom_data["max_dp"],
+            dexterity=10,
+            participant_type=CombatParticipantType.PHANTOM,
+            is_non_damaging=phantom_data["is_non_damaging"],
+            phantom_id=phantom_id,
+        )
+        damage = _resolve_combat_damage(handler, player)
+        combat_service = handler.combat_service
+        _ = await combat_service.start_combat(
+            room_id=room_id,
+            attacker=attacker_data,
+            target=target_data,
+            current_tick=get_current_tick(),
+        )
+        result = await combat_service.process_attack(
+            attacker_id=player.player_id, target_id=phantom_uuid, damage=damage, is_initial_attack=True
+        )
+        if not result.success:
+            return {"result": f"You cannot attack {phantom_data['name']} right now."}
+        return {"result": f"You {command} {phantom_data['name']}!"}
+    except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Combat action errors unpredictable
+        logger.error("Error executing phantom combat action", error=str(e), exc_info=True)
+        return {"result": f"Error executing {command} command"}
+
+
 async def run_handle_attack_command(
     handler: Any,
     command_data: dict[str, Any],
@@ -199,6 +265,10 @@ async def run_handle_attack_command(
         )
         if err:
             return err
+        if target_match.target_type == TargetType.PHANTOM:
+            return await _execute_phantom_combat_action(
+                handler, player_name, target_match.target_id, command, room_id
+            )
         combat_result = await _execute_combat_action(
             handler, player_name, target_match.target_id, command, room_id, npc_instance=npc_instance
         )
