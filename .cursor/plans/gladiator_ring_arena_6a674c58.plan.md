@@ -50,6 +50,12 @@ isProject: false
 
 ## 2. Tutorial exit room → arena center
 
+> **SUPERSEDED (2026-08).** This section was applied once and then deliberately reverted by
+> `data/db/migrations/20260719_tutorial_exit_to_sanitarium_foyer_{dev,e2e,unit}.sql`, shipped
+> alongside the "Sanitarium Daisy" onboarding quest (`gather_sanitarium_daisies`, triggered by
+> Dr. Morgan) which requires new/respawning players to land in the foyer. Decision (GitHub #628):
+> the arena is a mechanics-testing space, not a player-facing default. Do not reapply this section.
+
 **Current behavior**
 
 - Tutorial bedroom template has `instance_exit_room_id` in attributes ([data/db/mythosdml.sql](e:\projects\GitHub\MythosMUD\data\db\mythos_dev_dml.sql) rooms COPY: tutorial bedroom row has `"instance_exit_room_id": "earth_arkhamcity_sanitarium_room_foyer_001"`).
@@ -64,6 +70,9 @@ isProject: false
 ---
 
 ## 3. Death and lucidity respawn → arena center
+
+> **SUPERSEDED (2026-08).** Same decision as section 2 above — see that note. `DEFAULT_RESPAWN_ROOM`
+> stays the sanitarium foyer permanently. Do not reapply this section.
 
 **Current behavior**
 

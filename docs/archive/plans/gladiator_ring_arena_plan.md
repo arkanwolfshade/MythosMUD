@@ -86,6 +86,12 @@ todos:
 
 ## 2. Tutorial exit and respawn
 
+> **SUPERSEDED (2026-08).** Applied once, then deliberately reverted by
+> `data/db/migrations/20260719_tutorial_exit_to_sanitarium_foyer_{dev,e2e,unit}.sql` alongside the
+> "Sanitarium Daisy" onboarding quest, which needs new/respawning players in the foyer near
+> Dr. Morgan. Decision (GitHub #628): the arena is a mechanics-testing space, not a player-facing
+> default. Do not reapply this section.
+
 - Set tutorial bedroom `instance_exit_room_id` to `limbo_arena_arena_arena_5_5` in room attributes (all three DML files).
 - Optionally set `InstanceManager.DEFAULT_EXIT_ROOM_ID` to same ([server/game/instance_manager.py](server/game/instance_manager.py)).
 - In [server/services/player_respawn_service.py](server/services/player_respawn_service.py): `DEFAULT_RESPAWN_ROOM = "limbo_arena_arena_arena_5_5"`.
