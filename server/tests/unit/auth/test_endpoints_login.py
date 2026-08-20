@@ -47,7 +47,9 @@ async def test_login_user_success(mock_request: MagicMock, mock_session: MagicMo
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth_utils.verify_password", return_value=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
-                with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+                with patch(
+                    "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+                ):
                     # Mock user_manager.authenticate to return the user
                     mock_user_manager.authenticate = AsyncMock(return_value=user)
 
@@ -228,7 +230,7 @@ async def test_login_user_id_mismatch(mock_request: MagicMock, mock_session: Mag
     mock_async_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with pytest.raises(LoggedHTTPException) as exc_info:
                 _ = await login_user(
                     request=login_request,
@@ -322,7 +324,7 @@ async def test_login_user_with_characters(mock_request: MagicMock, mock_session:
     mock_async_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                 # Mock container with async_persistence
                 mock_container = MagicMock()

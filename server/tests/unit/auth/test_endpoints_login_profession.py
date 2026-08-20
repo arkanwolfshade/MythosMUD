@@ -56,7 +56,7 @@ async def test_login_user_profession_lookup_success(mock_request: MagicMock, moc
     mock_async_persistence.get_profession_by_id = AsyncMock(return_value=mock_profession)
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                 # Mock container with async_persistence
                 mock_container = MagicMock()
@@ -119,7 +119,7 @@ async def test_login_user_profession_lookup_error(mock_request: MagicMock, mock_
     mock_async_persistence.get_profession_by_id = AsyncMock(side_effect=SQLAlchemyError("DB error", None, None))
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                 # Mock container with async_persistence
                 mock_container = MagicMock()
@@ -180,7 +180,7 @@ async def test_login_user_profession_lookup_none(mock_request: MagicMock, mock_s
     mock_async_persistence.get_profession_by_id = AsyncMock(return_value=None)
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                 # Mock container with async_persistence
                 mock_container = MagicMock()
@@ -240,7 +240,7 @@ async def test_login_user_player_no_profession_id(mock_request: MagicMock, mock_
     mock_async_persistence.get_active_players_by_user_id = AsyncMock(return_value=[mock_player])
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
-        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+        with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True):
             with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                 # Mock container with async_persistence
                 mock_container = MagicMock()

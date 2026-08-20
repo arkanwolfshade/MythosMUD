@@ -164,7 +164,9 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
-            with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+            with patch(
+                "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+            ):
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     # register_user creates User directly, so we need to mock session.add to set the user
                     def mock_add(_user: object) -> None:
@@ -218,7 +220,9 @@ async def test_register_user_no_email(mock_request: MagicMock, mock_session: Mag
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
-            with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+            with patch(
+                "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+            ):
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     mock_session.add = MagicMock()
 
@@ -335,7 +339,9 @@ async def test_register_user_invite_marking_success(mock_request: MagicMock, moc
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
-            with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+            with patch(
+                "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+            ):
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     mock_session.add = MagicMock()
                     mock_session.commit = AsyncMock()
@@ -388,7 +394,9 @@ async def test_register_user_invite_marking_failure(mock_request: MagicMock, moc
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
-            with patch("server.async_persistence.get_async_persistence", return_value=mock_async_persistence):
+            with patch(
+                "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+            ):
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     # Mock session.add and commit to succeed
                     mock_session.add = MagicMock()

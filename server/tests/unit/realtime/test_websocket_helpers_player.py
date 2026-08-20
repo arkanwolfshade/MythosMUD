@@ -197,7 +197,7 @@ async def test_get_player_and_room_success():
     mock_connection_manager = AsyncMock()
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = mock_room
         mock_get_persistence.return_value = mock_persistence
@@ -236,7 +236,7 @@ async def test_get_player_and_room_room_not_found():
     mock_connection_manager = AsyncMock()
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = None
         mock_get_persistence.return_value = mock_persistence
@@ -263,7 +263,7 @@ async def test_get_player_and_room_adds_player_to_room():
     mock_connection_manager = AsyncMock()
     mock_connection_manager.get_player = AsyncMock(return_value=mock_player)
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persistence:
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persistence:
         mock_persistence = MagicMock()
         mock_persistence.get_room_by_id.return_value = mock_room
         mock_get_persistence.return_value = mock_persistence

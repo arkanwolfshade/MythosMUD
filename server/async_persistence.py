@@ -46,8 +46,7 @@ logger = get_logger(__name__)
 
 __all__ = [
     "AsyncPersistenceLayer",
-    "get_async_persistence",
-    "reset_async_persistence",
+    "get_container_async_persistence",
     "PLAYER_COLUMNS",
     "PROFESSION_COLUMNS",
 ]
@@ -395,6 +394,13 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
             player_id, "corruption", amount, f"{source}: corruption increase"
         )
 
+    async def gain_occult_knowledge(self, player: Player, amount: int, source: str = "unknown") -> None:
+        """Gain occult knowledge for a player. Delegates to ExperienceRepository."""
+        player_id = uuid.UUID(str(player.player_id))  # Convert Column to UUID for type checking
+        await self._experience_repo.update_player_stat_field(
+            player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
+        )
+
     async def gain_experience(self, player: Player, amount: int, source: str = "unknown") -> None:
         """Award experience to a player atomically. Delegates to ExperienceRepository."""
         await self._experience_repo.gain_experience(player, amount, source)
@@ -583,33 +589,26 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         return await self._item_repo.item_instance_exists(item_instance_id)
 
 
-# DEPRECATED: Module-level global singleton removed - use ApplicationContainer instead
-# Keeping these functions for backward compatibility during migration
-_async_persistence_instance: AsyncPersistenceLayer | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
-
-
-def get_async_persistence() -> AsyncPersistenceLayer:
+def get_container_async_persistence() -> AsyncPersistenceLayer:
     """
-    Get the global async persistence instance.
+    Get the container-backed AsyncPersistenceLayer instance.
 
-    DEPRECATED: Use ApplicationContainer.async_persistence instead.
-    This function exists only for backward compatibility during migration.
+    Use for code that has no FastAPI Request/WebSocket in scope (so
+    server.dependencies.get_async_persistence's Depends-style accessor doesn't fit) but still
+    needs the live, container-wired instance rather than a disconnected one-off with no event
+    bus. ApplicationContainer.get_instance() never raises and auto-constructs an empty container
+    if none exists yet, so the emptiness case is checked explicitly here rather than left to
+    surface as a confusing AttributeError on a None persistence layer downstream.
 
     Returns:
-        AsyncPersistenceLayer: The async persistence instance
-    """
-    global _async_persistence_instance  # pylint: disable=global-statement  # Reason: Singleton pattern requires global variable access for backward compatibility during migration
-    if _async_persistence_instance is None:
-        _async_persistence_instance = AsyncPersistenceLayer()
-    return _async_persistence_instance
+        AsyncPersistenceLayer: The container's configured async persistence instance
 
-
-def reset_async_persistence() -> None:
+    Raises:
+        RuntimeError: If the container hasn't finished initializing async_persistence yet
     """
-    Reset the global async persistence instance for testing.
+    from .container import ApplicationContainer  # noqa: PLC0415  # Reason: lazy import avoids container import cycle
 
-    DEPRECATED: Use ApplicationContainer.reset_instance() instead.
-    This function exists only for backward compatibility during migration.
-    """
-    global _async_persistence_instance  # pylint: disable=global-statement  # Reason: Singleton reset pattern requires global variable access for backward compatibility during migration
-    _async_persistence_instance = None
+    container = ApplicationContainer.get_instance()
+    if container.async_persistence is None:
+        raise RuntimeError("AsyncPersistenceLayer not initialized in container")
+    return cast(AsyncPersistenceLayer, container.async_persistence)

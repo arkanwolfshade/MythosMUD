@@ -196,9 +196,9 @@ async def _resolve_player_id_from_test(_websocket: WebSocket, player_id_str: str
     Resolve player ID from test player_id query parameter.
     Validates that the player exists before returning.
     """
-    from ..async_persistence import get_async_persistence
+    from ..async_persistence import get_container_async_persistence
 
-    async_persistence = get_async_persistence()
+    async_persistence = get_container_async_persistence()
     # Convert str player_id to UUID for get_player
     player_id_uuid = uuid.UUID(player_id_str) if isinstance(player_id_str, str) else player_id_str
     player = await async_persistence.get_player_by_id(player_id_uuid)
@@ -224,9 +224,9 @@ async def _resolve_player_id_from_token(websocket: WebSocket, payload: dict[str,
     Otherwise, fall back to first active character (backward compatibility).
     """
     user_id = str(payload["sub"]).strip()
-    from ..async_persistence import get_async_persistence
+    from ..async_persistence import get_container_async_persistence
 
-    async_persistence = get_async_persistence()
+    async_persistence = get_container_async_persistence()
 
     # MULTI-CHARACTER: Check if character_id is provided in query params
     character_id_str = websocket.query_params.get("character_id")

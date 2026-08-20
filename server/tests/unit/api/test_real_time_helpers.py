@@ -81,7 +81,7 @@ async def test_resolve_player_id_from_test() -> None:
     player = MagicMock(player_id=player_id)
     persistence = MagicMock()
     persistence.get_player_by_id = AsyncMock(return_value=player)
-    with patch("server.async_persistence.get_async_persistence", return_value=persistence):
+    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
         resolved = await real_time._resolve_player_id_from_test(MagicMock(), str(player_id), MagicMock())
     assert resolved == player_id
 
@@ -90,7 +90,7 @@ async def test_resolve_player_id_from_test() -> None:
 async def test_resolve_player_id_from_token_no_player() -> None:
     persistence = MagicMock()
     persistence.get_player_by_user_id = AsyncMock(return_value=None)
-    with patch("server.async_persistence.get_async_persistence", return_value=persistence):
+    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
         with pytest.raises(LoggedHTTPException):
             await real_time._resolve_player_id_from_token(MagicMock(), {"sub": "user-1"})
 
@@ -154,7 +154,7 @@ async def test_resolve_player_id_query_allowed_when_fallback_on(monkeypatch: pyt
     websocket.query_params = {"player_id": str(player_id)}
     with (
         patch("server.api.real_time.decode_access_token", return_value=None),
-        patch("server.async_persistence.get_async_persistence", return_value=persistence),
+        patch("server.async_persistence.get_container_async_persistence", return_value=persistence),
     ):
         resolved = await real_time._resolve_player_id(websocket, None, MagicMock())
     assert resolved == player_id
@@ -215,7 +215,7 @@ async def test_resolve_player_id_from_token_with_character_id() -> None:
     persistence.get_player_by_id = AsyncMock(return_value=player)
     websocket = MagicMock()
     websocket.query_params = {"character_id": str(player_id)}
-    with patch("server.async_persistence.get_async_persistence", return_value=persistence):
+    with patch("server.async_persistence.get_container_async_persistence", return_value=persistence):
         resolved = await real_time._resolve_player_id_from_token(websocket, {"sub": user_id})
     assert resolved == player_id
 

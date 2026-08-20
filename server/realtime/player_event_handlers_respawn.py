@@ -483,10 +483,10 @@ class PlayerRespawnEventHandler:
         player_names: list[str] = []
 
         try:
-            from ..async_persistence import get_async_persistence
+            from ..async_persistence import get_container_async_persistence
             from .websocket_initial_state import prepare_room_data_with_occupants
 
-            async_persistence = get_async_persistence()
+            async_persistence = get_container_async_persistence()
             room = async_persistence.get_room_by_id(room_id)
             if not room:
                 return None, npc_names, player_names, occupant_names
