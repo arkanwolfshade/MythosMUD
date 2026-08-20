@@ -5,6 +5,7 @@ CONTRIBUTING.md
 docs/AI_DEVELOPMENT_WORKFLOW.md
 docs/architecture/aggro-threat-system.md
 docs/architecture/API_OPENAPI_SPECIFICATION.md
+docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md
 docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md
 docs/architecture/decisions/ADR-002-application-container-dependency-injection.md
 docs/architecture/decisions/ADR-003-dual-event-systems-eventbus-nats.md
