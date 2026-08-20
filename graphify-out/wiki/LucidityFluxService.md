@@ -1,6 +1,6 @@
 # LucidityFluxService
 
-> 55 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -14,9 +14,7 @@
 - **._lookup_base_flux_for_room()** (9 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._filter_active_players()** (8 connections) — `server/services/passive_lucidity_flux/service.py`
 - **datetime** (8 connections)
-- **PlayerFluxCtx** (7 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._evaluate_players_tick()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
-- **CachedRoom** (6 connections) — `server/services/passive_lucidity_flux/models.py`
 - **._build_room_cache()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._is_player_active()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
 - **._lookup_world_override_flux()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
@@ -29,26 +27,27 @@
 - **._normalize_datetime_timezone()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
 - **AsyncSession** (5 connections)
 - **_as_str_attr()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
-- *... and 30 more nodes in this community*
+- **._commit_flux_adjustments()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._load_lucidity_records()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [test_passive_lucidity_flux_service.py](test_passive_lucidity_flux_service.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [LucidityService](LucidityService.md) (7 shared connections)
-- [database_config_helpers.py](database_config_helpers.py.md) (2 shared connections)
+- [service.py](service.py.md) (19 shared connections)
+- [LucidityService](LucidityService.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [PhantomHostileService](PhantomHostileService.md) (1 shared connections)
+- [rate_overrides.py](rate_overrides.py.md) (1 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/models.py`
 - `server/services/passive_lucidity_flux/service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 129 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

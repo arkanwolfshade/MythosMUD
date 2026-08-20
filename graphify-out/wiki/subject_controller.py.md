@@ -36,14 +36,15 @@
 - [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
 - [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (8 shared connections)
-- [test_exceptions.py](test_exceptions.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [MythosMUDError](MythosMUDError.md) (6 shared connections)
 - [manager.py](manager.py.md) (1 shared connections)
 - [test_manager.py](test_manager.py.md) (1 shared connections)
 - [test_validation.py](test_validation.py.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

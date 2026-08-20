@@ -1,6 +1,6 @@
 # test_npc_service.py
 
-> 92 nodes
+> 88 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **asyncio** (35 connections)
 - **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
 - **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
 - **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_create_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
@@ -29,27 +28,25 @@
 - **test_update_npc_definition_invalid_probability()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_update_npc_definition_invalid_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
 - **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 67 more nodes in this community*
+- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [npc_service/__init__.py](npc_service-__init__.py.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_service/__init__.py`
 - `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (98%)
+- EXTRACTED: 180 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

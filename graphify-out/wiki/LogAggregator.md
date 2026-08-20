@@ -1,6 +1,6 @@
 # LogAggregator
 
-> 69 nodes
+> 67 nodes
 
 ## Key Concepts
 
@@ -24,22 +24,25 @@
 - **.get_warning_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.__init__()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._log_matches_filter()** (5 connections) — `server/structured_logging/log_aggregator.py`
-- **peek_log_aggregator()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **test_export_logs_json()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **test_get_logs_after_flush()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **.add_log_entry()** (4 connections) — `server/structured_logging/log_aggregator.py`
 - **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
-- *... and 44 more nodes in this community*
+- **test_aggregate_log_entry_helper()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (5 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
 - [lifespan.py](lifespan.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [collect_idle_memory_sample](collect_idle_memory_sample.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 158 (99%)
+- EXTRACTED: 155 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

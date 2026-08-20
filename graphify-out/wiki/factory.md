@@ -11,7 +11,7 @@
 ## Relationships
 
 - [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
-- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 

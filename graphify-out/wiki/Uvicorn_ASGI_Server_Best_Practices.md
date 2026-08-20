@@ -1,6 +1,6 @@
 # Uvicorn ASGI Server Best Practices
 
-> 25 nodes
+> 26 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **1. Code Organization and Structure** (4 connections) — `.claude/rules/uvicorn.md`
 - **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/uvicorn.md`
 - **7. Tooling and Environment** (4 connections) — `.claude/rules/uvicorn.md`
+- **uvicorn.md** (3 connections) — `.claude/rules/uvicorn.md`
 - **3. Performance Considerations** (3 connections) — `.claude/rules/uvicorn.md`
 - **4. Security Best Practices** (3 connections) — `.claude/rules/uvicorn.md`
 - **5. Testing Approaches** (3 connections) — `.claude/rules/uvicorn.md`
@@ -28,10 +29,11 @@
 - **6.2. Debugging Strategies** (1 connections) — `.claude/rules/uvicorn.md`
 - **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/uvicorn.md`
 - **7.2. Deployment Best Practices** (1 connections) — `.claude/rules/uvicorn.md`
-- **7.3. CI/CD Integration** (1 connections) — `.claude/rules/uvicorn.md`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
+- [get_logger](get_logger.md) (1 shared connections)
 - [server/main.py](server-main.py.md) (1 shared connections)
 
 ## Source Files
@@ -40,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

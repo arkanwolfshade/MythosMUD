@@ -6,8 +6,8 @@
 
 - **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
 - **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **tick_scheduler.py** (17 connections) — `server/time/tick_scheduler.py`
 - **asyncio** (9 connections)
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
 - **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
 - **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
 - **._run()** (5 connections) — `server/time/tick_scheduler.py`
@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [MythosChronicle](MythosChronicle.md) (5 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
-- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) (3 shared connections)
-- [TaskRegistry](TaskRegistry.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
+- [bundles/game.py](bundles-game.py.md) (2 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [Lock](Lock.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -51,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 78 (84%)
-- INFERRED: 15 (16%)
+- EXTRACTED: 69 (81%)
+- INFERRED: 16 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

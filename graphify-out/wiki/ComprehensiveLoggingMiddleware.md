@@ -1,6 +1,6 @@
 # ComprehensiveLoggingMiddleware
 
-> 30 nodes
+> 32 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **test_comprehensive_logging.py** (11 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
 - **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
 - **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
+- **comprehensive_logging.py** (7 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
 - **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
@@ -27,15 +28,15 @@
 - **Receive** (1 connections)
 - **Scope** (1 connections)
 - **Send** (1 connections)
-- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 5 more nodes in this community*
+- **Comprehensive logging middleware for MythosMUD server. This module provides a…** (1 connections) — `server/middleware/comprehensive_logging.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [middleware](middleware.md) (3 shared connections)
 - [build_event](build_event.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -46,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 48 (84%)
-- INFERRED: 9 (16%)
+- EXTRACTED: 53 (85%)
+- INFERRED: 9 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

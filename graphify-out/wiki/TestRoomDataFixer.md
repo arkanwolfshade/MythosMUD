@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files

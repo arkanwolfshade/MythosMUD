@@ -1,78 +1,62 @@
 # build_event
 
-> 371 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **build_event()** (116 connections) — `server/realtime/envelope.py`
-- **RoomSubscriptionManager** (52 connections) — `server/realtime/room_subscription_manager.py`
-- **connection_initialization.py** (38 connections) — `server/realtime/connection_initialization.py`
-- **test_websocket_room_updates.py** (35 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **websocket_room_updates.py** (30 connections) — `server/realtime/websocket_room_updates.py`
+- **build_event()** (111 connections) — `server/realtime/envelope.py`
 - **envelope.py** (29 connections) — `server/realtime/envelope.py`
 - **test_envelope.py** (29 connections) — `server/tests/unit/realtime/test_envelope.py`
-- **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
-- **deque** (26 connections)
-- **asyncio** (24 connections)
-- **HealthMonitor** (23 connections) — `server/realtime/monitoring/health_monitor.py`
-- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
-- **game_state_provider.py** (22 connections) — `server/realtime/integration/game_state_provider.py`
-- **room_subscription_manager.py** (21 connections) — `server/realtime/room_subscription_manager.py`
 - **websocket_handler_connection.py** (18 connections) — `server/realtime/websocket_handler_connection.py`
-- **test_connection_initialization.py** (18 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
-- **CombatMessagingService** (17 connections) — `server/services/combat_messaging_service.py`
-- **message_broadcaster.py** (16 connections) — `server/realtime/messaging/message_broadcaster.py`
-- **CombatBroadcastMixin** (15 connections) — `server/services/combat_messaging/combat_broadcasts.py`
-- **initialize_core_components()** (13 connections) — `server/realtime/connection_initialization.py`
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
-- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
-- **Any** (13 connections)
-- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
-- *... and 346 more nodes in this community*
+- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
+- **utc_now_z()** (6 connections) — `server/realtime/envelope.py`
+- **send_welcome_event()** (6 connections) — `server/realtime/websocket_handler_connection.py`
+- **cleanup_websocket_connection()** (5 connections) — `server/realtime/websocket_handler_connection.py`
+- **setup_initial_connection_state()** (5 connections) — `server/realtime/websocket_handler_connection.py`
+- **UUID** (5 connections)
+- **_SupportsEventSequence** (4 connections) — `server/realtime/envelope.py`
+- **AsyncPersistenceRoomLookup** (4 connections) — `server/realtime/websocket_handler_connection.py`
+- **PlayerDisconnectService** (4 connections) — `server/realtime/websocket_handler_connection.py`
+- **.handle_player_dp_decay()** (4 connections) — `server/realtime/player_event_handlers_state.py`
+- **test_build_event_json_serializable()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_sequence_priority()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_with_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_uuid_encoder_handles_other_types()** (4 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **_get_next_global_sequence()** (3 connections) — `server/realtime/envelope.py`
+- **test_build_event_all_parameters()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_basic()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_empty_data()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_no_data_parameter()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_optional_parameters_none()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **test_build_event_timestamp_format()** (3 connections) — `server/tests/unit/realtime/test_envelope.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (75 shared connections)
-- [RateLimiter](RateLimiter.md) (20 shared connections)
-- [.state](state.md) (18 shared connections)
-- [ConnectionManager](ConnectionManager.md) (10 shared connections)
-- [MessageBroadcaster](MessageBroadcaster.md) (9 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
 - [player_event_handlers.py](player_event_handlers.py.md) (9 shared connections)
-- [StatisticsAggregator](StatisticsAggregator.md) (8 shared connections)
-- [RoomEventHandler](RoomEventHandler.md) (8 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (8 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (7 shared connections)
 - [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (7 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (7 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (6 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (6 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
+- [rest_countdown_task.py](rest_countdown_task.py.md) (4 shared connections)
+- [send_game_event](send_game_event.md) (4 shared connections)
+- [test_message_broadcaster.py](test_message_broadcaster.py.md) (4 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (4 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (4 shared connections)
+- [ConnectionManager](ConnectionManager.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_initialization.py`
-- `server/realtime/connection_manager.py`
 - `server/realtime/envelope.py`
-- `server/realtime/event_handlers.py`
-- `server/realtime/integration/__init__.py`
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/integration/room_event_handler.py`
-- `server/realtime/messaging/__init__.py`
-- `server/realtime/messaging/message_broadcaster.py`
-- `server/realtime/monitoring/health_monitor.py`
-- `server/realtime/room_subscription_manager.py`
+- `server/realtime/player_event_handlers_state.py`
 - `server/realtime/websocket_handler_connection.py`
-- `server/realtime/websocket_room_updates.py`
-- `server/services/combat_messaging/__init__.py`
-- `server/services/combat_messaging/base.py`
-- `server/services/combat_messaging/combat_broadcasts.py`
-- `server/services/combat_messaging/integration.py`
-- `server/services/combat_messaging/player_broadcasts.py`
-- `server/services/combat_messaging_integration.py`
-- `server/services/combat_messaging_service.py`
+- `server/tests/unit/realtime/test_envelope.py`
 
 ## Audit Trail
 
-- EXTRACTED: 927 (94%)
-- INFERRED: 54 (6%)
+- EXTRACTED: 231 (97%)
+- INFERRED: 8 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

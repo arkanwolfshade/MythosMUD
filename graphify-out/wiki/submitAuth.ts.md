@@ -1,6 +1,6 @@
 # submitAuth.ts
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
@@ -8,11 +8,9 @@
 - **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
 - **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
 - **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
-- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
 - **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
 - **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
 - **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
-- **ServerCharacterResponse** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - **persistTokensAndApplySession()** (4 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
 - **toCharacterInfoFromLogin()** (3 connections) — `client/src/mythosApp/mapServerCharacters.ts`
 - **sanitizeLoginInputs()** (3 connections) — `client/src/mythosApp/submitAuth.ts`
@@ -27,8 +25,8 @@
 ## Relationships
 
 - [useMythosAppActions.ts](useMythosAppActions.ts.md) (12 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (12 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (6 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (4 shared connections)
 - [security.ts](security.ts.md) (4 shared connections)
 - [utils/config.ts](utils-config.ts.md) (2 shared connections)
 
@@ -42,8 +40,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 70 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 59 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

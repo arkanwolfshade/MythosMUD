@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [QuestService](QuestService.md) (30 shared connections)
+- [QuestService](QuestService.md) (31 shared connections)
 - [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [handle_new_connection_setup](handle_new_connection_setup.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (1 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 

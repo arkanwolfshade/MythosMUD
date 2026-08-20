@@ -34,8 +34,8 @@
 ## Relationships
 
 - [ErrorType](ErrorType.md) (12 shared connections)
-- [test_exceptions.py](test_exceptions.py.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (5 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

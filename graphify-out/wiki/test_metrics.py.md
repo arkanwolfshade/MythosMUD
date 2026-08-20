@@ -37,7 +37,7 @@
 - [manager.py](manager.py.md) (2 shared connections)
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (1 shared connections)
 - [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

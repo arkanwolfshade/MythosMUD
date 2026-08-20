@@ -33,10 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (4 shared connections)
 - [NATSConfig](NATSConfig.md) (2 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (2 shared connections)
 - [.on_enter_state](on_enter_state.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

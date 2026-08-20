@@ -1,13 +1,12 @@
 # test_room_utils.py
 
-> 40 nodes
+> 38 nodes
 
 ## Key Concepts
 
 - **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
 - **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
-- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
 - **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
 - **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
 - **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
@@ -29,12 +28,12 @@
 - **Test get_subzone_local_channel_subject() returns None for invalid room ID.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test extract_subzone_from_room_id() extracts subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
 - **Test extract_subzone_from_room_id() extracts different subzone.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
-- *... and 15 more nodes in this community*
+- **Test extract_subzone_from_room_id() returns None for invalid format.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (12 shared connections)
 
 ## Source Files
 
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
+- EXTRACTED: 59 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

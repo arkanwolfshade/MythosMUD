@@ -37,7 +37,7 @@
 - [fixtures/auth.ts](fixtures-auth.ts.md) (31 shared connections)
 - [executeCommand](executeCommand.md) (20 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (4 shared connections)
-- [client tests e2e runtime character](client_tests_e2e_runtime_character.md) (4 shared connections)
+- [character-cleanup.ts](character-cleanup.ts.md) (4 shared connections)
 - [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (2 shared connections)
 - [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
 

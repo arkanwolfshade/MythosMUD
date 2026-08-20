@@ -1,6 +1,6 @@
 # test_magic_healing_events.py
 
-> 40 nodes
+> 41 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
 - **MagicServiceHealingMixin** (14 connections) — `server/game/magic/magic_healing_events.py`
 - **_HealingService** (12 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
 - **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
 - **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
 - **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
@@ -28,19 +29,21 @@
 - **.__init__()** (1 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
 - **Healing event notification for spellcasting. Mixin that sends player_dp_updated…** (1 connections) — `server/game/magic/magic_healing_events.py`
 - **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
-- *... and 15 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [Spell](Spell.md) (13 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [SpellEffectType](SpellEffectType.md) (8 shared connections)
+- [TargetMatch](TargetMatch.md) (5 shared connections)
+- [magic_service.py](magic_service.py.md) (4 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [send_game_event](send_game_event.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
+- [.get_instance](get_instance.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -50,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 95 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 96 (94%)
+- INFERRED: 6 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -7,8 +7,8 @@
 - **PlayerGuidFormatter** (33 connections) — `server/structured_logging/player_guid_formatter.py`
 - **test_player_guid_formatter.py** (25 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- **.format()** (5 connections) — `server/structured_logging/player_guid_formatter.py`
 - **player_guid_formatter.py** (5 connections) — `server/structured_logging/player_guid_formatter.py`
-- **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
 - **formatter()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
 - **test_format_guid_at_start()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
@@ -34,10 +34,11 @@
 ## Relationships
 
 - [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
-- [load_player_guid_formatter_class](load_player_guid_formatter_class.md) (2 shared connections)
+- [logging_file_categories.py](logging_file_categories.py.md) (2 shared connections)
 - [lifespan.py](lifespan.py.md) (1 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (1 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 78 (80%)
-- INFERRED: 20 (20%)
+- EXTRACTED: 78 (79%)
+- INFERRED: 21 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

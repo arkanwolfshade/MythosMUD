@@ -1,6 +1,6 @@
 # LoggedHTTPException
 
-> God node · 358 connections · `server/exceptions.py`
+> God node · 359 connections · `server/exceptions.py`
 
 **Community:** [LoggedHTTPException](LoggedHTTPException.md)
 
@@ -34,24 +34,24 @@
 ### imports
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- maps.py `EXTRACTED`
+- [maps.py](maps.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
-- api/monitoring.py `EXTRACTED`
-- [test_monitoring_endpoints.py](test_monitoring_endpoints.py.md) `EXTRACTED`
+- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
+- test_monitoring_endpoints.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - legacy_error_handlers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_legacy_error_handlers.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - [real_time.py](real_time.py.md) `EXTRACTED`
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
+- test_real_time_helpers.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
-- api/player_effects.py `EXTRACTED`
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) `EXTRACTED`
+- [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
 
 ### inherits
 - LoggedException `EXTRACTED`

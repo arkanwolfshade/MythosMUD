@@ -1,10 +1,10 @@
 # CombatInstance
 
-> 100 nodes
+> 120 nodes
 
 ## Key Concepts
 
-- **CombatInstance** (174 connections) — `server/models/combat.py`
+- **CombatInstance** (176 connections) — `server/models/combat.py`
 - **test_combat_flee_handler.py** (34 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **combat_flee_handler.py** (23 connections) — `server/services/combat_flee_handler.py`
 - **execute_voluntary_flee()** (20 connections) — `server/services/combat_flee_handler.py`
@@ -29,22 +29,22 @@
 - **test_check_involuntary_flee_with_session_tier_blocks()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **test_check_involuntary_flee_zero_max_dp_returns_false()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
 - **test_try_voluntary_flee_roll_dead_opponent_not_counted()** (5 connections) — `server/tests/unit/services/test_combat_flee_handler.py`
-- *... and 75 more nodes in this community*
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (45 shared connections)
-- [CombatService](CombatService.md) (35 shared connections)
-- [test_combat.py](test_combat.py.md) (19 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (14 shared connections)
+- [CombatParticipant](CombatParticipant.md) (49 shared connections)
+- [CombatService](CombatService.md) (39 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (13 shared connections)
 - [combat_service_npc.py](combat_service_npc.py.md) (10 shared connections)
+- [NATSError](NATSError.md) (10 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (9 shared connections)
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (8 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (7 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (6 shared connections)
-- [TargetType](TargetType.md) (6 shared connections)
-- [CombatAttackHandler](CombatAttackHandler.md) (5 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (7 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (7 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_flee_command.py](test_flee_command.py.md) (4 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (4 shared connections)
 
 ## Source Files
 
@@ -52,11 +52,12 @@
 - `server/services/combat_cleanup_handler.py`
 - `server/services/combat_flee_handler.py`
 - `server/services/combat_service.py`
+- `server/tests/unit/models/test_combat.py`
 - `server/tests/unit/services/test_combat_flee_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 370 (99%)
+- EXTRACTED: 392 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

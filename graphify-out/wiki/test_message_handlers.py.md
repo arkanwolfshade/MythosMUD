@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [get_logger](get_logger.md) (14 shared connections)
 - [Any](Any.md) (6 shared connections)
-- [message_handler_factory.py](message_handler_factory.py.md) (6 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
 - [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (1 shared connections)
 - [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (1 shared connections)
+- [send_game_event](send_game_event.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

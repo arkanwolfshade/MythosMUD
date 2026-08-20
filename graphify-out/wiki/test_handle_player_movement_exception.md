@@ -11,7 +11,7 @@
 
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 

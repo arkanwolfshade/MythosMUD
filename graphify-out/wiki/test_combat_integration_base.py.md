@@ -31,15 +31,15 @@
 ## Relationships
 
 - [NPCCombatIntegration](NPCCombatIntegration.md) (17 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [server/config/__init__.py](server-config-__init__.py.md) (3 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
-- [message_handler_factory.py](message_handler_factory.py.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 - [AttributeError](AttributeError.md) (1 shared connections)
+- [test_command_service.py](test_command_service.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 

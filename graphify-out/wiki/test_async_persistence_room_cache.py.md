@@ -22,17 +22,17 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
 - [test_get_user_by_username_case_insensitive_no_session](test_get_user_by_username_case_insensitive_no_session.md) (1 shared connections)
 - [test_get_professions_no_session](test_get_professions_no_session.md) (1 shared connections)
-- [test_get_players_batch_empty_list](test_get_players_batch_empty_list.md) (1 shared connections)
+- [test_get_players_batch_with_players](test_get_players_batch_with_players.md) (1 shared connections)
 - [test_generate_room_id_from_zone_data_with_prefix](test_generate_room_id_from_zone_data_with_prefix.md) (1 shared connections)
 - [test_generate_room_id_from_zone_data_needs_generation](test_generate_room_id_from_zone_data_needs_generation.md) (1 shared connections)
 - [test_parse_exits_json_string_valid](test_parse_exits_json_string_valid.md) (1 shared connections)
 - [test_load_room_cache_async_rooms_none](test_load_room_cache_async_rooms_none.md) (1 shared connections)
 - [test_parse_exits_json_list](test_parse_exits_json_list.md) (1 shared connections)
+- [test_parse_exits_json_other_type](test_parse_exits_json_other_type.md) (1 shared connections)
+- [test_process_exits_for_room_multiple_exits](test_process_exits_for_room_multiple_exits.md) (1 shared connections)
 
 ## Source Files
 

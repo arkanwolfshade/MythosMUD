@@ -1,8 +1,8 @@
 # Player
 
-> God node · 231 connections · `server/models/player.py`
+> God node · 232 connections · `server/models/player.py`
 
-**Community:** [Player](Player.md)
+**Community:** [pytest.md](pytest.md.md)
 
 ## Connections by Relation
 
@@ -29,7 +29,7 @@
 - test_player_get_health_percentage_full() `EXTRACTED`
 
 ### contains
-- [models/player.py](models-player.py.md) `EXTRACTED`
+- models/player.py `EXTRACTED`
 
 ### imports
 - server/models/__init__.py `EXTRACTED`
@@ -49,8 +49,8 @@
 - player_respawn_service.py `EXTRACTED`
 - [websocket_helpers.py](websocket_helpers.py.md) `EXTRACTED`
 - test_inventory_equip_command.py `EXTRACTED`
-- service.py `EXTRACTED`
-- test_async_persistence_delegates.py `EXTRACTED`
+- [service.py](service.py.md) `EXTRACTED`
+- [game_tick_death.py](game_tick_death.py.md) `EXTRACTED`
 - inventory_pickup_command.py `EXTRACTED`
 
 ### inherits
@@ -90,8 +90,8 @@
 - Base `INFERRED`
 - HealthRepository `INFERRED`
 - PlayerRepository `INFERRED`
+- [SpellTargetingService](SpellTargetingService.md) `INFERRED`
 - [ExperienceRepository](ExperienceRepository.md) `INFERRED`
-- SpellTargetingService `INFERRED`
 - PlayerDeathService `INFERRED`
 - LucidityExposureState `INFERRED`
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
@@ -99,7 +99,7 @@
 - LucidityAdjustmentLog `INFERRED`
 - PlayerSpell `INFERRED`
 - PositionState `INFERRED`
-- PlayerSavePreparer `INFERRED`
+- [PlayerSavePreparer](PlayerSavePreparer.md) `INFERRED`
 - PlayerSkill `INFERRED`
 - PlayerEffect `INFERRED`
 - validate_and_fix_player_room() `INFERRED`

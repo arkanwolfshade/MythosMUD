@@ -1,34 +1,33 @@
 # fixture
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
 - **fixture** (5 connections)
-- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock get_async_persistence callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock send_personal_message callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a mock get_app callback.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **Create a GameStateProvider instance.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_game_state_provider.py](test_game_state_provider.py.md) (5 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (4 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

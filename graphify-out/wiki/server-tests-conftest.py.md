@@ -33,8 +33,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [server/config/__init__.py](server-config-__init__.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,13 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [UserManager](UserManager.md) (3 shared connections)
 - [ChatLogger](ChatLogger.md) (3 shared connections)
-- [UserManager](UserManager.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 - [RateLimiter](RateLimiter.md) (1 shared connections)
 - [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,44 +1,47 @@
 # asyncio
 
-> 13 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **asyncio** (23 connections)
-- **test_handle_alias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_alias_not_found()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_unalias_command_success()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_aliases_command when player has no aliases.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_aliases_command when listing fails.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command when alias doesn't exist.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_unalias_command successful removal.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command with no arguments.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **Test handle_alias_command viewing nonexistent alias.** (1 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **asyncio** (12 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
 
 ## Relationships
 
-- [test_alias_commands.py](test_alias_commands.py.md) (11 shared connections)
-- [handle_alias_command](handle_alias_command.md) (6 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
-- [test_handle_alias_command_circular_reference](test_handle_alias_command_circular_reference.md) (1 shared connections)
-- [test_handle_alias_command_create_error](test_handle_alias_command_create_error.md) (1 shared connections)
-- [test_handle_alias_command_create_from_args](test_handle_alias_command_create_from_args.md) (1 shared connections)
-- [test_handle_alias_command_create_from_structured_data](test_handle_alias_command_create_from_structured_data.md) (1 shared connections)
-- [test_handle_alias_command_invalid_command_empty](test_handle_alias_command_invalid_command_empty.md) (1 shared connections)
-- [test_handle_alias_command_invalid_name_empty](test_handle_alias_command_invalid_name_empty.md) (1 shared connections)
-- [test_handle_alias_command_no_storage](test_handle_alias_command_no_storage.md) (1 shared connections)
-- [test_handle_alias_command_view_existing](test_handle_alias_command_view_existing.md) (1 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
+- [test_look_item.py](test_look_item.py.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_alias_commands.py`
+- `server/tests/unit/commands/test_look_item.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

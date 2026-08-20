@@ -1,10 +1,11 @@
 # messageHandlers.ts
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
 - **statusParser.ts** (11 connections) — `client/src/utils/statusParser.ts`
 - **handleCommandResponse()** (6 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
 - **handleCommandResponse.test.ts** (6 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
@@ -31,9 +32,11 @@
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (11 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (4 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (7 shared connections)
+- [logger.ts](logger.ts.md) (5 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (4 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 
 ## Source Files
 
@@ -48,7 +51,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 69 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -14,7 +14,7 @@
 ## Relationships
 
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [test_event_handler.py](test_event_handler.py.md) (1 shared connections)
+- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
 
 ## Source Files
 

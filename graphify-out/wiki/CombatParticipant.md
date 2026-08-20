@@ -1,69 +1,63 @@
 # CombatParticipant
 
-> 276 nodes
+> 226 nodes
 
 ## Key Concepts
 
-- **CombatParticipant** (194 connections) — `server/models/combat.py`
+- **CombatParticipant** (195 connections) — `server/models/combat.py`
 - **CombatTurnProcessor** (61 connections) — `server/services/combat_turn_processor.py`
-- **models/combat.py** (58 connections) — `server/models/combat.py`
+- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
 - **test_combat_turn_processor.py** (50 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **combat_turn_participant_actions.py** (47 connections) — `server/services/combat_turn_participant_actions.py`
-- **CombatParticipantType** (44 connections) — `server/models/combat.py`
-- **test_combat_attack_handler.py** (38 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
 - **CombatAction** (29 connections) — `server/models/combat.py`
-- **test_damage_grace_period.py** (28 connections) — `server/tests/unit/services/test_damage_grace_period.py`
 - **asyncio** (27 connections)
-- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
 - **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **combat_attack_handler.py** (17 connections) — `server/services/combat_attack_handler.py`
-- **CombatStatus** (13 connections) — `server/models/combat.py`
-- **test_combat_turn_participant_actions.py** (13 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
 - **._execute_spell_action()** (12 connections) — `server/services/combat_turn_processor.py`
-- **_weapon_damage_from_equipped_player()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_npc_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
-- **process_player_turn()** (10 connections) — `server/services/combat_turn_participant_actions.py`
 - **._execute_queued_action()** (10 connections) — `server/services/combat_turn_processor.py`
-- **_get_combat_container_services()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **resolve_player_attack_damage()** (9 connections) — `server/services/combat_turn_participant_actions.py`
-- **_execute_player_attack()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
 - **._build_spell_target()** (7 connections) — `server/services/combat_turn_processor.py`
-- *... and 251 more nodes in this community*
+- **._execute_default_action()** (7 connections) — `server/services/combat_turn_processor.py`
+- **._execute_participant_action()** (7 connections) — `server/services/combat_turn_processor.py`
+- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
+- **._get_player_and_room_for_spell()** (7 connections) — `server/services/combat_turn_processor.py`
+- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence()** (7 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **._execute_attack_action()** (6 connections) — `server/services/combat_turn_processor.py`
+- **._finalize_spell_execution()** (6 connections) — `server/services/combat_turn_processor.py`
+- **._get_spell_for_action()** (6 connections) — `server/services/combat_turn_processor.py`
+- **._is_npc_still_in_world()** (6 connections) — `server/services/combat_turn_processor.py`
+- **_stale_queued_attack_rows()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **test_execute_participant_action_valid_queued_attack()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **test_execute_queued_attack_action()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **test_execute_queued_spell_without_magic_service()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- **_unarmed_fallback_player_target_pair()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
+- *... and 201 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (55 shared connections)
-- [CombatInstance](CombatInstance.md) (45 shared connections)
-- [test_combat.py](test_combat.py.md) (42 shared connections)
-- [get_logger](get_logger.md) (28 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (27 shared connections)
-- [TargetType](TargetType.md) (14 shared connections)
-- [CombatAttackHandler](CombatAttackHandler.md) (13 shared connections)
-- [CombatParticipantData](CombatParticipantData.md) (12 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (12 shared connections)
-- [combat_service_npc.py](combat_service_npc.py.md) (12 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (10 shared connections)
-- [TargetMatch](TargetMatch.md) (10 shared connections)
+- [CombatInstance](CombatInstance.md) (49 shared connections)
+- [CombatService](CombatService.md) (40 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (19 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (12 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (10 shared connections)
+- [NATSError](NATSError.md) (9 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (8 shared connections)
+- [combat_service_npc.py](combat_service_npc.py.md) (8 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (5 shared connections)
+- [test_combat_death_handler.py](test_combat_death_handler.py.md) (3 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_targeting.py`
 - `server/models/combat.py`
-- `server/services/combat_attack_handler.py`
-- `server/services/combat_turn_participant_actions.py`
+- `server/services/combat_service.py`
 - `server/services/combat_turn_processor.py`
 - `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_combat_attack_handler.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
 - `server/tests/unit/services/test_combat_turn_processor.py`
-- `server/tests/unit/services/test_combat_types.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 814 (94%)
-- INFERRED: 52 (6%)
+- EXTRACTED: 563 (94%)
+- INFERRED: 35 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

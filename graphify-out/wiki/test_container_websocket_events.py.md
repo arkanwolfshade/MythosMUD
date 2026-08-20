@@ -1,6 +1,6 @@
 # test_container_websocket_events.py
 
-> 43 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -26,19 +26,19 @@
 - **test_emit_container_opened_with_owner_id()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
 - **test_emit_container_updated()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
 - **test_emit_container_updated_empty_diff()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
 - **datetime** (3 connections)
 - **ContainerComponent** (2 connections)
-- **Container WebSocket event emission for unified container system. As documented…** (1 connections) — `server/services/container_websocket_events.py`
-- *... and 18 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
+- [models/container.py](models-container.py.md) (12 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [test_game_tick_death.py](test_game_tick_death.py.md) (2 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
 - [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [ContainerLockState](ContainerLockState.md) (2 shared connections)
-- [mock_container](mock_container.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCStartupService](NPCStartupService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 106 (100%)
+- EXTRACTED: 109 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

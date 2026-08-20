@@ -1,51 +1,35 @@
 # asyncio
 
-> 68 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (21 connections)
-- **ConnectionManager** (19 connections)
-- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitCloseContainerEvent** (11 connections) — `server/tests/unit/api/test_container_events.py`
-- **_assert_warning_once()** (10 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitContainerOpenedEvents** (9 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_to_container_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_to_player_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitTransferEventDirections** (7 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_success()** (7 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_validation_error()** (7 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_close_container_event_persistence_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_validation_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_missing_mutation_token()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_container_opened_events_room_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_connection_manager()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_container_in_result()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_no_room_id()** (6 connections) — `server/tests/unit/api/test_container_events.py`
-- **ContainerComponent** (6 connections)
-- **TestEmitContainerOpenedEventsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_events.py`
-- **mock_connection_manager()** (5 connections) — `server/tests/unit/api/test_container_events.py`
-- **sample_container_component()** (5 connections) — `server/tests/unit/api/test_container_events.py`
-- *... and 43 more nodes in this community*
+- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
+- **asyncio** (5 connections)
+- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (33 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (10 shared connections)
-- [ContainerComponent](ContainerComponent.md) (7 shared connections)
-- [ConnectionManager](ConnectionManager.md) (6 shared connections)
+- [test_party_service.py](test_party_service.py.md) (5 shared connections)
+- [.__post_init__](__post_init__.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 153 (91%)
-- INFERRED: 16 (9%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

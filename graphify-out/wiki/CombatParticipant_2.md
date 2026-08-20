@@ -1,6 +1,6 @@
 # CombatParticipant
 
-> God node · 194 connections · `server/models/combat.py`
+> God node · 195 connections · `server/models/combat.py`
 
 **Community:** [CombatParticipant](CombatParticipant.md)
 
@@ -8,14 +8,15 @@
 
 ### calls
 - _make_participant() `EXTRACTED`
-- _make_participant() `EXTRACTED`
 - _combat_instance() `EXTRACTED`
 - _make_participant() `EXTRACTED`
-- test_get_combat_target_auto_selects_opponent() `EXTRACTED`
 - _participant() `EXTRACTED`
 - _make_participant() `EXTRACTED`
-- test_run_handle_taunt_success() `EXTRACTED`
+- test_get_combat_target_auto_selects_opponent() `EXTRACTED`
 - _attack_participant() `EXTRACTED`
+- _make_participant() `EXTRACTED`
+- test_run_handle_taunt_success() `EXTRACTED`
+- test_apply_taunt_and_maybe_broadcast_publishes_target_switch_to_nats() `EXTRACTED`
 - _make_participant() `EXTRACTED`
 - test_process_npc_turn_calls_process_attack_when_target_resolved() `EXTRACTED`
 - _stale_queued_attack_rows() `EXTRACTED`
@@ -26,7 +27,6 @@
 - _build_participant() `EXTRACTED`
 - test_combat_instance_queue_action() `EXTRACTED`
 - test_resolve_npc_target_broadcasts_when_aggro_switches() `EXTRACTED`
-- test_resolve_npc_target_uses_aggro_current_target() `EXTRACTED`
 
 ### contains
 - models/combat.py `EXTRACTED`
@@ -34,13 +34,13 @@
 ### imports
 - combat_service.py `EXTRACTED`
 - [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
-- [test_combat.py](test_combat.py.md) `EXTRACTED`
+- test_combat.py `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
-- combat_turn_participant_actions.py `EXTRACTED`
-- test_combat_attack_handler.py `EXTRACTED`
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) `EXTRACTED`
 - [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - test_combat_flee_handler.py `EXTRACTED`
-- combat_taunt.py `EXTRACTED`
 - [combat_service_npc.py](combat_service_npc.py.md) `EXTRACTED`
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) `EXTRACTED`
 - test_combat_service_npc_helpers.py `EXTRACTED`
@@ -69,21 +69,21 @@
 - add_heal_threat() `EXTRACTED`
 - _validate_taunt_context() `EXTRACTED`
 - ._execute_spell_action() `EXTRACTED`
+- _apply_taunt_and_maybe_broadcast() `EXTRACTED`
 - _check_involuntary_flee_with_session() `EXTRACTED`
+- finalize_attack_result() `EXTRACTED`
 - _weapon_damage_from_equipped_player() `EXTRACTED`
 - _resolve_npc_target() `EXTRACTED`
-- finalize_attack_result() `EXTRACTED`
 - process_npc_turn() `EXTRACTED`
 - process_player_turn() `EXTRACTED`
 - ._execute_queued_action() `EXTRACTED`
 - _resolve_taunt_combat_and_participant() `EXTRACTED`
-- _apply_taunt_and_maybe_broadcast() `EXTRACTED`
 - ._apply_damage() `EXTRACTED`
 - ._create_corpse_on_death() `EXTRACTED`
 - ._publish_attack_events() `EXTRACTED`
 - check_involuntary_flee() `EXTRACTED`
+- apply_damage_and_check_involuntary_flee() `EXTRACTED`
 - validate_melee_location() `EXTRACTED`
-- validate_melee_or_end_combat() `EXTRACTED`
 
 ---
 

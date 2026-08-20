@@ -1,6 +1,6 @@
 # test_magic_commands.py
 
-> 131 nodes
+> 132 nodes
 
 ## Key Concepts
 
@@ -29,22 +29,22 @@
 - **._build_cast_success_message()** (4 connections) — `server/commands/magic_commands.py`
 - **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
 - **._build_spell_detail_lines()** (4 connections) — `server/commands/magic_commands.py`
-- *... and 106 more nodes in this community*
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (12 shared connections)
-- [command_service.py](command_service.py.md) (7 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (6 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (6 shared connections)
-- [test_rest_command.py](test_rest_command.py.md) (5 shared connections)
-- [SpellLearningService](SpellLearningService.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [magic_service.py](magic_service.py.md) (9 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (7 shared connections)
+- [command_service.py](command_service.py.md) (6 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [SpellLearningService](SpellLearningService.md) (2 shared connections)
 - [ChatService](ChatService.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (1 shared connections)
-- [Spell](Spell.md) (1 shared connections)
-- [TestHelperFunctions](TestHelperFunctions.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 244 (90%)
+- EXTRACTED: 245 (90%)
 - INFERRED: 27 (10%)
 - AMBIGUOUS: 0 (0%)
 

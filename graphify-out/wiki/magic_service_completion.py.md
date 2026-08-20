@@ -32,16 +32,15 @@
 
 ## Relationships
 
-- [magic_service.py](magic_service.py.md) (5 shared connections)
+- [magic_service.py](magic_service.py.md) (6 shared connections)
 - [TargetMatch](TargetMatch.md) (4 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [Spell](Spell.md) (2 shared connections)
-- [SpellLearningService](SpellLearningService.md) (2 shared connections)
-- [PlayerService](PlayerService.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (2 shared connections)
 - [CombatService](CombatService.md) (2 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
+- [SpellLearningService](SpellLearningService.md) (1 shared connections)
+- [User](User.md) (1 shared connections)
 
 ## Source Files
 

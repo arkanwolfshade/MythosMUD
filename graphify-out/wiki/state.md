@@ -1,61 +1,65 @@
 # .state
 
-> 43 nodes
+> 54 nodes
 
 ## Key Concepts
 
 - **.state()** (37 connections) — `server/realtime/connection_state_machine.py`
-- **UUID** (14 connections)
-- **Any** (13 connections)
-- **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
-- **.connection_manager()** (9 connections) — `server/realtime/nats_message_handler.py`
-- **._get_player_data_for_client()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_player_name_with_grace_periods()** (8 connections) — `server/realtime/integration/game_state_provider.py`
-- **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._process_occupants_with_grace_periods()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **._convert_player_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **.convert_room_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_following_for_client()** (6 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_player()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **._get_room_data_with_conversion()** (5 connections) — `server/realtime/integration/game_state_provider.py`
-- **Player** (5 connections)
-- **.get_npcs_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.get_room_occupants()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **_not_configured_async()** (3 connections) — `server/realtime/nats_message_handler.py`
-- **Any** (2 connections)
-- **setter** (1 connections)
-- **Current FSM state as a single State. Uses python-statemachine 3.x configuration…** (1 connections) — `server/realtime/connection_state_machine.py`
-- *... and 18 more nodes in this community*
+- **handle_emote_command()** (16 connections) — `server/commands/emote_commands.py`
+- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
+- **emote_commands.py** (13 connections) — `server/commands/emote_commands.py`
+- **exploration_commands.py** (11 connections) — `server/commands/exploration_commands.py`
+- **handle_explore_command()** (9 connections) — `server/commands/exploration_commands.py`
+- **test_emote_commands.py** (8 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Any** (6 connections)
+- **test_exploration_commands.py** (6 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **_get_emote_services()** (5 connections) — `server/commands/emote_commands.py`
+- **asyncio** (5 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_predefined_emote()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_explore_command()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_time_command_holiday_service_error()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holiday_service()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_no_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **test_handle_time_command_success()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [build_event](build_event.md) (18 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
 - [command_service.py](command_service.py.md) (3 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (3 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (3 shared connections)
 - [real_time.py](real_time.py.md) (2 shared connections)
-- [communication_commands_flows.py](communication_commands_flows.py.md) (2 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (2 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
-- [.on_enter_state](on_enter_state.md) (1 shared connections)
-- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (1 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
-- [processing.py](processing.py.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
+- [server/commands/__init__.py](server-commands-__init__.py.md) (2 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (2 shared connections)
+- [server/config/__init__.py](server-config-__init__.py.md) (2 shared connections)
+- [test_go_command.py](test_go_command.py.md) (2 shared connections)
 
 ## Source Files
 
+- `server/commands/emote_commands.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/time_commands.py`
 - `server/realtime/connection_state_machine.py`
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/commands/test_emote_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/tests/unit/commands/test_time_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 93 (70%)
-- INFERRED: 40 (30%)
+- EXTRACTED: 106 (74%)
+- INFERRED: 37 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

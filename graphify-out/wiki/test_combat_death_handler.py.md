@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [CombatParticipant](CombatParticipant.md) (5 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [CombatInstance](CombatInstance.md) (1 shared connections)
 

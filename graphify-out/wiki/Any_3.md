@@ -1,35 +1,43 @@
 # Any
 
-> 11 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **Any** (7 connections)
-- **.to_dict()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.dequeue()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.dequeue_async()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.get_statistics()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **.list_messages()** (3 connections) — `server/realtime/dead_letter_queue.py`
-- **Retrieve and remove oldest message from DLQ (async version). Returns: Message…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Retrieve and remove oldest message from DLQ (sync version). Returns: Message…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Get DLQ statistics. Returns: Dictionary with DLQ metrics AI: For monitoring…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **List messages in DLQ without removing them. Args: limit: Maximum number of…** (1 connections) — `server/realtime/dead_letter_queue.py`
-- **Convert message to dictionary for JSON serialization.** (1 connections) — `server/realtime/dead_letter_queue.py`
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
+- **.get_exit_target()** (3 connections) — `schemas/validator.py`
+- **._load_schema()** (3 connections) — `schemas/validator.py`
+- **Path** (3 connections)
+- **Validate a room file against the schema. Args: file_path: Path to the room JSON…** (1 connections) — `schemas/validator.py`
+- **Validate all rooms in a database against the schema. Args: room_database:…** (1 connections) — `schemas/validator.py`
+- **Validate a serialized alias bundle against the alias schema. Args: alias_data:…** (1 connections) — `schemas/validator.py`
+- **Validate emote definition data against the emote schema. Args: emote_data:…** (1 connections) — `schemas/validator.py`
+- **Extract target room ID from exit data, handling both formats. Args: exit_data:…** (1 connections) — `schemas/validator.py`
+- **Extract flags from exit data, handling both formats. Args: exit_data: Exit data…** (1 connections) — `schemas/validator.py`
+- **Initialize the schema validator. Args: schema_path: Path to the JSON schema…** (1 connections) — `schemas/validator.py`
+- **Load and cache the JSON schema.** (1 connections) — `schemas/validator.py`
+- **Validate a JSON document against the loaded schema. Args: data: Data to…** (1 connections) — `schemas/validator.py`
+- **Validate a single room against the schema. Args: room_data: Room data to…** (1 connections) — `schemas/validator.py`
 
 ## Relationships
 
-- [DeadLetterQueue](DeadLetterQueue.md) (4 shared connections)
-- [DeadLetterMessage](DeadLetterMessage.md) (1 shared connections)
-- [.from_dict](from_dict.md) (1 shared connections)
-- [Path](Path.md) (1 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 
 ## Source Files
 
-- `server/realtime/dead_letter_queue.py`
+- `schemas/validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

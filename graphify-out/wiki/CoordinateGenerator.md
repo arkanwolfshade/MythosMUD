@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (4 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

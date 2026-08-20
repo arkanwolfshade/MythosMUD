@@ -24,8 +24,8 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [magic_service.py](magic_service.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

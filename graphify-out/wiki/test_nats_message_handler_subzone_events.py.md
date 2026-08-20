@@ -28,9 +28,9 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (8 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 - [test_subscribe_to_subzone_no_subject_manager](test_subscribe_to_subzone_no_subject_manager.md) (1 shared connections)
 - [test_subscribe_to_event_subjects_partial_failure](test_subscribe_to_event_subjects_partial_failure.md) (1 shared connections)
 - [test_unsubscribe_from_subzone_decrease_count](test_unsubscribe_from_subzone_decrease_count.md) (1 shared connections)

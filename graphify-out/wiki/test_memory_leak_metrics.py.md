@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [lifespan.py](lifespan.py.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

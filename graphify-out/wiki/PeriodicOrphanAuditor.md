@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
 - [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
 - [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

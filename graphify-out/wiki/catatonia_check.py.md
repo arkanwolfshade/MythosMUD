@@ -33,16 +33,12 @@
 
 ## Relationships
 
-- [TestHelperFunctions](TestHelperFunctions.md) (17 shared connections)
-- [LucidityService](LucidityService.md) (5 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (23 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [pytest.md](pytest.md.md) (6 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
-- [WebSocketRequestContext](WebSocketRequestContext.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AliasGraph](AliasGraph.md) (2 shared connections)
+- [command_input.py](command_input.py.md) (2 shared connections)
 - [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
 - [TestCheckRateLimit](TestCheckRateLimit.md) (1 shared connections)
 - [TestValidateCommandBasics](TestValidateCommandBasics.md) (1 shared connections)
 

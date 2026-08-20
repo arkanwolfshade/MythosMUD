@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (9 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (8 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

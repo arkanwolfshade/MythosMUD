@@ -34,10 +34,8 @@
 ## Relationships
 
 - [NATSService](NATSService.md) (8 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
-- [NATSSubscribeError](NATSSubscribeError.md) (1 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (7 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 - [.disconnect](disconnect.md) (1 shared connections)
 
 ## Source Files

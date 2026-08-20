@@ -12,7 +12,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_security_headers.py](test_security_headers.py.md) (1 shared connections)
 
 ## Source Files
 

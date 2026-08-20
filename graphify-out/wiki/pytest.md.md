@@ -1,78 +1,78 @@
 # pytest.md
 
-> 379 nodes
+> 505 nodes
 
 ## Key Concepts
 
 - **pytest.md** (518 connections) — `.claude/rules/pytest.md`
-- **User** (293 connections) — `server/models/user.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **Invite** (52 connections) — `server/models/invite.py`
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **InviteManager** (32 connections) — `server/auth/invites.py`
-- **register_user()** (32 connections) — `server/auth/endpoints.py`
-- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
-- **UserCreate** (24 connections) — `server/auth/endpoints.py`
-- **test_endpoints_register.py** (23 connections) — `server/tests/unit/auth/test_endpoints_register.py`
-- **test_invite_manager.py** (22 connections) — `server/tests/unit/auth/test_invite_manager.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **auth/dependencies.py** (19 connections) — `server/auth/dependencies.py`
-- **test_invite.py** (17 connections) — `server/tests/unit/models/test_invite.py`
-- **test_invite_schemas.py** (17 connections) — `server/tests/unit/schemas/test_invite_schemas.py`
-- **test_endpoints_invites.py** (15 connections) — `server/tests/unit/auth/test_endpoints_invites.py`
-- **test_user_schemas.py** (15 connections) — `server/tests/unit/schemas/test_user_schemas.py`
-- **list_invites()** (14 connections) — `server/auth/endpoints.py`
-- **asyncio** (14 connections)
-- **asyncio** (14 connections)
-- **schemas/auth/__init__.py** (13 connections) — `server/schemas/auth/__init__.py`
-- **InviteRead** (12 connections) — `server/schemas/auth/invite.py`
-- **get_current_superuser()** (12 connections) — `server/auth/dependencies.py`
-- **create_invite()** (12 connections) — `server/auth/endpoints.py`
-- *... and 354 more nodes in this community*
+- **Player** (232 connections) — `server/models/player.py`
+- **models/player.py** (98 connections) — `server/models/player.py`
+- **PlayerLucidity** (69 connections) — `server/models/lucidity.py`
+- **test_player_respawn_service.py** (55 connections) — `server/tests/unit/services/test_player_respawn_service.py`
+- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
+- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **player_respawn_service.py** (40 connections) — `server/services/player_respawn_service.py`
+- **lucidity.py** (35 connections) — `server/models/lucidity.py`
+- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
+- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
+- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
+- **asyncio** (27 connections)
+- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
+- **asyncio** (23 connections)
+- **LucidityCooldown** (22 connections) — `server/models/lucidity.py`
+- **LucidityAdjustmentLog** (20 connections) — `server/models/lucidity.py`
+- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
+- **PlayerInventory** (16 connections) — `server/models/player.py`
+- **_MockAsyncSession** (16 connections) — `server/tests/unit/services/test_lucidity_repository.py`
+- **PlayerChannelPreferences** (15 connections) — `server/models/player.py`
+- **lucidity_repository.py** (13 connections) — `server/services/lucidity_repository.py`
+- **test_procedures_return_shape.py** (13 connections) — `server/tests/integration/test_procedures_return_shape.py`
+- *... and 480 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (65 shared connections)
-- [DatabaseError](DatabaseError.md) (60 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (37 shared connections)
-- [test_users.py](test_users.py.md) (32 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (29 shared connections)
-- [get_logger](get_logger.md) (27 shared connections)
-- [ExplorationService](ExplorationService.md) (25 shared connections)
-- [PlayerService](PlayerService.md) (23 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (20 shared connections)
-- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (15 shared connections)
-- [BaseCommand](BaseCommand.md) (13 shared connections)
-- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (121 shared connections)
+- [LucidityService](LucidityService.md) (31 shared connections)
+- [command_result_text](command_result_text.md) (20 shared connections)
+- [coerce_int](coerce_int.md) (17 shared connections)
+- [ValidationError](ValidationError.md) (17 shared connections)
+- [PlayerRespawnService](PlayerRespawnService.md) (13 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (13 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (13 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (12 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (12 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (11 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (11 shared connections)
 
 ## Source Files
 
 - `.claude/rules/pytest.md`
-- `server/auth/dependencies.py`
-- `server/auth/endpoints.py`
-- `server/auth/invites.py`
-- `server/auth/users.py`
-- `server/models/invite.py`
-- `server/models/user.py`
-- `server/schemas/auth/__init__.py`
-- `server/schemas/auth/invite.py`
-- `server/schemas/auth/user.py`
-- `server/schemas/shared/base.py`
+- `server/models/lucidity.py`
+- `server/models/player.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/persistence/repositories/player_repository_mappers.py`
+- `server/persistence/repositories/player_repository_save.py`
+- `server/services/lucidity_repository.py`
+- `server/services/player_respawn_service.py`
 - `server/tests/integration/test_db_connectivity.py`
-- `server/tests/unit/auth/test_auth_dependencies.py`
-- `server/tests/unit/auth/test_endpoints_invites.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
-- `server/tests/unit/auth/test_endpoints_register.py`
-- `server/tests/unit/auth/test_invite_manager.py`
-- `server/tests/unit/models/test_invite.py`
-- `server/tests/unit/models/test_user.py`
+- `server/tests/integration/test_lucidity_round_trip.py`
+- `server/tests/integration/test_procedures_return_shape.py`
+- `server/tests/unit/infrastructure/conftest.py`
+- `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- `server/tests/unit/models/test_game_inventory_item.py`
+- `server/tests/unit/models/test_lucidity_models.py`
+- `server/tests/unit/models/test_player_model.py`
+- `server/tests/unit/models/test_player_related_models.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
+- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1459 (89%)
-- INFERRED: 176 (11%)
+- EXTRACTED: 1628 (90%)
+- INFERRED: 181 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

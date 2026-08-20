@@ -33,10 +33,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
-- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (1 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (3 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
+- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
 
 ## Source Files
 

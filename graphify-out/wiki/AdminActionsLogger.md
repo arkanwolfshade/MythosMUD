@@ -33,17 +33,17 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
 - [test_goto_helpers.py](test_goto_helpers.py.md) (4 shared connections)
 - [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
 - [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (3 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (2 shared connections)
-- [admin_shutdown_command.py](admin_shutdown_command.py.md) (1 shared connections)
-- [test_admin_commands.py](test_admin_commands.py.md) (1 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [command_service.py](command_service.py.md) (1 shared connections)
 - [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
+- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
 - [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -1,16 +1,12 @@
 # validate_room_data
 
-> 63 nodes
+> 36 nodes
 
 ## Key Concepts
 
 - **validate_room_data()** (17 connections) — `server/world_loader.py`
-- **world_loader.py** (14 connections) — `server/world_loader.py`
-- **get_room_environment()** (13 connections) — `server/world_loader.py`
-- **TestGetRoomEnvironment** (11 connections) — `server/tests/unit/test_world_loader.py`
 - **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
 - **test_world_loader.py** (11 connections) — `server/tests/unit/test_world_loader.py`
-- **create_validator()** (10 connections) — `schemas/validator.py`
 - **generate_room_id()** (9 connections) — `server/world_loader.py`
 - **patch** (8 connections)
 - **TestGenerateRoomId** (6 connections) — `server/tests/unit/test_world_loader.py`
@@ -26,34 +22,32 @@
 - **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
 - **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- *... and 38 more nodes in this community*
+- **SchemaValidator** (1 connections)
+- **Unit tests for world loader utility functions. Tests room ID generation,…** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns empty list when validation not available.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() with provided validator.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() creates validator when not provided.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns validation errors.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (6 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [ValidationError](ValidationError.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [log_and_raise_enhanced](log_and_raise_enhanced.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [EmoteService](EmoteService.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (3 shared connections)
 - [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/validator.py`
 - `server/tests/unit/test_world_loader.py`
 - `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 67 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,30 +1,30 @@
-# Graph Report - MythosMUD  (2026-08-19)
+# Graph Report - MythosMUD  (2026-08-20)
 
 ## Corpus Check
-- 3353 files · ~2,986,553 words
+- 3351 files · ~3,011,304 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 54194 nodes · 101857 edges · 2258 communities (1684 shown, 574 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 5655 edges (avg confidence: 0.56)
+- 54176 nodes · 101827 edges · 2189 communities (1672 shown, 517 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 5663 edges (avg confidence: 0.56)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf127a66`
+- Built from commit: `ba95551b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- get_session_maker
+- generate_invites_db.py
 - ContainerComponent
 - NPCDefinition
-- get_admin_auth_service
+- dialogue_definitions_api.py
 - inventory_command_helpers.py
 - get_logger
-- BaseCommand
+- ValidationError
 - AliasStorage
-- ExplorationService
-- Player
+- maps.py
+- pytest.md
 - NPCCombatIntegrationService
 - test_combat_service.py
 - NATSServicePoolMixin
@@ -33,20 +33,20 @@
 - EldritchIcon.tsx
 - CombatParticipant
 - Stats
-- EventBus
+- NPCLifecycleManager
 - server/dependencies.py
-- ConnectionManager
+- connection_manager_methods.py
 - test_security_validator.py
-- test_connection_delegates.py
-- HolidayService
-- ui-v2/types.ts
+- MythosMUDError
+- server/schemas/__init__.py
+- eventHandlers/types.ts
 - NATSService
 - test_websocket_handler_core.py
 - is_player_in_login_grace_period
-- test_container_bundles.py
-- test_containers.py
-- EventHandler
-- exception_metrics.py
+- ApplicationContainer
+- models/container.py
+- nats_exceptions.py
+- NPCSpawningService
 - InventoryCommandFactory
 - PrototypeRegistryError
 - api/monitoring.py
@@ -54,102 +54,102 @@
 - CombatService
 - canonical_room_id_impl
 - Any
-- ApplicationContainer
-- test_player_respawn_service.py
-- LootAllRequest
+- .get_instance
+- test_look_player.py
+- transfer_all_items_from_container
 - WebSocketMessageValidator
-- combat_service.py
+- NATSError
 - ChatService
-- players.py
-- test_admin_commands.py
+- User
+- command_service.py
 - lifecycle_manager.py
-- test_container_persistence_crud.py
-- test_lucidity_models.py
+- ContainerRepository
+- StandardizedErrorResponse
 - test_command_inventory.py
 - Communities (355 total, 223 thin omitted)
 - test_connection_helpers_impl.py
 - server/models/game.py
-- test_player_model.py
+- look_command.py
 - SpellEffectType
-- message_handler_factory.py
-- ErrorMessages
+- test_message_handler_factory.py
+- mock_connection_manager
 - CombatInstance
-- test_combat.py
+- test_combat_cleanup_handler.py
 - RateLimiter
 - admin_teleport_commands.py
 - TargetResolutionService
 - test_aggro_threat.py
 - test_nats_message_handler.py
-- PlayerStateCommandFactory
+- Invite
 - NPCCombatUUIDMapping
 - PassiveMobNPC
 - Profession
 - test_manager.py
-- UtilityCommandFactory
-- test_command_communication.py
-- test_command_moderation.py
+- field_validator
+- test_websocket_helpers.py
+- PopulationStats
 - RoomLoader
 - PlayerCombatService
 - DatabaseManager
 - get_npc_instance_service
-- ContainerData
+- test_container_persistence_extended_crud.py
 - test_logging_handlers.py
-- PlayerLucidity
-- test_schedule_service.py
+- rescue_commands.py
+- _MagicServiceCore
 - test_look_container.py
-- format_player_entry
-- ExplorationCommandFactory
+- test_who_commands.py
+- test_player_event_handlers_respawn.py
 - test_player_disconnect_handlers.py
-- test_look_player.py
-- test_zone_config_loader.py
+- test_look_helpers.py
+- ZoneConfiguration
 - test_player_presence_tracker.py
 - build_event
 - catatonia_check.py
-- ContainerServiceError
+- test_active_lucidity_service.py
 - TestMonitoringEndpoints
 - UserManager
-- test_argon2_utils.py
+- test_async_persistence_delegates.py
 - test_chat_npc_system.py
 - NPCThreadManager
 - chatPanelRuntimeUtils.ts
-- communication_commands_flows.py
+- test_communication_commands_flows.py
 - test_combat_monitoring_service.py
 - TestHelperFunctions
 - test_combat_service_modules.py
-- test_auth_utils.py
-- test_npc_utils.py
+- setup_jwt_secret
+- population_control.py
 - ExceptionTracker
 - request_with_app_container
 - test_room_renderer.py
-- test_event_bus.py
+- EventBus
 - Room
 - test_player_death_service.py
 - test_logging_utilities.py
-- CorpseOverlay.tsx
+- gameStore.ts
 - test_character_creation_service.py
 - test_container_helpers_inventory_find.py
-- look_command.py
-- get_npc_session
-- ContainerSourceType
-- persistence/container_persistence.py
+- test_look_room.py
+- npc_database.py
+- GameTerminal.tsx
+- container_persistence.py
 - ErrorType
-- websocket_handler.py
-- test_npc_definitions_api.py
+- test_websocket_initial_state.py
+- get_admin_auth_service
 - FeatureFlagService
 - Reporter
-- magic_service.py
+- test_magic_service.py
 - HealthStatus
 - manager.py
-- test_world.py
+- combat_loader.py
 - test_combat_validator.py
-- ChatMessage
-- MythosChronicle
+- chat_service.py
+- config/models/__init__.py
 - test_container_helpers_inventory_ops.py
 - lifespan_startup.py
 - CircuitBreaker
-- ScheduleEntry
+- LucidityFluxService
 - SchemaValidator
-- CommandPanel.tsx
+- ChatPanelRuntimeViewParts.tsx
 - login_user
 - NATSRetryHandler
 - test_nats_broker.py
@@ -157,35 +157,35 @@
 - test_message_handlers.py
 - test_level_service.py
 - NATSMessageSubscriptionMixin
-- PanelState
-- position_commands.py
+- ui-v2/types.ts
+- server/commands/__init__.py
 - test_metrics_endpoints.py
 - test_status_commands.py
-- NATSError
+- test_nats_service.py
 - test_quest_service.py
-- deleteCharacterFlow.ts
-- npc_combat_integration_service.py
-- test_command_combat.py
+- errorHandler.ts
+- NPCCombatMemory
+- NATSMetrics
 - waitForMessage
 - test_logging_processors.py
 - manual_dependency_analysis.py
-- ScheduleService
+- bundles/game.py
 - TargetMatch
-- api/game.py
+- NATSMessageHandler
 - test_go_command.py
 - test_connection_disconnection.py
 - test_follow_service.py
-- test_command_parser.py
-- test_room_id_utils.py
+- test_command_processor.py
+- NPCOccupantProcessor
 - CombatConfiguration
-- test_npc_event_handlers.py
-- test_npc_combat_integration_class.py
+- NPCEnteredRoom
+- NPCCombatIntegration
 - combat_turn_participant_actions.py
 - QuestService
 - test_room_sync_service.py
 - test_npc_service.py
-- CreateItemInstanceInput
-- bundles/game.py
+- item_instance_persistence_async.py
+- test_skill_use_log_repository.py
 - debrief_command.py
 - combat_service_npc.py
 - test_corpse_lifecycle_service.py
@@ -193,13 +193,13 @@
 - test_movement_service.py
 - ._get_room_uuid_by_stable_id
 - test_rate_limiter_utils.py
-- _handle_admin_set_stat_command
+- test_admin_setstat_command.py
 - test_inventory_display_helpers.py
-- PlayerPositionService
-- test_player_event_handlers_room_left.py
+- .change_position
+- CombatCommandHandler
 - combat_taunt.py
 - test_websocket_handler_coverage_gaps.py
-- PanelPosition
+- CombatValidator
 - test_admin_setlucidity_command.py
 - CombatAuditLogger
 - test_wearable_container_service.py
@@ -207,7 +207,7 @@
 - submitAuth.ts
 - StyleGuideSections.tsx
 - test_combat_flee_helpers.py
-- PlayerEventHandlerUtils
+- player_event_handlers.py
 - test_websocket_handler_validation_errors.py
 - compare_linting_results.py
 - JsonMap
@@ -217,55 +217,55 @@
 - test_nats_message_handler_subzone_events.py
 - websocket_handler_commands.py
 - GameLogPanel.tsx
-- real_time.py
-- test_rest_command.py
-- test_chat_message_senders.py
+- register_user
+- PlayerPositionService
+- ChatMessage
 - test_party_service.py
 - fixtures/auth.ts
 - test_item.py
-- Any
+- Player
 - test_metrics.py
 - test_skill_service.py
 - useGameClientV2Container.ts
 - test_logout_commands.py
-- test_connection_session_management.py
+- RoomSubscriptionManager
 - test_connection_establishment.py
 - test_error_handling_middleware.py
 - CatatoniaRegistry
-- connection_manager_health_cleanup.py
+- test_connection_error_methods.py
 - test_connection_statistics.py
 - test_combat_attack_handler.py
 - test_channel_commands.py
-- asyncio
+- test_command_service.py
 - test_room_subscription_manager_drops.py
 - MonitoringDashboard
-- test_lifecycle_periodic.py
+- lifespan.py
 - player_combat_service_support.py
-- WearableContainerService
+- test_look_npc_helpers.py
 - test_player_service_mutations.py
 - PlayerGuidFormatter
-- gameStore.ts
+- mapUtils.ts
 - LogAggregator
-- DialogueService
-- create_error_context
+- talk_command.py
+- test_error_logging.py
 - NATSMessageBroker
 - test_websocket_messages.py
 - test_validation.py
 - test_rate_limiter.py
-- _check_grace_period_block
+- WebSocketRequestContext
 - devDependencies
 - test_movement_monitor.py
 - test_container_persistence_async_helpers.py
-- test_player_related_models.py
-- test_hallucination_services.py
+- PydanticErrorHandler
+- FakeHallucinationService
 - RoomDataCache
 - AsyncPersistenceLayer
 - IdleMovementHandler
 - useAsciiMapState.ts
-- quest_service.py
+- collect_inventory.py
 - GameTickService
-- test_player_event_handlers_respawn.py
-- useMythosAppState.ts
+- PlayerRespawnEventHandler
+- useMythosAppActions.ts
 - GameClientV2ContainerView.tsx
 - ClientLogger
 - testing_examples.py
@@ -274,70 +274,70 @@
 - CombatMonitoringService
 - test_message_filtering.py
 - test_rescue_service.py
-- SpellRegistry
+- magic_service.py
 - test_map_helpers.py
 - test_nats_messages.py
-- CombatParticipantType
+- test_command_parser_helpers.py
 - server/services/nats_subject_manager/__init__.py
 - test_lucidity_recovery_commands.py
-- asyncio
+- test_user_manager.py
 - test_security_headers.py
 - test_command_validator.py
 - quality_fragmentation_ai_guardrails.py
 - test_chat_nats_publisher.py
-- PartyService
-- CombatCommandHandler
+- _str_id
+- test_flee_command.py
 - test_combat_handler.py
 - ResourceManager
 - inventory_equip_command.py
 - PersonalMessageSender
 - map_minimap.py
-- admin_mute_commands.py
-- test_room_subscription_manager.py
+- chat_channel_message_senders.py
+- TestErrorHandlers
 - MemoryMonitor
 - AliasGraph
-- start_grace_period
+- test_nats_service_health.py
 - resolve_weapon_attack_from_equipped
 - RoomService
-- LucidityService
+- test_lucidity_event_dispatcher.py
 - NPCCombatLucidity
 - AdminActionsLogger
-- test_party_commands.py
+- establish_websocket_connection
 - MovementService
 - TestRoomDataFixer
 - EventBusLifecycleMixin
 - player_service
 - test_admin_summon_command.py
-- test_communication_commands_flows.py
-- NPCOccupantProcessor
+- connection_establishment.py
+- SafeHtml.tsx
 - handle_read_command
-- test_real_time_helpers.py
+- real_time.py
 - inventory_get_command.py
-- test_command_helpers.py
+- get_username_from_user
 - test_shutdown_sequence.py
-- pytest.md
+- test_auth_dependencies.py
 - test_pattern_matcher.py
-- map/types.ts
-- AdminAction
-- test_container_persistence_extended_crud.py
+- RoomNodeData
+- test_admin_auth_service.py
+- test_delete_container_success
 - test_inventory_helpers.py
 - lifespan_protocols.py
 - NPCMovementIntegration
-- ContainerTransferFromMixin
+- ContainerServiceError
 - RoomDataValidator
-- test_admin_auth_service.py
+- PhantomHostileService
 - App.tsx
 - useDraggablePanelInteractions.ts
 - test_login_grace_period_visual_indicator.py
 - apiTypeGuards.ts
 - send_game_event
-- ._init_movement_layer
+- utils.py
 - test_connection_cleaner.py
 - test_rooms_api.py
 - verify_enhanced_logging_compliance.py
 - projectorRoom.ts
 - character-cleanup.ts
-- deque
+- test_message_queue.py
 - MetricsCollector
 - useWebSocketConnection.ts
 - test_admin_shutdown_command.py
@@ -345,28 +345,28 @@
 - test_shopkeeper_npc.py
 - PlayerRepositoryProtocol
 - CombatEventHandler
-- UUID
+- panelReducerHandlers.ts
 - CoordinateGenerator
 - test_windows_safe_rotation.py
 - test_audit_logger.py
 - Test Suite Refactoring Plan
-- command_service.py
+- TargetResolutionResult
 - NATSSubjectManager
-- SpellMaterial
-- AdminRole
+- HallucinationFrequencyService
+- useRespawnHandlers.ts
 - ConnectionCleaner
-- test_profession_repository.py
+- handle_command
 - ChatLogger
 - test_player_occupant_processor.py
 - SkillAssignmentScreen.tsx
 - RoomMapEditorRuntime.tsx
-- _asyncio_mark
+- CommandPanel.tsx
 - fixtures/integration/__init__.py
 - test_lru_cache.py
 - SpellLearningService
-- NPCCombatIntegrationBase
+- server/config/__init__.py
 - game_tick_status_effects.py
-- test_rest_and_grace_period.py
+- disconnect_grace_period.py
 - test_npc_combat_integration_service_player_attacks.py
 - WebSocket Best Practices
 - vim Best Practices and Coding Standards
@@ -375,28 +375,28 @@
 - _NPCCombatIntegrationValidationDeps
 - command_result_text
 - _container_data_to_dict
-- test_player_service.py
-- .get_active_effects_for_player
+- test_inventory_mutation_guard.py
+- player_effect_repository.py
 - useGameTerminal.ts
-- test_logout_commands_helpers.py
+- login_grace_period.py
 - properties
 - properties
 - test_admin_teleport_commands.py
 - test_config_model_helpers.py
-- test_player_effect_repository.py
+- test_lint_raw_sql_in_python.py
 - _make_session_context
 - ChatHistoryPanel.tsx
 - test_memory_leak_metrics.py
 - TestCombatConfigurationService
-- CorpseLifecycleService
+- GameConfig
 - executeCommand
 - Uplift Strategy
-- bind_request_context
+- fastapi_integration.py
 - subject_controller.py
-- PlayerDeathService
+- NATSConfig
 - quest_commands.py
 - NATSMessageBroadcastMixin
-- models/container.py
+- test_container_websocket_events.py
 - test_room_utils.py
 - TestHierarchicalSchema
 - utils/layout.ts
@@ -407,13 +407,13 @@
 - test_game_tick_processing_async.py
 - combat_attack.py
 - GameMechanicsService
-- logger.ts
+- useGameConnectionRefactored.ts
 - test_message_broadcaster.py
-- test_event_publisher.py
+- asyncio
 - Memory Leak Prevention System - Implementation Summary
 - deprecated_patterns.py
 - ItemPrototypeModel
-- test_websocket_helpers_player.py
+- websocket_helpers.py
 - debugLogger
 - test_health_monitor.py
 - TestCombatMessagingService
@@ -422,26 +422,26 @@
 - test_quest_commands.py
 - properties
 - player_connection_setup.py
-- Any
+- connection_cleanup_methods.py
 - test_container_query_helpers_async.py
-- test_room_subscription_manager_helpers.py
-- format_message_content
+- ._create_tracked_task
+- get_monitoring_dashboard
 - properties
 - multiplayer-browser-helpers.js
 - Chat Panel Separation Implementation Tasks
 - Async Persistence Migration Plan
 - migration_examples.py
 - game_tick_processing.py
-- lifespan.py
+- MemoryLeakMetricsCollector
 - LRUCache
-- test_lifespan_event_subscriptions.py
-- SpellEffects
-- test_container_persistence.py
+- UserManagerProtocol
+- test_spell_effects.py
+- test_player_position_service.py
 - test_dependency_analysis.py
-- test_combat_persistence_handler_persistence.py
-- test_skills.py
-- test_connection_state_machine.py
-- logout_commands.py
+- AttributeError
+- SkillService
+- NATSConnectionStateMachine
+- active_lucidity_service.py
 - properties
 - mapPageRenderer.tsx
 - useRoomEditModal.ts
@@ -455,7 +455,7 @@
 - properties
 - enum
 - middleware
-- test_statistics_aggregator.py
+- StatisticsAggregator
 - retry.py
 - .load_room_data
 - authenticated.ts
@@ -465,64 +465,64 @@
 - PrototypeRegistry
 - PostgresConnection
 - TestNPCCombatRewards
-- lucidity_trigger_handlers.py
+- LucidityService
 - stateNormalization.ts
 - File-by-File Changes
 - Coverage Improvement Summary - Plan 2 Execution
 - Memory Leak Audit Report
 - enum
 - enum
-- SchemaValidator
+- validate_room_data
 - test_game_tick_processing.py
 - MemoryThresholdMonitor
-- test_player_schema_converter_weapon.py
-- alias_storage.py
+- test_item_instance_persistence.py
+- .state
 - NPCStartupService
 - ConnectionErrorHandler
 - .__init__
-- test_player_preferences_service.py
+- ExperienceRepository
 - MythosTickScheduler
-- useMythosAppActions.ts
+- security.ts
 - roomHandlers.ts
 - Chaosium CoC Catalog
 - NATS Anti-Patterns and Best Practices Review
 - Persistence Layer Refactoring - COMPLETE ✅
 - Persistence Layer Refactoring Summary
 - Test Pruning Candidates - Detailed List
-- test_room_subscription_manager_npcs.py
+- validate_inventory_payload
 - test_connection_event_helpers.py
-- skills_commands.py
+- handle_skills_command
 - playerHandlers.ts
 - ChatChannelLoggerMixin
 - api/character_creation.py
 - test_quality_fragmentation_guard.py
 - e2e-bootstrap.ts
-- test_calendar.py
+- edgeModalLogic.ts
 - FStringLoggingFixer
 - Stop-MythosMudProjectProcessTree
 - TrackedTaskManager
 - convert_uuids_to_strings
 - EmoteService
-- PlayerService
-- NPCCombatIntegration
+- api/player_effects.py
+- test_combat_integration_base.py
 - ._build_player_attacked_event
 - Async Audit Executive Summary
 - PARALLEL EXECUTION RESULTS (2025-11-05)
-- validate_secure_path
+- test_security_utils.py
 - InstanceManager
 - test_room_service.py
 - CommandRateLimiter
-- AttributeError
+- test_websocket_room_updates.py
 - RoomEventHandler
 - Pydantic Code Review - feature/sqlite-to-postgresql Branch
 - Prometheus Configuration
 - load_world_seed.py
 - validate.py
 - ReactNodeUpgradeAnalyzer
-- Any
+- RoomInfoPanel.tsx
 - PeriodicOrphanAuditor
 - run_flee_effect
-- ContainerSessionMixin
+- Any
 - ComprehensiveLoggingMiddleware
 - NPCCommunicationIntegration
 - magic_service_completion.py
@@ -533,40 +533,40 @@
 - test_npc_combat_integration_service_npc_aggro.py
 - test_optimized_security_validator.py
 - MinimapRenderer
-- map/config.ts
+- map/types.ts
 - connection_manager.py
 - properties
 - Complexity Checking Alignment: Ruff C901 vs Pylint
 - WebSocket Code Review - Branch: feature/sqlite-to-postgresql
 - TestNPCCombatLifecycle
 - test_admin_commands_helpers.py
-- talk_command.py
+- resolve_state
 - DialogueDefinitionRepository
 - DeadLetterQueue
 - asyncio
 - test_room_occupant_manager.py
 - MythosMUD Database Placement
-- npc_base.py
+- PlayerEnteredRoom
 - 🎯 Async Remediation - Final Report
 - NATS Code Review - Branch: feature/sqlite-to-postgresql
 - Persistence Layer Extraction - COMPLETE ✅
 - 🔴 CRITICAL ISSUES
 - enum
-- test_spell_effects_support.py
+- spell_effects_support.py
 - test_lifecycle_respawn.py
-- NATSConnectionStateMachine
+- test_auth_rate_limit.py
 - PlayerPreferencesService
 - TestLogoutCommand
 - test_chat_moderation.py
 - server/services/__init__.py
 - Bug Investigator Subagent
-- RespawnResponse
-- normalize_command
+- rooms/room.py
+- command_input.py
 - 3. REFACTOR Findings (935 findings)
 - ErrorMonitor
 - verify_linting_parity.py
 - TaskRegistry
-- sanitizeChatMessageForState
+- logger.ts
 - test_container_helpers_inventory_display.py
 - MPRegenerationService
 - test_chat_validator.py
@@ -575,13 +575,13 @@
 - test_command_processing.py
 - AdminAuthService
 - PayloadOptimizer
-- test_security_utils.py
-- EnvironmentalContainerLoader
+- designTokens.ts
+- .load_container_from_room_json
 - include
 - test_quest_service_collect.py
 - test_combat_death_handler.py
 - apply_communication_dampening
-- test_shutdown_process_termination.py
+- get_help_content
 - Argon2 Password Hashing Best Practices
 - Pre-commit Hooks Best Practices
 - Communities (19 total, 4 thin omitted)
@@ -590,12 +590,12 @@
 - LogAnalyzer
 - run_quality_fragmentation_guard.py
 - _find_item_in_equipped
-- normalize_environment
+- _format_npc_description
 - test_chat_pose_helpers.py
 - MovementMonitor
 - attach_compatibility_properties
 - test_instance_manager.py
-- test_combat_persistence_handler_events.py
+- Audit Coverage Boundary — 2026-08 Design Audit
 - RateLimiter
 - Path
 - SpellTargetingService
@@ -622,11 +622,11 @@
 - fix_fstring_logging.py
 - TestRunner
 - ContainerTransferToMixin
-- _NPCCombatIntegrationDeps
+- test_alias_expansion.py
 - test_command_factories_inventory_helpers.py
-- .execute_idle_movement
+- maps/__init__.py
 - asyncio
-- NPCMessageQueue
+- RateLimiter
 - _make_session_context
 - CoordinateValidator
 - game_tick_death.py
@@ -647,14 +647,14 @@
 - Test Coverage Summary: Disconnect Grace Period & Rest Command
 - format_markdown_file
 - migrate_rooms.py
-- parse_last_active_datetime
+- get_current_user_with_logging
 - test_inventory_command_prototype.py
 - test_look_item_helpers.py
-- ._validate_container_access
+- Any
 - PostgresRow
-- test_who_commands.py
-- test_game_tick_death.py
-- test_cache_service.py
+- test_event_publisher.py
+- asyncio
+- ProfessionCacheService
 - EdgeDetailsPanel.tsx
 - multiplayer-colocated.ts
 - MUD Disconnect Grace Period & Rest Command: Industry Comparison
@@ -671,13 +671,13 @@
 - test_command_factories_inventory.py
 - migrate_combat_data.py
 - .create_put_command
-- admin_shutdown_command.py
-- parse_shutdown_parameters
+- .disconnect
+- NPCCombatRewards
 - .create_get_command
 - logging_file_setup.py
 - .create_equip_command
-- NPCSpawnRuleCRUDMixin
-- test_players_quests.py
+- NPCSpawnRule
+- asyncio
 - Performance Profiler Subagent
 - Security Auditor Subagent
 - github-actions Best Practices
@@ -685,7 +685,7 @@
 - legacy_error_sanitization.py
 - test_config_models.py
 - asyncio
-- test_websocket_handler_disconnect.py
+- lint_raw_sql_in_python.py
 - Asyncio Code Review - feature/sqlite-to-postgresql Branch
 - Ruff to Pylint Rule Mapping
 - SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch
@@ -695,17 +695,17 @@
 - fixtures/unit/__init__.py
 - fix_suppression_alignment.py
 - identify_critical_code.py
-- persistence/container_helpers.py
+- fetch_container_items
 - handle_teach_command
 - CircuitBreaker
-- test_websocket_handler_helpers.py
+- _get_npc_room_id
 - test_player_repository_room.py
 - PostgresCursor
-- graceful_degradation
+- TestGracefulDegradation
 - NPCCacheService
-- test_occupants.py
-- get_asyncpg_server_settings_for_database_url
-- security.ts
+- LoggingConfig
+- rate_overrides.py
+- SessionManager
 - test_game_state_provider.py
 - Phase 1: Core Separation
 - get_room_environment
@@ -728,14 +728,14 @@
 - populate_npc_sample_data.py
 - CacheManager
 - NPCActionMessage
-- test_message_builders.py
+- .measure_model_deserialization
 - AsciiMapRenderer
 - test_lucidity_command_disruption.py
-- InventorySchemaValidationError
+- PlayerSavePreparer
 - asyncio
-- test_retry.py
+- useRoomMapData.ts
 - logging_file_categories.py
-- test_user_manager.py
+- _should_include_npc
 - TestPathValidator
 - schemas/unified_room_schema.json
 - Design Critique
@@ -755,14 +755,14 @@
 - test_inventory_mutation_guard_internal.py
 - required
 - UpgradeImplementationPlan
-- NPCEventHandler
+- _occupation_slots_9
 - CORSConfig
 - _apply_exploration_filter_if_needed
 - get_npc_name_from_instance
 - MessageBroker
-- ContainerLockMixin
+- test_combat_messaging_integration.py
 - TestVerificationSqlUsersPlayers
-- test_combat_grace_period.py
+- DraggablePanelView.tsx
 - subzone_schema.json
 - static_data/package.json
 - TypeScript Best Practices
@@ -775,13 +775,13 @@
 - NumPy Code Review - MythosMUD Codebase
 - Python Model Updates Required for Migration 019
 - Transaction Boundaries Audit
-- test_asyncio_run_guardrails.py
+- Any
 - performance.test.tsx
-- PlayerRespawnWrapper
+- test_emote_repository.py
 - required
 - CacheService
 - test_spell_repository.py
-- asyncio
+- Protocol
 - fixtures/shared/__init__.py
 - zone
 - room_validator/tests/conftest.py
@@ -791,30 +791,30 @@
 - Polish Systematically
 - overrides
 - Communities (10 total, 2 thin omitted)
-- fixture
+- subscribe_npc_spoke_to_chat
 - Execution Steps
 - properties
 - fix_markdown_blanks_around_lists.py
 - init_npc_database.py
 - safe_run_static
 - validate_admin_permission
-- .__init__
-- MagicServiceHealingMixin
-- RoomRepositoryProtocol
+- .accept_party_invite
+- test_magic_healing_events.py
+- auth_rate_limit.py
 - test_event_publisher_helpers.py
 - RoomRepository
-- CharacterSelectionScreen.tsx
+- useStatsRollingActions.ts
 - factory
 - Phase 3: Polish and Optimization
-- is_safe_filename
-- test_combat_messaging_integration.py
+- _find_dead_connections
+- asyncio
 - .check_bidirectional_connections
 - SQLAlchemy Best Practices (2.x Style)
 - Introduce Color Strategically
 - UX Writing
 - rules
 - usePanelContext.ts
-- commandStore.ts
+- _CombatServiceDeps
 - Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)
 - Cosmic Horror.md
 - applies_to
@@ -831,8 +831,8 @@
 - RoomFilenameMigrator
 - test_email_utils.py
 - Phase 4: Testing and Refinement
-- MessageBroadcaster
-- asyncio
+- test_enhanced_logging_config.py
+- test_mp_regeneration_service.py
 - test_player_spell_repository.py
 - test_nats_message_handler_chat.py
 - properties
@@ -842,8 +842,8 @@
 - Adapt Skill
 - Improve Copy Systematically
 - Color & Contrast
-- .__init__
-- test_follow_flow.py
+- GameClientV2Dock.test.tsx
+- WebSocketManager
 - collect-n-quest.spec.ts
 - Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)
 - Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)
@@ -888,22 +888,22 @@
 - test_look_item.py
 - P4 · Intent Sweep — Core Feature Issues
 - rest_countdown_task.py
-- who_commands.py
-- test_game_enums.py
+- _apply_stat_change_and_build_result
+- PlayerStatsConfig
 - test_realtime_bundle_nats.py
 - _make_mock_row
-- .get_room_occupants
-- test_restore_mp_from_item_player_not_found
-- CombatPersistenceHandler
-- combat_integration_protocols.py
+- ItemInstance
+- fixture
+- test_combat_persistence_handler_events.py
+- _handle_admin_set_stat_command
 - Decisions required
-- _clear_corrupted_cache_entry
+- ._connect_nats
 - asyncio
-- test_get_players_batch_empty_list
+- extract_subzone_from_room_id
 - test_process_exit_rows_multiple_exits_same_room
 - room_hierarchy_schema.json
-- .__init__
-- format_player_location
+- DecodeLiabilitiesFn
+- populate_test_npc_databases.py
 - _EventPersistence
 - optimized_security_validator.py
 - properties
@@ -923,23 +923,23 @@
 - analyze_log_file
 - find_fstring_logging_violations
 - lint_sql_guardrails.py
-- validate_websocket_message
+- UUID
 - ChatPoseManager
 - AggressiveMobNPC
 - _parse_env_list
-- field_validator
+- .optimize_payload
 - Recommended Test Additions
-- test_mp_regeneration_service.py
+- test_utility_commands_whoami.py
 - test_profession_service.py
-- test_command_service.py
+- Any
 - test_persistence_container_persistence.py
-- cached
-- BaseEvent
+- test_cache_service.py
+- AuthRateLimitMiddleware
 - Party
 - Claims by cluster
 - P4 · Intent Sweep — FRD/SPEC Documents
 - test_command_factories.py
-- PlayerCreationService
+- PlayerStateService
 - optimized_validate_player_name
 - TestValidatorIntegration
 - Improve Layout Systematically
@@ -966,7 +966,7 @@
 - required
 - required
 - verify_npc_occupants.py
-- ._finalize_spawn_record
+- _optimize_payload
 - asyncio
 - Net Impact Summary
 - test_validate_codacy_coverage_gate.py
@@ -976,7 +976,7 @@
 - Amplify the Design
 - Hardening Dimensions
 - MythosMUD LLM Wiki (Obsidian)
-- get_mythos_chronicle
+- occupant_display.py
 - .create_drop_command
 - MapPerformanceMonitor
 - PanelContextRuntime.tsx
@@ -1007,11 +1007,11 @@
 - .get_combat_stats
 - is_postgres_url
 - test_monitoring_init.py
-- PlayerEnteredRoom
+- test_player_event_handlers_room.py
 - P3 · realtime-connection + events-nats
 - P4 · Intent Sweep — Plan Documents
 - test_channel_broadcasting_strategies.py
-- NATSMessageProcessingMixin
+- _FakeRoomManager
 - P7 · Rulings — complete
 - main
 - Codacy Rules
@@ -1041,15 +1041,15 @@
 - check_and_apply_map_migrations.py
 - main
 - main
-- get_help_content
+- system_commands.py
 - P8 · Applied
 - required
 - test_async_persistence_room_cache.py
 - asyncio
 - Design ↔ Implementation Drift Audit — Final Summary
-- resolve_connection_manager
+- .auto_progression_enabled
 - environment
-- TestGenerateRoomId
+- sample_container
 - Teach Impeccable Skill
 - client/package.json
 - Playwright Best Practices
@@ -1069,28 +1069,28 @@
 - MythosMUD Testing Strategy (Greenfield Suite)
 - Dialogue Content Tools (Content Creators)
 - load_test_10_players.spec.ts
-- apply_stat_modifications
+- mock_persistence
 - alias_schema.json
-- test_exploration_service.py
+- ExplorationService
 - emote_schema.json
 - bench_cache_npc.py
 - bench_cache_professions.py
 - check_file
-- SpellDB
+- SampleModel
 - Protocol
-- User
+- test_users.py
 - .on_enter_state
 - fixture
 - Any
 - analyze_idle_memory_samples.py
 - lucidity_migration.py
-- event_handler
-- mock_utils
+- handle_new_login_impl
+- .__init__
 - test_async_persistence_room_loading.py
 - TestMinimapExplorationInvestigationDoc
 - C2 · REVISED — procedures-only is binding
 - channel_broadcasting_strategies.py
-- WebSocket
+- websocket_integration.py
 - CRITICAL · WebSocket authentication bypass on `/ws`
 - optimized_validate_action_content
 - optimized_validate_alias_name
@@ -1113,7 +1113,7 @@
 - **~25-30% provide CRITICAL coverage**
 - P3 · config-api
 - days
-- type
+- .get_original_string_id
 - bench_cache.py
 - quality_fragmentation_graph.py
 - _filter_lines
@@ -1124,18 +1124,18 @@
 - P3 · persistence-db
 - P5 · Adversarial Refutation
 - ADR-020: WebSocket Authentication and CSRF
-- get_pose_persistence
-- test_websocket_handler_json_error.py
-- NPCService
-- normalize_path_from_url_or_path
+- .handle_npc_attack_on_player
+- websocket_handler.py
+- Summary: Test Quality Metrics
+- .get_professions
 - test_websocket_handler_validation.py
 - player_inventory_migration.py
 - messaging_integration
 - fixture
 - fixture
 - MockPersistence
-- connection_state_machine.py
-- mp_regeneration_service
+- ._initialize_item_services
+- .__call__
 - user_manager
 - ConnectionManager
 - event_publisher
@@ -1152,7 +1152,7 @@
 - Step 2: Ask UX-Focused Questions
 - run-vitest.js
 - usePerformanceMonitor.ts
-- assert_event_envelope
+- asyncio
 - Earth Plane
 - emotes.schema.json
 - 1. Enhanced ChatPanel (New Chat Input Panel)
@@ -1163,7 +1163,7 @@
 - ✅ Phase 2 Async Persistence Migration - COMPLETE
 - pyrightconfig.json
 - enum
-- ensure_directory_exists
+- _EventBusPublishPort
 - main
 - migrate_file
 - apply_migration
@@ -1173,12 +1173,12 @@
 - Design ↔ Implementation Drift Audit
 - mock_lifecycle_manager
 - UnknownChannelStrategy
-- party_service.py
+- PartyService
 - initialize_components
 - P0 · Previously-Known Deviations
-- _extract_bearer_token
-- _default_cors_origins
-- command_service
+- async_persistence_layer
+- event_publisher
+- health_service
 - idle_movement_handler
 - test_run_make_stages.py
 - monitoring_service
@@ -1219,18 +1219,18 @@
 - Attack Command Not Starting Combat
 - Second NPC Combat And Linkdead Findings
 - Multi-Word Spell Name Parsing Failure
-- properties
+- enum
 - Disconnect Grace Period and Rest Command
 - InventoryMutationGuard
 - main
-- SupportsConnectionManager
-- test_auth
+- sub_zone
+- server/main.py
 - mark_player_seen_impl
 - Server Realtime Module
 - TestValidateCommandBasics
-- Conclusion
+- _parse_set_stat_args
 - get_alerts
-- name
+- ._complete_player_attack_on_npc_after_grace
 - Thinking about stack structure
 - Extract Skill
 - GameClientV2.tsx
@@ -1238,7 +1238,7 @@
 - MythosMUD Server Test Suite
 - Common Test Failure Categories
 - Azotottal.md
-- rename_used_to_is_active.py
+- .get_memory_usage_summary
 - Chat Panel Separation Specification
 - 2. Primitive Anti-Patterns: Direct `asyncio` Primitive Usage
 - 🔍 Anti-Pattern Check
@@ -1266,7 +1266,7 @@
 - Measurement and Validation
 - Enhanced Logging System Implementation Guide
 - Whisper Channel System
-- .get_active_sessions
+- sub_zone
 - NPC Occupants Verification Summary
 - Combat Client Crash
 - Respawn Death Screen Loop Limbo ID Mismatch
@@ -1282,19 +1282,19 @@
 - add_suppression_to_file
 - items
 - container
-- AdminSession
+- metadata
 - holidays
 - schedules
 - intersection_schema.json
-- factory.py
+- CORSConfigDict
 - room_schema.json
 - integration
 - mock_player
-- exploration_service
-- mock_lucidity_record
+- .filter
+- test_lucidity_service.py
 - sub_zone
 - @eslint/js
-- wearable_service
+- _FakeClientState
 - PostgreSQL database names (MythosMUD)
 - MythosMUD COPPA Checklist
 - ConnectionPanel.tsx
@@ -1305,7 +1305,7 @@
 - DML Migrations
 - Nameless Horrors - 2nd Edition (source summary)
 - S. Petersen's Field Guide to Lovecraftian Horrors (source summary)
-- .ensure_url_set
+- mock_websocket
 - Advanced Chat Channels Specification
 - UI/UX Considerations
 - 3. Simplified CommandPanel
@@ -1323,10 +1323,10 @@
 - Phase 4: Test Consolidation (Week 4)
 - Phase 6: Long-Term Optimizations (Ongoing)
 - Phase 1: Quantitative Analysis Results
-- test_validate_secure_path_path_traversal_commonpath
+- ._get_npc_stats
 - test_container_persistence_sql_injection.py
 - Risk Assessment and Mitigation
-- test_publish_attack_event_emits_npc_attacked
+- test_derive_npc_name_from_id
 - id
 - Modular E2E Test Suite
 - Playwright MCP Scenarios
@@ -1354,15 +1354,15 @@
 - 2026_02_19_seed_quest_leave_the_tutorial.py
 - 2026_02_26_add_arena_zone_type.py
 - rename_players_to_population.py
-- Lock
+- .handle_npc_death
 - DomainError
-- .validate_tls_config
-- .to_dict
-- .on_connection_failed
+- ._publish_attack_event
+- test_handle_admin_set_stat_command_invalid_stat_name
+- test_handle_admin_set_stat_command_success_str
 - test_grype.py
-- .set_player_combat_service
-- test_parse_command_string_success
-- test_parse_command_string_with_subcommand
+- test_handle_admin_set_stat_command_success_all_stat_types
+- test_get_user_by_username_case_insensitive_no_session
+- test_compute_dp_update_fields
 - test_load_room_cache_async_rooms_none
 - test_build_room_objects_success
 - MythosMUD Pre-Commit Checklist Skill
@@ -1396,7 +1396,7 @@
 - Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)
 - The Grand Grimoire of Cthulhu Mythos Magic (source summary)
 - The Malleus Monstrorum Keeper Deck (source summary)
-- test_parse_command_string_unexpected_error
+- test_get_npc_stats_defaults
 - duration_hours
 - Migration Considerations
 - Success Criteria
@@ -1437,7 +1437,7 @@
 - ✅ Verification Results
 - MythosMUD Product Requirements
 - Files to Update
-- test_prepare_command_data_with_pipe_target
+- test_get_npc_stats_preserves_values
 - Net Impact Projection
 - Implementation Timeline
 - Phase 3: Coverage Test Optimization (Week 3)
@@ -1468,8 +1468,8 @@
 - verify_tutorial_migrations.ps1
 - name
 - item_prototype.schema.json
-- test_extract_parsed_fields_with_pipe_target
-- test_execute_command_handler_error
+- test_calculate_damage_physical_strength_bonus
+- test_calculate_damage_weapon_type_no_strength_bonus
 - description
 - fixture
 - eslint.config.js
@@ -1536,7 +1536,7 @@
 - Test Warning Remediation
 - Enhanced Logging Migration Complete
 - Random Stats Generator Planning
-- test_process_command_parse_error
+- test_calculate_max_dp_from_constitution_and_size
 - Log Rotation and Management
 - Log Analysis and Monitoring
 - Party System Reference
@@ -1549,7 +1549,7 @@
 - 🧪 Testing Status
 - 🔧 Changes Summary
 - Structured Error Logging
-- test_process_command_no_handler
+- test_normalize_npc_stats_adds_hp_from_determination_points
 - Test File Migration Mapping
 - Optimization Strategy Overview
 - Monitoring and Validation
@@ -1581,23 +1581,23 @@
 - parse_lint_findings
 - setup_postgresql_test_db.sh
 - verify_e2e_users_seeded.py
-- test_get_available_commands
-- test_unregister_command_handler
-- test_unregister_command_handler_nonexistent
+- test_delete_container_not_found
+- test_delete_container_uuid_string_conversion
+- test_create_container_database_error
 - ._error_callback
-- test_log_parsed_command_inspection
+- test_publish_player_left_resolves_names_from_persistence
 - pydantic Best Practices
 - cli.sh
-- test_process_validated_command_no_command_type
-- test_restore_mp_from_rest_player_not_found
+- test_get_player_lucidity_tier_default
+- test_validate_chat_message_fields_type_errors
 - SystemAdminChannelStrategy
 - RoomBasedChannelStrategy
-- test_restore_mp_from_rest_restores_mp
-- test_restore_mp_from_meditation_higher_than_rest
+- test_validate_chat_message_fields_sender_name_type_error
+- test_validate_chat_message_fields_content_type_error
 - nats_broker
-- test_restore_mp_from_item_restores_mp
-- test_restore_mp_from_item_calculates_max_from_power
-- test_process_tick_regeneration_lying_position
+- test_extract_chat_message_fields_whisper_target_id
+- test_extract_chat_message_fields_system_target_id
+- test_process_message_with_retry_failure
 - description
 - name
 - weather_patterns
@@ -1732,19 +1732,19 @@
 - server/structured_logging/__init__.py
 - server/tests/__init__.py
 - command_handler_unified/__init__.py
-- unit/container_persistence/__init__.py
+- test_broadcast_by_channel_type_exception
 - unit/game/magic/__init__.py
-- test_process_tick_regeneration_fractional_accumulation
+- test_send_messages_to_players_no_original_content
 - test_get_adjacent_rooms_null_exit
-- test_restore_mp_from_rest_at_max
+- test_send_messages_to_players_with_tags
 - test_get_local_chat_scope
-- test_restore_mp_from_rest_calculates_max_from_power
+- test_should_echo_to_sender_not_echo_channel
 - test_get_local_chat_scope_source_not_found
 - test_validate_room_exists_cache_not_found
 - test_validate_exit_exists_success
 - test_validate_exit_exists_invalid
 - test_validate_exit_exists_from_room_not_found
-- test_process_tick_regeneration_player_not_found
+- test_should_echo_to_sender_not_chat_message
 - test_validate_exit_exists_no_exits
 - test_get_room_occupants_with_cache_dict
 - test_get_room_occupants_cache_not_found
@@ -1753,17 +1753,17 @@
 - test_validate_player_in_room_with_cache_false
 - holiday
 - test_validate_player_in_room_cache_dict
-- movement_service
+- test_validate_chat_message_fields
 - test_get_room_exits_success
 - month
 - items
 - test_create_stand_command
-- test_get_room_exits_no_exits
-- pydantic.md
+- test_should_echo_to_sender_no_targets_not_notified
+- AppConfig
 - test_list_rooms_exclude_exits
 - test_get_room_info_success
 - start_hour
-- .get_task_lifecycle_metrics
+- test_should_echo_to_sender_no_targets_already_notified
 - test_get_room_info_not_found
 - test_room_service_init
 - test_room_service_init_with_cache
@@ -1771,7 +1771,7 @@
 - test_get_players_batch_with_players
 - test_build_room_objects_with_exits
 - plane
-- .create_supervised_task
+- test_broadcast_to_room_with_filtering_exception
 - unit/infrastructure/__init__.py
 - test_get_professions_no_session
 - zone
@@ -1821,16 +1821,16 @@
 - test_soft_delete_player_not_found
 - description
 - exits
-- id
+- test_apply_dampening_and_send_message_exception
 - unit/monitoring/__init__.py
 - name
 - plane
 - test_get_players_batch_success
-- test_disconnect_from_connected
+- test_get_player_lucidity_tier_exception_in_processing
 - exits
 - plane
 - zone
-- test_disconnect_from_degraded
+- test_convert_ids_to_uuids
 - npc_spawn_modifier
 - special_rules
 - test_create_get_command
@@ -1839,41 +1839,41 @@
 - Security Considerations
 - Testing Logging
 - Final Recommendation
-- test_degrade
-- test_recover
+- test_convert_ids_to_uuids_none_target
+- test_format_message_for_receiver
 - weight
-- test_close_circuit
-- test_can_attempt_connection_connected
-- test_can_attempt_connection_circuit_open
-- test_can_attempt_connection_reconnecting
-- test_should_open_circuit_at_threshold
+- test_subscribe_to_subzone_no_subject_manager
+- test_subscribe_to_event_subjects_partial_failure
+- test_unsubscribe_from_subzone_decrease_count
+- test_handle_player_movement_old_subzone_none
+- test_handle_player_movement_new_subzone_none
 - test_create_equip_command
-- test_should_open_circuit_over_threshold
-- test_get_stats
-- test_get_stats_with_error
-- test_get_stats_no_error
-- test_reconnect_attempts_increment
-- test_nats_connection_state_machine_init
-- test_total_disconnections_increment
-- test_last_connected_time_set
-- test_on_enter_state_logs
-- test_invalid_transition_raises_error
+- test_handle_player_movement_error
+- test_subscribe_to_subzone_subscribe_failure
+- test_unsubscribe_from_subzone_unsubscribe_failure
+- test_handle_combat_started_event
+- test_handle_combat_ended_event
+- test_handle_npc_attacked_event
+- test_handle_npc_took_damage_event
+- test_handle_npc_died_event
+- test_handle_player_movement_different_subzone
+- test_handle_player_movement_same_subzone
 - test_create_unequip_command
 - esbuild
 - unit/persistence/__init__.py
 - unit/realtime/integration/__init__.py
-- test_connect_transition
+- test_handle_player_movement_exception
 - eslint-plugin-jsx-a11y
-- test_connected_successfully_from_connecting
+- test_broadcast_player_died
 - happy-dom
-- test_connection_failed_from_connecting
+- test_broadcast_player_mortally_wounded_no_attacker
 - markdownlint-cli
-- test_mark_room_as_explored_sync_no_loop
-- test_mark_room_as_explored_sync_generic_exception
-- test_exploration_service_init
+- test_connection_manager_lazy_load_called
+- test_broadcast_player_mortally_wounded_personal_message_error
+- test_broadcast_player_death_personal_message_error
 - patch-package
-- test_unmute_player_not_muted
-- test_mute_channel_success
+- test_send_dp_decay_message_error
+- test_connection_manager_setter
 - @playwright/test
 - tailwindcss
 - unit/realtime/maintenance/__init__.py
@@ -1894,20 +1894,15 @@
 - AFTER
 - Files to Update
 - New Tests to Add
-- test_mute_channel_already_muted
-- test_unmute_channel_success
-- description
-- test_mute_global_admin_immune
+- test_messaging_integration_init_no_connection_manager
+- test_resolve_connection_manager_from_container_no_manager
+- properties
+- test_resolve_connection_manager_from_container_error
 - test_create_mute_command
-- test_process_tick_regeneration_calculates_max_from_power
-- .create_player_read_from_object
-- test_unmute_global_success
-- test_unmute_global_not_muted
-- test_is_player_muted_false
+- test_broadcast_combat_attack
+- PlayerSchemaConverter
+- test_memory_profiler_get_current_memory_usage
 - test_create_unmute_command
-- test_is_channel_muted_false
-- test_is_globally_muted_false
-- test_can_send_message_true
 - test_generate_room_id_from_zone_data_needs_generation
 - eslint
 - test_process_room_rows_with_none_zone_stable_id
@@ -1916,43 +1911,7 @@
 - test_process_exit_rows_missing_stable_id
 - test_load_room_cache_async_warning_logging
 - wsl-bashrc-codacy.sh
-- test_can_send_message_globally_muted
-- test_get_player_mutes
-- test_is_player_muted_by_others_true
-- test_is_player_muted_by_others_false
-- test_get_who_muted_player
-- test_get_system_stats
-- test_get_player_mute_file
-- test_user_manager_init
-- test_is_cache_valid_true
-- test_is_cache_valid_false_expired
-- test_is_cache_valid_false_not_cached
-- test_add_admin_no_persistence
-- test_remove_admin_no_persistence
-- test_normalize_to_uuid_uuid
-- test_load_player_mutes_file_not_exists
-- test_load_player_mutes_empty_file
-- test_load_player_mutes_invalid_json
-- test_cleanup_player_mutes_no_delete_file
-- test_cleanup_player_mutes_with_delete_file
-- test_unmute_player_not_found
-- test_get_player_mutes_empty
-- test_normalize_to_uuid_invalid
-- test_get_player_mutes_with_mutes
-- test_is_admin_sync_true
-- test_mute_player_success
-- test_mute_player_admin_immune
-- test_unmute_player_success
-- test_handle_unequip_wearable_container_not_found
-- test_add_items_to_wearable_container_capacity_exceeded
-- test_update_wearable_container_items
 - unit/services/nats_subject_manager/__init__.py
-- test_handle_container_overflow
-- test_handle_container_overflow_player_not_found
-- test_wearable_container_service_init_no_persistence
-- test_add_items_to_wearable_container_wrong_player
-- test_update_wearable_container_items_not_found
-- test_update_wearable_container_items_capacity_exceeded
 - test_create_mute_global_command
 - test_create_unmute_global_command
 - test_create_add_admin_command
@@ -1961,14 +1920,6 @@
 - test_create_status_command
 - test_command_factory_init
 - test_create_time_command
-- test_update_wearable_container_items_update_fails
-- test_get_enum_value_with_enum
-- test_handle_equip_wearable_container_filters_non_equipment
-- test_handle_unequip_wearable_container_no_allowed_roles
-- test_handle_equip_wearable_container_existing_container_no_metadata
-- test_handle_equip_wearable_container_existing_container_different_item_instance
-- test_handle_container_overflow_room_id_empty_string
-- test_handle_equip_wearable_container_capacity_exceeded
 - test_create_whoami_command
 - test_create_who_command
 - test_create_quit_command
@@ -1979,7 +1930,6 @@
 - test_create_strike_command
 - test_create_unalias_command
 - test_create_help_command
-- test_create_player_preferences_success
 - test_create_npc_command
 - test_create_spawn_command
 - test_create_summon_command
@@ -1992,7 +1942,6 @@
 - test_create_spells_command
 - test_create_learn_command
 - test_command_factory_create_existing_command
-- .to_dict
 - test_command_factory_create_nonexistent_command
 - unit/structured_logging/__init__.py
 - test_create_say_command
@@ -2017,7 +1966,6 @@
 - POSTGRES_SEARCH_PATH for invites schema
 - JSON Schema Validation
 - room_validator/tests/__init__.py
-- WebSocketRateLimiter
 - gh-stack Skill
 - Codebase Explorer Agent
 - Performance Profiler Agent
@@ -2131,8 +2079,6 @@
 - _AppStateWithLegacyConfig
 - enabled
 - finalize_build_touch Rebuild Trigger
-- no-direct-table-crud-in-python-sql rule
-- no-select-star-in-python-sql rule
 - Persistence Repositories Overview
 - GET /v1/monitoring/health
 - Memory Leak Monitoring Endpoints
@@ -2148,34 +2094,19 @@
 - Mythos-themed invite codes
 - core/fixer.py
 - jsonschema dependency
-- test_create_player_preferences_integrity_error
-- test_get_player_preferences_not_found
-- test_update_default_channel_not_found
-- mock_send_game_event
-- test_mute_channel_already_muted
-- test_get_muted_channels_success
-- test_delete_player_preferences_success
-- test_delete_player_preferences_not_found
-- test_mute_channel_not_found
-- test_update_default_channel_invalid_id
-- test_mute_channel_invalid_id
-- test_is_channel_muted_invalid_id
-- test_is_channel_muted_not_found
-- test_is_channel_muted_invalid_channel
-- asyncio
-- test_get_player_preferences_invalid_id
+- test_player_preferences_service.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `get_logger()` - 534 edges
 2. `LoggedHTTPException` - 359 edges
-3. `ValidationError` - 337 edges
+3. `ValidationError` - 330 edges
 4. `User` - 293 edges
 5. `AliasStorage` - 264 edges
-6. `DatabaseError` - 264 edges
-7. `Player` - 231 edges
-8. `log_and_raise()` - 196 edges
-9. `CombatParticipant` - 194 edges
-10. `EventBus` - 190 edges
+6. `DatabaseError` - 260 edges
+7. `Player` - 232 edges
+8. `CombatParticipant` - 195 edges
+9. `EventBus` - 189 edges
+10. `log_and_raise()` - 189 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Arkham City Graph PNG` --semantically_similar_to--> `Simple Room Graph - Arkham City`  [INFERRED] [semantically similar]
@@ -2184,29 +2115,29 @@
   docs/examples/logging/correct_patterns.py → server/structured_logging/logging_context.py
 - `correct_async_logging()` --calls--> `clear_request_context()`  [INFERRED]
   docs/examples/logging/correct_patterns.py → server/structured_logging/logging_context.py
-- `update_player_background_task()` --calls--> `bind_request_context()`  [INFERRED]
-  docs/examples/logging/fastapi_integration.py → server/structured_logging/logging_context.py
-- `update_player_background_task()` --calls--> `clear_request_context()`  [INFERRED]
-  docs/examples/logging/fastapi_integration.py → server/structured_logging/logging_context.py
+- `migration_example_4()` --calls--> `measure_performance()`  [INFERRED]
+  docs/examples/logging/migration_examples.py → server/monitoring/performance_monitor.py
+- `migration_example_5()` --calls--> `bind_request_context()`  [INFERRED]
+  docs/examples/logging/migration_examples.py → server/structured_logging/logging_context.py
 
 ## Import Cycles
 - 2-file cycle: `client/src/components/panels/chatPanelRuntimeUtils.ts -> client/src/components/panels/chatPanelUnreadCounts.ts -> client/src/components/panels/chatPanelRuntimeUtils.ts`
 - 2-file cycle: `client/src/components/map/useAsciiMap.ts -> client/src/components/map/useAsciiMapState.ts -> client/src/components/map/useAsciiMap.ts`
-- 3-file cycle: `server/services/combat_service.py -> server/services/combat_turn_processor.py -> server/services/combat_turn_participant_actions.py -> server/services/combat_service.py`
-- 3-file cycle: `server/services/combat_service.py -> server/services/npc_combat_integration_service.py -> server/services/npc_combat_integration_combat_mixin.py -> server/services/combat_service.py`
-- 3-file cycle: `server/services/combat_service.py -> server/services/npc_combat_integration_service.py -> server/services/npc_combat_integration_validation_mixin.py -> server/services/combat_service.py`
 - 3-file cycle: `server/realtime/connection_cleanup_methods.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py -> server/realtime/connection_cleanup_methods.py`
 - 3-file cycle: `server/realtime/connection_manager.py -> server/realtime/player_presence_tracker.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py`
-- 3-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- 3-file cycle: `server/services/combat_service.py -> server/services/npc_combat_integration_service.py -> server/services/npc_combat_integration_combat_mixin.py -> server/services/combat_service.py`
+- 3-file cycle: `server/services/combat_service.py -> server/services/npc_combat_integration_service.py -> server/services/npc_combat_integration_validation_mixin.py -> server/services/combat_service.py`
+- 3-file cycle: `server/services/combat_service.py -> server/services/combat_turn_processor.py -> server/services/combat_turn_participant_actions.py -> server/services/combat_service.py`
 - 3-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - 3-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- 3-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
 - 3-file cycle: `client/src/components/panels/chatPanelRuntimeUtils.ts -> client/src/components/panels/chatPanelUnreadCounts.ts -> client/src/components/panels/chatPanelUnreadBump.ts -> client/src/components/panels/chatPanelRuntimeUtils.ts`
 - 3-file cycle: `client/src/components/panels/chatPanelChannelFilter.ts -> client/src/components/panels/chatPanelChannelVisibility.ts -> client/src/components/panels/chatPanelRuntimeUtils.ts -> client/src/components/panels/chatPanelChannelFilter.ts`
 - 4-file cycle: `server/realtime/connection_establishment.py -> server/realtime/disconnect_grace_period.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py -> server/realtime/connection_establishment.py`
 - 4-file cycle: `server/realtime/connection_manager.py -> server/realtime/player_presence_tracker.py -> server/realtime/disconnect_grace_period.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py`
-- 4-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- 4-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
 - 4-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts -> client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- 4-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- 4-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
 - 5-file cycle: `server/realtime/connection_initialization.py -> server/realtime/integration/game_state_provider.py -> server/realtime/disconnect_grace_period.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py -> server/realtime/connection_initialization.py`
 - 5-file cycle: `server/realtime/connection_manager.py -> server/realtime/player_presence_tracker.py -> server/realtime/player_connection_setup.py -> server/realtime/disconnect_grace_period.py -> server/realtime/player_disconnect_handlers.py -> server/realtime/connection_manager.py`
 - 5-file cycle: `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts -> client/tests/e2e/runtime/fixtures/multiplayer-ready.ts -> client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts -> client/tests/e2e/runtime/fixtures/player.ts -> client/tests/e2e/runtime/fixtures/multiplayer.ts -> client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
@@ -2277,111 +2208,111 @@
 - **Spell command and casting failure cluster** — investigations_sessions_2025_12_14_session_001_spell_commands_failure_spell_commands_missing, investigations_sessions_2025_12_14_session_002_spell_cast_failure_multiword_spell, investigations_sessions_2025_12_14_session_003_minor_heal_casting_delay_missing_async_heal, investigations_sessions_2025_12_14_session_004_heal_spell_casting_failure_session_boundary [INFERRED 0.95]
 - **Command System Documentation Suite** — docs_command_handler_patterns, docs_command_models_reference, docs_command_security_guide, docs_command_testing_guide [INFERRED 0.95]
 
-## Communities (2258 total, 574 thin omitted)
+## Communities (2189 total, 517 thin omitted)
 
-### Community 0 - "get_session_maker"
-Cohesion: 0.02
-Nodes (149): get_10_active_invites(), main(), Get 10 active invite codes from the database., F, normalize_database_url(), Normalize database URL for asyncpg. Args: database_url: Original database URL…, get_session_maker(), _normalize_connect_args_search_path() (+141 more)
+### Community 0 - "generate_invites_db.py"
+Cohesion: 0.19
+Nodes (15): create_invite_in_db(), generate_invite_code(), generate_unique_codes(), get_existing_codes(), main(), parse_expires_date(), datetime, Generate a unique Mythos-themed invite code. (+7 more)
 
 ### Community 1 - "ContainerComponent"
-Cohesion: 0.03
-Nodes (83): ContainerComponent, Any, BaseModel, field_validator, Validate that metadata does not contain personal information (COPPA…, Validate and convert source_type to enum., Validate and convert lock_state to enum., Validate that room_id is provided for environment and corpse containers. (+75 more)
+Cohesion: 0.02
+Nodes (190): ContainerComponent, ContainerLockState, ContainerSourceType, Any, BaseModel, field_validator, StrEnum, Validate that metadata does not contain personal information (COPPA… (+182 more)
 
 ### Community 2 - "NPCDefinition"
 Cohesion: 0.02
-Nodes (122): _JSONDict, _loads_json_dict(), NPCDefinition, NPCRelationship, Initialize NPCDefinition with defaults., String representation of the NPC definition., Get base stats as dictionary., Set base stats from dictionary. (+114 more)
+Nodes (128): _JSONDict, Base, _loads_json_dict(), NPCDefinition, NPCDefinitionType, NPCRelationship, DeclarativeBase, StrEnum (+120 more)
 
-### Community 3 - "get_admin_auth_service"
-Cohesion: 0.03
-Nodes (147): create_dialogue_definition(), delete_dialogue_definition(), get_dialogue_definition(), list_dialogue_definitions(), delete, get, post, put (+139 more)
+### Community 3 - "dialogue_definitions_api.py"
+Cohesion: 0.09
+Nodes (44): create_dialogue_definition(), delete_dialogue_definition(), get_dialogue_definition(), list_dialogue_definitions(), delete, get, post, put (+36 more)
 
 ### Community 4 - "inventory_command_helpers.py"
-Cohesion: 0.02
-Nodes (156): _DropResolved, _FloorPickupResolved, Protocol, Narrows room managers for floor drop operations (pickup / get room)., RoomDropManager, add_pickup_to_inventory(), broadcast_room_event(), build_and_broadcast_inventory_event() (+148 more)
+Cohesion: 0.03
+Nodes (122): _FloorPickupResolved, add_pickup_to_inventory(), broadcast_room_event(), build_and_broadcast_inventory_event(), clone_inventory(), _collect_progress_sync(), ensure_item_instance_for_pickup(), get_room_manager() (+114 more)
 
 ### Community 5 - "get_logger"
-Cohesion: 0.01
-Nodes (644): add_flavor_text_column(), Add flavor_text column if missing., load_seed_data(), Load all seed data files., get_npc_data_from_source(), get_npc_database_url(), main(), populate_database() (+636 more)
+Cohesion: 0.00
+Nodes (788): AliasRecord, get_10_active_invites(), main(), Get 10 active invite codes from the database., F, PasswordHasher, create_validator(), Shared schema validator for room definition files. This module provides JSON… (+780 more)
 
-### Community 6 - "BaseCommand"
-Cohesion: 0.01
-Nodes (397): GotoCommand, NPCCommand, field_validator, Admin command models for MythosMUD. This module provides command models for…, Command for shutting down the server (admin only). Args can be: - Empty:…, Command for NPC administrative utilities with subcommands., Administrative command for summoning prototypes into the current room., Validate prototype ID format. Args: value: The prototype ID to validate… (+389 more)
+### Community 6 - "ValidationError"
+Cohesion: 0.00
+Nodes (1194): Data validation errors (e.g. empty local/whisper message). Log at warning, not…, ValidationError, GotoCommand, NPCCommand, Admin command models for MythosMUD. This module provides command models for…, Command for shutting down the server (admin only). Args can be: - Empty:…, Command for NPC administrative utilities with subcommands., Administrative command for summoning prototypes into the current room. (+1186 more)
 
 ### Community 7 - "AliasStorage"
 Cohesion: 0.01
-Nodes (217): AliasPayload, AliasStorage, _as_alias_payload(), _empty_alias_payload(), Path, Manages player alias storage in JSON files. Each player's aliases are stored in…, Get the file path for a player's aliases. Human: reject path separators /…, Absolute str path for open(); re-checks containment at the open site. Human:… (+209 more)
+Nodes (219): AliasPayload, AliasStorage, _as_alias_payload(), _empty_alias_payload(), Path, Manages player alias storage in JSON files. Each player's aliases are stored in…, Get the file path for a player's aliases. Human: reject path separators /…, Absolute str path for open(); re-checks containment at the open site. Human:… (+211 more)
 
-### Community 8 - "ExplorationService"
-Cohesion: 0.05
-Nodes (107): _MapRooms, _apply_exploration_filter_if_needed(), _AsciiMapViewport, _build_ascii_map_response(), _build_ascii_minimap_response(), _CoordGenCtx, _ensure_coordinates_generated(), _filter_explored_rooms() (+99 more)
+### Community 8 - "maps.py"
+Cohesion: 0.06
+Nodes (82): MapZoneContext, NamedTuple, Plane, zone, and sub_zone grouped for map/minimap APIs to reduce parameter…, _apply_exploration_filter_if_needed(), _AsciiMapViewport, _build_ascii_map_response(), _build_ascii_minimap_response(), _CoordGenCtx (+74 more)
 
-### Community 9 - "Player"
-Cohesion: 0.02
-Nodes (112): _convert_legacy_stats_string(), Player, listens_for, Initialize Player instance., String representation of the player., Get player inventory as list. Handles both JSON string (from database) and list…, Get player status effects as list., Set player status effects from list. (+104 more)
+### Community 9 - "pytest.md"
+Cohesion: 0.01
+Nodes (451): LucidityActionCode, LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, PlayerLucidity, Base, StrEnum, Lucidity tracking models drawn from the Pnakotic Manuscripts. (+443 more)
 
 ### Community 10 - "NPCCombatIntegrationService"
 Cohesion: 0.03
-Nodes (92): Check if participant is alive enough to be in combat. For players: alive if DP…, NPCCombatIntegrationService, ConnectionManager, Return combat messaging integration for room broadcasts (e.g. aggro switches)., Return combat service dependency for integration collaborators., NPC attack path after login grace check passes., Aggressive-mob entrypoint; matches NPCCombatIntegration.handle_npc_attack for…, Handle an NPC attacking a player (aggro) using the same combat codepath as… (+84 more)
+Nodes (88): NPCCombatIntegrationService, ConnectionManager, Return combat messaging integration for room broadcasts (e.g. aggro switches)., Return combat service dependency for integration collaborators., Return NPC data provider dependency for integration collaborators., Return UUID mapping dependency for integration collaborators., Handle NPC death and related effects. Args: npc_id: ID of the dead NPC room_id:…, Get the last attacker for an NPC. (+80 more)
 
 ### Community 11 - "test_combat_service.py"
 Cohesion: 0.07
 Nodes (57): _make_combat_instance(), _make_participant(), _make_service(), asyncio, Unit tests for CombatService process_attack flow and private helper methods., When involuntary flee triggers, combat ends and an early CombatResult is…, finalize_attack_result wires target state, events, XP, and completion correctly., process_attack returns early CombatResult when melee validation ends combat. (+49 more)
 
 ### Community 12 - "NATSServicePoolMixin"
-Cohesion: 0.05
-Nodes (34): configure_nats_tls(), nats_connect(), _NatsConnectFn, NatsConnectOptions, Client, Protocol, TypedDict, NATS connect options, TLS setup, and client connect helper. (+26 more)
+Cohesion: 0.08
+Nodes (21): NATSServicePoolMixin, Client, Task, Set pool initialized flag and log full/partial/none success., Get connection from pool. Raises: NATSPublishError: If no connection is…, Return connection to pool., Validate subject when subject manager and validation are enabled., Publish message using connection pool for high-throughput scenarios. Args:… (+13 more)
 
 ### Community 13 - "NPCBase"
 Cohesion: 0.02
-Nodes (70): NPCBase, ABC, Get attribute from obj with default to avoid lazy-loading issues., Set npc_type, name, current_room, spawn_room_id from definition., Setup base behavior rules common to all NPCs., Return stats[key] as int, or default if missing/None., Return current_dp, max_dp, dexterity for CombatParticipantData., Get behavior configuration. (+62 more)
+Nodes (77): NPCBase, ABC, Get attribute from obj with default to avoid lazy-loading issues., Set npc_type, name, current_room, spawn_room_id from definition., Setup base behavior rules common to all NPCs., Return stats[key] as int, or default if missing/None., Return current_dp, max_dp, dexterity for CombatParticipantData., Get behavior configuration. (+69 more)
 
 ### Community 14 - "container_endpoints_basic.py"
 Cohesion: 0.01
-Nodes (252): _apply_inventory_stack_defaults(), _as_inventory_dicts(), _as_str_list(), _as_str_object_dict(), _as_str_object_mapping(), _build_container_data_from_dict(), _build_open_container_response(), _build_transfer_response() (+244 more)
+Nodes (330): get_connection_manager, _apply_inventory_stack_defaults(), _as_inventory_dicts(), _as_str_list(), _as_str_object_dict(), _as_str_object_mapping(), _build_container_data_from_dict(), _build_open_container_response() (+322 more)
 
 ### Community 15 - "EldritchIcon.tsx"
-Cohesion: 0.03
-Nodes (75): ChatMessage, ChatMessageType, ChatPanelTest(), mockClick, mockCreateObjectURL, mockRevokeObjectURL, DraggablePanelResizeHandles(), DraggablePanelResizeHandlesProps (+67 more)
+Cohesion: 0.04
+Nodes (58): ChatMessage, ChatMessageType, ChatPanelTest(), mockClick, mockCreateObjectURL, mockRevokeObjectURL, DraggablePanel, DraggablePanelTest() (+50 more)
 
 ### Community 16 - "CombatParticipant"
-Cohesion: 0.03
-Nodes (111): CombatAction, CombatParticipant, Check if participant can perform voluntary combat actions. Unconscious (DP <=…, Apply damage to this participant and determine resulting death states.…, Represents a combat action., Represents a participant in combat., Check if participant is dead. For players: dead if DP <= -10 For NPCs: dead if…, Check if participant is mortally wounded (players only). For players: mortally… (+103 more)
+Cohesion: 0.02
+Nodes (196): CombatAction, CombatParticipant, Check if participant is mortally wounded (players only). For players: mortally…, Check if participant can perform voluntary combat actions. Unconscious (DP <=…, Apply damage to this participant and determine resulting death states.…, Represents a combat action., Represents a participant in combat., Check if participant is dead. For players: dead if DP <= -10 For NPCs: dead if… (+188 more)
 
 ### Community 17 - "Stats"
 Cohesion: 0.02
-Nodes (110): computed_field, generate_random_stats(), Any, Stats, Stats Generator Service for MythosMUD. This module provides random stat…, Roll Size using formula: (2D6+6)*5 (range 40-90)., Roll stats using 3d6 method (scaled to 15-90 range)., Roll stats using 4d6 drop lowest method (more generous, scaled to 15-90 range). (+102 more)
+Nodes (122): computed_field, CharacterCreationService, Any, UUID, Validate character stats against class prerequisites. Args: stats: The stats…, Create a new character with specific stats. Args: name: The character's name…, Get information about all available character classes and their prerequisites.…, Service class for character creation and stats generation business operations. (+114 more)
 
-### Community 18 - "EventBus"
+### Community 18 - "NPCLifecycleManager"
 Cohesion: 0.01
-Nodes (236): _create_npc_services_on_app(), Create NPC spawning, lifecycle, population services and instance service.…, EventBus, EventBusProcessingMixin, Exception, Task, Execute sync subscribers sequentially with error isolation. Sync subscribers…, Create asyncio tasks for async event subscribers and track their lifecycle.… (+228 more)
+Nodes (154): NPCLifecycleManager, Protocol, Initialize the NPC lifecycle manager. Args: event_bus: Event bus for publishing…, Record the death of an NPC to suppress respawning for 30 seconds. Args: npc_id:…, Check if an NPC is currently under death suppression. Args: npc_id: ID of the…, Subscribe to relevant game events., Handle NPC leaving a room., Record the schedule categories currently active for NPC routines. (+146 more)
 
 ### Community 19 - "server/dependencies.py"
 Cohesion: 0.01
-Nodes (199): LevelUpHook, get_async_persistence(), get_catatonia_registry(), get_chat_service(), get_combat_service(), get_connection_manager(), get_container(), get_exploration_service() (+191 more)
+Nodes (200): get_async_persistence(), get_catatonia_registry(), get_chat_service(), get_combat_service(), get_connection_manager(), get_container(), get_exploration_service(), get_level_service() (+192 more)
 
-### Community 20 - "ConnectionManager"
-Cohesion: 0.02
-Nodes (142): broadcast_global_event_impl(), broadcast_global_impl(), broadcast_room_event_impl(), broadcast_to_room_impl(), check_all_connections_health_impl(), check_connection_health_impl(), ConnectionManager, convert_uuids_to_strings_impl() (+134 more)
+### Community 20 - "connection_manager_methods.py"
+Cohesion: 0.01
+Nodes (301): _async_callable(), cleanup_dead_websocket_impl(), _close_dead_websocket_if_open(), delegate_connection_cleaner(), delegate_connection_cleaner_sync(), delegate_error_handler(), delegate_game_state_provider(), delegate_game_state_provider_sync() (+293 more)
 
 ### Community 21 - "test_security_validator.py"
 Cohesion: 0.01
-Nodes (226): field_validator, Validate alias name format using centralized validation., Validate command content for security using centralized validation., Validate alias name format using centralized validation., field_validator, Validate combat target name format using centralized validation., Validate combat target name format using centralized validation., Validate combat target name format using centralized validation. (+218 more)
+Nodes (238): field_validator, Validate prototype ID format. Args: value: The prototype ID to validate…, Validate player name format using centralized validation., Validate player name format using centralized validation., field_validator, Validate alias name format using centralized validation., Validate command content for security using centralized validation., Validate alias name format using centralized validation. (+230 more)
 
-### Community 22 - "test_connection_delegates.py"
-Cohesion: 0.03
-Nodes (121): _async_callable(), cleanup_dead_websocket_impl(), _close_dead_websocket_if_open(), delegate_connection_cleaner_sync(), delegate_game_state_provider(), delegate_game_state_provider_sync(), delegate_health_monitor(), delegate_health_monitor_sync() (+113 more)
+### Community 22 - "MythosMUDError"
+Cohesion: 0.02
+Nodes (124): Initialize the Pydantic error handler. Args: context: Optional error context…, create_error_context(), ErrorContext, handle_exception(), LoggedException, MythosMUDError, Any, Exception (+116 more)
 
-### Community 23 - "HolidayService"
-Cohesion: 0.03
-Nodes (71): HolidayCollection, HolidayEntry, Create a mapping of holiday IDs to holiday entries. Returns: dict[str,…, Ensure all holiday IDs are unique. Raises: ValueError: If duplicate holiday IDs…, Single holiday definition loaded from data/<env>/calendar/holidays.json., Wrapper for the complete holiday JSON payload., _ensure_utc(), _holiday_entry_from_row() (+63 more)
+### Community 23 - "server/schemas/__init__.py"
+Cohesion: 0.01
+Nodes (327): broadcast_message(), get_game_status(), get_mythos_time(), get, post, Game mechanics API endpoints for MythosMUD server. This module handles all game…, Return the current Mythos calendar metadata for HUD initialization. In-memory…, Get current game status and connection information. (+319 more)
 
-### Community 24 - "ui-v2/types.ts"
-Cohesion: 0.05
-Nodes (72): eventHandlers, processGameEvent(), hoisted, EventHandler, GameEvent, GameStateUpdates, EventStore, IEventStore (+64 more)
+### Community 24 - "eventHandlers/types.ts"
+Cohesion: 0.10
+Nodes (32): GameEvent, EventStore, IEventStore, ensureSelfListedInRoomPlayers(), HANDLERS, projectEvent(), projectState(), getInitialGameState() (+24 more)
 
 ### Community 25 - "NATSService"
-Cohesion: 0.02
-Nodes (152): NATSConfig, Any, BaseSettings, field_validator, NATS messaging configuration., Validate TLS file paths exist when TLS is enabled., Validate max payload is reasonable., Validate value is positive. (+144 more)
+Cohesion: 0.07
+Nodes (62): NATSService, NATS service for handling pub/sub operations and real-time messaging. This…, Check if NATS client is connected and healthy. Returns: True if connected and…, Get the number of active subscriptions. Returns: Number of active subscriptions, _assert_tracked_coro_closed(), _mock_create_tracked_task(), asyncio, fixture (+54 more)
 
 ### Community 26 - "test_websocket_handler_core.py"
 Cohesion: 0.03
@@ -2389,147 +2320,147 @@ Nodes (86): handle_websocket_message(), WebSocket, Handle a WebSocket message fr
 
 ### Community 27 - "is_player_in_login_grace_period"
 Cohesion: 0.04
-Nodes (98): _as_grace(), cancel_login_grace_period(), _EffectPersistence, get_login_grace_period_remaining(), _grace_period_task(), _GraceApp, _GraceAppState, _GraceContainer (+90 more)
+Nodes (91): Get login grace period status for player., get_login_grace_period_remaining(), is_player_in_login_grace_period(), Start LOGIN_WARDED via effects (ADR-009) or a legacy asyncio timeout task., Check if a player is currently in login grace period. Args: player_id: The…, Get the remaining time in seconds for a player's login grace period. Args:…, start_login_grace_period(), FakeGraceManager (+83 more)
 
-### Community 28 - "test_container_bundles.py"
-Cohesion: 0.04
-Nodes (86): ChatBundle, Chat bundle: chat service. Depends on Core (config, persistence), Game…, CombatBundle, Combat bundle: player combat, death, respawn, combat service, catatonia,…, Combat-related services., CoreBundle, Core infrastructure: config, database, tasks, event bus, persistence., GameBundle (+78 more)
+### Community 28 - "ApplicationContainer"
+Cohesion: 0.03
+Nodes (122): ChatBundle, Chat bundle: chat service. Depends on Core (config, persistence), Game…, CombatBundle, Combat bundle: player combat, death, respawn, combat service, catatonia,…, Raise if prerequisites for NATS combat are missing., Create CombatService with NATS and register it. Assumes NATS is connected., Start NATS message handler if available. Logs and swallows errors., Handle case when NATS is not connected. Raises in prod, sets combat_service to… (+114 more)
 
-### Community 29 - "test_containers.py"
-Cohesion: 0.04
-Nodes (67): get_async_persistence, get_connection_manager, close_container(), open_container(), APIRouter, ConnectionManager, Depends, Request (+59 more)
+### Community 29 - "models/container.py"
+Cohesion: 0.03
+Nodes (85): emit_close_container_event(), emit_container_opened_events(), emit_loot_all_event(), emit_transfer_event(), ConnectionManager, ContainerComponent, UUID, WebSocket event emission helpers for container API endpoints. This module… (+77 more)
 
-### Community 30 - "EventHandler"
-Cohesion: 0.05
-Nodes (53): _as_event_data_dict(), _EventBusPublishPort, EventHandler, _npc_died_broadcast_and_bridge(), _npc_died_ids_or_warn(), _participant_key_strings(), _publish_npc_died_to_event_bus(), ConnectionManager (+45 more)
+### Community 30 - "nats_exceptions.py"
+Cohesion: 0.02
+Nodes (106): Dead Letter Queue for failed NATS messages. Stores messages that fail after all…, _as_event_data_dict(), EventHandler, _npc_died_broadcast_and_bridge(), _npc_died_ids_or_warn(), _participant_key_strings(), _publish_npc_died_to_event_bus(), ConnectionManager (+98 more)
 
-### Community 31 - "exception_metrics.py"
-Cohesion: 0.40
-Nodes (4): get_summary(), Any, Exception metrics tracking for monitoring. This module provides thread-safe…, Get a summary of exception counts. Returns: dict[str, Any]: Dictionary…
+### Community 31 - "NPCSpawningService"
+Cohesion: 0.03
+Nodes (85): NPC database models for MythosMUD. This module defines the SQLAlchemy models…, _build_aggressive(), _build_passive(), _build_shopkeeper(), _coerce_simple_definition(), create_npc_instance(), generate_npc_id(), _instantiate_by_type() (+77 more)
 
 ### Community 32 - "InventoryCommandFactory"
 Cohesion: 0.10
 Nodes (27): Test create_pickup_command() with numeric index., Test create_pickup_command() with quantity., test_create_pickup_command_with_index(), test_create_pickup_command_with_quantity(), Test create_pickup_command() creates PickupCommand., Test create_pickup_command() raises error with no args., Test create_pickup_command() raises error when quantity is zero., Test create_pickup_command() raises error when quantity is negative. (+19 more)
 
 ### Community 33 - "PrototypeRegistryError"
-Cohesion: 0.07
-Nodes (35): ItemInstance, Item system package. This module exposes the prototype schema and registry…, ItemFactory, ItemFactoryError, Any, Exception, PrototypeRegistry, Item factory for creating item instances from prototypes. This module provides… (+27 more)
+Cohesion: 0.05
+Nodes (51): ItemInstance, Item system package. This module exposes the prototype schema and registry…, ItemFactory, ItemFactoryError, Any, Exception, PrototypeRegistry, Item factory for creating item instances from prototypes. This module provides… (+43 more)
 
 ### Community 34 - "api/monitoring.py"
-Cohesion: 0.04
-Nodes (118): force_memory_cleanup(), get_cache_metrics(), get_connection_health_stats(), get_dual_connection_stats(), get_eventbus_metrics(), get_memory_alerts(), get_memory_leak_metrics(), get_memory_stats() (+110 more)
+Cohesion: 0.05
+Nodes (102): force_memory_cleanup(), get_cache_metrics(), get_connection_health_stats(), get_dual_connection_stats(), get_eventbus_metrics(), get_memory_alerts(), get_memory_leak_metrics(), get_memory_stats() (+94 more)
 
 ### Community 35 - "PlayerNameExtractor"
 Cohesion: 0.02
 Nodes (85): PlayerNameExtractor, Any, UUID, Player name extraction and validation utilities. This module provides utilities…, Get name from user object (username or display_name). Args: user: The user…, Try to get name from related User object. Args: player: The player object…, Try to get player name from fallback sources (username, user object). Args:…, Perform basic validation on player name (not None, is string, not empty). Args:… (+77 more)
 
 ### Community 36 - "CombatService"
-Cohesion: 0.02
-Nodes (89): _attach_combat_service(), Wire CombatService onto app.state and the player service., CombatResult, Result of a combat action., apply_damage_and_check_involuntary_flee(), _effective_room_for_melee(), finalize_attack_result(), _melee_location_fail_reason() (+81 more)
+Cohesion: 0.01
+Nodes (206): get_current_tick(), Shared game tick counter. Kept in a leaf module so combat services can read the…, Get the current game tick., get_config(), Get application configuration (singleton in production, fresh in tests). In…, Spell targeting service for resolving spell targets. This module handles target…, CombatParticipantType, CombatResult (+198 more)
 
 ### Community 37 - "canonical_room_id_impl"
-Cohesion: 0.07
-Nodes (26): canonical_room_id_public_impl(), Resolve a room id to the canonical Room.id value (public method)., Resolve a room id to the canonical Room.id value (public method)., Resolve a room id to the canonical Room.id value (compatibility method)., Remove a player from all room subscriptions and occupant lists (compatibility…, canonical_room_id_impl(), prune_player_from_all_rooms_impl(), Any (+18 more)
+Cohesion: 0.08
+Nodes (32): canonical_room_id_public_impl(), Resolve a room id to the canonical Room.id value (public method)., Ensure room_occupants only contains currently online players (compatibility…, Remove a player from all room subscriptions and occupant lists (compatibility…, canonical_room_id_impl(), prune_player_from_all_rooms_impl(), Any, Resolve a room id to the canonical Room.id value. Args: room_id: The room ID to… (+24 more)
 
 ### Community 38 - "Any"
 Cohesion: 0.10
-Nodes (11): Any, Get room data with caching. Args: room_id: The room ID Returns: Room data…, Get room data with caching (synchronous version). Args: room_id: The room ID…, Initialize the NPC cache service. Args: npc_service: NPC service instance, Get NPC definitions with caching. Args: session: Database session Returns: List…, Get a specific NPC definition with caching. Args: session: Database session…, Get NPC spawn rules with caching. Args: session: Database session Returns: List…, Initialize the profession cache service. Args: persistence: Persistence layer… (+3 more)
+Nodes (11): Any, Initialize the room cache service. Args: persistence: Persistence layer instance, Get room data with caching. Args: room_id: The room ID Returns: Room data…, Get room data with caching (synchronous version). Args: room_id: The room ID…, Initialize the NPC cache service. Args: npc_service: NPC service instance, Get NPC definitions with caching. Args: session: Database session Returns: List…, Get a specific NPC definition with caching. Args: session: Database session…, Get NPC spawn rules with caching. Args: session: Database session Returns: List… (+3 more)
 
-### Community 39 - "ApplicationContainer"
-Cohesion: 0.03
-Nodes (81): Raise if prerequisites for NATS combat are missing., Create CombatService with NATS and register it. Assumes NATS is connected., Start NATS message handler if available. Logs and swallows errors., Handle case when NATS is not connected. Raises in prod, sets combat_service to…, Initialize NATS-dependent combat service and start NATS message handler., Failover callback that relocates catatonic players to the sanitarium., Shutdown core services., Initialize monitoring services. No dependencies. (+73 more)
+### Community 39 - ".get_instance"
+Cohesion: 0.04
+Nodes (58): Dependency Injection Container for MythosMUD. Re-exports ApplicationContainer…, get_container(), Get the singleton container instance., Reset the container singleton. ONLY use this in tests., Set the singleton container instance., Get the application container singleton. Backward compatibility., Reset the container singleton. ONLY use this in tests., reset_container() (+50 more)
 
-### Community 40 - "test_player_respawn_service.py"
-Cohesion: 0.03
-Nodes (90): PositionState, Permitted posture states for a character., LucidityActionCode, StrEnum, Action codes used for lucidity cooldowns (debrief, hallucination timer, etc.)., datetime, Player Respawn Service for managing player resurrection and limbo state. This…, Return naive UTC timestamp suitable for PostgreSQL TIMESTAMP WITHOUT TIME ZONE. (+82 more)
+### Community 40 - "test_look_player.py"
+Cohesion: 0.04
+Nodes (88): _apply_grace_period_labels(), _find_matching_players(), _format_player_look_display(), _get_players_in_room(), _handle_player_look(), _player_id_uuid(), Any, UUID (+80 more)
 
-### Community 41 - "LootAllRequest"
-Cohesion: 0.03
-Nodes (92): _audit_loot_all(), loot_all_items(), Any, APIRouter, Request, Register loot-all endpoint to the router., Loot all eligible items from a container., register_loot_endpoints() (+84 more)
+### Community 41 - "transfer_all_items_from_container"
+Cohesion: 0.09
+Nodes (23): ContainerComponent, InventoryStack, Transfer all items from container to player, returning updated container and…, transfer_all_items_from_container(), asyncio, Test get_container_and_player_for_loot_all handles player without inventory…, Test transfer_all_items_from_container function., Test transfer_all_items_from_container transfers all items. (+15 more)
 
 ### Community 42 - "WebSocketMessageValidator"
-Cohesion: 0.06
-Nodes (55): get_message_validator(), MessageValidationError, BaseModel, Exception, WebSocket message validation for MythosMUD. This module provides comprehensive…, Calculate the maximum nesting depth of a JSON structure. Args: obj: Object to…, Validate that strings in the JSON structure don't exceed length limits. Args:…, Validate message against Pydantic schema. Args: message: Parsed JSON message… (+47 more)
+Cohesion: 0.05
+Nodes (71): get_message_validator(), MessageValidationError, BaseModel, Exception, WebSocket message validation for MythosMUD. This module provides comprehensive…, Calculate the maximum nesting depth of a JSON structure. Args: obj: Object to…, Validate that strings in the JSON structure don't exceed length limits. Args:…, Validate message against Pydantic schema. Args: message: Parsed JSON message… (+63 more)
 
-### Community 43 - "combat_service.py"
-Cohesion: 0.02
-Nodes (151): CombatEndedEvent, CombatStartedEvent, CombatTimeoutEvent, CombatTurnAdvancedEvent, NPCAttackedEvent, NPCDiedEvent, NPCTookDamageEvent, PlayerAttackedEvent (+143 more)
+### Community 43 - "NATSError"
+Cohesion: 0.01
+Nodes (191): CombatEndedEvent, CombatStartedEvent, CombatTargetSwitchEvent, NPCAttackedEvent, NPCDiedEvent, NPCTookDamageEvent, PlayerAttackedEvent, Combat-specific events for the MUD. This module defines combat-related events… (+183 more)
 
 ### Community 44 - "ChatService"
 Cohesion: 0.02
-Nodes (120): ChatService, _publish_room_chat(), ChatMessage, UUID, _rate_limit_result(), Chat service for handling real-time communication between players. This service…, Normalize player identifiers to string form., Send a say message to players in the same room. This method publishes the… (+112 more)
+Nodes (108): ChatService, _publish_room_chat(), ChatMessage, UUID, _rate_limit_result(), Chat service for handling real-time communication between players. This service…, Normalize player identifiers to string form., Send a say message to players in the same room. This method publishes the… (+100 more)
 
-### Community 45 - "players.py"
+### Community 45 - "User"
+Cohesion: 0.02
+Nodes (202): create_player(), delete_character(), delete_player(), _disconnect_other_characters(), _end_combat_for_grace_period(), _force_disconnect_character(), get_available_classes(), get_class_description() (+194 more)
+
+### Community 46 - "command_service.py"
 Cohesion: 0.03
-Nodes (157): create_player(), delete_character(), delete_player(), _disconnect_other_characters(), _end_combat_for_grace_period(), _force_disconnect_character(), get_available_classes(), get_class_description() (+149 more)
-
-### Community 46 - "test_admin_commands.py"
-Cohesion: 0.04
-Nodes (76): handle_admin_command(), _handle_admin_status_command(), _handle_admin_time_command(), Any, Administrative commands for MythosMUD. This module contains the main admin…, Expose current Mythos time metadata, active holidays, and freeze diagnostics., Entry point for general admin commands that expose subcommands like `admin…, Provide contextual status information about the caller's administrative… (+68 more)
+Nodes (101): handle_admin_command(), _handle_admin_status_command(), _handle_admin_time_command(), Any, Expose current Mythos time metadata, active holidays, and freeze diagnostics., Entry point for general admin commands that expose subcommands like `admin…, Provide contextual status information about the caller's administrative…, _collect_mute_display_lines() (+93 more)
 
 ### Community 47 - "lifecycle_manager.py"
-Cohesion: 0.05
-Nodes (72): NPCDied, Event fired when an NPC dies. This event is triggered when an NPC's…, handle_npc_died_impl(), _LifecycleManagerForDeath, _mark_despawned_and_queue_respawn(), Protocol, NPC death event handling for lifecycle. Extracted from lifecycle_manager to…, Structural type for NPCLifecycleManager (avoids importing lifecycle_manager:… (+64 more)
-
-### Community 48 - "test_container_persistence_crud.py"
-Cohesion: 0.03
-Nodes (132): ContainerData, Container data class for the unified container system., Data class for container information., Convert container data to dictionary for ContainerComponent., allowed_roles_from_row(), as_opt_datetime(), as_opt_str(), as_opt_uuid() (+124 more)
-
-### Community 49 - "test_lucidity_models.py"
 Cohesion: 0.04
-Nodes (91): LucidityAdjustmentLog, LucidityCooldown, LucidityExposureState, Base, Immutable ledger for every lucidity gain or loss event., Tracks repeated exposure to particular eldritch archetypes., Cooldown tracker for recovery rituals and hallucination timers., LucidityRepository (+83 more)
+Nodes (107): NPCMaintenanceConfig, Any, NPC Configuration for MythosMUD. This module defines configuration settings for…, Configuration for NPC lifecycle maintenance. This class centralizes all timing…, Get the respawn delay for a specific NPC type. Args: npc_type: Type of NPC…, Check if NPC maintenance should run on this tick. Args: tick_count: Current…, Get a summary of all NPC configuration values. Returns: Dictionary containing…, NPCDied (+99 more)
+
+### Community 48 - "ContainerRepository"
+Cohesion: 0.17
+Nodes (22): ContainerCreateParams, Optional fields for creating a container row (beyond source_type)., ContainerRepository, Repository for container persistence operations. Uses async SQLAlchemy…, Initialize the container repository., asyncio, ContainerData, fixture (+14 more)
+
+### Community 49 - "StandardizedErrorResponse"
+Cohesion: 0.04
+Nodes (58): JSONResponse, post, Request, Receive and log alert webhooks, webhook(), Error handlers package for MythosMUD. This package provides specialized error…, _contains_file_path_in_exception(), _contains_sensitive_exception_pattern() (+50 more)
 
 ### Community 50 - "test_command_inventory.py"
 Cohesion: 0.02
-Nodes (131): DropCommand, EquipCommand, GetCommand, PickupCommand, PutCommand, field_validator, model_validator, Strip and validate search term. (+123 more)
+Nodes (125): EquipCommand, PickupCommand, field_validator, model_validator, Strip and validate search term., Ensure either index or search_term is provided., Validate target slot value. Args: value: The target slot value to validate (can…, Command for unequipping an item back to inventory. (+117 more)
 
 ### Community 51 - "Communities (355 total, 223 thin omitted)"
 Cohesion: 0.02
 Nodes (133): Communities (355 total, 223 thin omitted), Community 0 - "Nyarlathotep Avatars", Community 100 - "Call Daoloth / Daoloth", Community 101 - "Call Nyogtha / Clutch of Nyogtha", Community 102 - "Call Saaitii / Saaitii", Community 103 - "Call Zu-Che-Quon / Enchant Bells of Horror", Community 104 - "Cast Out Shan / Shaggai", Community 105 - "Casting the Runes / Elder Sign" (+125 more)
 
 ### Community 52 - "test_connection_helpers_impl.py"
-Cohesion: 0.05
-Nodes (59): broadcast_global_event_impl(), broadcast_room_event_impl(), _optimize_payload(), Any, _queue_message_if_needed(), Queue message for later delivery if no active connections. Args: player_id: The…, Update final delivery status based on connection results. Args:…, Send a personal message to a player via WebSocket (deprecated implementation).… (+51 more)
+Cohesion: 0.10
+Nodes (29): broadcast_global_event_impl(), broadcast_room_event_impl(), Any, _queue_message_if_needed(), Queue message for later delivery if no active connections. Args: player_id: The…, Update final delivery status based on connection results. Args:…, Send a personal message to a player via WebSocket (deprecated implementation).…, Broadcast a room-specific event to all players in the room. (+21 more)
 
 ### Community 53 - "server/models/game.py"
 Cohesion: 0.03
-Nodes (98): _apply_player_status_with_grace_check(), _apply_status_effect_to_player(), _grace_period_blocks_negative_status_effect(), _handle_player_status_effect(), _maybe_run_force_flee_effect(), _parse_status_effect_metadata(), Any, UUID (+90 more)
+Nodes (108): _apply_player_status_with_grace_check(), _apply_status_effect_to_player(), _grace_period_blocks_negative_status_effect(), _handle_player_status_effect(), _maybe_run_force_flee_effect(), _parse_status_effect_metadata(), Any, UUID (+100 more)
 
-### Community 54 - "test_player_model.py"
-Cohesion: 0.02
-Nodes (87): Unit tests for Player SQLAlchemy model. Tests the Player model methods…, Test Player.get_inventory() handles empty inventory., Test Player.set_inventory() serializes to JSON., UUID fields in inventory entries should serialize to strings., Test Player can be instantiated with required fields., Test Player.get_status_effects() parses JSON status effects., Test Player.set_status_effects() serializes to JSON., Test Player.get_equipped_items() returns equipped items from _equipped_items… (+79 more)
+### Community 54 - "look_command.py"
+Cohesion: 0.05
+Nodes (78): _app_from_request(), _as_response(), _connection_manager_from_app(), _container_from_app(), _get_app_and_persistence(), _get_room_drops(), _handle_implicit_target_lookup(), handle_look_command() (+70 more)
 
 ### Community 55 - "SpellEffectType"
-Cohesion: 0.04
-Nodes (102): Healing event notification for spellcasting. Mixin that sends player_dp_updated…, StrEnum, Spell data models for the magic system. This module contains Pydantic models…, Valid target types for spells., Valid range types for spells., Valid effect types for spells., SpellEffectType, SpellRangeType (+94 more)
-
-### Community 56 - "message_handler_factory.py"
 Cohesion: 0.05
-Nodes (62): ChatMessageHandler, ClientErrorReportMessageHandler, CommandMessageHandler, FollowResponseMessageHandler, MessageHandler, MessageHandlerFactory, PartyInviteResponseMessageHandler, PingMessageHandler (+54 more)
+Nodes (93): BaseModel, StrEnum, Valid target types for spells., Valid range types for spells., Valid effect types for spells., Material component required for casting a spell., SpellEffectType, SpellMaterial (+85 more)
 
-### Community 57 - "ErrorMessages"
-Cohesion: 0.03
-Nodes (78): ErrorMessages, Common error messages for consistent user experience., Test validate_user_for_open_container function., Test validate_user_for_open_container passes with valid user., Test validate_user_for_open_container raises exception for None user., TestValidateUserForOpenContainer, mock_websocket(), asyncio (+70 more)
+### Community 56 - "test_message_handler_factory.py"
+Cohesion: 0.06
+Nodes (51): ChatMessageHandler, ClientErrorReportMessageHandler, CommandMessageHandler, FollowResponseMessageHandler, MessageHandler, MessageHandlerFactory, PartyInviteResponseMessageHandler, PingMessageHandler (+43 more)
+
+### Community 57 - "mock_connection_manager"
+Cohesion: 0.29
+Nodes (7): mock_connection_manager(), mock_validator(), mock_websocket(), fixture, Create a mock WebSocket., Create a mock connection manager., Create a mock message validator.
 
 ### Community 58 - "CombatInstance"
-Cohesion: 0.05
-Nodes (71): CombatInstance, UUID, Represents an active combat instance., Get the participant whose turn it is., Advance to the next round - all participants act each round. In round-based…, Check if combat should end. CRITICAL: Combat should NOT end when a player is…, Get all participants that are not dead (includes mortally wounded players at 0…, Update the last activity tick and datetime. (+63 more)
+Cohesion: 0.03
+Nodes (100): CombatInstance, UUID, Represents an active combat instance., Get the participant whose turn it is., Advance to the next round - all participants act each round. In round-based…, Check if combat should end. CRITICAL: Combat should NOT end when a player is…, Get all participants that are not dead (includes mortally wounded players at 0…, Update the last activity tick and datetime. (+92 more)
 
-### Community 59 - "test_combat.py"
-Cohesion: 0.01
-Nodes (144): CombatStatus, _get_default_damage(), Enum, Combat system models for in-memory state management. This module defines the…, Get the default damage value from configuration., Status of a combat instance., CombatCleanupHandler, Any (+136 more)
+### Community 59 - "test_combat_cleanup_handler.py"
+Cohesion: 0.08
+Nodes (27): cleanup_handler(), mock_combat(), mock_combat_service(), asyncio, fixture, Unit tests for combat cleanup handler. Tests the CombatCleanupHandler class for…, Test cleanup_stale_combats handles missing end_combat method., Test cleanup_stale_combats when no stale combats exist. (+19 more)
 
 ### Community 60 - "RateLimiter"
 Cohesion: 0.03
 Nodes (73): Any, RateLimiter, Clean up old rate limit attempts to prevent memory bloat. Args:…, Clean up large data structures to prevent memory bloat. Args: max_entries:…, Remove all rate limit data for a specific player. Args: player_id: The player's…, Rate limiter for connection attempts and other operations. This class provides…, Get rate limiter statistics. Returns: dict: Statistics about current rate…, Check if a connection has exceeded message rate limits. Args: connection_id:… (+65 more)
 
 ### Community 61 - "admin_teleport_commands.py"
-Cohesion: 0.06
-Nodes (63): Admin teleport command handlers for MythosMUD. This module provides handlers…, broadcast_teleport_updates(), build_teleport_message(), execute_confirm_teleport(), log_teleport_success(), Any, Helper functions for teleport command operations., Resolve target player for teleport command. (+55 more)
+Cohesion: 0.05
+Nodes (83): Admin teleport command handlers for MythosMUD. This module provides handlers…, broadcast_teleport_effects(), get_online_player_by_display_name(), notify_player_of_teleport(), Any, Teleport utility functions for admin commands in MythosMUD. This module…, Notify a player that they are being teleported by an admin. Args:…, Get online player information by display name. Args: display_name: Display name… (+75 more)
 
 ### Community 62 - "TargetResolutionService"
 Cohesion: 0.02
-Nodes (126): BaseModel, Target metadata schema for MythosMUD. This module defines Pydantic models for…, Metadata about a target in target resolution. This model represents additional…, TargetMetadata, StrEnum, Enumeration of possible target types., TargetType, PersistenceProtocol (+118 more)
+Nodes (176): _NpcWithLife, Protocol, Combat command handler class and shared helpers. Extracted from combat.py to…, NPC instance shape for alive check before accepting an attack target., _get_container(), _get_member_display(), _get_party_command_context(), _handle_party_chat() (+168 more)
 
 ### Community 63 - "test_aggro_threat.py"
 Cohesion: 0.05
@@ -2539,17 +2470,17 @@ Nodes (87): add_damage_threat(), add_heal_threat(), _aggression_scale(), apply_s
 Cohesion: 0.02
 Nodes (128): asyncio, Unit tests for NATS message handler. Tests the NATSMessageHandler class…, Test _subscribe_to_chat_subjects() raises error when subject manager not…, Test _subscribe_to_standardized_chat_subjects() successfully subscribes., Test _subscribe_to_standardized_chat_subjects() continues on partial failure., Test _subscribe_to_subject() successfully subscribes., Test _subscribe_to_subject() raises error on failure., Test _unsubscribe_from_subject() successfully unsubscribes. (+120 more)
 
-### Community 65 - "PlayerStateCommandFactory"
+### Community 65 - "Invite"
 Cohesion: 0.04
-Nodes (59): Unit tests for player state command factories. Tests the…, Test create_skills_command() raises error with args., Test create_journal_command() creates JournalCommand., Test create_journal_command() raises error with args., Test create_quests_command() creates QuestsCommand., Test create_quests_command() raises error with args., Test create_quest_command() with no args creates QuestCommand with empty list., Test create_status_command() creates StatusCommand. (+51 more)
+Nodes (64): InviteManager, AsyncSession, datetime, Request, UUID, Mark an invite as used by a specific user., Get all invites used by a user., Get all unused invites. (+56 more)
 
 ### Community 66 - "NPCCombatUUIDMapping"
 Cohesion: 0.05
-Nodes (34): Return UUID mapping dependency for integration collaborators., NPCCombatUUIDMapping, UUID, Get the original string ID from a UUID. Args: uuid_id: The UUID to look up…, Get XP value for a UUID. Args: uuid_id: The UUID to look up Returns: XP value…, Manages UUID mappings for NPC combat., Initialize UUID mapping storage., Check if a string is a valid UUID. Args: uuid_string: String to check Returns:… (+26 more)
+Nodes (33): NPCCombatUUIDMapping, UUID, Get the original string ID from a UUID. Args: uuid_id: The UUID to look up…, Get XP value for a UUID. Args: uuid_id: The UUID to look up Returns: XP value…, Manages UUID mappings for NPC combat., Initialize UUID mapping storage., Check if a string is a valid UUID. Args: uuid_string: String to check Returns:…, Convert string ID to UUID, creating new UUID if needed. For non-UUID string IDs… (+25 more)
 
 ### Community 67 - "PassiveMobNPC"
-Cohesion: 0.04
-Nodes (59): PassiveMobNPC, Check if idle movement should be scheduled based on configuration and timing.…, Create a WANDER action message. Args: current_time: Current timestamp Returns:…, Queue a WANDER action via the thread manager. Args: wander_action: The wander…, Schedule a WANDER action for idle movement if interval has elapsed. This method…, Respond to player interaction., Handle wandering action., Handle responding to greeting action. (+51 more)
+Cohesion: 0.03
+Nodes (77): NPCEventReactionSystem, Any, System for managing NPC event subscriptions and reactions. This class handles…, Initialize the NPC event reaction system. Args: event_bus: The event bus to…, Subscribe to all event types that NPCs might react to., Register reactions for a specific NPC. Args: npc_id: The ID of the NPC…, Unregister all reactions for a specific NPC. Args: npc_id: The ID of the NPC, Handle an incoming event and trigger appropriate NPC reactions. Args: event:… (+69 more)
 
 ### Community 68 - "Profession"
 Cohesion: 0.03
@@ -2557,19 +2488,19 @@ Nodes (71): Profession, Any, Base, Check if given stats meet the profession requ
 
 ### Community 69 - "test_manager.py"
 Cohesion: 0.03
-Nodes (70): fixture, Unit tests for NATS Subject Manager. Tests the NATSSubjectManager class., Test build_subject() raises SubjectValidationError for invalid parameter., Test validate_subject() returns True for valid subject., Test validate_subject() returns False for invalid subject., Test validate_subject() accepts events.domain.{event_type} (distributed…, Test validate_subject() returns False for empty subject., Test validate_subject() uses cache for repeated validations. (+62 more)
+Nodes (68): fixture, Unit tests for NATS Subject Manager. Tests the NATSSubjectManager class., Test build_subject() raises SubjectValidationError for invalid parameter., Test validate_subject() returns True for valid subject., Test validate_subject() returns False for invalid subject., Test validate_subject() accepts events.domain.{event_type} (distributed…, Test validate_subject() returns False for empty subject., Test validate_subject() uses cache for repeated validations. (+60 more)
 
-### Community 70 - "UtilityCommandFactory"
-Cohesion: 0.02
-Nodes (161): CastCommand, LearnCommand, field_validator, Command for casting a spell., Validate spell name format., Validate target format., Command for viewing spell details., Validate spell name format. (+153 more)
+### Community 70 - "field_validator"
+Cohesion: 0.22
+Nodes (5): field_validator, Validate spell name format., Validate target format., Validate spell name format., Validate spell name format.
 
-### Community 71 - "test_command_communication.py"
-Cohesion: 0.02
-Nodes (149): EmoteCommand, LocalCommand, MeCommand, PoseCommand, Command for whispering to a specific player., Command for replying to the last whisper received., Validate message content for security using centralized validation., Command for saying something to other players in the room. (+141 more)
+### Community 71 - "test_websocket_helpers.py"
+Cohesion: 0.04
+Nodes (65): check_shutdown_and_reject(), convert_uuids_to_strings(), get_npc_name_from_instance(), load_player_mute_data(), WebSocket, Load player mute data when they connect. AI: Uses async version to avoid…, Recursively convert UUID objects to strings for JSON serialization., Get NPC name from the actual NPC instance, preserving original case from… (+57 more)
 
-### Community 72 - "test_command_moderation.py"
-Cohesion: 0.02
-Nodes (137): AddAdminCommand, AdminCommand, MuteCommand, MuteGlobalCommand, field_validator, Command for administrative utilities with subcommands., Validate and normalize admin subcommand names., Command for muting a player. (+129 more)
+### Community 72 - "PopulationStats"
+Cohesion: 0.04
+Nodes (58): PopulationStats, Any, Population Statistics Module. This module provides the PopulationStats class…, Statistics for NPC population in a zone or sub-zone., Initialize population statistics. Args: zone_id: The zone identifier…, Add an NPC to the population statistics. Args: npc_type: Type of the NPC…, Remove an NPC from the population statistics. Args: npc_type: Type of the NPC…, Convert population statistics to dictionary. (+50 more)
 
 ### Community 73 - "RoomLoader"
 Cohesion: 0.03
@@ -2577,99 +2508,99 @@ Nodes (75): option, fixture, Create a temporary directory for testing., temp_dir
 
 ### Community 74 - "PlayerCombatService"
 Cohesion: 0.03
-Nodes (91): PlayerCombatService, PlayerCombatState, UUID, Attach NPC combat integration for UUID/XP mapping (post-construction wiring)., Track a player's combat state. Args: player_id: ID of the player player_name:…, Get a player's combat state. Args: player_id: ID of the player Returns:…, Clear a player's combat state. Args: player_id: ID of the player, Synchronously check if a player is currently in combat. This is the preferred… (+83 more)
+Nodes (92): Attach or replace the player combat service (shared instance wiring)., PlayerCombatService, PlayerCombatState, UUID, Attach NPC combat integration for UUID/XP mapping (post-construction wiring)., Track a player's combat state. Args: player_id: ID of the player player_name:…, Get a player's combat state. Args: player_id: ID of the player Returns:…, Clear a player's combat state. Args: player_id: ID of the player (+84 more)
 
 ### Community 75 - "DatabaseManager"
 Cohesion: 0.01
-Nodes (324): Core bundle: config, database, tasks, event bus, persistence. First bundle in…, Initialize core services. No dependencies., close_db(), Set test override database URL., set_test_database_url(), DatabaseManager, _dispose_engine_safely(), ensure_database_directory() (+316 more)
+Nodes (323): close_db(), Set test override database URL., set_test_database_url(), DatabaseManager, _dispose_engine_safely(), ensure_database_directory(), get_database_path(), get_database_url() (+315 more)
 
 ### Community 76 - "get_npc_instance_service"
-Cohesion: 0.03
-Nodes (167): handle_npc_behavior_command(), handle_npc_react_command(), handle_npc_stop_command(), Any, NPC behavior control commands (behavior, react, stop)., Handle NPC behavior control command., Handle NPC reaction trigger command., Handle NPC behavior stop command. (+159 more)
+Cohesion: 0.02
+Nodes (180): handle_npc_behavior_command(), handle_npc_react_command(), handle_npc_stop_command(), Any, NPC behavior control commands (behavior, react, stop)., Handle NPC behavior control command., Handle NPC reaction trigger command., Handle NPC behavior stop command. (+172 more)
 
-### Community 77 - "ContainerData"
-Cohesion: 0.04
-Nodes (73): ContainerData, ContainerDataCore, ContainerDataExtras, Container data class for persistence operations., Identity and placement fields for a container row., Optional payload and timestamps for a container row., Data class for container information., Convert container data to dictionary. Returns dictionary with model field names… (+65 more)
+### Community 77 - "test_container_persistence_extended_crud.py"
+Cohesion: 0.03
+Nodes (106): ContainerData, ContainerDataCore, ContainerDataExtras, Container data class for persistence operations., Identity and placement fields for a container row., Optional payload and timestamps for a container row., Data class for container information., Convert container data to dictionary. Returns dictionary with model field names… (+98 more)
 
 ### Community 78 - "test_logging_handlers.py"
 Cohesion: 0.04
-Nodes (65): _aggregator_handler_class_for_windows(), AsyncioConnLostWriteFilter, create_aggregator_handler(), _make_exec_for_aggregator(), Any, LogRecord, Path, RotatingFileHandler (+57 more)
+Nodes (69): _aggregator_handler_class_for_windows(), AsyncioConnLostWriteFilter, create_aggregator_handler(), _make_exec_for_aggregator(), Any, LogRecord, Path, RotatingFileHandler (+61 more)
 
-### Community 79 - "PlayerLucidity"
-Cohesion: 0.04
-Nodes (81): _apply_grounding_adjustment(), _complete_ground_command(), _get_ground_services(), handle_ground_command(), handle_rescue_command(), _normalize_player_ids(), Any, UUID (+73 more)
+### Community 79 - "rescue_commands.py"
+Cohesion: 0.06
+Nodes (63): _apply_grounding_adjustment(), _complete_ground_command(), _get_ground_services(), handle_ground_command(), handle_rescue_command(), _normalize_player_ids(), Any, UUID (+55 more)
 
-### Community 80 - "test_schedule_service.py"
-Cohesion: 0.07
-Nodes (27): _DatabaseLoadResult, _fetch_schedule_entries(), _lower_string_list_from_row(), normalize_weekday_names(), Connection, Record, TypedDict, Load and normalize schedule rows from PostgreSQL. (+19 more)
+### Community 80 - "_MagicServiceCore"
+Cohesion: 0.06
+Nodes (34): _CombatTickState, _MagicServiceCore, _PlayerPersistence, JsonMap, Protocol, UUID, Load player and return normalized stats (MP/max_MP). Returns (player, stats) or…, Return (False, message) if not enough MP, else (True, ''). (+26 more)
 
 ### Community 81 - "test_look_container.py"
 Cohesion: 0.02
-Nodes (223): _as_map(), _as_map_list(), _as_uuid(), _container_name(), ContainerLookArgs, _ContainerPersistence, _extract_container_metadata(), _fetch_container() (+215 more)
+Nodes (204): _as_map(), _as_map_list(), _as_uuid(), _container_name(), ContainerLookArgs, _extract_container_metadata(), _fetch_container(), _find_container_in_room() (+196 more)
 
-### Community 82 - "format_player_entry"
-Cohesion: 0.09
-Nodes (23): format_player_entry(), Format a single player entry for the who command output. Args: player: Player…, Unit tests for who command helper functions. Tests the helper functions in…, Test filter_players_by_name() filters players by name., Test filter_players_by_name() returns empty list when no matches., Test filter_players_by_name() returns all players when filter is empty., Test format_player_location() formats valid room ID., Test format_player_entry() formats player entry. (+15 more)
-
-### Community 83 - "ExplorationCommandFactory"
+### Community 82 - "test_who_commands.py"
 Cohesion: 0.03
-Nodes (98): Unit tests for exploration command factories. Tests the…, Test create_look_command() with 'in' but no target., Test create_look_command() with direction target., Test create_look_command() with direction and instance number., Test create_sit_command() creates SitCommand., Test create_sit_command() raises error with args., Test create_stand_command() creates StandCommand., Test create_stand_command() raises error with args. (+90 more)
+Nodes (110): Utility commands for MythosMUD. This module contains handlers for utility…, filter_online_players(), filter_players_by_name(), format_player_entry(), format_player_location(), format_who_result(), get_players_for_who(), handle_who_command() (+102 more)
+
+### Community 83 - "test_player_event_handlers_respawn.py"
+Cohesion: 0.04
+Nodes (61): mock_connection_manager(), mock_logger(), mock_utils(), player_respawn_event_handler(), asyncio, fixture, Unit tests for player respawn event handlers. Tests the…, Test get_player_data_for_respawn() returns None when connection manager not… (+53 more)
 
 ### Community 84 - "test_player_disconnect_handlers.py"
 Cohesion: 0.04
-Nodes (76): Disconnect grace period management for MythosMUD. This module handles the…, age_off_disconnected_sessions(), _cleanup_player_references(), _collect_disconnect_keys(), _get_session_maps_for_age_off(), handle_player_disconnect_broadcast(), _purge_expired_sessions_from_maps(), Player (+68 more)
+Nodes (75): age_off_disconnected_sessions(), _cleanup_player_references(), _collect_disconnect_keys(), _get_session_maps_for_age_off(), handle_player_disconnect_broadcast(), _purge_expired_sessions_from_maps(), Player, UUID (+67 more)
 
-### Community 85 - "test_look_player.py"
-Cohesion: 0.02
-Nodes (185): _AppWithState, _async_persistence_from_app(), _ContainerWithPersistence, _EquippedPlayer, _get_health_label(), _get_lucidity_label(), _get_visible_equipment(), _parse_instance_number() (+177 more)
+### Community 85 - "test_look_helpers.py"
+Cohesion: 0.03
+Nodes (101): _AppWithState, _async_persistence_from_app(), _ContainerWithPersistence, _EquippedPlayer, _get_health_label(), _get_lucidity_label(), _get_visible_equipment(), _get_wearable_container_service() (+93 more)
 
-### Community 86 - "test_zone_config_loader.py"
-Cohesion: 0.05
-Nodes (79): async_load_zone_configurations(), extract_zone_name(), load_zone_configurations(), parse_json_field(), parse_zone_special_rules(), process_subzone_rows(), process_zone_rows(), Connection (+71 more)
+### Community 86 - "ZoneConfiguration"
+Cohesion: 0.03
+Nodes (133): async_load_zone_configurations(), extract_zone_name(), load_zone_configurations(), parse_json_field(), parse_zone_special_rules(), process_subzone_rows(), process_zone_rows(), Connection (+125 more)
 
 ### Community 87 - "test_player_presence_tracker.py"
 Cohesion: 0.04
 Nodes (91): _acquire_disconnect_lock(), broadcast_connection_message_impl(), _build_player_info(), _disconnect_during_rest_is_intentional(), _get_instance_manager_from_manager(), Any, UUID, Player presence tracking helper for connection manager. This module provides… (+83 more)
 
 ### Community 88 - "build_event"
-Cohesion: 0.02
-Nodes (125): _AdminSetStatApplyContext, _AdminSetStatLogContext, _apply_stat_change_and_build_result(), _build_set_stat_error_response(), _calculate_stat_warnings(), _log_admin_set_stat(), _notify_player_stat_change(), BaseException (+117 more)
+Cohesion: 0.04
+Nodes (69): build_event(), _get_next_global_sequence(), Protocol, UUID, Event envelope utilities for MythosMUD real-time messages. Provides a single,…, Minimal typing for connection_manager passed to build_event (sequence_counter…, Custom JSON encoder that handles UUID objects., Thread-safe global sequence number generation (fallback when no… (+61 more)
 
 ### Community 89 - "catatonia_check.py"
-Cohesion: 0.04
-Nodes (60): check_catatonia_block(), _check_catatonia_database(), _check_catatonia_registry(), _convert_player_id_to_uuid(), _fetch_lucidity_record(), _is_catatonic(), _load_player_for_catatonia_check(), _PersistenceGetPlayerByName (+52 more)
-
-### Community 90 - "ContainerServiceError"
 Cohesion: 0.03
-Nodes (50): ContainerServiceError, Base exception for container service operations., Test handle_transfer_items_exceptions function., Test handle_transfer_items_exceptions returns 404 for ContainerNotFoundError., Test handle_transfer_items_exceptions returns 409 for ContainerCapacityError., Test handle_transfer_items_exceptions returns 403 for…, Test handle_transfer_items_exceptions returns 412 for stale mutation token., Test handle_transfer_items_exceptions returns 400 for invalid stack. (+42 more)
+Nodes (67): check_catatonia_block(), _check_catatonia_database(), _check_catatonia_registry(), _convert_player_id_to_uuid(), _fetch_lucidity_record(), _is_catatonic(), _load_player_for_catatonia_check(), _PersistenceGetPlayerByName (+59 more)
+
+### Community 90 - "test_active_lucidity_service.py"
+Cohesion: 0.05
+Nodes (59): active_lucidity_service(), mock_session(), asyncio, fixture, Unit tests for active lucidity service. Tests the ActiveLucidityService class…, Test apply_encounter_lucidity_loss() for acclimated encounter., Test apply_encounter_lucidity_loss() raises error for unknown category., Test apply_encounter_lucidity_loss() handles string player_id. (+51 more)
 
 ### Community 91 - "TestMonitoringEndpoints"
-Cohesion: 0.06
-Nodes (31): get_system_health(), get_system_monitoring_alerts(), get, post, Request, Get system alerts from monitoring dashboard., Resolve a system alert., Enhanced health check endpoint using monitoring dashboard. (+23 more)
+Cohesion: 0.07
+Nodes (22): asyncio, fixture, Test health check endpoint returns system health., Test health check endpoint handles errors., Test metrics endpoint returns monitoring data., Test metrics endpoint handles errors., Test monitoring summary endpoint returns summary data., Test lifespan() context manager. (+14 more)
 
 ### Community 92 - "UserManager"
 Cohesion: 0.05
-Nodes (49): datetime, UUID, Get active global mutes applied by a player., Get all mutes applied by a player. Args: player_id: Player ID Returns:…, Check if a player is globally muted by any other player. Args: player_id:…, Get information about who muted a player. Args: player_id: Player ID to check…, Get system-wide user management statistics. Returns: Dictionary with system…, Clean up expired player mutes. (+41 more)
+Nodes (50): datetime, UUID, User management service for MythosMUD chat system. This module provides…, Get active global mutes applied by a player., Get all mutes applied by a player. Args: player_id: Player ID Returns:…, Check if a player is globally muted by any other player. Args: player_id:…, Get information about who muted a player. Args: player_id: Player ID to check…, Get system-wide user management statistics. Returns: Dictionary with system… (+42 more)
 
-### Community 93 - "test_argon2_utils.py"
-Cohesion: 0.04
-Nodes (78): PasswordHasher, create_hasher_with_params(), get_hash_info(), hash_password(), is_argon2_hash(), needs_rehash(), Hash a plaintext password using Argon2id. This function provides superior…, Verify a plaintext password against an Argon2 hash. This function verifies… (+70 more)
+### Community 93 - "test_async_persistence_delegates.py"
+Cohesion: 0.05
+Nodes (54): asyncio, Unit tests for async persistence layer: health, container, item, singleton,…, Test heal_player delegates to HealthRepository., Test async_heal_player delegates to HealthRepository., Test damage_player delegates to HealthRepository., Test async_damage_player delegates to HealthRepository., Test create_container with ContainerCreateParams., Test create_container with kwargs (backward compatibility). (+46 more)
 
 ### Community 94 - "test_chat_npc_system.py"
-Cohesion: 0.05
-Nodes (66): Initialize chat service., NPCSpoke, Event fired when an NPC speaks. This event is triggered when an NPC…, _ChatDeliveryService, deliver_npc_room_speech(), deliver_personal_system(), npc_sender_id(), _on_npc_spoke() (+58 more)
+Cohesion: 0.04
+Nodes (89): _ChatDeliveryService, deliver_npc_room_speech(), deliver_personal_system(), npc_sender_id(), _on_npc_spoke(), Protocol, UUID, NPC and personal system chat delivery via ChatService (issue #146 MVP). #… (+81 more)
 
 ### Community 95 - "NPCThreadManager"
-Cohesion: 0.05
-Nodes (36): NPCCommunicationBridge, NPCThreadManager, Start a thread for a specific NPC. Args: npc_id: Unique identifier for the NPC…, Stop a specific NPC thread. Args: npc_id: Unique identifier for the NPC…, Internal method to stop an NPC thread., Restart a specific NPC thread. Args: npc_id: Unique identifier for the NPC…, Get list of active NPC thread IDs., Get NPC definition for a specific NPC. (+28 more)
+Cohesion: 0.04
+Nodes (47): NPCMessageQueue, Thread-safe message queue for NPC actions. This queue handles pending actions…, Initialize the NPC message queue. Args: max_messages_per_npc: Maximum number of…, Add a message to an NPC's pending message queue. Args: npc_id: The NPC's ID…, Get all pending messages for an NPC. Args: npc_id: The NPC's ID Returns: List…, Clear all pending messages for an NPC. Args: npc_id: The NPC's ID Returns:…, Get the number of pending messages for an NPC., Get the total number of pending messages across all NPCs. (+39 more)
 
 ### Community 96 - "chatPanelRuntimeUtils.ts"
-Cohesion: 0.04
-Nodes (75): ChatExportDialog(), ChatExportDialogProps, collectFocusableElements(), filterMessagesForChannelView(), EXCLUDED_MESSAGE_TYPES_FOR_CHANNEL_VIEW, isGloballyExcludedFromChannelView(), isVisibleInChannelView(), matchesChannelSelection() (+67 more)
-
-### Community 97 - "communication_commands_flows.py"
 Cohesion: 0.07
-Nodes (50): _deliver_reply_to_last_whisper(), _deliver_whisper_message(), flow_global_command(), flow_reply_command(), flow_system_command(), flow_whisper_command(), _player_id_bundle(), Room/global/system/whisper/reply flows for communication command handlers.… (+42 more)
+Nodes (58): filterMessagesForChannelView(), EXCLUDED_MESSAGE_TYPES_FOR_CHANNEL_VIEW, isGloballyExcludedFromChannelView(), isVisibleInChannelView(), matchesChannelSelection(), resolveMessageChannelForFilter(), buildChatExportCSV(), buildChatExportCsvRow() (+50 more)
+
+### Community 97 - "test_communication_commands_flows.py"
+Cohesion: 0.04
+Nodes (104): _chat_send_with_room_bundle(), _deliver_reply_to_last_whisper(), _deliver_whisper_message(), flow_global_command(), flow_local_command(), flow_reply_command(), flow_say_command(), flow_system_command() (+96 more)
 
 ### Community 98 - "test_combat_monitoring_service.py"
 Cohesion: 0.03
@@ -2681,83 +2612,83 @@ Nodes (39): asyncio, Test _ensure_alias_storage returns None on error., Test _ch
 
 ### Community 100 - "test_combat_service_modules.py"
 Cohesion: 0.04
-Nodes (93): clear_aggro_for_combat(), Clear all aggro state for this combat (call on combat end)., CombatDPSync, Any, UUID, Get persistence layer from application container. Args: player_id: Player ID…, Verify that player DP was successfully saved to database. Args: persistence:…, Log death threshold events based on DP changes. Args: current_dp: New current… (+85 more)
+Nodes (85): clear_aggro_for_combat(), Clear all aggro state for this combat (call on combat end)., CombatDPSync, Any, UUID, Get persistence layer from application container. Args: player_id: Player ID…, Verify that player DP was successfully saved to database. Args: persistence:…, Log death threshold events based on DP changes. Args: current_dp: New current… (+77 more)
 
-### Community 101 - "test_auth_utils.py"
-Cohesion: 0.03
-Nodes (100): create_access_token(), decode_access_token(), hash_password(), timedelta, Decode and validate a JWT access token., Hash a plaintext password using Argon2id. This function provides superior…, Verify a plaintext password against a hash. This function safely handles both…, Create a JWT access token. (+92 more)
+### Community 101 - "setup_jwt_secret"
+Cohesion: 0.50
+Nodes (4): fixture, MonkeyPatch, Set JWT secret for tests., setup_jwt_secret()
 
-### Community 102 - "test_npc_utils.py"
+### Community 102 - "population_control.py"
 Cohesion: 0.03
-Nodes (84): Check if this NPC is required to spawn., extract_definition_id_from_npc(), extract_npc_metadata(), extract_room_id_from_lifecycle_record(), extract_room_id_from_npc(), get_zone_key_from_room_id(), Any, NPC Utility Functions. This module provides utility functions for extracting… (+76 more)
+Nodes (82): Check if this NPC is required to spawn., extract_definition_id_from_npc(), extract_npc_metadata(), extract_room_id_from_lifecycle_record(), extract_room_id_from_npc(), get_zone_key_from_room_id(), Any, NPC Utility Functions. This module provides utility functions for extracting… (+74 more)
 
 ### Community 103 - "ExceptionTracker"
-Cohesion: 0.03
-Nodes (74): auth_service(), BackgroundTasks, create_player(), File, general_exception_handler(), get_player(), http_exception_handler(), list_players() (+66 more)
+Cohesion: 0.05
+Nodes (43): ExceptionContextTrackInput, ExceptionRecord, ExceptionTracker, ExceptionTrackInput, get_exception_tracker(), Any, Exception, TypedDict (+35 more)
 
 ### Community 104 - "request_with_app_container"
-Cohesion: 0.04
-Nodes (90): handle_me_command(), handle_pose_command(), handle_reply_command(), handle_say_command(), handle_whisper_command(), Reply to last whisper sender., Room-wide say; returns user-facing result dict., Set or clear persistent pose text. (+82 more)
+Cohesion: 0.03
+Nodes (124): handle_global_command(), handle_local_command(), handle_me_command(), handle_pose_command(), handle_reply_command(), handle_say_command(), handle_system_command(), handle_whisper_command() (+116 more)
 
 ### Community 105 - "test_room_renderer.py"
 Cohesion: 0.04
-Nodes (68): Unit tests for room_renderer utility functions. Tests the utility functions in…, Test clone_room_drops() returns empty list for None., Test format_room_drop_lines() formats room drops., Test format_room_drop_lines() returns empty message for empty drops., Test format_room_drop_lines() handles None., Test format_room_drop_lines() uses fallback for missing item_name., Test build_room_drop_summary() returns newline-separated summary., Test build_room_drop_summary() handles empty drops. (+60 more)
+Nodes (69): Unit tests for room_renderer utility functions. Tests the utility functions in…, Test clone_room_drops() returns empty list for None., Test format_room_drop_lines() formats room drops., Test format_room_drop_lines() returns empty message for empty drops., Test format_room_drop_lines() handles None., Test format_room_drop_lines() uses fallback for missing item_name., Test build_room_drop_summary() returns newline-separated summary., Test build_room_drop_summary() handles empty drops. (+61 more)
 
-### Community 106 - "test_event_bus.py"
-Cohesion: 0.03
-Nodes (97): event_bus(), MockEventClass, asyncio, fixture, Unit tests for event bus. Tests the EventBus class., Test EventBus.publish() queues or processes event., Test EventBus.shutdown() stops processing., Test EventBus.set_main_loop() sets main loop. (+89 more)
+### Community 106 - "EventBus"
+Cohesion: 0.01
+Nodes (240): ModuleType, Distributed EventBus that uses NATS for cross-instance event distribution.…, EventBusMixinBase, Attribute stubs for EventBus mixins (mypy attr-defined). Mirrors…, Attrs/methods provided by EventBus when mixed in., Start the async consumer. Real impl is EventBusLifecycleMixin., Drain the event queue. Real impl is EventBusProcessingMixin., Drop tracked service handlers. Real impl is EventBus. (+232 more)
 
 ### Community 107 - "Room"
 Cohesion: 0.03
-Nodes (69): UUID, Add a player to the room without triggering an event. This method is used for…, Remove a player from the room without triggering an event. This method is used…, Remove a player from the room and trigger event. Args: player_id: The ID of the…, Add an object to the room and trigger event. Args: object_id: The ID of the…, Remove an object from the room and trigger event. Args: object_id: The ID of…, Add an NPC to the room and trigger event. Args: npc_id: The ID of the NPC…, Remove an NPC from the room and trigger event. Args: npc_id: The ID of the NPC… (+61 more)
+Nodes (77): Any, UUID, Add a player to the room without triggering an event. This method is used for…, Remove a player from the room without triggering an event. This method is used…, Remove a player from the room and trigger event. Args: player_id: The ID of the…, Add an NPC to the room and trigger event. Args: npc_id: The ID of the NPC…, Remove an NPC from the room and trigger event. Args: npc_id: The ID of the NPC…, Get list of player IDs currently in the room. Returns: List of player IDs in… (+69 more)
 
 ### Community 108 - "test_player_death_service.py"
-Cohesion: 0.03
-Nodes (87): mock_event_bus(), mock_player(), mock_player_combat_service(), mock_session(), player_death_service(), player_death_service_no_dependencies(), asyncio, fixture (+79 more)
+Cohesion: 0.02
+Nodes (111): PositionState, Permitted posture states for a character., PlayerLifecycleServices, Small types shared by CombatService wiring., Player death and respawn services for CombatService injection., PlayerDeathService, Any, AsyncSession (+103 more)
 
 ### Community 109 - "test_logging_utilities.py"
 Cohesion: 0.04
-Nodes (90): _collect_rotatable_logs(), detect_environment(), ensure_log_directory(), BoundLogger, Path, Logging utilities for directory management, path resolution, and environment…, Resolve log_base path to absolute path relative to project root. Args:…, Collect non-empty log files eligible for rotation. (+82 more)
+Nodes (86): _collect_rotatable_logs(), detect_environment(), BoundLogger, Path, Logging utilities for directory management, path resolution, and environment…, Resolve log_base path to absolute path relative to project root. Args:…, Collect non-empty log files eligible for rotation., Indirection so mypy does not treat sys.platform as a dead-code constant. (+78 more)
 
-### Community 110 - "CorpseOverlay.tsx"
+### Community 110 - "gameStore.ts"
 Cohesion: 0.04
-Nodes (73): BackpackTab(), BackpackTabProps, ContainerSplitPane(), ContainerSplitPaneProps, ContainerInventoryPaneProps, ContainerItemRow(), ContainerSplitPaneView(), ContainerSplitPaneViewModel (+65 more)
+Nodes (79): BackpackTab(), BackpackTabProps, ContainerSplitPane(), ContainerSplitPaneProps, ContainerInventoryPaneProps, ContainerItemRow(), ContainerSplitPaneView(), ContainerSplitPaneViewModel (+71 more)
 
 ### Community 111 - "test_character_creation_service.py"
-Cohesion: 0.03
-Nodes (62): CharacterCreationService, Any, UUID, Validate character stats against class prerequisites. Args: stats: The stats…, Create a new character with specific stats. Args: name: The character's name…, Get information about all available character classes and their prerequisites.…, Service class for character creation and stats generation business operations., Get a description for a character class. (+54 more)
+Cohesion: 0.04
+Nodes (50): character_creation_service(), mock_player_service(), fixture, Unit tests for character creation service. Tests the CharacterCreationService…, Test roll_character_stats() when required_class is not available., Test roll_character_stats() handles ValueError., Test validate_character_stats() with class_name., Test validate_character_stats() without class_name. (+42 more)
 
 ### Community 112 - "test_container_helpers_inventory_find.py"
 Cohesion: 0.06
 Nodes (88): check_item_matches_target(), _component_metadata(), _container_from_equip_dict(), _container_uuid(), create_wearable_container(), _fallback_create_equipment_container(), find_container_in_room(), find_item_in_inventory() (+80 more)
 
-### Community 113 - "look_command.py"
-Cohesion: 0.02
-Nodes (176): _app_from_request(), _as_response(), _connection_manager_from_app(), _container_from_app(), _get_app_and_persistence(), _get_room_drops(), _handle_implicit_target_lookup(), handle_look_command() (+168 more)
+### Community 113 - "test_look_room.py"
+Cohesion: 0.03
+Nodes (103): _filter_other_players(), _format_containers_section(), _format_exits_list(), _format_items_section(), _format_npcs_section(), _format_players_section(), _get_room_description(), _get_room_id() (+95 more)
 
-### Community 114 - "get_npc_session"
+### Community 114 - "npc_database.py"
 Cohesion: 0.04
-Nodes (64): close_npc_db(), ensure_npc_database_directory(), get_npc_database_path(), get_npc_engine(), get_npc_session(), get_npc_session_maker(), init_npc_db(), async_sessionmaker (+56 more)
+Nodes (67): close_npc_db(), ensure_npc_database_directory(), get_npc_database_path(), get_npc_engine(), get_npc_session(), get_npc_session_maker(), init_npc_db(), _initialize_npc_database() (+59 more)
 
-### Community 115 - "ContainerSourceType"
-Cohesion: 0.09
-Nodes (59): ContainerSourceType, Source type for container instances., ContainerService, Service for managing container operations. Orchestrates open/close, transfer…, _container(), _container_data(), asyncio, ContainerComponent (+51 more)
+### Community 115 - "GameTerminal.tsx"
+Cohesion: 0.06
+Nodes (39): buildHealthStatus(), ChatMessage, formatPosture(), GameTerminal(), Player, Room, IncapacitatedBanner, IncapacitatedBannerProps (+31 more)
 
-### Community 116 - "persistence/container_persistence.py"
-Cohesion: 0.08
-Nodes (62): parse_jsonb_column(), Parse a JSONB column value from database. JSONB columns may be returned as: -…, _after_container_insert(), _allowed_roles_from_row(), _as_opt_datetime(), _as_opt_str(), _as_opt_uuid(), _as_uuid() (+54 more)
+### Community 116 - "container_persistence.py"
+Cohesion: 0.07
+Nodes (67): Composed, build_update_query(), parse_jsonb_column(), datetime, Build SQL update query for container. Args: updates: List of update clauses…, Parse a JSONB column value from database. JSONB columns may be returned as: -…, _after_container_insert(), _allowed_roles_from_row() (+59 more)
 
 ### Community 117 - "ErrorType"
 Cohesion: 0.02
-Nodes (190): JSONResponse, post, Request, Receive and log alert webhooks, webhook(), Error handlers package for MythosMUD. This package provides specialized error…, convert_pydantic_error(), _ExtractedErrorInfo (+182 more)
+Nodes (185): Pydantic error handler for consistent error processing. This module provides a…, Standardized error response formats for all API endpoints. This module provides…, create_sse_error_response(), create_standard_error_response(), create_websocket_error_response(), ErrorContextDetail, ErrorMessages, ErrorResponseDetails (+177 more)
 
-### Community 118 - "websocket_handler.py"
-Cohesion: 0.02
-Nodes (218): Any, Convert alias to dictionary for JSON serialization., handle_json_decode_error(), handle_message_loop_exception(), handle_websocket_disconnect(), handle_websocket_generic_exception(), handle_websocket_message_loop(), handle_websocket_runtime_error() (+210 more)
+### Community 118 - "test_websocket_initial_state.py"
+Cohesion: 0.03
+Nodes (114): get_container_async_persistence(), Get the container-backed AsyncPersistenceLayer instance. Use for code that has…, FastAPI/Starlette application (or duck-typed equivalent)., Room model for MythosMUD. This module provides the Room class that represents a…, Player respawn event handlers. This module handles player respawn and delirium…, _accumulate_valid_occupant_name(), get_occupant_names(), Validate that a name is not a UUID string. (+106 more)
 
-### Community 119 - "test_npc_definitions_api.py"
-Cohesion: 0.09
-Nodes (55): create_npc_definition(), delete_npc_definition(), get_npc_definition(), get_npc_definitions(), AsyncSession, delete, get, post (+47 more)
+### Community 119 - "get_admin_auth_service"
+Cohesion: 0.03
+Nodes (138): create_npc_definition(), delete_npc_definition(), get_npc_definition(), get_npc_definitions(), AsyncSession, delete, get, post (+130 more)
 
 ### Community 120 - "FeatureFlagService"
 Cohesion: 0.03
@@ -2767,9 +2698,9 @@ Nodes (54): Initialize the combat configuration service., FeatureFlagService, ge
 Cohesion: 0.03
 Nodes (47): Any, Print validation warnings., Format an error message., Format a warning message., Legacy/programmatic use; prefer click.secho for new code. Colorize output text., Print validation errors., Formats and displays validation results., Generate JSON output for machine consumption. (+39 more)
 
-### Community 122 - "magic_service.py"
-Cohesion: 0.05
-Nodes (71): CastingState, CastingStateManager, Any, UUID, Casting state manager for tracking active spell castings. This module manages…, Check if a player is currently casting. Args: player_id: Player ID to check…, Get the casting state for a player. Args: player_id: Player ID Returns:…, Complete and remove a casting state. Args: player_id: Player ID Returns:… (+63 more)
+### Community 122 - "test_magic_service.py"
+Cohesion: 0.06
+Nodes (63): CastingState, CastingStateManager, Any, UUID, Casting state manager for tracking active spell castings. This module manages…, Check if a player is currently casting. Args: player_id: Player ID to check…, Get the casting state for a player. Args: player_id: Player ID Returns:…, Complete and remove a casting state. Args: player_id: Player ID Returns:… (+55 more)
 
 ### Community 123 - "HealthStatus"
 Cohesion: 0.03
@@ -2779,21 +2710,21 @@ Nodes (123): _assemble_health_response(), get_health_status(), Return aggregated
 Cohesion: 0.10
 Nodes (29): NATS Subject Manager for MythosMUD. This module provides centralized subject…, Predefined subject patterns for MythosMUD chat system. This module contains all…, get_chat_subscription_patterns(), get_event_subscription_patterns(), get_subscription_pattern(), Any, Subscription pattern utilities for NATS Subject Manager. This module provides…, Convert a pattern template into a subscription pattern with wildcards. Args:… (+21 more)
 
-### Community 125 - "test_world.py"
-Cohesion: 0.06
-Nodes (52): Base, Represent a directional link between two rooms., Represent a major area or plane of existence., Represent a specific region within a zone., Represent a mapping between zones and subzones for configuration., SQLAlchemy model for room data. Named RoomModel to avoid conflict with the…, RoomLink, RoomModel (+44 more)
+### Community 125 - "combat_loader.py"
+Cohesion: 0.08
+Nodes (49): CombatCommandHandlerExtras, Optional services from the app container (keeps…, format_combat_status(), get_combat_target(), Any, Produce a human-readable combat status string. This helper is retained for…, Resolve a combat target by name. The current implementation is intentionally…, _app_from_request() (+41 more)
 
 ### Community 126 - "test_combat_validator.py"
 Cohesion: 0.02
-Nodes (116): combat_validator(), fixture, Unit tests for combat validator. Tests the CombatValidator class for combat…, Test validate_combat_command with target name too long., Test validate_combat_command when rate limited., Test validate_combat_command handles exceptions gracefully., Test validate_target_exists with exact match., Test validate_target_exists with case-insensitive match. (+108 more)
+Nodes (87): Unit tests for combat validator. Tests the CombatValidator class for combat…, Test validate_combat_command with target name too long., Test validate_combat_command when rate limited., Test validate_combat_command handles exceptions gracefully., Test validate_target_exists with exact match., Test validate_target_exists with case-insensitive match., Test validate_target_exists with partial match., Test validate_target_exists with no match. (+79 more)
 
-### Community 127 - "ChatMessage"
+### Community 127 - "chat_service.py"
 Cohesion: 0.04
-Nodes (99): ChatResult, _append_channel_history(), _authorize_global_sender(), _authorize_system_sender(), ChatLogger, ChatPlayerService, ChatPlayerView, ChatRateLimiter (+91 more)
+Nodes (64): ChatEmoteService, ChatLogger, ChatPlayerService, ChatRateLimiter, ChatUserManager, Protocol, Return True if command is a predefined emote alias., Return (self_message, other_message) for a predefined emote command. (+56 more)
 
-### Community 128 - "MythosChronicle"
-Cohesion: 0.06
-Nodes (36): BaseSettings, field_validator, Validate rate limits are reasonable., Temporal compression configuration for the MythosChronicle., Ensure we never divide by zero or run the chronicle backward., TimeConfig, ChronicleState, _ensure_utc() (+28 more)
+### Community 128 - "config/models/__init__.py"
+Cohesion: 0.13
+Nodes (14): Composite application configuration model., ChatConfig, BaseSettings, field_validator, Chat and time configuration models., Chat system configuration., Validate rate limits are reasonable., Temporal compression configuration for the MythosChronicle. (+6 more)
 
 ### Community 129 - "test_container_helpers_inventory_ops.py"
 Cohesion: 0.05
@@ -2801,31 +2732,31 @@ Nodes (88): object, _app_state_container_service(), _coerce_transfer_quantity(),
 
 ### Community 130 - "lifespan_startup.py"
 Cohesion: 0.04
-Nodes (93): nats_is_connected(), Return True when nats_service exposes is_connected() and it is true., _ensure_room_cache_before_npc_startup(), _get_item_prototype_count(), _get_item_prototype_entries(), initialize_chat_service(), initialize_combat_services(), initialize_container_and_legacy_services() (+85 more)
+Nodes (98): nats_is_connected(), Return True when nats_service exposes is_connected() and it is true., _attach_combat_service(), _create_npc_services_on_app(), _ensure_room_cache_before_npc_startup(), _get_item_prototype_count(), _get_item_prototype_entries(), initialize_chat_service() (+90 more)
 
 ### Community 131 - "CircuitBreaker"
 Cohesion: 0.04
 Nodes (75): CircuitBreaker, CircuitBreakerOpen, CircuitState, Any, Enum, Exception, timedelta, Circuit breaker pattern for NATS message processing. Implements three-state… (+67 more)
 
-### Community 132 - "ScheduleEntry"
-Cohesion: 0.05
-Nodes (58): _check_holiday_coverage(), _get_calendar_paths(), _load_and_validate_holidays(), load_document_ids(), main(), parse_args(), _print_errors(), _print_success_message() (+50 more)
+### Community 132 - "LucidityFluxService"
+Cohesion: 0.08
+Nodes (26): _as_float(), _as_str_attr(), FluxRoom, LucidityFluxService, _profile_map(), AsyncSession, datetime, Player (+18 more)
 
 ### Community 133 - "SchemaValidator"
 Cohesion: 0.03
 Nodes (45): Path, Convert legacy string format exits to new object format internally. This allows…, Validate a room file against the schema. Args: file_path: Path to the room JSON…, Validate all rooms in a database against the schema. Args: room_database:…, Extract target room ID from exit data, handling both formats. Args: exit_data:…, Extract flags from exit data, handling both formats. Args: exit_data: Exit data…, Check if an exit is marked as one-way. Args: exit_data: Exit data in either…, Check if an exit is marked as self-reference. Args: exit_data: Exit data in… (+37 more)
 
-### Community 134 - "CommandPanel.tsx"
+### Community 134 - "ChatPanelRuntimeViewParts.tsx"
 Cohesion: 0.06
-Nodes (42): ChannelActivityIndicators(), ChannelActivityIndicatorsProps, getActivityColor(), ChatPanelRefactored(), ChatPanelRefactoredProps, computeChannelMessages(), computeFilteredMessages(), computeUnreadCounts() (+34 more)
+Nodes (42): ChannelActivityIndicators(), ChannelActivityIndicatorsProps, getActivityColor(), ChannelSelectorSection(), ChannelSelectorSectionProps, ChatHistoryToggle(), ChatStatistics(), ChatExportDialog() (+34 more)
 
 ### Community 135 - "login_user"
 Cohesion: 0.06
-Nodes (55): CharacterInfo, get_container, _authenticate_user_credentials(), _check_shutdown_status(), _find_user_by_username(), _get_user_characters(), _invalid_credentials_exc(), login_user() (+47 more)
+Nodes (60): CharacterInfo, get_container, _authenticate_user_credentials(), _check_shutdown_status(), _check_username_exists(), _find_user_by_username(), _get_user_characters(), _invalid_credentials_exc() (+52 more)
 
 ### Community 136 - "NATSRetryHandler"
 Cohesion: 0.04
-Nodes (76): NATSRetryHandler, Any, Exception, NATS message retry handler with exponential backoff. Implements resilient…, Calculate exponential backoff delay with jitter. Args: attempt: Current attempt…, Determine if a message should be retried. Args: message: Message that failed…, Retry a function with exponential backoff. Args: func: Async function to retry…, Get retry statistics. Returns: Dictionary with retry metrics AI: For monitoring… (+68 more)
+Nodes (75): NATSRetryHandler, Any, Exception, Calculate exponential backoff delay with jitter. Args: attempt: Current attempt…, Determine if a message should be retried. Args: message: Message that failed…, Retry a function with exponential backoff. Args: func: Async function to retry…, Get retry statistics. Returns: Dictionary with retry metrics AI: For monitoring…, Retry async function with exponential backoff. Attempts the function up to… (+67 more)
 
 ### Community 137 - "test_nats_broker.py"
 Cohesion: 0.03
@@ -2837,23 +2768,23 @@ Nodes (91): mock_connection_manager(), mock_logger(), mock_name_extractor(), pla
 
 ### Community 139 - "test_message_handlers.py"
 Cohesion: 0.08
-Nodes (49): handle_chat_message(), handle_client_error_report_message(), handle_command_message(), handle_follow_response_message(), handle_party_invite_response_message(), handle_ping_message(), Any, WebSocket (+41 more)
+Nodes (48): handle_chat_message(), handle_client_error_report_message(), handle_command_message(), handle_follow_response_message(), handle_party_invite_response_message(), handle_ping_message(), Any, WebSocket (+40 more)
 
 ### Community 140 - "test_level_service.py"
-Cohesion: 0.06
-Nodes (53): level_from_total_xp(), Level and XP curve for MythosMUD. Placeholder implementation: XP required for…, Total XP required to reach a given level (cumulative). Level 1 requires 0 XP.…, XP required to go from (level - 1) to level. Args: level: Target level (2-based…, Compute character level from total experience points. Uses the same curve as…, total_xp_for_level(), xp_required_for_level(), Unit tests for level curve (XP to level, level from total XP). Character… (+45 more)
+Cohesion: 0.05
+Nodes (62): LevelUpHook, level_from_total_xp(), Level and XP curve for MythosMUD. Placeholder implementation: XP required for…, Total XP required to reach a given level (cumulative). Level 1 requires 0 XP.…, XP required to go from (level - 1) to level. Args: level: Target level (2-based…, Compute character level from total experience points. Uses the same curve as…, total_xp_for_level(), xp_required_for_level() (+54 more)
 
 ### Community 141 - "NATSMessageSubscriptionMixin"
 Cohesion: 0.05
 Nodes (29): NATSMessageSubscriptionMixin, Any, Unsubscribe from local channel messages for a specific sub-zone. Args: subzone:…, Track a player's sub-zone subscription for local channels. Args: player_id:…, Mixin: room, subzone, and event NATS subscription lifecycle., Get list of players currently in a specific sub-zone. Args: subzone: Sub-zone…, Handle player movement between rooms and update sub-zone subscriptions. Args:…, Subscribe to chat messages for a specific room. Args: room_id: Room ID to… (+21 more)
 
-### Community 142 - "PanelState"
-Cohesion: 0.06
-Nodes (57): PanelManager(), PanelManagerProps, mergePanelMetadataFromDefault(), resolveInitialPanelLayout(), applyOptionalContentMinHeight(), clampDimensionsToViewport(), clampPanelLayoutToViewport(), clampSinglePanel() (+49 more)
+### Community 142 - "ui-v2/types.ts"
+Cohesion: 0.05
+Nodes (56): PanelManager(), PanelManagerProps, minimapBackdropLayout(), MinimapPanelBackdrop(), MinimapPanelSection(), MinimapPanelSectionProps, EXPANDED_RESIZE_EDGES, ExpandedPanelRnd() (+48 more)
 
-### Community 143 - "position_commands.py"
-Cohesion: 0.06
-Nodes (46): _EventSequence, _format_room_posture_message(), _get_position_command_services(), handle_lie_command(), _handle_position_change(), handle_sit_command(), handle_stand_command(), Protocol (+38 more)
+### Community 143 - "server/commands/__init__.py"
+Cohesion: 0.05
+Nodes (55): Command processing system for MythosMUD. This package provides the command…, handle_inventory_command(), CommandResponse, Display the player's inventory and equipped items, including container contents., _broadcast_posture_change(), _build_posture_change_event(), _EventSequence, _format_room_posture_message() (+47 more)
 
 ### Community 144 - "test_metrics_endpoints.py"
 Cohesion: 0.06
@@ -2861,27 +2792,27 @@ Nodes (79): delete_dlq_message(), get_dlq_messages(), get_metrics(), get_metrics
 
 ### Community 145 - "test_status_commands.py"
 Cohesion: 0.04
-Nodes (90): _add_additional_stats_lines(), _add_profession_lines(), _build_base_status_lines(), _build_status_result(), _get_combat_status(), _get_profession_info(), _get_status_persistence(), handle_status_command() (+82 more)
+Nodes (81): _add_additional_stats_lines(), _add_profession_lines(), _build_base_status_lines(), _build_status_result(), _get_combat_status(), _get_profession_info(), _get_status_persistence(), handle_status_command() (+73 more)
 
-### Community 146 - "NATSError"
-Cohesion: 0.02
-Nodes (154): Dead Letter Queue for failed NATS messages. Stores messages that fail after all…, Message filtering utilities for NATS message handler. This module handles room…, Message formatting utilities for NATS message handler., NATSMessageHandlerMixinBase, Attribute stubs for NATSMessageHandler mixins (mypy attr-defined). Mirrors…, Attrs/methods provided by NATSMessageHandler when mixed in., Room broadcast / mute / dampening mixin for NATSMessageHandler. Extracted to…, Chat message processing mixin for NATSMessageHandler. Extracted to keep… (+146 more)
+### Community 146 - "test_nats_service.py"
+Cohesion: 0.04
+Nodes (69): NATSRequestError, NATSSubscribeError, NATSUnsubscribeError, Raised when subscription operations fail., Raised when unsubscribe operations fail., Raised when request/response operations fail., NATS metrics collection for MythosMUD. This module provides metrics collection…, NATS service for MythosMUD chat system. This module provides NATS pub/sub… (+61 more)
 
 ### Community 147 - "test_quest_service.py"
 Cohesion: 0.06
 Nodes (82): _DefinitionRow, _FullInventory, _InstanceStub, _make_definition_row(), _make_kill_definition_row(), _make_turn_in_definition_row(), _message(), mock_def_repo() (+74 more)
 
-### Community 148 - "deleteCharacterFlow.ts"
+### Community 148 - "errorHandler.ts"
 Cohesion: 0.10
-Nodes (46): buildCreateCharacterPayload(), CharacterNameScreen(), CreateCharacterPayload, getCreateCharacterErrorMessage(), extractErrorMessageFromResponseBody(), errorMessageFromApiBody(), parseSelectCharacterResult(), pickString() (+38 more)
+Nodes (39): getCreateCharacterErrorMessage(), CharacterCard(), CharacterCardDeleteState, CharacterCardProps, CharacterSelectionScreen(), CharacterSelectionScreenProps, extractCharactersFetchErrorMessage(), extractErrorMessageFromResponseBody() (+31 more)
 
-### Community 149 - "npc_combat_integration_service.py"
-Cohesion: 0.02
-Nodes (79): Combat messaging integration with real-time messaging system. Re-exports from…, NPCCombatDataProvider, Any, UUID, NPC Combat Data Provider. This module provides data retrieval and preparation…, Get player name for messaging. Args: player_id: ID of the player Returns:…, Get the current room ID for a player. Args: player_id: ID of the player (must…, Get player combat participant data from persistence. Args: player_id: ID of the… (+71 more)
+### Community 149 - "NPCCombatMemory"
+Cohesion: 0.06
+Nodes (24): NPCCombatMemory, NPC Combat Memory Management. This module handles NPC combat memory - tracking…, Manages NPC combat memory - tracking attackers., Initialize combat memory storage., Get the last attacker for an NPC. Args: npc_id: ID of the NPC Returns: ID of…, Record that an NPC was attacked by a player. Args: npc_id: ID of the NPC…, Clear combat memory for an NPC. Args: npc_id: ID of the NPC Returns: True if…, Check if an NPC has combat memory. Args: npc_id: ID of the NPC Returns: True if… (+16 more)
 
-### Community 150 - "test_command_combat.py"
-Cohesion: 0.03
-Nodes (91): AttackCommand, KickCommand, PunchCommand, Command for attacking a target., Command for punching a target., Command for kicking a target., Command for striking a target., StrikeCommand (+83 more)
+### Community 150 - "NATSMetrics"
+Cohesion: 0.04
+Nodes (40): NATSMetrics, Any, NATS-specific metrics collection for monitoring and alerting., Record publish operation metrics., Record subscribe operation metrics., Record batch flush operation metrics., Update connection health score (0-100)., Update connection pool utilization (0-1). (+32 more)
 
 ### Community 151 - "waitForMessage"
 Cohesion: 0.12
@@ -2895,21 +2826,21 @@ Nodes (80): EventDict, configure_enhanced_structlog(), Configure enhanced Struct
 Cohesion: 0.06
 Nodes (55): _dep_info_from_npm_row(), DependencyAnalyzer, main(), _parse_npm_outdated_json(), Path, Analyze Python dependencies, Determine overall upgrade strategy, Assess overall project risks (+47 more)
 
-### Community 154 - "ScheduleService"
-Cohesion: 0.05
-Nodes (38): MythosHourTickEvent, Event fired when the accelerated Mythos clock rolls over to a new hour., datetime, Provides schedule lookups for NPCs and environmental consumers., Load schedules from PostgreSQL database., Return schedule entries active at the provided Mythos date/time., Get all schedule entries. Returns: list[ScheduleEntry]: List of all schedule…, Get the number of schedule entries. Returns: int: The count of schedule entries (+30 more)
+### Community 154 - "bundles/game.py"
+Cohesion: 0.03
+Nodes (72): _check_holiday_coverage(), _get_calendar_paths(), _load_and_validate_holidays(), load_document_ids(), main(), parse_args(), _print_errors(), _print_success_message() (+64 more)
 
 ### Community 155 - "TargetMatch"
-Cohesion: 0.02
-Nodes (153): _MagicServiceCore, JsonMap, UUID, Load player and return normalized stats (MP/max_MP). Returns (player, stats) or…, Return (False, message) if not enough MP, else (True, '')., Return (False, message) if Mythos spell and not enough lucidity, else (True,…, Return (False, message) if player has not learned the spell, else (True, '')., Return (False, message) if spell requires materials and any are missing, else… (+145 more)
+Cohesion: 0.03
+Nodes (127): Resolve a typed target match for the given name in the current context., NpcIntegrationStringIdPort, NpcLifecycleManagerPort, NpcSpellDamageTarget, PlayerPersistenceSpellPort, PlayerServiceHealPort, Protocol, UUID (+119 more)
 
-### Community 156 - "api/game.py"
-Cohesion: 0.04
-Nodes (59): broadcast_message(), get_game_status(), get_mythos_time(), get, post, Game mechanics API endpoints for MythosMUD server. This module handles all game…, Return the current Mythos calendar metadata for HUD initialization. In-memory…, Get current game status and connection information. (+51 more)
+### Community 156 - "NATSMessageHandler"
+Cohesion: 0.06
+Nodes (41): NATSMessageHandler, Start the NATS message handler and subscribe to subjects. Args:…, Stop the NATS message handler and unsubscribe from subjects. Returns: True if…, Subscribe to all chat-related NATS subjects using NATSSubjectManager patterns.…, Subscribe to chat subjects using NATSSubjectManager patterns. This method…, Subscribe to a specific NATS subject. Args: subject: Subject string to…, Unsubscribe from a specific NATS subject. Returns: True if unsubscribed…, Handler for processing NATS messages and broadcasting to WebSocket clients.… (+33 more)
 
 ### Community 157 - "test_go_command.py"
-Cohesion: 0.04
-Nodes (75): _canonical_room_id_for_go(), _connection_manager_from_go_app(), _execute_movement(), handle_go_command(), _movement_combat_and_event_bus_from_go_app(), _movement_service_for_go_command(), Any, Validate that exit exists and target room is valid. (+67 more)
+Cohesion: 0.05
+Nodes (78): _cancel_rest_if_moving(), _canonical_room_id_for_go(), _connection_manager_from_go_app(), _execute_movement(), handle_go_command(), _movement_combat_and_event_bus_from_go_app(), _movement_service_for_go_command(), Any (+70 more)
 
 ### Community 158 - "test_connection_disconnection.py"
 Cohesion: 0.03
@@ -2917,51 +2848,51 @@ Nodes (125): _apply_disconnect_side_effects(), _cleanup_connection_tracking(), _
 
 ### Community 159 - "test_follow_service.py"
 Cohesion: 0.02
-Nodes (111): _FollowTargetValue, FollowService, _is_npc_follow_value(), Any, ConnectionManager, TypeGuard, UserManager, UUID (+103 more)
+Nodes (112): _FollowTargetValue, FollowService, _is_npc_follow_value(), Any, ConnectionManager, TypeGuard, UserManager, UUID (+104 more)
 
-### Community 160 - "test_command_parser.py"
-Cohesion: 0.01
-Nodes (216): MythosValidationError, Test _parse_command_string handles ValidationError., Test process_validated_command handles ValidationError., test_parse_command_string_validation_error(), test_process_validated_command_validation_error(), Smoke test for command parser., Test basic command parsing., Test command parsing with arguments. (+208 more)
+### Community 160 - "test_command_processor.py"
+Cohesion: 0.03
+Nodes (72): command_processor(), fixture, Unit tests for command processor. Tests the CommandProcessor class which…, Test process_command_string handles KeyError., Test process_command_string handles RuntimeError., Test _extract_attributes extracts attributes correctly., Test _extract_attributes handles missing attributes., Test _is_combat_command returns True for attack command. (+64 more)
 
-### Community 161 - "test_room_id_utils.py"
-Cohesion: 0.07
-Nodes (30): Check if NPC room IDs match target room IDs using fallback comparison. Args:…, Check if NPC room matches target room using normalized comparison. Args:…, Normalize room ID for comparison. Args: rid: Room ID to normalize Returns:…, Check if two normalized room IDs match. Args: id1: First normalized room ID…, Check if normalized NPC room IDs match normalized target room IDs. Args:…, Unit tests for room ID utilities. Tests the RoomIDUtils class for room ID…, Test RoomIDUtils initialization., Test get_canonical_room_id returns canonical ID. (+22 more)
+### Community 161 - "NPCOccupantProcessor"
+Cohesion: 0.03
+Nodes (75): NPCOccupantProcessor, Any, NPC occupant processing utilities. This module handles querying and processing…, Determine if NPC should be included in room query results. Args: npc_id: The…, Scan active NPCs to find those in the target room. Args: active_npcs_dict:…, Processes NPC occupants for rooms., Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…, Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:… (+67 more)
 
 ### Community 162 - "CombatConfiguration"
 Cohesion: 0.04
 Nodes (50): CombatConfiguration, CombatConfigurationError, CombatConfigurationScope, CombatConfigurationService, get_combat_config(), get_combat_configuration(), is_combat_available(), Any (+42 more)
 
-### Community 163 - "test_npc_event_handlers.py"
-Cohesion: 0.03
-Nodes (81): mock_connection_manager(), mock_message_builder(), mock_send_occupants_update(), npc_event_handler(), asyncio, fixture, Unit tests for NPC event handlers. Tests the NPCEventHandler class., Test _parse_behavior_config() with invalid JSON. (+73 more)
+### Community 163 - "NPCEnteredRoom"
+Cohesion: 0.01
+Nodes (234): NPCEnteredRoom, NPCLeftRoom, PlayerDeliriumRespawnedEvent, PlayerRespawnedEvent, Event fired when an NPC enters a room. This event is triggered when an NPC…, Event fired when an NPC leaves a room. This event is triggered when an NPC…, Event fired when a player respawns after death. This event is triggered when a…, Event fired when a player respawns after delirium. This event is triggered when… (+226 more)
 
-### Community 164 - "test_npc_combat_integration_class.py"
-Cohesion: 0.05
-Nodes (51): asyncio, Unit tests for server.npc.combat_integration.NPCCombatIntegration (helpers and…, Invalid UUID with npc_stats returns normalized NPC stats., Killer path loads player and calls game mechanics helpers., After damage, old_dp reflects pre-hit value., Display name resolves from lifecycle_manager.active_npcs when present., When lifecycle manager is unavailable, display name lookup returns None., Empty npc_stats yields default strength/constitution. (+43 more)
+### Community 164 - "NPCCombatIntegration"
+Cohesion: 0.10
+Nodes (41): NPCCombatIntegration, Integrates NPCs with the existing combat and game mechanics systems. Extends…, asyncio, Unit tests for server.npc.combat_integration.NPCCombatIntegration (helpers and…, Invalid UUID with npc_stats returns normalized NPC stats., Killer path loads player and calls game mechanics helpers., Display name resolves from lifecycle_manager.active_npcs when present., When lifecycle manager is unavailable, display name lookup returns None. (+33 more)
 
 ### Community 165 - "combat_turn_participant_actions.py"
-Cohesion: 0.05
-Nodes (52): _apply_physical_strength_bonus(), _attacker_stats_dict_from_full_player(), _execute_npc_attack(), _execute_player_attack(), _get_combat_container_services(), _get_target_stats_for_damage(), process_npc_turn(), process_player_turn() (+44 more)
+Cohesion: 0.06
+Nodes (50): _apply_physical_strength_bonus(), _attacker_stats_dict_from_full_player(), _execute_npc_attack(), _get_combat_container_services(), _get_target_stats_for_damage(), process_npc_turn(), process_player_turn(), PrototypeRegistry (+42 more)
 
 ### Community 166 - "QuestService"
-Cohesion: 0.06
-Nodes (46): Persist player after spell mutations., _call_add_item_to_inventory(), _definition_completion_mode_error(), _goals_met(), _has_collect_n_goals(), _parse_definition(), Any, UUID (+38 more)
+Cohesion: 0.05
+Nodes (58): Persist player after spell mutations., Quest subsystem: service, goal progression, rewards., _build_collect_n_progress(), _call_add_item_to_inventory(), _collect_goal_prototype_id(), _collect_goal_required_count(), _consume_collect_goals_from_player(), _definition_completion_mode_error() (+50 more)
 
 ### Community 167 - "test_room_sync_service.py"
 Cohesion: 0.03
-Nodes (83): get_room_sync_service(), Any, T, Process room update with comprehensive validation. Args: room_data: Room data…, Invalidate stale room cache entry. Args: room_id: Room ID to invalidate…, Fetch fresh room data from room service. Args: room_id: Room ID to fetch…, Handle stale room data by requesting fresh data. Args: room_data: Stale room…, Process room transition with proper ordering and validation. Args:… (+75 more)
+Nodes (81): Any, T, Process room update with comprehensive validation. Args: room_data: Room data…, Invalidate stale room cache entry. Args: room_id: Room ID to invalidate…, Fetch fresh room data from room service. Args: room_id: Room ID to fetch…, Handle stale room data by requesting fresh data. Args: room_data: Stale room…, Process room transition with proper ordering and validation. Args:…, Get statistics about the room data cache. Returns: Dict[str, Any]: Cache… (+73 more)
 
 ### Community 168 - "test_npc_service.py"
 Cohesion: 0.04
 Nodes (87): _def_row(), _mock_result_mappings_all(), mock_session(), npc_service(), asyncio, fixture, Unit tests for NPC service. Tests the NPCService class., Test NPCService initialization. (+79 more)
 
-### Community 169 - "CreateItemInstanceInput"
-Cohesion: 0.05
-Nodes (58): CreateItemInstanceInput, TypedDict, Optional fields for create_item_instance. owner_type, owner_id, etc. with…, Create a new item instance. Delegates to ItemRepository., create_item_instance_async(), ensure_item_instance_async(), item_instance_exists_async(), _item_instance_upsert_params() (+50 more)
+### Community 169 - "item_instance_persistence_async.py"
+Cohesion: 0.08
+Nodes (40): CreateItemInstanceInput, EnsureItemInstanceInput, TypedDict, Constants and shared types for async persistence layer. Extracted to keep…, Optional fields for create_item_instance. owner_type, owner_id, etc. with…, Optional fields for ensure_item_instance., create_item_instance_async(), ensure_item_instance_async() (+32 more)
 
-### Community 170 - "bundles/game.py"
-Cohesion: 0.07
-Nodes (43): Game bundle: player, room, movement, exploration, user_manager,…, Wire player/room/user, container, skill, level, and quest services., get_skill_repository(), Get a SkillRepository instance for skills catalog queries. Used by GET…, SkillService: skills catalog, set_player_skills, get_player_skills (with…, PlayerSkillRepository, Repository for player_skills table. Used by SkillService for set_player_skills…, Repository for skills catalog persistence. Handles skill queries for character… (+35 more)
+### Community 170 - "test_skill_use_log_repository.py"
+Cohesion: 0.33
+Nodes (8): _mock_session(), asyncio, fixture, Unit tests for SkillUseLogRepository., repo(), test_get_skill_ids_used_at_level(), test_record_use(), test_record_use_db_error()
 
 ### Community 171 - "debrief_command.py"
 Cohesion: 0.08
@@ -2973,51 +2904,51 @@ Nodes (62): DataProviderProtocol, _fallback_find_combat_id_for_npc(), find_parti
 
 ### Community 173 - "test_corpse_lifecycle_service.py"
 Cohesion: 0.03
-Nodes (94): ContainerLockState, StrEnum, Lock state for container instances., CorpseNotFoundError, CorpseServiceError, Base exception for corpse service operations., Raised when a corpse container is not found., corpse_service() (+86 more)
+Nodes (88): CorpseLifecycleService, CorpseNotFoundError, CorpseServiceError, _filter_container_data(), _get_enum_value(), Any, ContainerComponent, UUID (+80 more)
 
 ### Community 174 - "OccupantFormatter"
 Cohesion: 0.04
-Nodes (64): OccupantFormatter, Any, Process a dictionary occupant and add to appropriate lists if valid. Args: occ:…, Process a string occupant (legacy format) and add to list if valid. Args: occ:…, Separate occupants into players, NPCs, and all occupants lists. Args:…, Formats and separates occupants by type., Check if a string looks like a UUID. Args: value: The string to check Returns:…, Check if a name is valid for use as an occupant name. Args: name: The name to… (+56 more)
+Nodes (65): OccupantFormatter, Any, Process a dictionary occupant and add to appropriate lists if valid. Args: occ:…, Process a string occupant (legacy format) and add to list if valid. Args: occ:…, Separate occupants into players, NPCs, and all occupants lists. Args:…, Formats and separates occupants by type., Initialize occupant formatter., Check if a string looks like a UUID. Args: value: The string to check Returns:… (+57 more)
 
 ### Community 175 - "test_movement_service.py"
 Cohesion: 0.03
-Nodes (92): check_combat_state(), check_player_posture(), extract_player_id(), Any, Room, UUID, Movement validation helpers for MovementService. Cohesive validation and room-…, Validate player is in the from_room, auto-adding if database matches. (+84 more)
+Nodes (98): check_combat_state(), check_player_posture(), extract_player_id(), Any, Room, UUID, Movement validation helpers for MovementService. Cohesive validation and room-…, Validate player is in the from_room, auto-adding if database matches. (+90 more)
 
 ### Community 176 - "._get_room_uuid_by_stable_id"
 Cohesion: 0.17
 Nodes (10): Any, AsyncSession, UUID, Get room UUID by stable_id (hierarchical room ID). Args: stable_id:…, Mark room as explored using the provided session. Args: session: Database…, Get list of room IDs that a player has explored. Args: player_id: UUID of the…, Check if a player has explored a specific room. Args: player_id: UUID of the…, Synchronous wrapper for mark_room_as_explored. This method is designed to be… (+2 more)
 
 ### Community 177 - "test_rate_limiter_utils.py"
-Cohesion: 0.05
-Nodes (36): fixture, rate_limiter(), Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…, Test get_rate_limit_info calculates reset time correctly., Test get_rate_limit_info calculates retry_after correctly., Test get_rate_limit_info filters out old requests., Test enforce_rate_limit allows request within limit., Test enforce_rate_limit raises RateLimitError when limit exceeded. (+28 more)
+Cohesion: 0.06
+Nodes (33): Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…, Test get_rate_limit_info calculates reset time correctly., Test get_rate_limit_info calculates retry_after correctly., Test get_rate_limit_info filters out old requests., Test enforce_rate_limit allows request within limit., Test enforce_rate_limit raises RateLimitError when limit exceeded., Test enforce_rate_limit includes retry_after in error., Test stats_roll_limiter is initialized with correct defaults. (+25 more)
 
-### Community 178 - "_handle_admin_set_stat_command"
-Cohesion: 0.07
-Nodes (52): _get_app_or_error(), _handle_admin_set_stat_command(), _parse_set_stat_args(), _parse_value_from_args(), Any, Parse value from args[2] when value_input is None and args has at least 3…, Parse stat name, target player, and value from command data., Validate stat name and value inputs. (+44 more)
+### Community 178 - "test_admin_setstat_command.py"
+Cohesion: 0.10
+Nodes (27): asyncio, patch, Unit tests for admin set stat command handler. Tests the admin set command…, Test invalid value (non-integer) handling., Test value out of range (warn but allow)., Test DP above maximum (warn but allow)., Test MP above maximum (warn but allow)., Test target player not found handling. (+19 more)
 
 ### Community 179 - "test_inventory_display_helpers.py"
 Cohesion: 0.07
 Nodes (48): build_container_metadata(), build_equipped_lines(), build_inventory_lines(), filter_non_equipped_inventory(), format_metadata(), get_equipped_item_identifiers(), Any, Display and rendering helpers for inventory commands. (+40 more)
 
-### Community 180 - "PlayerPositionService"
-Cohesion: 0.04
-Nodes (66): PlayerPositionService, PositionChangeResponse, Player, TypedDict, Validate and normalize position., Get player for position change. Returns: Tuple of (player, response_dict) if…, Copy player identity fields into the position-change response., Load player stats, returning {} when loading fails. (+58 more)
+### Community 180 - ".change_position"
+Cohesion: 0.09
+Nodes (16): PositionChangeResponse, Player, TypedDict, Validate and normalize position., Get player for position change. Returns: Tuple of (player, response_dict) if…, Copy player identity fields into the position-change response., Load player stats, returning {} when loading fails., Get current position from player stats. (+8 more)
 
-### Community 181 - "test_player_event_handlers_room_left.py"
-Cohesion: 0.10
-Nodes (26): asyncio, Unit tests for player room event handlers (player left / unsubscribe /…, Test handle_player_left() skips when connection manager not available., Test handle_player_left() handles player not found., Test handle_player_left() skips broadcast when player is disconnecting., Test handle_player_left() handles errors., Test _log_occupants_info() logs occupant information., Test unsubscribe_player_from_room() successfully unsubscribes player. (+18 more)
+### Community 181 - "CombatCommandHandler"
+Cohesion: 0.05
+Nodes (32): CombatCommandHandler, Any, AppWithState, Combat service for command modules., Movement service for command modules., Player position service for command modules., Extract command type and target name from command_data. Public API., Validate that target name is provided. Public API. (+24 more)
 
 ### Community 182 - "combat_taunt.py"
 Cohesion: 0.05
-Nodes (50): _apply_taunt_and_maybe_broadcast(), AppWithState, Protocol, UUID, Taunt command flow: validation and execution. Extracted from combat.py to…, Validate taunt preconditions and resolve combat/NPC. Returns error dict or…, Validate and resolve target name from command_data. Returns error dict or…, Apply taunt and broadcast target switch if aggro changed. Returns error dict or… (+42 more)
+Nodes (55): AppWithState, Protocol, Shared Starlette/FastAPI-shaped protocols for combat command modules. Keeps…, Application object with a ``state`` namespace (dynamic attributes)., _apply_taunt_and_maybe_broadcast(), AppWithState, Protocol, UUID (+47 more)
 
 ### Community 183 - "test_websocket_handler_coverage_gaps.py"
-Cohesion: 0.03
-Nodes (85): handle_chat_message(), handle_websocket_connection(), UUID, Handle a WebSocket connection for a player. Args: websocket: The WebSocket…, Handle a chat message from a player. Args: websocket: The WebSocket connection…, asyncio, Unit tests for WebSocket handler app state resolution and connection handling.…, Test _resolve_and_setup_app_state_services when only user_manager is available. (+77 more)
+Cohesion: 0.07
+Nodes (44): handle_chat_message(), Handle a chat message from a player. Args: websocket: The WebSocket connection…, asyncio, Unit tests to fill coverage gaps in websocket_handler.py. These tests target…, Test handle_game_command exception handling path (lines 472-480)., Test handle_game_command RuntimeError handling path (lines 472-480)., Test process_websocket_command resolves connection_manager from app when None…, Test handle_chat_message resolves connection_manager from app when None (lines… (+36 more)
 
-### Community 184 - "PanelPosition"
-Cohesion: 0.10
-Nodes (31): ExpandedPanelBody(), ExpandedPanelBodyProps, ExpandedPanelHeader(), ExpandedPanelHeaderProps, EXPANDED_RESIZE_EDGES, ExpandedPanelRnd(), ExpandedPanelRndProps, panelShellStyle() (+23 more)
+### Community 184 - "CombatValidator"
+Cohesion: 0.05
+Nodes (30): ConnectionManager, combat_validator(), fixture, Create a CombatValidator instance., When party_service is None, validate_can_attack_target allows attack., When both players are in same party, validate_can_attack_target blocks attack., When players are not in same party, validate_can_attack_target allows attack., test_validate_can_attack_target_different_party_allows() (+22 more)
 
 ### Community 185 - "test_admin_setlucidity_command.py"
 Cohesion: 0.06
@@ -3028,28 +2959,28 @@ Cohesion: 0.05
 Nodes (59): CombatAttackDetails, CombatAuditLogger, CombatMonitoringAlert, CombatParties, CombatSecurityEvent, Any, datetime, Combat-specific audit logging and monitoring. This module provides specialized… (+51 more)
 
 ### Community 187 - "test_wearable_container_service.py"
-Cohesion: 0.04
-Nodes (74): asyncio, Unit tests for wearable container service. Tests the WearableContainerService…, Test handle_unequip_wearable_container returns None when no item_instance_id., Test handle_unequip_wearable_container preserves container., Test get_wearable_containers_for_player returns containers., Test get_wearable_containers_for_player returns empty list when no containers., Test get_wearable_containers_for_player handles errors gracefully., Test add_items_to_wearable_container adds items. (+66 more)
+Cohesion: 0.02
+Nodes (140): _filter_container_data(), _get_enum_value(), Any, ContainerComponent, UUID, Wearable container service for unified container system. As documented in the…, Return existing equipment container ID for item instance if present., Create wearable container in persistence and return container_id payload. (+132 more)
 
 ### Community 188 - "MemoryProfiler"
-Cohesion: 0.04
-Nodes (58): OtherModel, BaseModel, Unit tests for memory profiler utilities. Tests the MemoryProfiler class…, Test MemoryProfiler.measure_model_instantiation() handles zero iterations., Test MemoryProfiler.get_memory_usage_summary() returns summary., Test MemoryProfiler.print_memory_summary() doesn't raise., Test Pydantic model for memory profiling tests., Test MemoryProfiler.print_model_memory_usage() doesn't raise. (+50 more)
+Cohesion: 0.08
+Nodes (32): Unit tests for memory profiler utilities. Tests the MemoryProfiler class…, Test MemoryProfiler.measure_model_instantiation() handles zero iterations., Test MemoryProfiler.get_memory_usage_summary() returns summary., Test MemoryProfiler.print_memory_summary() doesn't raise., Test MemoryProfiler.print_model_memory_usage() doesn't raise., Test MemoryProfiler.print_model_memory_usage() handles error dict., Test MemoryProfiler.measure_model_deserialization() returns stats., Test MemoryProfiler initialization. (+24 more)
 
 ### Community 189 - "submitAuth.ts"
 Cohesion: 0.24
 Nodes (14): AuthSessionSetters, persistTokensAndApplySession(), SetBool, SetChars, SetStep, toCharacterInfoFromLogin(), AuthSuccessPayload, SanitizedCredentials (+6 more)
 
 ### Community 190 - "StyleGuideSections.tsx"
-Cohesion: 0.05
-Nodes (59): animations, borderRadius, breakpoints, buildClasses, ButtonVariant, colors, ColorVariant, ComponentSize (+51 more)
+Cohesion: 0.06
+Nodes (45): Channel, ChannelSelector(), ChannelSelectorProps, useChannelSelectorState(), AllStats(), CommandsCount(), ConnectionStatus(), CORE_ATTRIBUTES (+37 more)
 
 ### Community 191 - "test_combat_flee_helpers.py"
-Cohesion: 0.04
-Nodes (76): AppWithState, Protocol, Shared Starlette/FastAPI-shaped protocols for combat command modules. Keeps…, Application object with a ``state`` namespace (dynamic attributes)., _ensure_flee_standing(), _FleeCommandHandlerLike, _get_flee_player_uuid(), _get_flee_room_id() (+68 more)
+Cohesion: 0.05
+Nodes (58): _ensure_flee_standing(), _FleeCommandHandlerLike, _get_flee_player_uuid(), _get_flee_room_id(), _PlayerForFlee, _PlayerPositionServiceLike, AppWithState, Protocol (+50 more)
 
-### Community 192 - "PlayerEventHandlerUtils"
+### Community 192 - "player_event_handlers.py"
 Cohesion: 0.01
-Nodes (163): OccupantSnap, Any, UUID, Get the next sequence number for events., Subscribe to relevant game events., Delegate player left event to specialized handler., Delegate NPC entered event to specialized handler., Delegate NPC left event to specialized handler. (+155 more)
+Nodes (226): OccupantSnap, PlayerDPUpdated, Event fired when a player's DP changes. This event is triggered when a player…, MessageBuilder, Any, Message building utilities for real-time events. This module provides utilities…, Create an NPC movement message with direction. Args: npc_name: Name of the NPC…, Build the room occupants update message. Args: room_id_str: Room ID as string… (+218 more)
 
 ### Community 193 - "test_websocket_handler_validation_errors.py"
 Cohesion: 0.04
@@ -3076,32 +3007,32 @@ Cohesion: 0.12
 Nodes (17): asyncio, Test get_player_by_name returns None when player not found., Test get_player_by_id returns None when player not found., Test get_player_by_user_id returns None when no players., Test soft_delete_player successfully soft deletes player., Test delete_player successfully deletes player., Test delete_player returns False when player not found., Test update_player_last_active successfully updates timestamp. (+9 more)
 
 ### Community 199 - "test_nats_message_handler_subzone_events.py"
-Cohesion: 0.04
-Nodes (68): asyncio, Unit tests for NATS message handler subzone and event handling. Tests subzone…, Test cleanup_empty_subzone_subscriptions cleans up empty subzones., Test subscribe_to_subzone handles errors., Test subscribe_to_subzone raises error when subject manager unavailable., Test unsubscribe_from_event_subjects handles partial success., Test subscribe_to_event_subjects handles partial failure., Test get_event_subscription_count returns count. (+60 more)
+Cohesion: 0.10
+Nodes (19): Unit tests for NATS message handler subzone and event handling. Tests subzone…, Test get_event_subscription_count returns count., Test is_event_subscription_active checks subscription., Test _get_user_manager returns injected manager., Test _get_user_manager falls back to global manager., Test _get_event_handler_map delegates to event handler., Test _validate_event_message delegates to event handler., Test track_player_subzone_subscription handles player moving to different… (+11 more)
 
 ### Community 200 - "websocket_handler_commands.py"
-Cohesion: 0.03
-Nodes (95): create_websocket_request_context(), Any, Get the event bus from the request context., Get the alias storage from the request context., Factory function to create a WebSocket request context. Args: app_state: Real…, Creates FastAPI Request-like objects for WebSocket commands. This allows…, Initialize the WebSocket request context. Args: app_state: Real application…, Set the alias storage in the app state. Args: alias_storage: Alias storage… (+87 more)
+Cohesion: 0.04
+Nodes (94): _mirror_service_to_app_state(), Read player_service and user_manager from app_state.container., Copy container service onto app.state if missing., Resolve player_service and user_manager from container or app.state. Mutates…, resolve_and_setup_app_state_services(), _services_from_container(), _attach_room_state_to_result(), _broadcast_command_room_if_needed() (+86 more)
 
 ### Community 201 - "GameLogPanel.tsx"
-Cohesion: 0.07
-Nodes (40): GameTerminalPresentation(), GameTerminalPresentationProps, GameLogListMessage, GameLogMessagesList(), GameLogMessagesListProps, GameLogPanel(), GameLogPanelProps, GameLogPanelFilterBar() (+32 more)
+Cohesion: 0.10
+Nodes (29): GameLogListMessage, GameLogMessagesList(), GameLogMessagesListProps, GameLogPanel(), GameLogPanelProps, GameLogPanelFilterBar(), GameLogPanelFilterBarProps, GameLogPanelHeader() (+21 more)
 
-### Community 202 - "real_time.py"
-Cohesion: 0.08
-Nodes (47): _ConnectionManagerUtilsModule, _ensure_connection_manager(), get_connection_statistics(), get_player_connections(), handle_new_game_session(), _invoke_handle_websocket_connection(), _parse_websocket_token(), Any (+39 more)
+### Community 202 - "register_user"
+Cohesion: 0.09
+Nodes (45): IntegrityError, _ensure_user_email(), _handle_integrity_error(), LoginResponse, BaseModel, field_validator, NoReturn, Generate email if not provided. (+37 more)
 
-### Community 203 - "test_rest_command.py"
-Cohesion: 0.05
-Nodes (81): Check if player is resting or in login grace period, interrupt rest if needed.…, Check if player is resting or in login grace period, interrupt rest if needed., _cancel_rest_if_moving(), Cancel rest if active; return interrupt note so movement can continue in the…, _begin_seated_rest_countdown(), cancel_rest_countdown(), _check_player_in_combat(), _check_rest_location() (+73 more)
+### Community 203 - "PlayerPositionService"
+Cohesion: 0.03
+Nodes (103): Check if player is resting or in login grace period, interrupt rest if needed.…, Check if player is resting or in login grace period, interrupt rest if needed., _begin_seated_rest_countdown(), cancel_rest_countdown(), _check_player_in_combat(), _check_rest_location(), _disconnect_player_intentionally(), _execute_rest_flow() (+95 more)
 
-### Community 204 - "test_chat_message_senders.py"
-Cohesion: 0.27
-Nodes (21): _attr(), _ctx(), _player(), asyncio, ChatMessage, Unit tests for chat message senders., MagicMock attributes are Any; getattr+cast is the typed access path., test_normalize_player_id() (+13 more)
+### Community 204 - "ChatMessage"
+Cohesion: 0.10
+Nodes (40): ChatMessage, Any, Represents a chat message with metadata., Convert message to dictionary for serialization., Log this chat message to the communications log., _attr(), _ctx(), _player() (+32 more)
 
 ### Community 205 - "test_party_service.py"
 Cohesion: 0.04
-Nodes (52): party_service(), fixture, Unit tests for PartyService. Covers: create_party, disband_party, add_member,…, Member can leave; party remains., When leader leaves, party is disbanded., Leader can kick a member., Non-leader cannot kick., Leader cannot kick themselves. (+44 more)
+Nodes (49): Unit tests for PartyService. Covers: create_party, disband_party, add_member,…, Member can leave; party remains., When leader leaves, party is disbanded., Leader can kick a member., Non-leader cannot kick., Leader cannot kick themselves., Leader can disband the party., Non-leader cannot disband. (+41 more)
 
 ### Community 206 - "fixtures/auth.ts"
 Cohesion: 0.07
@@ -3109,107 +3040,107 @@ Nodes (40): assertCommandChannelReady(), assertNotStuckOnLogin(), clickWithoutSt
 
 ### Community 207 - "test_item.py"
 Cohesion: 0.07
-Nodes (37): ItemInstance, ItemPrototype, Base, Idempotently apply a runtime-only flag override., Convenience helper for composing uniqueness checks in higher layers., Immutable catalog entry describing a canonical item., Return the first configured wear slot, if any., Runtime representation of an item spawned from a prototype. (+29 more)
+Nodes (39): ItemComponentState, ItemInstance, ItemPrototype, Base, Idempotently apply a runtime-only flag override., Per-instance persisted state for modular item components., Convenience helper for composing uniqueness checks in higher layers., Immutable catalog entry describing a canonical item. (+31 more)
 
-### Community 208 - "Any"
-Cohesion: 0.06
-Nodes (21): Any, Retrieve current room drops as a defensive copy for callers. Args: room_id: The…, Append an item stack to the room drop ledger. Args: room_id: The room receiving…, Remove quantity of a drop entry, returning the removed stack. Args: room_id:…, Adjust quantity for an existing drop entry; removing entry when zero. Args:…, Add a player as an occupant of a room. Args: player_id: The player's ID…, Remove a player as an occupant of a room. Args: player_id: The player's ID…, Get online player occupants from room_occupants and room_subscriptions. Uses… (+13 more)
+### Community 208 - "Player"
+Cohesion: 0.05
+Nodes (24): Player, Ensure room cache is loaded (lazy loading with lock). This method uses a lock…, Load rooms from PostgreSQL via RoomCacheLoader., Get a player by name. Delegates to PlayerRepository., Get a player by ID. Delegates to PlayerRepository., Get all players (including deleted) for a user ID. Delegates to…, Get active (non-deleted) players for a user ID. Delegates to PlayerRepository., Get the first active player by user ID (backward compatibility). Delegates to… (+16 more)
 
 ### Community 209 - "test_metrics.py"
 Cohesion: 0.03
 Nodes (61): Any, Performance metrics for NATS Subject Manager operations. This module provides…, Get current metrics summary. Returns: Dictionary containing all metrics, Calculate percentile from list of times. Args: times: List of time measurements…, Reset all metrics to zero., Performance metrics for NATS Subject Manager operations. Tracks validation…, Initialize metrics collection., Record a validation operation. Args: duration: Time taken in seconds success:… (+53 more)
 
 ### Community 210 - "test_skill_service.py"
-Cohesion: 0.05
-Nodes (65): catalog_with_own_language_and_mythos(), mock_persistence(), mock_player_skill_repo(), mock_skill_repo(), mock_skill_use_log_repo(), _occupation_slots_9(), _personal_interest_4(), asyncio (+57 more)
+Cohesion: 0.07
+Nodes (38): asyncio, Unit tests for SkillService (get_skills_catalog, set_player_skills,…, get_skills_catalog returns list of skill dicts., Personal interest with Cthulhu Mythos raises ValueError., occupation_slots not length 9 raises ValueError., personal_interest must have exactly 4 entries., personal_interest with duplicate skill_id raises ValueError., Occupation and personal interest sharing a skill_id raises ValueError. (+30 more)
 
 ### Community 211 - "useGameClientV2Container.ts"
 Cohesion: 0.10
-Nodes (39): GameClientV2Container(), getEmptyOccupantsReportContextOrNull(), isWithinRoomOccupantsSettleGracePeriod(), runEmptyOccupantsReportIfNeeded(), tryGetRoomWithEmptyOccupantsList(), forceLogoutFallback(), performGameClientLogout(), stillShowingGameClient() (+31 more)
+Nodes (40): GameClientV2Container(), getEmptyOccupantsReportContextOrNull(), isWithinRoomOccupantsSettleGracePeriod(), runEmptyOccupantsReportIfNeeded(), tryGetRoomWithEmptyOccupantsList(), forceLogoutFallback(), performGameClientLogout(), stillShowingGameClient() (+32 more)
 
 ### Community 212 - "test_logout_commands.py"
-Cohesion: 0.08
-Nodes (40): _get_player_for_logout(), Get player for logout, handling cache corruption and persistence fallback.…, asyncio, Unit tests for logout commands. Tests the logout and quit command handlers for…, Test _get_player_for_logout retrieves player from persistence when not in cache., Test _get_player_for_logout handles corrupted cache (coroutine instead of…, Test _get_player_for_logout handles persistence errors gracefully., Test _get_player_for_logout handles persistence returning coroutine. (+32 more)
-
-### Community 213 - "test_connection_session_management.py"
 Cohesion: 0.04
-Nodes (101): Handle a new game session by disconnecting existing connections., ConnectionMetadata, Metadata for tracking connection details in the WebSocket-only system. This…, _cleanup_old_session_tracking(), _cleanup_player_data_for_session(), _disconnect_all_connections_for_session(), _disconnect_connection_for_session(), handle_new_game_session_impl() (+93 more)
+Nodes (103): _clear_corrupted_cache_entry(), _disconnect_player_connections(), _force_disconnect_player(), _get_app_services(), _get_player_for_logout(), _get_player_position_from_connection_manager(), handle_logout_command(), handle_quit_command() (+95 more)
+
+### Community 213 - "RoomSubscriptionManager"
+Cohesion: 0.01
+Nodes (244): Handle a new game session by disconnecting existing connections., ConnectionMetadata, Data models for connection management. This module defines data structures used…, Metadata for tracking connection details in the WebSocket-only system. This…, _cleanup_old_session_tracking(), _cleanup_player_data_for_session(), _disconnect_all_connections_for_session(), _disconnect_connection_for_session() (+236 more)
 
 ### Community 214 - "test_connection_establishment.py"
-Cohesion: 0.04
-Nodes (134): _bind_accepted_websocket(), _cleanup_dead_connections(), _cleanup_failed_connection(), establish_websocket_connection(), _EstablishmentConnectionManager, _find_dead_connections(), Player, Protocol (+126 more)
+Cohesion: 0.08
+Nodes (53): _as_mgr(), _FakeEstablishmentManager, _make_manager(), asyncio, UUID, Unit tests for connection establishment. Tests the connection_establishment…, Test _remove_dead_connection() handles connection not present., Test _update_player_connection_list() handles player not in player_websockets. (+45 more)
 
 ### Community 215 - "test_error_handling_middleware.py"
-Cohesion: 0.07
-Nodes (40): ErrorHandlingMiddleware, extract_user_id_from_non_mapping(), ASGIApp, Exception, Receive, Request, Response, Scope (+32 more)
+Cohesion: 0.06
+Nodes (53): add_error_handling_middleware(), ErrorHandlingMiddleware, extract_user_id_from_non_mapping(), ASGIApp, Exception, FastAPI, Protocol, Receive (+45 more)
 
 ### Community 216 - "CatatoniaRegistry"
 Cohesion: 0.05
-Nodes (35): CatatoniaRegistry, datetime, UUID, In-memory registry tracking catatonic investigators., Return True if the player is currently registered as catatonic., Return a shallow copy of the current registry for diagnostics., Track players who have entered catatonia and coordinate failover hooks., Return True if we should trigger sanitarium failover for this player (not… (+27 more)
+Nodes (33): CatatoniaRegistry, datetime, UUID, Return True if the player is currently registered as catatonic., Return a shallow copy of the current registry for diagnostics., Track players who have entered catatonia and coordinate failover hooks., Return True if we should trigger sanitarium failover for this player (not…, asyncio (+25 more)
 
-### Community 217 - "connection_manager_health_cleanup.py"
-Cohesion: 0.04
-Nodes (92): check_and_cleanup_impl(), cleanup_dead_connections_impl(), cleanup_ghost_players_impl(), cleanup_orphaned_data_impl(), force_cleanup_impl(), prune_stale_players_impl(), Any, UUID (+84 more)
+### Community 217 - "test_connection_error_methods.py"
+Cohesion: 0.10
+Nodes (28): detect_and_handle_error_state_impl(), handle_authentication_error_impl(), handle_security_violation_impl(), handle_websocket_error_impl(), Any, UUID, Error-handling method implementations for ConnectionManager. Thin wrappers that…, Detect when a client is in an error state and handle it appropriately. (+20 more)
 
 ### Community 218 - "test_connection_statistics.py"
 Cohesion: 0.06
-Nodes (48): Get session management statistics., Get presence tracking statistics., get_online_player_by_display_name_impl(), get_player_presence_info_impl(), get_presence_statistics_impl(), get_session_stats_impl(), Any, Get online player information by display name. (+40 more)
+Nodes (50): get_online_player_by_display_name_method(), Get online player information by display name., get_online_player_by_display_name_impl(), get_player_presence_info_impl(), get_presence_statistics_impl(), get_session_stats_impl(), Any, Statistics and reporting helpers for connection manager. This module provides… (+42 more)
 
 ### Community 219 - "test_combat_attack_handler.py"
 Cohesion: 0.03
-Nodes (72): CombatAttackHandler, Any, UUID, Combat attack processing logic. Handles attack validation, damage application,…, Apply damage to target and update combat state. Args: combat: Combat instance…, Validate attack and retrieve combat participants. Args: attacker_id: ID of the…, Handles combat attack processing and damage application., Initialize the attack handler. Args: combat_service: Reference to the parent… (+64 more)
+Nodes (74): CombatStatus, Status of a combat instance., CombatAttackHandler, Any, UUID, Combat attack processing logic. Handles attack validation, damage application,…, Apply damage to target and update combat state. Args: combat: Combat instance…, Validate attack and retrieve combat participants. Args: attacker_id: ID of the… (+66 more)
 
 ### Community 220 - "test_channel_commands.py"
 Cohesion: 0.09
-Nodes (40): _extract_channel_from_command(), _get_persistence_and_player(), handle_channel_command(), _handle_default_channel_setting(), Any, Channel management commands for Advanced Chat Channels. This module provides…, Validate channel name. Returns error dict if invalid, None if valid., Handle the channel command for switching channels or setting default channel.… (+32 more)
+Nodes (39): _extract_channel_from_command(), _get_persistence_and_player(), handle_channel_command(), _handle_default_channel_setting(), Any, Validate channel name. Returns error dict if invalid, None if valid., Handle the channel command for switching channels or setting default channel.…, Get persistence and player. Returns (persistence, player) or (None, None) if… (+31 more)
 
-### Community 221 - "asyncio"
-Cohesion: 0.13
-Nodes (15): asyncio, Test _execute_command_handler successfully executes handler., Test process_command successfully processes command string., Test _execute_command_handler handles handler returning non-dict., Test process_validated_command successfully routes to handler., Test process_validated_command handles unknown command type., Test process_validated_command handles handler errors., Test process_validated_command handles logging errors gracefully. (+7 more)
+### Community 221 - "test_command_service.py"
+Cohesion: 0.03
+Nodes (68): MythosValidationError, command_service(), mock_request(), mock_user(), asyncio, fixture, Unit tests for command service. Tests the CommandService class which handles…, Test _parse_command_string successfully parses command. (+60 more)
 
 ### Community 222 - "test_room_subscription_manager_drops.py"
 Cohesion: 0.03
 Nodes (64): fixture, Unit tests for room subscription manager drop functions. Tests the room drop…, Test adjust_room_drop() returns False for invalid index., Test list_room_drops() returns room drops., Test add_room_drop() adds drop to new room., Test add_room_drop() adds drop to existing room., Test take_room_drop() successfully takes drop., Test take_room_drop() with index out of range. (+56 more)
 
 ### Community 223 - "MonitoringDashboard"
-Cohesion: 0.05
-Nodes (41): PerformanceStats, Alert, MonitoringDashboard, Any, Get comprehensive monitoring summary. Returns: Complete monitoring summary with…, Evaluate thresholds and record new alerts., Record a custom alert emitted by subsystems. Args: alert_type: Identifier for…, Record an alert related to prototype registry loading. Args: source: Which… (+33 more)
-
-### Community 224 - "test_lifecycle_periodic.py"
 Cohesion: 0.06
-Nodes (54): NPCMaintenanceConfig, Any, NPC Configuration for MythosMUD. This module defines configuration settings for…, Configuration for NPC lifecycle maintenance. This class centralizes all timing…, Get the respawn delay for a specific NPC type. Args: npc_type: Type of NPC…, Check if NPC maintenance should run on this tick. Args: tick_count: Current…, Get a summary of all NPC configuration values. Returns: Dictionary containing…, Clean up old lifecycle records (delegates to lifecycle_periodic). (+46 more)
+Nodes (39): PerformanceStats, Alert, MonitoringDashboard, Any, Get comprehensive monitoring summary. Returns: Complete monitoring summary with…, Evaluate thresholds and record new alerts., Record a custom alert emitted by subsystems. Args: alert_type: Identifier for…, Record an alert related to prototype registry loading. Args: source: Which… (+31 more)
+
+### Community 224 - "lifespan.py"
+Cohesion: 0.09
+Nodes (43): _calculate_metrics_delta(), _cleanup_container_on_error(), _cleanup_dead_letter_queue_periodically(), _initialize_enhanced_systems(), lifespan(), _log_memory_metrics_periodically(), _persist_metrics_to_file(), _persist_mythos_state_on_error() (+35 more)
 
 ### Community 225 - "player_combat_service_support.py"
 Cohesion: 0.07
 Nodes (32): async_load_lifecycle_manager(), available_lifecycle_npc_ids(), EventBusPublish, lifecycle_lookup_id(), log_missing_lifecycle_npc(), NPCCombatIntegrationReadApi, NPCCombatRewardsLike, original_string_id_for_npc() (+24 more)
 
-### Community 226 - "WearableContainerService"
-Cohesion: 0.11
-Nodes (24): _filter_container_data(), _get_enum_value(), Any, ContainerComponent, UUID, Return existing equipment container ID for item instance if present., Create wearable container in persistence and return container_id payload., Handle equipping a wearable container item. Creates a container in PostgreSQL… (+16 more)
+### Community 226 - "test_look_npc_helpers.py"
+Cohesion: 0.05
+Nodes (43): _parse_stat_datetime(), Parse datetime value from various formats and return formatted string., Unit tests for look_npc helper functions. Tests the helper functions in…, Test _format_other_stats() returns empty list when no other stats., Test _parse_stat_datetime() handles datetime object., Test _parse_stat_datetime() handles timestamp., Test _parse_stat_datetime() handles ISO string., Test _parse_stat_datetime() returns 'Unknown' for None. (+35 more)
 
 ### Community 227 - "test_player_service_mutations.py"
-Cohesion: 0.05
-Nodes (61): mock_persistence(), player_service(), asyncio, fixture, Unit tests for player service mutations. Covers delete, location update, mythos…, Test apply_corruption() applies corruption., Test gain_occult_knowledge() increases occult knowledge., Test heal_player() heals player. (+53 more)
+Cohesion: 0.02
+Nodes (123): Shared spawn / respawn room identifiers used by gameplay and E2E seed scripts.…, PlayerRespawnWrapper, Any, Player respawn wrapper service. This module provides wrapper methods for player…, Respawn a delirious player by user ID. This method handles the complete…, Wrapper service for player respawn operations., Initialize with a persistence layer., Respawn a dead player by user ID. This method handles the complete respawn… (+115 more)
 
 ### Community 228 - "PlayerGuidFormatter"
 Cohesion: 0.05
 Nodes (53): PlayerGuidFormatter, LogRecord, Player GUID Formatter for MythosMUD logging system. This module provides a…, Determine if a GUID is likely to be a player ID based on context. Args: guid:…, Get player name for GUID from in-memory data. Args: guid: The player GUID to…, Custom formatter that converts player GUIDs to "<name>: <GUID>" format. This…, Initialize the PlayerGuidFormatter. Args: player_service: Service for accessing…, Format a log record with enhanced player GUID display. Args: record: The log… (+45 more)
 
-### Community 229 - "gameStore.ts"
-Cohesion: 0.10
-Nodes (38): fetchSpy, useMapLayout(), buildRoomListRequest(), FetchRoomListConfig, fetchRoomListData(), parseRoomListResponse(), useRoomMapData(), UseRoomMapDataOptions (+30 more)
+### Community 229 - "mapUtils.ts"
+Cohesion: 0.14
+Nodes (25): useMapLayout(), useRoomMapData(), UseRoomMapDataResult, MapControls(), MapControlsProps, RoomDetailsPanel(), RoomDetailsPanelProps, useRoomMapEditorData() (+17 more)
 
 ### Community 230 - "LogAggregator"
 Cohesion: 0.06
-Nodes (50): LogEntry, aggregate_log_entry(), get_log_aggregator(), LogAggregator, LogEntry, LogQueryFilter, _optional_datetime_from_object(), _optional_str_from_object() (+42 more)
+Nodes (48): LogEntry, aggregate_log_entry(), get_log_aggregator(), LogAggregator, LogEntry, LogQueryFilter, _optional_datetime_from_object(), _optional_str_from_object() (+40 more)
 
-### Community 231 - "DialogueService"
-Cohesion: 0.07
-Nodes (38): DialogueCursor, DialogueService, UUID, In-memory dialogue session service for classic MUD talk (#583). Loads trees by…, Load and validate a dialogue tree, or clear cursor and return fade text., Return an error string if option_index is out of range for node., Advance from the current cursor by 1-based option index. Returns…, Set cursor and build prompt for node_id. (+30 more)
+### Community 231 - "talk_command.py"
+Cohesion: 0.04
+Nodes (71): _emit_prompt(), handle_talk_command(), UUID, talk / talk <n> command for NPC dialogue trees (#583)., Handle talk <npc> or talk <n> against same-room NPCs., Extract player UUID from player model., Join talk args into a single remainder string., Send personal system message for a node; return short command result. (+63 more)
 
-### Community 232 - "create_error_context"
-Cohesion: 0.24
-Nodes (9): create_error_context(), Any, Request, Create error context from request and user. Helper function to reduce…, Unit tests for server.api.player_helpers (error context helper)., When current_user is None, context gets metadata only., When current_user is set, user_id is populated and metadata merged., test_create_error_context_with_user_sets_user_id_and_metadata() (+1 more)
+### Community 232 - "test_error_logging.py"
+Cohesion: 0.04
+Nodes (72): create_error_context(), Any, Request, Create error context from request and user. Helper function to reduce…, get_summary(), increment_exception(), Any, Exception metrics tracking for monitoring. This module provides thread-safe… (+64 more)
 
 ### Community 233 - "NATSMessageBroker"
 Cohesion: 0.06
@@ -3227,65 +3158,65 @@ Nodes (77): Custom exceptions for NATS Subject Manager. This module defines all 
 Cohesion: 0.03
 Nodes (60): mock_config(), fixture, rate_limiter(), Unit tests for rate limiter service. Tests the RateLimiter class which provides…, Test check_rate_limit returns True when within limits., Test check_rate_limit returns False when limit exceeded., Test check_rate_limit always returns True when disabled., Test check_rate_limit handles errors gracefully (fails open). (+52 more)
 
-### Community 237 - "_check_grace_period_block"
+### Community 237 - "WebSocketRequestContext"
 Cohesion: 0.07
-Nodes (32): command_request_app_state(), CommandExecutionRequest, Return app.state for HTTP Request or WebSocketRequestContext (duck-typed).…, _check_grace_period_block(), _get_grace_check_context(), UUID, Resolve player_id and connection_manager for grace period check. Returns None…, Check if player is in grace period and block commands. Players in grace period… (+24 more)
+Nodes (37): create_websocket_request_context(), Any, Get the event bus from the request context., Factory function to create a WebSocket request context. Args: app_state: Real…, Creates FastAPI Request-like objects for WebSocket commands. This allows…, Initialize the WebSocket request context. Args: app_state: Real application…, Set the alias storage in the app state. Args: alias_storage: Alias storage…, Set the app state services in the request context. Note: This method is kept… (+29 more)
 
 ### Community 238 - "devDependencies"
 Cohesion: 0.05
 Nodes (41): autoprefixer, devDependencies, autoprefixer, cross-env, eslint-plugin-playwright, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals (+33 more)
 
 ### Community 239 - "test_movement_monitor.py"
-Cohesion: 0.03
-Nodes (60): Reset the global movement monitor (useful for testing)., reset_movement_monitor(), movement_monitor(), fixture, Unit tests for movement monitor. Tests the MovementMonitor class for monitoring…, Test record_integrity_check() records check without violation., Test record_integrity_check() records check with violation., Test validate_room_integrity() with valid room data. (+52 more)
+Cohesion: 0.04
+Nodes (55): Reset the global movement monitor (useful for testing)., reset_movement_monitor(), Unit tests for movement monitor. Tests the MovementMonitor class for monitoring…, Test record_integrity_check() records check without violation., Test record_integrity_check() records check with violation., Test validate_room_integrity() with valid room data., Test validate_room_integrity() detects duplicate players., Test validate_room_integrity() handles empty rooms dict. (+47 more)
 
 ### Community 240 - "test_container_persistence_async_helpers.py"
 Cohesion: 0.08
-Nodes (60): Validate lock_state parameter. Args: lock_state: Lock state to validate Raises:…, validate_lock_state(), _build_item_dict(), _call_create_container_procedure(), _container_data_from_row(), create_container_async(), delete_container_async(), fetch_container_items_async() (+52 more)
+Nodes (58): _build_item_dict(), _call_create_container_procedure(), _container_data_from_row(), create_container_async(), delete_container_async(), fetch_container_items_async(), _finalize_container_creation(), get_container_async() (+50 more)
 
-### Community 241 - "test_player_related_models.py"
+### Community 241 - "PydanticErrorHandler"
+Cohesion: 0.09
+Nodes (29): convert_pydantic_error(), _ExtractedErrorInfo, _ExtractedFieldErrorInfo, handle_pydantic_error(), TypedDict, Unpack, ValidationError, PydanticErrorHandler (+21 more)
+
+### Community 242 - "FakeHallucinationService"
 Cohesion: 0.08
-Nodes (36): PlayerChannelPreferences, PlayerExploration, PlayerInventory, Base, Player channel preferences model for Advanced Chat Channels. Stores player…, Player inventory model for persistent storage of items. This matches the…, Junction table tracking which rooms each player has explored., Unit tests for Player-related SQLAlchemy models. Tests… (+28 more)
-
-### Community 242 - "test_hallucination_services.py"
-Cohesion: 0.03
-Nodes (87): FakeHallucinationService, Any, UUID, Fake hallucination service for MythosMUD. Implements fake NPC tells and room…, Generate a room text overlay hallucination. Args: player_id: Player UUID who…, Select which type of fake hallucination to trigger (50/50 chance). Returns:…, Service for generating fake NPC tells and room text overlays. These…, Initialize the fake hallucination service. (+79 more)
+Nodes (31): FakeHallucinationService, Any, UUID, Generate a room text overlay hallucination. Args: player_id: Player UUID who…, Select which type of fake hallucination to trigger (50/50 chance). Returns:…, Service for generating fake NPC tells and room text overlays. These…, Initialize the fake hallucination service., Generate a fake NPC tell hallucination. Args: player_id: Player UUID who will… (+23 more)
 
 ### Community 243 - "RoomDataCache"
 Cohesion: 0.04
 Nodes (39): Any, Get statistics about the room data cache. Args: is_room_data_fresh_func:…, Merge room data with proper conflict resolution. Args: old_data: Existing room…, Manages room data caching and freshness validation., Check if new data is newer than old data for a specific key. Args: old_data:…, Initialize the room data cache. Args: freshness_threshold_seconds: Threshold in…, Check if room data is fresh enough to use. Args: room_data: Room data to check…, Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,… (+31 more)
 
 ### Community 244 - "AsyncPersistenceLayer"
-Cohesion: 0.02
-Nodes (127): AsyncPersistenceLayer, get_async_persistence(), Any, datetime, Player, Profession, UUID, Set the instance manager for instanced room lookup (instance-first). (+119 more)
+Cohesion: 0.04
+Nodes (44): AsyncPersistenceLayer, Any, datetime, UUID, Set the instance manager for instanced room lookup (instance-first)., Delegate to room loader; exposed for unit tests., Delegate to room loader; exposed for unit tests., Delegate to room loader; exposed for unit tests. (+36 more)
 
 ### Community 245 - "IdleMovementHandler"
-Cohesion: 0.04
-Nodes (67): IdleMovementHandler, Core gating for idle movement (interval handled by scheduler)., Determine if an NPC should attempt idle movement. Checks multiple conditions: -…, Check if NPC is in combat via UUID lookup. Args: npc_id: NPC ID (string or…, Check if NPC is in combat via string ID mapping. Args: npc_id: NPC ID as string…, Check if an NPC is currently in combat. Args: npc_instance: The NPC instance to…, Handler for NPC idle movement logic. This class manages the decision-making and…, patch (+59 more)
+Cohesion: 0.03
+Nodes (80): _cfg_bool(), _cfg_float(), IdleMovementHandler, _npc_id_str(), _passes_movement_probability(), NPC Idle Movement Handler for MythosMUD. This module provides idle movement…, Core gating for idle movement (interval handled by scheduler)., Determine if an NPC should attempt idle movement. Checks multiple conditions: -… (+72 more)
 
 ### Community 246 - "useAsciiMapState.ts"
-Cohesion: 0.08
-Nodes (38): buildHeaders(), buildMapUrl(), fetchAsciiMap(), FetchAsciiMapParams, fetchAsciiMinimap(), FetchAsciiMinimapParams, formatDetailMessage(), formatMapErrorResponse() (+30 more)
-
-### Community 247 - "quest_service.py"
 Cohesion: 0.06
-Nodes (54): _apply_holdings(), collect_player_stacks(), _consume_from_equipped(), _consume_from_stack_list(), consume_prototype_from_player(), count_prototype_in_stacks(), _deepcopy_dict_stacks(), _deepcopy_equipped_map() (+46 more)
+Nodes (44): buildHeaders(), buildMapUrl(), fetchAsciiMap(), FetchAsciiMapParams, fetchAsciiMinimap(), FetchAsciiMinimapParams, formatDetailMessage(), formatMapErrorResponse() (+36 more)
+
+### Community 247 - "collect_inventory.py"
+Cohesion: 0.08
+Nodes (43): _apply_holdings(), collect_player_stacks(), _consume_from_equipped(), _consume_from_stack_list(), consume_prototype_from_player(), count_prototype_in_stacks(), _deepcopy_dict_stacks(), _deepcopy_equipped_map() (+35 more)
 
 ### Community 248 - "GameTickService"
 Cohesion: 0.05
-Nodes (32): GameTickService, Get the current tick count. Returns: int: Current number of ticks processed, Reset the tick count to zero., Get the current tick interval. Returns: float: Current tick interval in seconds, Set a new tick interval. Args: interval: New tick interval in seconds, Check if the service is currently running. Returns: bool: True if running,…, Service that manages the game tick system. The game tick system runs at regular…, Initialize the GameTickService. Args: event_publisher: EventPublisher instance… (+24 more)
+Nodes (31): GameTickService, Get the current tick count. Returns: int: Current number of ticks processed, Reset the tick count to zero., Get the current tick interval. Returns: float: Current tick interval in seconds, Set a new tick interval. Args: interval: New tick interval in seconds, Check if the service is currently running. Returns: bool: True if running,…, Service that manages the game tick system. The game tick system runs at regular…, Initialize the GameTickService. Args: event_publisher: EventPublisher instance… (+23 more)
 
-### Community 249 - "test_player_event_handlers_respawn.py"
-Cohesion: 0.02
-Nodes (104): _append_unique_valid_occupant(), _ensure_respawned_player_in_lists(), _is_npc_occupant_row(), _occupant_str_field(), PlayerRespawnEventHandler, BoundLogger, ConnectionManager, Player (+96 more)
-
-### Community 250 - "useMythosAppState.ts"
+### Community 249 - "PlayerRespawnEventHandler"
 Cohesion: 0.05
-Nodes (70): CharacterNameScreenProps, MechanicalEffect, Profession, ProfessionCard(), ProfessionCardProps, StatRequirement, STAT_ROWS, StatsRollingScreen() (+62 more)
+Nodes (43): _append_unique_valid_occupant(), _ensure_respawned_player_in_lists(), _is_npc_occupant_row(), _occupant_str_field(), PlayerRespawnEventHandler, BoundLogger, ConnectionManager, Player (+35 more)
+
+### Community 250 - "useMythosAppActions.ts"
+Cohesion: 0.05
+Nodes (79): CharacterNameScreenProps, CreateCharacterPayload, Profession, StatsRollingScreenProps, Stats, PerformStatsRollParams, AuthSlice, authSliceReducer() (+71 more)
 
 ### Community 251 - "GameClientV2ContainerView.tsx"
-Cohesion: 0.05
-Nodes (37): DeathInterstitial(), DeathInterstitialProps, DeliriumInterstitial(), DeliriumInterstitialProps, MainMenuModal(), MainMenuModalProps, AsciiMinimap(), AsciiMinimapProps (+29 more)
+Cohesion: 0.06
+Nodes (27): DeathInterstitial(), DeathInterstitialProps, DeliriumInterstitial(), DeliriumInterstitialProps, MainMenuModal(), MainMenuModalProps, MapView(), MapViewBody() (+19 more)
 
 ### Community 253 - "testing_examples.py"
 Cohesion: 0.04
@@ -3296,8 +3227,8 @@ Cohesion: 0.06
 Nodes (55): all_room_rows(), gen_room_link_id(), gen_room_links(), gen_room_row(), gen_subzone_row(), gen_zone_config_row(), gen_zone_row(), main() (+47 more)
 
 ### Community 255 - "PerformanceMonitor"
-Cohesion: 0.03
-Nodes (84): auth_service, authenticate_websocket_connection(), chat_service, game_service, handle_chat_message(), handle_game_action(), handle_websocket_error(), handle_websocket_message() (+76 more)
+Cohesion: 0.05
+Nodes (58): ExceptionStats, Statistics for exception tracking., __getattr__(), Any, Monitoring package for MythosMUD server., Lazy import for modules that require numpy., MonitoringSummary, Comprehensive monitoring dashboard for MythosMUD server. This module provides a… (+50 more)
 
 ### Community 256 - "CombatMonitoringService"
 Cohesion: 0.04
@@ -3311,9 +3242,9 @@ Nodes (56): message_filtering_helper(), mock_connection_manager(), asyncio, fixt
 Cohesion: 0.04
 Nodes (75): AsyncSessionFactory, EventDispatcher, LucidityServiceFactory, _dispatch_rescue_events(), _ensure_uuid(), _load_rescue_participants(), _maybe_await(), Any (+67 more)
 
-### Community 259 - "SpellRegistry"
-Cohesion: 0.07
-Nodes (23): Initialize the magic command handler. Args: magic_service: Magic service for…, Initialize the spell learning service. Args: spell_registry: Registry for spell…, Spell registry for managing the global spell database. This module provides an…, List all spells, optionally filtered by school. Args: school: Optional school…, Search spells by name or description. Args: query: Search query (case-…, Get all spell IDs. Returns: list[str]: List of all spell IDs, In-memory registry for all spells. Loads spells from the database on…, Check if spells have been loaded. (+15 more)
+### Community 259 - "magic_service.py"
+Cohesion: 0.03
+Nodes (80): _initialize_magic_service(), initialize_magic_services(), _initialize_mp_regeneration_service(), _initialize_spell_effects(), _initialize_spell_learning_service(), _initialize_spell_registry(), _initialize_spell_repositories(), _initialize_spell_targeting_service() (+72 more)
 
 ### Community 260 - "test_map_helpers.py"
 Cohesion: 0.08
@@ -3323,25 +3254,25 @@ Nodes (36): build_room_dict(), build_zone_pattern(), load_room_exits(), load_roo
 Cohesion: 0.06
 Nodes (50): BaseMessageSchema, ChatMessageSchema, EventMessageSchema, Any, BaseModel, field_validator, Pydantic schemas for NATS message validation. This module provides type-safe…, Validate event type is not empty. (+42 more)
 
-### Community 262 - "CombatParticipantType"
+### Community 262 - "test_command_parser_helpers.py"
 Cohesion: 0.05
-Nodes (44): CombatParticipantType, Type of combat participant., _build_combat_instance(), _build_participant(), CombatInitializer, _compute_turn_order(), UUID, Combat initialization logic. Handles creation and setup of combat instances. (+36 more)
+Nodes (40): command_parser(), fixture, Unit tests for command_parser helper methods. Tests the helper methods in…, Test _create_command_object() handles 'l' alias., Test _create_command_object() handles 'g' alias., Test _create_command_object() handles 'w' alias., Test _create_command_object() raises error for unsupported command., Test _create_command_object() handles PydanticValidationError. (+32 more)
 
 ### Community 263 - "server/services/nats_subject_manager/__init__.py"
 Cohesion: 0.09
 Nodes (28): MissingParameterError, NATSSubjectError, PatternNotFoundError, Exception, Base exception for NATS subject-related errors., Exception raised when a pattern name is not found in registry., Exception raised when required parameters are missing., NATS Subject Manager for MythosMUD. This package provides centralized subject… (+20 more)
 
 ### Community 264 - "test_lucidity_recovery_commands.py"
-Cohesion: 0.02
-Nodes (156): FastAPI/Starlette application (or duck-typed equivalent)., _format_cooldown_message(), _format_recovery_success_message(), handle_folk_tonic_command(), handle_group_solace_command(), handle_meditate_command(), handle_pray_command(), handle_therapy_command() (+148 more)
-
-### Community 265 - "asyncio"
 Cohesion: 0.06
-Nodes (33): asyncio, Test is_player_muted_async() returns True when player is muted., Test is_player_muted_async() returns False when player is not muted., Test add_admin() handles missing container., Test add_admin() handles player not found., Test remove_admin() handles missing container., Test remove_admin() handles player not found., Test is_admin() returns False when container not available. (+25 more)
+Nodes (70): _format_cooldown_message(), _format_recovery_success_message(), handle_folk_tonic_command(), handle_group_solace_command(), handle_meditate_command(), handle_pray_command(), handle_therapy_command(), _perform_recovery_action() (+62 more)
+
+### Community 265 - "test_user_manager.py"
+Cohesion: 0.02
+Nodes (134): asyncio, Unit tests for user manager service. Tests the UserManager class., Test unmute_player() when player is not muted., Test mute_channel() successfully mutes a channel., Test mute_channel() when channel is already muted., Test unmute_channel() successfully unmutes a channel., Test unmute_channel() when channel is not muted., Test mute_global() successfully globally mutes a player. (+126 more)
 
 ### Community 266 - "test_security_headers.py"
-Cohesion: 0.05
-Nodes (49): MutableHeaders, Any, ASGIApp, Receive, Request, Scope, Send, Backward-compatible dispatch method for BaseHTTPMiddleware interface. This… (+41 more)
+Cohesion: 0.07
+Nodes (31): MutableHeaders, Any, ASGIApp, Request, Backward-compatible dispatch method for BaseHTTPMiddleware interface. This…, Add security headers to Response object (compatibility method)., Add all security headers to the response., Pure ASGI middleware to add comprehensive security headers to all HTTP… (+23 more)
 
 ### Community 267 - "test_command_validator.py"
 Cohesion: 0.03
@@ -3352,56 +3283,56 @@ Cohesion: 0.10
 Nodes (52): check_ai_guardrails(), _check_single_use_file(), _collect_code_texts(), _guardrail_scan_inputs(), _is_single_use_small_file(), _process_added_file_checks(), build_context(), ChangedFile (+44 more)
 
 ### Community 269 - "test_chat_nats_publisher.py"
-Cohesion: 0.09
-Nodes (53): _build_legacy_subject(), _build_nats_message_data(), build_nats_subject(), _build_standardized_subject(), _extract_subzone_from_room(), _log_nats_publish_error(), _log_nats_unexpected_error(), _nats_service_ready() (+45 more)
+Cohesion: 0.08
+Nodes (55): _build_legacy_subject(), _build_nats_message_data(), build_nats_subject(), _build_standardized_subject(), _chat_passes_nats_validation(), _extract_subzone_from_room(), _log_nats_publish_error(), _log_nats_unexpected_error() (+47 more)
 
-### Community 270 - "PartyService"
+### Community 270 - "_str_id"
 Cohesion: 0.11
-Nodes (25): PartyService, Any, UUID, Create a new party with the given player as leader. Returns dict with success…, Disband a party. If by_player_id is given, only the leader may disband. If…, Add a player to a party. Fails if party does not exist or player is already in…, Remove expired pending invites and notify inviters., Send a command_response-style message to a single player. (+17 more)
+Nodes (19): Any, ConnectionManager, UUID, Create a new party with the given player as leader. Returns dict with success…, Disband a party. If by_player_id is given, only the leader may disband. If…, Add a player to a party. Fails if party does not exist or player is already in…, Safely schedule an async notification, handling cases where no event loop is…, Notify a player they have been removed from a party. Resolves leader name. (+11 more)
 
-### Community 271 - "CombatCommandHandler"
-Cohesion: 0.03
-Nodes (109): CombatCommandHandler, CombatCommandHandlerExtras, _NpcWithLife, Any, AppWithState, ConnectionManager, Protocol, Combat command handler class and shared helpers. Extracted from combat.py to… (+101 more)
+### Community 271 - "test_flee_command.py"
+Cohesion: 0.09
+Nodes (38): flee_handler_deps(), _FleeCmdApp, _FleeCmdAppState, _FleeCmdRequest, FleeHandlerDeps, _GetCombatHandlerLoaderApp, _GetCombatHandlerLoaderAppState, _GetCombatHandlerLoaderContainer (+30 more)
 
 ### Community 272 - "test_combat_handler.py"
-Cohesion: 0.06
-Nodes (59): BaseModel, Result of target resolution operation. This model contains the complete result…, Get the single match if exactly one target was found., Get list of disambiguation options for multiple matches., TargetResolutionResult, _AppStatePersistence, _AppWithPersistence, _as_app_with_state() (+51 more)
+Cohesion: 0.07
+Nodes (54): _AppStatePersistence, _AppWithPersistence, _as_app_with_state(), _CmdType, _handler_with_persistence(), mock_persistence(), AppWithState, asyncio (+46 more)
 
 ### Community 273 - "ResourceManager"
 Cohesion: 0.05
 Nodes (19): trackComponentMount, trackComponentUnmount, trackStoreSubscription, trackStoreUnsubscription, useComponentLifecycleTracking(), UseComponentLifecycleTrackingOptions, useStoreSubscriptionTracking(), ClientMetrics (+11 more)
 
 ### Community 274 - "inventory_equip_command.py"
-Cohesion: 0.13
-Nodes (40): normalize_inventory_slots(), Normalize slot_type in inventory list in-place., _equip_build_work(), _equip_inventory_rollback_snapshot(), _equip_persist_or_rollback(), _equip_run_mutation(), _equip_success_payload(), _equip_target_slot_or_error() (+32 more)
+Cohesion: 0.06
+Nodes (74): _find_equipped_by_item_id(), find_equipped_item_after_equip(), handle_wearable_container_on_equip(), normalize_equipped_items(), normalize_inventory_slots(), InventoryStack, Player, Find the equipped slot and item after equipping. (+66 more)
 
 ### Community 275 - "PersonalMessageSender"
-Cohesion: 0.12
-Nodes (26): PersonalMessageSender, Any, UUID, Send message to a single WebSocket connection. Returns True if successful., Queue message if no active connections., Send a personal message to a player via WebSocket. Args: player_id: The…, Get message delivery statistics for a player., Sends personal messages to individual players. This class provides: - Personal… (+18 more)
+Cohesion: 0.11
+Nodes (28): Messaging components for connection management. This package provides modular…, PersonalMessageSender, Any, UUID, Personal message delivery for connection management. This module provides…, Send message to a single WebSocket connection. Returns True if successful., Queue message if no active connections., Send a personal message to a player via WebSocket. Args: player_id: The… (+20 more)
 
 ### Community 276 - "map_minimap.py"
 Cohesion: 0.07
-Nodes (44): MapZoneContext, NamedTuple, Plane, zone, and sub_zone grouped for map/minimap APIs to reduce parameter…, _append_room_with_fallback_coords_if_needed(), _apply_minimap_fallback_coordinates(), _ensure_current_room_in_minimap_rooms(), generate_minimap_html(), Any (+36 more)
+Nodes (41): _append_room_with_fallback_coords_if_needed(), _apply_minimap_fallback_coordinates(), _ensure_current_room_in_minimap_rooms(), generate_minimap_html(), Any, AsyncSession, UUID, Minimap orchestration for the map API. Extracted from maps.py so the router… (+33 more)
 
-### Community 277 - "admin_mute_commands.py"
-Cohesion: 0.11
-Nodes (30): _collect_mute_display_lines(), _extract_mute_target(), _format_mute_line(), handle_mutes_command(), _mute_command_app(), _mute_display_target(), _mute_duration_display(), _mute_success_result() (+22 more)
+### Community 277 - "chat_channel_message_senders.py"
+Cohesion: 0.13
+Nodes (36): ChatResult, _append_channel_history(), _authorize_global_sender(), _authorize_system_sender(), ChatPlayerView, ChatSendServices, _load_whisper_participants(), _log_and_store_system_message() (+28 more)
 
-### Community 278 - "test_room_subscription_manager.py"
-Cohesion: 0.04
-Nodes (53): asyncio, fixture, Unit tests for room subscription manager. Tests the RoomSubscriptionManager…, Test get_room_subscribers() returns empty set when no subscribers., Test get_room_subscribers() handles errors gracefully., Test add_room_occupant() adds occupant., Test add_room_occupant() with multiple occupants., Test add_room_occupant() adds occupant to new room. (+45 more)
+### Community 278 - "TestErrorHandlers"
+Cohesion: 0.08
+Nodes (24): general_exception_handler(), _include_error_details_from_request(), mythos_exception_handler(), Exception, Request, Handle MythosMUD-specific exceptions. Args: request: FastAPI request object…, Handle all other exceptions. Args: request: FastAPI request object exc: Generic…, Safely read the debug flag from app.state.config; defaults to False. (+16 more)
 
 ### Community 279 - "MemoryMonitor"
 Cohesion: 0.06
 Nodes (17): useGameClientV2MemoryMonitorEffect(), ExtendedPerformance, MemoryLeakDetector, MemoryLeakDetectorOptions, MemorySnapshot, PerformanceMemory, useMemoryLeakDetector(), MemoryMonitor (+9 more)
 
 ### Community 280 - "AliasGraph"
-Cohesion: 0.06
-Nodes (43): check_alias_safety(), handle_expanded_command(), Any, CommandExecutionRequest, Alias Expansion Logic for MythosMUD. This module handles alias resolution,…, Handle command processing with alias expansion and loop detection. This…, Check if an alias is safe to expand. Builds an alias dependency graph and…, Validate an expanded command for length and content. Args: expanded_command:… (+35 more)
-
-### Community 281 - "start_grace_period"
 Cohesion: 0.09
-Nodes (33): cancel_grace_period(), Any, UUID, Cancel grace period for a player (e.g., on reconnection). Args: player_id: The…, Start a grace period for a disconnected player. During the grace period, the…, start_grace_period(), mock_manager(), asyncio (+25 more)
+Nodes (22): Unit tests for alias_graph utilities. Tests the AliasGraph class., Test AliasGraph initialization., Test AliasGraph.build_graph() builds dependency graph., Test AliasGraph.detect_cycle() returns None when no cycle., Test AliasGraph.is_safe_to_expand() returns True when safe., Test AliasGraph.get_expansion_depth() returns depth., Test AliasGraph.clear() clears the graph., test_alias_graph_build_graph() (+14 more)
+
+### Community 281 - "test_nats_service_health.py"
+Cohesion: 0.07
+Nodes (37): nats_config(), nats_service(), asyncio, fixture, NATS health-check, batch flush, and subscription-lifecycle tests., Test _stop_health_monitoring() handles no task., Test publish_batch() adds message to batch., Test publish_batch() flushes when batch is full. (+29 more)
 
 ### Community 282 - "resolve_weapon_attack_from_equipped"
 Cohesion: 0.09
@@ -3411,25 +3342,25 @@ Nodes (33): _prototype_from_equipped_stack(), NamedTuple, PrototypeRegistry, Wea
 Cohesion: 0.07
 Nodes (24): Any, AsyncSession, UUID, Get a list of rooms adjacent to the specified room. Args: room_id: The room's…, Get the scope of rooms for local chat (current room + adjacent rooms). Args:…, Validate that a room exists using cached data. Args: room_id: The room's ID…, Validate that there's a valid exit from one room to another. Args:…, Get all occupants (players and NPCs) currently in a room using cached data.… (+16 more)
 
-### Community 284 - "LucidityService"
-Cohesion: 0.02
-Nodes (144): _dispatch_player_event(), _format_liabilities(), LucidityChangeEventExtras, LiabilityStackEntry, UUID, Helpers for broadcasting lucidity-related SSE events., Emit a catatonia state event to the affected player., Send rescue progress/status updates to either participant. (+136 more)
+### Community 284 - "test_lucidity_event_dispatcher.py"
+Cohesion: 0.05
+Nodes (73): _dispatch_player_event(), _format_liabilities(), LucidityChangeEventExtras, LiabilityStackEntry, UUID, Helpers for broadcasting lucidity-related SSE events., Emit a catatonia state event to the affected player., Send rescue progress/status updates to either participant. (+65 more)
 
 ### Community 285 - "NPCCombatLucidity"
 Cohesion: 0.06
-Nodes (31): Return lucidity dependency for integration collaborators., _EncounterCtx, NPCCombatLucidity, Any, NamedTuple, Apply lucidity loss when a player engages an eldritch entity. Args: player_id:…, Determine encounter category based on NPC definition metadata. Args:…, Context for applying encounter lucidity loss. (+23 more)
+Nodes (32): ActiveLucidityService, Handle active lucidity adjustments such as encounters and recovery actions., Return lucidity dependency for integration collaborators., _EncounterCtx, NPCCombatLucidity, Any, NamedTuple, Apply lucidity loss when a player engages an eldritch entity. Args: player_id:… (+24 more)
 
 ### Community 286 - "AdminActionsLogger"
 Cohesion: 0.08
-Nodes (37): AdminActionsLogger, Any, datetime, Path, TypedDict, Log a general admin command action., Log permission check attempts. Args: player_name: Name of the player attempting…, Optional fields for teleport action logging. (+29 more)
+Nodes (39): AdminActionsLogger, get_admin_actions_logger(), Any, datetime, Path, TypedDict, Log a general admin command action., Log permission check attempts. Args: player_name: Name of the player attempting… (+31 more)
 
-### Community 287 - "test_party_commands.py"
-Cohesion: 0.08
-Nodes (50): _get_container(), _get_member_display(), _get_party_command_context(), _handle_party_chat(), handle_party_command(), _handle_party_invite(), _handle_party_kick(), _handle_party_leave() (+42 more)
+### Community 287 - "establish_websocket_connection"
+Cohesion: 0.14
+Nodes (34): establish_websocket_connection(), Establish a new WebSocket connection. Args: websocket: The WebSocket connection…, _as_ws(), _FakeWebSocket, _meta(), ConnectionMetadata, WebSocket, Test _remove_dead_connection() removes connection from tracking. (+26 more)
 
 ### Community 288 - "MovementService"
-Cohesion: 0.06
-Nodes (33): MovementService, Any, Exception, Room, UUID, Validate movement parameters. Returns False if validation fails (same room),…, Resolve player by ID or name and return player object and resolved ID., Get and validate rooms for movement. (+25 more)
+Cohesion: 0.05
+Nodes (36): Movement service for flee effect., MovementService, Any, Exception, Room, UUID, Validate movement parameters. Returns False if validation fails (same room),…, Resolve player by ID or name and return player object and resolved ID. (+28 more)
 
 ### Community 289 - "TestRoomDataFixer"
 Cohesion: 0.06
@@ -3443,77 +3374,73 @@ Nodes (17): EventBusLifecycleMixin, Exception, Task, Cancel leftover tasks after
 Cohesion: 0.08
 Nodes (50): _broadcast_and_log_summon_success(), _complete_summon(), _create_summon_item_instance(), handle_summon_command(), _log_summon_success(), _parse_summon_command_data(), _persist_summoned_item(), Any (+42 more)
 
-### Community 293 - "test_communication_commands_flows.py"
-Cohesion: 0.08
-Nodes (47): _chat_send_with_room_bundle(), flow_local_command(), flow_say_command(), _global_player_bundle(), _message_from_command(), Handle the `say` command: broadcast speech to the current room., Handle the `local` command: room-only speech (not global)., Resolve primary IDs for whisper; return error dict if self-whisper or missing… (+39 more)
-
-### Community 294 - "NPCOccupantProcessor"
+### Community 293 - "connection_establishment.py"
 Cohesion: 0.11
-Nodes (25): NPCOccupantProcessor, NPC occupant processing utilities. This module handles querying and processing…, Processes NPC occupants for rooms., Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…, Room ID normalization and comparison utilities. This module provides utilities…, Utilities for room ID normalization and comparison., Get canonical room ID for consistent comparison. Args: room_id: The room ID…, RoomIDUtils (+17 more)
+Nodes (32): _bind_accepted_websocket(), _cleanup_dead_connections(), _cleanup_failed_connection(), _EstablishmentConnectionManager, Player, Protocol, UUID, WebSocket (+24 more)
+
+### Community 294 - "SafeHtml.tsx"
+Cohesion: 0.09
+Nodes (19): SafeHtml(), SafeHtmlProps, createDomPurifyTestWindow(), installDomPurifyTestWindow(), defaultFetchMock, collectWindowCandidates(), COMMAND_PROBE_CONFIG, DOMPurifyInstance (+11 more)
 
 ### Community 295 - "handle_read_command"
 Cohesion: 0.07
 Nodes (49): _find_item_in_inventory(), _format_learn_spell_message(), handle_read_command(), _learn_single_spell(), _learn_specific_spell(), _list_spells_in_book(), _process_spellbook_read(), Any (+41 more)
 
-### Community 296 - "test_real_time_helpers.py"
-Cohesion: 0.07
-Nodes (49): Resolve player ID from a valid JWT. Path UUID is an identity check, not a…, _resolve_player_id_from_path_or_token(), Realtime domain schemas: realtime API, NATS messages, WebSocket messages., ErrorStatistics, PresenceStatistics, BaseModel, Presence and health statistics schema for MythosMUD. This module defines…, Presence statistics for connection monitoring. This model represents aggregate… (+41 more)
+### Community 296 - "real_time.py"
+Cohesion: 0.04
+Nodes (103): _ConnectionManagerUtilsModule, _ensure_connection_manager(), _extract_bearer_token(), get_connection_statistics(), get_player_connections(), handle_new_game_session(), _invoke_handle_websocket_connection(), _parse_subprotocol_token() (+95 more)
 
 ### Community 297 - "inventory_get_command.py"
-Cohesion: 0.13
-Nodes (34): _container_transfer_messages(), _get_from_container_path(), _get_route_after_validation(), _get_transfer_out_of_container(), GetCommandRuntime, GetItemSpec, handle_get_command(), _handle_get_from_room() (+26 more)
+Cohesion: 0.12
+Nodes (35): Parse numeric fields from object-typed JSON command payloads., _container_transfer_messages(), _get_from_container_path(), _get_route_after_validation(), _get_transfer_out_of_container(), GetCommandRuntime, GetItemSpec, handle_get_command() (+27 more)
 
-### Community 298 - "test_command_helpers.py"
-Cohesion: 0.05
-Nodes (55): Unit tests for command_helpers utility functions. Tests the utility functions…, Test validate_command_safety() returns True for safe commands., Test validate_command_safety() returns False for shell metacharacters., Test validate_command_safety() returns False for SQL injection attempts., Test validate_command_safety() returns False for Python injection attempts., Test validate_command_safety() returns False for format string injection., Test validate_command_safety() returns False for XSS attempts., Test get_command_help() returns help for specific command. (+47 more)
+### Community 298 - "get_username_from_user"
+Cohesion: 0.03
+Nodes (86): handle_add_admin_command(), Handle the add_admin command for adding administrators. Args: command_data:…, Unit tests for admin command handlers. Tests the admin command handler…, Test handle_add_admin_command() when user manager is not available., Test handle_add_admin_command() successful execution., Test handle_mute_command() handles exceptions., test_handle_add_admin_command_no_user_manager(), test_handle_add_admin_command_success() (+78 more)
 
 ### Community 299 - "test_shutdown_sequence.py"
-Cohesion: 0.10
-Nodes (46): _cancel_background_tasks(), _cleanup_connection_manager(), _despawn_all_npcs(), _disconnect_all_players(), _disconnect_nats_service(), execute_shutdown_sequence(), _persist_all_players(), Any (+38 more)
+Cohesion: 0.05
+Nodes (73): _find_uvicorn_processes(), Any, Process termination utilities for graceful server shutdown. This module handles…, Schedule a best-effort graceful process termination after a short delay. This…, Find all uvicorn processes using psutil., Terminate all uvicorn processes., Terminate all child processes of the current process., Fallback signal-based termination when psutil is not available. (+65 more)
 
-### Community 300 - "pytest.md"
-Cohesion: 0.01
-Nodes (264): get_current_active_user, IntegrityError, get_current_superuser(), get_current_verified_user(), get_optional_current_user(), Authentication dependencies for MythosMUD. This module provides dependency…, Get current superuser or raise 403., Get current verified user or raise 403. (+256 more)
+### Community 300 - "test_auth_dependencies.py"
+Cohesion: 0.02
+Nodes (130): get_current_active_user, get_current_superuser(), get_current_verified_user(), get_optional_current_user(), Get current superuser or raise 403., Get current verified user or raise 403., Validate invite code for registration., Get current user if authenticated, otherwise None. (+122 more)
 
 ### Community 301 - "test_pattern_matcher.py"
 Cohesion: 0.05
 Nodes (44): Initialize NATS Subject Manager. Args: enable_cache: Enable validation result…, PatternMatcher, Any, Pattern matching utilities for NATS Subject Manager. This module provides…, Matcher for validating subjects against registered patterns., Initialize pattern matcher. Args: strict_validation: Enable strict validation…, Check if subject matches any registered pattern. Args: subject: Subject string…, Check if subject components match a pattern. Args: components: Subject… (+36 more)
 
-### Community 302 - "map/types.ts"
-Cohesion: 0.07
-Nodes (43): EdgeCreationModal(), EdgeCreationModalProps, EDGE_EXIT_FLAGS, EDGE_MODAL_MESSAGE_TONE_CLASSES, EdgeCreationModalView(), EdgeCreationModalViewProps, EdgeModalDirectionFieldsProps, EdgeModalValidationMessagesProps (+35 more)
+### Community 302 - "RoomNodeData"
+Cohesion: 0.10
+Nodes (25): EdgeCreationModal(), EdgeCreationModalProps, EDGE_EXIT_FLAGS, EDGE_MODAL_MESSAGE_TONE_CLASSES, EdgeCreationModalView(), EdgeCreationModalViewProps, EdgeModalDirectionFieldsProps, EdgeModalValidationMessagesProps (+17 more)
 
-### Community 303 - "AdminAction"
-Cohesion: 0.07
-Nodes (30): AdminAction, Enumeration of admin actions for audit logging., Test validate_permission allows superuser all actions., Test validate_permission limits viewer role., Test validate_permission raises for None user., Test validate_permission enforces rate limiting., Test _has_permission for superuser., Test _has_permission for admin role. (+22 more)
-
-### Community 304 - "test_container_persistence_extended_crud.py"
-Cohesion: 0.04
-Nodes (66): create_container(), Persist a new container row, optionally seed contents, return hydrated data or…, _build_container_data_from_row(), get_containers_by_entity_id(), get_containers_by_room_id(), get_decayed_containers(), Any, ContainerData (+58 more)
+### Community 303 - "test_admin_auth_service.py"
+Cohesion: 0.03
+Nodes (87): AdminRole, AdminSession, Represents an admin session., Enumeration of admin roles., Unit tests for admin authentication service. Tests the AdminAuthService class…, Test get_user_role returns SUPERUSER for superuser., Test get_user_role returns VIEWER for regular user., Test get_user_role raises for None user. (+79 more)
 
 ### Community 305 - "test_inventory_helpers.py"
-Cohesion: 0.02
-Nodes (133): _equip_stack_from_inventory_index(), _find_equipped_by_item_id(), find_equipped_item_after_equip(), handle_wearable_container_on_equip(), normalize_equipped_items(), InventoryStack, Player, Equipment-related helper functions for inventory commands. (+125 more)
+Cohesion: 0.03
+Nodes (93): _equip_stack_from_inventory_index(), Equipment-related helper functions for inventory commands., Deep-copy inventory stack at index and normalize slot_type., _try_resolve_unequip_by_search(), build_drop_candidates(), build_equipped_candidates(), build_inventory_candidates(), clean_item_value() (+85 more)
 
 ### Community 306 - "lifespan_protocols.py"
 Cohesion: 0.07
-Nodes (64): MemoryMonitor, _container_attr(), _legacy_container_attr(), lifespan_connection_manager(), lifespan_container(), lifespan_event_bus(), lifespan_memory_monitor(), lifespan_nats_handler() (+56 more)
+Nodes (63): MemoryMonitor, _container_attr(), _legacy_container_attr(), lifespan_connection_manager(), lifespan_container(), lifespan_event_bus(), lifespan_memory_monitor(), lifespan_nats_handler() (+55 more)
 
 ### Community 307 - "NPCMovementIntegration"
 Cohesion: 0.05
 Nodes (46): Initialize the idle movement handler. Args: event_bus: Optional EventBus…, NPCMovementIntegration, Room, Get room objects and validate they exist. Args: npc_id: ID of the NPC…, Update room occupancy by removing NPC from source and adding to destination.…, Update NPC instance room tracking for occupant queries. Args: npc_id: ID of the…, Move an NPC to a different room with full integration. This method provides…, Get the current room ID for an NPC. Args: npc_id: ID of the NPC Returns:… (+38 more)
 
-### Community 308 - "ContainerTransferFromMixin"
-Cohesion: 0.19
-Nodes (15): ContainerTransferFromMixin, ContainerComponent, InventoryStack, Player, UUID, Persist container changes and log audit trail., Mutation-guarded body: remove stack, add to player, persist, audit., Transfer items from container to player inventory. (+7 more)
+### Community 308 - "ContainerServiceError"
+Cohesion: 0.04
+Nodes (86): ContainerAccessMixin, ContainerComponent, UUID, Container access validation (ownership, proximity, roles, corpse grace). Mixin…, Deny non-owner corpse access during (or without) a timed grace period., Validate corpse grace period access rules., Validate that player has access to the container. Checks proximity, ownership,…, Return True if player inventory contains the required key item_id. (+78 more)
 
 ### Community 309 - "RoomDataValidator"
 Cohesion: 0.07
-Nodes (39): Any, Validate occupant count consistency. Args: room_data: Room data to validate…, Validate room ID format. Args: room_id: Room ID to validate Returns: bool: True…, Check if occupant count matches the actual occupants list length. Args:…, Validates room data structure and content., Check for duplicate occupants in the room. Args: room_data: Room data to check…, Check if room has occupants but no name. Args: room_data: Room data to check…, Validate room data structure and content. Args: room_data: Room data to… (+31 more)
+Nodes (40): Any, Room data validation utilities for MythosMUD. This module provides validation…, Validate occupant count consistency. Args: room_data: Room data to validate…, Validate room ID format. Args: room_id: Room ID to validate Returns: bool: True…, Check if occupant count matches the actual occupants list length. Args:…, Validates room data structure and content., Check for duplicate occupants in the room. Args: room_data: Room data to check…, Check if room has occupants but no name. Args: room_data: Room data to check… (+32 more)
 
-### Community 310 - "test_admin_auth_service.py"
+### Community 310 - "PhantomHostileService"
 Cohesion: 0.07
-Nodes (29): Unit tests for admin authentication service. Tests the AdminAuthService class…, Test get_user_role raises for None user., Test get_username from User object., Test get_username from dict., Test get_username returns 'unknown' for None., Test get_username returns 'unknown' when username missing., Test get_username returns 'unknown' when dict doesn't have username., Test get_user_id from User object. (+21 more)
+Nodes (25): PhantomHostileService, Any, UUID, Return the full data dict for one phantom, or None if it's gone (#625)., Find one of the player's active phantoms by (case-insensitive) name, scoped to…, Remove a phantom hostile from tracking. Args: player_id: Player UUID…, Get list of active phantom IDs for a player. Args: player_id: Player UUID…, Clear all phantom hostiles for a player. Args: player_id: Player UUID (+17 more)
 
 ### Community 311 - "App.tsx"
 Cohesion: 0.11
@@ -3524,20 +3451,20 @@ Cohesion: 0.09
 Nodes (41): DraggablePanel(), DraggablePanelProps, isMouseEventOnHeader(), isPanelDragBlockedTarget(), PANEL_DRAG_BLOCK_SELECTORS, relativeSizeToAbsolute(), relativeToAbsolute(), applyDragMove() (+33 more)
 
 ### Community 313 - "test_login_grace_period_visual_indicator.py"
-Cohesion: 0.03
-Nodes (77): is_player_in_grace_period(), Check if a player is currently in grace period. Args: player_id: The player's…, GameStateProvider, Any, Player, UUID, Game state provision for connection management. This module provides…, Get NPC names for multiple NPCs in a batch operation. Args: npc_ids: List of… (+69 more)
+Cohesion: 0.08
+Nodes (33): PlayerOccupantProcessor, Any, UUID, Player occupant processing utilities. This module handles querying and…, Process players and convert to occupant information. Args: room_id: The room ID…, Processes player occupants for rooms., Initialize player occupant processor. Args: connection_manager:…, Ensure a player is included in the player ID strings list if specified. Args:… (+25 more)
 
 ### Community 314 - "apiTypeGuards.ts"
-Cohesion: 0.11
-Nodes (47): LoginResponse, ApiErrorWithDetail, assertCharacterInfoArray(), assertProfessionArray(), assertRefreshTokenResponse(), assertServerCharacterResponseArray(), assertStatsRollResponse(), hasAtLeastOneIdentifier() (+39 more)
+Cohesion: 0.09
+Nodes (54): handleProfessionsFetchError(), loadProfessions(), parseDetailMessage(), parseProfessionsBody(), parseProfessionsErrorResponse(), SERVER_UNAVAILABLE_PATTERNS, UseProfessionsOptions, UseProfessionsResult (+46 more)
 
 ### Community 315 - "send_game_event"
-Cohesion: 0.09
-Nodes (31): _ConnectionManagerAPI, Protocol, UUID, Send a system notification to a player. Args: player_id: The player's ID…, Send a player status update to a player. Args: player_id: The player's ID…, Send room description to a player. Args: player_id: The player's ID room_data:…, Structural type for API helpers; avoids importing ConnectionManager., Resolve manager without importing ConnectionManager (import cycle). (+23 more)
-
-### Community 316 - "._init_movement_layer"
 Cohesion: 0.07
-Nodes (18): Any, Exception, Wire user_manager into follow_service and nats_message_handler when present., Set item prototype registry on player service when both are available., Create room and profession cache services; set to None on RuntimeError., Wire exploration, movement, follow, and party services., Initialize game services. Requires Core and Realtime., On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item… (+10 more)
+Nodes (43): broadcast_game_event(), _ConnectionManagerAPI, Protocol, UUID, Public API utility functions for connection manager. This module provides…, Send a system notification to a player. Args: player_id: The player's ID…, Send a player status update to a player. Args: player_id: The player's ID…, Send room description to a player. Args: player_id: The player's ID room_data:… (+35 more)
+
+### Community 316 - "utils.py"
+Cohesion: 0.08
+Nodes (17): Any, Wire user_manager into follow_service and nats_message_handler when present., Create room and profession cache services; set to None on RuntimeError., Build a single item prototype payload from a DB row for validation., Any, Path, Return and cache the repository root directory., Delegate to shared util. Kept for backward compatibility. (+9 more)
 
 ### Community 317 - "test_connection_cleaner.py"
 Cohesion: 0.06
@@ -3552,48 +3479,48 @@ Cohesion: 0.07
 Nodes (39): Assign, _check_all_files(), check_file(), _find_python_files(), _group_violations_by_type(), LoggingComplianceChecker, main(), _print_compliance_success() (+31 more)
 
 ### Community 320 - "projectorRoom.ts"
-Cohesion: 0.17
-Nodes (27): attachOccupants(), coalesceCount(), createInitialRoomState(), createMinimalRoomFromOccupantsEvent(), createRoomUpdateWithPreservedOccupants(), deriveRoomFromGameState(), deriveRoomFromOccupantsWithoutExisting(), deriveRoomFromRoomOccupants() (+19 more)
+Cohesion: 0.10
+Nodes (41): formatNpcAttackedLine(), formatNpcTookDamageLine(), formatPlayerAttackedLine(), mergePlayerDpFromPlayerAttackedPayload(), messageHandlers, ProjectorHandler, stateHandlers, appendMessage() (+33 more)
 
 ### Community 321 - "character-cleanup.ts"
 Cohesion: 0.10
 Nodes (25): assertCharacterVisibleOnList(), deleteRevisedTestCharacterToMakeRoom(), loginAsIthaqua(), needsRecoveryFromWrongCreationScreen(), openStatsRollingFromLogin(), pollUntilCharacterListed(), readSkillsMessageText(), recoverCharacterSelectionAfterCreation() (+17 more)
 
-### Community 322 - "deque"
-Cohesion: 0.07
-Nodes (54): Coord, build_tile_grid(), _check_disconnected_rooms(), compute_bounds(), dump_ascii_to_file(), example_validator(), _handle_coordinate_conflict(), _handle_spatial_collision() (+46 more)
+### Community 322 - "test_message_queue.py"
+Cohesion: 0.03
+Nodes (111): Coord, build_tile_grid(), _check_disconnected_rooms(), compute_bounds(), dump_ascii_to_file(), example_validator(), _handle_coordinate_conflict(), _handle_spatial_collision() (+103 more)
 
 ### Community 323 - "MetricsCollector"
-Cohesion: 0.08
-Nodes (18): MetricsCollector, Any, Metrics collection for NATS message delivery. Collects and exposes metrics for…, Record a circuit breaker state change. Args: old_state: Previous circuit state…, Record message processing time. Args: duration_ms: Processing duration in…, Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…, Reset all metrics counters. Useful for clearing metrics after a deployment or…, Simple metrics collector for NATS message delivery. Thread-safe metrics… (+10 more)
+Cohesion: 0.07
+Nodes (21): Lock, MetricsCollector, Any, Record a circuit breaker state change. Args: old_state: Previous circuit state…, Record message processing time. Args: duration_ms: Processing duration in…, Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…, Reset all metrics counters. Useful for clearing metrics after a deployment or…, Simple metrics collector for NATS message delivery. Thread-safe metrics… (+13 more)
 
 ### Community 324 - "useWebSocketConnection.ts"
 Cohesion: 0.17
 Nodes (12): ThrowingWebSocket, connectOpenAndRunPingInterval(), defaultOptions, latestWebSocketInstance, { mockResourceManager, fetchSpy, mockedSetInterval, mockedClearInterval }, MockWebSocket, wsConnectionAfterEach(), wsConnectionBeforeEach() (+4 more)
 
 ### Community 325 - "test_admin_shutdown_command.py"
-Cohesion: 0.08
-Nodes (42): calculate_notification_times(), get_shutdown_blocking_message(), is_shutdown_pending(), Calculate notification times for countdown. Notifications occur: - Every 10…, Check if server shutdown is currently pending. Args: app: FastAPI application…, Get appropriate shutdown blocking message for different contexts. Args:…, _AppWithoutState, _InitiateAppStub (+34 more)
+Cohesion: 0.03
+Nodes (126): _asyncio_mark, _broadcast_shutdown_cancellation(), broadcast_shutdown_notification(), calculate_notification_times(), _cancel_countdown_task(), _cancel_existing_shutdown_task(), cancel_shutdown_countdown(), _clear_shutdown_state() (+118 more)
 
 ### Community 326 - "test_goto_helpers.py"
-Cohesion: 0.11
-Nodes (45): execute_confirm_goto(), execute_goto_teleport(), log_goto_failure(), Any, Exception, Helper functions for goto command operations., Log failed goto action., Validate app context and get current player with admin permissions. Returns… (+37 more)
+Cohesion: 0.12
+Nodes (43): execute_confirm_goto(), execute_goto_teleport(), log_goto_failure(), Any, Exception, Helper functions for goto command operations., Log failed goto action., Validate app context and get current player with admin permissions. Returns… (+35 more)
 
 ### Community 327 - "test_shopkeeper_npc.py"
 Cohesion: 0.06
-Nodes (35): Buy item from player., Calculate final price with markup., Handle greeting customer action., Handle restocking inventory action., Coerce inventory quantity from JSON-shaped dict values to int (excludes bool)., Shopkeeper NPC type with buy/sell functionality., Initialize shopkeeper NPC., Setup shopkeeper-specific behavior rules. (+27 more)
+Nodes (36): Shopkeeper NPC type for MythosMUD. This module provides the ShopkeeperNPC class…, Buy item from player., Calculate final price with markup., Handle greeting customer action., Handle restocking inventory action., Coerce inventory quantity from JSON-shaped dict values to int (excludes bool)., Shopkeeper NPC type with buy/sell functionality., Initialize shopkeeper NPC. (+28 more)
 
 ### Community 328 - "PlayerRepositoryProtocol"
-Cohesion: 0.11
-Nodes (20): PlayerRepositoryProtocol, datetime, Player, UUID, Repository protocols for MythosMUD persistence layer. Explicit typing.Protocol…, Protocol for player persistence operations. Defines the contract used by…, Get the first active player for a user ID., Get all players (including deleted) for a user ID. (+12 more)
+Cohesion: 0.07
+Nodes (31): PlayerRepositoryProtocol, datetime, Player, Protocol, Room, UUID, Repository protocols for MythosMUD persistence layer. Explicit typing.Protocol…, List all cached rooms. (+23 more)
 
 ### Community 329 - "CombatEventHandler"
-Cohesion: 0.13
-Nodes (22): CombatEventHandler, Any, UUID, Publish attack events and calculate XP reward. Args: current_participant:…, Calculate XP reward for defeating an NPC. Args: npc_id: ID of the defeated NPC…, Award XP to player for defeating an NPC. Args: current_participant: Attacking…, Publish combat ended event., Handles combat event publishing. (+14 more)
+Cohesion: 0.11
+Nodes (28): CombatEventHandler, Any, UUID, Publish attack events and calculate XP reward. Args: current_participant:…, Calculate XP reward for defeating an NPC. Args: npc_id: ID of the defeated NPC…, Award XP to player for defeating an NPC. Args: current_participant: Attacking…, Publish combat ended event., Handles combat event publishing. (+20 more)
 
-### Community 330 - "UUID"
-Cohesion: 0.08
-Nodes (15): Any, UUID, Find player_id for cleanup when metadata is missing., Check if connection is stale based on timeout., Check if WebSocket is actually open., Validate token and update last validation time if needed., Process health check for a single connection., Clean up stale connections. (+7 more)
+### Community 330 - "panelReducerHandlers.ts"
+Cohesion: 0.16
+Nodes (27): savePanelLayout(), PanelAction, panelActionHandlers, PanelReducerHandler, computeMinimizedDockPosition(), getDefaultViewport(), getMinimizedPanelIds(), MINIMIZED_BAR_HEIGHT (+19 more)
 
 ### Community 331 - "CoordinateGenerator"
 Cohesion: 0.07
@@ -3611,29 +3538,29 @@ Nodes (35): _logger(), Path, Unit tests for audit_logger utilities. Tests the Au
 Cohesion: 0.04
 Nodes (45): 1. Test Independence, 2. Mock Usage, 3. Assertion Quality, 4. Test Data Management, 5. Performance, 6-Week Timeline, Appendix A: Full File Mapping, Appendix B: Test Categories Reference (+37 more)
 
-### Community 335 - "command_service.py"
-Cohesion: 0.03
-Nodes (106): handle_mute_global_command(), handle_unmute_global_command(), Handle the mute_global command for global muting. Args: command_data: Command…, Handle the unmute_global command for removing global mute. Args: command_data:…, Command service for MythosMUD. This module provides the main command processing…, handle_global_command(), handle_local_command(), handle_system_command() (+98 more)
+### Community 335 - "TargetResolutionResult"
+Cohesion: 0.05
+Nodes (75): _get_container(), handle_follow_command(), handle_following_command(), handle_unfollow_command(), _load_follow_context(), Any, Follow commands for MythosMUD. Handlers for /follow, /unfollow, and /following.…, Handle /following - show who you follow and who follows you. (+67 more)
 
 ### Community 336 - "NATSSubjectManager"
 Cohesion: 0.05
 Nodes (33): get_subject_manager_dependency(), Dependency function to inject NATSSubjectManager. Returns: Global…, Initialize combat event publisher. Args: nats_service: NATS service instance…, NATSSubjectManager, Any, Build a NATS subject from a pattern and parameters. Args: pattern_name: Name of…, Ensure pattern exists in registry. Args: pattern_name: Name of the pattern to…, Ensure all required parameters are provided. Args: pattern_name: Name of the… (+25 more)
 
-### Community 337 - "SpellMaterial"
-Cohesion: 0.08
-Nodes (37): Any, UUID, Spell material handling service. This module handles checking and consuming…, Build final inventory with consumed materials removed. Args: inventory:…, Consume spell materials from player inventory. Args: player_id: Player ID…, Service for handling spell material requirements. Handles checking if players…, Check if player has all required materials. Args: player_id: Player ID spell:…, Process a single material requirement. Args: material: Material requirement… (+29 more)
+### Community 337 - "HallucinationFrequencyService"
+Cohesion: 0.09
+Nodes (28): HallucinationFrequencyService, Any, AsyncSession, UUID, Check if hallucination should trigger on room entry (Uneasy tier). Args:…, Check if hallucination should trigger based on time (Fractured/Deranged tiers).…, Service for managing hallucination frequency checks based on player tier., Initialize the hallucination frequency service. (+20 more)
 
-### Community 338 - "AdminRole"
-Cohesion: 0.07
-Nodes (28): AdminRole, Enumeration of admin roles., Test get_user_role returns SUPERUSER for superuser., Test get_user_role returns VIEWER for regular user., Test get_user_role returns ADMIN for user with is_admin attribute., Test get_user_role returns ADMIN for dict user with is_admin., Test _has_permission for moderator role., Test _update_session creates new session. (+20 more)
+### Community 338 - "useRespawnHandlers.ts"
+Cohesion: 0.14
+Nodes (26): handleCombatDeath(), handleCombatEnded(), handleCombatStarted(), handleCombatTargetSwitch(), handleNpcAttacked(), handleNpcDied(), handlePlayerAttacked(), fetchSpy (+18 more)
 
 ### Community 339 - "ConnectionCleaner"
 Cohesion: 0.08
 Nodes (26): ConnectionCleaner, Any, UUID, Identify players whose last_seen timestamp exceeds the max age. Args:…, Remove all data for a stale player. Args: pid: Player ID to remove…, Remove players whose presence is stale beyond the threshold. Args: last_seen:…, Return connection IDs that exceed max_connection_age., Extract player_id from connection metadata if present. (+18 more)
 
-### Community 340 - "test_profession_repository.py"
-Cohesion: 0.13
-Nodes (24): _bool_or_default(), Any, Profession, Get a profession by ID. Args: profession_id: Profession ID Returns: Profession…, Return value as str or a default if falsy., Return text value or default if falsy., Return bool(value) when not None, otherwise default., Map procedure result row to Profession model. (+16 more)
+### Community 340 - "handle_command"
+Cohesion: 0.08
+Nodes (23): CommandRequest, handle_command(), BaseModel, post, Request, Handle incoming HTTP command requests., Request model for command processing., asyncio (+15 more)
 
 ### Community 341 - "ChatLogger"
 Cohesion: 0.07
@@ -3644,40 +3571,40 @@ Cohesion: 0.04
 Nodes (49): mock_connection_manager(), mock_name_extractor(), processor(), asyncio, fixture, Unit tests for player occupant processor. Tests the PlayerOccupantProcessor…, Test _convert_player_ids_to_uuids handles mixed string and UUID types., Test _convert_player_ids_to_uuids handles UUID objects. (+41 more)
 
 ### Community 343 - "SkillAssignmentScreen.tsx"
-Cohesion: 0.18
-Nodes (20): OccupationSlotPayload, PersonalInterestPayload, SkillsPayload, loadSkillsCatalog(), MIN_TOUCH_TARGET_STYLE, OCCUPATION_VALUES, renderErrorState(), renderLoadingState() (+12 more)
+Cohesion: 0.08
+Nodes (32): buildCreateCharacterPayload(), CharacterNameScreen(), OccupationSlotPayload, PersonalInterestPayload, SkillsPayload, MotdContent(), MOTD_BUTTON_STYLE, MotdInterstitialScreen() (+24 more)
 
 ### Community 344 - "RoomMapEditorRuntime.tsx"
-Cohesion: 0.07
-Nodes (36): useMapEditing(), MapEditToolbar(), MapEditToolbarProps, buildModalCreateEdgeHandler(), buildModalPreviewHandler(), buildModalUpdateEdgeHandler(), buildModalUpdateRoomHandler(), buildPreviewEdge() (+28 more)
+Cohesion: 0.09
+Nodes (28): useMapEditing(), MapEditToolbar(), MapEditToolbarProps, buildModalCreateEdgeHandler(), buildModalPreviewHandler(), buildModalUpdateEdgeHandler(), buildModalUpdateRoomHandler(), buildPreviewEdge() (+20 more)
 
-### Community 345 - "_asyncio_mark"
-Cohesion: 0.08
-Nodes (33): _asyncio_mark, _await_shutdown_result(), Test handle_shutdown_command() when player service is not available., Test handle_shutdown_command() when player is not found., Test handle_shutdown_command() when player lacks admin permission., Test handle_shutdown_command() with invalid parameters., Test handle_shutdown_command() with cancel action., Test handle_shutdown_command() with cancel when no active shutdown. (+25 more)
+### Community 345 - "CommandPanel.tsx"
+Cohesion: 0.10
+Nodes (19): CommandPanel(), CommandPanelProps, logCommandPanelConnectionDebug(), useCommandPanelEffects(), applyChannelPrefix(), prepareCommandForSubmit(), prependChannelShortcut(), prependPartyPrefix() (+11 more)
 
 ### Community 346 - "fixtures/integration/__init__.py"
 Cohesion: 0.07
-Nodes (45): FixtureRequest, Database fixtures for integration tests. This module provides database…, _assert_allowed_integration_test_db(), db_cleanup(), _delete_mutable_integration_test_rows(), _get_db_name_from_url(), integration_db_url(), integration_engine() (+37 more)
+Nodes (47): FixtureRequest, Database fixtures for integration tests. This module provides database…, _assert_allowed_integration_test_db(), db_cleanup(), _delete_mutable_integration_test_rows(), _get_db_name_from_url(), integration_db_url(), integration_engine() (+39 more)
 
 ### Community 347 - "test_lru_cache.py"
 Cohesion: 0.07
 Nodes (27): cache_with_ttl(), cache_without_ttl(), asyncio, fixture, Unit tests for LRU cache expiration and eviction. Tests the LRUCache class,…, Test that expired entry count is tracked in cache stats., Test that expiration rate is calculated in stats., Test that cache size stays within bounds after expiration cleanup. (+19 more)
 
 ### Community 348 - "SpellLearningService"
-Cohesion: 0.10
-Nodes (29): Any, UUID, Spell learning service for handling spell acquisition. This module provides…, Learn a spell for a player., Validate prerequisites for learning a spell. Args: player_id: Player ID spell:…, Service for handling spell learning from various sources. Manages spell…, Learn a spell from a spellbook item. Args: player_id: Player ID…, # TODO: Integrate with item system to get spellbook data # pylint:… (+21 more)
+Cohesion: 0.12
+Nodes (25): Any, UUID, Learn a spell for a player., Validate prerequisites for learning a spell. Args: player_id: Player ID spell:…, Service for handling spell learning from various sources. Manages spell…, Learn a spell from a spellbook item. Args: player_id: Player ID…, Learn a spell from an NPC teacher. Args: player_id: Player ID npc_id: ID of the…, Learn a spell as a quest reward. Args: player_id: Player ID quest_id: ID of the… (+17 more)
 
-### Community 349 - "NPCCombatIntegrationBase"
-Cohesion: 0.07
-Nodes (24): NPCCombatIntegrationBase, ABC, Exception, UUID, ValidationError, Apply combat effects to a target (player or NPC). Args: target_id: ID of the…, Convert target_id to UUID, accepting either string or UUID input., Apply combat effects to a player. (+16 more)
+### Community 349 - "server/config/__init__.py"
+Cohesion: 0.03
+Nodes (66): _create_config_instance(), _get_config_cached(), _get_config_test(), _is_test_mode(), Configuration module for MythosMUD server. This module provides type-safe,…, Reset the configuration cache. In test mode, this is a no-op since get_config()…, Detect if running in test environment. Uses multiple detection methods to…, Create a new AppConfig instance from current environment. This is a helper… (+58 more)
 
 ### Community 350 - "game_tick_status_effects.py"
 Cohesion: 0.14
-Nodes (26): _handle_login_warded_expirations(), _process_all_status_effects(), _process_damage_over_time_effect(), _process_heal_over_time_effect(), process_player_effects_expiration(), _process_player_status_effects(), _process_single_effect(), process_status_effects() (+18 more)
+Nodes (30): _online_player_ids(), Return currently online player UUIDs, or empty if no connection manager., _TickConnectionManager, _TickContainer, _handle_login_warded_expirations(), _process_all_status_effects(), _process_damage_over_time_effect(), _process_heal_over_time_effect() (+22 more)
 
-### Community 351 - "test_rest_and_grace_period.py"
-Cohesion: 0.07
-Nodes (38): mock_app_with_services(), mock_connection_manager_full(), mock_persistence_full(), MockPersistenceFull, asyncio, fixture, Integration tests for rest command and disconnect grace period. Tests the…, Allow setting get_player_by_name and get_room_by_id to mocks. (+30 more)
+### Community 351 - "disconnect_grace_period.py"
+Cohesion: 0.04
+Nodes (74): cancel_grace_period(), is_player_in_grace_period(), Any, UUID, Disconnect grace period management for MythosMUD. This module handles the…, Cancel grace period for a player (e.g., on reconnection). Args: player_id: The…, Check if a player is currently in grace period. Args: player_id: The player's…, Start a grace period for a disconnected player. During the grace period, the… (+66 more)
 
 ### Community 352 - "test_npc_combat_integration_service_player_attacks.py"
 Cohesion: 0.09
@@ -3696,8 +3623,8 @@ Cohesion: 0.05
 Nodes (43): AI Executor Role, Mandatory Execution Protocol, Pre-Execution Affirmation, Seven Commandments, Empty browser_evaluate Results Valid, Maximum 3 Attempts Per Step, 1. Updated Core Configuration, 1. Visual Emphasis (+35 more)
 
 ### Community 356 - "HealthService"
-Cohesion: 0.08
-Nodes (26): HealthStatus, HealthService, Any, Async database health check., check_database_health., Check connection manager health., Get server component health status., Get database component health status (async version with actual validation). (+18 more)
+Cohesion: 0.09
+Nodes (21): HealthStatus, HealthService, Any, Async database health check., check_database_health., Check connection manager health., Get server component health status., Get database component health status (async version with actual validation). (+13 more)
 
 ### Community 357 - "_NPCCombatIntegrationValidationDeps"
 Cohesion: 0.09
@@ -3705,31 +3632,31 @@ Nodes (19): _coerce_xp_mapping_value(), _NPCCombatIntegrationValidationDeps, Pro
 
 ### Community 358 - "command_result_text"
 Cohesion: 0.04
-Nodes (90): Shared types for inventory command handlers (Lizard: keep main module small)., handle_inventory_command(), CommandResponse, Inventory and equipment command handlers for MythosMUD. Heavy handlers live in…, Display the player's inventory and equipped items, including container contents., handle_pickup_command(), Move an item stack from room drops into the player's inventory., handle_put_command() (+82 more)
+Nodes (109): _DropResolved, Protocol, Shared types for inventory command handlers (Lizard: keep main module small)., Narrows room managers for floor drop operations (pickup / get room)., RoomDropManager, Resolve state and player, returning (persistence, connection_manager, player,…, resolve_state_and_player(), Inventory and equipment command handlers for MythosMUD. Heavy handlers live in… (+101 more)
 
 ### Community 359 - "_container_data_to_dict"
 Cohesion: 0.14
 Nodes (13): _container_data_to_dict(), Any, ContainerData, datetime, UUID, Update a container (async)., Get decayed containers (async)., Delete a container (async). (+5 more)
 
-### Community 360 - "test_player_service.py"
-Cohesion: 0.06
-Nodes (45): mock_persistence(), player_service(), asyncio, fixture, Unit tests for player service CRUD and lookup. Delete, location, mythos status,…, Test get_player_by_id() when player is not found., Test get_player_by_name() when player is found., Test get_player_by_name() when player is not found. (+37 more)
+### Community 360 - "test_inventory_mutation_guard.py"
+Cohesion: 0.07
+Nodes (29): guard(), asyncio, fixture, Unit tests for inventory mutation guard - core functionality. Tests…, Test acquire_async without token allows mutation., Test acquire_async with unique token allows mutation., Test acquire_async with duplicate token suppresses mutation., Test acquire_async allows same token for different players. (+21 more)
 
-### Community 361 - ".get_active_effects_for_player"
-Cohesion: 0.10
-Nodes (21): _add_effect_params(), AddEffectInput, _int_opt(), _opt_str(), Any, TypedDict, UUID, Add a player effect. Returns the effect id (UUID string). Args: player_id:… (+13 more)
+### Community 361 - "player_effect_repository.py"
+Cohesion: 0.05
+Nodes (55): PlayerEffect, Base, Player effect model for the effects system (ADR-009). Persistent, tick-based…, Persistent player effect (status effect) with tick-based duration. Table:…, _add_effect_params(), AddEffectInput, _int_opt(), _opt_str() (+47 more)
 
 ### Community 362 - "useGameTerminal.ts"
-Cohesion: 0.07
-Nodes (41): GameTerminalContainer(), createDefaultGameTerminalState(), useGameTerminalMock, GameTerminalContext, GameTerminalContextType, GameTerminalProvider(), GameTerminalProviderProps, useConnectionState() (+33 more)
+Cohesion: 0.05
+Nodes (52): GameTerminalContainer(), createDefaultGameTerminalState(), useGameTerminalMock, GameTerminalContext, GameTerminalContextType, GameTerminalProvider(), GameTerminalProviderProps, useConnectionState() (+44 more)
 
-### Community 363 - "test_logout_commands_helpers.py"
-Cohesion: 0.09
-Nodes (25): _get_player_position_from_connection_manager(), Get player's current position from connection manager. Args:…, Unit tests for logout_commands helper functions. Tests helper functions in…, Test _sync_player_position() does nothing when position is None., Test _sync_player_position() does nothing when position matches., Test _get_player_position_from_connection_manager() returns position., Test _get_player_position_from_connection_manager() finds by display name., Test _get_player_position_from_connection_manager() returns None when no… (+17 more)
+### Community 363 - "login_grace_period.py"
+Cohesion: 0.14
+Nodes (25): _as_grace(), cancel_login_grace_period(), _EffectPersistence, _grace_period_task(), _GraceApp, _GraceAppState, _GraceContainer, _GraceManager (+17 more)
 
 ### Community 364 - "properties"
-Cohesion: 0.18
-Nodes (11): description, description, description, properties, field1, field2, field3, sub_zone (+3 more)
+Cohesion: 0.17
+Nodes (12): description, description, description, description, maxLength, minLength, type, properties (+4 more)
 
 ### Community 365 - "properties"
 Cohesion: 0.11
@@ -3740,20 +3667,20 @@ Cohesion: 0.16
 Nodes (42): handle_confirm_goto_command(), handle_confirm_teleport_command(), handle_goto_command(), handle_teleport_command(), Any, Handle the goto command for teleporting the admin to a player's location. Args:…, Handle the confirm teleport command for executing the actual teleportation.…, Handle the confirm goto command for executing the actual teleportation. Args:… (+34 more)
 
 ### Community 367 - "test_config_model_helpers.py"
-Cohesion: 0.19
-Nodes (14): _apply_url_fallback(), Any, If url is missing, set it from npc_url in data or from DATABASE_* env vars.…, When TLS is enabled, validate cert/key (and optional CA) exist and update url…, _validate_tls_files_and_maybe_update_url(), MonkeyPatch, Path, Unit tests for server.config.models._helpers. (+6 more)
+Cohesion: 0.12
+Nodes (19): _apply_url_fallback(), Any, If url is missing, set it from npc_url in data or from DATABASE_* env vars.…, When TLS is enabled, validate cert/key (and optional CA) exist and update url…, _validate_tls_files_and_maybe_update_url(), model_validator, Validate TLS configuration is complete when enabled., Any (+11 more)
 
-### Community 368 - "test_player_effect_repository.py"
+### Community 368 - "test_lint_raw_sql_in_python.py"
 Cohesion: 0.11
-Nodes (26): _make_effect(), player_id(), asyncio, fixture, Unit tests for PlayerEffectRepository (ADR-009 effects system). Tests…, get_active_effects_for_player returns only effects with remaining_ticks > 0…, has_effect returns True when player has active effect of type., has_effect returns False when no active effect of type. (+18 more)
+Nodes (25): _LintRawSqlModule, _load_script(), Protocol, Unit tests for scripts/lint_raw_sql_in_python.py. Verifies the detection logic…, Ordinary English sentence-case prose ('Select ... from ...') must not match --…, The shipped RAW_SQL_ALLOWLIST must exactly match what the scanner currently…, Typed surface of the loaded script, for the parts these tests exercise., Regression test for the gap #624 found: a naive per-line matcher can't see… (+17 more)
 
 ### Community 369 - "_make_session_context"
-Cohesion: 0.11
-Nodes (27): _make_session_context(), asyncio, Test get_by_player_and_quest returns mapped instance when found., Test get_by_player_and_quest returns None when not found., Test get_by_player_and_quest accepts UUID for player_id., Test update_state_and_progress updates and commits., Test update_state_and_progress still calls procedure and commit when only…, Test list_active_by_player returns list of mapped active instances. (+19 more)
+Cohesion: 0.12
+Nodes (25): _make_session_context(), asyncio, Test get_by_player_and_quest returns mapped instance when found., Test get_by_player_and_quest returns None when not found., Test get_by_player_and_quest accepts UUID for player_id., Test update_state_and_progress updates and commits., Test update_state_and_progress still calls procedure and commit when only…, Test list_active_by_player returns list of mapped active instances. (+17 more)
 
 ### Community 370 - "ChatHistoryPanel.tsx"
-Cohesion: 0.05
-Nodes (48): SafeHtml(), SafeHtmlProps, ChatMessage(), ChatMessageProps, formatTimestamp(), getFontSizeClass(), getMessageClass(), ChatHistoryMessageBody() (+40 more)
+Cohesion: 0.08
+Nodes (30): ChatMessage(), ChatMessageProps, formatTimestamp(), getFontSizeClass(), getMessageClass(), ChatMessagesList(), ChatMessagesListProps, ChatHistoryMessageBody() (+22 more)
 
 ### Community 371 - "test_memory_leak_metrics.py"
 Cohesion: 0.05
@@ -3763,9 +3690,9 @@ Nodes (42): collector(), fixture, Unit tests for memory leak metrics collector. 
 Cohesion: 0.05
 Nodes (23): fixture, Test suite for CombatConfigurationService class., Create a mock config object., Create a CombatConfigurationService instance for testing., Test CombatConfigurationService initialization., Test get_combat_configuration returns configuration., Test get_combat_configuration caches configuration., Test get_combat_configuration_for_scope with global scope. (+15 more)
 
-### Community 373 - "CorpseLifecycleService"
+### Community 373 - "GameConfig"
 Cohesion: 0.09
-Nodes (25): CorpseLifecycleService, _filter_container_data(), _get_enum_value(), Any, ContainerComponent, UUID, Corpse lifecycle service for unified container system. As documented in the…, Create a corpse container when a player dies. (+17 more)
+Nodes (20): GameConfig, BaseSettings, field_validator, Game-specific configuration., Validate combat alert threshold., Validate combat performance threshold., Validate combat error threshold., Validate max connections is reasonable. (+12 more)
 
 ### Community 374 - "executeCommand"
 Cohesion: 0.07
@@ -3775,33 +3702,33 @@ Nodes (57): locationIndicatesDeathVoid(), requiredAliveButDeadMessage(), assertL
 Cohesion: 0.04
 Nodes (49): 0.2 Update conftest.py ✅, 2.1 Categorize Unit Tests by Dependency Pattern, 4.1 Test ApplicationContainer Itself, Actions, AFTER, AFTER, AFTER, AFTER (+41 more)
 
-### Community 376 - "bind_request_context"
-Cohesion: 0.07
-Nodes (32): correct_request_context(), Demonstrate correct request context binding., add_request_context(), process_websocket_message(), websocket, WebSocket endpoint with enhanced logging., Add request context to all log entries using enhanced logging., Simulate WebSocket message processing. (+24 more)
+### Community 376 - "fastapi_integration.py"
+Cohesion: 0.04
+Nodes (60): correct_request_context(), Demonstrate correct request context binding., add_request_context(), auth_service(), BackgroundTasks, create_player(), File, general_exception_handler() (+52 more)
 
 ### Community 377 - "subject_controller.py"
 Cohesion: 0.10
 Nodes (41): get_patterns(), get_subject_statistics(), PatternsResponse, BaseModel, get, post, NATS Subject Management API Controller for MythosMUD. This module provides REST…, Dependency to require admin permissions. Args: current_user: Current… (+33 more)
 
-### Community 378 - "PlayerDeathService"
-Cohesion: 0.12
-Nodes (16): Initialize combat services., PlayerDeathService, Any, AsyncSession, Player, UUID, Process DP decay for a single mortally wounded player. Decreases player DP by…, Ensure player posture is set to lying when dead. Args: player: Player object to… (+8 more)
+### Community 378 - "NATSConfig"
+Cohesion: 0.08
+Nodes (24): NATSConfig, Any, BaseSettings, field_validator, NATS messaging configuration., Validate TLS file paths exist when TLS is enabled., Validate max payload is reasonable., Validate value is positive. (+16 more)
 
 ### Community 379 - "quest_commands.py"
-Cohesion: 0.05
-Nodes (74): _active_npc_ids_in_room(), _emit_npc_lines_for_results(), _format_goal_line(), _format_one_quest_entry(), _format_quest_action_results(), _format_quest_log(), _get_container_and_persistence(), _get_quest_service() (+66 more)
+Cohesion: 0.10
+Nodes (39): _active_npc_ids_in_room(), _emit_npc_lines_for_results(), _format_goal_line(), _format_one_quest_entry(), _format_quest_action_results(), _format_quest_log(), _get_container_and_persistence(), _get_quest_service() (+31 more)
 
 ### Community 380 - "NATSMessageBroadcastMixin"
-Cohesion: 0.05
-Nodes (32): NATSMessageBroadcastMixin, Any, UserManager, Determine if message should be echoed to sender. Args: channel: Channel type…, Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…, Broadcast room-based messages with server-side filtering. This method ensures…, Mixin: room filtering, mute checks, dampening, and personal send., Return the user manager instance to use for mute lookups. (+24 more)
+Cohesion: 0.07
+Nodes (23): NATSMessageBroadcastMixin, Any, UserManager, Determine if message should be echoed to sender. Args: channel: Channel type…, Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…, Broadcast room-based messages with server-side filtering. This method ensures…, Mixin: room filtering, mute checks, dampening, and personal send., Return the user manager instance to use for mute lookups. (+15 more)
 
-### Community 381 - "models/container.py"
+### Community 381 - "test_container_websocket_events.py"
 Cohesion: 0.08
-Nodes (43): Container component model for the unified container system. As documented in…, emit_container_closed(), emit_container_decayed(), emit_container_opened(), emit_container_opened_to_room(), Any, ContainerComponent, datetime (+35 more)
+Nodes (44): emit_container_closed(), emit_container_decayed(), emit_container_opened(), emit_container_opened_to_room(), emit_container_updated(), Any, ContainerComponent, datetime (+36 more)
 
 ### Community 382 - "test_room_utils.py"
 Cohesion: 0.07
-Nodes (42): Unit tests for room_utils. Tests utility functions for room operations., Test get_subzone_local_channel_subject() generates subject., Test get_subzone_local_channel_subject() returns None for invalid room ID., Test extract_subzone_from_room_id() extracts subzone., Test extract_subzone_from_room_id() extracts different subzone., Test extract_subzone_from_room_id() returns None for invalid format., Test get_zone_from_room_id() extracts zone., Test get_zone_from_room_id() extracts different zone. (+34 more)
+Nodes (37): Unit tests for room_utils. Tests utility functions for room operations., Test get_subzone_local_channel_subject() generates subject., Test get_subzone_local_channel_subject() returns None for invalid room ID., Test extract_subzone_from_room_id() extracts subzone., Test extract_subzone_from_room_id() extracts different subzone., Test extract_subzone_from_room_id() returns None for invalid format., Test get_zone_from_room_id() extracts zone., Test get_zone_from_room_id() extracts different zone. (+29 more)
 
 ### Community 383 - "TestHierarchicalSchema"
 Cohesion: 0.06
@@ -3836,20 +3763,20 @@ Cohesion: 0.08
 Nodes (39): _execute_combat_action(), _get_combat_action_context(), Any, Attack command flow: validation and execution. Extracted from combat.py to…, Resolve damage from equipped weapon or fall back to config unarmed damage., Execute combat action using the proper combat service., Handle attack commands (attack, punch, kick, etc.)., Validate target name, load player/room, check DP and no_combat. Returns… (+31 more)
 
 ### Community 391 - "GameMechanicsService"
-Cohesion: 0.08
-Nodes (28): GameMechanicsService, Any, Heal a player's health., Damage a player's health., Award experience points to a player. CRITICAL FIX: This method prevents XP…, Service class for game mechanics operations., Initialize the game mechanics service with a persistence layer., Apply lucidity loss to a player. (+20 more)
+Cohesion: 0.10
+Nodes (25): GameMechanicsService, Heal a player's health., Damage a player's health., Award experience points to a player. CRITICAL FIX: This method prevents XP…, Service class for game mechanics operations., Initialize the game mechanics service with a persistence layer., Apply lucidity loss to a player., Apply fear to a player. (+17 more)
 
-### Community 392 - "logger.ts"
-Cohesion: 0.04
-Nodes (51): applyRoomDefaultFields(), DEV_FALLBACK_ROOM, fixOccupantCountMismatch(), formatDescription(), formatExitDirections(), formatLocationName(), KNOWN_LOCATION_PATTERNS, logRoomInfoRenderDebug() (+43 more)
+### Community 392 - "useGameConnectionRefactored.ts"
+Cohesion: 0.12
+Nodes (17): useConnectionState(), UseConnectionStateResult, ConnectionContext, ConnectionEvent, connectionMachine, ConnectionMachineInput, ConnectionState, mockWebSocket (+9 more)
 
 ### Community 393 - "test_message_broadcaster.py"
-Cohesion: 0.07
-Nodes (41): message_broadcaster(), mock_room_manager(), mock_send_personal_message(), asyncio, fixture, Unit tests for message broadcaster. Tests the MessageBroadcaster class., Test broadcast_global() excludes specified player., Test broadcast_global() when no players online. (+33 more)
+Cohesion: 0.04
+Nodes (64): SendPersonalMessage, _global_targets_and_stats(), MessageBroadcaster, _narrow_gather_delivery_dict(), UUID, Message broadcasting for connection management. This module provides room and…, Convert string player IDs to UUIDs for message sending. Args: target_list: List…, Process results from batch message delivery. Args: delivery_results: Results… (+56 more)
 
-### Community 394 - "test_event_publisher.py"
-Cohesion: 0.06
-Nodes (40): asyncio, Unit tests for event publisher. Tests the EventPublisher class., Test publish_game_tick_event() when NATS is not connected., Test get_next_sequence_number() returns and increments sequence., Test reset_sequence_number() resets sequence to 0., Test EventPublisher initialization without subject manager., Test EventPublisher initialization with initial sequence., Persistence lookup should replace Player_/Room_ fallbacks in event data. (+32 more)
+### Community 394 - "asyncio"
+Cohesion: 0.10
+Nodes (21): asyncio, Test publish_game_tick_event() when NATS is not connected., Persistence lookup should replace Player_/Room_ fallbacks in event data., Legacy subject strings when subject_manager is unset., publish() returning False should surface as False from EventPublisher., Test publish_player_entered_event() successfully publishes., Test publish_player_left_event() successfully publishes., Test publish_game_tick_event() successfully publishes. (+13 more)
 
 ### Community 395 - "Memory Leak Prevention System - Implementation Summary"
 Cohesion: 0.05
@@ -3863,13 +3790,13 @@ Nodes (37): database, deprecated_api_logging(), deprecated_async_logging(), depr
 Cohesion: 0.10
 Nodes (27): Constants supporting item prototype validation. These enumerations anchor the…, ItemPrototypeModel, BaseModel, field_validator, Pydantic models for item prototype validation. This module defines the…, Validate and normalize effect components. Args: value: The list of effect…, Validate and normalize tags. Args: value: The list of tags to validate Returns:…, Validated representation of an item prototype definition. This model keeps the… (+19 more)
 
-### Community 398 - "test_websocket_helpers_player.py"
+### Community 398 - "websocket_helpers.py"
 Cohesion: 0.06
-Nodes (47): _ensure_player_in_room_occupancy(), _fetch_room_for_tracked_player(), get_player_and_room(), get_player_service_from_connection_manager(), get_player_stats_data(), _get_tracked_player_from_connection_manager(), UUID, Extract player service from connection manager using container pattern. (+39 more)
+Nodes (57): _AppStateForPlayerService, build_basic_player_data(), convert_schema_to_dict(), _ensure_player_in_room_occupancy(), _fetch_room_for_tracked_player(), get_player_and_room(), get_player_service_from_connection_manager(), get_player_stats_data() (+49 more)
 
 ### Community 399 - "debugLogger"
-Cohesion: 0.13
-Nodes (5): debugLogger, LogConfig, LogEntry, LogLevel, mockConsole
+Cohesion: 0.11
+Nodes (7): GameTerminalPresentation(), GameTerminalPresentationProps, debugLogger, LogConfig, LogEntry, LogLevel, mockConsole
 
 ### Community 400 - "test_health_monitor.py"
 Cohesion: 0.07
@@ -3880,12 +3807,12 @@ Cohesion: 0.07
 Nodes (22): asyncio, fixture, Test get_death_message with custom template., Test get_combat_start_messages generates messages for all occupants., Test get_combat_start_messages with single occupant., Test get_combat_end_messages generates messages for all occupants., Test suite for CombatMessagingService class., Test get_combat_end_messages from winner perspective. (+14 more)
 
 ### Community 402 - "test_npc_combat_handlers.py"
-Cohesion: 0.06
-Nodes (42): CombatResultCtx, Bundle for handle_combat_result (lizard PARAM)., Handle combat result, broadcast, and NPC death., mock_combat_memory(), mock_combat_result(), mock_data_provider(), mock_lifecycle(), mock_messaging_integration() (+34 more)
+Cohesion: 0.05
+Nodes (50): CombatResultCtx, NPCCombatHandlers, Any, NPC Combat Event Handlers. This module handles combat result processing and NPC…, Handle NPC death when combat ends, with defensive exception handling. Args:…, Handle NPC death and related effects., Check if a string is a valid UUID., Bundle for handle_combat_result (lizard PARAM). (+42 more)
 
 ### Community 403 - "coerce_int"
 Cohesion: 0.07
-Nodes (30): Parse numeric fields from object-typed JSON command payloads., Get player stats as dictionary. Returns a MutableDict instance that…, Set player stats from dictionary. Accepts both plain dict and MutableDict…, Check if player is alive (DP > 0)., Check if player is mortally wounded (0 >= DP > -10). Returns: True if player…, Check if player is dead (DP <= -10). Returns: True if player has -10 DP or below, Get player's current health state. Returns: "alive" if DP > 0…, Get stats used for combat participant creation. Returns current_dp, max_dp, and… (+22 more)
+Nodes (29): Get player stats as dictionary. Returns a MutableDict instance that…, Set player stats from dictionary. Accepts both plain dict and MutableDict…, Check if player is alive (DP > 0)., Check if player is mortally wounded (0 >= DP > -10). Returns: True if player…, Check if player is dead (DP <= -10). Returns: True if player has -10 DP or below, Get player's current health state. Returns: "alive" if DP > 0…, Get stats used for combat participant creation. Returns current_dp, max_dp, and…, Get player determination points (DP) as percentage. (+21 more)
 
 ### Community 404 - "test_quest_commands.py"
 Cohesion: 0.09
@@ -3899,21 +3826,21 @@ Nodes (11): description, description, description, description, pattern, type, p
 Cohesion: 0.11
 Nodes (38): _add_player_to_room_silently(), _broadcast_player_entered_game(), handle_new_connection_setup(), Any, Player, UUID, Player connection setup functions. This module handles the setup tasks when a…, Broadcast a structured entry event to other occupants (excluding the newcomer).… (+30 more)
 
-### Community 407 - "Any"
-Cohesion: 0.10
-Nodes (16): Any, Task, Create callback function for task completion cleanup., Set up tracking for a newly created task., Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…, Unregister task from tracking, optionally force-cancelling. Args: task: Task…, Cancel specific task with logical timeout boundaries. Args: task: Task…, Metadata for tracked asyncio.Tasks. (+8 more)
+### Community 407 - "connection_cleanup_methods.py"
+Cohesion: 0.13
+Nodes (26): check_and_cleanup_impl(), cleanup_dead_connections_impl(), cleanup_ghost_players_impl(), cleanup_orphaned_data_impl(), force_cleanup_impl(), prune_stale_players_impl(), Any, UUID (+18 more)
 
 ### Community 408 - "test_container_query_helpers_async.py"
 Cohesion: 0.16
 Nodes (25): _build_container_data_from_row_async(), get_containers_by_entity_id_async(), get_containers_by_room_id_async(), get_decayed_containers_async(), _parse_jsonb(), Any, AsyncSession, ContainerData (+17 more)
 
-### Community 409 - "test_room_subscription_manager_helpers.py"
-Cohesion: 0.05
-Nodes (40): fixture, Unit tests for room subscription manager helper functions. Tests the helper…, Test reconcile_room_presence() handles errors gracefully., Test _canonical_room_id() with None., Test _canonical_room_id() with empty string., Test _canonical_room_id() resolves via persistence., Test _canonical_room_id() returns original when room has no id., Test _canonical_room_id() handles errors gracefully. (+32 more)
+### Community 409 - "._create_tracked_task"
+Cohesion: 0.07
+Nodes (15): BaseException, Task, Async handler for NATS reconnection events., Check if connection attempt is allowed by state machine., Set up connection event handlers., Connect to NATS server with state machine tracking. Returns: True if connection…, Start periodic health check monitoring task., Periodic health check loop using ping/pong. (+7 more)
 
-### Community 410 - "format_message_content"
+### Community 410 - "get_monitoring_dashboard"
 Cohesion: 0.11
-Nodes (25): format_message_content(), Format message content based on channel type and sender name. Args: channel:…, Unit tests for message formatters. Tests the message_formatters module…, Test format_message_content() formats 'say' channel messages., Test format_message_content() formats 'local' channel messages., Test format_message_content() formats 'global' channel messages., Test format_message_content() formats 'emote' channel messages., Test format_message_content() formats 'pose' channel messages. (+17 more)
+Nodes (26): AlertResolveResponse, Response model for system health check., Response model for system metrics., Response model for system monitoring summary., Response model for system alerts., Response model for alert resolution., SystemAlertsResponse, SystemHealthResponse (+18 more)
 
 ### Community 411 - "properties"
 Cohesion: 0.14
@@ -3936,60 +3863,60 @@ Cohesion: 0.06
 Nodes (36): expensive_operation(), migration_example_1(), migration_example_10(), migration_example_11(), migration_example_12(), migration_example_13(), migration_example_14(), migration_example_15() (+28 more)
 
 ### Community 416 - "game_tick_processing.py"
-Cohesion: 0.11
-Nodes (29): get_current_tick(), Shared game tick counter. Kept in a leaf module so combat services can read the…, Get the current game tick., Set the current game tick (game tick loop)., Reset the current tick for testing., reset_current_tick(), set_current_tick(), broadcast_tick_event() (+21 more)
+Cohesion: 0.07
+Nodes (46): Set the current game tick (game tick loop)., Reset the current tick for testing., reset_current_tick(), set_current_tick(), process_dp_decay_and_death(), Process DP decay for mortally wounded players and handle deaths., broadcast_tick_event(), game_tick_loop() (+38 more)
 
-### Community 417 - "lifespan.py"
-Cohesion: 0.03
-Nodes (85): BaseUserManager, ID, get_system_metrics(), Get system metrics from monitoring dashboard., _calculate_metrics_delta(), _cleanup_container_on_error(), _initialize_enhanced_systems(), lifespan() (+77 more)
+### Community 417 - "MemoryLeakMetricsCollector"
+Cohesion: 0.09
+Nodes (20): MemoryLeakMetricsCollector, Any, Memory leak metrics collector for MythosMUD. This module provides comprehensive…, Collect event metrics from EventBus. Returns: Dictionary with event metrics, Collect cache metrics from CacheManager. Returns: Dictionary with cache metrics, Collect task metrics from TaskRegistry. Returns: Dictionary with task metrics, Collect NATS subscription metrics from NATSService. Returns: Dictionary with…, Unified metrics collector for memory leak detection. Aggregates metrics from… (+12 more)
 
 ### Community 418 - "LRUCache"
 Cohesion: 0.08
 Nodes (20): K, LRUCache, Put an item into the cache. Args: key: The key to store value: The value to…, Delete an item from the cache. Args: key: The key to delete Returns: True if…, Clear all items from the cache., Get the current number of items in the cache., Check if the cache is at maximum capacity., Get cache statistics. Returns: Dictionary containing cache statistics (+12 more)
 
-### Community 419 - "test_lifespan_event_subscriptions.py"
-Cohesion: 0.15
-Nodes (20): Event subscription setup for application startup. Extracted from…, Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC…, Subscribe to room events for quest triggers and progress (start on enter,…, subscribe_quest_events(), subscribe_room_occupants_refresh(), QuestCompleted, Event requesting that room occupants be broadcast to clients. Used after NPC…, Event fired when a quest instance is completed (rewards applied, state set to… (+12 more)
+### Community 419 - "UserManagerProtocol"
+Cohesion: 0.07
+Nodes (11): Protocol for user manager., Mute a channel for a player., Unmute a channel for a player., Check if channel is muted., Mute a player for another player., Unmute a player for another player., Check if player is muted., Check if player is globally muted. (+3 more)
 
-### Community 420 - "SpellEffects"
-Cohesion: 0.02
-Nodes (132): _initialize_magic_service(), initialize_magic_services(), _initialize_mp_regeneration_service(), _initialize_spell_effects(), _initialize_spell_learning_service(), _initialize_spell_registry(), _initialize_spell_repositories(), _initialize_spell_targeting_service() (+124 more)
+### Community 420 - "test_spell_effects.py"
+Cohesion: 0.03
+Nodes (93): Optional deps for SpellEffects beyond player_service., Initialize the spell effects engine., SpellEffectsDeps, mock_player_service(), mock_spell(), mock_target_match(), asyncio, fixture (+85 more)
 
-### Community 421 - "test_container_persistence.py"
-Cohesion: 0.05
-Nodes (37): Unit tests for container_persistence helpers and fetch_container_items. Tests…, Test fetch_container_items with items., Test fetch_container_items skips rows with missing item_instance_id., Test fetch_container_items handles non-dictionary rows., Test fetch_container_items parses string metadata., Test fetch_container_items handles invalid JSON metadata., Test fetch_container_items handles non-dict metadata., Test parsing None JSONB column. (+29 more)
+### Community 421 - "test_player_position_service.py"
+Cohesion: 0.11
+Nodes (26): asyncio, Unit tests for player position service. Tests the PlayerPositionService for…, Test change_position raises ValueError for invalid position., Test change_position returns error when no persistence., Test change_position returns error when player not found., Test change_position handles database errors gracefully., Test change_position returns already message when already in position., Test change_position successfully changes position. (+18 more)
 
 ### Community 422 - "test_dependency_analysis.py"
 Cohesion: 0.08
 Nodes (37): analyzer_api_module_scope(), _DependencyAnalyzerScriptInternals, DependencyAnalyzerTestApi, _DependencyRiskScriptInternals, DependencyRiskTestApi, _FakeCompletedProcess, _load_dependency_analyzer_script(), _load_dependency_risk_script() (+29 more)
 
-### Community 423 - "test_combat_persistence_handler_persistence.py"
-Cohesion: 0.07
-Nodes (38): mock_combat_service(), mock_player(), persistence_handler(), asyncio, fixture, Unit tests for combat persistence handler - persistence operations. Tests…, Test _persist_player_dp_sync calls _verify_player_save., Test _persist_player_dp_sync handles save_player error. (+30 more)
+### Community 423 - "AttributeError"
+Cohesion: 0.06
+Nodes (47): AttributeError, Test _extract_parsed_fields handles missing attributes gracefully., test_extract_parsed_fields_handles_missing_attributes(), mock_combat_service(), mock_player(), persistence_handler(), asyncio, fixture (+39 more)
 
-### Community 424 - "test_skills.py"
+### Community 424 - "SkillService"
 Cohesion: 0.13
-Nodes (19): get_skills_catalog(), get, Request, Return the skills catalog (base values, allow_at_creation). Cthulhu Mythos is…, mock_request(), mock_skill_repository(), mock_user(), asyncio (+11 more)
+Nodes (17): _get_container_services(), Get container, persistence, and skill_service from request, or None if…, Any, Raise ValueError if any skill_id appears in both occupation and personal…, Build skill_key -> total modifier from profession skill_modifiers (supports…, Compute final skill_id -> value: base + profession mod, then occupation…, Validate skills allocation without persisting. Raises ValueError if invalid.…, Set all skills for a character at creation. Validates occupation_slots (9… (+9 more)
 
-### Community 425 - "test_connection_state_machine.py"
-Cohesion: 0.08
-Nodes (25): Unit tests for connection state machine. Tests the NATSConnectionStateMachine…, Test start_reconnect() transition from disconnected to reconnecting., Test open_circuit() transition from reconnecting to circuit_open., Test can_attempt_connection() returns True when disconnected., Test can_attempt_connection() returns True when connecting., Test should_open_circuit() returns False when under threshold., Test get_stats() handles None connected time., Test reconnect_attempts resets on successful connection. (+17 more)
+### Community 425 - "NATSConnectionStateMachine"
+Cohesion: 0.03
+Nodes (92): ConnectionEvent, NATSConnectionStateMachine, Enum, Exception, Connection state machine for NATS messaging. Implements a robust state machine…, Initialize connection state machine. Args: connection_id: Unique identifier for…, Handler for connect transition. Resets reconnection counter and prepares for…, Handler for successful connection. Records connection time and increments… (+84 more)
 
-### Community 426 - "logout_commands.py"
-Cohesion: 0.14
-Nodes (24): _disconnect_player_connections(), _force_disconnect_player(), _get_app_services(), handle_logout_command(), handle_quit_command(), _mark_quit_intentional(), _prepare_player_for_logout(), Any (+16 more)
+### Community 426 - "active_lucidity_service.py"
+Cohesion: 0.11
+Nodes (19): EncounterProfile, LucidityActionError, Any, AsyncSession, datetime, RuntimeError, UUID, Active LCD adjustment helpers for encounters and recovery rituals. (+11 more)
 
 ### Community 427 - "properties"
 Cohesion: 0.18
-Nodes (11): description, description, description, properties, field1, field2, field3, sub_zone (+3 more)
+Nodes (11): description, description, description, description, pattern, type, properties, field1 (+3 more)
 
 ### Community 428 - "mapPageRenderer.tsx"
-Cohesion: 0.08
-Nodes (25): AppRouter(), DialogueEditorPage, MapPage, SkillsPage, RoomMapViewerProps, MapPage(), AuthenticatedMapProps, MapViewResolvedProps (+17 more)
+Cohesion: 0.16
+Nodes (17): MapPage, RoomMapViewerProps, MapPage(), AuthenticatedMapProps, MapViewResolvedProps, renderAuthenticatedMapView(), renderMapPageState(), renderStatusGate() (+9 more)
 
 ### Community 429 - "useRoomEditModal.ts"
 Cohesion: 0.07
-Nodes (19): ENVIRONMENT_OPTIONS, EnvironmentOption, RoomEditModal(), EnvironmentOption, fieldBorderClass(), RoomEditDescriptionField(), RoomEditFormData, RoomEditModalForm() (+11 more)
+Nodes (18): ENVIRONMENT_OPTIONS, EnvironmentOption, RoomEditModal(), EnvironmentOption, fieldBorderClass(), RoomEditDescriptionField(), RoomEditFormData, RoomEditModalForm() (+10 more)
 
 ### Community 430 - "test_emote.py"
 Cohesion: 0.11
@@ -4021,23 +3948,23 @@ Nodes (19): description, items, type, default, description, maximum, minimum, ty
 
 ### Community 437 - "properties"
 Cohesion: 0.11
-Nodes (19): minimum, type, type, additionalProperties, type, maxLength, minLength, type (+11 more)
+Nodes (19): integer, minimum, type, minimum, type, null, maxLength, minLength (+11 more)
 
 ### Community 438 - "enum"
 Cohesion: 0.20
 Nodes (10): default, description, enum, type, indoors, intersection, outdoors, street_paved (+2 more)
 
 ### Community 439 - "middleware"
-Cohesion: 0.10
-Nodes (32): CorrelationMiddleware, create_correlation_middleware(), create_websocket_correlation_middleware(), _get_header(), ASGIApp, Receive, Scope, Send (+24 more)
+Cohesion: 0.06
+Nodes (48): CorrelationMiddleware, create_correlation_middleware(), create_websocket_correlation_middleware(), _get_header(), Any, ASGIApp, Receive, Scope (+40 more)
 
-### Community 440 - "test_statistics_aggregator.py"
-Cohesion: 0.10
-Nodes (24): mock_memory_monitor(), mock_message_queue(), mock_performance_tracker(), mock_rate_limiter(), mock_room_manager(), fixture, Unit tests for statistics aggregator. Tests the StatisticsAggregator class., Test get_connection_stats() returns connection statistics. (+16 more)
+### Community 440 - "StatisticsAggregator"
+Cohesion: 0.04
+Nodes (51): MemoryStatsSnapshot, TypedDict, UUID, Assemble memory stats from a snapshot dict (keeps call sites param-stable)., Count active connections not tied to any online player., Build the connections subsection of memory stats., Build the sessions subsection of memory stats., Expose memory monitor configuration knobs for stats payload. (+43 more)
 
 ### Community 441 - "retry.py"
-Cohesion: 0.12
-Nodes (24): _calculate_retry_delay(), _create_async_wrapper(), _create_sync_wrapper(), _is_asyncpg_transient(), _is_psycopg2_transient(), is_transient_error(), _is_wrapped_transient_message(), _iter_exception_chain() (+16 more)
+Cohesion: 0.07
+Nodes (42): asyncio, Unit tests for retry utilities. Tests the retry decorator and retry logic., Test retry_with_backoff() with async function succeeds on first attempt., Test is_transient_error() identifies transient errors., Test retry_with_backoff() with async function retries on failure then succeeds., Test is_transient_error() returns False for non-transient errors., DatabaseError wrapping asyncpg closed-connection must still retry (e2e…, __cause__ ConnectionDoesNotExistError makes the outer wrapper transient. (+34 more)
 
 ### Community 442 - ".load_room_data"
 Cohesion: 0.06
@@ -4052,8 +3979,8 @@ Cohesion: 0.25
 Nodes (8): description, exits, id, name, plane, sub_zone, zone, required
 
 ### Community 445 - "ChatModeration"
-Cohesion: 0.04
-Nodes (44): ChatModeration, normalize_player_id(), PlayerServiceProtocol, Any, datetime, Protocol, UUID, Chat moderation utilities. This module provides moderation functionality… (+36 more)
+Cohesion: 0.06
+Nodes (32): ChatModeration, normalize_player_id(), PlayerServiceProtocol, Any, datetime, Protocol, UUID, Chat moderation utilities. This module provides moderation functionality… (+24 more)
 
 ### Community 446 - "extract_player_name"
 Cohesion: 0.13
@@ -4069,15 +3996,15 @@ Nodes (18): PostgresConnection, connection, Commit the current transaction., Rol
 
 ### Community 449 - "TestNPCCombatRewards"
 Cohesion: 0.08
-Nodes (20): asyncio, fixture, Test check_player_connection_state handles missing container., Test award_xp_to_killer successfully awards XP., Test award_xp_to_killer handles failure gracefully., Test award_xp_to_killer handles exceptions gracefully., Test suite for NPCCombatRewards class., Test award_xp_to_killer handles zero XP. (+12 more)
+Nodes (19): asyncio, fixture, Test check_player_connection_state handles missing container., Test award_xp_to_killer successfully awards XP., Test award_xp_to_killer handles failure gracefully., Test award_xp_to_killer handles exceptions gracefully., Test suite for NPCCombatRewards class., Test award_xp_to_killer handles zero XP. (+11 more)
 
-### Community 450 - "lucidity_trigger_handlers.py"
-Cohesion: 0.08
-Nodes (41): AsyncSession, datetime, CatatoniaObserverProtocol, datetime, Protocol, UUID, Handle a player returning from catatonia., Handle a player requiring sanitarium failover. (+33 more)
+### Community 450 - "LucidityService"
+Cohesion: 0.04
+Nodes (83): CatatoniaObserverProtocol, clamp_lucidity(), coerce_metadata_dict(), decode_liabilities(), lucidity_event_source(), LucidityAdjustmentFinalizeContext, LucidityChangeEventContext, LucidityUpdateResult (+75 more)
 
 ### Community 451 - "stateNormalization.ts"
-Cohesion: 0.09
-Nodes (29): ConnectionActions, ConnectionHealth, ConnectionMetadata, ConnectionSelectors, ConnectionState, ConnectionStore, createInitialState(), GameEvent (+21 more)
+Cohesion: 0.08
+Nodes (33): CommandActions, CommandAlias, CommandHistoryEntry, CommandSelectors, CommandState, CommandStore, CommandStoreGet, CommandStoreSet (+25 more)
 
 ### Community 452 - "File-by-File Changes"
 Cohesion: 0.06
@@ -4096,52 +4023,52 @@ Cohesion: 0.11
 Nodes (19): ACCESSORY, AMULET, BELT, CURSED, FEET, GLOW, HANDS, HEAD (+11 more)
 
 ### Community 456 - "enum"
-Cohesion: 0.20
-Nodes (10): city, countryside, desert, mountains, swamp, tundra, zone_type, description (+2 more)
+Cohesion: 0.29
+Nodes (7): city, countryside, desert, mountains, swamp, tundra, enum
 
-### Community 457 - "SchemaValidator"
-Cohesion: 0.06
-Nodes (34): create_validator(), Any, Path, Shared schema validator for room definition files. This module provides JSON…, Validate a room file against the schema. Args: file_path: Path to the room JSON…, Validate all rooms in a database against the schema. Args: room_database:…, Validate a serialized alias bundle against the alias schema. Args: alias_data:…, Validate emote definition data against the emote schema. Args: emote_data:… (+26 more)
+### Community 457 - "validate_room_data"
+Cohesion: 0.09
+Nodes (23): patch, Unit tests for world loader utility functions. Tests room ID generation,…, Test validate_room_data() function., Test validate_room_data() returns empty list when validation not available., Test validate_room_data() with provided validator., Test validate_room_data() creates validator when not provided., Test validate_room_data() returns validation errors., Test validate_room_data() raises exception in strict mode with errors. (+15 more)
 
 ### Community 458 - "test_game_tick_processing.py"
-Cohesion: 0.09
-Nodes (32): asyncio, Unit tests for game tick processing functions. Tests the game tick processing…, Test _validate_app_state_for_status_effects returns False when no…, Test _validate_app_state_for_status_effects returns True when all required…, Test _validate_app_state_for_status_effects returns False when container is…, Test _validate_app_state_for_status_effects returns False when…, Test get_tick_interval returns tick interval from config., Test _validate_app_state_for_status_effects returns False when no container. (+24 more)
+Cohesion: 0.07
+Nodes (45): cleanup_decayed_corpses(), _cleanup_single_decayed_corpse(), _CorpseLike, _create_corpse_lifecycle_service(), _log_cleanup_results(), FastAPI, Protocol, Decayed corpse cleanup for the game tick loop. (+37 more)
 
 ### Community 459 - "MemoryThresholdMonitor"
 Cohesion: 0.06
 Nodes (45): create_memory_cleanup_monitor(), get_managed_task_cleanup_implementation_for_task_four_spec_compliance(), MemoryThresholdMonitor, Any, Managed Task Cleanup Service - Runtime Detection for Memory Threshold…, Generate status report for diagnostic monitoring. Returns: Dictionary…, Runtime detection and cleanup of orphaned tasks based on memory thresholds.…, Create an instance of the MemoryThresholdMonitor with user-specified… (+37 more)
 
-### Community 460 - "test_player_schema_converter_weapon.py"
-Cohesion: 0.10
-Nodes (20): asyncio, Unit tests for PlayerSchemaConverter weapon stats enrichment., When converter has registry, inventory items with weapon prototype get weapon…, When registry is None, returns None., When prototype_id is empty, returns None., When prototype is not found, returns None., When prototype has no metadata.weapon, returns None., When prototype has metadata.weapon, returns weapon dict. (+12 more)
+### Community 460 - "test_item_instance_persistence.py"
+Cohesion: 0.15
+Nodes (22): create_item_instance(), ensure_item_instance(), _execute_item_instance_upsert(), get_item_instance(), _handle_item_instance_db_error(), item_instance_exists(), _item_instance_row_values(), Any (+14 more)
 
-### Community 461 - "alias_storage.py"
-Cohesion: 0.04
-Nodes (60): AliasRecord, _AliasValidatorCache, _apply_alias_timestamps(), _as_alias_record(), _get_alias_validator(), _parse_alias_timestamp(), datetime, Alias storage utilities for MythosMUD. As noted in the restricted archives of… (+52 more)
+### Community 461 - ".state"
+Cohesion: 0.06
+Nodes (49): _extract_emote_action(), _format_emote_messages(), _get_emote_services(), handle_emote_command(), _handle_emote_result(), Any, Emote command handlers for MythosMUD. This module contains handlers for the…, Handle the result from chat service after sending emote. Args: result: Result… (+41 more)
 
 ### Community 462 - "NPCStartupService"
 Cohesion: 0.04
-Nodes (88): _merge_phase_into_startup(), _new_spawn_results(), NPCStartupService, Any, Spawn all required NPCs. Args: required_npcs: List of required NPC definitions…, Spawn optional NPCs based on spawn probability. Args: optional_npcs: List of…, Second pass: spawn one instance per definition (that was spawned in…, Determine the appropriate room for spawning an NPC. Args: npc_def: NPC… (+80 more)
+Nodes (91): get_npc_startup_service(), _merge_phase_into_startup(), _new_spawn_results(), NPCStartupService, Any, NPC Startup Service for MythosMUD. This module provides automatic NPC spawning…, Spawn all required NPCs. Args: required_npcs: List of required NPC definitions…, Spawn optional NPCs based on spawn probability. Args: optional_npcs: List of… (+83 more)
 
 ### Community 463 - "ConnectionErrorHandler"
 Cohesion: 0.11
-Nodes (26): ConnectionErrorHandler, Any, UUID, Handle WebSocket-specific errors. Args: player_id: The player's ID…, Handle authentication-related errors. Args: player_id: The player's ID…, Handle security violations. Args: player_id: The player's ID violation_type:…, Attempt to recover from an error state for a player. Args: player_id: The…, Get error handling statistics. Args: online_players: Online players dictionary… (+18 more)
+Nodes (27): ConnectionErrorHandler, Any, UUID, Error handling for connection management. This module provides comprehensive…, Handle WebSocket-specific errors. Args: player_id: The player's ID…, Handle authentication-related errors. Args: player_id: The player's ID…, Handle security violations. Args: player_id: The player's ID violation_type:…, Attempt to recover from an error state for a player. Args: player_id: The… (+19 more)
 
 ### Community 464 - ".__init__"
 Cohesion: 0.20
 Nodes (7): Check if the status effect is still active., Any, Initialize Invite with defaults., _npc_alive_and_active(), setter, Return True if NPC is alive (determination_points > 0)., Allow backward-compatible assignment (npc.is_alive = False).
 
-### Community 465 - "test_player_preferences_service.py"
-Cohesion: 0.06
-Nodes (35): Unit tests for player preferences service. Tests the PlayerPreferencesService…, Test _is_valid_json_array with invalid JSON., Test creating player preferences with invalid ID., Test getting player preferences with database error., Test muting a channel successfully., Test checking if channel is muted (returns True)., Test checking if channel is muted (returns False)., Test deleting player preferences with database error. (+27 more)
+### Community 465 - "ExperienceRepository"
+Cohesion: 0.17
+Nodes (20): ExperienceRepository, Any, Player, Repository for player experience and stats persistence operations. Handles XP…, Initialize the experience repository. Args: event_bus: Optional EventBus for…, Award experience points to a player atomically. Args: player: Player to award…, asyncio, fixture (+12 more)
 
 ### Community 466 - "MythosTickScheduler"
-Cohesion: 0.09
-Nodes (29): mock_chronicle(), mock_event_bus(), mock_task_registry(), asyncio, fixture, Unit tests for MythosTickScheduler., scheduler(), test_emit_pending_ticks_initializes_last_hour() (+21 more)
+Cohesion: 0.10
+Nodes (28): HolidayResolver, mock_chronicle(), mock_event_bus(), mock_task_registry(), asyncio, fixture, Unit tests for MythosTickScheduler., scheduler() (+20 more)
 
-### Community 467 - "useMythosAppActions.ts"
-Cohesion: 0.08
-Nodes (46): postSelectCharacter(), runAfterCharacterCreatedFlow(), executeDeleteCharacterUi(), isGracePeriodServerUnavailableError(), tryStartLoginGracePeriod(), runSelectCharacterFlow(), selectCharacterNetworkErrorMessage(), SelectCharacterResult (+38 more)
+### Community 467 - "security.ts"
+Cohesion: 0.07
+Nodes (31): isGracePeriodServerUnavailableError(), hoisted, useMythosSessionChrome(), fetchSpy, mockLogoutHandler, fetchSpy, mockLogoutHandler, asRecordUnknown() (+23 more)
 
 ### Community 468 - "roomHandlers.ts"
 Cohesion: 0.12
@@ -4167,17 +4094,17 @@ Nodes (33): 1. PlayerRepository (439 lines), 2. RoomRepository (42 lines), 3. Pr
 Cohesion: 0.06
 Nodes (35): 1. Command Validation Tests, 2. Error Response Tests, 3. Permission Check Tests, Aggressive Estimate (Full Optimization), Category A: Infrastructure Tests Testing Framework Behavior, Category B: Coverage Tests Written for Metrics, Category C: Model Property Tests, Conclusion (+27 more)
 
-### Community 474 - "test_room_subscription_manager_npcs.py"
-Cohesion: 0.09
-Nodes (23): asyncio, fixture, Unit tests for room subscription manager NPC helpers. Tests NPC-related helpers…, Test get_room_occupants() includes NPCs from lifecycle manager., Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager…, Create a RoomSubscriptionManager instance., Test _get_npc_name_from_lifecycle_manager gets NPC name., Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found. (+15 more)
+### Community 474 - "validate_inventory_payload"
+Cohesion: 0.13
+Nodes (21): _build_validator(), Any, Inventory JSON schema validation utilities. As recorded in the restricted…, Internal helper to construct a Draft7 validator instance., Validate a complete inventory payload against the canonical schema. Raises:…, Validate only the inventory portion to simplify testing workflows. Raises:…, validate_inventory_items(), validate_inventory_payload() (+13 more)
 
 ### Community 475 - "test_connection_event_helpers.py"
 Cohesion: 0.14
 Nodes (23): Any, Subscribe to room movement events for occupant broadcasting., Unsubscribe from room movement events., subscribe_to_room_events_impl(), unsubscribe_from_room_events_impl(), asyncio, Unit tests for connection event helpers. Tests the connection_event_helpers…, Test unsubscribe_from_room_events_impl() handles AttributeError. (+15 more)
 
-### Community 476 - "skills_commands.py"
-Cohesion: 0.14
-Nodes (22): _format_skills_output(), _get_container_services(), handle_skills_command(), Any, UUID, Skills command handler (plan 10.7 V4). Returns the active character's skills as…, Get container, persistence, and skill_service from request, or None if…, Extract and validate player_id from player object, returning UUID or None. (+14 more)
+### Community 476 - "handle_skills_command"
+Cohesion: 0.15
+Nodes (18): _format_skills_output(), handle_skills_command(), Any, UUID, Extract and validate player_id from player object, returning UUID or None., Resolve user_id from current_user (auth user) or fallback to player.user_id., Format skills list as text output lines., Handle the /skills command: return the active character's skills as text.… (+10 more)
 
 ### Community 477 - "playerHandlers.ts"
 Cohesion: 0.14
@@ -4188,8 +4115,8 @@ Cohesion: 0.10
 Nodes (19): ChatChannelLoggerMixin, Any, Path, Log a global channel message to global.log file. Args: message_data: Global…, Get the global channel log file path. Returns: Path to the global channel log…, Log a system channel message to system.log file. Args: message_data: System…, Log a whisper channel message to whisper.log file. Args: message_data: Whisper…, Channel log paths, writers, stats, and cleanup. Requires ChatLogger attrs. (+11 more)
 
 ### Community 479 - "api/character_creation.py"
-Cohesion: 0.02
-Nodes (135): get_current_user(), Get current user with enhanced logging., _apply_stat_modifiers(), _as_float(), _as_int(), _check_shutdown_status(), _convert_stat_summary_to_stat_summary_model(), create_character_with_stats() (+127 more)
+Cohesion: 0.01
+Nodes (201): get_current_user(), Get current user with enhanced logging., _apply_rate_limiting_for_stats_roll(), _apply_stat_modifiers(), _as_float(), _as_int(), _check_shutdown_status(), _convert_stat_summary_to_stat_summary_model() (+193 more)
 
 ### Community 480 - "test_quality_fragmentation_guard.py"
 Cohesion: 0.10
@@ -4199,9 +4126,9 @@ Nodes (39): _build_python_call_usage_map(), _call_target_name(), Call, ChangedFi
 Cohesion: 0.14
 Nodes (29): appendBootstrapFailureLog(), countProfessionsPayload(), __dirname, E2E_BOOTSTRAP_ERRORS_LOG, E2E_BOOTSTRAP_LOG_DIR, E2E_CLIENT_URL, E2E_ENV_DEFAULTS, E2E_PROJECT_ROOT (+21 more)
 
-### Community 482 - "test_calendar.py"
-Cohesion: 0.12
-Nodes (23): HolidayModel, NPCScheduleModel, Base, Mythos holidays tracker., Unit tests for calendar models. Tests the HolidayModel and NPCScheduleModel…, Test NPCScheduleModel can have optional notes., Test NPCScheduleModel has correct table name., Test NPCScheduleModel __repr__ method. (+15 more)
+### Community 482 - "edgeModalLogic.ts"
+Cohesion: 0.21
+Nodes (20): applyModalBodyScrollLock(), deriveEdgeCreationData(), edgeFormCanSubmit(), EdgeFormFields, EdgeFormResetters, edgeFormStateFromExisting(), emptyEdgeFormState(), filterNodesForTargetSelection() (+12 more)
 
 ### Community 483 - "FStringLoggingFixer"
 Cohesion: 0.09
@@ -4212,28 +4139,28 @@ Cohesion: 0.12
 Nodes (23): Get-MythosMudProtectedDevToolPattern(), Get-MythosMudRepoRoot(), Stop-MythosMudProjectProcessTree(), Stop-MythosMudProjectProcessTreeInternal(), Test-MythosMudProjectProcess(), Test-MythosMudProtectedDevToolProcess(), Find-NatsServerInstallation(), Get-NatsServerPath() (+15 more)
 
 ### Community 485 - "TrackedTaskManager"
-Cohesion: 0.09
-Nodes (30): get_global_tracked_manager(), memory_leak_prevention_channel_start_session(), patch_asyncio_create_task_with_tracking(), Global TrackedTaskManager for Memory Leak Prevention Infrastructure. This…, Audit and reclaim orphaned task candidates across the system. Returns: Number…, Proactively clean up orphaned tasks by cancelling leak prevention violations.…, Return count of currently tracked task references within the manager's…, Attach a TaskRegistry instance to this Tracker for shared coordination. Args:… (+22 more)
+Cohesion: 0.07
+Nodes (35): get_global_tracked_manager(), memory_leak_prevention_channel_start_session(), patch_asyncio_create_task_with_tracking(), Any, Task, Global TrackedTaskManager for Memory Leak Prevention Infrastructure. This…, Create a task with enhanced supervision for legacy cleanup scenarios. Args:…, Audit and reclaim orphaned task candidates across the system. Returns: Number… (+27 more)
 
 ### Community 486 - "convert_uuids_to_strings"
 Cohesion: 0.11
 Nodes (23): convert_uuids_to_strings(), Recursively convert UUID objects to strings for JSON serialization. Args: obj:…, Test convert_uuids_to_strings() converts UUIDs in dict., Test convert_uuids_to_strings() converts UUIDs in list., Test convert_uuids_to_strings() converts UUID object., Test convert_uuids_to_strings() converts UUIDs in nested structures., test_convert_uuids_to_strings_dict(), test_convert_uuids_to_strings_list() (+15 more)
 
 ### Community 487 - "EmoteService"
-Cohesion: 0.09
-Nodes (22): EmoteDefinition, EmoteService, Check if a command is an emote alias. Args: command: The command to check…, Get the emote definition for a command. Args: command: The command (emote name…, Format emote messages for the player and room occupants. Args: command: The…, Get a list of all available emotes and their aliases. Returns: Dict mapping…, Reload emote definitions from the file., Validate emote definitions against the shared schema when available. Args:… (+14 more)
+Cohesion: 0.07
+Nodes (29): Create the emote repository/service and load predefined emotes once, at…, EmoteDefinition, EmoteService, TypedDict, Check if a command is an emote alias. Args: command: The command to check…, Get the emote definition for a command. Args: command: The command (emote name…, Format emote messages for the player and room occupants. Args: command: The…, Get a list of all available emotes and their aliases. Returns: Dict mapping… (+21 more)
 
-### Community 488 - "PlayerService"
-Cohesion: 0.02
-Nodes (149): apply_corruption(), apply_fear(), apply_lucidity_loss(), damage_player(), gain_occult_knowledge(), heal_player(), FastAPIRequest, post (+141 more)
+### Community 488 - "api/player_effects.py"
+Cohesion: 0.04
+Nodes (89): apply_corruption(), apply_fear(), apply_lucidity_loss(), damage_player(), gain_occult_knowledge(), heal_player(), FastAPIRequest, post (+81 more)
 
-### Community 489 - "NPCCombatIntegration"
-Cohesion: 0.12
-Nodes (27): Return the live NPC combat integration service for delegation. Prefer…, _resolve_npc_combat_service_raw(), NPCCombatIntegration, Publish NPC attack event to event bus., Integrates NPCs with the existing combat and game mechanics systems. Extends…, Handle NPC death and related effects. Args: npc_id: ID of the dead NPC room_id:…, Get NPC stats or use defaults., integration() (+19 more)
+### Community 489 - "test_combat_integration_base.py"
+Cohesion: 0.13
+Nodes (22): Return the live NPC combat integration service for delegation. Prefer…, _resolve_npc_combat_service_raw(), integration(), asyncio, fixture, Unit tests for NPCCombatIntegrationBase helpers., test_apply_combat_effects_attribute_error_raises(), test_apply_combat_effects_grace_period_blocks_damage() (+14 more)
 
 ### Community 490 - "._build_player_attacked_event"
-Cohesion: 0.11
-Nodes (12): UUID, Resolve the player and UUID needed for DP update events., Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated., Publish the PlayerDPUpdated event to the event bus., Publish NPC-on-player attack as player_attacked to NATS so the client receives…, Resolve the combat event publisher used to send PlayerAttacked events to NATS., Resolve target UUID, player object, and stats needed for NATS attack event., Construct the PlayerAttackedEvent payload for NATS publication. (+4 more)
+Cohesion: 0.12
+Nodes (11): UUID, Resolve the player and UUID needed for DP update events., Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated., Publish the PlayerDPUpdated event to the event bus., Publish NPC-on-player attack as player_attacked to NATS so the client receives…, Resolve target UUID, player object, and stats needed for NATS attack event., Construct the PlayerAttackedEvent payload for NATS publication., Return an integer stat from stats[key], handling common primitive types. (+3 more)
 
 ### Community 491 - "Async Audit Executive Summary"
 Cohesion: 0.06
@@ -4243,29 +4170,29 @@ Nodes (31): Alternative Approaches Considered, Async Audit Executive Summary, Be
 Cohesion: 0.06
 Nodes (31): 1. **Mark Additional Slow Tests**, 2. **Investigate Heavy Setup Tests**, 3. **Verify Marker Application**, 4. **Target Time Budget (5-7 min = 300-420 seconds)**, After Parallelization, Argon2 Password Tests (1.4+ seconds), Auth & Security Tests (21+ seconds setup each), Before Parallelization (+23 more)
 
-### Community 493 - "validate_secure_path"
-Cohesion: 0.08
-Nodes (24): Validate and sanitize a user-provided path to prevent path traversal attacks.…, validate_secure_path(), Test validate_secure_path detects when common_path != base_path (lines 59-66)., Test validate_secure_path with valid path., Test validate_secure_path handles different drives on Windows., Test validate_secure_path rejects path traversal with .., Test validate_secure_path rejects path traversal with ~, Test validate_secure_path with nested valid path. (+16 more)
+### Community 493 - "test_security_utils.py"
+Cohesion: 0.04
+Nodes (75): ensure_directory_exists(), get_secure_file_path(), is_safe_filename(), Ensure a directory exists and return its absolute path. Args: directory: The…, Check if a filename is safe (no path traversal, no special characters). Args:…, Validate and sanitize a user-provided path to prevent path traversal attacks.…, Get a secure file path within a base directory. Args: filename: The filename…, validate_secure_path() (+67 more)
 
 ### Community 494 - "InstanceManager"
-Cohesion: 0.09
-Nodes (19): Instance, InstanceManager, Room, UUID, InstanceManager for MythosMUD. Manages instanced rooms: creates, stores, and…, Return template rooms matching instance_template_id., Clone template rooms into instance-scoped rooms with remapped exits., Extract stable_id from room - use room.id if it looks like a full path. (+11 more)
+Cohesion: 0.08
+Nodes (19): Wire exploration, movement, follow, and party services., Instance, InstanceManager, Room, UUID, Return template rooms matching instance_template_id., Clone template rooms into instance-scoped rooms with remapped exits., Extract stable_id from room - use room.id if it looks like a full path. (+11 more)
 
 ### Community 495 - "test_room_service.py"
 Cohesion: 0.08
 Nodes (23): Unit tests for room service. Tests the RoomService class for room-related…, Test get_room_by_name() returns None (not implemented)., Test list_rooms_in_zone() returns empty list (not implemented)., Test update_environment_state() updates environment state., Test get_environment_state() returns current environment state., Test describe_lighting() returns description for day., Test describe_lighting() returns description for night., Test describe_lighting() returns default for unknown daypart. (+15 more)
 
 ### Community 496 - "CommandRateLimiter"
-Cohesion: 0.10
-Nodes (22): CommandRateLimiter, Any, datetime, Per-player command rate limiting. Prevents command flooding and denial-of-…, Get number of commands player can still execute. Args: player_name: Player to…, Reset rate limit for a specific player. Useful for admin commands or when…, Reset rate limit for all players. Clears all accumulated timestamp data.…, Get system-wide rate limiting statistics. Returns: Dictionary containing rate… (+14 more)
+Cohesion: 0.11
+Nodes (21): CommandRateLimiter, Any, datetime, Get number of commands player can still execute. Args: player_name: Player to…, Reset rate limit for a specific player. Useful for admin commands or when…, Reset rate limit for all players. Clears all accumulated timestamp data.…, Get system-wide rate limiting statistics. Returns: Dictionary containing rate…, Remove timestamp data for players who haven't been active recently. Prevents… (+13 more)
 
-### Community 497 - "AttributeError"
+### Community 497 - "test_websocket_room_updates.py"
 Cohesion: 0.04
-Nodes (82): AttributeError, broadcast_room_update(), build_room_update_event(), get_npc_occupants_from_lifecycle_manager(), get_player_occupants(), Any, Build room update event with room data and occupants (players/npcs for…, Resolve room by ID, optionally using player's current_room_id as fallback when… (+74 more)
+Nodes (83): connection_manager_from_running_app(), _MainModule, Protocol, Read the running FastAPI app without a static import of server.main. A static…, Return app.state.container.connection_manager, or None if unavailable., broadcast_room_update(), build_room_update_event(), get_npc_occupants_fallback() (+75 more)
 
 ### Community 498 - "RoomEventHandler"
-Cohesion: 0.12
-Nodes (23): Any, UUID, Room event handling for connection management. This module provides integration…, Handle PlayerEnteredRoom events by broadcasting updated occupant count., Handle PlayerLeftRoom events by broadcasting updated occupant count., Handles room movement events and broadcasts occupant updates. This class…, Initialize the room event handler. Args: room_manager: RoomSubscriptionManager…, Subscribe to room movement events for occupant broadcasting. (+15 more)
+Cohesion: 0.11
+Nodes (24): Integration components for connection management. This package provides…, Any, UUID, Room event handling for connection management. This module provides integration…, Handle PlayerEnteredRoom events by broadcasting updated occupant count., Handle PlayerLeftRoom events by broadcasting updated occupant count., Handles room movement events and broadcasts occupant updates. This class…, Initialize the room event handler. Args: room_manager: RoomSubscriptionManager… (+16 more)
 
 ### Community 499 - "Pydantic Code Review - feature/sqlite-to-postgresql Branch"
 Cohesion: 0.06
@@ -4287,9 +4214,9 @@ Nodes (30): BugBlock, check_bug_content(), _check_bugs(), check_loose_tags(), _c
 Cohesion: 0.10
 Nodes (17): main(), Any, Analyze Node.js ecosystem upgrade opportunities, Specialized analyzer for React/Node.js ecosystem upgrades, Analyze build tools and development dependencies, Categorize update by semver, Assess risk for React ecosystem updates, Assess risk for Node.js ecosystem updates (+9 more)
 
-### Community 504 - "Any"
-Cohesion: 0.12
-Nodes (12): Any, Determine if NPC should be included in room query results. Args: npc_id: The…, Scan active NPCs to find those in the target room. Args: active_npcs_dict:…, Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…, Get lifecycle manager for filtering fallback NPCs. Returns: Lifecycle manager…, Check if a single fallback NPC should be included. Args: npc_id: The NPC ID to…, Filter fallback NPCs to only include those in active_npcs and alive. Args:…, Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging… (+4 more)
+### Community 504 - "RoomInfoPanel.tsx"
+Cohesion: 0.13
+Nodes (16): applyRoomDefaultFields(), DEV_FALLBACK_ROOM, fixOccupantCountMismatch(), formatDescription(), formatExitDirections(), formatLocationName(), KNOWN_LOCATION_PATTERNS, logRoomInfoRenderDebug() (+8 more)
 
 ### Community 505 - "PeriodicOrphanAuditor"
 Cohesion: 0.07
@@ -4299,9 +4226,9 @@ Nodes (40): create_lifespan_memory_service(), PeriodicOrphanAuditor, Any, Core c
 Cohesion: 0.15
 Nodes (28): _flee_effect_failure_response(), _flee_effect_invalid_target_response(), _flee_effect_invalid_target_type_response(), _flee_effect_not_in_combat_response(), _flee_effect_room_error_response(), _flee_effect_services_available(), _flee_effect_services_unavailable_response(), _flee_effect_success_response() (+20 more)
 
-### Community 507 - "ContainerSessionMixin"
-Cohesion: 0.15
-Nodes (14): ContainerSessionMixin, ContainerComponent, Player, UUID, Open a container for interaction. Raises: ContainerNotFoundError: If container…, Validate that container is open and mutation token is valid., Remove container from open containers dictionary., Log container close event to audit log. (+6 more)
+### Community 507 - "Any"
+Cohesion: 0.11
+Nodes (12): Any, Path, Validate a room file against the schema. Args: file_path: Path to the room JSON…, Validate all rooms in a database against the schema. Args: room_database:…, Validate a serialized alias bundle against the alias schema. Args: alias_data:…, Validate emote definition data against the emote schema. Args: emote_data:…, Extract target room ID from exit data, handling both formats. Args: exit_data:…, Extract flags from exit data, handling both formats. Args: exit_data: Exit data… (+4 more)
 
 ### Community 508 - "ComprehensiveLoggingMiddleware"
 Cohesion: 0.10
@@ -4309,27 +4236,27 @@ Nodes (23): ComprehensiveLoggingMiddleware, Any, ASGIApp, Exception, Receive, Re
 
 ### Community 509 - "NPCCommunicationIntegration"
 Cohesion: 0.09
-Nodes (24): NPCCommunicationIntegration, NPC Communication Integration for MythosMUD. This module provides integration…, Handle a message received by an NPC from a player. Args: npc_id: ID of the NPC…, Process a message to determine if the NPC should respond. Args: npc_id: ID of…, Subscribe an NPC to messages in a specific room. Args: npc_id: ID of the NPC to…, Unsubscribe an NPC from messages in a specific room. Args: npc_id: ID of the…, Integrates NPCs with the existing chat and whisper systems. This class provides…, Initialize the NPC communication integration. Args: event_bus: Optional… (+16 more)
+Nodes (24): NPCCommunicationIntegration, Handle a message received by an NPC from a player. Args: npc_id: ID of the NPC…, Process a message to determine if the NPC should respond. Args: npc_id: ID of…, Subscribe an NPC to messages in a specific room. Args: npc_id: ID of the NPC to…, Unsubscribe an NPC from messages in a specific room. Args: npc_id: ID of the…, Integrates NPCs with the existing chat and whisper systems. This class provides…, Initialize the NPC communication integration. Args: event_bus: Optional…, Send a message from an NPC to a room. Args: npc_id: ID of the NPC sending the… (+16 more)
 
 ### Community 510 - "magic_service_completion.py"
-Cohesion: 0.11
-Nodes (23): _is_heal_other_target(), MagicServiceCompletionMixin, Any, UUID, Casting completion flow for spellcasting. Mixin that handles completing a…, Apply spell costs and process effects. Args: player_id: Player ID spell: Spell…, Parse target_id from casting state. Returns None if missing or invalid., Apply costs and queue spell for next combat round. Returns True if queued,… (+15 more)
+Cohesion: 0.18
+Nodes (16): _is_heal_other_target(), MagicServiceCompletionMixin, Any, UUID, Casting completion flow for spellcasting. Mixin that handles completing a…, Apply spell costs and process effects. Args: player_id: Player ID spell: Spell…, Parse target_id from casting state. Returns None if missing or invalid., Apply costs and queue spell for next combat round. Returns True if queued,… (+8 more)
 
 ### Community 511 - "LoggedHTTPException"
-Cohesion: 0.05
-Nodes (82): NPCSpawnRuleResponse, Model for NPC spawn rule responses., Create response from ORM object., create_npc_spawn_rule(), delete_npc_spawn_rule(), get_npc_spawn_rules(), AsyncSession, delete (+74 more)
+Cohesion: 0.06
+Nodes (75): cleanup_admin_sessions(), get_admin_audit_log(), get_admin_sessions(), get, post, Request, Get active admin sessions., Clean up expired admin sessions. (+67 more)
 
 ### Community 512 - "RoomCacheService"
-Cohesion: 0.12
-Nodes (11): Service for caching room data., Initialize the room cache service. Args: persistence: Persistence layer instance, Invalidate cached room data. Args: room_id: The room ID to invalidate, Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload, Initialize the cache service. Args: persistence: Persistence layer instance…, RoomCacheService, get_cache_manager(), Get the global cache manager instance. Returns: The global cache manager… (+3 more)
+Cohesion: 0.15
+Nodes (7): Service for caching room data., Invalidate cached room data. Args: room_id: The room ID to invalidate, Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload, RoomCacheService, Any, _RoomObj, TestRoomCacheService
 
 ### Community 513 - "service.py"
-Cohesion: 0.04
-Nodes (81): PassiveLucidityFluxService, LucidityUpdateResult, Normalized response describing the outcome of a lucidity adjustment., FluxServiceConfig, lookup_profile(), normalize_environment_config(), period_label(), Any (+73 more)
+Cohesion: 0.07
+Nodes (51): PassiveLucidityFluxService, FluxServiceConfig, lookup_profile(), normalize_environment_config(), period_label(), Any, datetime, Configuration and normalization for passive lucidity flux. (+43 more)
 
 ### Community 514 - "test_chat_logger.py"
 Cohesion: 0.05
-Nodes (35): Initialize the user manager. Args: data_dir: Directory for player-specific mute…, chat_logger(), fixture, Unit tests for chat logger service. Tests the ChatLogger class for structured…, Test log_player_muted writes entry., Test log_player_unmuted writes entry., Test log_player_joined_room writes entry., Test log_rate_limit_violation writes entry. (+27 more)
+Nodes (39): Initialize the rate limiter with configuration-based limits., _get_proper_data_dir(), Path, Get the proper environment-aware data directory for user management. Uses…, Initialize the user manager. Args: data_dir: Directory for player-specific mute…, chat_logger(), fixture, Unit tests for chat logger service. Tests the ChatLogger class for structured… (+31 more)
 
 ### Community 515 - "test_npc_combat_integration_service_npc_aggro.py"
 Cohesion: 0.08
@@ -4343,13 +4270,13 @@ Nodes (31): Unit tests for optimized security validation utilities. Tests the op
 Cohesion: 0.09
 Nodes (17): MinimapRenderer, Any, Mini-map renderer for room connectivity visualization. This module provides…, Renders room connectivity graphs in various visual formats. Implements the…, Extract street acronym from room ID. Args: room_id: Full room ID (e.g.,…, Extract street name from room ID. Args: room_id: Full room ID Returns: Street…, Get color code for a street. Args: room_id: Full room ID Returns: ANSI color…, Render the mini-map as ASCII art with grid-based visualization. Args:… (+9 more)
 
-### Community 518 - "map/config.ts"
-Cohesion: 0.13
-Nodes (19): defaultReactFlowOptions, edgeTypes, getEdgeTypes(), getNodeTypes(), nodeTypes, ExitEdge, ExitEdgeBody(), ExitEdgeLabels() (+11 more)
+### Community 518 - "map/types.ts"
+Cohesion: 0.10
+Nodes (24): defaultReactFlowOptions, edgeTypes, getEdgeTypes(), getNodeTypes(), nodeTypes, ExitEdge, ExitEdgeBody(), ExitEdgeLabels() (+16 more)
 
 ### Community 519 - "connection_manager.py"
-Cohesion: 0.01
-Nodes (251): Time bundle: mythos time event consumer. Depends on Core (event_bus), Game…, initialize_connection_cleaner(), initialize_connection_state(), initialize_core_components(), initialize_error_handler(), initialize_game_state_provider(), initialize_health_monitor(), initialize_messaging() (+243 more)
+Cohesion: 0.02
+Nodes (175): Time bundle: mythos time event consumer. Depends on Core (event_bus), Game…, initialize_connection_cleaner(), initialize_connection_state(), initialize_core_components(), initialize_error_handler(), initialize_game_state_provider(), initialize_health_monitor(), initialize_messaging() (+167 more)
 
 ### Community 520 - "properties"
 Cohesion: 0.11
@@ -4364,24 +4291,24 @@ Cohesion: 0.07
 Nodes (29): 10. **No Message Batching**, 11. **Missing Rate Limiting on WebSocket Messages**, 12. **Insufficient Authentication Validation**, 1. **Dependency Injection Pattern**, 1. **Event Loop Anti-Pattern in Connection Manager**, 2. **Missing Input Validation on Server Side**, 2. **Modern Async Patterns**, 3. **Error Boundaries** (+21 more)
 
 ### Community 523 - "TestNPCCombatLifecycle"
-Cohesion: 0.11
-Nodes (14): asyncio, fixture, Unit tests for NPC combat lifecycle. Tests the NPCCombatLifecycle class for…, Test _despawn_npc handles NPC not in active_npcs., Test suite for NPCCombatLifecycle class., Create a mock persistence layer., Create a NPCCombatLifecycle instance for testing., Test NPCCombatLifecycle initialization. (+6 more)
+Cohesion: 0.12
+Nodes (13): asyncio, fixture, Test _despawn_npc handles NPC not in active_npcs., Test suite for NPCCombatLifecycle class., Create a mock persistence layer., Create a NPCCombatLifecycle instance for testing., Test NPCCombatLifecycle initialization., Test despawn_npc_safely successfully despawns NPC. (+5 more)
 
 ### Community 524 - "test_admin_commands_helpers.py"
-Cohesion: 0.07
-Nodes (49): broadcast_teleport_effects(), create_teleport_effect_message(), get_online_player_by_display_name(), notify_player_of_teleport(), Any, Teleport utility functions for admin commands in MythosMUD. This module…, Notify a player that they are being teleported by an admin. Args:…, Get online player information by display name. Args: display_name: Display name… (+41 more)
+Cohesion: 0.09
+Nodes (29): create_teleport_effect_message(), Create teleport effect message for visual display. Args: player_name: Name of…, asyncio, Unit tests for admin_commands helper functions. Tests helper functions in…, Test DIRECTION_OPPOSITES dictionary contains correct mappings., Test create_teleport_effect_message() for teleport departure., Test create_teleport_effect_message() for teleport departure with direction., Test create_teleport_effect_message() for teleport arrival. (+21 more)
 
-### Community 525 - "talk_command.py"
+### Community 525 - "resolve_state"
 Cohesion: 0.10
-Nodes (35): _emit_prompt(), handle_talk_command(), UUID, talk / talk <n> command for NPC dialogue trees (#583)., Handle talk <npc> or talk <n> against same-room NPCs., Extract player UUID from player model., Join talk args into a single remainder string., Send personal system message for a node; return short command result. (+27 more)
+Nodes (21): Resolve persistence and connection manager from request., resolve_state(), Test _resolve_state() extracts persistence and connection_manager from request., Test _resolve_state() returns None when request has no app., Test _resolve_state() returns None when app has no state., test_resolve_state_no_app(), test_resolve_state_no_state(), test_resolve_state_with_app() (+13 more)
 
 ### Community 526 - "DialogueDefinitionRepository"
-Cohesion: 0.18
+Cohesion: 0.19
 Nodes (20): _definition_dict(), DialogueDefinitionRepository, Coerce JSONB definition cell to a plain string-keyed dict., Repository for dialogue_definitions via stored procedures., _mock_session_with_rows(), asyncio, fixture, Unit tests for DialogueDefinitionRepository. (+12 more)
 
 ### Community 527 - "DeadLetterQueue"
 Cohesion: 0.04
-Nodes (67): DeadLetterMessage, DeadLetterQueue, Any, Path, Add failed message to dead letter queue (async version). Args: message: Dead…, Add failed message to dead letter queue (sync version). Args: message: Dead…, Retrieve and remove oldest message from DLQ (async version). Returns: Message…, Retrieve and remove oldest message from DLQ (sync version). Returns: Message… (+59 more)
+Nodes (69): DeadLetterMessage, DeadLetterQueue, Any, Path, Add failed message to dead letter queue (async version). Args: message: Dead…, Add failed message to dead letter queue (sync version). Args: message: Dead…, Retrieve and remove oldest message from DLQ (async version). Returns: Message…, Retrieve and remove oldest message from DLQ (sync version). Returns: Message… (+61 more)
 
 ### Community 528 - "asyncio"
 Cohesion: 0.08
@@ -4395,9 +4322,9 @@ Nodes (29): mock_connection_manager(), occupant_manager(), asyncio, fixture, Uni
 Cohesion: 0.07
 Nodes (29): Database Placement Skill, Allowed Paths Only, Data Types, Forbidden, MythosMUD Database Placement, PostgreSQL Access (Procedures and Functions), Reference, When Adding or Moving Persistence (+21 more)
 
-### Community 531 - "npc_base.py"
-Cohesion: 0.03
-Nodes (87): NPCAttacked, NPCListened, NPCTookDamage, Event fired when an NPC attacks a target. This event is triggered when an NPC…, Event fired when an NPC takes damage. This event is triggered when an NPC…, Event fired when an NPC receives a message. This event is triggered when an NPC…, Protocol, Aggressive mob NPC type for MythosMUD. This module provides the… (+79 more)
+### Community 531 - "PlayerEnteredRoom"
+Cohesion: 0.02
+Nodes (129): PlayerEnteredRoom, PlayerLeftRoom, Event fired when a player enters a room. This event is triggered when a player…, Event fired when a player leaves a room. This event is triggered when a player…, _entity_id_for_quest_offer(), _make_on_npc_died(), _make_on_player_entered(), _make_on_player_left() (+121 more)
 
 ### Community 532 - "🎯 Async Remediation - Final Report"
 Cohesion: 0.07
@@ -4419,17 +4346,17 @@ Nodes (28): 10. Use of `BETWEEN` with Integer Ranges, 11. Missing Indexes on For
 Cohesion: 0.20
 Nodes (10): artifact, consumable, container, currency, equipment, quest, enum, type (+2 more)
 
-### Community 537 - "test_spell_effects_support.py"
-Cohesion: 0.18
-Nodes (22): _build_stat_modifications(), _create_object_for_player(), _create_object_for_room(), process_create_object_effect(), process_stat_modify_effect(), Any, Process stat modification effect for a player target. Delegated from…, Process object creation effect (delegated from SpellEffects). (+14 more)
+### Community 537 - "spell_effects_support.py"
+Cohesion: 0.11
+Nodes (34): apply_stat_modifications(), Stat modification helpers for spell effects. This module contains utility…, Apply stat modification dict to stats. Returns (updated stats, stat_changes,…, _apply_stat_modify_to_player(), _build_stat_modifications(), _create_object_for_player(), _create_object_for_room(), process_create_object_effect() (+26 more)
 
 ### Community 538 - "test_lifecycle_respawn.py"
 Cohesion: 0.18
 Nodes (26): Process the respawn queue and spawn NPCs that are ready (delegates to…, _attempt_respawn_impl(), _cleanup_respawn_queue(), _process_respawn_queue_entry(), process_respawn_queue_impl(), Any, Respawn queue processing for NPC lifecycle. Extracted from lifecycle_manager to…, Process the respawn queue and spawn NPCs that are ready. Args: manager:… (+18 more)
 
-### Community 539 - "NATSConnectionStateMachine"
-Cohesion: 0.08
-Nodes (14): NATSConnectionStateMachine, Initialize connection state machine. Args: connection_id: Unique identifier for…, Handler for connect transition. Resets reconnection counter and prepares for…, Handler for successful connection. Records connection time and increments…, Handler for disconnection. Increments disconnection counter. AI: Track…, Handler for starting reconnection. Checks if circuit breaker should be…, Handler for circuit breaker opening. Logs circuit open event for alerting. AI:…, Handler for circuit breaker closing. Resets failure counters. AI: Circuit… (+6 more)
+### Community 539 - "test_auth_rate_limit.py"
+Cohesion: 0.17
+Nodes (21): _auth_bucket(), auth_client_key(), auth_rate_limit_response(), _canonical_ip(), is_auth_rate_limited_path(), Request, Return 429 when an auth POST exceeds the limiter; otherwise None., Key the limiter by client IP. Default uses the TCP peer (request.client.host).… (+13 more)
 
 ### Community 540 - "PlayerPreferencesService"
 Cohesion: 0.15
@@ -4440,24 +4367,24 @@ Cohesion: 0.11
 Nodes (17): Any, asyncio, fixture, Unit tests for the logout command handler., Test logout command when persistence is not available., Test logout command when persistence operations fail., Test cases for the logout command handler., Test logout command when connection cleanup fails. (+9 more)
 
 ### Community 542 - "test_chat_moderation.py"
-Cohesion: 0.11
-Nodes (20): moderation(), player_service(), asyncio, fixture, Unit tests for chat moderation operations., test_add_admin_returns_true(), test_get_mute_status_handles_internal_error(), test_get_mute_status_includes_player_name() (+12 more)
+Cohesion: 0.10
+Nodes (21): moderation(), player_service(), asyncio, fixture, Unit tests for chat moderation operations., test_add_admin_returns_true(), test_get_mute_status_handles_internal_error(), test_get_mute_status_includes_player_name() (+13 more)
 
 ### Community 543 - "server/services/__init__.py"
 Cohesion: 0.02
-Nodes (143): AbstractContextManager, handle_wearable_container_on_unequip(), Handle wearable container preservation when unequipping a container item., _ensure_shared_services_initialized(), get_shared_services(), Shared service initialization for inventory commands., Clear lazy singletons so each test gets a fresh init path. For unit tests only;…, Resolve async_persistence from the request and construct shared singletons. (+135 more)
+Nodes (138): AbstractContextManager, handle_wearable_container_on_unequip(), Handle wearable container preservation when unequipping a container item., _ensure_shared_services_initialized(), get_shared_services(), Shared service initialization for inventory commands., Clear lazy singletons so each test gets a fresh init path. For unit tests only;…, Resolve async_persistence from the request and construct shared singletons. (+130 more)
 
 ### Community 544 - "Bug Investigator Subagent"
 Cohesion: 0.07
 Nodes (27): Authentication/Login Issues, Best Practices, Bug Investigator Subagent, Capabilities, Chat/Communication Issues, Critical Requirements, Evidence Collection, Evidence Standards (+19 more)
 
-### Community 545 - "RespawnResponse"
-Cohesion: 0.12
-Nodes (19): BaseModel, Player respawn API response schemas for MythosMUD server. This module provides…, Simplified player data returned in respawn responses., Response model for player respawn endpoints., RespawnPlayerData, RespawnResponse, Rooms domain schemas: room API responses., BaseModel (+11 more)
+### Community 545 - "rooms/room.py"
+Cohesion: 0.16
+Nodes (14): Player respawn API response schemas for MythosMUD server. This module provides…, Rooms domain schemas: room API responses., BaseModel, Room data schema for MythosMUD. This module defines Pydantic models for room…, Room data structure for API responses. This model represents room information…, RoomData, BaseModel, Room API response schemas for MythosMUD server. This module provides Pydantic… (+6 more)
 
-### Community 546 - "normalize_command"
-Cohesion: 0.06
-Nodes (30): clean_command_input(), _is_predefined_emote(), normalize_command(), Clean and normalize command input by collapsing multiple spaces and stripping…, Normalize command input by removing optional slash prefix. Supports both…, Check if a command is a predefined emote alias. Args: command: The command to…, Check if a single word command should be treated as an emote. This function…, should_treat_as_emote() (+22 more)
+### Community 546 - "command_input.py"
+Cohesion: 0.05
+Nodes (36): clean_command_input(), _is_predefined_emote(), normalize_command(), CommandExecutionRequest, Command Input Utilities for MythosMUD. This module provides utilities for…, Clean and normalize command input by collapsing multiple spaces and stripping…, Normalize command input by removing optional slash prefix. Supports both…, Check if a command is a predefined emote alias. Args: command: The command to… (+28 more)
 
 ### Community 547 - "3. REFACTOR Findings (935 findings)"
 Cohesion: 0.07
@@ -4472,24 +4399,24 @@ Cohesion: 0.15
 Nodes (27): check_alignment(), _check_pylint_suppressions(), _check_ruff_suppressions(), find_suppressions(), _has_pylint_equivalent(), _has_ruff_equivalent(), main(), parse_pylint_suppression() (+19 more)
 
 ### Community 550 - "TaskRegistry"
-Cohesion: 0.09
-Nodes (37): get_registry(), Centralized TaskRegistry for MythosMUD server task lifecycle management. This…, Cancel lifecycle/critical tasks first (Phase 1)., Cancel remaining active tasks (Phase 2)., Wait for task completion with timeout., Forcibly cancel any lingering tasks that didn't respond to graceful…, Clean up active collections after final shutdown., Gracefully shutdown all tracked tasks with timeout coordination. Implements… (+29 more)
+Cohesion: 0.05
+Nodes (56): get_registry(), Any, Task, Centralized TaskRegistry for MythosMUD server task lifecycle management. This…, Create callback function for task completion cleanup., Set up tracking for a newly created task., Register and create a tracked asyncio.Task. Args: coro: The coroutine to wrap…, Unregister task from tracking, optionally force-cancelling. Args: task: Task… (+48 more)
 
-### Community 551 - "sanitizeChatMessageForState"
-Cohesion: 0.06
-Nodes (58): HolidayBanner(), HolidayBannerProps, MythosTimeHud(), MythosTimeHudProps, TRADITION_COLORS, mythosState, handleCombatDeath(), handleCombatEnded() (+50 more)
+### Community 551 - "logger.ts"
+Cohesion: 0.07
+Nodes (46): HolidayBanner(), HolidayBannerProps, MythosTimeHud(), MythosTimeHudProps, TRADITION_COLORS, mythosState, eventHandlers, processGameEvent() (+38 more)
 
 ### Community 552 - "test_container_helpers_inventory_display.py"
 Cohesion: 0.12
 Nodes (28): _apply_container_component_to_slot(), _component_metadata(), _equipped_matches_container_metadata(), get_container_data_for_inventory(), _inventory_stack_to_display_dict(), _lock_state_as_str(), match_container_to_slot(), InventoryStack (+20 more)
 
 ### Community 553 - "MPRegenerationService"
-Cohesion: 0.15
-Nodes (13): MPRegenerationService, Any, UUID, MP regeneration service for passive and active magic point recovery. This…, Get MP regeneration multiplier based on player state. Args: stats: Player stats…, # TODO: Check status effects for meditation when status effect system supports…, Restore MP from resting (accelerated regeneration). Args: player_id: Player ID…, # NOTE: Server tick rate is 0.1 seconds, so 0.01 MP per tick = 0.1 MP per… (+5 more)
+Cohesion: 0.12
+Nodes (17): MPRegenerationService, Any, UUID, MP regeneration service for passive and active magic point recovery. This…, Get MP regeneration multiplier based on player state. Args: stats: Player stats…, # TODO: Check status effects for meditation when status effect system supports…, Restore MP from resting (accelerated regeneration). Args: player_id: Player ID…, # NOTE: Server tick rate is 0.1 seconds, so 0.01 MP per tick = 0.1 MP per… (+9 more)
 
 ### Community 554 - "test_chat_validator.py"
-Cohesion: 0.13
-Nodes (26): _chat_passes_nats_validation(), Return True when message content and room access checks pass., contains_malicious_content(), Chat message validation utilities. This module provides validation functions…, Validate chat message before transmission. Args: chat_message: The chat message…, Validate sender has access to the room. Args: sender_id: ID of the message…, Check for malicious content patterns. Args: content: The message content to…, validate_chat_message() (+18 more)
+Cohesion: 0.12
+Nodes (26): UUID, Chat message model for MythosMUD. This module provides the ChatMessage class…, contains_malicious_content(), Chat message validation utilities. This module provides validation functions…, Validate chat message before transmission. Args: chat_message: The chat message…, Validate sender has access to the room. Args: sender_id: ID of the message…, Check for malicious content patterns. Args: content: The message content to…, validate_chat_message() (+18 more)
 
 ### Community 555 - "MessageFilteringHelper"
 Cohesion: 0.05
@@ -4504,20 +4431,20 @@ Cohesion: 0.10
 Nodes (30): _dispatch_parsed_command(), _handle_processing_error(), _handle_validation_error(), _log_security_sensitive_command(), _parse_command_line_or_client_error(), process_command_with_validation(), CommandExecutionRequest, Exception (+22 more)
 
 ### Community 558 - "AdminAuthService"
-Cohesion: 0.13
-Nodes (13): AdminAuthService, Request, Service for admin authentication and authorization., Initialize the admin auth service., Determine the admin role for a user. Args: current_user: The current user…, Safely get username from current user object., Safely get user ID from current user object., Validate that the current user has permission to perform the action. Args:… (+5 more)
+Cohesion: 0.10
+Nodes (16): AdminAuthService, Any, Request, Service for admin authentication and authorization., Initialize the admin auth service., Determine the admin role for a user. Args: current_user: The current user…, Safely get username from current user object., Safely get user ID from current user object. (+8 more)
 
 ### Community 559 - "PayloadOptimizer"
-Cohesion: 0.09
-Nodes (29): get_payload_optimizer(), PayloadOptimizer, Any, Payload optimization for WebSocket messages. This module provides utilities for…, Create an incremental update payload containing only changed fields. Args:…, Optimizes payloads for WebSocket transmission. Features: - Size limit…, Get the global payload optimizer instance., Initialize the payload optimizer. Args: max_payload_size: Maximum payload size… (+21 more)
-
-### Community 560 - "test_security_utils.py"
 Cohesion: 0.12
-Nodes (23): get_secure_file_path(), Get a secure file path within a base directory. Args: filename: The filename…, Unit tests for security utilities. Tests path validation and file security…, Test get_secure_file_path with valid filename., Test get_secure_file_path rejects invalid characters., Test get_secure_file_path rejects filenames with slashes., Test get_secure_file_path creates base directory if it doesn't exist., Test get_secure_file_path accepts filenames with underscores. (+15 more)
+Nodes (24): get_payload_optimizer(), PayloadOptimizer, Payload optimization for WebSocket messages. This module provides utilities for…, Optimizes payloads for WebSocket transmission. Features: - Size limit…, Get the global payload optimizer instance., Initialize the payload optimizer. Args: max_payload_size: Maximum payload size…, _CompareExplodes, optimizer() (+16 more)
 
-### Community 561 - "EnvironmentalContainerLoader"
-Cohesion: 0.12
-Nodes (21): EnvironmentalContainerLoader, Any, ContainerComponent, ContainerLockState, UUID, migrate_room_container_to_postgresql., Load all environmental containers for a room from PostgreSQL. Args: room_id:…, Service for loading environmental containers from JSON and PostgreSQL. Handles… (+13 more)
+### Community 560 - "designTokens.ts"
+Cohesion: 0.15
+Nodes (19): animations, borderRadius, breakpoints, buildClasses, ButtonVariant, colors, ColorVariant, ComponentSize (+11 more)
+
+### Community 561 - ".load_container_from_room_json"
+Cohesion: 0.15
+Nodes (8): Any, ContainerComponent, ContainerLockState, UUID, migrate_room_container_to_postgresql., Load all environmental containers for a room from PostgreSQL. Args: room_id:…, Initialize the environmental container loader. Args: persistence: Persistence…, Load environmental container definition from room JSON.
 
 ### Community 562 - "include"
 Cohesion: 0.11
@@ -4535,9 +4462,9 @@ Nodes (22): combat(), combat_service(), handler(), npc_target(), player_target()
 Cohesion: 0.17
 Nodes (21): apply_communication_dampening(), _apply_receiver_effects(), _apply_sender_effects(), DampeningResult, _maybe_muffle_fractured_message(), _maybe_scramble_deranged_message(), TypedDict, Communication dampening utilities for lucidity system. Implements communication… (+13 more)
 
-### Community 566 - "test_shutdown_process_termination.py"
-Cohesion: 0.08
-Nodes (26): _find_uvicorn_processes(), Any, Schedule a best-effort graceful process termination after a short delay. This…, Find all uvicorn processes using psutil., Terminate all uvicorn processes., Terminate all child processes of the current process., Fallback signal-based termination when psutil is not available., schedule_process_termination() (+18 more)
+### Community 566 - "get_help_content"
+Cohesion: 0.12
+Nodes (18): get_command_categories(), get_commands_by_category(), _get_general_help(), get_help_content(), Any, Help content and command documentation for MythosMUD. This module contains the…, Get help content for commands. Args: command_name: Optional specific command…, Get general help content with command categories. (+10 more)
 
 ### Community 567 - "Argon2 Password Hashing Best Practices"
 Cohesion: 0.07
@@ -4571,17 +4498,17 @@ Nodes (12): _argv_char_len(), _build_guard_command(), _changed_files_between(), 
 Cohesion: 0.11
 Nodes (24): _check_equipped_item(), _check_item_in_location(), _find_item_in_equipped(), _handle_item_look(), Any, Item look functionality for MythosMUD. This module handles looking at items,…, Find an item in equipped items by name or prototype_id. Args: equipped:…, Check if item found in a location and return formatted result. (+16 more)
 
-### Community 575 - "normalize_environment"
-Cohesion: 0.14
-Nodes (20): Path, Unit tests for project_paths utilities. Tests path resolution functions., Test get_project_root() returns project root path., Test normalize_environment() normalizes environment names., Test get_environment_data_dir() returns data directory., Test get_calendar_paths_for_environment() returns calendar paths., test_get_calendar_paths_for_environment(), test_get_environment_data_dir() (+12 more)
+### Community 575 - "_format_npc_description"
+Cohesion: 0.10
+Nodes (20): _format_npc_description(), Format NPC description with fallback., Test _format_npc_description() returns description from definition., Test _format_npc_description() uses fallback when description is empty., Test _format_npc_description() uses alternative attributes., test_format_npc_description(), test_format_npc_description_fallback(), test_format_npc_description_no_description() (+12 more)
 
 ### Community 576 - "test_chat_pose_helpers.py"
 Cohesion: 0.16
 Nodes (25): clear_player_pose(), get_player_pose(), get_room_poses(), normalize_player_id(), Any, UUID, Pose management helpers for chat service., Clear a player's pose. Args: player_id: ID of the player pose_manager: Pose… (+17 more)
 
 ### Community 577 - "MovementMonitor"
-Cohesion: 0.11
-Nodes (15): MovementMonitor, Any, UUID, Record concurrent movement count., Record an integrity check result., Validate players are not in multiple rooms., Get comprehensive movement metrics., Get current alerts based on thresholds. (+7 more)
+Cohesion: 0.09
+Nodes (20): MovementMonitor, Any, UUID, Record concurrent movement count., Record an integrity check result., Validate players are not in multiple rooms., Get comprehensive movement metrics., Get current alerts based on thresholds. (+12 more)
 
 ### Community 578 - "attach_compatibility_properties"
 Cohesion: 0.12
@@ -4591,21 +4518,21 @@ Nodes (25): attach_compatibility_properties(), _attach_connection_properties(), 
 Cohesion: 0.09
 Nodes (22): instance_manager(), fixture, Unit tests for InstanceManager. Tests instance creation, destruction, room…, Test get_exit_room_id returns fixed exit room., Test get_room_by_id returns None for non-instance room IDs., Test get_room_by_id returns room when room is in an instance., Create tutorial bedroom template room., Room cache with tutorial template. (+14 more)
 
-### Community 580 - "test_combat_persistence_handler_events.py"
-Cohesion: 0.06
-Nodes (43): mock_combat_service(), persistence_handler(), asyncio, fixture, Unit tests for combat persistence handler - event publishing. Tests DP update…, Test _publish_player_dp_update_event_impl handles NATS errors gracefully., Test _publish_player_dp_update_event_impl handles no NATS service., Test _publish_player_dp_update_event_impl with all optional parameters. (+35 more)
+### Community 580 - "Audit Coverage Boundary — 2026-08 Design Audit"
+Cohesion: 0.11
+Nodes (18): 1. Purpose, 2. Scope for the immediate next step: verifying #625–#628, 3. Enumeration method, 4.1 Documents — the audited 29, recovered from the audit's own claim registers, 4.2 Documents — the residual 74, conservative default, 4.3 Code — method fact, not a directory checklist, 4.4 `docs/subsystems/` — staleness, not conformance, 4.5 Security — a boundary issue #639 does not mention (+10 more)
 
 ### Community 581 - "RateLimiter"
-Cohesion: 0.09
-Nodes (18): Any, RateLimiter, Remove timestamps older than the window size. Args: player_id: Player ID…, Check if a player is within rate limits for a channel. Args: player_id: Player…, Record a message for rate limiting. Args: player_id: Player ID channel: Channel…, Sliding window rate limiter for chat channels. Implements per-user, per-channel…, Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…, Reset rate limiting for a player. Args: player_id: Player ID channel: Specific… (+10 more)
+Cohesion: 0.10
+Nodes (17): Any, RateLimiter, Remove timestamps older than the window size. Args: player_id: Player ID…, Check if a player is within rate limits for a channel. Args: player_id: Player…, Record a message for rate limiting. Args: player_id: Player ID channel: Channel…, Sliding window rate limiter for chat channels. Implements per-user, per-channel…, Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…, Reset rate limiting for a player. Args: player_id: Player ID channel: Specific… (+9 more)
 
 ### Community 582 - "Path"
 Cohesion: 0.10
 Nodes (14): Path, Fix self-references by adding proper flags. Args: room_database: Complete room…, Find the file for a room. Returns None if file doesn't exist., Create backup if requested., Fix missing exits field. Returns True if fixed., Fix missing optional fields. Returns True if any fixed., Initialize the room fixer. Args: base_path: Base directory for room files, Fix missing fields based on errors. Returns True if any fixed. (+6 more)
 
 ### Community 583 - "SpellTargetingService"
-Cohesion: 0.16
-Nodes (13): Player, UUID, Spell targeting service for resolving spell targets. This module handles target…, Resolve the target for a spell cast. Args: player_id: ID of the player casting…, Get player from persistence., Build a TargetMatch for a combat opponent, or None if unresolved., Get the combat target for a player if they are in combat. Args: player_id:…, Service for resolving spell targets. Handles target resolution based on spell… (+5 more)
+Cohesion: 0.15
+Nodes (14): Player, UUID, Resolve the target for a spell cast. Args: player_id: ID of the player casting…, Get player from persistence., Build a TargetMatch for a combat opponent, or None if unresolved., Get the combat target for a player if they are in combat. Args: player_id:…, Service for resolving spell targets. Handles target resolution based on spell…, Initialize the spell targeting service. Args: target_resolution_service:… (+6 more)
 
 ### Community 584 - "PostgreSQL Best Practices"
 Cohesion: 0.08
@@ -4641,7 +4568,7 @@ Nodes (25): regression, _load_script_module(), _LoadWorldSeedScriptInternals, Lo
 
 ### Community 592 - "BehaviorEngine"
 Cohesion: 0.02
-Nodes (120): BehaviorEngine, Any, Get all behavior rules., Evaluate equality condition (==). Returns: bool if condition matches, None if…, Evaluate inequality condition (!=). Returns: bool if condition matches, None if…, Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…, Try multiple evaluator methods in sequence. Args: condition: Condition string…, Evaluate boolean conditions and variable lookups. Args: condition: Condition… (+112 more)
+Nodes (121): BehaviorEngine, Any, Behavior engine for NPCs. This module provides the deterministic behavior…, Get all behavior rules., Evaluate equality condition (==). Returns: bool if condition matches, None if…, Evaluate inequality condition (!=). Returns: bool if condition matches, None if…, Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…, Try multiple evaluator methods in sequence. Args: condition: Condition string… (+113 more)
 
 ### Community 593 - ".claude/hooks/record_edited_file.py"
 Cohesion: 0.13
@@ -4656,12 +4583,12 @@ Cohesion: 0.08
 Nodes (25): dependencies, dompurify, lucide-react, react, react-dom, react-grid-layout, react-resizable, react-rnd (+17 more)
 
 ### Community 596 - "DialogueEditorPage.tsx"
-Cohesion: 0.16
-Nodes (18): baseUrl(), buildHeaders(), deleteDialogueDefinition(), DialogueDefinitionDto, DialogueNodeDto, DialogueOptionDto, DialogueTreeDto, listDialogueDefinitions() (+10 more)
+Cohesion: 0.09
+Nodes (26): baseUrl(), buildHeaders(), deleteDialogueDefinition(), DialogueDefinitionDto, DialogueNodeDto, DialogueOptionDto, DialogueTreeDto, listDialogueDefinitions() (+18 more)
 
 ### Community 597 - "EventPublisher"
-Cohesion: 0.18
-Nodes (10): EventPublisher, JsonMap, Publish a player_entered event to NATS. Args: player_id: ID of the player who…, Publish a player_left event to NATS. Args: player_id: ID of the player who left…, Publish a game_tick event to NATS. Args: timestamp: Optional custom timestamp…, Create a standardized event message structure. Args: event_type: Type of event…, Get the next sequence number for event ordering. Returns: Next sequence number, Reset the sequence number to 0. (+2 more)
+Cohesion: 0.21
+Nodes (9): EventPublisher, JsonMap, Publish a player_entered event to NATS. Args: player_id: ID of the player who…, Publish a player_left event to NATS. Args: player_id: ID of the player who left…, Publish a game_tick event to NATS. Args: timestamp: Optional custom timestamp…, Create a standardized event message structure. Args: event_type: Type of event…, Get the next sequence number for event ordering. Returns: Next sequence number, Reset the sequence number to 0. (+1 more)
 
 ### Community 598 - "messageHandlers.ts"
 Cohesion: 0.16
@@ -4699,41 +4626,41 @@ Nodes (14): main(), Path, Verify test database configuration. Note: For PostgreS
 Cohesion: 0.20
 Nodes (14): ContainerTransferToMixin, ContainerComponent, InventoryStack, Player, UUID, Best-effort audit log for transfer-to-container (must not fail the transfer)., Add a stack via InventoryService; map capacity failures to…, Load player or raise ValidationError for transfer ops. (+6 more)
 
-### Community 607 - "_NPCCombatIntegrationDeps"
-Cohesion: 0.13
-Nodes (13): _NPCCombatIntegrationDeps, Protocol, UUID, Structured logging / observability trail when NPC-initiated combat begins., Process combat attack, starting new combat or continuing existing one., Start a new combat and process initial attack., Broadcast room occupants update to killer's room after NPC death. Swallows…, Attributes supplied by NPCCombatIntegrationService (mixin cannot initialize… (+5 more)
+### Community 607 - "test_alias_expansion.py"
+Cohesion: 0.18
+Nodes (18): check_alias_safety(), handle_expanded_command(), Any, CommandExecutionRequest, Handle command processing with alias expansion and loop detection. This…, Check if an alias is safe to expand. Builds an alias dependency graph and…, Validate an expanded command for length and content. Args: expanded_command:…, validate_expanded_command() (+10 more)
 
 ### Community 608 - "test_command_factories_inventory_helpers.py"
 Cohesion: 0.10
 Nodes (20): Unit tests for inventory command factory helper functions. Tests the helper…, Test create_equip_command() with item name and inferred slot., Test create_unequip_command() with slot., Test create_unequip_command() with item name., Test create_inventory_command() creates InventoryCommand., Test create_inventory_command() raises error with args., Test create_pickup_command() raises error for invalid quantity., Test create_pickup_command() raises error for invalid index. (+12 more)
 
-### Community 609 - ".execute_idle_movement"
-Cohesion: 0.10
-Nodes (12): _cfg_bool(), _cfg_float(), _npc_id_str(), _passes_movement_probability(), Get exits from current room that stay within subzone boundaries. Args:…, Calculate weight for an exit based on distance from spawn. Args:…, Calculate weights for all exits. Args: valid_exits: Dictionary of direction ->…, Select exit based on weighted probabilities. Args: exit_weights: List of… (+4 more)
+### Community 609 - "maps/__init__.py"
+Cohesion: 0.18
+Nodes (17): Maps domain schemas: map API responses., AsciiMapResponse, AsciiMinimapResponse, CoordinateGenerationResponse, CoordinateRecalculationResponse, CoordinateValidationResponse, MapOriginSetResponse, BaseModel (+9 more)
 
 ### Community 610 - "asyncio"
 Cohesion: 0.14
 Nodes (17): PartyChannelStrategy, Strategy for party channel broadcasting. Delivers only to current party members., asyncio, When party_service is missing on handler, no message is sent., When party does not exist, no message is sent., Test PartyChannelStrategy.broadcast() handles missing party_id., Test WhisperChannelStrategy.broadcast() sends personal message., Test WhisperChannelStrategy.broadcast() handles missing target_player_id. (+9 more)
 
-### Community 611 - "NPCMessageQueue"
-Cohesion: 0.10
-Nodes (14): NPCMessageQueue, Thread-safe message queue for NPC actions. This queue handles pending actions…, Initialize the NPC message queue. Args: max_messages_per_npc: Maximum number of…, Add a message to an NPC's pending message queue. Args: npc_id: The NPC's ID…, Get all pending messages for an NPC. Args: npc_id: The NPC's ID Returns: List…, Clear all pending messages for an NPC. Args: npc_id: The NPC's ID Returns:…, Get the number of pending messages for an NPC., Get the total number of pending messages across all NPCs. (+6 more)
+### Community 611 - "RateLimiter"
+Cohesion: 0.12
+Nodes (13): test_auth_rate_limit_response_returns_429_when_exceeded(), fixture, rate_limiter(), Create a RateLimiter instance for testing., Utility modules for MythosMUD server. This package contains various utility…, Any, RateLimiter, Rate limiting utilities for MythosMUD API endpoints. This module provides rate… (+5 more)
 
 ### Community 612 - "_make_session_context"
-Cohesion: 0.13
-Nodes (21): _make_session_context(), asyncio, Test get_by_id raises DatabaseError on DB failure., Test get_by_name returns definition when found by common name., Test get_by_name returns None when not found., Test get_by_name raises DatabaseError on DB failure., Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns…, Test list_quest_ids_offered_by returns empty list when no offers. (+13 more)
+Cohesion: 0.12
+Nodes (23): _make_session_context(), asyncio, Test get_by_id raises DatabaseError on DB failure., Test get_by_name returns definition when found by common name., Test get_by_name returns None when not found., Test get_by_name raises DatabaseError on DB failure., Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns…, Test list_quest_ids_offered_by returns empty list when no offers. (+15 more)
 
 ### Community 613 - "CoordinateValidator"
 Cohesion: 0.14
-Nodes (14): _conflict_from_row(), CoordinateValidator, Any, AsyncSession, Validate coordinates for rooms in a zone/subzone and detect conflicts. Args:…, Validates room coordinates and detects conflicts. A conflict occurs when…, Initialize coordinate validator. Args: session: Database session for coordinate…, _zone_pattern() (+6 more)
+Nodes (15): _conflict_from_row(), CoordinateValidator, Any, AsyncSession, Coordinate validation service for ASCII maps. This module provides conflict…, Validate coordinates for rooms in a zone/subzone and detect conflicts. Args:…, Validates room coordinates and detects conflicts. A conflict occurs when…, Initialize coordinate validator. Args: session: Database session for coordinate… (+7 more)
 
 ### Community 614 - "game_tick_death.py"
 Cohesion: 0.13
-Nodes (29): _handle_player_death_threshold(), _player_in_active_combat(), _process_dead_players(), process_dp_decay_and_death(), _process_mortally_wounded_player(), _process_mortally_wounded_players(), _process_mp_regeneration(), _process_passive_lucidity_flux() (+21 more)
+Nodes (26): _handle_player_death_threshold(), _player_in_active_combat(), _process_dead_players(), _process_mortally_wounded_player(), _process_mortally_wounded_players(), _process_mp_regeneration(), _process_passive_lucidity_flux(), _process_session_dp_decay_and_death() (+18 more)
 
 ### Community 615 - "CombatMessagingService"
-Cohesion: 0.12
-Nodes (12): CombatMessages, CombatMessagingService, Any, Generate combat start messages for all room occupants. Args: attacker_name:…, Generate combat end messages for all room occupants. Args: winner_name: Name of…, Generate thematic error messages for combat actions. Args: error_type: Type of…, Validate NPC message templates against the schema. Args: messages_data: NPC…, Service for generating combat messages. This service creates thematic,… (+4 more)
+Cohesion: 0.06
+Nodes (28): CombatMessages, CombatMessagingBase, Any, Base class with connection manager setup. Used by CombatMessagingIntegration., Lazily resolve the connection manager from the application container., CombatBroadcastMixin, Any, Broadcast combat attack to room. Excludes attacker from broadcast; sends them a… (+20 more)
 
 ### Community 616 - "get_cached_player"
 Cohesion: 0.13
@@ -4799,9 +4726,9 @@ Nodes (23): fix_blank_lines_after_headings(), fix_bold_items_without_list_marker
 Cohesion: 0.12
 Nodes (23): _create_backup(), create_subzone_config(), _create_subzone_structure(), create_zone_config(), _create_zone_structure(), determine_zone_type(), _group_rooms_by_zone(), _load_and_validate_rooms() (+15 more)
 
-### Community 632 - "parse_last_active_datetime"
-Cohesion: 0.10
-Nodes (20): parse_last_active_datetime(), Parse last_active from string or datetime object to timezone-aware datetime.…, Test parse_last_active_datetime with None., Test parse_last_active_datetime with empty string., Test parse_last_active_datetime with string ending in Z., Test parse_last_active_datetime with string containing timezone., Test parse_last_active_datetime with string without timezone., Test parse_last_active_datetime with naive datetime. (+12 more)
+### Community 632 - "get_current_user_with_logging"
+Cohesion: 0.15
+Nodes (18): DependsParam, get_current_user_with_logging(), Enhanced get_current_user with detailed logging., asyncio, Test _get_current_user_with_logging when HTTPException is raised., Test _get_current_user_with_logging with successful authentication., Test _get_current_user_with_logging when generic Exception is raised., Test _get_current_user_with_logging with long Authorization header. (+10 more)
 
 ### Community 633 - "test_inventory_command_prototype.py"
 Cohesion: 0.12
@@ -4811,25 +4738,25 @@ Nodes (26): _first_normalized_wear_slot(), infer_equip_slot_from_prototype(), _i
 Cohesion: 0.05
 Nodes (49): _find_item_in_room_drops(), Find an item in room drops by name or prototype_id. Args: room_drops: List of…, Unit tests for look item helper functions. Tests the helper functions in…, Test _find_item_in_room_drops() with instance number out of range., Test _find_item_in_room_drops() finds item by name., Test _find_item_in_room_drops() with instance number zero., Test _find_item_in_equipped() with empty dict., Test _find_item_in_equipped() with no matching items. (+41 more)
 
-### Community 635 - "._validate_container_access"
-Cohesion: 0.15
-Nodes (9): ContainerComponent, Deny non-owner corpse access during (or without) a timed grace period., Validate corpse grace period access rules., Validate that player has access to the container. Checks proximity, ownership,…, Return True if player inventory contains the required key item_id., Check if player can unlock the container. Args: container: Container to check…, Validate player is in same room as container for environment/corpse containers., Validate player owns equipment container. (+1 more)
+### Community 635 - "Any"
+Cohesion: 0.16
+Nodes (10): Any, WebSocket, Handle a WebSocket message using the appropriate handler. Args: websocket: The…, Handle a specific message type. Args: websocket: The WebSocket connection…, Handle command message type., Handle chat message type., Handle ping message type., Handle follow_response message type. (+2 more)
 
 ### Community 636 - "PostgresRow"
 Cohesion: 0.11
 Nodes (13): PostgresRow, Row-like object for PostgreSQL query results., Test PostgresRow class., Test PostgresRow initialization., Test PostgresRow.__getitem__ with string key., Test PostgresRow.__getitem__ with integer index., Test PostgresRow.__getitem__ with out-of-range integer index., Test PostgresRow.__iter__. (+5 more)
 
-### Community 637 - "test_who_commands.py"
-Cohesion: 0.10
-Nodes (19): Unit tests for who commands., Test filtering players with no filter term., Test format_who_result with no players., Test format_who_result with no players and filter term., Test format_who_result with players., Test get_players_for_who without filter., Test get_players_for_who with filter., Test filtering players with exact match. (+11 more)
+### Community 637 - "test_event_publisher.py"
+Cohesion: 0.11
+Nodes (17): Unit tests for event publisher. Tests the EventPublisher class., Test get_next_sequence_number() returns and increments sequence., Test reset_sequence_number() resets sequence to 0., Test EventPublisher initialization without subject manager., Test EventPublisher initialization with initial sequence., tick_number from additional_metadata should win over sequence., Container lookup failures should leave async_persistence unset., Test EventPublisher initialization. (+9 more)
 
-### Community 638 - "test_game_tick_death.py"
-Cohesion: 0.12
-Nodes (27): cleanup_decayed_corpses(), _cleanup_single_decayed_corpse(), _CorpseLike, _create_corpse_lifecycle_service(), _log_cleanup_results(), FastAPI, Protocol, Decayed corpse cleanup for the game tick loop. (+19 more)
+### Community 638 - "asyncio"
+Cohesion: 0.15
+Nodes (17): Send event to all active websockets for a player. Args: player_id: The player's…, _send_to_websockets(), asyncio, Test broadcast_global_event_impl() broadcasts global event., Test _send_to_websockets() handles websocket errors., Test _send_to_websockets() handles None websocket., Test _send_to_websockets() skips inactive connections., Do not send on sockets whose client_state is not CONNECTED. (+9 more)
 
-### Community 639 - "test_cache_service.py"
-Cohesion: 0.16
-Nodes (11): ProfessionCacheService, Service for caching profession data., Invalidate all profession caches., Caching module for MythosMUD server. This module provides comprehensive caching…, Reset the global cache manager (for testing)., reset_cache_manager(), _Profession, fixture (+3 more)
+### Community 639 - "ProfessionCacheService"
+Cohesion: 0.19
+Nodes (7): ProfessionCacheService, Service for caching profession data., Initialize the profession cache service. Args: persistence: Persistence layer…, Invalidate all profession caches., _Profession, fixture, TestProfessionCacheService
 
 ### Community 640 - "EdgeDetailsPanel.tsx"
 Cohesion: 0.11
@@ -4877,7 +4804,7 @@ Nodes (5): Any, BaseException, Loads room data from the database and populates a
 
 ### Community 651 - "test_alias_commands.py"
 Cohesion: 0.05
-Nodes (70): _create_alias(), _extract_alias_params(), handle_alias_command(), handle_aliases_command(), handle_unalias_command(), Any, Alias management commands for MythosMUD. This module contains handlers for…, Handle the aliases command for listing all aliases. Args: command_data: Command… (+62 more)
+Nodes (69): _create_alias(), _extract_alias_params(), handle_alias_command(), handle_aliases_command(), handle_unalias_command(), Any, Alias management commands for MythosMUD. This module contains handlers for…, Handle the aliases command for listing all aliases. Args: command_data: Command… (+61 more)
 
 ### Community 652 - "_find_item_in_inventory"
 Cohesion: 0.08
@@ -4895,13 +4822,13 @@ Nodes (76): Draft7Validator, add_default_combat_data_to_config(), add_default_co
 Cohesion: 0.10
 Nodes (19): Test create_put_command() handles optional 'in' keyword., Test create_put_command() with quantity., test_create_put_command_with_in(), test_create_put_command_with_quantity(), Test create_put_command() raises error with no args., Test create_put_command() raises error with only item., Test create_put_command() handles 'in' keyword., Test create_put_command() raises error when quantity is zero. (+11 more)
 
-### Community 656 - "admin_shutdown_command.py"
-Cohesion: 0.10
-Nodes (39): _broadcast_shutdown_cancellation(), broadcast_shutdown_notification(), _cancel_countdown_task(), _cancel_existing_shutdown_task(), cancel_shutdown_countdown(), _clear_shutdown_state(), countdown_loop(), _create_countdown_task() (+31 more)
+### Community 656 - ".disconnect"
+Cohesion: 0.12
+Nodes (9): Drain in-flight messages from all subscriptions., Close and unsubscribe from all subscriptions., Verify all subscriptions were cleaned up and log warnings if any remain., Close NATS connection and transition to disconnected state., Disconnect from NATS with graceful shutdown and message draining. AI: State…, Cancel all tracked background tasks for proper cleanup. AnyIO Pattern:…, Stop health check monitoring task., Get list of all active NATS subscription subjects. Returns: List of subject… (+1 more)
 
-### Community 657 - "parse_shutdown_parameters"
+### Community 657 - "NPCCombatRewards"
 Cohesion: 0.14
-Nodes (14): parse_shutdown_parameters(), Parse shutdown command parameters. Args: command_data: Command data dictionary…, Test parse_shutdown_parameters() with no args defaults to 10 seconds., Test parse_shutdown_parameters() with cancel action., Test parse_shutdown_parameters() with seconds., Test parse_shutdown_parameters() with negative seconds., Test parse_shutdown_parameters() with zero seconds., Test parse_shutdown_parameters() with invalid string. (+6 more)
+Nodes (10): Return rewards dependency for integration collaborators., NPCCombatRewards, Any, Check if a string is a valid UUID., Manages XP rewards for NPC combat., Initialize the rewards manager. Args: async_persistence: Async persistence…, Calculate XP reward from NPC definition. Args: npc_definition: NPC definition…, Check and log player connection state before operations. Args: player_id: ID of… (+2 more)
 
 ### Community 658 - ".create_get_command"
 Cohesion: 0.10
@@ -4909,19 +4836,19 @@ Nodes (19): Test create_get_command() creates GetCommand., Test create_get_comma
 
 ### Community 659 - "logging_file_setup.py"
 Cohesion: 0.05
-Nodes (77): Logger, Queue, QueueHandler, QueueListener, add_handler_to_loggers(), LoggerNameFilter, LogRecord, Filter that only allows logs from loggers matching specified prefixes. This… (+69 more)
+Nodes (75): Logger, Queue, QueueHandler, QueueListener, add_handler_to_loggers(), LoggerNameFilter, Filter that only allows logs from loggers matching specified prefixes. This…, Initialize filter with allowed logger name prefixes. Args: allowed_prefixes:… (+67 more)
 
 ### Community 660 - ".create_equip_command"
 Cohesion: 0.10
 Nodes (19): Test create_equip_command() raises error when index is zero., Test create_equip_command() raises error when index is negative., Test create_equip_command() handles index with slot., Test create_equip_command() handles search term with slot., Test create_equip_command() raises error when search term is empty., Test create_equip_command() infers slot from known slots., Test create_equip_command() creates EquipCommand., Test create_equip_command() raises error with no args. (+11 more)
 
-### Community 661 - "NPCSpawnRuleCRUDMixin"
-Cohesion: 0.17
-Nodes (13): Any, Map procedure result row to NPCSpawnRule model., _row_to_npc_spawn_rule(), NPCSpawnRuleCRUDMixin, Any, AsyncSession, Validate NPC definition existence and population counts for spawn rule creation., Execute create_spawn_rule stored procedure and return the created spawn rule. (+5 more)
+### Community 661 - "NPCSpawnRule"
+Cohesion: 0.03
+Nodes (72): NPCSpawnRule, NPC spawn rule model. Defines conditions under which NPCs should be spawned,…, String representation of the spawn rule., Check if this rule allows spawning given current NPC population., Check if missing key condition is acceptable. Returns: True if condition…, Check list condition. Returns: True if condition passes, False if fails, None…, True if numeric game_value is strictly below bound., True if numeric game_value is strictly above bound. (+64 more)
 
-### Community 662 - "test_players_quests.py"
-Cohesion: 0.14
-Nodes (18): mock_player_service(), mock_quest_service(), mock_request(), mock_user(), player_id(), asyncio, fixture, Unit tests for GET /api/players/{player_id}/quests (quest log). Tests… (+10 more)
+### Community 662 - "asyncio"
+Cohesion: 0.12
+Nodes (17): asyncio, Test _send_messages_to_players skips blocked messages., Test _send_messages_to_players handles invalid player_id., Test _echo_message_to_sender echoes message., Test _echo_message_to_sender handles exceptions., Test _apply_dampening_and_send_message handles blocked messages., Test _apply_dampening_and_send_message handles missing original_content., Test _get_player_lucidity_tier handles UUID objects. (+9 more)
 
 ### Community 663 - "Performance Profiler Subagent"
 Cohesion: 0.10
@@ -4941,19 +4868,19 @@ Nodes (22): Overdrive Skill, Animate complex properties, Assess What "Extraordin
 
 ### Community 667 - "legacy_error_sanitization.py"
 Cohesion: 0.05
-Nodes (40): _collect_safe_context_fields(), _contains_sensitive_detail_pattern(), is_safe_detail_key(), Sanitization helpers for legacy MythosMUD error responses. Extracted from…, Sanitize dictionary detail values, keeping only safe keys., Sanitize each element in a list detail value., Return detail dict entries that use safe keys with sanitized values., Sanitize a detail value to prevent information exposure. Uses bleach for HTML… (+32 more)
+Nodes (44): _collect_safe_context_fields(), _contains_sensitive_detail_pattern(), is_safe_detail_key(), Sanitization helpers for legacy MythosMUD error responses. Extracted from…, Sanitize dictionary detail values, keeping only safe keys., Sanitize each element in a list detail value., Return detail dict entries that use safe keys with sanitized values., Sanitize a detail value to prevent information exposure. Uses bleach for HTML… (+36 more)
 
 ### Community 668 - "test_config_models.py"
-Cohesion: 0.11
-Nodes (17): Unit tests for configuration models., Test DatabaseConfig pool config validation with positive values., Test DatabaseConfig pool config validation with invalid value., Test ServerConfig default host., Test ServerConfig port validation with valid port., Test ServerConfig port validation with port too low., Test ServerConfig port validation with port too high., Test DatabaseConfig URL validation with PostgreSQL URL. (+9 more)
+Cohesion: 0.07
+Nodes (33): _default_cors_origins(), Derive default CORS origins with environment taking precedence., DatabaseConfig, BaseSettings, field_validator, Server network configuration., Validate port is in valid range., Database configuration. (+25 more)
 
 ### Community 669 - "asyncio"
-Cohesion: 0.11
-Nodes (19): asyncio, Test filter_online_players with all players online., Test filter_online_players with some players offline., Test filter_online_players with players without last_active., Test handle_who_command when persistence is not available., Test handle_who_command when no players are found., Test handle_who_command successful execution., Test handle_who_command with filter term. (+11 more)
+Cohesion: 0.12
+Nodes (17): asyncio, Test cleanup_empty_subzone_subscriptions cleans up empty subzones., Test subscribe_to_subzone handles errors., Test unsubscribe_from_event_subjects handles partial success., Test cleanup_empty_subzone_subscriptions handles NATSError., Test _handle_player_attacked_event delegates to event handler., Test unsubscribe_from_subzone handles not subscribed case., Test _handle_event_message delegates to event handler. (+9 more)
 
-### Community 670 - "test_websocket_handler_disconnect.py"
-Cohesion: 0.33
-Nodes (5): Unit tests for websocket handler disconnect handling. Tests the disconnect…, Test _handle_websocket_disconnect() returns True., Test _handle_websocket_disconnect() with no connection_id., test_handle_websocket_disconnect(), test_handle_websocket_disconnect_no_connection_id()
+### Community 670 - "lint_raw_sql_in_python.py"
+Cohesion: 0.17
+Nodes (15): AllowlistEntry, _collect_python_files(), _find_raw_sql_lines(), main(), Path, Guard against raw table CRUD SQL string literals inside Python source. Replaces…, Return line with a trailing '# ...' comment removed, so prose mentioning SQL…, Return content with every '# ...' line comment blanked out, preserving line… (+7 more)
 
 ### Community 671 - "Asyncio Code Review - feature/sqlite-to-postgresql Branch"
 Cohesion: 0.09
@@ -4976,8 +4903,8 @@ Cohesion: 0.09
 Nodes (21): BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY, Cleanup, Execution Steps, Expected Results, ⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE, Overview, Prerequisites, ✅ READY FOR TESTING (+13 more)
 
 ### Community 676 - "test_population_control.py"
-Cohesion: 0.01
-Nodes (262): Base, NPCSpawnRule, DeclarativeBase, NPC database models for MythosMUD. This module defines the SQLAlchemy models…, NPC spawn rule model. Defines conditions under which NPCs should be spawned,…, String representation of the spawn rule., Check if this rule allows spawning given current NPC population., Check if missing key condition is acceptable. Returns: True if condition… (+254 more)
+Cohesion: 0.03
+Nodes (76): mock_async_persistence(), mock_event_bus(), mock_lifecycle_manager(), population_controller(), fixture, Unit tests for NPC population control. Tests the NPCPopulationController class., Test load_spawn_rules() loads rules., Test load_spawn_rules() handles empty list. (+68 more)
 
 ### Community 677 - "fixtures/unit/__init__.py"
 Cohesion: 0.13
@@ -4991,9 +4918,9 @@ Nodes (21): add_pylint_suppression(), add_ruff_suppression(), _apply_fixes_to_li
 Cohesion: 0.15
 Nodes (21): analyze_file(), analyze_function(), calculate_complexity(), calculate_priority(), check_file_keywords(), check_function_keywords(), main(), process_ast_functions() (+13 more)
 
-### Community 680 - "persistence/container_helpers.py"
-Cohesion: 0.18
-Nodes (16): Composed, build_update_query(), _coerce_row_quantity(), fetch_container_items(), _item_dict_from_contents_row(), _metadata_dict_from_cell(), datetime, PsycopgConnection (+8 more)
+### Community 680 - "fetch_container_items"
+Cohesion: 0.15
+Nodes (15): _coerce_row_quantity(), fetch_container_items(), _item_dict_from_contents_row(), _metadata_dict_from_cell(), PsycopgConnection, PsycopgCursor, UUID, Fetch container items directly from normalized tables. Queries… (+7 more)
 
 ### Community 681 - "handle_teach_command"
 Cohesion: 0.18
@@ -5003,9 +4930,9 @@ Nodes (22): _format_teach_result(), _get_teach_services(), handle_teach_command(
 Cohesion: 0.10
 Nodes (15): _CircuitBreakerResult, CircuitBreaker, Simple circuit breaker pattern implementation. Provides fault tolerance for…, Execute function with circuit breaker protection. Args: func: Function to…, Handle successful operation., Handle failed operation., Check if circuit breaker should attempt reset., Test CircuitBreaker class. (+7 more)
 
-### Community 683 - "test_websocket_handler_helpers.py"
-Cohesion: 0.33
-Nodes (5): Unit tests for websocket handler helper functions. Tests the helper functions…, Test _is_websocket_disconnected() returns True for disconnection messages., Test _is_websocket_disconnected() returns False for other messages., test_is_websocket_disconnected_false(), test_is_websocket_disconnected_true()
+### Community 683 - "_get_npc_room_id"
+Cohesion: 0.12
+Nodes (16): _get_npc_room_id(), _get_npcs_in_room(), Get the room ID from an NPC instance, checking both current_room and…, Get list of NPC names in a room from lifecycle manager., Test _get_npc_room_id() returns current_room_id when available., Test _get_npc_room_id() returns current_room when current_room_id is None., Test _get_npc_room_id() returns None when both are None., test_get_npc_room_id_from_current_room() (+8 more)
 
 ### Community 684 - "test_player_repository_room.py"
 Cohesion: 0.20
@@ -5015,29 +4942,25 @@ Nodes (20): Any, Player, Player room validation helpers for PlayerRepository. Va
 Cohesion: 0.12
 Nodes (12): PostgresCursor, cursor, PostgreSQL cursor wrapper for query result access., Get the number of rows affected., Test PostgresCursor class., Test PostgresCursor initialization., Test PostgresCursor.fetchone() with row., Test PostgresCursor.fetchone() with None. (+4 more)
 
-### Community 686 - "graceful_degradation"
-Cohesion: 0.29
-Nodes (6): graceful_degradation(), Context manager for graceful degradation. Provides fallback behavior when…, Test graceful_degradation context manager., Test graceful_degradation with successful operation., Test graceful_degradation catches exceptions., TestGracefulDegradation
+### Community 686 - "TestGracefulDegradation"
+Cohesion: 0.33
+Nodes (4): Test graceful_degradation context manager., Test graceful_degradation with successful operation., Test graceful_degradation catches exceptions., TestGracefulDegradation
 
 ### Community 687 - "NPCCacheService"
 Cohesion: 0.23
 Nodes (8): NPCCacheService, Service for caching NPC definitions and spawn rules., Invalidate all NPC definition caches., Invalidate all NPC spawn rule caches., _NpcDef, asyncio, _SpawnRule, TestNPCCacheService
 
-### Community 688 - "test_occupants.py"
-Cohesion: 0.18
-Nodes (16): _format_occupants_result(), _get_event_handler_for_test_occupants(), _get_room_id_for_test_occupants(), Any, NPC test-occupants command for debugging occupant queries., Resolve application, player, room_id, and event handler for NPC test occupants…, Get room_id from args or current room. Returns (room_id, error_result)., Get event handler from app.state. Returns (event_handler, error_result). (+8 more)
+### Community 688 - "LoggingConfig"
+Cohesion: 0.16
+Nodes (10): LoggingConfig, Any, BaseSettings, field_validator, Security-sensitive configuration., Validate admin password strength (production only)., Logging configuration., Validate logging environment. (+2 more)
 
-### Community 689 - "get_asyncpg_server_settings_for_database_url"
-Cohesion: 0.07
-Nodes (40): get_asyncpg_server_settings_for_database_url(), Build asyncpg ``server_settings`` so unqualified table names resolve like…, _EmoteLoadResult, _EmoteRowData, TypedDict, Async helper to load emotes from PostgreSQL database., _async_load_lucidity_rate_overrides(), extract_lucidity_rate() (+32 more)
-
-### Community 690 - "security.ts"
-Cohesion: 0.09
-Nodes (9): CSRFProtection, inputSanitizer, NOTE: For production, this should be stored in httpOnly cookies set by the…, RefreshTokenResponse, Session, SessionManager, localStorageMock, setupSecurityMocks() (+1 more)
+### Community 689 - "rate_overrides.py"
+Cohesion: 0.13
+Nodes (21): _async_load_lucidity_rate_overrides(), build_override_key(), extract_lucidity_rate(), _LucidityRateLoadResult, _normalize_database_url(), _parse_special_rules_from_raw(), _parse_zone_stable_id(), _process_override_row() (+13 more)
 
 ### Community 691 - "test_game_state_provider.py"
-Cohesion: 0.03
-Nodes (79): game_state_provider(), mock_get_app(), mock_get_async_persistence(), mock_room_manager(), mock_send_personal_message(), asyncio, fixture, Unit tests for game state provider. Tests the GameStateProvider class. (+71 more)
+Cohesion: 0.02
+Nodes (106): GameStateProvider, Any, Player, UUID, Game state provision for connection management. This module provides…, Get NPC names for multiple NPCs in a batch operation. Args: npc_ids: List of…, Get player name and add grace period indicators if applicable., Convert player UUIDs to names in room_data. (+98 more)
 
 ### Community 692 - "Phase 1: Core Separation"
 Cohesion: 0.12
@@ -5052,8 +4975,8 @@ Cohesion: 0.12
 Nodes (16): Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Phase 2: Enhanced Features, Sub-tasks, Sub-tasks (+8 more)
 
 ### Community 695 - "type"
-Cohesion: 0.15
-Nodes (14): items, items, type, uniqueItems, minLength, type, flags, tags (+6 more)
+Cohesion: 0.13
+Nodes (16): items, type, items, type, uniqueItems, minLength, type, effect_components (+8 more)
 
 ### Community 696 - "3. Common Patterns and Anti-patterns"
 Cohesion: 0.10
@@ -5123,37 +5046,37 @@ Nodes (9): CacheManager, Any, Centralized cache manager for MythosMUD server. Ma
 Cohesion: 0.15
 Nodes (15): _float_field(), NPCActionMessage, NPCActionType, _optional_int_field(), _optional_str_field(), Enum, Convert message to JSON string., Create message from JSON string. (+7 more)
 
-### Community 713 - "test_message_builders.py"
-Cohesion: 0.14
-Nodes (18): _builder(), Unit tests for MessageBuilder., Sequence counter callable is invoked., Non-callable sequence counter returns 0., Player entered message includes ids and player name., Player left message includes ids and player name., NPC movement messages cover direction and movement type branches., Occupants update includes structured and legacy fields. (+10 more)
+### Community 713 - ".measure_model_deserialization"
+Cohesion: 0.20
+Nodes (8): BaseModel, Measure memory usage for model deserialization. Args: model_class: The Pydantic…, Start memory profiling., Stop memory profiling., Get current memory usage in bytes., Get memory delta from baseline., Measure memory usage for model instantiation. Args: model_class: The Pydantic…, Measure memory usage for model serialization. Args: instances: List of model…
 
 ### Community 714 - "AsciiMapRenderer"
 Cohesion: 0.03
-Nodes (65): AsciiMapRenderer, _ExitRowContext, Any, NamedTuple, True if target room has a reverse exit back to from_room_id., Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…, Return list of (direction, (target_x, target_y), is_bidirectional) for exits…, Build exit lookup map from room data. (+57 more)
+Nodes (66): AsciiMapRenderer, _ExitRowContext, Any, NamedTuple, ASCII map renderer for MythosMUD. This module provides server-side rendering of…, True if target room has a reverse exit back to from_room_id., Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…, Return list of (direction, (target_x, target_y), is_bidirectional) for exits… (+58 more)
 
 ### Community 715 - "test_lucidity_command_disruption.py"
 Cohesion: 0.16
 Nodes (19): can_perform_action(), get_misfire_message(), Command disruption utilities for lucidity system. Implements command misfires…, Check if a command should misfire based on tier and command type. Args:…, Get the misfire message for a failed command. Args: command_type: Type of…, Check if player should involuntarily flee. Args: tier: Current lucidity tier…, Check if player can perform actions (motor lock check). Args: tier: Current…, should_involuntary_flee() (+11 more)
 
-### Community 716 - "InventorySchemaValidationError"
-Cohesion: 0.07
-Nodes (42): _parse_equipped_raw(), _parse_inventory_raw(), PlayerSavePreparer, Any, datetime, Player, Validate and serialize inventory payload. Returns (inventory_json,…, Prepare player for upsert: normalize, validate inventory, build params. (+34 more)
+### Community 716 - "PlayerSavePreparer"
+Cohesion: 0.13
+Nodes (17): _parse_equipped_raw(), _parse_inventory_raw(), PlayerSavePreparer, Any, datetime, Player, Validate and serialize inventory payload. Returns (inventory_json,…, Prepare player for upsert: normalize, validate inventory, build params. (+9 more)
 
 ### Community 717 - "asyncio"
-Cohesion: 0.08
-Nodes (25): asyncio, Test get_adjacent_rooms() handles room with no exits., Test get_adjacent_rooms() handles target room not found., Test validate_room_exists() uses cache., Test validate_room_exists() falls back to persistence., Test get_room_occupants() handles Room object with get_players/get_npcs., Test get_room_occupants() falls back to persistence., Test validate_player_in_room() returns False when room not found. (+17 more)
+Cohesion: 0.07
+Nodes (27): asyncio, Test get_adjacent_rooms() handles room with no exits., Test get_adjacent_rooms() handles target room not found., Test validate_room_exists() uses cache., Test validate_room_exists() falls back to persistence., Test get_room_occupants() handles Room object with get_players/get_npcs., Test get_room_occupants() falls back to persistence., Test validate_player_in_room() returns False when room not found. (+19 more)
 
-### Community 718 - "test_retry.py"
-Cohesion: 0.11
-Nodes (18): asyncio, Unit tests for retry utilities. Tests the retry decorator and retry logic., Test retry_with_backoff() with async function succeeds on first attempt., Test is_transient_error() identifies transient errors., Test retry_with_backoff() with async function retries on failure then succeeds., Test is_transient_error() returns False for non-transient errors., DatabaseError wrapping asyncpg closed-connection must still retry (e2e…, __cause__ ConnectionDoesNotExistError makes the outer wrapper transient. (+10 more)
+### Community 718 - "useRoomMapData.ts"
+Cohesion: 0.20
+Nodes (9): fetchSpy, buildRoomListRequest(), FetchRoomListConfig, fetchRoomListData(), parseRoomListResponse(), UseRoomMapDataOptions, useRoomMapDataMock, isApiErrorWithDetail() (+1 more)
 
 ### Community 719 - "logging_file_categories.py"
 Cohesion: 0.18
 Nodes (12): Formatter, _PlayerGuidFormatterType, create_formatter(), create_handler_for_category(), Path, RotatingFileHandler, Logger-name categories and per-category file handlers for enhanced logging. The…, Create formatter (with or without PlayerGuidFormatter). (+4 more)
 
-### Community 720 - "test_user_manager.py"
-Cohesion: 0.08
-Nodes (25): Unit tests for user manager service. Tests the UserManager class., Test unmute_channel() when channel is not muted., Test mute_global() successfully globally mutes a player., Test is_player_muted() returns True when player is muted., Test is_channel_muted() returns True when channel is muted., Test is_globally_muted() returns True when player is globally muted., Test can_send_message() behavior when target player is muted., Test can_send_message() returns False when channel is muted. (+17 more)
+### Community 720 - "_should_include_npc"
+Cohesion: 0.14
+Nodes (14): Check if an NPC should be included in the results (has name and is alive)., _should_include_npc(), Test _should_include_npc() returns True for valid NPC., Test _should_include_npc() returns False when no name., Test _should_include_npc() returns False when not alive., test_should_include_npc(), test_should_include_npc_no_name(), test_should_include_npc_not_alive() (+6 more)
 
 ### Community 721 - "TestPathValidator"
 Cohesion: 0.10
@@ -5231,37 +5154,37 @@ Nodes (15): base_value, effect_components, flags, item_type, long_description, m
 Cohesion: 0.14
 Nodes (11): main(), Generate Phase 2: Minor Updates Plan, Comprehensive upgrade implementation plan, Generate Phase 3: Major Updates Plan, Generate detailed migration guides, Generate rollback procedures, Generate post-upgrade monitoring plan, Generate complete upgrade implementation plan (+3 more)
 
-### Community 740 - "NPCEventHandler"
-Cohesion: 0.05
-Nodes (43): NPCEventHandler, Any, Extract spawn_message from behavior_config. Args: behavior_config: The parsed…, Get the spawn message for an NPC from its behavior_config. If no custom spawn…, Get the name of an NPC by ID. Args: npc_id: The NPC ID Returns: NPC name or…, Determine the direction from one room to another by checking room exits. Args:…, Handles all NPC-related real-time events., Get the departure message for an NPC from its behavior_config. If no custom… (+35 more)
+### Community 740 - "_occupation_slots_9"
+Cohesion: 0.19
+Nodes (14): _occupation_slots_9(), _personal_interest_4(), Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no…, Four personal interest (skill_ids only); distinct and no overlap with…, set_player_skills with valid occupation and personal calls delete then…, When Own Language is not in occupation or personal, its value is stats_for_edu., Occupation slot with Cthulhu Mythos (allow_at_creation=False) raises ValueError., occupation_slots with wrong value set (e.g. two 70s) raises ValueError. (+6 more)
 
 ### Community 741 - "CORSConfig"
-Cohesion: 0.08
-Nodes (29): CORSConfig, Any, BaseSettings, field_validator, model_validator, Parse comma-separated string into cleaned list., Parse comma separated strings or lists into a cleaned list of strings., Parse allowed origins from various input formats. (+21 more)
+Cohesion: 0.07
+Nodes (30): CORSConfig, Any, BaseSettings, field_validator, model_validator, CORS (Cross-Origin Resource Sharing) configuration model., Parse comma-separated string into cleaned list., Parse comma separated strings or lists into a cleaned list of strings. (+22 more)
 
 ### Community 742 - "_apply_exploration_filter_if_needed"
 Cohesion: 0.18
 Nodes (17): RoomDictList, _apply_exploration_filter_if_needed(), Any, Apply exploration filter to rooms if requested and user is not admin. Args:…, asyncio, fixture, Tests for room list exploration filtering vs admin bypass (server.api.rooms).…, Non-admin with player record gets filter_rooms_by_exploration(stable room rows). (+9 more)
 
 ### Community 743 - "get_npc_name_from_instance"
-Cohesion: 0.17
-Nodes (15): get_npc_name_from_instance(), Get NPC name from the actual NPC instance, preserving original case from…, Unit tests for connection utils. Tests the connection_utils module functions., Test get_npc_name_from_instance() returns NPC name when found., Test get_npc_name_from_instance() returns None when NPC not found., Test get_npc_name_from_instance() returns None when NPC has no name., Test get_npc_name_from_instance() returns None when service not available., Test get_npc_name_from_instance() returns None when no lifecycle manager. (+7 more)
+Cohesion: 0.16
+Nodes (16): get_npc_name_from_instance(), Utility functions for connection management. This module provides helper…, Get NPC name from the actual NPC instance, preserving original case from…, Unit tests for connection utils. Tests the connection_utils module functions., Test get_npc_name_from_instance() returns NPC name when found., Test get_npc_name_from_instance() returns None when NPC not found., Test get_npc_name_from_instance() returns None when NPC has no name., Test get_npc_name_from_instance() returns None when service not available. (+8 more)
 
 ### Community 744 - "MessageBroker"
 Cohesion: 0.11
 Nodes (12): Infrastructure layer for MythosMUD. This package contains abstractions for…, MessageBroker, Any, Protocol, Send a request and wait for a reply (request-reply pattern). Args: subject:…, Protocol defining the message broker interface. This abstract interface allows…, Connect to the message broker. Returns: bool: True if connection successful,…, Disconnect from the message broker. Closes all subscriptions and releases… (+4 more)
 
-### Community 745 - "ContainerLockMixin"
-Cohesion: 0.20
-Nodes (12): ContainerLockMixin, ContainerComponent, ContainerLockState, Player, UUID, Lock a container (LOCKED or SEALED). Requires ownership or admin., Unlock a container. Requires access and unlock eligibility (key/admin)., Lock/unlock container state persistence. (+4 more)
+### Community 745 - "test_combat_messaging_integration.py"
+Cohesion: 0.14
+Nodes (13): Unit tests for combat messaging integration. Tests the…, Test connection_manager setter overrides lazy load mechanism., A room broadcast with failed_deliveries must log at error level, not just debug…, A clean room broadcast (no failures) stays at debug level., Test CombatMessagingIntegration initialization., Test connection_manager property lazy loads from container., Test _resolve_connection_manager_from_container resolves manager., test_connection_manager_property_lazy_load() (+5 more)
 
 ### Community 746 - "TestVerificationSqlUsersPlayers"
 Cohesion: 0.10
 Nodes (12): PostgreSQL-focused tests for verification and maintenance SQL scripts.…, Tests for db/verification/users_players.sql alignment with current schema., Verification SQL file must exist., Verification SQL must not reference staging tables or select obsolete columns., Verification SQL must use explicit join syntax for multi-table queries., Verification SQL must reference users and players tables., Tests for server/scripts/add_npc_name_constraint.sql (PostgreSQL-only)., NPC name constraint script must exist. (+4 more)
 
-### Community 747 - "test_combat_grace_period.py"
-Cohesion: 0.14
-Nodes (17): mock_connection_manager(), mock_persistence(), mock_request(), asyncio, fixture, Unit tests for combat command blocking during login grace period. Tests that…, Test that attack commands work when player is not in grace period., Attack command returns incapacitated message when player has 0 to -9 DP (prone,… (+9 more)
+### Community 747 - "DraggablePanelView.tsx"
+Cohesion: 0.19
+Nodes (10): DraggablePanelResizeHandles(), DraggablePanelResizeHandlesProps, HANDLE_CONFIGS, HandleConfig, DraggablePanelView(), DraggablePanelViewProps, headerClasses, panelLayoutStyle() (+2 more)
 
 ### Community 748 - "subzone_schema.json"
 Cohesion: 0.05
@@ -5311,33 +5234,33 @@ Nodes (18): 1. Import BigInteger, 2. Files Requiring Updates, Impact Assessment,
 Cohesion: 0.11
 Nodes (18): ✅ AsyncPersistenceLayer (Async), Audit Date, Audited Operations, Current State: ✅ GOOD, Future Improvements, Multi-Step Operations, Notes, Pattern 1: Connection Context Manager (PersistenceLayer) (+10 more)
 
-### Community 760 - "test_asyncio_run_guardrails.py"
-Cohesion: 0.50
-Nodes (3): Test that server library code does not use asyncio.run() (AnyIO best practice).…, Assert server/ has no asyncio.run() in library code (use anyio.run() at entry…, test_no_asyncio_run_in_server_library_code()
+### Community 760 - "Any"
+Cohesion: 0.17
+Nodes (13): _calculate_stat_warnings(), _get_app_or_error(), _notify_player_stat_change(), Any, Return warning message if value exceeds DP or MP calculated maximum; else empty…, Return warning message if value is outside normal range for stat; else empty…, Calculate warnings for stat values that exceed maximums or normal ranges., Notify target player of stat change and send player update event. (+5 more)
 
 ### Community 761 - "performance.test.tsx"
-Cohesion: 0.12
-Nodes (13): Channel, ChannelSelectorProps, MemoryUsageDisplayProps, PerformanceChartProps, TerminalButtonProps, TerminalInputProps, ExtendedPerformance, PerformanceMemory (+5 more)
+Cohesion: 0.07
+Nodes (25): ChatPanel(), Channel, ChannelSelectorProps, TerminalButtonProps, TerminalInputProps, Channel, ChannelSelectorProps, TerminalButtonProps (+17 more)
 
-### Community 762 - "PlayerRespawnWrapper"
-Cohesion: 0.19
-Nodes (15): PlayerRespawnWrapper, Any, Respawn a delirious player by user ID. This method handles the complete…, Wrapper service for player respawn operations., Initialize with a persistence layer., Respawn a dead player by user ID. This method handles the complete respawn…, _dead_player(), asyncio (+7 more)
+### Community 762 - "test_emote_repository.py"
+Cohesion: 0.27
+Nodes (12): _alias_row(), _emote_row(), _mock_session(), asyncio, fixture, Unit tests for EmoteRepository (#624)., repo(), test_get_emote_aliases() (+4 more)
 
 ### Community 763 - "required"
 Cohesion: 0.14
 Nodes (13): additionalProperties, $id, description, exits, id, name, plane, sub_zone (+5 more)
 
 ### Community 764 - "CacheService"
-Cohesion: 0.26
-Nodes (4): CacheService, Main cache service that coordinates all caching operations. This service…, Preload frequently accessed data into caches. This method loads commonly used…, TestCacheService
+Cohesion: 0.21
+Nodes (5): CacheService, Main cache service that coordinates all caching operations. This service…, Initialize the cache service. Args: persistence: Persistence layer instance…, Preload frequently accessed data into caches. This method loads commonly used…, TestCacheService
 
 ### Community 765 - "test_spell_repository.py"
 Cohesion: 0.19
 Nodes (15): Any, Map procedure result row to spell dict., Get all spells from the database. Returns: list[dict]: List of all spell…, _row_to_spell_dict(), _mock_session(), asyncio, fixture, Unit tests for SpellRepository. (+7 more)
 
-### Community 766 - "asyncio"
-Cohesion: 0.16
-Nodes (10): asyncio, Test roll_character_stats() requires authentication., Test roll_character_stats() enforces rate limiting., Test roll_character_stats() with profession_id., Test roll_character_stats() when profession not found., Test roll_character_stats() with required_class., Test roll_character_stats() when persistence not available., Test roll_character_stats() endpoint. (+2 more)
+### Community 766 - "Protocol"
+Cohesion: 0.18
+Nodes (8): _ContainerPersistence, _LookPlayer, _LookRoom, _Prototype, _PrototypeRegistry, Protocol, UUID, _WearableSvc
 
 ### Community 767 - "fixtures/shared/__init__.py"
 Cohesion: 0.13
@@ -5375,9 +5298,9 @@ Nodes (18): overrides, @asyncapi/generator, @asyncapi/generator-components, @asy
 Cohesion: 0.11
 Nodes (17): Communities (10 total, 2 thin omitted), Community 0 - "Azotottal (fallen angel beyond the stars) / Captain Louis Malon", Community 1 - "Charenton (Paris district / asylum) / Christophe Pressi — Soldat (Soldier), age 20", Community 2 - "Dreamlands / Fenalik's Mansion (Poissy)", Community 3 - "Reign of Terror / Call of Cthulhu 7th Edition", Community 4 - "Bastille / James Coquillat", Community 5 - "Azathoth / Celine Bessette", Community 6 - "Christophe Pressi / Comte Benoit" (+9 more)
 
-### Community 776 - "fixture"
-Cohesion: 0.12
-Nodes (17): mock_chat_logger(), mock_connection_manager(), mock_message_builder(), mock_name_extractor(), mock_occupant_manager(), mock_room_sync_service(), mock_task_registry(), player_event_handler() (+9 more)
+### Community 776 - "subscribe_npc_spoke_to_chat"
+Cohesion: 0.17
+Nodes (11): Initialize chat service., Subscribe once so NPCSpoke publishes become room chat lines., Wire ChatService once at app startup (optional for unit tests)., set_chat_service_for_npc_system(), subscribe_npc_spoke_to_chat(), NPCSpoke bridge schedules say-shaped room speech; skips whisper., NPCSpoke subscription is one-shot., test_npc_spoke_handler_schedules_room_speech() (+3 more)
 
 ### Community 777 - "Execution Steps"
 Cohesion: 0.11
@@ -5403,25 +5326,29 @@ Nodes (41): get_project_root(), Determine the project root based on current work
 Cohesion: 0.23
 Nodes (14): Any, Validate that a player has admin permissions. Args: player: Player object to…, validate_admin_permission(), _BrokenAdminPlayer, mock_admin_logger(), asyncio, fixture, Unit tests for admin permission validation. (+6 more)
 
-### Community 784 - "MagicServiceHealingMixin"
-Cohesion: 0.23
-Nodes (10): MagicServiceHealingMixin, Any, UUID, Publish DP update via event bus, or send fallback game event., If instant cast applied healing, send DP update event to the healed player., Mixin for MagicService: send DP update events when spells apply healing., True when healing was applied to another player (heal-other, not steal-life or…, True if effect result indicates healing was applied (success, effect_applied,… (+2 more)
+### Community 783 - ".accept_party_invite"
+Cohesion: 0.20
+Nodes (6): Remove expired pending invites and notify inviters., Send a command_response-style message to a single player., Send party_invite event to the target player only., Create a pending party invite and send party_invite event to target. Target…, Accept a party invite. Target is the player who accepted (the invitee)., Decline a party invite.
 
-### Community 785 - "RoomRepositoryProtocol"
-Cohesion: 0.15
-Nodes (11): Protocol, Room, List all cached rooms., Protocol for room persistence operations. Defines the contract used by…, Get a room by ID from cache., RoomRepositoryProtocol, asyncio, Runtime checks for persistence repository protocols. (+3 more)
+### Community 784 - "test_magic_healing_events.py"
+Cohesion: 0.09
+Nodes (32): MagicServiceHealingMixin, Any, UUID, Healing event notification for spellcasting. Mixin that sends player_dp_updated…, Publish DP update via event bus, or send fallback game event., If instant cast applied healing, send DP update event to the healed player., Mixin for MagicService: send DP update events when spells apply healing., True when healing was applied to another player (heal-other, not steal-life or… (+24 more)
+
+### Community 785 - "auth_rate_limit.py"
+Cohesion: 0.24
+Nodes (11): assert_auth_rate_limit_paths_registered(), _collect_post_paths(), _HasPrefix, _HasRoutes, _IncludedRouterLike, _join_route_path(), FastAPI, Protocol (+3 more)
 
 ### Community 786 - "test_event_publisher_helpers.py"
-Cohesion: 0.14
-Nodes (14): event_publisher(), mock_nats_service(), fixture, Unit tests for event publisher helper functions. Tests the helper functions in…, Create a mock NATS service., Create an EventPublisher instance., Test _create_event_message() creates event message., Test get_next_sequence_number() increments sequence. (+6 more)
+Cohesion: 0.20
+Nodes (9): Unit tests for event publisher helper functions. Tests the helper functions in…, Test _create_event_message() creates event message., Test get_next_sequence_number() increments sequence., Test reset_sequence_number() resets to 0., Test _get_async_persistence() gets persistence from container., test_create_event_message(), test_get_async_persistence(), test_get_next_sequence_number() (+1 more)
 
 ### Community 787 - "RoomRepository"
 Cohesion: 0.13
 Nodes (13): Room repository for async persistence operations. This module provides async…, Repository for room persistence operations. Handles room caching and retrieval.…, Initialize the room repository. Args: room_cache: Shared room cache dictionary, Get a room by ID from cache. Args: room_id: Room identifier Returns: Room |…, List all cached rooms. Returns: list[Room]: List of all rooms Note: This is…, Save a room to the cache. Args: room: Room object to save Note: Rooms are…, Save multiple rooms to the cache. Args: rooms: List of room objects to save…, RoomRepository (+5 more)
 
-### Community 788 - "CharacterSelectionScreen.tsx"
-Cohesion: 0.06
-Nodes (32): CharacterCard(), CharacterCardDeleteState, CharacterCardProps, CharacterSelectionScreen(), CharacterSelectionScreenProps, extractCharactersFetchErrorMessage(), fetchCharactersList(), formatCharacterDate() (+24 more)
+### Community 788 - "useStatsRollingActions.ts"
+Cohesion: 0.07
+Nodes (27): MechanicalEffect, ProfessionCard(), ProfessionCardProps, StatRequirement, ProfessionSelectionContentProps, ProfessionSelectionScreen(), ProfessionSelectionScreenProps, fetchSpy (+19 more)
 
 ### Community 789 - "factory"
 Cohesion: 0.67
@@ -5431,13 +5358,13 @@ Nodes (3): factory(), fixture, Create a CommandFactory instance.
 Cohesion: 0.15
 Nodes (13): Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Phase 3: Polish and Optimization, Sub-tasks, Sub-tasks, Sub-tasks (+5 more)
 
-### Community 791 - "is_safe_filename"
-Cohesion: 0.12
-Nodes (16): is_safe_filename(), Check if a filename is safe (no path traversal, no special characters). Args:…, Test is_safe_filename with valid filename., Test is_safe_filename with empty string (considered safe)., Test is_safe_filename rejects filenames with .., Test is_safe_filename rejects filenames with forward slash., Test is_safe_filename rejects filenames with backslash., Test is_safe_filename rejects filenames with special characters. (+8 more)
+### Community 791 - "_find_dead_connections"
+Cohesion: 0.17
+Nodes (12): _find_dead_connections(), Find dead WebSocket connections for a player before acquiring lock. Args:…, Test _find_dead_connections() returns empty list when player not found., Test _find_dead_connections() returns empty list when all connections are…, Test _find_dead_connections() skips connections not in active_websockets., Test _find_dead_connections() raises ConnectionError when websocket is None., Test _find_dead_connections() finds dead connections., test_find_dead_connections_all_active() (+4 more)
 
-### Community 792 - "test_combat_messaging_integration.py"
-Cohesion: 0.05
-Nodes (58): asyncio, Unit tests for combat messaging integration. Tests the…, Test broadcast_combat_attack handles personal message errors gracefully., Test broadcast_combat_death broadcasts death event., Test broadcast_combat_ended broadcasts combat ended event., Test broadcast_combat_end broadcasts combat end event., Test broadcast_combat_error sends error to player., Test broadcast_player_mortally_wounded broadcasts message. (+50 more)
+### Community 792 - "asyncio"
+Cohesion: 0.13
+Nodes (15): asyncio, Test broadcast_player_mortally_wounded broadcasts message., Test broadcast_player_mortally_wounded with attacker name., Test broadcast_combat_attack sends personal message to attacker., Test broadcast_combat_attack without attacker_id., Test send_dp_decay_message sends DP decay message., broadcast_combat_attack surfaces a partial room-broadcast failure at error…, Test broadcast_combat_attack handles personal message errors gracefully. (+7 more)
 
 ### Community 793 - ".check_bidirectional_connections"
 Cohesion: 0.11
@@ -5463,9 +5390,9 @@ Nodes (25): entry, ignoreBinaries, ignoreDependencies, vite.userConfig.ts, proje
 Cohesion: 0.25
 Nodes (13): usePanel(), usePanelActions(), usePanelContext(), usePanelLayout(), defaultPanels, PanelContext, PanelContextType, PanelLayout (+5 more)
 
-### Community 799 - "commandStore.ts"
-Cohesion: 0.16
-Nodes (15): CommandActions, CommandAlias, CommandHistoryEntry, CommandSelectors, CommandState, CommandStore, CommandStoreGet, CommandStoreSet (+7 more)
+### Community 799 - "_CombatServiceDeps"
+Cohesion: 0.17
+Nodes (7): _CombatServiceDeps, Minimal CombatService surface required by CombatDeathHandler., Return NPC combat integration service when available., Publish NPCDiedEvent to NATS., Publish PlayerDiedEvent to NATS (#634)., Publish PlayerMortallyWoundedEvent to NATS (#634)., Initialize the death handler. Args: combat_service: Reference to the parent…
 
 ### Community 800 - "Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)"
 Cohesion: 0.12
@@ -5524,28 +5451,28 @@ Cohesion: 0.19
 Nodes (10): main(), Path, Update the room ID in the JSON file to match new naming schema., Execute the migration., Handles migration of room filenames from old to new schema., Initialize the migrator., Parse old filename format to extract components., Discover all room files that need migration. (+2 more)
 
 ### Community 814 - "test_email_utils.py"
-Cohesion: 0.18
-Nodes (17): generate_unique_bogus_email(), is_bogus_email(), AsyncSession, Email utilities for MythosMUD authentication. This module provides utilities…, Generate a unique bogus email address for a user. This function creates a bogus…, Check if an email address is a bogus email generated by our system. Args:…, Validate that a bogus email follows our expected format. Args: email: The email…, validate_bogus_email_format() (+9 more)
+Cohesion: 0.19
+Nodes (16): generate_unique_bogus_email(), is_bogus_email(), AsyncSession, Generate a unique bogus email address for a user. This function creates a bogus…, Check if an email address is a bogus email generated by our system. Args:…, Validate that a bogus email follows our expected format. Args: email: The email…, validate_bogus_email_format(), asyncio (+8 more)
 
 ### Community 815 - "Phase 4: Testing and Refinement"
 Cohesion: 0.15
 Nodes (13): Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Acceptance Criteria, Phase 4: Testing and Refinement, Sub-tasks, Sub-tasks, Sub-tasks (+5 more)
 
-### Community 816 - "MessageBroadcaster"
-Cohesion: 0.09
-Nodes (24): SendPersonalMessage, Messaging components for connection management. This package provides modular…, _global_targets_and_stats(), MessageBroadcaster, _narrow_gather_delivery_dict(), UUID, Message broadcasting for connection management. This module provides room and…, Convert string player IDs to UUIDs for message sending. Args: target_list: List… (+16 more)
+### Community 816 - "test_enhanced_logging_config.py"
+Cohesion: 0.24
+Nodes (10): _as_bound_logger(), BoundLogger, Unit tests for enhanced_logging_config helpers. Covers log_exception_once…, Minimal stand-in for BoundLogger: only what log_exception_once touches for…, Adapt test double to the function param type (structural use only)., Plain exceptions get _already_logged via __setattr__ fallback; second log is…, LoggedException uses mark_logged(); repeat call does not log again., _StubBoundLogger (+2 more)
 
-### Community 817 - "asyncio"
-Cohesion: 0.12
-Nodes (17): asyncio, Test restore_mp_from_meditation() returns error when player not found., Test restore_mp_from_meditation() returns message when MP already at max., Test restore_mp_from_meditation() restores MP., Test restore_mp_from_item() respects max_mp limit., Test restore_mp_from_item() uses magic_service if available., Test process_tick_regeneration() uses REST multiplier for sitting position., Test process_tick_regeneration() returns zero when MP already at max. (+9 more)
+### Community 817 - "test_mp_regeneration_service.py"
+Cohesion: 0.05
+Nodes (59): mock_player(), mock_player_service(), mp_regeneration_service(), asyncio, fixture, Unit tests for MP regeneration service. Tests the MPRegenerationService class…, Test process_tick_regeneration() accumulates fractional MP., Test _get_regen_multiplier() returns 1.0 for standing position. (+51 more)
 
 ### Community 818 - "test_player_spell_repository.py"
 Cohesion: 0.27
 Nodes (16): _mock_session_with_rows(), asyncio, fixture, Unit tests for PlayerSpellRepository., repo(), _spell_row(), test_get_player_spell_found(), test_get_player_spell_missing() (+8 more)
 
 ### Community 819 - "test_nats_message_handler_chat.py"
-Cohesion: 0.03
-Nodes (76): asyncio, Unit tests for NATS message handler chat and messaging. Tests chat field…, Test _get_player_lucidity_tier returns default on error., Test _validate_chat_message_fields raises TypeError for invalid types., Test _validate_chat_message_fields raises TypeError for invalid sender_name…, Test _validate_chat_message_fields raises TypeError for invalid content type., Test _validate_chat_message_fields raises TypeError for invalid sender_id type., Test _extract_chat_message_fields handles whisper target_id. (+68 more)
+Cohesion: 0.11
+Nodes (17): Unit tests for NATS message handler chat and messaging. Tests chat field…, Test _validate_chat_message_fields raises TypeError for invalid sender_id type., Test _extract_chat_message_fields extracts fields., Chat WebSocket event carries speaker_kind for client pass-through., Test _convert_ids_to_uuids handles UUID objects., Test _should_echo_to_sender returns False when message_id is None., Test _should_echo_to_sender returns True when targets exist., Test _validate_chat_message_fields raises error when fields missing. (+9 more)
 
 ### Community 820 - "properties"
 Cohesion: 0.15
@@ -5575,9 +5502,13 @@ Nodes (16): Clarify Skill, Apply Clarity Principles, Assess Current Copy, Button
 Cohesion: 0.12
 Nodes (15): Alpha Is A Design Smell, Building Functional Palettes, Color & Contrast, Color Spaces: Use OKLCH, Contrast & Accessibility, Dangerous Color Combinations, Dark Mode Is Not Inverted Light Mode, Never Use Pure Gray or Pure Black (+7 more)
 
-### Community 828 - "test_follow_flow.py"
-Cohesion: 0.17
-Nodes (15): connection_manager(), event_bus(), follow_service(), movement_service(), asyncio, fixture, Integration tests for follow feature. Flow: Player A requests follow B; B…, Real EventBus for integration. (+7 more)
+### Community 827 - "GameClientV2Dock.test.tsx"
+Cohesion: 0.25
+Nodes (9): chatHistoryLayoutIdentity, chatHistoryLayoutState, defaultChatHistoryLayoutKey, dockTest, mockPanelRecord(), mockPanelRecordCore(), mockPanelRecordFlags(), mockUsePanelManagerNoops() (+1 more)
+
+### Community 828 - "WebSocketManager"
+Cohesion: 0.22
+Nodes (6): WebSocket connection manager with enhanced logging., Establish WebSocket connection with enhanced logging., Disconnect WebSocket with enhanced logging., Send message to specific client with enhanced logging., Broadcast message to all connected clients with enhanced logging., WebSocketManager
 
 ### Community 829 - "collect-n-quest.spec.ts"
 Cohesion: 0.22
@@ -5636,8 +5567,8 @@ Cohesion: 0.30
 Nodes (15): ajv, __dirname, ensureDir(), __filename, generateEmotes(), generateHolidays(), generateNpcSchedules(), generateRooms() (+7 more)
 
 ### Community 843 - ".__post_init__"
-Cohesion: 0.05
-Nodes (18): Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type., Initialize the event with proper type. (+10 more)
+Cohesion: 0.04
+Nodes (41): Event subscription setup for application startup. Extracted from…, Subscribe to RoomOccupantsRefreshRequested so Occupants panel updates after NPC…, Subscribe to room events for quest triggers and progress (start on enter,…, subscribe_quest_events(), subscribe_room_occupants_refresh(), QuestCompleted, Initialize the event with proper type., Initialize the event with proper type. (+33 more)
 
 ### Community 844 - "api/conftest.py"
 Cohesion: 0.17
@@ -5660,8 +5591,8 @@ Cohesion: 0.12
 Nodes (15): Unit tests for player repository. Tests the PlayerRepository class which…, Test PlayerRepository initializes with room cache., Test PlayerRepository initializes with event bus., Test validate_and_fix_player_room returns False for valid room., Test validate_and_fix_player_room fixes invalid room., Test list_players returns empty list when no players., Test save_players successfully saves multiple players., Test PlayerRepository initializes correctly. (+7 more)
 
 ### Community 849 - "utils/config.ts"
-Cohesion: 0.08
-Nodes (33): ConnectionHealthStats(), DualConnectionStats(), formatNumber(), formatPercentage(), formatTime(), loadMonitoringSnapshot(), MonitoringData, MonitoringPanel() (+25 more)
+Cohesion: 0.07
+Nodes (39): ConnectionHealthStats(), DualConnectionStats(), formatNumber(), formatPercentage(), formatTime(), loadMonitoringSnapshot(), MonitoringData, MonitoringPanel() (+31 more)
 
 ### Community 850 - "test_inventory_mutation_guard_async.py"
 Cohesion: 0.17
@@ -5672,8 +5603,8 @@ Cohesion: 0.18
 Nodes (15): _load_checker(), _NoProductionAssertModule, Path, Protocol, Tests for scripts/check_no_production_assert.py., Verify no-production-assert hook targets server code and excludes tests., Public surface of check_no_production_assert loaded via importlib., test_find_assert_line_numbers_detects_assert() (+7 more)
 
 ### Community 852 - "seed_e2e_users.py"
-Cohesion: 0.23
-Nodes (10): E2eUserSpec, _ensure_player_for_user(), main(), Connection, datetime, UUID, Entry point: run E2E user seed via anyio., One row in users plus optional default character for login E2E. (+2 more)
+Cohesion: 0.29
+Nodes (9): E2eUserSpec, _ensure_player_for_user(), main(), Connection, datetime, UUID, Entry point: run E2E user seed via anyio., One row in users plus optional default character for login E2E. (+1 more)
 
 ### Community 853 - "pytest Best Practices"
 Cohesion: 0.13
@@ -5755,13 +5686,13 @@ Nodes (14): #17 · Party — one of three bullets built, #21 · Admin commands �
 Cohesion: 0.24
 Nodes (14): create_rest_countdown_task(), _disconnect_player_after_rest(), _handle_countdown_loop(), _is_rest_interrupted(), Any, Task, UUID, Rest countdown task implementation. This module contains the async task that… (+6 more)
 
-### Community 873 - "who_commands.py"
-Cohesion: 0.21
-Nodes (14): filter_online_players(), filter_players_by_name(), format_who_result(), get_players_for_who(), handle_who_command(), Any, Who command handlers and utilities for MythosMUD. This module contains the who…, Filter players to only those who are online (active within threshold). Args:… (+6 more)
+### Community 873 - "_apply_stat_change_and_build_result"
+Cohesion: 0.22
+Nodes (11): _AdminSetStatApplyContext, _AdminSetStatLogContext, _apply_stat_change_and_build_result(), _build_set_stat_error_response(), _log_admin_set_stat(), BaseException, Log admin set stat command., Context for logging an admin set-stat command (reduces parameter count). (+3 more)
 
-### Community 874 - "test_game_enums.py"
-Cohesion: 0.14
-Nodes (13): Unit tests for game model enums. Tests AttributeType, StatusEffectType, and…, Test PositionState enum contains all expected states., Test AttributeType enum contains expected values., Test AttributeType enum contains all expected types., Test StatusEffectType enum contains expected values., Test StatusEffectType enum contains all expected types., Test PositionState enum contains expected values., test_attribute_type_enum_all_types() (+5 more)
+### Community 874 - "PlayerStatsConfig"
+Cohesion: 0.20
+Nodes (8): PlayerStatsConfig, Any, BaseSettings, field_validator, Default player statistics configuration., Validate stats are in valid range., Validate derived stats values., Convert to dictionary format expected by game code.
 
 ### Community 875 - "test_realtime_bundle_nats.py"
 Cohesion: 0.19
@@ -5771,41 +5702,53 @@ Nodes (14): _config(), Any, asyncio, RealtimeBundle NATS connect policy: e2e har
 Cohesion: 0.13
 Nodes (15): _make_mock_row(), UUID, Test get_player_by_name successfully retrieves player., Test list_players successfully retrieves players., Create a mock procedure result row for row_to_player., Test get_player_by_id successfully retrieves player., Test get_players_by_user_id successfully retrieves players., Test get_active_players_by_user_id successfully retrieves active players. (+7 more)
 
-### Community 877 - ".get_room_occupants"
-Cohesion: 0.33
-Nodes (4): Any, UUID, Separate occupants into players, NPCs, and all occupants lists. Args:…, Get the list of occupants in a room. Args: room_id: The room ID…
+### Community 877 - "ItemInstance"
+Cohesion: 0.24
+Nodes (8): ItemInstance, Any, Item instance model for runtime item representation. This module defines the…, Runtime representation of an item created from a prototype., Convert the instance into an inventory stack payload understood by legacy…, Unit tests for ItemInstance model., test_item_instance_to_inventory_stack_includes_optional_fields(), test_item_instance_to_inventory_stack_minimal()
 
-### Community 879 - "CombatPersistenceHandler"
-Cohesion: 0.05
-Nodes (39): CombatPersistenceHandler, Any, UUID, Combat persistence handling logic. Handles player DP persistence, verification,…, # NOTE: The game tick loop will also check for dead players, but this provides…, Synchronously persist player DP to database. This is the actual persistence…, Persist player DP to database in background (fire-and-forget). This method runs…, Handles combat-related persistence operations. (+31 more)
+### Community 878 - "fixture"
+Cohesion: 0.18
+Nodes (11): catalog_with_own_language_and_mythos(), mock_persistence(), mock_player_skill_repo(), mock_skill_repo(), mock_skill_use_log_repo(), fixture, Mock PlayerSkillRepository., Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id). (+3 more)
 
-### Community 880 - "combat_integration_protocols.py"
+### Community 879 - "test_combat_persistence_handler_events.py"
+Cohesion: 0.03
+Nodes (82): CombatPersistenceHandler, Any, UUID, Combat persistence handling logic. Handles player DP persistence, verification,…, # NOTE: The game tick loop will also check for dead players, but this provides…, Synchronously persist player DP to database. This is the actual persistence…, Persist player DP to database in background (fire-and-forget). This method runs…, Handles combat-related persistence operations. (+74 more)
+
+### Community 880 - "_handle_admin_set_stat_command"
 Cohesion: 0.20
-Nodes (8): CombatEventPublisherProtocol, NpcCombatServiceProtocol, Protocol, Protocols for NPC combat integration (shared by base and facade modules)., Publish a PlayerAttackedEvent to the combat event stream., Typed surface for npc_combat_service.handle_npc_attack_on_player., Handle an NPC attack against a player via the main combat service., Combat event publisher (avoids importing CombatEventPublisher).
+Nodes (10): _handle_admin_set_stat_command(), Validate stat name and value inputs., Handle the admin set command to set a player's statistic. Usage: admin set…, _validate_set_stat_inputs(), Test non-admin user is denied., Test missing stat name handling., Test handling when app context is not available., test_handle_admin_set_stat_command_missing_stat_name() (+2 more)
 
 ### Community 881 - "Decisions required"
 Cohesion: 0.14
 Nodes (14): A · Hard-coded metrics in documents, B · Migration scaffolding that outlived its migration, C · Broken links to archived documents, D · The design record was built from the code, Decisions required, E · Who owns query construction?, F · Layer boundaries: enforce or amend?, G · Doc ↔ doc contradictions (+6 more)
 
-### Community 882 - "_clear_corrupted_cache_entry"
-Cohesion: 0.14
-Nodes (14): _clear_corrupted_cache_entry(), Clear a corrupted cache entry if it exists. Args: request: FastAPI request…, Test _clear_corrupted_cache_entry() clears cache entry., Test _clear_corrupted_cache_entry() handles None request., Test _clear_corrupted_cache_entry() handles request without state., test_clear_corrupted_cache_entry(), test_clear_corrupted_cache_entry_no_request(), test_clear_corrupted_cache_entry_no_state() (+6 more)
+### Community 882 - "._connect_nats"
+Cohesion: 0.22
+Nodes (6): Any, BaseException, Raise RuntimeError when e2e requires live NATS; no-op for other environments., Convert connect failures into hard error (e2e) or soft log (other envs)., Handle connect() returning False; raise for e2e, soft-warn otherwise., Connect to NATS if enabled and not unit_test. Returns NATSService or None.…
 
 ### Community 883 - "asyncio"
 Cohesion: 0.13
 Nodes (12): asyncio, Test _handle_special_command_routing function., Test _handle_special_command_routing handles alias management commands., Test _handle_special_command_routing returns error when alias storage…, Test _handle_special_command_routing converts single-word emotes., Test _process_alias_expansion function., Test _process_alias_expansion returns None when no alias storage., Test _process_alias_expansion returns None when alias not found. (+4 more)
 
+### Community 884 - "extract_subzone_from_room_id"
+Cohesion: 0.24
+Nodes (7): Channel-specific chat log methods for MythosMUD. Mixin used by ChatLogger:…, Stable strftime patterns for log filenames and aggregation keys. These are…, extract_subzone_from_room_id(), get_subzone_local_channel_subject(), Room utility functions for MythosMUD. This module provides utility functions…, Extract sub-zone from room ID. Room ID format:…, Generate NATS subject for sub-zone local channel messages. This creates a…
+
 ### Community 886 - "room_hierarchy_schema.json"
 Cohesion: 0.17
 Nodes (11): additionalProperties, anyOf, description, description, exits, id, name, required (+3 more)
 
-### Community 888 - "format_player_location"
-Cohesion: 0.14
-Nodes (14): format_player_location(), Format player location as Zone: Sub-zone: Room from room ID. Args: room_id:…, Test format_player_location() handles invalid room ID., test_format_player_location_invalid(), Test format_player_location() with short room ID format., Test format_player_location() with non-string input., Test formatting valid player location., Test formatting invalid player location. (+6 more)
+### Community 887 - "DecodeLiabilitiesFn"
+Cohesion: 0.22
+Nodes (8): DecodeLiabilitiesFn, EncodeLiabilitiesFn, LiabilityStackEntry, Protocol, Callable that parses liability JSON into normalized stack entries., Decode stored liability text (or empty state) into stack rows., Callable that serializes liability stack rows for persistence., Encode stack rows into JSON suitable for PlayerLucidity.liabilities.
+
+### Community 888 - "populate_test_npc_databases.py"
+Cohesion: 0.31
+Nodes (8): get_npc_data_from_source(), get_npc_database_url(), main(), populate_database(), Populate a PostgreSQL database with NPC data. Args: target_url: PostgreSQL…, Main function to populate test NPC databases., Get NPC database URL for the specified environment. Args: environment:…, Extract NPC data from the source PostgreSQL database. Args: source_url:…
 
 ### Community 889 - "_EventPersistence"
-Cohesion: 0.22
-Nodes (6): _EventPersistence, _Named, _NatsPublish, Protocol, UUID, Initialize EventPublisher service. Args: nats_service: NATS service instance…
+Cohesion: 0.18
+Nodes (7): _EventPersistence, _Named, _NatsPublish, Protocol, UUID, Get async_persistence from ApplicationContainer (lazy-loaded)., Initialize EventPublisher service. Args: nats_service: NATS service instance…
 
 ### Community 890 - "optimized_security_validator.py"
 Cohesion: 0.13
@@ -5879,53 +5822,53 @@ Nodes (11): find_fstring_logging_violations(), format_violation_report(), FStrin
 Cohesion: 0.23
 Nodes (13): check_not_in_subquery(), check_select_star(), _collect_sql_files(), main(), Path, Lightweight guardrails for hand-maintained PostgreSQL SQL. Warns on: - select *…, Return line with line comment removed (-- ...)., Return content with block comments /* ... */ removed (simple, no nested). (+5 more)
 
-### Community 908 - "validate_websocket_message"
+### Community 908 - "UUID"
 Cohesion: 0.28
-Nodes (9): check_websocket_message_rate_limit(), get_connection_csrf_context(), WebSocket, Resolve the CSRF/JWT token used for message validation. Prefer connection…, Validate message and send error response if validation fails. Returns:…, Check rate limit and send error response if exceeded. Returns: True if rate…, Return stored JWT, connection_id, and metadata from the active WebSocket…, resolve_expected_csrf_token() (+1 more)
+Nodes (5): UUID, Record one successful use of a skill at the character's current level. Used for…, Return distinct skill_ids that the player successfully used at the given level.…, For each skill the player used during the previous level, roll d100. If roll >…, Roll d100 against the character's skill value; on success record use and return…
 
 ### Community 909 - "ChatPoseManager"
-Cohesion: 0.08
-Nodes (16): ChatPoseManager, Manages in-memory storage of player poses., Initialize the pose manager., Normalize player identifiers to string form., Set a player's pose in memory. Args: player_id: ID of the player pose: Pose…, Get a player's current pose. Args: player_id: ID of the player Returns: Current…, Clear a player's pose. Args: player_id: ID of the player Returns: True if pose…, Get all poses (for testing/debugging). Returns: Dictionary mapping player IDs… (+8 more)
+Cohesion: 0.07
+Nodes (17): ChatPoseManager, Chat pose management utilities. This module provides pose management…, Manages in-memory storage of player poses., Initialize the pose manager., Normalize player identifiers to string form., Set a player's pose in memory. Args: player_id: ID of the player pose: Pose…, Get a player's current pose. Args: player_id: ID of the player Returns: Current…, Clear a player's pose. Args: player_id: ID of the player Returns: True if pose… (+9 more)
 
 ### Community 910 - "AggressiveMobNPC"
-Cohesion: 0.05
-Nodes (47): AggressiveMobNPC, Debug log for context enrichment (best-effort, must not fail)., Populate player_in_range, enemy_nearby, and target_id for attack rules. Uses…, Hunt a specific target., Resolve attack_damage from behavior config with robust typing., Try to handle the attack via combat integration. Returns: True/False if…, Internal implementation for attacking a target., Attack a specific target. (+39 more)
+Cohesion: 0.04
+Nodes (52): AggressiveMobNPC, Protocol, Aggressive mob NPC type for MythosMUD. This module provides the…, Debug log for context enrichment (best-effort, must not fail)., Populate player_in_range, enemy_nearby, and target_id for attack rules. Uses…, Hunt a specific target., Resolve attack_damage from behavior config with robust typing., Try to handle the attack via combat integration. Returns: True/False if… (+44 more)
 
 ### Community 911 - "_parse_env_list"
 Cohesion: 0.14
 Nodes (14): _parse_env_list(), _parse_list_from_string(), Parse non-empty string as JSON list or CSV. Used by _parse_env_list., Parse a string from the environment as JSON list or CSV., test_parse_env_list_empty_and_none(), test_parse_list_from_string_json_and_csv(), Test parsing None as env list., Test parsing empty string as env list. (+6 more)
 
-### Community 912 - "field_validator"
-Cohesion: 0.14
-Nodes (8): Any, field_validator, Validate schedule entry days are standard English weekday names (Sunday,…, Validate slug-formatted list entries. Args: value: Sequence of strings to…, Ensure the schedule window moves time forward like the Chronology Tablets…, Validate tradition value. Args: value: The tradition string to validate…, Validate season value. Args: value: The season string to validate Returns: str:…, Validate bonus tags format.
+### Community 912 - ".optimize_payload"
+Cohesion: 0.28
+Nodes (5): Any, Create an incremental update payload containing only changed fields. Args:…, Calculate the size of a payload in bytes. Args: payload: The payload dictionary…, Compress a large payload using gzip compression. Args: payload: The payload…, Optimize a payload by applying size limits and compression if needed. Args:…
 
 ### Community 913 - "Recommended Test Additions"
 Cohesion: 0.20
 Nodes (10): 1. MessageBroker Integration Tests (15 tests, ~1 hour), 2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour), 3. Database Migration Tests (10 tests, ~1.5 hours), 4. WebSocket Edge Case Tests (15 tests, ~2 hours), 5. Error Recovery Tests (20 tests, ~3 hours), Immediate Priority (Add First), Recommended Test Additions, Secondary Priority (Add Second) (+2 more)
 
-### Community 914 - "test_mp_regeneration_service.py"
-Cohesion: 0.14
-Nodes (13): Unit tests for MP regeneration service. Tests the MPRegenerationService class…, Test _get_regen_multiplier() returns 1.0 for standing position., Test _get_regen_multiplier() returns REST multiplier for sitting., Test _get_regen_multiplier() returns enhanced REST multiplier for lying., Test _get_regen_multiplier() defaults to 1.0 when position not specified., Test MPRegenerationService initialization., Test MPRegenerationService initialization with custom regen_rate., test_get_regen_multiplier_default_position() (+5 more)
+### Community 914 - "test_utility_commands_whoami.py"
+Cohesion: 0.28
+Nodes (8): asyncio, Unit tests for utility command handlers. Tests the whoami command functionality., Test handle_whoami_command() returns player information., Test handle_whoami_command() handles missing persistence., Test handle_whoami_command() handles player not found., test_handle_whoami_command(), test_handle_whoami_command_no_persistence(), test_handle_whoami_command_player_not_found()
 
 ### Community 915 - "test_profession_service.py"
 Cohesion: 0.25
 Nodes (13): persistence(), _profession(), asyncio, fixture, Unit tests for ProfessionService., service(), test_get_all_professions_dict(), test_get_profession_by_id_dict_found() (+5 more)
 
-### Community 916 - "test_command_service.py"
-Cohesion: 0.14
-Nodes (13): Unit tests for command service. Tests the CommandService class which handles…, Test _prepare_command_data creates basic command_data dict., Test _extract_parsed_fields extracts basic fields., Test _extract_parsed_fields handles missing attributes gracefully., Test register_command_handler adds new handler., Test register_command_handler overwrites existing handler., Test _log_model_dump_result logs model dump., test_extract_parsed_fields_basic() (+5 more)
+### Community 916 - "Any"
+Cohesion: 0.25
+Nodes (6): benchmark_model_memory_usage(), Any, Compare memory usage across multiple model classes. Args: model_classes: List…, Print formatted model memory usage results., Print formatted comparison results., Benchmark memory usage for all major models.
 
 ### Community 917 - "test_persistence_container_persistence.py"
 Cohesion: 0.14
 Nodes (13): Unit tests for persistence.container_persistence module. This module tests the…, Test parsing None JSONB column., Test parsing string JSONB column., Test parsing dict JSONB column., Test parsing empty string JSONB column., Test parsing list JSONB column., Test parsing invalid JSON string., test_parse_jsonb_column_dict() (+5 more)
 
-### Community 918 - "cached"
-Cohesion: 0.33
-Nodes (5): cached(), Decorator to cache function results. Args: cache_name: Name of the cache to use…, Keep players cache truthy; empty LRUCache is bool-false via __len__., _seed_players_cache(), TestCachedDecorator
+### Community 918 - "test_cache_service.py"
+Cohesion: 0.17
+Nodes (14): cached(), Cache service for MythosMUD server. This module provides caching services that…, Decorator to cache function results. Args: cache_name: Name of the cache to use…, Caching module for MythosMUD server. This module provides comprehensive caching…, get_cache_manager(), LRU Cache implementation for MythosMUD server. This module provides thread-safe…, Get the global cache manager instance. Returns: The global cache manager…, Reset the global cache manager (for testing). (+6 more)
 
-### Community 919 - "BaseEvent"
-Cohesion: 0.01
-Nodes (234): ModuleType, Distributed EventBus that uses NATS for cross-instance event distribution.…, Invoke one subscriber in test mode (direct call or create_task)., Process subscribers synchronously when tests have no running EventBus loop., Publish an event to the pure asyncio event bus. Args: event: The event to…, _convert_value_for_json(), _convert_value_from_json(), _copy_public_event_attrs() (+226 more)
+### Community 919 - "AuthRateLimitMiddleware"
+Cohesion: 0.25
+Nodes (6): AuthRateLimitMiddleware, ASGIApp, Receive, Scope, Send, Pure ASGI middleware; HTTP POST login/register only.
 
 ### Community 920 - "Party"
 Cohesion: 0.20
@@ -5943,9 +5886,9 @@ Nodes (12): Correction to the core-issues sweep — verified directly, Corrobora
 Cohesion: 0.14
 Nodes (13): Unit tests for command factories. Tests the CommandFactory class., Test create_sit_command delegates to exploration factory., Test create_drop_command delegates to inventory factory., Test create_kick_command delegates to combat factory., Test create_alias_command delegates to utility factory., Test create_aliases_command delegates to utility factory., Test create_reply_command delegates to communication factory., test_create_alias_command() (+5 more)
 
-### Community 924 - "PlayerCreationService"
-Cohesion: 0.21
-Nodes (9): PlayerCreationService, Any, Stats, UUID, Create a new player character with specific stats. Args: name: The player's…, Service for player creation operations., Initialize with persistence layer, schema converter, and optional instance…, Resolve starting room and tutorial instance ID. For tutorial players, returns… (+1 more)
+### Community 924 - "PlayerStateService"
+Cohesion: 0.09
+Nodes (21): PlayerCreationService, Any, Stats, UUID, Create a new player character with specific stats. Args: name: The player's…, Service for player creation operations., Initialize with persistence layer, schema converter, and optional instance…, Resolve starting room and tutorial instance ID. For tutorial players, returns… (+13 more)
 
 ### Community 925 - "optimized_validate_player_name"
 Cohesion: 0.12
@@ -6051,13 +5994,13 @@ Nodes (9): required, applies_to, category, days, end_hour, id, name, start_hour 
 Cohesion: 0.23
 Nodes (12): _check_service_availability(), _collect_npcs_by_room(), _print_summary(), Any, Verification script to check NPCs in lifecycle manager and test occupant query…, Print verification summary. Args: npc_count: Total number of active NPCs…, Verify NPCs exist in lifecycle manager and test query logic., Check if NPC service, lifecycle manager, and active_npcs are available.… (+4 more)
 
-### Community 951 - "._finalize_spawn_record"
-Cohesion: 0.17
-Nodes (9): Protocol, Set room tracking attributes on NPC instance., Validate that room tracking was set correctly., Update in-memory state and tracking after successful NPC creation., Protocol for NPCs that track spawn metadata and room tracking., Protocol for spawning services used by NPCLifecycleManager., Create an NPC instance or return None on failure., _SpawningServiceProtocol (+1 more)
+### Community 951 - "_optimize_payload"
+Cohesion: 0.25
+Nodes (8): _optimize_payload(), Optimize payload size for transmission. Args: event: The event data to optimize…, Test _optimize_payload() handles payload too large., Test _optimize_payload() handles optimization failure., Test _optimize_payload() optimizes payload., test_optimize_payload(), test_optimize_payload_optimization_failure(), test_optimize_payload_too_large()
 
 ### Community 952 - "asyncio"
 Cohesion: 0.15
-Nodes (13): asyncio, Test get_user_by_username_case_insensitive when no session is yielded., Test _load_room_cache_async logs sample room IDs when rooms are loaded…, Test _load_room_cache_async handles table not found error., Test _load_room_cache_async raises other errors., Test _query_rooms_with_exits_async handles table not found error., Test _query_rooms_with_exits_async raises other errors., test_get_user_by_username_case_insensitive_no_session() (+5 more)
+Nodes (13): asyncio, Test get_players_batch with empty list., Test _load_room_cache_async logs sample room IDs when rooms are loaded…, Test _load_room_cache_async handles table not found error., Test _load_room_cache_async raises other errors., Test _query_rooms_with_exits_async handles table not found error., Test _query_rooms_with_exits_async raises other errors., test_get_players_batch_empty_list() (+5 more)
 
 ### Community 953 - "Net Impact Summary"
 Cohesion: 0.22
@@ -6091,9 +6034,9 @@ Nodes (12): Harden Skill, Accessibility Resilience, Assess Hardening Needs, Edge
 Cohesion: 0.17
 Nodes (12): LLM Wiki Skill, Chaosium ingest, Division of labor, Graphify sync, Ingest, Lint, MythosMUD LLM Wiki (Obsidian), Non-goals (+4 more)
 
-### Community 961 - "get_mythos_chronicle"
-Cohesion: 0.06
-Nodes (31): Wire holiday/schedule services and Mythos tick scheduler., Initialize Mythos time event consumer., isolated_chronicle(), asyncio, fixture, Unit tests for TimeBundle container wiring., Advance and freeze update persisted state., Clock formatting includes Mythos suffix. (+23 more)
+### Community 961 - "occupant_display.py"
+Cohesion: 0.46
+Nodes (7): _apply_grace_badges(), format_occupant_display_name(), _parse_occupant_player_id(), Any, UUID, Shared occupant display names for look text and Occupants panel events., Format an in-room player's Occupants/look name. Always list; grace badges only.
 
 ### Community 962 - ".create_drop_command"
 Cohesion: 0.15
@@ -6184,16 +6127,16 @@ Cohesion: 0.17
 Nodes (12): C1 · What are the ADRs *for*?, C2 · Who owns query construction?, C3 · Layer boundaries: enforce or amend?, C4 · Is `APPLICATION_CONTAINER_ANALYSIS.md` restored or left archived?, C5 · Four doc↔doc contradictions, C6 · Contract drift from one unrecorded decision, C7 · Closed-but-not-built — six features, C8 · Undocumented systems worth an ADR (+4 more)
 
 ### Community 984 - "game_tick_protocols.py"
-Cohesion: 0.11
-Nodes (18): _online_player_ids(), AsyncSession, FastAPI, Player, Protocol, UUID, Protocol stubs and container access for game tick processing., Return currently online player UUIDs, or empty if no connection manager. (+10 more)
+Cohesion: 0.12
+Nodes (13): AsyncSession, FastAPI, Player, Protocol, UUID, Protocol stubs and container access for game tick processing., _TickCombatService, _TickDeathService (+5 more)
 
 ### Community 985 - "load_motd"
 Cohesion: 0.23
 Nodes (11): Unit tests for motd_loader utilities. Tests the MOTD loading functions., Test load_motd() loads MOTD from file., Test load_motd() returns default when file doesn't exist., Test load_motd() handles file read errors., Test load_motd() handles empty file., test_load_motd_empty_file(), test_load_motd_file_exists(), test_load_motd_file_not_exists() (+3 more)
 
 ### Community 986 - "command_handler_unified.py"
-Cohesion: 0.04
-Nodes (66): _check_all_command_blocks(), _check_casting_state(), _check_rate_limit(), CommandRequest, _ensure_alias_storage(), _get_casting_block_result(), get_help_content(), handle_command() (+58 more)
+Cohesion: 0.05
+Nodes (66): command_request_app_state(), CommandExecutionRequest, Return app.state for HTTP Request or WebSocketRequestContext (duck-typed).…, _check_all_command_blocks(), _check_casting_state(), _check_grace_period_block(), _check_rate_limit(), _ensure_alias_storage() (+58 more)
 
 ### Community 987 - "INDEX.md"
 Cohesion: 0.27
@@ -6215,9 +6158,9 @@ Nodes (4): is_postgres_url(), Check if the database URL is PostgreSQL., Test is_
 Cohesion: 0.17
 Nodes (11): Unit tests for server.monitoring lazy __getattr__ re-exports., Exception tracker symbols import without triggering numpy lazy paths., __getattr__ resolves MonitoringDashboard and get_monitoring_dashboard., __getattr__ resolves PerformanceStats and get_performance_monitor., Unknown attribute names raise AttributeError., Direct __getattr__ covers both branch returns for dashboard imports., test_monitoring_eager_imports(), test_monitoring_getattr_direct_call() (+3 more)
 
-### Community 992 - "PlayerEnteredRoom"
-Cohesion: 0.03
-Nodes (113): PlayerEnteredRoom, Event fired when a player enters a room. This event is triggered when a player…, Move followers when the followed player moves., _entity_id_for_quest_offer(), _make_on_npc_died(), _make_on_player_entered(), _make_on_player_left(), _parse_player_id() (+105 more)
+### Community 992 - "test_player_event_handlers_room.py"
+Cohesion: 0.04
+Nodes (70): asyncio, Unit tests for player room event handlers. Tests the PlayerRoomEventHandler…, Test broadcast_player_entered_message() skips when room_id is None., Test subscribe_player_to_room() successfully subscribes player., Test subscribe_player_to_room() handles invalid player_id., Test subscribe_player_to_room() handles subscription errors., Test _send_room_name_message() sends room name., Test _prepare_room_data() prepares room data with to_dict. (+62 more)
 
 ### Community 993 - "P3 · realtime-connection + events-nats"
 Cohesion: 0.20
@@ -6230,10 +6173,6 @@ Nodes (9): Conforming — substantial features that check out, Correction to a p
 ### Community 995 - "test_channel_broadcasting_strategies.py"
 Cohesion: 0.20
 Nodes (13): ChannelBroadcastingStrategyFactory, Factory for creating channel broadcasting strategies., Unit tests for channel broadcasting strategies. Tests the…, Test ChannelBroadcastingStrategyFactory.__init__() initializes with default…, Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy., Test ChannelBroadcastingStrategyFactory.get_strategy() returns…, Test ChannelBroadcastingStrategyFactory.register_strategy() registers new…, Test global channel_strategy_factory instance exists. (+5 more)
-
-### Community 996 - "NATSMessageProcessingMixin"
-Cohesion: 0.10
-Nodes (20): _ChatMessageFields, NATSMessageProcessingMixin, _optional_str(), TypedDict, UUID, Process message with retry logic. Attempts message processing with exponential…, Process a single NATS message (original logic, can raise exceptions). Args:…, Extract and normalize chat message fields from message data. Args:… (+12 more)
 
 ### Community 997 - "P7 · Rulings — complete"
 Cohesion: 0.20
@@ -6351,9 +6290,9 @@ Nodes (10): check_thresholds(), _ensure_coverage_xml_or_exit(), main(), parse_co
 Cohesion: 0.25
 Nodes (10): generate_simple_dot_file(), generate_simple_html_visualization(), load_room_data(), main(), print_simple_statistics(), Load all room and intersection data from the zone directory., Print simplified statistics about the room data., Main function to generate the simplified visualization. (+2 more)
 
-### Community 1026 - "get_help_content"
-Cohesion: 0.06
-Nodes (41): Help command adapter module. The original help command handler lives in…, handle_help_command(), handle_system_command(), Any, System commands for MythosMUD. This module contains handlers for system-level…, Broadcast a system-level message via the chat service if available., Handle the help command. Args: command_data: Command data dictionary containing…, get_command_categories() (+33 more)
+### Community 1026 - "system_commands.py"
+Cohesion: 0.11
+Nodes (23): Help command adapter module. The original help command handler lives in…, handle_help_command(), handle_system_command(), Any, System commands for MythosMUD. This module contains handlers for system-level…, Broadcast a system-level message via the chat service if available., Handle the help command. Args: command_data: Command data dictionary containing…, asyncio (+15 more)
 
 ### Community 1027 - "P8 · Applied"
 Cohesion: 0.20
@@ -6375,17 +6314,17 @@ Nodes (11): asyncio, Test _ensure_room_cache_loaded returns early when cache is 
 Cohesion: 0.20
 Nodes (10): Decisions made — do not re-litigate, Design ↔ Implementation Drift Audit — Final Summary, Do first — small, high value, Loose ends outside the tracker, Sequencing that matters, User-visible defects, Weight the evidence correctly, What the audit concluded (+2 more)
 
-### Community 1032 - "resolve_connection_manager"
-Cohesion: 0.27
-Nodes (9): _coerce_connection_manager(), _ensure_async_compat(), _make_async_compat_wrapper(), Utility functions and module-level code for ConnectionManager. This module…, Pass-through for container values; typing lives at call sites., Wrap a sync or async callable so callers can always await it., Ensure connection manager methods are awaitable. Wraps synchronous callables in…, Resolve a connection manager instance. Prefers explicitly supplied candidate,… (+1 more)
+### Community 1032 - ".auto_progression_enabled"
+Cohesion: 0.29
+Nodes (5): setter, Return whether auto-progression is enabled., Enable or disable combat auto-progression., Return the turn interval in seconds., Set the turn interval in seconds.
 
 ### Community 1033 - "environment"
 Cohesion: 0.25
 Nodes (8): default, description, enum, type, indoors, outdoors, underwater, environment
 
-### Community 1034 - "TestGenerateRoomId"
-Cohesion: 0.20
-Nodes (6): Test generate_room_id() function., Test generate_room_id() with basic components., Test generate_room_id() handles components with underscores., Test generate_room_id() with empty components., Test generate_room_id() preserves special characters in components., TestGenerateRoomId
+### Community 1034 - "sample_container"
+Cohesion: 0.29
+Nodes (7): mock_prototype_registry(), fixture, Create a sample container., Create a sample equipped container item., Create a mock prototype registry., sample_container(), sample_equipped_container()
 
 ### Community 1035 - "Teach Impeccable Skill"
 Cohesion: 0.24
@@ -6400,8 +6339,8 @@ Cohesion: 0.20
 Nodes (9): 1. Always Use `@playwright/test`, 2. Prioritize Robust Locators, 3. Embrace Web-First Assertions, 4. Implement the Page Object Model (POM), 5. Optimize Performance with Auth State & Route Blocking, 6. Mock APIs for Deterministic Tests, 7. Leverage CI/CD Features for Debugging, 8. Maintain Code Quality with Linters & Formatters (+1 more)
 
 ### Community 1038 - "npc_combat_grace.py"
-Cohesion: 0.14
-Nodes (17): _connection_manager_from_config_app(), is_npc_attack_on_player_blocked_by_login_grace_period(), is_player_attack_blocked_by_login_grace_period(), ConnectionManager, UUID, Login grace-period checks for NPC combat integration (extracted to keep service…, Resolve connection_manager from the public config app accessor. Uses getattr on…, True if the player should not attack (in login grace period). Fail-open on… (+9 more)
+Cohesion: 0.17
+Nodes (17): get_app_instance(), Return the runtime app instance attached during lifespan startup. This provides…, _connection_manager_from_config_app(), is_npc_attack_on_player_blocked_by_login_grace_period(), is_player_attack_blocked_by_login_grace_period(), ConnectionManager, UUID, Login grace-period checks for NPC combat integration (extracted to keep service… (+9 more)
 
 ### Community 1039 - "Cursor Subagents Overview"
 Cohesion: 0.20
@@ -6449,7 +6388,7 @@ Nodes (17): Deliverables, Deliverables, Deliverables, Deliverables, Deliverables
 
 ### Community 1050 - "Test Suite Quality Audit Report"
 Cohesion: 0.18
-Nodes (10): By removing 15% of tests, we, Current State, Optimized State (After Pruning), Phase A: Quick Wins (1-2 hours effort), Phase B: Medium Effort (4-8 hours effort), Phase C: Strategic Enhancements (8-16 hours effort), Specific Actionable Recommendations, Summary: Test Quality Metrics (+2 more)
+Nodes (10): ~25-30% (1,250-1,500 tests) provide CRITICAL protection, Answer to Your Question, Conclusion, Phase A: Quick Wins (1-2 hours effort), Phase B: Medium Effort (4-8 hours effort), Phase C: Strategic Enhancements (8-16 hours effort), Recommended Action, Specific Actionable Recommendations (+2 more)
 
 ### Community 1051 - "MythosMUD Testing Strategy (Greenfield Suite)"
 Cohesion: 0.20
@@ -6463,17 +6402,17 @@ Nodes (9): 1. Overview, 2. Open the editor, 3. Tree shape (nav-only), 4. Editor 
 Cohesion: 0.22
 Nodes (6): generateLoadTestCredential(), INVITE_CODES, PLAYER_CONFIGS, PlayerConfig, NOTE: This test is designed to be executed using Playwright MCP tools for, registerPlayer()
 
-### Community 1054 - "apply_stat_modifications"
-Cohesion: 0.36
-Nodes (8): apply_stat_modifications(), Apply stat modification dict to stats. Returns (updated stats, stat_changes,…, Unit tests for spell_effects_stats helpers., test_apply_stat_modifications_bad_string_skipped(), test_apply_stat_modifications_basic(), test_apply_stat_modifications_clamps_to_bounds(), test_apply_stat_modifications_skips_invalid_stat(), test_apply_stat_modifications_string_coercion()
+### Community 1054 - "mock_persistence"
+Cohesion: 0.29
+Nodes (7): mock_persistence(), mock_player(), mock_request(), fixture, Create a mock request with app state and container., Create a mock persistence., Create a mock player.
 
 ### Community 1055 - "alias_schema.json"
 Cohesion: 0.04
 Nodes (51): command, version, additionalProperties, additionalProperties, description, properties, required, type (+43 more)
 
-### Community 1056 - "test_exploration_service.py"
-Cohesion: 0.05
-Nodes (68): _async_session_maker_mock(), asyncio, Unit tests for exploration service. Tests the ExplorationService class., Test mark_room_as_explored() returns False when room not found., Test mark_room_as_explored() raises DatabaseError on database failure., Test _get_room_uuid_by_stable_id() with provided session., Test _get_room_uuid_by_stable_id() creates session when none provided., Test _get_room_uuid_by_stable_id() returns None when room not found. (+60 more)
+### Community 1056 - "ExplorationService"
+Cohesion: 0.04
+Nodes (90): _MapRooms, ExplorationService, Service for tracking player room exploration. This service manages the…, test_apply_exploration_filter_if_needed_calls_for_normal_user(), test_apply_exploration_filter_if_needed_skips_for_superuser(), test_filter_explored_rooms_calls_room_service(), _two_rooms(), _async_session_maker_mock() (+82 more)
 
 ### Community 1057 - "emote_schema.json"
 Cohesion: 0.05
@@ -6491,17 +6430,17 @@ Nodes (7): bench_profession_cache(), _FakePersistence, _get_empty_dict(), main()
 Cohesion: 0.27
 Nodes (9): check_file(), main(), Path, Remove triple-quoted string blocks from file content., Remove string literals from line to avoid false positives inside docs/strings., Return list of (line_no, line) where asyncio.run( appears in code., Return 0 if no asyncio.run( in server/, else 1., _strip_string_literals() (+1 more)
 
-### Community 1061 - "SpellDB"
-Cohesion: 0.25
-Nodes (7): Base, SQLAlchemy model for the spells table. This is the database representation of…, String representation of SpellDB., SpellDB, Unit tests for SpellDB model. Tests the SpellDB SQLAlchemy model., Test __repr__ returns expected string format., test_spell_db_repr()
+### Community 1061 - "SampleModel"
+Cohesion: 0.29
+Nodes (7): OtherModel, BaseModel, Test Pydantic model for memory profiling tests., Test MemoryProfiler.measure_model_serialization() returns stats., Second model for compare_models_memory_usage., SampleModel, test_memory_profiler_measure_model_serialization()
 
 ### Community 1062 - "Protocol"
 Cohesion: 0.22
 Nodes (9): _HasId, _HasIsAdmin, _HasIsSuperuser, _HasUsername, Protocol, Narrowing for user shapes that expose is_superuser., Narrowing for user shapes that expose is_admin., Narrowing for user shapes that expose username. (+1 more)
 
-### Community 1063 - "User"
+### Community 1063 - "test_users.py"
 Cohesion: 0.02
-Nodes (161): AuthenticationBackend, DependsParam, get_auth_backend(), get_current_user_with_logging(), get_user_db(), get_user_manager(), get_username_auth_backend(), AsyncSession (+153 more)
+Nodes (133): AuthenticationBackend, BaseUserManager, ID, JWT strategy that rejects tokens issued before the current server start., Reads a JWT token, validating its signature, audience, and server epoch., RestartInvalidatingJWTStrategy, Set the current auth epoch (call once at server startup)., set_auth_epoch() (+125 more)
 
 ### Community 1064 - ".on_enter_state"
 Cohesion: 0.33
@@ -6523,13 +6462,9 @@ Nodes (8): analyze(), _append_slope_rows(), JsonSample, main(), Path, Analyze id
 Cohesion: 0.24
 Nodes (9): migrate_lucidity_system(), migrate_multiple(), parse_args(), Namespace, Path, Schema migration for the MythosMUD lucidity system tables., Run the lucidity migration across multiple database files., Parse CLI arguments for the lucidity migration runner. (+1 more)
 
-### Community 1069 - "event_handler"
-Cohesion: 0.22
-Nodes (9): event_handler(), mock_connection_manager(), mock_event_bus(), mock_task_registry(), fixture, Create a mock EventBus., Create a mock ConnectionManager., Create a mock TaskRegistry. (+1 more)
-
-### Community 1070 - "mock_utils"
-Cohesion: 0.22
-Nodes (9): mock_connection_manager(), mock_logger(), mock_utils(), player_state_event_handler(), fixture, Create a mock connection manager., Create a mock PlayerEventHandlerUtils., Create a mock logger. (+1 more)
+### Community 1069 - "handle_new_login_impl"
+Cohesion: 0.33
+Nodes (6): handle_new_login_impl(), Handle a new login by terminating all existing connections. Args: player_id:…, Test handle_new_login_impl() handles new login., New login must cancel /rest countdown so it cannot kill the new session., test_handle_new_login_impl(), test_handle_new_login_impl_cancels_orphan_rest_countdown()
 
 ### Community 1071 - "test_async_persistence_room_loading.py"
 Cohesion: 0.20
@@ -6546,6 +6481,10 @@ Nodes (7): C2 · REVISED — procedures-only is binding, Consequence for enforce
 ### Community 1074 - "channel_broadcasting_strategies.py"
 Cohesion: 0.21
 Nodes (10): ChannelBroadcastingStrategy, GlobalChannelStrategy, ABC, Channel Broadcasting Strategies for NATS Message Handler. This module…, Strategy for whisper channel broadcasting., Abstract base class for channel broadcasting strategies., Initialize the strategy factory., Register a new strategy for a channel type. Args: channel_type: Channel type to… (+2 more)
+
+### Community 1075 - "websocket_integration.py"
+Cohesion: 0.06
+Nodes (28): auth_service, authenticate_websocket_connection(), chat_service, game_service, handle_chat_message(), handle_game_action(), handle_websocket_error(), handle_websocket_message() (+20 more)
 
 ### Community 1076 - "CRITICAL · WebSocket authentication bypass on `/ws`"
 Cohesion: 0.25
@@ -6635,9 +6574,9 @@ Nodes (7): CONFORMS worth recording, H11 · Config fail-fast is defeated at app 
 Cohesion: 0.22
 Nodes (10): items, items, minItems, type, items, type, pattern, type (+2 more)
 
-### Community 1098 - "type"
-Cohesion: 0.40
-Nodes (5): integer, minimum, type, null, durability
+### Community 1098 - ".get_original_string_id"
+Cohesion: 0.27
+Nodes (4): UUID, Get the original string ID from a UUID., Any, Initialize the lifecycle manager. Args: async_persistence: Async persistence…
 
 ### Community 1099 - "bench_cache.py"
 Cohesion: 0.31
@@ -6679,21 +6618,21 @@ Nodes (7): DOWNGRADED · F2 — config fail-fast → dev CORS (High → Low/Medi
 Cohesion: 0.25
 Nodes (7): 1. Overview, 2. Context, 3. Decision, 4. Alternatives Considered, 5. Consequences, ADR-020: WebSocket Authentication and CSRF, AI READING INSTRUCTION
 
-### Community 1109 - "get_pose_persistence"
-Cohesion: 0.25
-Nodes (6): AsyncPersistenceForPose, get_pose_persistence(), Resolve async persistence from app state or container for pose commands., Minimal persistence for pose read/write in emote/pose flows., test_get_pose_persistence_from_container(), test_get_pose_persistence_state_fallback()
+### Community 1109 - ".handle_npc_attack_on_player"
+Cohesion: 0.33
+Nodes (3): NPC attack path after login grace check passes., Aggressive-mob entrypoint; matches NPCCombatIntegration.handle_npc_attack for…, Handle an NPC attacking a player (aggro) using the same combat codepath as…
 
-### Community 1110 - "test_websocket_handler_json_error.py"
-Cohesion: 0.25
-Nodes (7): mock_websocket(), asyncio, fixture, Unit tests for websocket handler JSON error handling. Tests the JSON decode…, Create a mock WebSocket., Test _handle_json_decode_error() sends error response., test_handle_json_decode_error()
+### Community 1110 - "websocket_handler.py"
+Cohesion: 0.06
+Nodes (46): handle_json_decode_error(), handle_message_loop_exception(), handle_websocket_disconnect(), handle_websocket_generic_exception(), handle_websocket_message_loop(), handle_websocket_runtime_error(), process_exception_in_message_loop(), process_websocket_inbound_message() (+38 more)
 
-### Community 1111 - "NPCService"
-Cohesion: 0.25
-Nodes (4): Initialize NPC services and load definitions., NPCService, Comprehensive NPC management service. Handles CRUD operations for NPC…, Initialize the NPC service.
+### Community 1111 - "Summary: Test Quality Metrics"
+Cohesion: 0.40
+Nodes (5): By removing 15% of tests, we, Current State, Optimized State (After Pruning), Summary: Test Quality Metrics, Value Proposition
 
-### Community 1112 - "normalize_path_from_url_or_path"
-Cohesion: 0.25
-Nodes (6): Path, Return and cache the repository root directory., Delegate to shared util. Kept for backward compatibility., normalize_path_from_url_or_path(), Path, Normalize an item database override into a filesystem path. DEPRECATED: Items…
+### Community 1112 - ".get_professions"
+Cohesion: 0.40
+Nodes (3): Profession, Get all available professions using SQLAlchemy ORM., Get a profession by ID. Delegates to ProfessionRepository.
 
 ### Community 1113 - "test_websocket_handler_validation.py"
 Cohesion: 0.20
@@ -6719,13 +6658,13 @@ Nodes (9): mock_prototype_registry(), fixture, Create a mock prototype registry.
 Cohesion: 0.10
 Nodes (16): mock_app(), mock_connection_manager(), mock_persistence(), mock_player(), mock_request(), MockPersistence, fixture, Create a mock FastAPI app. (+8 more)
 
-### Community 1119 - "connection_state_machine.py"
-Cohesion: 0.29
-Nodes (7): ConnectionEvent, Enum, Connection state machine for NATS messaging. Implements a robust state machine…, Events that trigger state transitions. AI: Explicit events make the FSM…, Test ConnectionEvent enum values., test_connection_event_enum(), StateMachine
+### Community 1119 - "._initialize_item_services"
+Cohesion: 0.40
+Nodes (3): Exception, On SQLAlchemyError: log, optionally warn about schema/DDL, and clear item…, Load item prototypes from PostgreSQL and create item factory.
 
-### Community 1120 - "mp_regeneration_service"
-Cohesion: 0.22
-Nodes (9): mock_player(), mock_player_service(), mp_regeneration_service(), fixture, Create a mock player service., Create an MPRegenerationService instance., Create a sample player ID., Create a mock player. (+1 more)
+### Community 1120 - ".__call__"
+Cohesion: 0.40
+Nodes (4): Receive, Scope, Send, ASGI application interface. Args: scope: ASGI connection scope receive: ASGI…
 
 ### Community 1121 - "user_manager"
 Cohesion: 0.40
@@ -6733,7 +6672,7 @@ Nodes (5): mock_data_dir(), fixture, Create a temporary data directory., Create 
 
 ### Community 1122 - "ConnectionManager"
 Cohesion: 0.02
-Nodes (98): ConnectionManager, Player, UUID, WebSocket, Check if a WebSocket is open., Check if a WebSocket ID is in the closed set., Mark a WebSocket ID as closed., Get the count of closed WebSocket IDs being tracked. (+90 more)
+Nodes (100): ConnectionManager, Player, UUID, WebSocket, Check if a WebSocket is open., Check if a WebSocket ID is in the closed set., Mark a WebSocket ID as closed., Get the count of closed WebSocket IDs being tracked. (+92 more)
 
 ### Community 1123 - "event_publisher"
 Cohesion: 0.29
@@ -6791,9 +6730,9 @@ Nodes (7): args, clientRoot, __dirname, env, __filename, vitest, vitestBin
 Cohesion: 0.29
 Nodes (6): ExtendedPerformance, ExtendedPerformance, PerformanceMemory, PerformanceMetrics, usePerformanceMonitor(), UsePerformanceMonitorOptions
 
-### Community 1137 - "assert_event_envelope"
-Cohesion: 0.11
-Nodes (17): asyncio, Accepting a party invite adds the player to the party., Declining removes pending invite and does not add to party., Request fails if target is already in a party., party_invite producer emits a build_event-shaped envelope., Requesting a party invite creates a pending invite (target must accept)., test_accept_party_invite_success(), test_decline_party_invite_success() (+9 more)
+### Community 1137 - "asyncio"
+Cohesion: 0.18
+Nodes (11): asyncio, Accepting a party invite adds the player to the party., Declining removes pending invite and does not add to party., Request fails if target is already in a party., party_invite producer emits a build_event-shaped envelope., Requesting a party invite creates a pending invite (target must accept)., test_accept_party_invite_success(), test_decline_party_invite_success() (+3 more)
 
 ### Community 1138 - "Earth Plane"
 Cohesion: 0.25
@@ -6835,9 +6774,9 @@ Nodes (7): extends, extraPaths, pythonVersion, venv, venvPath, ., ./pyproject.to
 Cohesion: 0.25
 Nodes (8): catholic, islamic, jewish, mythos, neo_pagan, tradition, enum, type
 
-### Community 1148 - "ensure_directory_exists"
-Cohesion: 0.25
-Nodes (8): ensure_directory_exists(), Ensure a directory exists and return its absolute path. Args: directory: The…, Test ensure_directory_exists with existing directory., Test ensure_directory_exists creates directory if it doesn't exist., Test ensure_directory_exists with relative path., test_ensure_directory_exists_creates(), test_ensure_directory_exists_existing(), test_ensure_directory_exists_relative_path()
+### Community 1148 - "_EventBusPublishPort"
+Cohesion: 0.40
+Nodes (4): _EventBusPublishPort, Protocol, Minimal surface for publishing domain events from ConnectionManager.event_bus., Publish a single event to the in-process bus.
 
 ### Community 1149 - "main"
 Cohesion: 0.36
@@ -6875,29 +6814,29 @@ Nodes (4): mock_lifecycle_manager(), mock_npc(), fixture, Create a mock lifecycl
 Cohesion: 0.25
 Nodes (6): Strategy for unknown channel types., Initialize unknown channel strategy. Args: channel_type: Unknown channel type, Get strategy for channel type. Args: channel_type: Type of channel to get…, UnknownChannelStrategy, Test UnknownChannelStrategy.broadcast() handles unknown channel., test_unknown_channel_strategy_broadcast()
 
-### Community 1158 - "party_service.py"
-Cohesion: 0.16
-Nodes (16): PartyUpdated, Event fired when party membership or leadership changes. Emitted by…, Party service for MythosMUD. In-memory ephemeral party state: parties exist…, event_bus(), party_events(), party_service(), asyncio, fixture (+8 more)
+### Community 1158 - "PartyService"
+Cohesion: 0.14
+Nodes (21): PartyUpdated, Event fired when party membership or leadership changes. Emitted by…, PartyService, Party service for MythosMUD. In-memory ephemeral party state: parties exist…, In-memory party management: create, disband, add/remove/kick members, leader…, event_bus(), party_events(), party_service() (+13 more)
 
 ### Community 1159 - "initialize_components"
-Cohesion: 0.36
-Nodes (7): initialize_components(), Any, Prepare component state metadata for a new item instance. This routine…, Unit tests for item component hooks., test_initialize_components_empty_prototype(), test_initialize_components_merges_overrides(), test_initialize_components_records_prototype_components()
+Cohesion: 0.29
+Nodes (8): initialize_components(), Any, Component hook coordination for freshly minted item instances., Prepare component state metadata for a new item instance. This routine…, Unit tests for item component hooks., test_initialize_components_empty_prototype(), test_initialize_components_merges_overrides(), test_initialize_components_records_prototype_components()
 
 ### Community 1160 - "P0 · Previously-Known Deviations"
 Cohesion: 0.29
 Nodes (7): ACCEPTED — do not re-report as new, Contradiction found in prior work, Corroboration of the P2 provenance finding, Deferred / residual (open by admission), P0 · Previously-Known Deviations, PLANNED-NOT-DONE — highest-value rows, REMEDIATED — expect CONFORMS; a deviation here is a regression
 
-### Community 1161 - "_extract_bearer_token"
-Cohesion: 0.29
-Nodes (7): _extract_bearer_token(), _parse_subprotocol_token(), Extract bearer token from parsed subprotocol parts. If 'bearer' marker is…, Parse token from WebSocket subprotocol header. Example formats: "bearer,…, test_extract_bearer_token_empty(), test_extract_bearer_token_last_part(), test_parse_subprotocol_token()
+### Community 1161 - "async_persistence_layer"
+Cohesion: 0.40
+Nodes (5): async_persistence_layer(), mock_event_bus(), fixture, Create a mock event bus., Create an AsyncPersistenceLayer instance with skipped room cache.
 
-### Community 1162 - "_default_cors_origins"
-Cohesion: 0.29
-Nodes (7): _default_cors_origins(), Derive default CORS origins with environment taking precedence., test_default_cors_origins_fallback(), Test default CORS origins when no env vars set., Test default CORS origins with env var set., test_default_cors_origins_no_env(), test_default_cors_origins_with_env()
+### Community 1162 - "event_publisher"
+Cohesion: 0.40
+Nodes (5): event_publisher(), mock_nats_service(), fixture, Create a mock NATS service., Create an EventPublisher instance.
 
-### Community 1163 - "command_service"
-Cohesion: 0.29
-Nodes (7): command_service(), mock_request(), mock_user(), fixture, Create a CommandService instance., Create a mock request object., Create a mock user object.
+### Community 1163 - "health_service"
+Cohesion: 0.40
+Nodes (5): health_service(), mock_connection_manager(), fixture, Create a mock connection manager., Create a HealthService instance.
 
 ### Community 1164 - "idle_movement_handler"
 Cohesion: 0.29
@@ -7059,29 +6998,29 @@ Nodes (7): Coroutine Object Has No current_room_id, Combat Start Missing Await g
 Cohesion: 0.29
 Nodes (7): Missing cast spell spells Pydantic Models, Spell Slash Commands Missing From Validation, create_cast_command First-Word-Only Parse, Multi-Word Spell Name Parsing Failure, Missing async_heal_player Method, record_spell_cast Cross-Session Object Use, Heal Spell SQLAlchemy Session Boundary Error
 
-### Community 1204 - "properties"
-Cohesion: 0.25
-Nodes (8): description, enum, type, indoors, outdoors, underwater, properties, environment
+### Community 1204 - "enum"
+Cohesion: 0.29
+Nodes (7): description, enum, type, indoors, outdoors, underwater, environment
 
 ### Community 1205 - "Disconnect Grace Period and Rest Command"
 Cohesion: 0.29
 Nodes (7): Disconnect Grace Period and Rest Command, Rest Command, 30-Second Disconnect Grace Period, ADR-009 Effects System Architecture, LOGIN_WARDED Effect, Effects System ADR and Implementation, Effects System Implementation
 
 ### Community 1206 - "InventoryMutationGuard"
-Cohesion: 0.03
-Nodes (77): _AsyncPlayerGuardState, InventoryMutationGuard, _PlayerGuardState, Acquire sync mutation guard., Acquire async mutation guard., Get or create per-player guard state for sync contexts. Uses thread-safe…, Get or create per-player guard state for async contexts. Uses async lock to…, Clean up per-player guard state when no longer needed (sync context). Removes… (+69 more)
+Cohesion: 0.04
+Nodes (48): _AsyncPlayerGuardState, InventoryMutationGuard, _PlayerGuardState, Acquire sync mutation guard., Acquire async mutation guard., Get or create per-player guard state for sync contexts. Uses thread-safe…, Get or create per-player guard state for async contexts. Uses async lock to…, Clean up per-player guard state when no longer needed (sync context). Removes… (+40 more)
 
 ### Community 1207 - "main"
 Cohesion: 0.38
 Nodes (6): generate_html_visualization(), load_room_data(), main(), Load all room and intersection data from the zone directory., Main function to generate the HTML visualization., Generate an HTML visualization of the room network.
 
-### Community 1208 - "SupportsConnectionManager"
-Cohesion: 0.40
-Nodes (5): _broadcast_posture_change(), _build_posture_change_event(), Live presence surface used to mirror posture into online player records., Return the online player record for a display name, if present., SupportsConnectionManager
+### Community 1208 - "sub_zone"
+Cohesion: 0.50
+Nodes (4): sub_zone, description, pattern, type
 
-### Community 1209 - "test_auth"
-Cohesion: 0.33
-Nodes (6): Any, get, Root endpoint providing basic server information., Test endpoint to verify JWT authentication is working., read_root(), test_auth()
+### Community 1209 - "server/main.py"
+Cohesion: 0.11
+Nodes (22): main(), Replace auth token examples with clearly fake placeholders., Generate and write OpenAPI spec to docs/openapi/openapi.json., _sanitize_token_examples(), create_app(), FastAPI, Mount all versioned API routers under /v1., Create and configure the FastAPI application. This function sets up the FastAPI… (+14 more)
 
 ### Community 1210 - "mark_player_seen_impl"
 Cohesion: 0.33
@@ -7095,17 +7034,13 @@ Nodes (7): FastAPI, ConnectionManager, Message Validator, NATS Message Handler, 
 Cohesion: 0.20
 Nodes (6): Test _validate_command_basics function., Test _validate_command_basics returns result for empty command., Test _validate_command_basics returns result for command too long., Test _validate_command_basics returns result for invalid command content., Test _validate_command_basics returns None for valid command., TestValidateCommandBasics
 
-### Community 1213 - "Conclusion"
-Cohesion: 0.40
-Nodes (5): ~25-30% (1,250-1,500 tests) provide CRITICAL protection, Answer to Your Question, Conclusion, Recommended Action, The remaining 70-75% provide
+### Community 1213 - "_parse_set_stat_args"
+Cohesion: 0.50
+Nodes (4): _parse_set_stat_args(), _parse_value_from_args(), Parse value from args[2] when value_input is None and args has at least 3…, Parse stat name, target player, and value from command data.
 
 ### Community 1214 - "get_alerts"
 Cohesion: 0.40
 Nodes (5): get_alerts(), health(), get, Health check endpoint, Get recent alerts (for testing)
-
-### Community 1215 - "name"
-Cohesion: 0.40
-Nodes (5): description, maxLength, minLength, type, name
 
 ### Community 1216 - "Thinking about stack structure"
 Cohesion: 0.33
@@ -7116,8 +7051,8 @@ Cohesion: 0.33
 Nodes (6): Extract Skill, Discover, Document, Extract & Enrich, Migrate, Plan Extraction
 
 ### Community 1218 - "GameClientV2.tsx"
-Cohesion: 0.03
-Nodes (95): buildHealthStatus(), ChatMessage, formatPosture(), GameTerminal(), GameTerminalProps, Player, Room, formatDelta() (+87 more)
+Cohesion: 0.04
+Nodes (81): GameTerminalProps, formatDelta(), HealthMeter, TIER_METADATA, TierMetadata, computeLucidityBar(), formatChange(), LucidityChangeFooter() (+73 more)
 
 ### Community 1219 - "codacy.yaml Tool Manifest"
 Cohesion: 0.33
@@ -7134,10 +7069,6 @@ Nodes (6): 1. Database Test Failures, 2. Authentication Test Failures, 3. WebSoc
 ### Community 1222 - "Azotottal.md"
 Cohesion: 0.33
 Nodes (3): Azotottal, Comte Fenalik, The Old Gods (nameless patrons)
-
-### Community 1223 - "rename_used_to_is_active.py"
-Cohesion: 0.50
-Nodes (4): apply_migration(), main(), Main entry point for the migration script., Apply the migration to rename used back to is_active. Args: database_url:…
 
 ### Community 1224 - "Chat Panel Separation Specification"
 Cohesion: 0.29
@@ -7247,9 +7178,9 @@ Nodes (6): MythosMUD Development Environment Setup, MythosMUD AI Agent Developme
 Cohesion: 0.40
 Nodes (6): Scenario 13 Whisper Basic, Scenario 14 Whisper Errors, Scenario 16 Whisper Movement, Scenario 18 Whisper Logging, Whisper Moderation Logging, Whisper Channel System
 
-### Community 1251 - ".get_active_sessions"
-Cohesion: 0.40
-Nodes (3): Any, Get list of active admin sessions. Returns: List of active session information, Get audit log entries. Args: limit: Maximum number of entries to return…
+### Community 1251 - "sub_zone"
+Cohesion: 0.50
+Nodes (4): sub_zone, description, pattern, type
 
 ### Community 1252 - "NPC Occupants Verification Summary"
 Cohesion: 0.33
@@ -7311,9 +7242,9 @@ Nodes (6): additionalProperties, properties, schedules, items, minItems, type
 Cohesion: 0.33
 Nodes (6): enabled, additionalProperties, description, required, type, container
 
-### Community 1267 - "AdminSession"
-Cohesion: 0.40
-Nodes (4): AdminSession, Represents an admin session., Test AdminSession initialization., test_admin_session_init()
+### Community 1267 - "metadata"
+Cohesion: 0.67
+Nodes (3): additionalProperties, type, metadata
 
 ### Community 1268 - "holidays"
 Cohesion: 0.33
@@ -7327,9 +7258,9 @@ Nodes (6): $ref, properties, schedules, items, minItems, type
 Cohesion: 0.33
 Nodes (5): additionalProperties, description, $schema, title, type
 
-### Community 1271 - "factory.py"
-Cohesion: 0.03
-Nodes (95): main(), Replace auth token examples with clearly fake placeholders., Generate and write OpenAPI spec to docs/openapi/openapi.json., _sanitize_token_examples(), _apply_cors_env_overrides(), _configure_cors(), CORSConfigDict, CORSConfigOverrides (+87 more)
+### Community 1271 - "CORSConfigDict"
+Cohesion: 0.11
+Nodes (21): _apply_cors_env_overrides(), _configure_cors(), CORSConfigDict, CORSConfigOverrides, _first_set_env(), _get_cors_config_from_app_config(), _get_default_cors_config(), _parse_cors_env_vars() (+13 more)
 
 ### Community 1272 - "room_schema.json"
 Cohesion: 0.33
@@ -7343,21 +7274,13 @@ Nodes (5): integration(), mock_persistence(), fixture, Persistence mock with asy
 Cohesion: 0.40
 Nodes (5): mock_player(), player_repository(), fixture, Create a PlayerRepository instance., Create a mock player for save operations.
 
-### Community 1275 - "exploration_service"
-Cohesion: 0.40
-Nodes (5): exploration_service(), mock_database_manager(), fixture, Create a mock database manager., Create an ExplorationService instance.
-
-### Community 1276 - "mock_lucidity_record"
-Cohesion: 0.40
-Nodes (5): mock_lucidity_record(), mock_session(), fixture, Create a mock async session., Create a mock lucidity record.
+### Community 1276 - "test_lucidity_service.py"
+Cohesion: 0.08
+Nodes (33): mock_session(), asyncio, fixture, Unit tests for lucidity service., Test that lucidity adjustment clamps to minimum value., Test adding a new liability code., Test stacking an existing liability., Test clearing all stacks of a liability. (+25 more)
 
 ### Community 1277 - "sub_zone"
 Cohesion: 0.50
 Nodes (4): sub_zone, description, pattern, type
-
-### Community 1279 - "wearable_service"
-Cohesion: 0.40
-Nodes (5): mock_persistence(), fixture, Create mock persistence layer., Create WearableContainerService instance., wearable_service()
 
 ### Community 1280 - "PostgreSQL database names (MythosMUD)"
 Cohesion: 0.40
@@ -7395,9 +7318,9 @@ Nodes (4): External live graph, For MythosMUD design, Key extractions pages, Nam
 Cohesion: 0.40
 Nodes (4): External live graph, For MythosMUD design, Key extrated pages, S. Petersen's Field Guide to Lovecraftian Horrors (source summary)
 
-### Community 1290 - ".ensure_url_set"
-Cohesion: 0.50
-Nodes (3): Any, model_validator, Ensure url is set - use npc_url as fallback if url is missing. This handles…
+### Community 1290 - "mock_websocket"
+Cohesion: 0.67
+Nodes (3): mock_websocket(), fixture, Create a mock WebSocket.
 
 ### Community 1291 - "Advanced Chat Channels Specification"
 Cohesion: 0.40
@@ -7467,10 +7390,6 @@ Nodes (5): Phase 6: Long-Term Optimizations (Ongoing), Task 6.1: Establish Test 
 Cohesion: 0.40
 Nodes (5): 1.1 Test Distribution by Category, 1.2 Largest Test Files (Splitting/Pruning Candidates), 1.3 Infrastructure Test Analysis, Files, Phase 1: Quantitative Analysis Results
 
-### Community 1308 - "test_validate_secure_path_path_traversal_commonpath"
-Cohesion: 0.33
-Nodes (4): Test validate_secure_path normalizes backslashes., Test validate_secure_path detects path traversal via commonpath check., test_validate_secure_path_path_traversal_commonpath(), test_validate_secure_path_with_backslash()
-
 ### Community 1309 - "test_container_persistence_sql_injection.py"
 Cohesion: 0.17
 Nodes (10): _create_mock_container_row(), UUID, Tests for SQL injection protection in container persistence operations. These…, Test that update_container uses parameterized queries, not string concatenation., Test that column names are hardcoded, not from user input., Create a complete mock container row with all required columns., Test SQL injection protection in container persistence., Test that SQL injection in lock_state is prevented. (+2 more)
@@ -7478,10 +7397,6 @@ Nodes (10): _create_mock_container_row(), UUID, Tests for SQL injection protecti
 ### Community 1310 - "Risk Assessment and Mitigation"
 Cohesion: 0.40
 Nodes (5): Automatic Rollback If, Review and Reconsider If, Risk Assessment and Mitigation, Risks by Phase, Rollback Triggers
-
-### Community 1311 - "test_publish_attack_event_emits_npc_attacked"
-Cohesion: 0.33
-Nodes (4): _publish_attack_event forwards to event bus when configured., First underscore segment title-cased., test_derive_npc_name_from_id(), test_publish_attack_event_emits_npc_attacked()
 
 ### Community 1312 - "id"
 Cohesion: 0.67
@@ -7590,10 +7505,6 @@ Nodes (4): downgrade(), Allow zone_type 'arena' in zones CHECK., Remove 'arena' 
 ### Community 1340 - "rename_players_to_population.py"
 Cohesion: 0.40
 Nodes (4): downgrade(), Rename columns from min_players/max_players to min_population/max_population., Revert column names back to min_players/max_players., upgrade()
-
-### Community 1341 - "Lock"
-Cohesion: 0.18
-Nodes (6): HolidayResolver, Lock, Initialize metrics collector. AI: Uses Lock for thread-safety in async context., Initialize the communication bridge., Initialize the NPC thread manager., Get or create the async lock (lazy initialization).
 
 ### Community 1342 - "DomainError"
 Cohesion: 0.40
@@ -8383,10 +8294,6 @@ Nodes (4): maximum, minimum, type, day
 Cohesion: 0.50
 Nodes (4): $defs, holiday, additionalProperties, type
 
-### Community 1751 - "movement_service"
-Cohesion: 0.29
-Nodes (7): mock_event_bus(), mock_persistence(), movement_service(), fixture, Create a mock persistence layer., Create a mock event bus., Create a MovementService instance.
-
 ### Community 1753 - "month"
 Cohesion: 0.50
 Nodes (4): maximum, minimum, type, month
@@ -8395,25 +8302,17 @@ Nodes (4): maximum, minimum, type, month
 Cohesion: 0.33
 Nodes (6): items, minItems, type, additionalProperties, properties, holidays
 
-### Community 1757 - "pydantic.md"
-Cohesion: 0.03
-Nodes (80): _create_config_instance(), _get_config_cached(), _get_config_test(), Create a new AppConfig instance from current environment. This is a helper…, Production config loader with caching. Uses both @lru_cache and global…, Test config loader without caching - always returns fresh instances. This…, AppConfig, Any (+72 more)
+### Community 1757 - "AppConfig"
+Cohesion: 0.13
+Nodes (14): AppConfig, Any, BaseSettings, model_validator, Build legacy dict entries for game config., Build legacy nats nested dict., Build legacy chat nested dict., Build legacy cors nested dict. (+6 more)
 
 ### Community 1760 - "start_hour"
 Cohesion: 0.50
 Nodes (4): start_hour, maximum, minimum, type
 
-### Community 1761 - ".get_task_lifecycle_metrics"
-Cohesion: 0.33
-Nodes (3): Get count of active tasks., Get task breakdown by type., Get task lifecycle metrics including creation and completion rates.
-
 ### Community 1768 - "plane"
 Cohesion: 0.50
 Nodes (4): description, pattern, type, plane
-
-### Community 1769 - ".create_supervised_task"
-Cohesion: 0.47
-Nodes (4): Any, Task, Create a task with enhanced supervision for legacy cleanup scenarios. Args:…, Create a managed asyncio.Task with mandatory lifecycle tracking. Args: coro:…
 
 ### Community 1772 - "zone"
 Cohesion: 0.50
@@ -8448,8 +8347,8 @@ Cohesion: 0.50
 Nodes (4): zone, description, pattern, type
 
 ### Community 1798 - "server/tests/conftest.py"
-Cohesion: 0.04
-Nodes (56): Config, Item, Reset the configuration cache. In test mode, this is a no-op since get_config()…, reset_config(), _apply_path_based_markers(), _create_test_event_loop(), deterministic_random_seed(), ensure_test_environment_variables() (+48 more)
+Cohesion: 0.10
+Nodes (28): Config, Item, _apply_path_based_markers(), _create_test_event_loop(), deterministic_random_seed(), ensure_test_environment_variables(), _get_db_name_from_url(), AbstractEventLoop (+20 more)
 
 ### Community 1805 - "plane"
 Cohesion: 0.50
@@ -8474,10 +8373,6 @@ Nodes (4): description, minLength, type, description
 ### Community 1818 - "exits"
 Cohesion: 0.50
 Nodes (4): additionalProperties, description, type, exits
-
-### Community 1819 - "id"
-Cohesion: 0.50
-Nodes (4): description, pattern, type, id
 
 ### Community 1821 - "name"
 Cohesion: 0.50
@@ -8531,29 +8426,21 @@ Nodes (3): Final Recommendation, Start with Option B (Quick Wins) Immediately, T
 Cohesion: 0.67
 Nodes (3): weight, minimum, type
 
-### Community 1894 - "description"
-Cohesion: 0.50
-Nodes (4): description, minLength, type, description
+### Community 1894 - "properties"
+Cohesion: 0.25
+Nodes (8): description, minLength, type, properties, description, zone_type, description, type
 
-### Community 1898 - ".create_player_read_from_object"
-Cohesion: 0.12
-Nodes (15): _inventory_item_with_weapon(), Any, Get stats, inventory, and status_effects from player, handling async methods., Compute derived stats fields (max_dp, max_magic_points, max_lucidity). Returns…, Get PositionState from position value, with fallback to STANDING., Create PlayerRead schema from player object., Create PlayerRead schema from player dictionary., Convert a player object to PlayerRead schema. Args: player: Player object or… (+7 more)
+### Community 1898 - "PlayerSchemaConverter"
+Cohesion: 0.13
+Nodes (16): Item prototype registry for command modules., PlayerSchemaConverter, Any, Get stats, inventory, and status_effects from player, handling async methods., Compute derived stats fields (max_dp, max_magic_points, max_lucidity). Returns…, Get PositionState from position value, with fallback to STANDING., Create PlayerRead schema from player object., Create PlayerRead schema from player dictionary. (+8 more)
 
 ### Community 1987 - "DistributedEventBus"
 Cohesion: 0.09
 Nodes (28): DistributedEventBus, Any, EventBus that distributes domain events via NATS for horizontal scaling. When…, Initialize distributed EventBus. Args: nats_service: NATS service for…, Set NATS service and start the bridge (call after NATS connects)., Publish event locally and to NATS when bridge is active., Shutdown EventBus and stop NATS bridge., distributed_bus() (+20 more)
 
-### Community 2008 - ".to_dict"
-Cohesion: 0.12
-Nodes (9): Any, Get list of player IDs currently in the room. Returns: List of player IDs in…, Get list of object IDs currently in the room. Returns: List of object IDs in…, Get list of NPC IDs currently in the room. Returns: List of NPC IDs in the room, Get the total number of occupants in the room. Returns: Total count of players,…, Check if the room has no occupants. Returns: True if the room is empty, False…, Get list of containers in this room. Returns: List of container data…, Convert the room to a dictionary representation. Returns: Dictionary containing… (+1 more)
-
 ### Community 2019 - "._despawn_npc"
 Cohesion: 0.33
 Nodes (3): Despawn NPC with defensive error handling. Args: npc_id: ID of the NPC to…, Despawn an NPC. Args: npc_id: ID of the NPC to despawn _room_id: ID of the room…, Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.
-
-### Community 2072 - "WebSocketRateLimiter"
-Cohesion: 0.40
-Nodes (3): WebSocket rate limiter with enhanced logging., Check if client is within rate limit with enhanced logging., WebSocketRateLimiter
 
 ### Community 2201 - "_AppStateWithLegacyConfig"
 Cohesion: 0.40
@@ -8564,39 +8451,35 @@ Cohesion: 0.50
 Nodes (4): default, description, type, enabled
 
 ### Community 2296 - "test_look_npc.py"
-Cohesion: 0.02
-Nodes (165): _find_matching_npcs(), _format_core_attributes(), _format_lifecycle_info(), _format_multiple_npcs_result(), _format_npc_description(), _format_npc_stats_for_admin(), _format_other_stats(), _format_single_npc_result() (+157 more)
+Cohesion: 0.05
+Nodes (72): _find_matching_npcs(), _format_core_attributes(), _format_lifecycle_info(), _format_multiple_npcs_result(), _format_npc_stats_for_admin(), _format_other_stats(), _format_single_npc_result(), _get_lifecycle_manager() (+64 more)
 
 ### Community 2301 - "PlayerRespawnService"
-Cohesion: 0.05
-Nodes (42): _PlayerCombatClearing, PlayerRespawnService, AsyncSession, Player, Protocol, UUID, _RandomChoiceSource, Return current_dp as an int, defaulting to 0 for non-numeric values. (+34 more)
+Cohesion: 0.06
+Nodes (42): encode_liabilities(), LiabilityStackEntry, Serialize liability structures into JSON string., _PlayerCombatClearing, PlayerRespawnService, AsyncSession, datetime, Player (+34 more)
 
-### Community 2348 - "mock_send_game_event"
-Cohesion: 0.67
-Nodes (3): mock_send_game_event(), fixture, Create a mock send_game_event function.
-
-### Community 2556 - "asyncio"
-Cohesion: 0.05
-Nodes (37): asyncio, Test creating player preferences with string UUID., Test creating player preferences when they already exist., Test getting player preferences successfully., Test updating default channel successfully., Test updating default channel with invalid channel name., Test muting system channel (should fail)., Test unmuting a channel successfully. (+29 more)
+### Community 2556 - "test_player_preferences_service.py"
+Cohesion: 0.03
+Nodes (102): asyncio, Unit tests for player preferences service. Tests the PlayerPreferencesService…, Test _is_valid_json_array with invalid JSON., Test creating player preferences successfully., Test creating player preferences with string UUID., Test creating player preferences when they already exist., Test creating player preferences with invalid ID., Test creating player preferences with integrity error. (+94 more)
 
 ## Knowledge Gaps
-- **6293 isolated node(s):** `wsl-bashrc-codacy.sh script`, `uvx`, `jcodemunch-mcp`, `JCODEMUNCH_MAX_FOLDER_FILES`, `@codacy/codacy-mcp` (+6288 more)
+- **6307 isolated node(s):** `wsl-bashrc-codacy.sh script`, `uvx`, `jcodemunch-mcp`, `JCODEMUNCH_MAX_FOLDER_FILES`, `@codacy/codacy-mcp` (+6302 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **574 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **517 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `get_logger()` connect `get_logger` to `get_session_maker`, `service.py`, `get_help_content`, `get_admin_auth_service`, `inventory_command_helpers.py`, `connection_manager.py`, `ExplorationService`, `Player`, `test_admin_commands_helpers.py`, `talk_command.py`, `container_endpoints_basic.py`, `DialogueDefinitionRepository`, `CombatParticipant`, `Stats`, `EventBus`, `server/dependencies.py`, `npc_base.py`, `NATSServicePoolMixin`, `test_connection_delegates.py`, `HolidayService`, `test_lifecycle_respawn.py`, `is_player_in_login_grace_period`, `test_container_bundles.py`, `EventHandler`, `server/services/__init__.py`, `PrototypeRegistryError`, `api/monitoring.py`, `PlayerNameExtractor`, `CombatService`, `TaskRegistry`, `test_player_respawn_service.py`, `MPRegenerationService`, `test_chat_validator.py`, `WebSocketMessageValidator`, `lucidity_migration.py`, `players.py`, `test_admin_commands.py`, `lifecycle_manager.py`, `test_container_persistence_crud.py`, `PayloadOptimizer`, `channel_broadcasting_strategies.py`, `combat_service.py`, `server/models/game.py`, `apply_communication_dampening`, `SpellEffectType`, `message_handler_factory.py`, `CombatInstance`, `test_combat.py`, `admin_teleport_commands.py`, `_find_item_in_equipped`, `test_aggro_threat.py`, `test_chat_pose_helpers.py`, `MovementMonitor`, `TargetResolutionService`, `SpellTargetingService`, `DatabaseManager`, `get_npc_instance_service`, `ContainerData`, `PlayerLucidity`, `test_look_container.py`, `test_player_disconnect_handlers.py`, `test_look_player.py`, `test_zone_config_loader.py`, `test_player_presence_tracker.py`, `build_event`, `catatonia_check.py`, `player_inventory_migration.py`, `test_chat_npc_system.py`, `connection_state_machine.py`, `communication_commands_flows.py`, `test_combat_monitoring_service.py`, `test_combat_service_modules.py`, `game_tick_death.py`, `ExceptionTracker`, `npc_combat_grace.py`, `look_command.py`, `persistence/container_persistence.py`, `ErrorType`, `websocket_handler.py`, `test_npc_definitions_api.py`, `FeatureFlagService`, `magic_service.py`, `HealthStatus`, `test_game_tick_death.py`, `ChatMessage`, `MythosChronicle`, `test_combat_validator.py`, `lifespan_startup.py`, `CircuitBreaker`, `party_service.py`, `NATSRetryHandler`, `test_alias_commands.py`, `test_message_handlers.py`, `migrate_combat_data.py`, `position_commands.py`, `test_metrics_endpoints.py`, `admin_shutdown_command.py`, `test_status_commands.py`, `NATSError`, `npc_combat_integration_service.py`, `ScheduleService`, `TargetMatch`, `api/game.py`, `test_connection_disconnection.py`, `test_follow_service.py`, `CombatConfiguration`, `test_population_control.py`, `combat_turn_participant_actions.py`, `persistence/container_helpers.py`, `handle_teach_command`, `bundles/game.py`, `debrief_command.py`, `CreateItemInstanceInput`, `test_occupants.py`, `get_asyncpg_server_settings_for_database_url`, `test_inventory_display_helpers.py`, `test_admin_setlucidity_command.py`, `CombatAuditLogger`, `PlayerEventHandlerUtils`, `test_magic_commands.py`, `rename_used_to_is_active.py`, `NPCActionMessage`, `websocket_handler_commands.py`, `real_time.py`, `test_rest_command.py`, `test_lucidity_command_disruption.py`, `test_connection_session_management.py`, `test_connection_establishment.py`, `CatatoniaRegistry`, `connection_manager_health_cleanup.py`, `test_combat_attack_handler.py`, `test_channel_commands.py`, `pydantic.md`, `test_lifecycle_periodic.py`, `player_combat_service_support.py`, `NPCEventHandler`, `LogAggregator`, `DialogueService`, `NATSMessageBroker`, `test_container_persistence_async_helpers.py`, `test_hallucination_services.py`, `factory.py`, `test_look_npc.py`, `quest_service.py`, `PerformanceMonitor`, `test_rescue_service.py`, `SpellRegistry`, `test_map_helpers.py`, `CombatParticipantType`, `server/tests/conftest.py`, `test_lucidity_recovery_commands.py`, `test_chat_nats_publisher.py`, `CombatCommandHandler`, `inventory_equip_command.py`, `RoomRepository`, `map_minimap.py`, `admin_mute_commands.py`, `AliasGraph`, `resolve_weapon_attack_from_equipped`, `LucidityService`, `test_party_commands.py`, `MovementService`, `NPCOccupantProcessor`, `handle_read_command`, `inventory_get_command.py`, `test_command_helpers.py`, `test_shutdown_sequence.py`, `pytest.md`, `test_email_utils.py`, `test_container_persistence_extended_crud.py`, `test_inventory_helpers.py`, `lifespan_protocols.py`, `MessageBroadcaster`, `test_login_grace_period_visual_indicator.py`, `.__init__`, `Lock`, `MetricsCollector`, `test_goto_helpers.py`, `command_service.py`, `SpellMaterial`, `fixtures/integration/__init__.py`, `SpellLearningService`, `game_tick_status_effects.py`, `command_result_text`, `rest_countdown_task.py`, `who_commands.py`, `CombatPersistenceHandler`, `CorpseLifecycleService`, `.__init__`, `subject_controller.py`, `optimized_security_validator.py`, `quest_commands.py`, `models/container.py`, `combat_attack.py`, `player_connection_setup.py`, `BaseEvent`, `game_tick_processing.py`, `lifespan.py`, `test_lifespan_event_subscriptions.py`, `SpellEffects`, `logout_commands.py`, `middleware`, `retry.py`, `ChatModeration`, `lucidity_trigger_handlers.py`, `MemoryThresholdMonitor`, `alias_storage.py`, `MythosTickScheduler`, `game_tick_protocols.py`, `.to_dict`, `command_handler_unified.py`, `skills_commands.py`, `api/character_creation.py`, `PlayerEnteredRoom`, `TrackedTaskManager`, `PlayerService`, `InstanceManager`, `CommandRateLimiter`, `RoomEventHandler`, `ComprehensiveLoggingMiddleware`, `NPCCommunicationIntegration`, `magic_service_completion.py`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
-- **Why does `PlayerRespawnEventHandler` connect `test_player_event_handlers_respawn.py` to `PlayerEventHandlerUtils`, `ConnectionManager`, `BaseEvent`?**
+- **Why does `get_logger()` connect `get_logger` to `ContainerComponent`, `system_commands.py`, `dialogue_definitions_api.py`, `inventory_command_helpers.py`, `NPCDefinition`, `service.py`, `connection_manager.py`, `maps.py`, `pytest.md`, `ValidationError`, `NPCBase`, `container_endpoints_basic.py`, `DialogueDefinitionRepository`, `CombatParticipant`, `Stats`, `npc_combat_grace.py`, `server/dependencies.py`, `PlayerEnteredRoom`, `connection_manager_methods.py`, `MythosMUDError`, `server/schemas/__init__.py`, `NPCLifecycleManager`, `spell_effects_support.py`, `test_lifecycle_respawn.py`, `ApplicationContainer`, `models/container.py`, `nats_exceptions.py`, `server/services/__init__.py`, `NPCSpawningService`, `PrototypeRegistryError`, `api/monitoring.py`, `command_input.py`, `CombatService`, `PlayerNameExtractor`, `TaskRegistry`, `test_users.py`, `test_look_player.py`, `MPRegenerationService`, `test_chat_validator.py`, `WebSocketMessageValidator`, `lucidity_migration.py`, `User`, `command_service.py`, `lifecycle_manager.py`, `ContainerRepository`, `PayloadOptimizer`, `channel_broadcasting_strategies.py`, `NATSError`, `server/models/game.py`, `look_command.py`, `get_help_content`, `apply_communication_dampening`, `CombatInstance`, `admin_teleport_commands.py`, `TargetResolutionService`, `_find_item_in_equipped`, `test_chat_pose_helpers.py`, `MovementMonitor`, `test_aggro_threat.py`, `PassiveMobNPC`, `DatabaseManager`, `get_npc_instance_service`, `test_container_persistence_extended_crud.py`, `rescue_commands.py`, `BehaviorEngine`, `test_look_container.py`, `test_who_commands.py`, `test_player_disconnect_handlers.py`, `test_look_helpers.py`, `ZoneConfiguration`, `test_player_presence_tracker.py`, `websocket_handler.py`, `catatonia_check.py`, `build_event`, `player_inventory_migration.py`, `UserManager`, `test_chat_npc_system.py`, `test_communication_commands_flows.py`, `test_combat_monitoring_service.py`, `test_combat_service_modules.py`, `CoordinateValidator`, `game_tick_death.py`, `ExceptionTracker`, `population_control.py`, `EventBus`, `Room`, `test_player_death_service.py`, `test_look_room.py`, `npc_database.py`, `container_persistence.py`, `ErrorType`, `test_websocket_initial_state.py`, `get_admin_auth_service`, `FeatureFlagService`, `test_magic_service.py`, `HealthStatus`, `chat_service.py`, `config/models/__init__.py`, `lifespan_startup.py`, `CircuitBreaker`, `PartyService`, `initialize_components`, `test_alias_commands.py`, `test_level_service.py`, `migrate_combat_data.py`, `server/commands/__init__.py`, `test_metrics_endpoints.py`, `test_status_commands.py`, `test_nats_service.py`, `NPCSpawnRule`, `NPCCombatMemory`, `bundles/game.py`, `TargetMatch`, `test_go_command.py`, `test_connection_disconnection.py`, `test_follow_service.py`, `NPCOccupantProcessor`, `CombatConfiguration`, `NPCEnteredRoom`, `combat_turn_participant_actions.py`, `QuestService`, `handle_teach_command`, `item_instance_persistence_async.py`, `debrief_command.py`, `test_corpse_lifecycle_service.py`, `OccupantFormatter`, `test_movement_service.py`, `rate_overrides.py`, `test_inventory_display_helpers.py`, `test_game_state_provider.py`, `CombatValidator`, `test_admin_setlucidity_command.py`, `server/main.py`, `test_wearable_container_service.py`, `CombatAuditLogger`, `player_event_handlers.py`, `test_magic_commands.py`, `NPCActionMessage`, `websocket_handler_commands.py`, `AsciiMapRenderer`, `PlayerPositionService`, `test_lucidity_command_disruption.py`, `test_logout_commands.py`, `RoomSubscriptionManager`, `test_error_handling_middleware.py`, `test_connection_statistics.py`, `test_combat_attack_handler.py`, `lifespan.py`, `player_combat_service_support.py`, `test_player_service_mutations.py`, `CORSConfig`, `LogAggregator`, `talk_command.py`, `get_npc_name_from_instance`, `NATSMessageBroker`, `test_error_logging.py`, `test_container_persistence_async_helpers.py`, `FakeHallucinationService`, `IdleMovementHandler`, `test_look_npc.py`, `PerformanceMonitor`, `test_rescue_service.py`, `magic_service.py`, `test_map_helpers.py`, `server/tests/conftest.py`, `test_lucidity_recovery_commands.py`, `test_chat_nats_publisher.py`, `_str_id`, `test_magic_healing_events.py`, `inventory_equip_command.py`, `RoomRepository`, `map_minimap.py`, `chat_channel_message_senders.py`, `PersonalMessageSender`, `resolve_weapon_attack_from_equipped`, `test_lucidity_event_dispatcher.py`, `MovementService`, `connection_establishment.py`, `handle_read_command`, `real_time.py`, `inventory_get_command.py`, `get_username_from_user`, `test_shutdown_sequence.py`, `test_inventory_helpers.py`, `lifespan_protocols.py`, `ContainerServiceError`, `RoomDataValidator`, `test_login_grace_period_visual_indicator.py`, `send_game_event`, `utils.py`, `test_admin_shutdown_command.py`, `test_goto_helpers.py`, `test_shopkeeper_npc.py`, `.__post_init__`, `TargetResolutionResult`, `fixtures/integration/__init__.py`, `server/config/__init__.py`, `game_tick_status_effects.py`, `disconnect_grace_period.py`, `command_result_text`, `rest_countdown_task.py`, `player_effect_repository.py`, `login_grace_period.py`, `test_combat_persistence_handler_events.py`, `extract_subzone_from_room_id`, `subject_controller.py`, `optimized_security_validator.py`, `quest_commands.py`, `test_container_websocket_events.py`, `combat_attack.py`, `test_message_broadcaster.py`, `ChatPoseManager`, `AggressiveMobNPC`, `websocket_helpers.py`, `test_npc_combat_handlers.py`, `test_cache_service.py`, `connection_cleanup_methods.py`, `player_connection_setup.py`, `game_tick_processing.py`, `MemoryLeakMetricsCollector`, `NATSConnectionStateMachine`, `active_lucidity_service.py`, `middleware`, `retry.py`, `ChatModeration`, `LucidityService`, `test_game_tick_processing.py`, `MemoryThresholdMonitor`, `.state`, `NPCStartupService`, `ConnectionErrorHandler`, `ExperienceRepository`, `MythosTickScheduler`, `game_tick_protocols.py`, `command_handler_unified.py`, `api/character_creation.py`, `TrackedTaskManager`, `api/player_effects.py`, `InstanceManager`, `test_websocket_room_updates.py`, `RoomEventHandler`, `ComprehensiveLoggingMiddleware`, `magic_service_completion.py`?**
+  _High betweenness centrality (0.070) - this node is a cross-community bridge._
+- **Why does `NPCPopulationController` connect `NPCLifecycleManager` to `lifespan_startup.py`, `NPCEnteredRoom`, `NPCDefinition`, `test_population_control.py`, `population_control.py`, `PopulationStats`, `EventBus`, `NPCBase`, `lifecycle_manager.py`, `server/dependencies.py`, `PlayerEnteredRoom`, `NPCSpawnRule`, `ZoneConfiguration`, `ApplicationContainer`, `NPCCommunicationIntegration`, `NPCSpawningService`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
-- **Why does `EventBus` connect `EventBus` to `get_logger`, `party_service.py`, `GameMechanicsService`, `connection_manager.py`, `NPCCombatIntegrationService`, `PartyService`, `CombatCommandHandler`, `npc_base.py`, `npc_combat_integration_service.py`, `BaseEvent`, `ScheduleService`, `test_follow_service.py`, `MovementService`, `EventBusLifecycleMixin`, `test_lifespan_event_subscriptions.py`, `test_population_control.py`, `CombatService`, `test_npc_combat_integration_class.py`, `combat_service.py`, `lifecycle_manager.py`, `lifespan_protocols.py`, `NPCMovementIntegration`, `test_follow_flow.py`, `Lock`, `PlayerEventHandlerUtils`, `DistributedEventBus`, `PassiveMobNPC`, `MythosTickScheduler`, `.to_dict`, `test_chat_npc_system.py`, `ConnectionManager`, `test_combat_service_modules.py`, `NPCCombatIntegration`, `test_event_bus.py`, `InstanceManager`, `.__init__`, `integration`, `NPCCommunicationIntegration`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `safe_run_static()` connect `safe_run_static` to `pylint.py`, `manual_dependency_analysis.py`, `compare_linting_results.py`, `grype.py`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Are the 133 inferred relationships involving `LoggedHTTPException` (e.g. with `logged_http_exception_handler()` and `register_error_handlers()`) actually correct?**
   _`LoggedHTTPException` has 133 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 203 inferred relationships involving `ValidationError` (e.g. with `fetch_user_by_username_case_insensitive()` and `load_database_url()`) actually correct?**
-  _`ValidationError` has 203 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 198 inferred relationships involving `ValidationError` (e.g. with `fetch_user_by_username_case_insensitive()` and `load_database_url()`) actually correct?**
+  _`ValidationError` has 198 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 81 inferred relationships involving `User` (e.g. with `.verify_token()` and `.create_user()`) actually correct?**
   _`User` has 81 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 73 inferred relationships involving `AliasStorage` (e.g. with `_handle_special_command_routing()` and `_prepare_command_for_processing()`) actually correct?**

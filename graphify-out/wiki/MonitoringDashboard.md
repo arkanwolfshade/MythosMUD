@@ -1,6 +1,6 @@
 # MonitoringDashboard
 
-> 64 nodes
+> 60 nodes
 
 ## Key Concepts
 
@@ -13,10 +13,8 @@
 - **.record_custom_alert()** (9 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.check_alerts()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **MonitoringSummary** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **SystemHealth** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
 - **Any** (6 connections)
 - **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
 - **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
@@ -29,18 +27,19 @@
 - **.get_alert_history()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_disk_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
 - **._get_memory_usage()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 39 more nodes in this community*
+- **._get_system_load()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._make_performance_alert()** (3 connections) — `server/monitoring/monitoring_dashboard.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (5 shared connections)
-- [LogAggregator](LogAggregator.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
-- [log_with_context](log_with_context.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (12 shared connections)
+- [LogAggregator](LogAggregator.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (3 shared connections)
+- [get_monitoring_dashboard](get_monitoring_dashboard.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 - [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
@@ -51,8 +50,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 128 (91%)
-- INFERRED: 13 (9%)
+- EXTRACTED: 121 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

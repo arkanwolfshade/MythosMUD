@@ -1,43 +1,45 @@
 # asyncio
 
-> 13 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **asyncio** (17 connections)
-- **test_rescue_delta_zero_or_negative()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_dispatches_events_for_both_players()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_event_dispatcher_error()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_handles_uuid_strings()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_rescuer_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_target_not_found()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when rescuer is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() returns error when target is not found.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() sets delta to 1 when delta is zero or negative.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() handles event dispatcher errors gracefully.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() dispatches events for both target and rescuer.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **Test rescue() handles player_id as UUID strings.** (1 connections) — `server/tests/unit/services/test_rescue_service.py`
+- **asyncio** (13 connections)
+- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **publish() returning False should surface as False from EventPublisher.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_game_tick_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() with additional metadata.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() handles NATS errors.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_left_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [test_rescue_service.py](test_rescue_service.py.md) (9 shared connections)
-- [test_rescue_apply_lucidity_error](test_rescue_apply_lucidity_error.md) (1 shared connections)
-- [test_rescue_different_rooms](test_rescue_different_rooms.md) (1 shared connections)
-- [test_rescue_handles_uuid_objects](test_rescue_handles_uuid_objects.md) (1 shared connections)
-- [test_rescue_metadata_includes_rescuer](test_rescue_metadata_includes_rescuer.md) (1 shared connections)
-- [test_rescue_no_persistence](test_rescue_no_persistence.md) (1 shared connections)
-- [test_rescue_not_catatonic](test_rescue_not_catatonic.md) (1 shared connections)
-- [test_rescue_success](test_rescue_success.md) (1 shared connections)
-- [test_rescue_with_player_name](test_rescue_with_player_name.md) (1 shared connections)
+- [test_event_publisher.py](test_event_publisher.py.md) (12 shared connections)
+- [EventPublisher](EventPublisher.md) (3 shared connections)
+- [test_publish_player_left_resolves_names_from_persistence](test_publish_player_left_resolves_names_from_persistence.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_rescue_service.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (92%)
+- INFERRED: 3 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -24,7 +24,7 @@
 - [test_look_npc.py](test_look_npc.py.md) (6 shared connections)
 - [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (4 shared connections)
 - [quest_commands.py](quest_commands.py.md) (2 shared connections)
-- [_get_lifecycle_manager](_get_lifecycle_manager.md) (1 shared connections)
+- [_get_npc_room_id](_get_npc_room_id.md) (1 shared connections)
 
 ## Source Files
 

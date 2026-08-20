@@ -36,7 +36,7 @@
 - [NATSService](NATSService.md) (17 shared connections)
 - [NATSConfig](NATSConfig.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
 
 ## Source Files
 

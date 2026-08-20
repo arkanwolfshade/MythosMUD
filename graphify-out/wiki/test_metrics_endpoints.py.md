@@ -34,12 +34,12 @@
 ## Relationships
 
 - [LoggedHTTPException](LoggedHTTPException.md) (15 shared connections)
-- [pytest.md](pytest.md.md) (15 shared connections)
-- [PlayerService](PlayerService.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [User](User.md) (14 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

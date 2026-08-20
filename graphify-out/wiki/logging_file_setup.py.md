@@ -1,6 +1,6 @@
 # logging_file_setup.py
 
-> 74 nodes
+> 81 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **test_logging_file_setup.py** (20 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
 - **_Handler** (13 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
 - **_setup_aggregator_handlers()** (10 connections) — `server/structured_logging/logging_file_setup.py`
+- **_prepare_log_environment()** (9 connections) — `server/structured_logging/logging_file_setup.py`
 - **Queue** (9 connections)
 - **DropOldestQueueHandler** (8 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
@@ -21,28 +22,29 @@
 - **get_queue_listener()** (7 connections) — `server/structured_logging/logging_file_setup.py`
 - **stop_queue_listener()** (7 connections) — `server/structured_logging/logging_file_setup.py`
 - **test_async_log_queue_is_bounded()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_nats_message_handler_base.py** (7 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
 - **add_handler_to_loggers()** (6 connections) — `server/structured_logging/logging_file_categories.py`
 - **_get_handler_class()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_get_handler_classes()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_get_or_create_log_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
 - **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **test_log_directory_under_env()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
-- **_new_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
-- *... and 49 more nodes in this community*
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_utilities.py](test_logging_utilities.py.md) (11 shared connections)
-- [load_player_guid_formatter_class](load_player_guid_formatter_class.md) (8 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [NATSMessageHandlerMixinBase](NATSMessageHandlerMixinBase.md) (4 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (10 shared connections)
+- [logging_file_categories.py](logging_file_categories.py.md) (8 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (5 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (3 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [.filter](filter.md) (1 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 - [LogAggregator](LogAggregator.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,7 +55,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 178 (98%)
+- EXTRACTED: 190 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

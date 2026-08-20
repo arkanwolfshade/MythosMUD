@@ -1,12 +1,14 @@
 # RoomEventHandler
 
-> 28 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **RoomEventHandler** (21 connections) — `server/realtime/integration/room_event_handler.py`
 - **test_room_event_handler.py** (14 connections) — `server/tests/unit/realtime/integration/test_room_event_handler.py`
+- **room_event_handler.py** (13 connections) — `server/realtime/integration/room_event_handler.py`
 - **asyncio** (9 connections)
+- **server/realtime/integration/__init__.py** (5 connections) — `server/realtime/integration/__init__.py`
 - **.handle_player_entered_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
 - **.handle_player_left_room()** (4 connections) — `server/realtime/integration/room_event_handler.py`
 - **.__init__()** (4 connections) — `server/realtime/integration/room_event_handler.py`
@@ -25,26 +27,30 @@
 - **.unsubscribe_from_events()** (2 connections) — `server/realtime/integration/room_event_handler.py`
 - **UUID** (2 connections)
 - **fixture** (1 connections)
-- **Handle PlayerEnteredRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- **Handle PlayerLeftRoom events by broadcasting updated occupant count.** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- **Handles room movement events and broadcasts occupant updates. This class…** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- **Initialize the room event handler. Args: room_manager: RoomSubscriptionManager…** (1 connections) — `server/realtime/integration/room_event_handler.py`
-- *... and 3 more nodes in this community*
+- **Integration components for connection management. This package provides…** (1 connections) — `server/realtime/integration/__init__.py`
+- **Room event handling for connection management. This module provides integration…** (1 connections) — `server/realtime/integration/room_event_handler.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [build_event](build_event.md) (8 shared connections)
+- [connection_manager.py](connection_manager.py.md) (3 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/realtime/integration/__init__.py`
 - `server/realtime/integration/room_event_handler.py`
 - `server/tests/unit/realtime/integration/test_room_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (88%)
-- INFERRED: 7 (12%)
+- EXTRACTED: 62 (90%)
+- INFERRED: 7 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

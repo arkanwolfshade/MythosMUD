@@ -21,9 +21,9 @@
 
 ## Relationships
 
-- [test_cache_service.py](test_cache_service.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (5 shared connections)
 - [Any](Any.md) (2 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
 - [RoomCacheService](RoomCacheService.md) (1 shared connections)
 - [NPCCacheService](NPCCacheService.md) (1 shared connections)
 

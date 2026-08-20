@@ -27,9 +27,11 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (5 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -40,8 +40,9 @@
 - [TestRunner](TestRunner.md) (3 shared connections)
 - [compare_linting_results.py](compare_linting_results.py.md) (3 shared connections)
 - [grype.py](grype.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (1 shared connections)
 
 ## Source Files

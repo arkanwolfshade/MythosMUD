@@ -1,57 +1,52 @@
 # test_skill_service.py
 
-> 88 nodes
+> 39 nodes
 
 ## Key Concepts
 
 - **test_skill_service.py** (37 connections) — `server/tests/unit/game/test_skill_service.py`
 - **asyncio** (23 connections)
-- **handle_skills_command()** (12 connections) — `server/commands/skills_commands.py`
-- **test_skills_commands.py** (12 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_get_container_services()** (8 connections) — `server/commands/skills_commands.py`
-- **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/skills_commands.py`
-- **fixture** (6 connections)
-- **_format_skills_output()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (5 connections) — `server/commands/skills_commands.py`
-- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_own_language_not_allocated_equals_edu()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_valid_creates_rows()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_values_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Any** (5 connections)
-- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_duplicate_personal_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_overlap_occupation_and_personal_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_personal_interest_not_four_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_wrong_occupation_count_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_container_services_ok()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- *... and 63 more nodes in this community*
+- **test_get_player_skills_non_owner_returns_none()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_player_skills_owner_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_catalog_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_get_skills_used_this_level_returns_repo_result()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_record_successful_skill_use_calls_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_roll_skill_check_failure_does_not_record()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_roll_skill_check_success_records_use_and_returns_true()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_roll_skill_check_unknown_skill_returns_false()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_high_skill_gains_one()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_improvement_applied_when_roll_exceeds_value()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_no_skills_used_no_updates()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_previous_level_under_1_no_op()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_run_improvement_rolls_roll_under_current_no_change()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Unit tests for SkillService (get_skills_catalog, set_player_skills,…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **get_skills_catalog returns list of skill dicts.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **occupation_slots not length 9 raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [command_service.py](command_service.py.md) (8 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (5 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
+- [_occupation_slots_9](_occupation_slots_9.md) (17 shared connections)
+- [fixture](fixture.md) (5 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [SkillService](SkillService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/tests/unit/commands/test_skills_commands.py`
 - `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

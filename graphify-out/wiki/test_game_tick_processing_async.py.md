@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [game_tick_processing.py](game_tick_processing.py.md) (14 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (3 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (13 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
 

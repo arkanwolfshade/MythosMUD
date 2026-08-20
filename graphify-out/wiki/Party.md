@@ -17,9 +17,9 @@
 
 ## Relationships
 
-- [PartyService](PartyService.md) (3 shared connections)
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [_str_id](_str_id.md) (2 shared connections)
+- [PartyService](PartyService.md) (2 shared connections)
 
 ## Source Files
 

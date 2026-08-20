@@ -25,7 +25,7 @@
 ## Relationships
 
 - [ExplorationService](ExplorationService.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [DatabaseManager](DatabaseManager.md) (1 shared connections)
 
 ## Source Files

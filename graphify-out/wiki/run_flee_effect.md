@@ -35,8 +35,8 @@
 
 - [TargetMatch](TargetMatch.md) (13 shared connections)
 - [CombatInstance](CombatInstance.md) (3 shared connections)
-- [spell_effects_status.py](spell_effects_status.py.md) (3 shared connections)
-- [TargetType](TargetType.md) (2 shared connections)
+- [server/models/game.py](server-models-game.py.md) (3 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

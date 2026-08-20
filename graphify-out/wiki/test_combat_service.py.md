@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (5 shared connections)
+- [CombatService](CombatService.md) (9 shared connections)
 - [CombatInstance](CombatInstance.md) (2 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

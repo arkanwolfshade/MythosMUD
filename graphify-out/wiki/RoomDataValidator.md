@@ -1,6 +1,6 @@
 # RoomDataValidator
 
-> 49 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
 - **Any** (8 connections)
 - **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
+- **room_data_validator.py** (7 connections) — `server/services/room_data_validator.py`
 - **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
 - **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
@@ -28,13 +29,14 @@
 - **test_validate_room_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_invalid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
 - **test_validate_room_data_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 24 more nodes in this community*
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
 
 ## Source Files
@@ -44,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 81 (84%)
-- INFERRED: 15 (16%)
+- EXTRACTED: 86 (85%)
+- INFERRED: 15 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

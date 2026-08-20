@@ -1,15 +1,13 @@
 # GameLogPanel.tsx
 
-> 56 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **GameLogPanel.tsx** (18 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
 - **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
 - **GameLogPanelSections.tsx** (16 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
 - **@testing-library/jest-dom/vitest** (14 connections) — `client/tsconfig.test.json`
-- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 - **ChatMessage** (10 connections) — `client/src/stores/gameStore.ts`
 - **GameLogPanel()** (9 connections) — `client/src/components/panels/GameLogPanel.tsx`
 - **gameLogPanelUtils.ts** (9 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
@@ -21,35 +19,35 @@
 - **useGameLogPanelState.ts** (6 connections) — `client/src/components/panels/useGameLogPanelState.ts`
 - **GameLogPanelFilterBar()** (5 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
 - **filterGameLogMessages()** (5 connections) — `client/src/utils/gameLogFilter.ts`
-- **GameTerminalPresentation.test.tsx** (5 connections) — `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
 - **GameLogListMessage** (4 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **GameTerminalPresentation()** (4 connections) — `client/src/components/GameTerminalPresentation.tsx`
 - **formatGameLogTimestamp()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogMessageClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogMessageFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogMessageRowClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
 - **getGameLogSearchInputClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- *... and 31 more nodes in this community*
+- **getGameLogTimeFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
+- **useGameLogPanelState()** (4 connections) — `client/src/components/panels/useGameLogPanelState.ts`
+- **messagePassesGameLogFilters()** (4 connections) — `client/src/utils/gameLogFilter.ts`
+- **components/__tests__/game-log-panel.test.tsx** (4 connections) — `client/src/components/__tests__/game-log-panel.test.tsx`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (11 shared connections)
-- [ChatPanelTest.tsx](ChatPanelTest.tsx.md) (6 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (5 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (4 shared connections)
-- [gameStore.ts](gameStore.ts.md) (4 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (4 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (8 shared connections)
+- [performance.test.tsx](performance.test.tsx.md) (4 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
 - [debugLogger](debugLogger.md) (3 shared connections)
+- [gameStore.ts](gameStore.ts.md) (3 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
 - [SafeHtml.tsx](SafeHtml.tsx.md) (3 shared connections)
-- [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (2 shared connections)
-- [PanelState](PanelState.md) (2 shared connections)
-- [include](include.md) (1 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (2 shared connections)
+- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (2 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
 - `client/src/components/__tests__/game-log-panel.test.tsx`
 - `client/src/components/panels/GameLogMessagesList.tsx`
 - `client/src/components/panels/GameLogPanel.tsx`
@@ -60,7 +58,6 @@
 - `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
 - `client/src/components/panels/gameLogPanelUtils.ts`
 - `client/src/components/panels/useGameLogPanelState.ts`
-- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
 - `client/src/stores/gameStore.ts`
 - `client/src/utils/__tests__/gameLogFilter.test.ts`
 - `client/src/utils/gameLogFilter.ts`
@@ -68,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 157 (100%)
+- EXTRACTED: 122 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,31 @@
 # enum
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **enum** (6 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [applies_to](applies_to.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,15 +33,14 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
 - [MythosMUDError](MythosMUDError.md) (4 shared connections)
 - [ErrorType](ErrorType.md) (3 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [server/main.py](server-main.py.md) (1 shared connections)
-- [MythosChronicle](MythosChronicle.md) (1 shared connections)
-- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

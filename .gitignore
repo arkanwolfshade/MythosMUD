@@ -427,3 +427,7 @@ pylint_output.txt
 *.orig
 client/.auth/admin-auth.json
 client/.auth/user-auth.json
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

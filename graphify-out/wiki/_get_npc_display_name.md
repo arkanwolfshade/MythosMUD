@@ -17,7 +17,7 @@
 
 - [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
 - [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 
 ## Source Files

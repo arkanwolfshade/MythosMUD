@@ -1,12 +1,11 @@
 # TestNPCCombatRewards
 
-> 38 nodes
+> 34 nodes
 
 ## Key Concepts
 
 - **TestNPCCombatRewards** (19 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **asyncio** (12 connections)
-- **test_npc_combat_rewards.py** (5 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.rewards_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.mock_game_mechanics()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.mock_persistence()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
@@ -20,22 +19,22 @@
 - **.test_calculate_xp_reward_with_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_check_player_connection_state_no_container()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_check_player_connection_state_with_connection_manager()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **fixture** (3 connections)
-- **Unit tests for NPC combat rewards. Tests the NPCCombatRewards class for XP…** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test check_player_connection_state handles missing container.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test award_xp_to_killer successfully awards XP.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test award_xp_to_killer handles failure gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
 - **Test award_xp_to_killer handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- *... and 13 more nodes in this community*
+- **Test suite for NPCCombatRewards class.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Test award_xp_to_killer handles zero XP.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [NPCCombatRewards](NPCCombatRewards.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (98%)
+- EXTRACTED: 49 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

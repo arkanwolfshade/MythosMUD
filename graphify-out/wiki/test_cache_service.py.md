@@ -1,50 +1,59 @@
 # test_cache_service.py
 
-> 18 nodes
+> 23 nodes
 
 ## Key Concepts
 
 - **test_cache_service.py** (22 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **ProfessionCacheService** (20 connections) — `server/caching/cache_service.py`
-- **TestProfessionCacheService** (7 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **cache_service.py** (15 connections) — `server/caching/cache_service.py`
+- **lru_cache.py** (13 connections) — `server/caching/lru_cache.py`
+- **server/caching/__init__.py** (12 connections) — `server/caching/__init__.py`
+- **cached()** (11 connections) — `server/caching/cache_service.py`
+- **TestCachedDecorator** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_seed_players_cache()** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
 - **reset_cache_manager()** (5 connections) — `server/caching/lru_cache.py`
-- **fixture** (5 connections)
-- **_Profession** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cache_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_custom_key_func()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
 - **_reset_cache_manager()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_profession_by_id_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_professions()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_all_professions_hit_and_miss()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_profession_by_id_not_found()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_professions()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **Service for caching profession data.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all profession caches.** (1 connections) — `server/caching/cache_service.py`
+- **.test_async_cached_missing_cache_calls_function()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_sync_cache_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_missing_cache_calls_function()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Cache service for MythosMUD server. This module provides caching services that…** (1 connections) — `server/caching/cache_service.py`
+- **Decorator to cache function results. Args: cache_name: Name of the cache to use…** (1 connections) — `server/caching/cache_service.py`
+- **Caching module for MythosMUD server. This module provides comprehensive caching…** (1 connections) — `server/caching/__init__.py`
+- **LRU Cache implementation for MythosMUD server. This module provides thread-safe…** (1 connections) — `server/caching/lru_cache.py`
+- **Get the global cache manager instance. Returns: The global cache manager…** (1 connections) — `server/caching/lru_cache.py`
 - **Reset the global cache manager (for testing).** (1 connections) — `server/caching/lru_cache.py`
 - **Unit tests for server.caching.cache_service.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Keep players cache truthy; empty LRUCache is bool-false via __len__.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [NPCCacheService](NPCCacheService.md) (5 shared connections)
-- [CacheService](CacheService.md) (4 shared connections)
-- [RoomCacheService](RoomCacheService.md) (4 shared connections)
-- [GameBundle](GameBundle.md) (3 shared connections)
+- [RoomCacheService](RoomCacheService.md) (8 shared connections)
+- [NPCCacheService](NPCCacheService.md) (8 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (7 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [CacheService](CacheService.md) (5 shared connections)
 - [Any](Any.md) (3 shared connections)
-- [cached](cached.md) (3 shared connections)
-- [bench_cache_professions.py](bench_cache_professions.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [CacheManager](CacheManager.md) (3 shared connections)
+- [LRUCache](LRUCache.md) (3 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
+- [get_monitoring_dashboard](get_monitoring_dashboard.md) (1 shared connections)
 
 ## Source Files
 
+- `server/caching/__init__.py`
 - `server/caching/cache_service.py`
 - `server/caching/lru_cache.py`
 - `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 95 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

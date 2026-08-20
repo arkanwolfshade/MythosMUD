@@ -34,10 +34,9 @@
 ## Relationships
 
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (2 shared connections)
 - [real_time.py](real_time.py.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [._handle_nats_message](_handle_nats_message.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

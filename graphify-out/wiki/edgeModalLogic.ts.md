@@ -29,7 +29,8 @@
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (14 shared connections)
+- [RoomNodeData](RoomNodeData.md) (13 shared connections)
+- [map/types.ts](map-types.ts.md) (1 shared connections)
 
 ## Source Files
 

@@ -34,7 +34,7 @@
 ## Relationships
 
 - [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [test_manager.py](test_manager.py.md) (10 shared connections)
 - [subject_controller.py](subject_controller.py.md) (9 shared connections)
+- [test_manager.py](test_manager.py.md) (9 shared connections)
 - [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
 - [test_validation.py](test_validation.py.md) (3 shared connections)
 - [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
 - [CombatService](CombatService.md) (2 shared connections)
 - [NATSConfig](NATSConfig.md) (2 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (2 shared connections)
 - [test_pattern_matcher.py](test_pattern_matcher.py.md) (2 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
-- [_EventPersistence](_EventPersistence.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

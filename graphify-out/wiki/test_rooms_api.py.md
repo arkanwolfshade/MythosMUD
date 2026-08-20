@@ -33,16 +33,16 @@
 
 ## Relationships
 
-- [RoomService](RoomService.md) (12 shared connections)
+- [get_logger](get_logger.md) (11 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (10 shared connections)
-- [DatabaseError](DatabaseError.md) (9 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [api/player_respawn.py](api-player_respawn.py.md) (3 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
+- [RoomService](RoomService.md) (10 shared connections)
+- [rooms/room.py](rooms-room.py.md) (3 shared connections)
+- [User](User.md) (3 shared connections)
+- [_apply_exploration_filter_if_needed](_apply_exploration_filter_if_needed.md) (2 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (2 shared connections)
 - [ExplorationService](ExplorationService.md) (1 shared connections)
 - [PostgresCursor](PostgresCursor.md) (1 shared connections)
-- [room_service.py](room_service.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
