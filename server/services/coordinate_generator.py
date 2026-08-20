@@ -11,6 +11,7 @@ for understanding the eldritch architecture of our dimensional spaces.
 
 # pylint: disable=too-few-public-methods,too-many-locals  # Reason: Coordinate generator class with focused responsibility, minimal public interface, and complex coordinate generation logic
 
+import json
 from collections import deque
 from typing import Any
 
@@ -348,18 +349,16 @@ class CoordinateGenerator:
         if not coordinates:
             return
 
-        # Batch update coordinates using stable_id
-        update_query = text("""
-            UPDATE rooms
-            SET map_x = :map_x, map_y = :map_y
-            WHERE stable_id = :stable_id
-        """)
+        # Bulk update via a single procedure call (one round-trip for the whole zone)
+        positions = json.dumps(
+            [
+                {"stable_id": stable_id, "map_x": float(x), "map_y": float(y)}
+                for stable_id, (x, y) in coordinates.items()
+            ]
+        )
+        update_query = text("SELECT update_room_map_positions(:positions)")
 
-        for stable_id, (x, y) in coordinates.items():
-            await self._session.execute(
-                update_query,
-                {"stable_id": stable_id, "map_x": float(x), "map_y": float(y)},
-            )
+        await self._session.execute(update_query, {"positions": positions})
 
         await self._session.commit()
         logger.info("Stored coordinates", room_count=len(coordinates))

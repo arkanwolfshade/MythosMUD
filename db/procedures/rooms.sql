@@ -178,3 +178,47 @@ BEGIN
     RETURN v_updated > 0;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- update_room_map_position: set map_x/map_y for a single room (admin position edit)
+CREATE OR REPLACE FUNCTION :schema_name.update_room_map_position(p_room_id text, p_map_x numeric, p_map_y numeric) -- noqa: PRS
+RETURNS boolean AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE rooms
+    SET map_x = p_map_x, map_y = p_map_y
+    WHERE stable_id = p_room_id;
+
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    RETURN v_updated > 0;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- update_room_map_positions: bulk set map_x/map_y from a jsonb array of
+-- {stable_id, map_x, map_y} objects; returns the number of rows updated
+CREATE OR REPLACE FUNCTION :schema_name.update_room_map_positions(p_positions jsonb) -- noqa: PRS
+RETURNS integer AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE rooms AS r
+    SET map_x = p.map_x, map_y = p.map_y
+    FROM jsonb_to_recordset(p_positions) AS p(stable_id text, map_x numeric, map_y numeric)
+    WHERE r.stable_id = p.stable_id;
+
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    RETURN v_updated;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get_room_stable_ids_by_uuids: resolve room UUIDs to stable_ids (exploration filtering)
+CREATE OR REPLACE FUNCTION :schema_name.get_room_stable_ids_by_uuids(p_room_ids uuid[]) -- noqa: PRS
+RETURNS TABLE (stable_id text) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT r.stable_id FROM rooms r WHERE r.id = ANY(p_room_ids);
+END;
+$$ LANGUAGE plpgsql;

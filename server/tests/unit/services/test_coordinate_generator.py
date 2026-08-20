@@ -1,5 +1,6 @@
 """Unit tests for coordinate generation helpers."""
 
+import json
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -128,3 +129,19 @@ async def test_store_coordinates_noop_on_empty():
     gen = CoordinateGenerator(session)
     await gen._store_coordinates({})
     session.execute.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_store_coordinates_sends_one_bulk_call_with_full_payload():
+    session = AsyncMock()
+    session.commit = AsyncMock()
+    gen = CoordinateGenerator(session)
+    await gen._store_coordinates({"room_a": (1, 2), "room_b": (-3, 4)})
+
+    session.execute.assert_awaited_once()
+    _, params = session.execute.await_args.args
+    payload = json.loads(params["positions"])
+    assert payload == [
+        {"stable_id": "room_a", "map_x": 1.0, "map_y": 2.0},
+        {"stable_id": "room_b", "map_x": -3.0, "map_y": 4.0},
+    ]
