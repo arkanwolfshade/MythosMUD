@@ -1,7 +1,7 @@
 """Unit tests for GameMechanicsService."""
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -16,6 +16,7 @@ def persistence() -> MagicMock:
     p.apply_lucidity_loss = AsyncMock()
     p.apply_fear = AsyncMock()
     p.apply_corruption = AsyncMock()
+    p.gain_occult_knowledge = AsyncMock()
     p.heal_player = AsyncMock()
     p.damage_player = AsyncMock()
     p.gain_experience = AsyncMock()
@@ -74,11 +75,10 @@ async def test_apply_corruption_success(service: GameMechanicsService, persisten
 async def test_gain_occult_knowledge_success(service: GameMechanicsService, persistence: MagicMock) -> None:
     player = _player()
     persistence.get_player_by_id.return_value = player
-    with patch("server.persistence.repositories.experience_repository.ExperienceRepository") as repo_cls:
-        repo_cls.return_value.update_player_stat_field = AsyncMock()
-        ok, msg = await service.gain_occult_knowledge(str(player.player_id), 10)
+    ok, msg = await service.gain_occult_knowledge(str(player.player_id), 10)
     assert ok is True
     assert "occult knowledge" in msg
+    persistence.gain_occult_knowledge.assert_awaited_once_with(player, 10, "unknown")
     persistence.apply_lucidity_loss.assert_awaited_once()
 
 

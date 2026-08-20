@@ -310,12 +310,9 @@ async def get_player_and_room(
     if player is None:
         return None, None, None
 
-    from ..async_persistence import get_async_persistence
+    from ..async_persistence import get_container_async_persistence
 
-    async_persistence = get_async_persistence()
-    if not async_persistence:
-        return None, None, None
-
+    async_persistence = get_container_async_persistence()
     room_bundle = _fetch_room_for_tracked_player(async_persistence, player)
     if room_bundle is None:
         return None, None, None

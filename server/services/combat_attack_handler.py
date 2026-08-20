@@ -89,11 +89,9 @@ class CombatAttackHandler:
     def _room_has_no_death(self, room_id: str) -> bool:
         """Check if room has no_death attribute (tutorial/safe zones)."""
         try:
-            from ..async_persistence import get_async_persistence
+            from ..async_persistence import get_container_async_persistence
 
-            persistence = get_async_persistence()
-            if not persistence:
-                return False
+            persistence = get_container_async_persistence()
             room = persistence.get_room_by_id(room_id)
             return bool(room and getattr(room, "attributes", {}) and room.attributes.get("no_death"))
         except (AttributeError, ImportError, TypeError) as _:

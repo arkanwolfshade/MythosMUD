@@ -6,8 +6,8 @@ lucidity, fear, corruption, healing, and damage mechanics.
 """
 
 from pathlib import Path  # noqa: F401  # pylint: disable=unused-import  # Reserved for future use
-from typing import Any
 
+from ..async_persistence import AsyncPersistenceLayer
 from ..exceptions import ValidationError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 class GameMechanicsService:
     """Service class for game mechanics operations."""
 
-    def __init__(self, persistence: Any) -> None:
+    def __init__(self, persistence: AsyncPersistenceLayer) -> None:
         """Initialize the game mechanics service with a persistence layer."""
         self.persistence = persistence
         logger.info("GameMechanicsService initialized")
@@ -112,12 +112,7 @@ class GameMechanicsService:
             )
 
         # Update occult_knowledge stat and apply lucidity loss
-        from server.persistence.repositories.experience_repository import ExperienceRepository
-
-        experience_repo = ExperienceRepository(event_bus=None)
-        await experience_repo.update_player_stat_field(
-            player.player_id, "occult_knowledge", amount, f"{source}: occult knowledge gain"
-        )
+        await self.persistence.gain_occult_knowledge(player, amount, source)
         await self.persistence.apply_lucidity_loss(player, amount // 2, f"{source}: occult knowledge lucidity cost")
         logger.info("Occult knowledge gained", player_id=player_id, amount=amount, source=source)
         return True, f"Gained {amount} occult knowledge for {player.name}"

@@ -228,7 +228,12 @@ async def test_handle_player_respawned_success(player_respawn_event_handler, moc
     mock_connection_manager.send_personal_message = AsyncMock(
         return_value={"websocket_delivered": 1, "active_connections": 1}
     )
-    with patch("server.realtime.envelope.build_event") as mock_build_event:
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = None
+    with (
+        patch("server.realtime.envelope.build_event") as mock_build_event,
+        patch("server.async_persistence.get_container_async_persistence", return_value=mock_persistence),
+    ):
         mock_build_event.return_value = {"type": "player_respawned"}
         await player_respawn_event_handler.handle_player_respawned(event)
         mock_connection_manager.send_personal_message.assert_awaited()
@@ -399,7 +404,7 @@ async def test_prepare_room_data_for_respawn_no_connection_manager(player_respaw
     mock_persistence.get_room_by_id.return_value = mock_room
 
     with patch(
-        "server.async_persistence.get_async_persistence",
+        "server.async_persistence.get_container_async_persistence",
         return_value=mock_persistence,
     ):
         (

@@ -186,9 +186,9 @@ async def _get_player_for_death_check(
     player_id: uuid.UUID, connection_manager: "ConnectionManager"
 ) -> tuple["Player", str | None] | None:
     """Get player and updated room ID for death check."""
-    from ..async_persistence import get_async_persistence
+    from ..async_persistence import get_container_async_persistence
 
-    async_persistence = get_async_persistence()
+    async_persistence = get_container_async_persistence()
     fresh_player = await async_persistence.get_player_by_id(player_id)
     if fresh_player:
         canonical_room_id = str(fresh_player.current_room_id) if hasattr(fresh_player, "current_room_id") else None
@@ -342,9 +342,9 @@ async def send_initial_room_state(
 ) -> None:
     """Send initial room state and occupants snapshot to connecting player."""
     try:
-        from ..async_persistence import get_async_persistence
+        from ..async_persistence import get_container_async_persistence
 
-        async_persistence = get_async_persistence()
+        async_persistence = get_container_async_persistence()
         room = async_persistence.get_room_by_id(canonical_room_id)
         if not room:
             return

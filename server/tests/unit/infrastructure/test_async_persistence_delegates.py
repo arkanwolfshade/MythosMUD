@@ -19,8 +19,7 @@ from server.async_persistence import (
     PLAYER_COLUMNS,
     PROFESSION_COLUMNS,
     AsyncPersistenceLayer,
-    get_async_persistence,
-    reset_async_persistence,
+    get_container_async_persistence,
 )
 from server.models.player import Player
 
@@ -87,6 +86,25 @@ async def test_apply_corruption_delegates(async_persistence_layer: AsyncPersiste
         "corruption",
         3,
         "test_source: corruption increase",
+    )
+
+
+@pytest.mark.asyncio
+async def test_gain_occult_knowledge_delegates(async_persistence_layer: AsyncPersistenceLayer):
+    """Test gain_occult_knowledge delegates to ExperienceRepository (via the facade, not a
+    disconnected ExperienceRepository(event_bus=None) instance)."""
+    mock_player = MagicMock(spec=Player)
+    player_id = uuid.uuid4()
+    mock_player.player_id = player_id
+    async_persistence_layer._experience_repo.update_player_stat_field = AsyncMock()
+
+    await async_persistence_layer.gain_occult_knowledge(mock_player, 7, "test_source")
+
+    async_persistence_layer._experience_repo.update_player_stat_field.assert_awaited_once_with(
+        player_id,
+        "occult_knowledge",
+        7,
+        "test_source: occult knowledge gain",
     )
 
 
@@ -307,49 +325,28 @@ async def test_item_instance_exists_delegates(async_persistence_layer: AsyncPers
     async_persistence_layer._item_repo.item_instance_exists.assert_awaited_once_with("item_instance_1")
 
 
-def test_get_async_persistence_creates_instance():
-    """Test get_async_persistence creates singleton instance."""
-    reset_async_persistence()
+def test_get_container_async_persistence_returns_container_instance():
+    """Test get_container_async_persistence returns the container's live instance."""
+    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
+        mock_container = MagicMock()
+        mock_container.async_persistence = MagicMock()
+        mock_get_instance.return_value = mock_container
 
-    with patch("server.async_persistence.AsyncPersistenceLayer") as mock_class:
-        mock_instance = MagicMock()
-        mock_class.return_value = mock_instance
+        result = get_container_async_persistence()
 
-        result1 = get_async_persistence()
-        result2 = get_async_persistence()
-
-        assert result1 == mock_instance
-        assert result2 == mock_instance
-        assert mock_class.call_count == 1
+        assert result is mock_container.async_persistence
 
 
-def test_get_async_persistence_returns_same_instance():
-    """Test get_async_persistence returns same instance on multiple calls."""
-    reset_async_persistence()
+def test_get_container_async_persistence_raises_when_not_initialized():
+    """Test get_container_async_persistence raises RuntimeError, not a silent None, when the
+    container hasn't finished wiring async_persistence yet."""
+    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
+        mock_container = MagicMock()
+        mock_container.async_persistence = None
+        mock_get_instance.return_value = mock_container
 
-    with patch("server.async_persistence.AsyncPersistenceLayer") as mock_class:
-        mock_instance = MagicMock()
-        mock_class.return_value = mock_instance
-
-        instance1 = get_async_persistence()
-        instance2 = get_async_persistence()
-
-        assert instance1 is instance2
-
-
-def test_reset_async_persistence():
-    """Test reset_async_persistence resets the singleton."""
-    reset_async_persistence()
-
-    with patch("server.async_persistence.AsyncPersistenceLayer") as mock_class:
-        mock_instance = MagicMock()
-        mock_class.return_value = mock_instance
-
-        _instance1 = get_async_persistence()
-        reset_async_persistence()
-        _instance2 = get_async_persistence()
-
-        assert mock_class.call_count == 2
+        with pytest.raises(RuntimeError, match="AsyncPersistenceLayer not initialized"):
+            get_container_async_persistence()
 
 
 def test_player_columns_constant():

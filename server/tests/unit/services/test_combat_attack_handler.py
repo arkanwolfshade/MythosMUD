@@ -227,7 +227,7 @@ def test_apply_damage_player_no_death_room_caps_damage(attack_handler, mock_targ
     mock_combat = MagicMock(spec=CombatInstance)
     mock_combat.room_id = "tutorial_room_001"
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persist:
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persist:
         mock_persistence = MagicMock()
         mock_room = MagicMock()
         mock_room.attributes = {"no_death": True}
@@ -249,7 +249,7 @@ def test_apply_damage_player_no_death_room_zero_damage_when_at_zero(attack_handl
     mock_combat = MagicMock(spec=CombatInstance)
     mock_combat.room_id = "tutorial_room_001"
 
-    with patch("server.async_persistence.get_async_persistence") as mock_get_persist:
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persist:
         mock_persistence = MagicMock()
         mock_room = MagicMock()
         mock_room.attributes = {"no_death": True}
@@ -267,7 +267,14 @@ def test_apply_damage_player_no_death_room_zero_damage_when_at_zero(attack_handl
 @pytest.mark.asyncio
 async def test_apply_attack_damage(attack_handler, mock_combat, mock_target_player):
     """Test apply_attack_damage applies damage and updates combat."""
-    old_dp, died, mortally_wounded = await attack_handler.apply_attack_damage(mock_combat, mock_target_player, 20)
+    with patch("server.async_persistence.get_container_async_persistence") as mock_get_persist:
+        mock_persistence = MagicMock()
+        mock_room = MagicMock()
+        mock_room.attributes = {}
+        mock_persistence.get_room_by_id.return_value = mock_room
+        mock_get_persist.return_value = mock_persistence
+
+        old_dp, died, mortally_wounded = await attack_handler.apply_attack_damage(mock_combat, mock_target_player, 20)
 
     assert old_dp == 50
     assert mock_target_player.current_dp == 30
