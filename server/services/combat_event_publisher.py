@@ -15,13 +15,13 @@ from typing import TYPE_CHECKING, Any
 from ..events.combat_events import (
     CombatEndedEvent,
     CombatStartedEvent,
-    CombatTimeoutEvent,
-    CombatTurnAdvancedEvent,
+    CombatTargetSwitchEvent,
     NPCAttackedEvent,
     NPCDiedEvent,
     NPCTookDamageEvent,
     PlayerAttackedEvent,
 )
+from ..events.event_types import PlayerDiedEvent, PlayerDPDecayEvent, PlayerMortallyWoundedEvent
 from ..structured_logging.enhanced_logging_config import get_logger
 from .nats_exceptions import NATSPublishError
 from .nats_subject_manager import NATSSubjectManager
@@ -44,6 +44,9 @@ class _CombatPublishJob:
     log_context: dict[str, Any]
     success_fields: dict[str, Any]
     error_label: str
+    # When set, the subject is built as combat.{subject_key}.{player_id} instead of
+    # combat.{subject_key}.{room_id} -- for player-scoped events like DP decay (#634).
+    player_scoped_id: str | None = None
 
 
 class CombatEventPublisher:
@@ -131,8 +134,13 @@ class CombatEventPublisher:
         "combat_npc_attacked": "combat.npc_attacked",
         "combat_damage": "combat.damage",
         "combat_npc_died": "combat.npc_died",
-        "combat_turn": "combat.turn",
-        "combat_timeout": "combat.timeout",
+        "combat_player_died": "combat.player_died",
+        "combat_player_mortally_wounded": "combat.player_mortally_wounded",
+        "combat_target_switch": "combat.target_switch",
+    }
+
+    _LEGACY_SUBJECT_PREFIX_PLAYER_SCOPED = {
+        "combat_dp_decay": "combat.dp_decay",
     }
 
     def _build_combat_subject(self, subject_key: str, room_id: str) -> str:
@@ -145,6 +153,17 @@ class CombatEventPublisher:
             room_id=room_id,
         )
         return f"{prefix}.{room_id}"
+
+    def _build_player_scoped_combat_subject(self, subject_key: str, player_id: str) -> str:
+        if self.subject_manager:
+            return self.subject_manager.build_subject(subject_key, player_id=player_id)
+        prefix = self._LEGACY_SUBJECT_PREFIX_PLAYER_SCOPED.get(subject_key, subject_key)
+        logger.warning(
+            "Using legacy subject construction - subject_manager not configured",
+            event_type=subject_key,
+            player_id=player_id,
+        )
+        return f"{prefix}.{player_id}"
 
     def _nats_ready(self, log_context: dict[str, Any]) -> bool:
         if not self.nats_service:
@@ -171,30 +190,54 @@ class CombatEventPublisher:
             message_data = self._create_event_message(
                 event_type=job.event_type,
                 event_data=job.event_data,
-                room_id=job.room_id,
+                room_id=job.room_id or None,
+                player_id=job.player_scoped_id,
                 timestamp=job.timestamp.isoformat().replace("+00:00", "Z"),
             )
-            subject = self._build_combat_subject(job.subject_key, job.room_id)
+            subject = (
+                self._build_player_scoped_combat_subject(job.subject_key, job.player_scoped_id)
+                if job.player_scoped_id
+                else self._build_combat_subject(job.subject_key, job.room_id)
+            )
             try:
                 await self.nats_service.publish(subject, message_data)
-                logger.info(f"{job.error_label} published to NATS", subject=subject, **job.success_fields)
+                logger.info(
+                    "Combat event published to NATS", event_label=job.error_label, subject=subject, **job.success_fields
+                )
                 return True
             except NATSPublishError as exc:
-                logger.error(f"Failed to publish {job.error_label} to NATS", error=str(exc), **job.success_fields)
+                logger.error(
+                    "Failed to publish combat event to NATS",
+                    event_label=job.error_label,
+                    error=str(exc),
+                    **job.success_fields,
+                )
                 return False
             except (RuntimeError, ConnectionError, TimeoutError, OSError) as exc:
                 logger.error(
-                    f"Unexpected error publishing {job.error_label} to NATS", error=str(exc), **job.success_fields
+                    "Unexpected error publishing combat event to NATS",
+                    event_label=job.error_label,
+                    error=str(exc),
+                    **job.success_fields,
                 )
                 return False
             except Exception as exc:  # pylint: disable=broad-exception-caught  # noqa: B904
                 # Catch generic exceptions from mocks in tests
                 logger.error(
-                    f"Unexpected error publishing {job.error_label} to NATS", error=str(exc), **job.success_fields
+                    "Unexpected error publishing combat event to NATS",
+                    event_label=job.error_label,
+                    error=str(exc),
+                    **job.success_fields,
                 )
                 return False
         except (AttributeError, TypeError, ValueError, KeyError) as exc:
-            logger.error(f"Error publishing {job.error_label}", error=str(exc), exc_info=True, **job.log_context)
+            logger.error(
+                "Error publishing combat event",
+                event_label=job.error_label,
+                error=str(exc),
+                exc_info=True,
+                **job.log_context,
+            )
             return False
 
     async def publish_combat_started(self, event: CombatStartedEvent) -> bool:
@@ -428,66 +471,130 @@ class CombatEventPublisher:
             )
         )
 
-    async def publish_combat_turn_advanced(self, event: CombatTurnAdvancedEvent) -> bool:
-        """Publish combat turn advanced event to NATS."""
-        combat_id = str(event.combat_id)
+    async def publish_player_died(self, event: PlayerDiedEvent) -> bool:
+        """Publish player died event to NATS (#634)."""
+        player_id = str(event.player_id)
         log_context = {
-            "combat_id": combat_id,
+            "player_id": player_id,
             "room_id": event.room_id,
-            "event_type": "combat_turn_advanced",
-            "current_turn": event.current_turn,
-            "combat_round": event.combat_round,
-            "next_participant": event.next_participant,
+            "event_type": "player_died",
+            "combat_id": event.combat_id,
+            "killer_id": event.killer_id,
         }
         event_data = {
-            "combat_id": combat_id,
+            "player_id": player_id,
+            "player_name": event.player_name,
             "room_id": event.room_id,
-            "current_turn": event.current_turn,
-            "combat_round": event.combat_round,
-            "next_participant": event.next_participant,
+            "combat_id": event.combat_id,
+            "killer_id": event.killer_id,
+            "killer_name": event.killer_name,
+            "death_location": event.death_location,
             "timestamp": event.timestamp.isoformat(),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
-                "combat_turn_advanced",
-                "combat_turn",
+                "player_died",
+                "combat_player_died",
                 event.room_id,
                 event_data,
                 event.timestamp,
                 log_context,
-                {"combat_id": combat_id, "room_id": event.room_id, "current_turn": event.current_turn},
-                "Combat turn advanced event",
+                {"player_id": player_id, "room_id": event.room_id},
+                "Player died event",
             )
         )
 
-    async def publish_combat_timeout(self, event: CombatTimeoutEvent) -> bool:
-        """Publish combat timeout event to NATS."""
-        combat_id = str(event.combat_id)
-        last_activity = event.last_activity.isoformat() if event.last_activity else None
+    async def publish_player_mortally_wounded(self, event: PlayerMortallyWoundedEvent) -> bool:
+        """Publish player mortally wounded event to NATS (#634)."""
+        player_id = event.player_id
         log_context = {
-            "combat_id": combat_id,
+            "player_id": player_id,
             "room_id": event.room_id,
-            "event_type": "combat_timeout",
-            "timeout_minutes": event.timeout_minutes,
-            "last_activity": last_activity,
+            "event_type": "player_mortally_wounded",
+            "combat_id": event.combat_id,
+            "attacker_id": event.attacker_id,
         }
         event_data = {
-            "combat_id": combat_id,
+            "player_id": player_id,
+            "player_name": event.player_name,
             "room_id": event.room_id,
-            "timeout_minutes": event.timeout_minutes,
-            "last_activity": last_activity,
+            "combat_id": event.combat_id,
+            "attacker_id": event.attacker_id,
+            "attacker_name": event.attacker_name,
             "timestamp": event.timestamp.isoformat(),
         }
         return await self._publish_combat_payload(
             _CombatPublishJob(
-                "combat_timeout",
-                "combat_timeout",
+                "player_mortally_wounded",
+                "combat_player_mortally_wounded",
                 event.room_id,
                 event_data,
                 event.timestamp,
                 log_context,
-                {"combat_id": combat_id, "room_id": event.room_id, "timeout_minutes": event.timeout_minutes},
-                "Combat timeout event",
+                {"player_id": player_id, "room_id": event.room_id},
+                "Player mortally wounded event",
+            )
+        )
+
+    async def publish_combat_target_switch(self, event: CombatTargetSwitchEvent) -> bool:
+        """Publish combat target switch (NPC aggro switch, ADR-016) event to NATS (#634)."""
+        combat_id = str(event.combat_id)
+        log_context = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "event_type": "combat_target_switch",
+            "npc_name": event.npc_name,
+            "new_target_name": event.new_target_name,
+        }
+        event_data = {
+            "combat_id": combat_id,
+            "room_id": event.room_id,
+            "npc_name": event.npc_name,
+            "new_target_name": event.new_target_name,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "combat_target_switch",
+                "combat_target_switch",
+                event.room_id,
+                event_data,
+                event.timestamp,
+                log_context,
+                {"combat_id": combat_id, "room_id": event.room_id, "npc_name": event.npc_name},
+                "Combat target switch event",
+            )
+        )
+
+    async def publish_player_dp_decay(self, event: PlayerDPDecayEvent) -> bool:
+        """Publish player DP decay tick event to NATS (#634)."""
+        player_id = str(event.player_id)
+        log_context = {
+            "player_id": player_id,
+            "room_id": event.room_id,
+            "event_type": "player_dp_decay",
+            "old_dp": event.old_dp,
+            "new_dp": event.new_dp,
+        }
+        event_data = {
+            "player_id": player_id,
+            "old_dp": event.old_dp,
+            "new_dp": event.new_dp,
+            "decay_amount": event.decay_amount,
+            "room_id": event.room_id,
+            "timestamp": event.timestamp.isoformat(),
+        }
+        return await self._publish_combat_payload(
+            _CombatPublishJob(
+                "player_dp_decay",
+                "combat_dp_decay",
+                event.room_id or "",
+                event_data,
+                event.timestamp,
+                log_context,
+                {"player_id": player_id, "new_dp": event.new_dp},
+                "Player DP decay event",
+                player_scoped_id=player_id,
             )
         )
 

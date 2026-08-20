@@ -11,6 +11,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol, cast
 
 from server.commands.combat_app_protocols import AppWithState
+from server.events.combat_events import CombatTargetSwitchEvent
 from server.models.combat import CombatInstance, CombatParticipant, CombatParticipantType
 from server.schemas.shared import TargetType
 from server.schemas.shared.target_resolution import TargetMatch
@@ -185,6 +186,16 @@ async def _apply_taunt_and_maybe_broadcast(
         _ = await mi.broadcast_combat_target_switch(
             combat.room_id, str(combat.combat_id), npc_participant.name, new_target_name
         )
+        # NATS-consumable in addition to the direct room broadcast above (#634)
+        if handler.combat_service:
+            _ = await handler.combat_service.publish_combat_target_switch_event_to_nats(
+                CombatTargetSwitchEvent(
+                    combat_id=combat.combat_id,
+                    room_id=combat.room_id,
+                    npc_name=npc_participant.name,
+                    new_target_name=new_target_name,
+                )
+            )
     return None
 
 

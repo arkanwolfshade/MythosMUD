@@ -85,6 +85,36 @@ async def test_process_mortally_wounded_death_threshold() -> None:
 
 
 @pytest.mark.asyncio
+async def test_process_mortally_wounded_publishes_dp_decay_to_nats() -> None:
+    """DP decay tick publishes to NATS (#634) alongside the existing personal message."""
+    process_mortally_wounded_tick: AsyncMock = AsyncMock()
+    player_death_service: MagicMock = MagicMock()
+    player_death_service.process_mortally_wounded_tick = process_mortally_wounded_tick
+    combat_service: MagicMock = MagicMock()
+    combat_service.get_combat_by_participant = AsyncMock(return_value=None)
+    combat_service.publish_player_dp_decay_event_to_nats = AsyncMock(return_value=True)
+    container: MagicMock = MagicMock()
+    container.player_death_service = player_death_service
+    container.combat_service = combat_service
+    get_stats: MagicMock = MagicMock(return_value={"current_dp": -3, "max_dp": 100})
+    player: MagicMock = MagicMock()
+    player.player_id = str(uuid.uuid4())
+    player.name = "Victim"
+    player.current_room_id = "room-1"
+    player.get_stats = get_stats
+    session: AsyncMock = AsyncMock()
+    with patch(
+        "server.app.game_tick_death.combat_messaging_integration.send_dp_decay_message",
+        new_callable=AsyncMock,
+    ):
+        await _process_mortally_wounded_player(container, player, session)
+    combat_service.publish_player_dp_decay_event_to_nats.assert_awaited_once()
+    published_event = combat_service.publish_player_dp_decay_event_to_nats.await_args.args[0]
+    assert published_event.new_dp == -3
+    assert published_event.room_id == "room-1"
+
+
+@pytest.mark.asyncio
 async def test_process_dead_players_moves_to_limbo() -> None:
     player_id = uuid.uuid4()
     player: MagicMock = MagicMock()

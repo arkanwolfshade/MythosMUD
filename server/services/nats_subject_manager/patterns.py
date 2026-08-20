@@ -103,11 +103,6 @@ PREDEFINED_PATTERNS = {
         "required_params": ["room_id"],
         "description": "NPC attacked events",
     },
-    "combat_npc_action": {
-        "pattern": "combat.npc_action.{room_id}",
-        "required_params": ["room_id"],
-        "description": "NPC action events",
-    },
     "combat_started": {
         "pattern": "combat.started.{room_id}",
         "required_params": ["room_id"],
@@ -128,19 +123,29 @@ PREDEFINED_PATTERNS = {
         "required_params": ["room_id"],
         "description": "Combat damage events",
     },
-    "combat_turn": {
-        "pattern": "combat.turn.{room_id}",
-        "required_params": ["room_id"],
-        "description": "Combat turn events",
-    },
-    "combat_timeout": {
-        "pattern": "combat.timeout.{room_id}",
-        "required_params": ["room_id"],
-        "description": "Combat timeout events",
-    },
     "combat_dp_update": {
         "pattern": "combat.dp_update.{player_id}",
         "required_params": ["player_id"],
         "description": "Player DP update events",
+    },
+    "combat_player_died": {
+        "pattern": "combat.player_died.{room_id}",
+        "required_params": ["room_id"],
+        "description": "Player death events (#634)",
+    },
+    "combat_player_mortally_wounded": {
+        "pattern": "combat.player_mortally_wounded.{room_id}",
+        "required_params": ["room_id"],
+        "description": "Player mortally wounded events (#634)",
+    },
+    "combat_target_switch": {
+        "pattern": "combat.target_switch.{room_id}",
+        "required_params": ["room_id"],
+        "description": "NPC aggro target switch events (ADR-016, #634)",
+    },
+    "combat_dp_decay": {
+        "pattern": "combat.dp_decay.{player_id}",
+        "required_params": ["player_id"],
+        "description": "Player DP decay tick events (#634)",
     },
 }

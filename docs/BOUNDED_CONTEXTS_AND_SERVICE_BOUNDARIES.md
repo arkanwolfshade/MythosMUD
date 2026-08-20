@@ -142,11 +142,11 @@ Bounded contexts are logical boundaries within which a particular model and voca
 
 **Inbound:** Depends on Core (persistence, event_bus), Realtime (connection_manager for broadcasts), Game (movement_service for flee/position).
 
-**Outbound:** Publishes CombatStartedEvent, PlayerAttackedEvent, NPCAttackedEvent, CombatEndedEvent; PlayerDeathService/PlayerRespawnService publish death/respawn events. CombatEventPublisher sends to NATS (`combat.{room_id}`). RealTimeEventHandler and NATSMessageHandler deliver to clients.
+**Outbound:** CombatService/CombatEventHandler/CombatDeathHandler call CombatEventPublisher's `publish_*` methods directly (imperative calls, not an EventBus subscription) to send to NATS (`combat.*.{room_id|player_id}`, see EVENT_OWNERSHIP_MATRIX.md §3 Layer 3). In parallel, `combat_messaging` (`CombatBroadcastMixin`/`PlayerBroadcastMixin`) calls ConnectionManager directly for low-latency in-room delivery. PlayerDeathService/PlayerRespawnService publish death/respawn events to EventBus separately, for their own listeners.
 
 **Contracts:**
 
-- **Combat events:** CombatService is the authority for combat state; events flow EventBus → CombatEventPublisher → NATS and/or EventBus → RealTimeEventHandler → WebSocket (see EVENT_OWNERSHIP_MATRIX.md).
+- **Combat events:** CombatService is the authority for combat state. Combat events do **not** flow through EventBus (corrected 2026-08, #634 — that was never actually implemented). Delivery is intentionally dual: CombatEventPublisher → NATS directly, and combat_messaging → ConnectionManager directly for the room. See rule 5 below and EVENT_OWNERSHIP_MATRIX.md §4 for why this split is kept rather than merged.
 
 ---
 
@@ -268,7 +268,7 @@ Core
 2. **Cross-context access:** Use published interfaces (e.g. PlayerService, RoomService) rather than reaching into another context’s internals.
 3. **Events:** Domain events are the preferred way to notify other contexts; see EVENT_OWNERSHIP_MATRIX.md for canonical ownership.
 4. **Persistence:** All persistence goes through Core (async_persistence and repositories); no context bypasses the persistence layer.
-5. **Realtime delivery:** Only Realtime context sends WebSocket messages; other contexts publish events or NATS messages, and Realtime (or NATS handler) delivers to clients.
+5. **Realtime delivery:** Only Realtime context sends WebSocket messages; other contexts publish events or NATS messages, and Realtime (or NATS handler) delivers to clients. **Exception (#634):** Combat calls `ConnectionManager.broadcast_to_room()`/`send_personal_message()` directly from `combat_messaging` for low-latency in-room delivery, *in addition to* publishing the same events to NATS via CombatEventPublisher. This is permitted under rule 3 — `broadcast_to_room` is Realtime's own published interface, not reaching into Realtime's internals — and is a deliberate latency/ordering tradeoff (see EVENT_OWNERSHIP_MATRIX.md §4), not a violation to fix.
 
 ## 7. References
 

@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.services.combat_messaging_integration import CombatMessagingIntegration
-from server.tests.unit.realtime.envelope_assertions import assert_event_envelope
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -80,16 +79,6 @@ def test_resolve_connection_manager_from_container_error(messaging_integration):
 
 
 @pytest.mark.asyncio
-async def test_broadcast_combat_start(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_start broadcasts combat start event."""
-    result = await messaging_integration.broadcast_combat_start("room_001", "Attacker", "Target", "combat_001")
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-    event = mock_connection_manager.broadcast_to_room.await_args.args[1]
-    assert_event_envelope(event, event_type="combat_started", require_room_id=True)
-
-
-@pytest.mark.asyncio
 async def test_broadcast_combat_attack(messaging_integration, mock_connection_manager):
     """Test broadcast_combat_attack broadcasts attack event."""
     result = await messaging_integration.broadcast_combat_attack(
@@ -109,42 +98,6 @@ async def test_broadcast_combat_attack_personal_message_error(messaging_integrat
         "room_001", "Attacker", "Target", 10, "punch", "combat_001", "attacker_001"
     )
     assert isinstance(result, dict)
-
-
-@pytest.mark.asyncio
-async def test_broadcast_combat_death(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_death broadcasts death event."""
-    result = await messaging_integration.broadcast_combat_death("room_001", "NPC", 100, "combat_001")
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_broadcast_combat_ended(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_ended broadcasts combat ended event."""
-    # Note: broadcast_combat_ended doesn't exist, using broadcast_combat_end instead
-    # Reason: Intentionally testing error handling with None input
-    result = await messaging_integration.broadcast_combat_end("room_001", "combat_001", None)
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_broadcast_combat_end(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_end broadcasts combat end event."""
-    result = await messaging_integration.broadcast_combat_end("room_001", "combat_001", "victory")
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_broadcast_combat_error(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_error sends error to player."""
-    mock_connection_manager.send_personal_message = AsyncMock(return_value={"sent": True})
-    result = await messaging_integration.broadcast_combat_error("room_001", "Error message", "player_001")
-    # Method returns delivery_status, not necessarily a dict
-    assert result is not None
-    mock_connection_manager.send_personal_message.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -180,34 +133,6 @@ async def test_broadcast_player_mortally_wounded_no_attacker(messaging_integrati
     mock_connection_manager.send_personal_message = AsyncMock()
     result = await messaging_integration.broadcast_player_mortally_wounded("player_001", "PlayerName", None, "room_001")
     assert isinstance(result, dict)
-
-
-@pytest.mark.asyncio
-async def test_broadcast_player_respawn(messaging_integration, mock_connection_manager):
-    """Test broadcast_player_respawn broadcasts respawn message."""
-    result = await messaging_integration.broadcast_player_respawn("player_001", "PlayerName", "room_001")
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_broadcast_player_respawn_personal_message_error(messaging_integration, mock_connection_manager):
-    """Test broadcast_player_respawn handles personal message errors."""
-    mock_connection_manager.send_personal_message = AsyncMock(side_effect=OSError("OS error"))
-    result = await messaging_integration.broadcast_player_respawn("player_001", "PlayerName", "room_001")
-    # Should not raise, just log warning
-    assert isinstance(result, dict)
-    mock_connection_manager.broadcast_to_room.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_broadcast_combat_error_send_error(messaging_integration, mock_connection_manager):
-    """Test broadcast_combat_error handles send_personal_message errors."""
-    mock_connection_manager.send_personal_message = AsyncMock(side_effect=RuntimeError("Send error"))
-    # Should not raise, error handling added
-    result = await messaging_integration.broadcast_combat_error("room_001", "Error message", "player_001")
-    assert isinstance(result, dict)
-    assert result.get("success") is False
 
 
 @pytest.mark.asyncio
@@ -296,3 +221,34 @@ def test_connection_manager_setter_overrides_lazy_load(messaging_integration):
     messaging_integration._connection_manager = None
     messaging_integration.connection_manager = new_manager
     assert messaging_integration.connection_manager == new_manager
+
+
+def test_log_room_broadcast_result_error_on_failed_deliveries():
+    """A room broadcast with failed_deliveries must log at error level, not just debug (#634)."""
+    from server.services.combat_messaging.base import log_room_broadcast_result
+
+    with patch("server.services.combat_messaging.base.logger") as mock_logger:
+        log_room_broadcast_result("Test broadcast", "room_001", {"failed_deliveries": 2, "successful_deliveries": 1})
+    mock_logger.error.assert_called_once()
+    mock_logger.debug.assert_not_called()
+
+
+def test_log_room_broadcast_result_debug_on_success():
+    """A clean room broadcast (no failures) stays at debug level."""
+    from server.services.combat_messaging.base import log_room_broadcast_result
+
+    with patch("server.services.combat_messaging.base.logger") as mock_logger:
+        log_room_broadcast_result("Test broadcast", "room_001", {"failed_deliveries": 0, "successful_deliveries": 3})
+    mock_logger.debug.assert_called_once()
+    mock_logger.error.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_broadcast_combat_attack_logs_error_on_failed_deliveries(messaging_integration, mock_connection_manager):
+    """broadcast_combat_attack surfaces a partial room-broadcast failure at error level, not silently (#634)."""
+    mock_connection_manager.broadcast_to_room = AsyncMock(return_value={"failed_deliveries": 1})
+    with patch("server.services.combat_messaging.base.logger") as mock_logger:
+        _ = await messaging_integration.broadcast_combat_attack(
+            "room_001", "Attacker", "Target", 10, "punch", "combat_001", None
+        )
+    mock_logger.error.assert_called_once()

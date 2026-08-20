@@ -46,12 +46,18 @@ These are domain events published through the EventBus system defined in `server
 | `ObjectRemovedFromRoom` | Room.object_removed() | Object removed from room         | RealTimeEventHandler |
 | `NPCEnteredRoom`        | Room.npc_entered()    | NPC joins room                   | RealTimeEventHandler |
 | `NPCLeftRoom`           | Room.npc_left()       | NPC leaves room                  | RealTimeEventHandler |
-| `CombatStartedEvent`    | CombatService         | Combat begins                    | CombatEventPublisher |
-| `PlayerAttackedEvent`   | CombatService         | Attack occurs                    | CombatEventPublisher |
-| `NPCAttackedEvent`      | CombatService         | NPC attacks                      | CombatEventPublisher |
-| `CombatEndedEvent`      | CombatService         | Combat ends                      | CombatEventPublisher |
 | `PlayerDiedEvent`       | PlayerDeathService    | Player death                     | Multiple listeners   |
 | `PlayerRespawnedEvent`  | PlayerRespawnService  | Player resurrection              | Multiple listeners   |
+
+**[SPEC]** Combat event classes (`CombatStartedEvent`, `PlayerAttackedEvent`, `NPCAttackedEvent`,
+`CombatEndedEvent`, `CombatTargetSwitchEvent`, etc., all in `server/events/combat_events.py`)
+subclass `BaseEvent` and are EventBus-*eligible*, but **combat never publishes them to EventBus** —
+they were never actually listened to by `CombatEventPublisher`; the rows above claiming that were
+wrong and are removed here. `PlayerDiedEvent`/`PlayerMortallyWoundedEvent`/`PlayerDPDecayEvent`
+above are a separate case: `PlayerDeathService` publishes them to EventBus for its own listeners,
+and `CombatEventPublisher` separately publishes the *same* dataclasses straight to NATS when
+death/mortally-wounded happens mid-combat (`combat_death_handler.py`) — two independent consumers
+of one dataclass, not a chain. See §4 and §5 for the corrected combat delivery model (#634).
 
 ### Layer 2: Real-Time Messages (Client-Facing)
 
@@ -72,13 +78,27 @@ These are WebSocket messages sent to clients:
 
 NATS subject-based messages for inter-service communication:
 
-| Subject Pattern            | Publisher             | Purpose          | Subscribers         |
-| -------------------------- | --------------------- | ---------------- | ------------------- |
-| `chat.say.{room_id}`       | ChatService           | Room-based chat  | Players in room     |
-| `chat.whisper.{player_id}` | ChatService           | Private messages | Target player       |
-| `chat.global`              | ChatService (planned) | Server-wide chat | All players         |
-| `chat.local.{subzone}`     | ChatService (planned) | Sub-zone chat    | Players in sub-zone |
-| `combat.{room_id}`         | CombatEventPublisher  | Combat events    | Players in room     |
+| Subject Pattern                        | Publisher             | Purpose                       | Subscribers      |
+| --------------------------------------- | --------------------- | ------------------------------ | ---------------- |
+| `chat.say.{room_id}`                    | ChatService           | Room-based chat                | Players in room  |
+| `chat.whisper.{player_id}`              | ChatService           | Private messages               | Target player    |
+| `chat.global`                           | ChatService (planned) | Server-wide chat                | All players      |
+| `chat.local.{subzone}`                  | ChatService (planned) | Sub-zone chat                   | Players in sub-zone |
+| `combat.started.{room_id}`              | CombatEventPublisher  | Combat begins                   | Players in room  |
+| `combat.ended.{room_id}`                | CombatEventPublisher  | Combat ends                     | Players in room  |
+| `combat.attack.{room_id}`               | CombatEventPublisher  | Player attacks (any target)     | Players in room  |
+| `combat.npc_attacked.{room_id}`         | CombatEventPublisher  | Player attacks an NPC           | Players in room  |
+| `combat.damage.{room_id}`               | CombatEventPublisher  | NPC takes damage                | Players in room  |
+| `combat.npc_died.{room_id}`             | CombatEventPublisher  | NPC dies                        | Players in room  |
+| `combat.dp_update.{player_id}`          | CombatPersistenceHandler (not CombatEventPublisher) | Player DP changes in combat | Target player |
+| `combat.player_died.{room_id}`          | CombatEventPublisher  | Player dies (#634)              | Players in room  |
+| `combat.player_mortally_wounded.{room_id}` | CombatEventPublisher | Player enters mortally-wounded state (#634) | Players in room |
+| `combat.target_switch.{room_id}`        | CombatEventPublisher  | NPC aggro switches target, ADR-016 (#634) | Players in room |
+| `combat.dp_decay.{player_id}`           | CombatEventPublisher  | Mortally-wounded DP decay tick (#634) | Target player |
+
+All `combat.*` subjects above are published by direct, synchronous, imperative calls from
+`CombatService`/`CombatEventHandler`/`CombatDeathHandler`/the taunt command/the game tick — **never**
+via an EventBus subscription. See §4.
 
 ## 4. Duplicate Event Analysis
 
@@ -118,17 +138,35 @@ Players receive BOTH "player_entered" AND "room_update" messages
 
 Direct broadcast_room_update() calls after movement have been removed. Teleport and goto flows now call `update_player_room_location()` (which invokes `Room.player_left()`/`player_entered()`), so EventBus handles all room state notifications.
 
-### 🟡 MEDIUM: Combat Event Overlap
+### 🟡 RESOLVED (#634): Combat's Two Delivery Paths, Documented as an Intentional Dual Path
 
-**Issue:** Combat events published through both EventBus and NATS
+**Prior claim (wrong, corrected 2026-08):** this section previously stated combat events flow
+`CombatService → EventBus → CombatEventPublisher (subscriber) → NATS`. Verified against code: that
+subscription never existed. `CombatEventPublisher` has no `event_bus` parameter and subscribes to
+nothing; `CombatService`/`CombatEventHandler`/`CombatDeathHandler` call its `publish_*` methods
+directly and imperatively. Zero combat event ever touches EventBus (the `PlayerDied*` family is the
+one exception — see the Layer 1 note above).
 
-### Paths
+**Actual architecture — two independent delivery paths, kept intentionally, not merged:**
 
-1. `CombatService` publishes `CombatStartedEvent` to EventBus
-2. `CombatEventPublisher` subscribes to events and publishes to NATS `combat.{room_id}` subject
-3. `NATSMessageHandler` subscribes to NATS and sends to clients
+1. **NATS path (`CombatEventPublisher`, `server/services/combat_event_publisher.py`).** Direct,
+   synchronous, `await`-chained calls to NATS. Preserves per-call-chain ordering and surfaces
+   failures via error-level logs (no silent drop). This is what makes combat "NATS-consumable" —
+   cross-instance fan-out, logging, replay.
+2. **Direct room broadcast path (`server/services/combat_messaging/`, `CombatBroadcastMixin` +
+   `PlayerBroadcastMixin`).** Direct `ConnectionManager.broadcast_to_room()` /
+   `send_personal_message()` calls — the low-latency path for the room the action happened in.
 
-This appears intentional (event sourcing + message delivery) but creates complexity.
+**Why not route combat through EventBus instead (considered and rejected in #634):** `DistributedEventBus.publish()`
+does local fan-out *and* a fire-and-forget `loop.create_task(bridge.publish(event))` with no task
+tracking and a silent `except RuntimeError: pass` — both violations of this repo's own
+`ASYNC_ANTI_PATTERNS_QUICK_REF.md`. Adding that hop to a latency- and ordering-sensitive path like
+combat, on top of building net-new EventBus subscribers to replace the direct broadcast path, was
+judged a materially bigger and riskier lift than the map justified. `DistributedEventBus`'s own bugs
+are unaddressed here and would need fixing before combat could safely route through it.
+
+**Every live combat action publishes to both paths deliberately** — this is `BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+rule 5's chat exemption extended to combat, not a bug to fix. See rule 5 there for the exact wording.
 
 ### 🟢 LOW: System Message Fragmentation
 
@@ -176,6 +214,14 @@ Establish single authoritative source for each domain event:
    - NATSMessageHandler transforms NATS messages to client format
    - Delivered via WebSocket to clients
    - Clear separation from domain events
+
+4. **Combat → NATS AND direct room broadcast, deliberately dual (#634)**
+
+   - `CombatEventPublisher` publishes to NATS `combat.*` subjects for cross-instance
+     consumption/logging/replay, in parallel with `CombatBroadcastMixin`/`PlayerBroadcastMixin`
+     direct `ConnectionManager` calls for low-latency in-room delivery
+   - Combat does **not** go through EventBus — see §4's resolved combat section
+   - Not a rule violation: this is the same NATS exemption chat has, extended to combat
 
 ## 6. Event Flow Diagram
 
@@ -271,3 +317,4 @@ This document represents the audit results.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-20 | #634: corrected the false claim that combat events flow through EventBus (they never have); documented the actual dual NATS + direct-broadcast delivery path as intentional; added 4 new NATS subjects (`combat.player_died`, `combat.player_mortally_wounded`, `combat.target_switch`, `combat.dp_decay`) and removed 3 dead ones (`combat.turn`, `combat.timeout`, `combat.npc_action`) |

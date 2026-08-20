@@ -14,6 +14,20 @@ class HasConnectionManager:
     connection_manager: Any  # Provided by CombatMessagingBase when mixed in
 
 
+def log_room_broadcast_result(action: str, room_id: str, broadcast_stats: dict[str, Any]) -> None:
+    """
+    Log a room broadcast's outcome -- error-level on any failed delivery, debug-level otherwise.
+
+    broadcast_to_room never raises on individual delivery failures (#634); this is the floor that
+    keeps a dropped combat broadcast from being invisible outside a debug log.
+    """
+    failed = broadcast_stats.get("failed_deliveries", 0)
+    if failed:
+        logger.error("Broadcast had failed deliveries", action=action, room_id=room_id, broadcast_stats=broadcast_stats)
+    else:
+        logger.debug("Broadcast completed", action=action, room_id=room_id, broadcast_stats=broadcast_stats)
+
+
 class CombatMessagingBase:
     """Base class with connection manager setup. Used by CombatMessagingIntegration."""
 

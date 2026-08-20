@@ -11,7 +11,7 @@ from uuid import UUID
 
 from structlog.stdlib import BoundLogger
 
-from server.events.combat_events import NPCDiedEvent, NPCTookDamageEvent
+from server.events.combat_events import CombatTargetSwitchEvent, NPCDiedEvent, NPCTookDamageEvent
 from server.services.nats_exceptions import NATSError
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -111,6 +111,12 @@ async def broadcast_aggro_target_switches(
     mi = npc_svc.get_messaging_integration()
     for _npc_id, npc_name, new_target_name in switches:
         _ = await mi.broadcast_combat_target_switch(room_id, str(combat_id), npc_name, new_target_name)
+        # NATS-consumable in addition to the direct room broadcast above (#634)
+        _ = await service.publish_combat_target_switch_event_to_nats(
+            CombatTargetSwitchEvent(
+                combat_id=combat_id, room_id=room_id, npc_name=npc_name, new_target_name=new_target_name
+            )
+        )
 
 
 if TYPE_CHECKING:

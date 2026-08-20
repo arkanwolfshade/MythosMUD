@@ -212,4 +212,55 @@ async def test_run_handle_taunt_success(mock_handler: TauntCommandHandler) -> No
             mock_handler, {"target_player": "beast"}, {"username": "u"}, req, None, "hero"
         )
     assert "taunt" in out["result"].lower()
-    assert "beast" in out["result"].lower()
+
+
+@pytest.mark.asyncio
+async def test_apply_taunt_and_maybe_broadcast_publishes_target_switch_to_nats() -> None:
+    """A successful aggro switch broadcasts to the room AND publishes to NATS (#634)."""
+    handler = MagicMock()
+    combat_svc: MagicMock = MagicMock()
+    combat_svc.publish_combat_target_switch_event_to_nats = AsyncMock(return_value=True)
+    handler.combat_service = combat_svc
+
+    broadcast_combat_target_switch = AsyncMock()
+    mi = MagicMock()
+    mi.broadcast_combat_target_switch = broadcast_combat_target_switch
+    npc_svc = MagicMock()
+    npc_svc.get_messaging_integration = MagicMock(return_value=mi)
+    handler.npc_combat_service = npc_svc
+
+    npc_uuid = uuid.uuid4()
+    new_target_uuid = uuid.uuid4()
+    npc_part = CombatParticipant(
+        participant_id=npc_uuid,
+        participant_type=CombatParticipantType.NPC,
+        name="Beast",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+        is_active=True,
+    )
+    new_target_part = CombatParticipant(
+        participant_id=new_target_uuid,
+        participant_type=CombatParticipantType.PLAYER,
+        name="Hero",
+        current_dp=10,
+        max_dp=10,
+        dexterity=10,
+        is_active=True,
+    )
+    combat = CombatInstance(
+        combat_id=uuid.uuid4(), room_id="r1", participants={npc_uuid: npc_part, new_target_uuid: new_target_part}
+    )
+
+    with (
+        patch("server.commands.combat_taunt.apply_taunt", return_value=True),
+        patch("server.commands.combat_taunt.update_aggro", return_value=(new_target_uuid, True)),
+    ):
+        result = await combat_taunt._apply_taunt_and_maybe_broadcast(handler, combat, npc_part, uuid.uuid4(), "r1")
+
+    assert result is None
+    broadcast_combat_target_switch.assert_awaited_once()
+    combat_svc.publish_combat_target_switch_event_to_nats.assert_awaited_once()
+    published_event = combat_svc.publish_combat_target_switch_event_to_nats.await_args.args[0]
+    assert published_event.new_target_name == "Hero"

@@ -271,11 +271,13 @@ async def test_broadcast_aggro_target_switches_sends_messages() -> None:
     get_npc_combat_integration_service: MagicMock = MagicMock(return_value=npc_svc)
     service: MagicMock = MagicMock()
     service.get_npc_combat_integration_service = get_npc_combat_integration_service
+    service.publish_combat_target_switch_event_to_nats = AsyncMock(return_value=True)
     npc_id = uuid.uuid4()
 
     switches = [(npc_id, "Horror", "Investigator")]
     await combat_service_events.broadcast_aggro_target_switches(service, "room_001", uuid.uuid4(), switches)
     broadcast_combat_target_switch.assert_awaited_once()
+    service.publish_combat_target_switch_event_to_nats.assert_awaited_once()
 
 
 def _dp_sync(**combat_attrs: AsyncMock | MagicMock | None) -> CombatDPSync:
@@ -332,18 +334,6 @@ async def test_combat_dp_sync_persist_player_dp_sync_no_persistence() -> None:
 
 
 @pytest.mark.asyncio
-async def test_combat_dp_sync_publish_player_dp_update_event() -> None:
-    sync = _dp_sync(_nats_service=None)
-    publish: MagicMock = MagicMock()
-    bus: MagicMock = MagicMock()
-    bus.publish = publish
-    with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value = bus
-        await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20, room_id="room-a")
-        publish.assert_called_once()
-
-
-@pytest.mark.asyncio
 async def test_combat_dp_sync_publish_correction_event() -> None:
     sync = _dp_sync()
     publish: MagicMock = MagicMock()
@@ -391,40 +381,6 @@ async def test_combat_dp_sync_persist_player_dp_sync_database_error() -> None:
     persistence.get_player_by_id = get_player_by_id
     with patch.object(sync, "_get_persistence", return_value=persistence):
         await sync._persist_player_dp_sync(uuid.uuid4(), 5)
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_publish_with_nats_legacy_subject() -> None:
-    publish: AsyncMock = AsyncMock()
-    nats_service: AsyncMock = AsyncMock()
-    nats_service.publish = publish
-    sync = _dp_sync(_nats_service=nats_service, _combat_event_publisher=None)
-    bus_publish: MagicMock = MagicMock()
-    bus: MagicMock = MagicMock()
-    bus.publish = bus_publish
-    with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value = bus
-        await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20)
-    publish.assert_awaited_once()
-
-
-@pytest.mark.asyncio
-async def test_combat_dp_sync_publish_with_nats_subject_manager() -> None:
-    publish: AsyncMock = AsyncMock()
-    nats_service: AsyncMock = AsyncMock()
-    nats_service.publish = publish
-    build_subject: MagicMock = MagicMock(return_value="combat.dp_update.player-1")
-    subject_manager: MagicMock = MagicMock()
-    subject_manager.build_subject = build_subject
-    publisher: MagicMock = MagicMock(subject_manager=subject_manager)
-    sync = _dp_sync(_nats_service=nats_service, _combat_event_publisher=publisher)
-    bus_publish: MagicMock = MagicMock()
-    bus: MagicMock = MagicMock()
-    bus.publish = bus_publish
-    with patch("server.services.combat_hp_sync.EventBus") as bus_cls:
-        bus_cls.return_value = bus
-        await sync._publish_player_dp_update_event(uuid.uuid4(), 10, 8, 20)
-    publish.assert_awaited_once()
 
 
 @pytest.mark.asyncio

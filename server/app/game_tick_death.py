@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..constants.spawn_defaults import LIMBO_ROOM_ID
 from ..database import get_async_session
-from ..events.event_types import PlayerDPUpdated
+from ..events.event_types import PlayerDPDecayEvent, PlayerDPUpdated
 from ..models.combat import CombatStatus
 from ..services.combat_messaging_integration import combat_messaging_integration
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -108,6 +108,7 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
         return
 
     death_service = container.player_death_service
+    old_dp = coerce_int(player.get_stats().get("current_dp", 0), default=0)
     _ = await death_service.process_mortally_wounded_tick(uuid.UUID(str(player.player_id)), session)
 
     await session.refresh(player)
@@ -116,6 +117,16 @@ async def _process_mortally_wounded_player(container: _TickContainer, player: Pl
 
     if container.combat_service:
         _ = await combat_messaging_integration.send_dp_decay_message(str(player.player_id), new_dp)
+        # NATS-consumable in addition to the direct personal message above (#634)
+        _ = await container.combat_service.publish_player_dp_decay_event_to_nats(
+            PlayerDPDecayEvent(
+                player_id=uuid.UUID(str(player.player_id)),
+                old_dp=old_dp,
+                new_dp=new_dp,
+                decay_amount=old_dp - new_dp,
+                room_id=player.current_room_id,
+            )
+        )
 
     if new_dp <= -10:
         await _handle_player_death_threshold(container, player, session, new_dp, stats)

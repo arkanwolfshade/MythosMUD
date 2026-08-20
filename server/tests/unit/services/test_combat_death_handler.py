@@ -15,6 +15,8 @@ def combat_service():
     svc.get_connection_manager = MagicMock(return_value=None)
     svc.get_npc_combat_integration_service = MagicMock(return_value=None)
     svc.publish_npc_died_event_to_nats = AsyncMock(return_value=True)
+    svc.publish_player_died_event_to_nats = AsyncMock(return_value=True)
+    svc.publish_player_mortally_wounded_event_to_nats = AsyncMock(return_value=True)
     return svc
 
 
@@ -69,11 +71,18 @@ def test_resolve_connection_manager_missing_getter(handler, combat_service):
 @pytest.mark.asyncio
 @patch("server.services.combat_death_handler.CombatDeathHandler._create_corpse_on_death", new_callable=AsyncMock)
 @patch("server.services.combat_messaging_integration.combat_messaging_integration")
-async def test_handle_player_death_events_success(mock_messaging, mock_corpse, handler, player_target, combat):
+async def test_handle_player_death_events_success(
+    mock_messaging, mock_corpse, handler, player_target, combat, combat_service
+):
     mock_messaging.broadcast_player_death = AsyncMock(return_value=True)
     await handler._handle_player_death_events(player_target, combat)
     mock_messaging.broadcast_player_death.assert_awaited_once()
     mock_corpse.assert_awaited_once()
+    # #634: also NATS-consumable alongside the direct room broadcast
+    combat_service.publish_player_died_event_to_nats.assert_awaited_once()
+    published_event = combat_service.publish_player_died_event_to_nats.await_args.args[0]
+    assert published_event.player_id == player_target.participant_id
+    assert published_event.room_id == combat.room_id
 
 
 @pytest.mark.asyncio
@@ -176,13 +185,15 @@ async def test_handle_npc_death(mock_log, mock_resolve, mock_publish, handler, n
 
 @pytest.mark.asyncio
 @patch("server.services.combat_messaging_integration.combat_messaging_integration")
-async def test_handle_target_state_mortally_wounded(mock_messaging, handler, player_target, combat):
+async def test_handle_target_state_mortally_wounded(mock_messaging, handler, player_target, combat, combat_service):
     mock_messaging.broadcast_player_mortally_wounded = AsyncMock(return_value=True)
     attacker = MagicMock(name="Attacker")
     await handler.handle_target_state_changes(
         player_target, attacker, target_mortally_wounded=True, target_died=False, combat=combat
     )
     mock_messaging.broadcast_player_mortally_wounded.assert_awaited_once()
+    # #634: also NATS-consumable alongside the direct room broadcast
+    combat_service.publish_player_mortally_wounded_event_to_nats.assert_awaited_once()
 
 
 @pytest.mark.asyncio

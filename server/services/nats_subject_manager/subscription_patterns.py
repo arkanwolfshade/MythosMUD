@@ -111,13 +111,14 @@ def get_event_subscription_patterns(
         "event_player_respawned",
         "combat_attack",
         "combat_npc_attacked",
-        "combat_npc_action",
         "combat_started",
         "combat_ended",
         "combat_npc_died",
         "combat_damage",
-        "combat_turn",
-        "combat_timeout",
+        "combat_player_died",
+        "combat_player_mortally_wounded",
+        "combat_target_switch",
+        "combat_dp_decay",
     ]
 
     for pattern_name in event_pattern_names:
