@@ -226,6 +226,12 @@ class LucidityService:
             tier_after=ctx.new_tier,
             liabilities_added=liabilities_added,
         )
+        # #625: phantoms only make sense while the player remains in a hallucination-eligible
+        # tier. Leaving fractured/deranged (in either direction) clears any still-active phantom.
+        if ctx.previous_tier != ctx.new_tier and ctx.new_tier not in ("fractured", "deranged"):
+            from .phantom_hostile_service import phantom_hostile_service
+
+            phantom_hostile_service.clear_all_phantoms(ctx.player_id)
         return LucidityUpdateResult(
             player_id=ctx.player_id,
             previous_lcd=ctx.previous_lcd,

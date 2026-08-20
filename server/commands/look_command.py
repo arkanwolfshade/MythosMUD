@@ -24,7 +24,7 @@ from .look_helpers import LookRequest, _is_direction
 from .look_item import _handle_item_look, _try_lookup_item_implicit
 from .look_npc import _try_lookup_npc_implicit
 from .look_player import _handle_player_look, _try_lookup_player_implicit
-from .look_room import _handle_direction_look, _handle_room_look
+from .look_room import _handle_direction_look, _handle_room_look, _try_lookup_phantom_implicit
 
 if TYPE_CHECKING:
     from ..models.player import Player
@@ -317,6 +317,11 @@ async def _handle_implicit_target_lookup(ctx: LookRouteCtx, target: str, target_
     if parsed:
         return parsed
 
+    result = await _try_lookup_phantom_implicit(target_lower, ctx.room, ctx.player)
+    parsed = _as_response(result)
+    if parsed:
+        return parsed
+
     result = await _try_lookup_item_implicit(
         target_lower, ctx.instance_number, ctx.room_drops, ctx.player, _prototype_registry_from_app(ctx.app)
     )
@@ -391,7 +396,9 @@ async def _route_look_command(ctx: LookRouteCtx) -> CommandResponse:
     if result:
         return result
 
-    room_result = await _handle_room_look(ctx.room, ctx.room_drops, ctx.persistence, ctx.player_name, ctx.request)
+    room_result = await _handle_room_look(
+        ctx.room, ctx.room_drops, ctx.persistence, ctx.player_name, ctx.request, ctx.player.player_id
+    )
     parsed = _as_response(room_result)
     if parsed is not None:
         return parsed

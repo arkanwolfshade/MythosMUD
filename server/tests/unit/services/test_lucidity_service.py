@@ -218,6 +218,46 @@ async def test_apply_lucidity_adjustment_adds_liability_on_large_drop(mock_sessi
     assert "night_frayed_reflexes" in result.liabilities_added
 
 
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_clears_phantoms_on_tier_improvement() -> None:
+    """#625: leaving fractured/deranged clears any lingering phantom hostiles for the player."""
+    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=25, current_tier="fractured")
+    session = MagicMock()
+    session.flush = AsyncMock()
+    service = LucidityService(session)
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
+    with (
+        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
+        patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock,
+    ):
+        result = await service.apply_lucidity_adjustment(
+            player_id=record.player_id, delta=20, reason_code="test_recovery"
+        )
+    assert result.new_tier == "uneasy"
+    clear_mock.assert_called_once_with(record.player_id)
+
+
+@pytest.mark.asyncio
+async def test_apply_lucidity_adjustment_keeps_phantoms_within_eligible_tiers() -> None:
+    """#625: moving from fractured to deranged (still eligible) does not clear phantoms."""
+    record = PlayerLucidity(player_id=uuid.uuid4(), current_lcd=20, current_tier="fractured")
+    session = MagicMock()
+    session.flush = AsyncMock()
+    service = LucidityService(session)
+    service._repo.get_or_create_player_lucidity = AsyncMock(return_value=record)  # type: ignore[method-assign]
+    service._repo.add_adjustment_log = AsyncMock()  # type: ignore[method-assign]
+    with (
+        patch("server.services.lucidity_service.send_lucidity_change_event", new=AsyncMock()),
+        patch("server.services.phantom_hostile_service.phantom_hostile_service.clear_all_phantoms") as clear_mock,
+    ):
+        result = await service.apply_lucidity_adjustment(
+            player_id=record.player_id, delta=-10, reason_code="test_worsen"
+        )
+    assert result.new_tier == "deranged"
+    clear_mock.assert_not_called()
+
+
 def test_max_lcd_from_stats():
     """Test max LCD calculation from stats dict."""
     assert LucidityService._max_lcd_from_stats({"education": 80}) == 80

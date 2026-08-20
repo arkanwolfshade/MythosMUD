@@ -130,7 +130,7 @@ class PhantomHostileService:
         name_lower = name.strip().lower()
         for phantom_id in self.get_active_phantoms(player_id):
             data = self._phantom_data.get(phantom_id)
-            if data and data["room_id"] == room_id and data["name"].lower() == name_lower:
+            if data and data["room_id"] == room_id and name_lower in data["name"].lower():
                 return data
         return None
 

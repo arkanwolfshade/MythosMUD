@@ -226,9 +226,7 @@ async def test_execute_phantom_combat_action_success(mock_handler: MagicMock) ->
         ),
         patch("server.commands.combat_attack._resolve_combat_damage", return_value=5),
     ):
-        out = await combat_attack._execute_phantom_combat_action(
-            mock_handler, "hero", "phantom_p1_1", "attack", "r1"
-        )
+        out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
     combat_service.start_combat.assert_awaited_once()
     combat_service.process_attack.assert_awaited_once()
     assert "Shambling Horror" in out["result"]
@@ -242,9 +240,7 @@ async def test_execute_phantom_combat_action_already_dissipated(mock_handler: Ma
     persistence: MagicMock = MagicMock()
     persistence.get_player_by_name = AsyncMock(return_value=player)
     mock_handler.persistence = persistence
-    with patch(
-        "server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None
-    ):
+    with patch("server.services.phantom_hostile_service.phantom_hostile_service.get_phantom_data", return_value=None):
         out = await combat_attack._execute_phantom_combat_action(mock_handler, "hero", "phantom_p1_1", "attack", "r1")
     assert "dissipated" in out["result"].lower()
 

@@ -266,9 +266,7 @@ async def run_handle_attack_command(
         if err:
             return err
         if target_match.target_type == TargetType.PHANTOM:
-            return await _execute_phantom_combat_action(
-                handler, player_name, target_match.target_id, command, room_id
-            )
+            return await _execute_phantom_combat_action(handler, player_name, target_match.target_id, command, room_id)
         combat_result = await _execute_combat_action(
             handler, player_name, target_match.target_id, command, room_id, npc_instance=npc_instance
         )

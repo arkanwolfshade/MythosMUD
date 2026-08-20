@@ -57,15 +57,54 @@ async def _format_containers_section(room_id: str | None, persistence: Any) -> l
     return lines
 
 
-async def _format_npcs_section(room_id: str | None) -> list[str]:
-    """Format the NPCs/Mobs section of room look."""
+def _get_viewer_phantom_names(viewer_player_id: Any | None, room_id: str | None) -> list[str]:
+    """
+    Return the viewer's own active phantom hostiles in this room, styled as NPC names (#625).
+
+    Phantoms are player-specific hallucinations (FR-3.1): only the hallucinating player's own
+    `look`/occupants queries ever see them. No other viewer, and no query without a viewer id,
+    injects anything here.
+    """
+    if not viewer_player_id or not room_id:
+        return []
+    from ..services.phantom_hostile_service import phantom_hostile_service
+
+    names: list[str] = []
+    for phantom_id in phantom_hostile_service.get_active_phantoms(viewer_player_id):
+        data = phantom_hostile_service.get_phantom_data(phantom_id)
+        if data and data["room_id"] == room_id:
+            names.append(str(data["name"]))
+    return names
+
+
+async def _format_npcs_section(room_id: str | None, viewer_player_id: Any | None = None) -> list[str]:
+    """Format the NPCs/Mobs section of room look, including the viewer's own phantoms."""
     if not room_id:
         return []
     npc_names = await _get_npcs_in_room(room_id)
+    npc_names = [*npc_names, *_get_viewer_phantom_names(viewer_player_id, room_id)]
     if not npc_names:
         return []
     npc_list = ", ".join(npc_names)
     return [f"Also here: {npc_list}", ""]
+
+
+async def _try_lookup_phantom_implicit(target_lower: str, room: Any, player: Any) -> dict[str, Any] | None:
+    """
+    Look at one of the player's own active phantom hostiles in this room (#625).
+
+    Generic description text -- phantoms don't need per-name flavor text across the 8-name pool.
+    """
+    player_id = getattr(player, "player_id", None)
+    room_id = _get_room_id(room)
+    if not player_id or not room_id:
+        return None
+    from ..services.phantom_hostile_service import phantom_hostile_service
+
+    data = phantom_hostile_service.find_phantom_by_name_in_room(player_id, room_id, target_lower)
+    if not data:
+        return None
+    return {"result": f"{data['name']}\nIts form wavers at the edges of perception, not quite real."}
 
 
 async def _filter_other_players(
@@ -127,6 +166,7 @@ async def _handle_room_look(
     persistence: Any,
     player_name: str,
     request: Any | None = None,
+    viewer_player_id: Any | None = None,
 ) -> dict[str, Any]:
     """Handle looking at the current room."""
     desc = _get_room_description(room)
@@ -149,7 +189,7 @@ async def _handle_room_look(
     lines.extend(await _format_containers_section(room_id, persistence))
 
     # 5. NPCs/Mobs
-    lines.extend(await _format_npcs_section(room_id))
+    lines.extend(await _format_npcs_section(room_id, viewer_player_id))
 
     # 6. Players
     players_in_room = await _get_players_in_room(room, persistence)
@@ -202,6 +242,8 @@ __all__ = [
     "_format_items_section",
     "_format_containers_section",
     "_format_npcs_section",
+    "_get_viewer_phantom_names",
+    "_try_lookup_phantom_implicit",
     "_filter_other_players",
     "_format_players_section",
     "_get_room_description",
