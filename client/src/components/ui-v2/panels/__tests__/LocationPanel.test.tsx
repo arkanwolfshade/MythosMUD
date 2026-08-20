@@ -74,6 +74,53 @@ describe('LocationPanel', () => {
     });
   });
 
+  describe('#626 deranged-tier direction hallucination', () => {
+    const room: Room = {
+      id: 'room1',
+      name: 'Test Room',
+      description: 'A test room',
+      exits: { north: 'room2', east: 'room3' },
+    };
+
+    it('shows real exits for non-deranged tiers', () => {
+      for (const tier of ['lucid', 'uneasy', 'fractured', 'catatonic'] as const) {
+        const { unmount } = render(<LocationPanel room={room} tier={tier} playerId="player-1" />);
+        expect(screen.getByText(/North/)).toBeInTheDocument();
+        expect(screen.getByText(/East/)).toBeInTheDocument();
+        unmount();
+      }
+    });
+
+    it('shows real exits when deranged but no playerId is available', () => {
+      render(<LocationPanel room={room} tier="deranged" />);
+      expect(screen.getByText(/North/)).toBeInTheDocument();
+      expect(screen.getByText(/East/)).toBeInTheDocument();
+    });
+
+    it('shows a hallucinated exit list when deranged with a playerId', () => {
+      render(<LocationPanel room={room} tier="deranged" playerId="player-1" />);
+      const exitsLine = screen.getByText(/Exits:/).parentElement;
+      expect(exitsLine?.textContent).toMatch(/Exits:/);
+    });
+
+    it('is stable across re-renders for the same room+player', () => {
+      const { rerender } = render(<LocationPanel room={room} tier="deranged" playerId="player-1" />);
+      const first = screen.getByText(/Exits:/).parentElement?.textContent;
+      rerender(<LocationPanel room={room} tier="deranged" playerId="player-1" />);
+      const second = screen.getByText(/Exits:/).parentElement?.textContent;
+      expect(second).toBe(first);
+    });
+
+    it('differs between two players standing in the same room', () => {
+      const { unmount } = render(<LocationPanel room={room} tier="deranged" playerId="player-1" />);
+      const first = screen.getByText(/Exits:/).parentElement?.textContent;
+      unmount();
+      render(<LocationPanel room={room} tier="deranged" playerId="player-2" />);
+      const second = screen.getByText(/Exits:/).parentElement?.textContent;
+      expect(second).not.toBe(first);
+    });
+  });
+
   describe('formatLocationName', () => {
     it('should format underscore-separated names', () => {
       const room: Room = {

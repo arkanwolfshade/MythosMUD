@@ -1,13 +1,19 @@
 import React from 'react';
+import { getHallucinatedExits } from '../../../utils/directionHallucination';
+import type { LucidityTier } from '../../../types/lucidity';
 import type { Room } from '../types';
 
 interface LocationPanelProps {
   room: Room | null;
+  /** Current lucidity tier; when 'deranged', displayed exits are a seeded hallucination (#626). */
+  tier?: LucidityTier;
+  /** Viewer id used to seed the hallucination alongside the room id. */
+  playerId?: string;
 }
 
 // Display zone > subzone > room hierarchy
 // Based on findings from "Spatial Navigation in Non-Euclidean Architectures" - Dr. Armitage, 1928
-export const LocationPanel: React.FC<LocationPanelProps> = ({ room }) => {
+export const LocationPanel: React.FC<LocationPanelProps> = ({ room, tier, playerId }) => {
   const formatLocationName = (location: string): string => {
     if (!location || location === 'Unknown') return 'Unknown';
 
@@ -63,9 +69,13 @@ export const LocationPanel: React.FC<LocationPanelProps> = ({ room }) => {
         <div className="text-sm text-mythos-terminal-text-secondary">
           <span className="text-mythos-terminal-text-secondary">Exits: </span>
           <span className="text-mythos-terminal-text">
-            {Object.entries(room.exits)
-              .filter(([_, destination]) => destination !== null)
-              .map(([direction, _]) => direction.charAt(0).toUpperCase() + direction.slice(1))
+            {(tier === 'deranged' && playerId
+              ? getHallucinatedExits(room.id, playerId)
+              : Object.entries(room.exits)
+                  .filter(([_, destination]) => destination !== null)
+                  .map(([direction]) => direction)
+            )
+              .map(direction => direction.charAt(0).toUpperCase() + direction.slice(1))
               .join(', ') || 'None'}
           </span>
         </div>

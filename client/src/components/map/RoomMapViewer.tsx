@@ -12,6 +12,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import ReactFlow, { Background, Controls, MiniMap, type Edge, type Node } from 'reactflow';
 import 'reactflow/dist/style.css';
+import type { LucidityTier } from '../../types/lucidity';
+import { seedFrom } from '../../utils/directionHallucination';
+import { AsciiNoise } from './AsciiNoise';
 import { MapControls } from './MapControls';
 import { RoomDetailsPanel } from './RoomDetailsPanel';
 import { edgeTypes, nodeTypes } from './config';
@@ -35,6 +38,10 @@ export interface RoomMapViewerProps {
   authToken?: string;
   /** Callback when room is selected */
   onRoomSelect?: (roomId: string) => void;
+  /** #626: current lucidity tier; 'deranged' overlays the map with noise and hallucinates exits. */
+  tier?: LucidityTier;
+  /** Viewer id used, with the room id, to seed the hallucination. */
+  playerId?: string;
 }
 
 /**
@@ -48,7 +55,10 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
   baseUrl,
   authToken,
   onRoomSelect,
+  tier,
+  playerId,
 }) => {
+  const isHallucinating = tier === 'deranged' && Boolean(playerId);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPlane, setSelectedPlane] = useState(plane);
@@ -227,7 +237,19 @@ export const RoomMapViewer: React.FC<RoomMapViewerProps> = ({
       </ReactFlow>
 
       {/* Room details panel */}
-      {selectedRoom && <RoomDetailsPanel room={selectedRoom} onClose={handleClosePanel} />}
+      {selectedRoom && (
+        <RoomDetailsPanel room={selectedRoom} onClose={handleClosePanel} tier={tier} playerId={playerId} />
+      )}
+
+      {/* #626: hallucination overlay -- blocks interaction with the real graph on purpose */}
+      {isHallucinating && (
+        <AsciiNoise
+          rows={24}
+          cols={80}
+          seed={seedFrom(currentRoomId ?? '', playerId ?? '')}
+          className="absolute inset-0 z-40 flex items-center justify-center overflow-hidden bg-mythos-terminal-background text-mythos-terminal-text"
+        />
+      )}
     </div>
   );
 };

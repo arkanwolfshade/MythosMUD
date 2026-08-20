@@ -3,6 +3,8 @@
  */
 
 import React from 'react';
+import type { LucidityTier } from '../../types/lucidity';
+import { getHallucinatedExits } from '../../utils/directionHallucination';
 import type { Room } from '../../stores/gameStore';
 
 export interface RoomDetailsPanelProps {
@@ -11,6 +13,10 @@ export interface RoomDetailsPanelProps {
   onEditRoom?: (roomId: string) => void;
   onCreateExit?: () => void;
   isAdmin?: boolean;
+  /** #626: when 'deranged', the exits list is a seeded hallucination instead of the real one. */
+  tier?: LucidityTier;
+  /** Viewer id used to seed the hallucination alongside the room id. */
+  playerId?: string;
 }
 
 function RoomAdminActions(props: {
@@ -75,24 +81,36 @@ function RoomLocationFields(props: { room: Room }): React.ReactElement {
   );
 }
 
-function RoomExitsList(props: { exits: Record<string, string> }): React.ReactElement {
+function RoomExitsList(props: {
+  exits: Record<string, string>;
+  hallucinatedDirections?: string[];
+}): React.ReactElement {
+  const { exits, hallucinatedDirections } = props;
   return (
     <div>
       <span className="text-xs text-mythos-terminal-text/70">Exits:</span>
       <div className="text-sm text-mythos-terminal-text mt-1 space-y-1">
-        {Object.entries(props.exits).map(([direction, target]) => (
-          <div key={direction} className="flex justify-between">
-            <span>{direction}:</span>
-            <span className="font-mono text-mythos-terminal-primary">{target}</span>
-          </div>
-        ))}
+        {hallucinatedDirections
+          ? hallucinatedDirections.map(direction => (
+              <div key={direction} className="flex justify-between">
+                <span>{direction}:</span>
+                <span className="font-mono text-mythos-terminal-primary">???</span>
+              </div>
+            ))
+          : Object.entries(exits).map(([direction, target]) => (
+              <div key={direction} className="flex justify-between">
+                <span>{direction}:</span>
+                <span className="font-mono text-mythos-terminal-primary">{target}</span>
+              </div>
+            ))}
       </div>
     </div>
   );
 }
 
 export const RoomDetailsPanel: React.FC<RoomDetailsPanelProps> = props => {
-  const { room, onClose, onEditRoom, onCreateExit, isAdmin = false } = props;
+  const { room, onClose, onEditRoom, onCreateExit, isAdmin = false, tier, playerId } = props;
+  const hallucinatedDirections = tier === 'deranged' && playerId ? getHallucinatedExits(room.id, playerId) : undefined;
 
   return (
     <div className="absolute top-4 right-4 w-80 bg-mythos-terminal-background border border-mythos-terminal-border rounded shadow-lg p-4 z-20 max-h-panel overflow-y-auto">
@@ -132,7 +150,9 @@ export const RoomDetailsPanel: React.FC<RoomDetailsPanelProps> = props => {
         </div>
       )}
 
-      {room.exits && Object.keys(room.exits).length > 0 && <RoomExitsList exits={room.exits} />}
+      {room.exits && Object.keys(room.exits).length > 0 && (
+        <RoomExitsList exits={room.exits} hallucinatedDirections={hallucinatedDirections} />
+      )}
     </div>
   );
 };

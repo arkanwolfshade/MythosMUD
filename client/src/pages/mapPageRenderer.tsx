@@ -1,5 +1,6 @@
 import { RoomMapEditor } from '../components/map/RoomMapEditor.tsx';
 import { RoomMapViewer } from '../components/map/RoomMapViewer.tsx';
+import type { LucidityTier } from '../types/lucidity.ts';
 import { API_V1_BASE } from '../utils/config.js';
 import type { MapPageState } from './mapPageState.ts';
 import { MapPageAuthRequiredView, MapPageErrorView, MapPageLoadingView } from './mapPageStatusViews.tsx';
@@ -11,6 +12,9 @@ interface AuthenticatedMapProps {
   subZone?: string;
   currentRoomId?: string;
   authToken: string;
+  /** #626: relayed tier; ignored in edit mode -- the editor must never lie to an admin. */
+  tier: LucidityTier | null;
+  playerId: string | null;
 }
 
 function renderAuthenticatedMapView({
@@ -20,6 +24,8 @@ function renderAuthenticatedMapView({
   subZone,
   currentRoomId,
   authToken,
+  tier,
+  playerId,
 }: AuthenticatedMapProps) {
   if (editMode) {
     return (
@@ -42,6 +48,8 @@ function renderAuthenticatedMapView({
       currentRoomId={currentRoomId}
       authToken={authToken}
       baseUrl={API_V1_BASE}
+      tier={tier ?? undefined}
+      playerId={playerId ?? undefined}
     />
   );
 }
@@ -87,7 +95,7 @@ function renderStatusGate(state: MapPageState) {
   return null;
 }
 
-export function renderMapPageState(state: MapPageState) {
+export function renderMapPageState(state: MapPageState, tier: LucidityTier | null = null) {
   const statusView = renderStatusGate(state);
   if (statusView) {
     return statusView;
@@ -104,6 +112,8 @@ export function renderMapPageState(state: MapPageState) {
         subZone: viewProps.subZone,
         currentRoomId: viewProps.currentRoomId,
         authToken: state.authToken!,
+        tier: state.editMode ? null : tier,
+        playerId: state.playerId,
       })}
     </div>
   );

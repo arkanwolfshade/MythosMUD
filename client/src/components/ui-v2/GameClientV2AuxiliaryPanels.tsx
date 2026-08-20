@@ -64,7 +64,7 @@ function renderCharacterInfoPanel(props: GameClientV2AuxiliaryPanelsProps): Reac
 }
 
 function renderMinimapPanel(props: GameClientV2AuxiliaryPanelsProps): React.ReactNode {
-  const { minimapPanel, room, authToken, onMapClick, panelManager } = props;
+  const { minimapPanel, room, authToken, onMapClick, panelManager, derivedLucidityStatus, player } = props;
   if (!minimapPanel || !minimapPanel.isVisible) return null;
 
   return (
@@ -73,6 +73,8 @@ function renderMinimapPanel(props: GameClientV2AuxiliaryPanelsProps): React.Reac
       room={room}
       authToken={authToken}
       onMapClick={onMapClick}
+      hallucinate={derivedLucidityStatus?.tier === 'deranged'}
+      playerId={player?.id ?? player?.name}
       updatePosition={panelManager.updatePosition}
       updateSize={panelManager.updateSize}
       toggleMinimize={panelManager.toggleMinimize}
