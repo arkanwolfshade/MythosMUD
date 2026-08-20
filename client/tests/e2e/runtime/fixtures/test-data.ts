@@ -16,7 +16,9 @@ export const DEFAULT_RESPAWN_ROOM = 'earth_arkhamcity_sanitarium_room_foyer_001'
 
 /**
  * After `look`, foyer prose shows in Location / Room Description (not always Game Info).
- * Use for spawn-room assertions after DEFAULT_RESPAWN_ROOM moved off the limbo arena.
+ * Use for spawn-room assertions against the default (foyer) respawn room -- the gladiator arena
+ * (#628) is intentionally a mechanics-testing space, not a player-facing default; see the
+ * superseded sections of gladiator_ring_arena_6a674c58.plan.md for why.
  */
 export const DEFAULT_SPAWN_LOOK_CUE =
   /Sanitarium\s*>\s*Main Foyer|Main Foyer|marble floor|respectability|disinfectant|Exits:\s*East/i;

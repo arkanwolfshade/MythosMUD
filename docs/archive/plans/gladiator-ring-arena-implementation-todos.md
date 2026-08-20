@@ -41,6 +41,12 @@ by `python scripts/gen_arena_migration_sql.py` and applied by `scripts/apply_are
 
 ### Phase 2: Tutorial exit and respawn (main agent)
 
+> **SUPERSEDED (2026-08).** Applied once, then deliberately reverted by
+> `data/db/migrations/20260719_tutorial_exit_to_sanitarium_foyer_{dev,e2e,unit}.sql` alongside the
+> "Sanitarium Daisy" onboarding quest, which needs new/respawning players in the foyer near
+> Dr. Morgan. Decision (GitHub #628): the arena is a mechanics-testing space, not a player-facing
+> default. Do not reapply this phase.
+
 - **todo-tutorial-exit**: Set tutorial bedroom `instance_exit_room_id` to
   `limbo_arena_arena_arena_5_5` in room attributes in mythos*dev_dml, mythos_unit_dml,
   mythos_e2e_dml (tutorial bedroom row in COPY mythos*\*\_dml.rooms).
