@@ -5,6 +5,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { fetchAsciiMinimap } from '../../api/maps';
 import { SafeHtml } from '../common/SafeHtml';
+import { AsciiNoise } from './AsciiNoise';
 
 export interface AsciiMinimapProps {
   plane: string;
@@ -17,6 +18,10 @@ export interface AsciiMinimapProps {
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   onClick?: () => void;
   variant?: 'floating' | 'inline';
+  /** #626: when true, replace the map with churning ASCII noise instead of fetching/rendering it. */
+  hallucinate?: boolean;
+  /** Seeds the noise (and its reduced-motion static frame); pass hash(roomId, playerId). */
+  seed?: number;
 }
 
 const POSITION_CLASSES = {
@@ -48,14 +53,17 @@ function useAsciiMinimapData(params: {
   size: number;
   baseUrl: string;
   authToken: string | undefined;
+  hallucinate: boolean;
 }): { mapHtml: string; isLoading: boolean; error: string | null } {
-  const { effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, baseUrl, authToken } = params;
+  const { effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, baseUrl, authToken, hallucinate } =
+    params;
   const [mapHtml, setMapHtml] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchMinimap = useCallback(async () => {
-    if (!currentRoomId) {
+    if (!currentRoomId || hallucinate) {
+      // Hallucinating: skip the network fetch entirely, the real map is never shown.
       setMapHtml('');
       setIsLoading(false);
       return;
@@ -79,7 +87,7 @@ function useAsciiMinimapData(params: {
     } finally {
       setIsLoading(false);
     }
-  }, [baseUrl, effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, authToken]);
+  }, [baseUrl, effectivePlane, effectiveZone, effectiveSubZone, currentRoomId, size, authToken, hallucinate]);
 
   useEffect(() => {
     // Remote fetch; local mapHtml/isLoading/error are the natural sink for the result.
@@ -112,10 +120,24 @@ interface MinimapDisplayProps {
   mapHtml: string;
   onClick?: () => void;
   containerRef: React.RefObject<HTMLButtonElement | null>;
+  hallucinate: boolean;
+  seed: number;
+  size: number;
 }
 
 function MinimapDisplay(props: MinimapDisplayProps): React.ReactElement {
-  const { isInline, position = 'bottom-right', isLoading, error, mapHtml, onClick, containerRef } = props;
+  const {
+    isInline,
+    position = 'bottom-right',
+    isLoading,
+    error,
+    mapHtml,
+    onClick,
+    containerRef,
+    hallucinate,
+    seed,
+    size,
+  } = props;
   const className = isInline
     ? 'w-full h-full min-h-[80px] bg-mythos-terminal-background border border-mythos-terminal-border rounded p-2 ' +
       'cursor-pointer hover:border-mythos-terminal-primary transition-colors flex flex-col'
@@ -131,13 +153,25 @@ function MinimapDisplay(props: MinimapDisplayProps): React.ReactElement {
       onClick={onClick}
       title="Click to open full map"
     >
-      {isLoading && <div className="text-xs text-mythos-terminal-text p-2">Loading...</div>}
-      {error && (
+      {hallucinate && (
+        <AsciiNoise
+          rows={size}
+          cols={size * 3}
+          seed={seed}
+          className={
+            isInline
+              ? 'minimap-container flex-1 min-h-0 overflow-auto text-mythos-terminal-text font-mono text-xs'
+              : 'minimap-container'
+          }
+        />
+      )}
+      {!hallucinate && isLoading && <div className="text-xs text-mythos-terminal-text p-2">Loading...</div>}
+      {!hallucinate && error && (
         <div className="text-xs text-mythos-terminal-error p-2" title={error}>
           Map Error
         </div>
       )}
-      {!isLoading && !error && mapHtml && (
+      {!hallucinate && !isLoading && !error && mapHtml && (
         <SafeHtml
           html={mapHtml}
           className={
@@ -164,6 +198,8 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = props => {
     position = 'bottom-right',
     onClick,
     variant = 'floating',
+    hallucinate = false,
+    seed = 0,
   } = props;
   const containerRef = useRef<HTMLButtonElement>(null);
   const location = deriveEffectiveLocation(plane, zone, subZone, currentRoomId);
@@ -173,6 +209,7 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = props => {
     size,
     baseUrl,
     authToken,
+    hallucinate,
   });
   const isInline = variant === 'inline';
 
@@ -189,6 +226,9 @@ export const AsciiMinimap: React.FC<AsciiMinimapProps> = props => {
       mapHtml={mapHtml}
       onClick={onClick}
       containerRef={containerRef}
+      hallucinate={hallucinate}
+      seed={seed}
+      size={size}
     />
   );
 };

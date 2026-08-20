@@ -15,15 +15,22 @@ export interface MapPageState {
   isLoading: boolean;
   error: string | null;
   editMode: boolean;
+  /** playerId query param (#626); used to seed the deranged-tier hallucination alongside the room. */
+  playerId: string | null;
 }
 
-function parseMapRouteParams(search: string): { currentRoom: RoomData | null; editMode: boolean } {
+function parseMapRouteParams(search: string): {
+  currentRoom: RoomData | null;
+  editMode: boolean;
+  playerId: string | null;
+} {
   const urlParams = new URLSearchParams(search);
   const roomId = urlParams.get('roomId');
   const plane = urlParams.get('plane');
   const zone = urlParams.get('zone');
   const subZone = urlParams.get('subZone');
   const editMode = urlParams.get('edit') === 'true';
+  const playerId = urlParams.get('playerId');
 
   const currentRoom =
     roomId && plane && zone
@@ -35,7 +42,7 @@ function parseMapRouteParams(search: string): { currentRoom: RoomData | null; ed
         }
       : null;
 
-  return { currentRoom, editMode };
+  return { currentRoom, editMode, playerId };
 }
 
 async function fetchFallbackCurrentRoom(setState: Dispatch<SetStateAction<MapPageState>>): Promise<void> {
@@ -55,6 +62,7 @@ export function useMapPageState(): MapPageState {
     isLoading: true,
     error: null,
     editMode: false,
+    playerId: null,
   });
 
   useEffect(() => {
@@ -75,10 +83,11 @@ export function useMapPageState(): MapPageState {
           ...prev,
           currentRoom: parsed.currentRoom,
           editMode: parsed.editMode,
+          playerId: parsed.playerId,
           isLoading: false,
         }));
       } else {
-        setState(prev => ({ ...prev, editMode: parsed.editMode }));
+        setState(prev => ({ ...prev, editMode: parsed.editMode, playerId: parsed.playerId }));
         void fetchFallbackCurrentRoom(setState);
       }
     };

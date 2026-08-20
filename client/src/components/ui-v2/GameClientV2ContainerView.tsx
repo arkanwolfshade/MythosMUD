@@ -16,7 +16,9 @@ function openMapTab(
   room: NonNullable<GameClientV2ContainerViewProps['gameState']['room']>,
   authToken: string,
   addTab: GameClientV2ContainerViewProps['addTab'],
-  closeTab: GameClientV2ContainerViewProps['closeTab']
+  closeTab: GameClientV2ContainerViewProps['closeTab'],
+  hallucinate: boolean,
+  playerId: string | undefined
 ) {
   addTab({
     id: `map-${room.id}`,
@@ -28,6 +30,8 @@ function openMapTab(
         currentRoom={room}
         authToken={authToken}
         hideHeader={true}
+        hallucinate={hallucinate}
+        playerId={playerId}
       />
     ),
     closable: true,
@@ -125,9 +129,12 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
     activeEffects,
   } = props;
 
+  const isHallucinatingMap = lucidityStatus?.tier === 'deranged';
+  const mapPlayerId = gameState.player?.id ?? gameState.player?.name;
+
   const handleMapClickFromGame = () => {
     if (tabs.length > 0 && gameState.room?.id) {
-      openMapTab(gameState.room, authToken, addTab, closeTab);
+      openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
       setActiveTab(`map-${gameState.room.id}`);
       return;
     }
@@ -135,7 +142,7 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
   };
 
   const handleMainMenuMapClick = () => {
-    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab);
+    if (gameState.room) openMapTab(gameState.room, authToken, addTab, closeTab, isHallucinatingMap, mapPlayerId);
   };
 
   const respondToFollow = (accept: boolean) => {
@@ -249,6 +256,8 @@ function GameClientV2ContainerLayout(props: GameClientV2ContainerViewProps) {
         onClose={() => setShowMap(false)}
         currentRoom={gameState.room}
         authToken={authToken}
+        hallucinate={isHallucinatingMap}
+        playerId={mapPlayerId}
       />
     </div>
   );

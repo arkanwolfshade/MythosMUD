@@ -11,6 +11,7 @@
 import React, { useCallback, useEffect } from 'react';
 
 import { AsciiMapViewerContent, AsciiMapViewerError, AsciiMapViewerLoading } from './AsciiMapViewerViews';
+import { AsciiNoise } from './AsciiNoise';
 import { createViewportKeyHandler } from './asciiMapViewerUtils';
 import type { UseAsciiMapResult } from './useAsciiMap';
 import { useAsciiMap } from './useAsciiMap';
@@ -72,6 +73,10 @@ export interface AsciiMapViewerProps {
   viewportWidth?: number;
   /** Viewport height in lines (default 24) */
   viewportHeight?: number;
+  /** #626: when true, replace the map with churning ASCII noise instead of the real one. */
+  hallucinate?: boolean;
+  /** Seeds the noise (and its reduced-motion static frame); pass hash(roomId, playerId). */
+  seed?: number;
 }
 
 function getMapClickHandler(
@@ -87,8 +92,22 @@ function chooseMapView(
   state: UseAsciiMapResult,
   plane: string,
   zone: string,
-  onMapClick: (event: React.MouseEvent<HTMLDivElement>) => void
+  onMapClick: (event: React.MouseEvent<HTMLDivElement>) => void,
+  viewportWidth: number,
+  viewportHeight: number,
+  hallucinate: boolean,
+  seed: number
 ): React.ReactElement {
+  if (hallucinate) {
+    return (
+      <AsciiNoise
+        rows={viewportHeight}
+        cols={viewportWidth}
+        seed={seed}
+        className="flex items-center justify-center h-full w-full overflow-auto bg-mythos-terminal-background text-mythos-terminal-text"
+      />
+    );
+  }
   if (state.isLoading) return <AsciiMapViewerLoading />;
   if (state.error) return <AsciiMapViewerError error={state.error} onRetry={() => state.fetchMap()} />;
   return (
@@ -116,5 +135,15 @@ function chooseMapView(
  */
 export function AsciiMapViewer(props: AsciiMapViewerProps): React.ReactElement {
   const { state, handleMapClick } = useAsciiMapViewerBindings(props);
-  return chooseMapView(state, props.plane, props.zone, handleMapClick);
+  const { viewportWidth = 80, viewportHeight = 24, hallucinate = false, seed = 0 } = props;
+  return chooseMapView(
+    state,
+    props.plane,
+    props.zone,
+    handleMapClick,
+    viewportWidth,
+    viewportHeight,
+    hallucinate,
+    seed
+  );
 }

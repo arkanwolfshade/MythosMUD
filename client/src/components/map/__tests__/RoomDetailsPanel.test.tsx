@@ -383,4 +383,37 @@ describe('RoomDetailsPanel', () => {
     // Should use occupants.length when occupant_count is 0 (line 119: 0 || length)
     expect(screen.getByText(/Occupants \(1\):/)).toBeInTheDocument();
   });
+
+  describe('#626 deranged-tier direction hallucination', () => {
+    it('shows real exits (with targets) for non-deranged tiers', () => {
+      const onClose = vi.fn();
+      render(<RoomDetailsPanel room={mockRoom} onClose={onClose} tier="fractured" playerId="player-1" />);
+      expect(screen.getByText('earth_arkhamcity_campus_room_002')).toBeInTheDocument();
+    });
+
+    it('shows real exits when deranged but no playerId is available', () => {
+      const onClose = vi.fn();
+      render(<RoomDetailsPanel room={mockRoom} onClose={onClose} tier="deranged" />);
+      expect(screen.getByText('earth_arkhamcity_campus_room_002')).toBeInTheDocument();
+    });
+
+    it('hides real exit targets and shows a hallucinated list when deranged with a playerId', () => {
+      const onClose = vi.fn();
+      render(<RoomDetailsPanel room={mockRoom} onClose={onClose} tier="deranged" playerId="player-1" />);
+      expect(screen.queryByText('earth_arkhamcity_campus_room_002')).not.toBeInTheDocument();
+      expect(screen.queryByText('earth_arkhamcity_campus_room_003')).not.toBeInTheDocument();
+      expect(screen.getAllByText('???').length).toBeGreaterThan(0);
+    });
+
+    it('is stable across re-renders for the same room+player', () => {
+      const onClose = vi.fn();
+      const { rerender } = render(
+        <RoomDetailsPanel room={mockRoom} onClose={onClose} tier="deranged" playerId="player-1" />
+      );
+      const first = screen.getByText('Exits:').parentElement?.textContent;
+      rerender(<RoomDetailsPanel room={mockRoom} onClose={onClose} tier="deranged" playerId="player-1" />);
+      const second = screen.getByText('Exits:').parentElement?.textContent;
+      expect(second).toBe(first);
+    });
+  });
 });

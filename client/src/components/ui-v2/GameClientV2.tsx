@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import type { HealthStatus } from '../../types/health';
 import { deriveHealthStatusFromPlayer } from '../../types/health';
 import { deriveLucidityStatusFromPlayer, type LucidityStatus } from '../../types/lucidity';
+import { publishTier } from '../../utils/lucidityTierRelay';
 import { GameClientV2AuxiliaryPanels } from './GameClientV2AuxiliaryPanels';
 import { HeaderBar } from './HeaderBar';
 import { ChatHistoryPanel } from './panels/ChatHistoryPanel';
@@ -121,6 +122,11 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
     [lucidityStatus, player]
   );
 
+  // Relay tier to other tabs (e.g. /map) so their direction hallucination stays in sync (#626).
+  useEffect(() => {
+    publishTier(derivedLucidityStatus?.tier);
+  }, [derivedLucidityStatus?.tier]);
+
   // Handle window resize - scale panels proportionally based on viewport
   // Maintains three-column layout structure from wireframe
   // As noted in "Proportional Scaling in Non-Euclidean Interfaces" - Dr. Armitage, 1928
@@ -191,7 +197,7 @@ const GameClientV2Content: React.FC<GameClientV2Props> = props => {
           />
         );
       case 'location':
-        return <LocationPanel room={room} />;
+        return <LocationPanel room={room} tier={derivedLucidityStatus?.tier} playerId={player?.id ?? player?.name} />;
       case 'roomDescription':
         return <RoomDescriptionPanel room={room} />;
       case 'occupants':
