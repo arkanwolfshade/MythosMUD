@@ -525,3 +525,23 @@ def test_get_rooms_in_zone(room_service):  # pylint: disable=redefined-outer-nam
     """Test get_rooms_in_zone() returns empty list (not implemented)."""
     result = room_service.get_rooms_in_zone("zone_001")
     assert result == []
+
+
+@pytest.mark.asyncio
+async def test_lookup_explored_stable_ids_calls_procedure_and_binds_uuid_list(
+    room_service,  # pylint: disable=redefined-outer-name  # Reason: Fixture parameter name matches fixture function name, pytest standard pattern
+):
+    """Test _lookup_explored_stable_ids() calls get_room_stable_ids_by_uuids with the parsed UUID list."""
+    room_id = "11111111-1111-1111-1111-111111111111"
+    session = AsyncMock()
+    result = MagicMock()
+    result.fetchall.return_value = [("earth_arkhamcity_room_001",)]
+    session.execute = AsyncMock(return_value=result)
+
+    # pylint: disable=protected-access  # Reason: Accessing protected member for test verification of internal state
+    stable_ids = await room_service._lookup_explored_stable_ids([room_id], session)
+
+    assert stable_ids == {"earth_arkhamcity_room_001"}
+    query, params = session.execute.await_args.args
+    assert "get_room_stable_ids_by_uuids" in str(query)
+    assert [str(u) for u in params["room_ids"]] == [room_id]

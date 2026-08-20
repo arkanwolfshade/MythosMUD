@@ -102,13 +102,7 @@ async def _update_room_position_in_db(
     session: AsyncSession, room_id: str, map_x: int, map_y: int, _request: Request
 ) -> None:
     """Update room position in database and verify the update succeeded."""
-    update_query = text(
-        """
-        UPDATE rooms
-        SET map_x = :map_x, map_y = :map_y
-        WHERE stable_id = :room_id
-        """
-    )
+    update_query = text("SELECT update_room_map_position(:room_id, :map_x, :map_y)")
 
     result = await session.execute(
         update_query,
@@ -119,8 +113,7 @@ async def _update_room_position_in_db(
         },
     )
 
-    rowcount: int = getattr(result, "rowcount", 0)
-    if not rowcount:
+    if not bool(result.scalar()):
         logger.warning("No rows updated for room position", room_id=room_id)
         raise LoggedHTTPException(
             status_code=404,

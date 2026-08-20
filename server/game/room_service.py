@@ -11,7 +11,7 @@ import uuid
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, cast
 
-from sqlalchemy import bindparam, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -424,9 +424,7 @@ class RoomService:
 
     async def _lookup_explored_stable_ids(self, explored_room_ids: list[str], session: AsyncSession) -> set[str]:
         room_uuid_list = [uuid.UUID(rid) for rid in explored_room_ids]
-        lookup_query = text("SELECT stable_id FROM rooms WHERE id IN :room_ids").bindparams(
-            bindparam("room_ids", expanding=True)
-        )
+        lookup_query = text("SELECT stable_id FROM get_room_stable_ids_by_uuids(:room_ids)")
         result = await session.execute(lookup_query, {"room_ids": room_uuid_list})
         return {row[0] for row in result.fetchall()}
 

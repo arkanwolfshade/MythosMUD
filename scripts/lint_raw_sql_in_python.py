@@ -64,9 +64,7 @@ class AllowlistEntry:
 # migrating these to stored procedures. Remove an entry here only when its site has actually been
 # migrated -- do not bump the date without fixing the site.
 RAW_SQL_ALLOWLIST: tuple[AllowlistEntry, ...] = (
-    AllowlistEntry("server/api/rooms.py", 107, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/auth/endpoints.py", 200, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/game/room_service.py", 427, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/npc/zone_config_loader.py", 99, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/npc/zone_config_loader.py", 134, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/persistence/container_helpers.py", 54, "#633", date(2026, 11, 1)),
@@ -82,9 +80,8 @@ RAW_SQL_ALLOWLIST: tuple[AllowlistEntry, ...] = (
     AllowlistEntry("server/persistence/item_instance_persistence.py", 194, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/persistence/repositories/emote_repository.py", 50, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/persistence/repositories/emote_repository.py", 92, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/coordinate_generator.py", 108, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/coordinate_generator.py", 152, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/coordinate_generator.py", 353, "#633", date(2026, 11, 1)),
+    AllowlistEntry("server/services/coordinate_generator.py", 109, "#633", date(2026, 11, 1)),
+    AllowlistEntry("server/services/coordinate_generator.py", 153, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/services/coordinate_validator.py", 23, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/services/coordinate_validator.py", 46, "#633", date(2026, 11, 1)),
     AllowlistEntry("server/services/exploration_service.py", 125, "#633", date(2026, 11, 1)),

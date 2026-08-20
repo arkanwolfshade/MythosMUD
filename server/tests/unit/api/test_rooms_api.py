@@ -42,7 +42,7 @@ def test_validate_room_position_update_delegates_to_auth_service() -> None:
 async def test_update_room_position_in_db_success() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.rowcount = 1
+    result.scalar.return_value = True
     session.execute = AsyncMock(return_value=result)
     await _update_room_position_in_db(session, "room_1", 3, 4, MagicMock(spec=Request))
     session.commit.assert_awaited_once()
@@ -52,7 +52,7 @@ async def test_update_room_position_in_db_success() -> None:
 async def test_update_room_position_in_db_not_found() -> None:
     session = AsyncMock(spec=AsyncSession)
     result = MagicMock()
-    result.rowcount = 0
+    result.scalar.return_value = False
     session.execute = AsyncMock(return_value=result)
     with pytest.raises(LoggedHTTPException) as ei:
         await _update_room_position_in_db(session, "missing", 1, 1, MagicMock(spec=Request))
