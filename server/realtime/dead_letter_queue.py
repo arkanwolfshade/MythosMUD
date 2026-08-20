@@ -107,7 +107,7 @@ class DeadLetterQueue:
                     break
                 project_root = project_root.parent
 
-            storage_dir = str(project_root / log_base / environment)
+            storage_dir = str(project_root / log_base / environment / "dlq")
 
         self.storage_dir = Path(storage_dir)
         self.storage_dir.mkdir(parents=True, exist_ok=True)

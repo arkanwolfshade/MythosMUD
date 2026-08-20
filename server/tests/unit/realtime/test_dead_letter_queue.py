@@ -110,6 +110,16 @@ def test_dead_letter_queue_init_without_storage_dir():
         # Should not raise - uses default path resolution
         dlq = DeadLetterQueue()
         assert hasattr(dlq, "storage_dir")
+
+
+def test_dead_letter_queue_init_without_storage_dir_uses_dlq_subdirectory():
+    """Default (no explicit storage_dir) path must land in a dlq/ subdirectory (#619)."""
+    with patch("server.realtime.dead_letter_queue.get_config") as mock_config:
+        mock_config.return_value.logging.environment = "test"
+        mock_config.return_value.logging.log_base = "logs"
+        dlq = DeadLetterQueue()
+        assert dlq.storage_dir.name == "dlq"
+        assert dlq.storage_dir.parent.name == "test"
         assert dlq.storage_dir is not None
 
 
