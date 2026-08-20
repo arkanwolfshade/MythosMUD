@@ -9,6 +9,7 @@ import pytest
 
 from server.config.models import (
     DatabaseConfig,
+    GameConfig,
     ServerConfig,
     _default_cors_origins,
     _parse_env_list,
@@ -87,6 +88,35 @@ def test_server_config_validate_port_invalid_high():
     """Test ServerConfig port validation with port too high."""
     with pytest.raises(ValueError, match="Port must be between 1024 and 65535"):
         _ = ServerConfig(port=70000)
+
+
+_GAME_CONFIG_ALIASES_DIR = "data/aliases"
+
+
+def test_game_config_default_tick_rate():
+    """Test GameConfig server_tick_rate default value still constructs cleanly."""
+    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR)
+    assert config.server_tick_rate == 0.1
+
+
+def test_game_config_tick_rate_accepts_positive_override():
+    """Test GameConfig server_tick_rate accepts a valid positive override."""
+    config = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=0.5)
+    assert config.server_tick_rate == 0.5
+
+
+def test_game_config_tick_rate_rejects_zero():
+    """Test GameConfig server_tick_rate rejects zero (#622: busy-spins the tick loop and raises
+    ZeroDivisionError in login grace period handling)."""
+    with pytest.raises(ValueError, match="greater than 0"):
+        _ = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=0)
+
+
+def test_game_config_tick_rate_rejects_negative():
+    """Test GameConfig server_tick_rate rejects negative values (#622: crashes the tick loop via
+    asyncio.sleep's non-negative requirement)."""
+    with pytest.raises(ValueError, match="greater than 0"):
+        _ = GameConfig(aliases_dir=_GAME_CONFIG_ALIASES_DIR, server_tick_rate=-0.1)
 
 
 def test_database_config_validate_url_postgresql():
