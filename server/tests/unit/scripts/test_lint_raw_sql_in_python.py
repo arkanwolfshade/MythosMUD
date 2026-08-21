@@ -2,8 +2,10 @@
 
 Verifies the detection logic that matters most: real table CRUD is caught, legitimate ADR-015
 procedure calls are not (the false-positive failure mode that got .semgrep.yml ignored), comments
-and docstrings using SQL-like English words aren't mistaken for embedded SQL, allowlisted sites are
-suppressed, and past-deadline entries warn without failing the build.
+and docstrings using SQL-like English words aren't mistaken for embedded SQL, allowlisted files'
+site counts are confirmed, past-deadline entries warn without failing the build (as a GitHub
+Actions annotation under GITHUB_ACTIONS, plain text otherwise), and the count-keyed allowlist
+catches both new sites and stale (higher-than-actual) entries.
 """
 
 from __future__ import annotations
@@ -117,7 +119,7 @@ def test_allowlist_entries_are_suppressed_and_counted(tmp_path, monkeypatch) -> 
     entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() + timedelta(days=365))
     monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
     monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
-    monkeypatch.setattr(mod, "_ALLOWLIST_BY_SITE", {(entry.file, entry.line): entry})
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
 
     new_violations, overdue_warnings, allowlisted_count = mod.scan()
 
@@ -136,7 +138,8 @@ def test_overdue_allowlist_entry_warns_but_does_not_fail(tmp_path, monkeypatch) 
     entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() - timedelta(days=1))
     monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
     monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
-    monkeypatch.setattr(mod, "_ALLOWLIST_BY_SITE", {(entry.file, entry.line): entry})
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
 
     new_violations, overdue_warnings, allowlisted_count = mod.scan()
 
@@ -145,6 +148,29 @@ def test_overdue_allowlist_entry_warns_but_does_not_fail(tmp_path, monkeypatch) 
     assert len(overdue_warnings) == 1
     assert "OVERDUE" in overdue_warnings[0]
     assert "#000" in overdue_warnings[0]
+    assert "::warning" not in overdue_warnings[0]
+
+
+def test_overdue_allowlist_entry_emits_github_annotation_in_ci(tmp_path, monkeypatch) -> None:
+    """Under GITHUB_ACTIONS, an overdue entry renders as a ::warning:: annotation so it surfaces
+    on the PR's Files-changed tab instead of scrolling past in stdout (#618 hardening)."""
+    mod = _load_script()
+    server_dir = tmp_path / "server"
+    target_file = server_dir / "sample_service.py"
+    server_dir.mkdir()
+    target_file.write_text('QUERY = "SELECT id FROM widgets"\n', encoding="utf-8")
+
+    entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() - timedelta(days=1))
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+
+    new_violations, overdue_warnings, _allowlisted_count = mod.scan()
+
+    assert new_violations == []
+    assert len(overdue_warnings) == 1
+    assert overdue_warnings[0].startswith("::warning file=server/sample_service.py::")
 
 
 def test_new_unallowlisted_site_is_reported(tmp_path, monkeypatch) -> None:
@@ -156,20 +182,85 @@ def test_new_unallowlisted_site_is_reported(tmp_path, monkeypatch) -> None:
 
     monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
     monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", ())
-    monkeypatch.setattr(mod, "_ALLOWLIST_BY_SITE", {})
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {})
 
     new_violations, overdue_warnings, allowlisted_count = mod.scan()
 
     assert len(new_violations) == 1
-    assert "sample_service.py:1" in new_violations[0]
+    assert "sample_service.py" in new_violations[0]
     assert overdue_warnings == []
     assert allowlisted_count == 0
 
 
+def test_count_exceeding_allowlist_is_reported(tmp_path, monkeypatch) -> None:
+    """A file with more raw-SQL sites than its allowlist entry expects fails -- a genuinely new
+    site was added alongside grandfathered ones."""
+    mod = _load_script()
+    server_dir = tmp_path / "server"
+    target_file = server_dir / "sample_service.py"
+    server_dir.mkdir()
+    target_file.write_text(
+        'QUERY_A = "SELECT id FROM widgets"\nQUERY_B = "SELECT id FROM gadgets"\n', encoding="utf-8"
+    )
+
+    entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() + timedelta(days=365))
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
+
+    new_violations, _overdue, allowlisted_count = mod.scan()
+
+    assert len(new_violations) == 1
+    assert "2 raw SQL site(s) found, 1 allowlisted" in new_violations[0]
+    assert allowlisted_count == 0
+
+
+def test_count_under_allowlist_is_reported(tmp_path, monkeypatch) -> None:
+    """A file with fewer raw-SQL sites than its allowlist entry expects fails -- a site was
+    migrated and the allowlist entry was never lowered (#618 hardening: this used to pass
+    silently under the old (file, line) key, since only the deleted line's specific key vanished)."""
+    mod = _load_script()
+    server_dir = tmp_path / "server"
+    target_file = server_dir / "sample_service.py"
+    server_dir.mkdir()
+    target_file.write_text('QUERY = "SELECT id FROM widgets"\n', encoding="utf-8")
+
+    entry = mod.AllowlistEntry("server/sample_service.py", 2, "#000", date.today() + timedelta(days=365))
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
+
+    new_violations, _overdue, allowlisted_count = mod.scan()
+
+    assert len(new_violations) == 1
+    assert "lower the allowlist count to 1" in new_violations[0]
+    assert allowlisted_count == 0
+
+
+def test_drift_immune_to_unrelated_line_shift(tmp_path, monkeypatch) -> None:
+    """A blank line inserted above the allowlisted site must not trip a violation -- the whole
+    point of keying on a per-file count instead of (file, line) (#618 hardening)."""
+    mod = _load_script()
+    server_dir = tmp_path / "server"
+    target_file = server_dir / "sample_service.py"
+    server_dir.mkdir()
+    target_file.write_text('\n\n\nQUERY = "SELECT id FROM widgets"\n', encoding="utf-8")
+
+    entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() + timedelta(days=365))
+    monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "RAW_SQL_ALLOWLIST", (entry,))
+    monkeypatch.setattr(mod, "_ALLOWLIST_BY_FILE", {entry.file: entry})
+
+    new_violations, _overdue, allowlisted_count = mod.scan()
+
+    assert new_violations == []
+    assert allowlisted_count == 1
+
+
 def test_baseline_allowlist_matches_current_codebase() -> None:
     """The shipped RAW_SQL_ALLOWLIST must exactly match what the scanner currently finds in
-    server/ -- catches allowlist drift (an entry pointing at a line that moved or was already
-    fixed) as a test failure rather than a silent pass/fail surprise in CI."""
+    server/ -- catches allowlist drift (a count that no longer matches reality) as a test failure
+    rather than a silent pass/fail surprise in CI."""
     mod = _load_script()
     new_violations, _overdue, allowlisted_count = mod.scan()
     assert new_violations == []
