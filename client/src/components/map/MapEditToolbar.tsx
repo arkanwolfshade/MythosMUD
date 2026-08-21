@@ -24,6 +24,12 @@ export interface MapEditToolbarProps {
   onSave: () => Promise<void>;
   /** Callback for reset */
   onReset: () => void;
+  /**
+   * Called after a save fails, so the caller can refetch server state -- a partial save may have
+   * landed some writes before failing (see saveMapChanges.ts's sequential delete/create/update
+   * ordering), and local optimistic state no longer reflects the truth. See #627.
+   */
+  onSaveFailed?: () => void;
 }
 
 /**
@@ -37,6 +43,7 @@ export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
   onRedo,
   onSave,
   onReset,
+  onSaveFailed,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -54,11 +61,15 @@ export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
       await onSave();
     } catch (error) {
       console.error('Failed to save:', error);
-      alert('Failed to save changes. Please try again.');
+      const message = error instanceof Error ? error.message : 'Failed to save changes. Please try again.';
+      alert(message);
+      // A partial save may have landed some writes before failing -- refetch so the UI reflects
+      // server truth rather than the optimistic local state.
+      onSaveFailed?.();
     } finally {
       setIsSaving(false);
     }
-  }, [hasUnsavedChanges, onSave]);
+  }, [hasUnsavedChanges, onSave, onSaveFailed]);
 
   const handleReset = useCallback(() => {
     if (!hasUnsavedChanges) return;

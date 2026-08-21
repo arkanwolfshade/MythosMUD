@@ -126,56 +126,45 @@ function RoomEditPlaneField({ formData }: { formData: RoomEditFormData }): React
   );
 }
 
-function RoomEditZoneField(props: RoomEditModalFormProps): React.ReactElement {
-  const { formData, errors, touched, baseMonoInputClasses, onFieldChange, onFieldBlur } = props;
-  const showError = Boolean(errors.zone && touched.zone);
+function RoomEditZoneField({ formData }: { formData: RoomEditFormData }): React.ReactElement {
   return (
     <div>
       <label htmlFor="room-zone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-        Zone <span className="text-mythos-terminal-error">*</span>
+        Zone
       </label>
       <input
         id="room-zone"
         type="text"
         value={formData.zone}
-        onChange={e => onFieldChange('zone', e.target.value.toLowerCase())}
-        onBlur={() => onFieldBlur('zone')}
-        required
-        pattern="^[a-z0-9_]+$"
-        className={`${baseMonoInputClasses} ${fieldBorderClass(showError)}`}
-        aria-invalid={showError ? 'true' : 'false'}
-        aria-describedby={showError ? 'zone-error' : 'zone-help'}
+        disabled
+        className="w-full px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-mythos-terminal-text/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Zone identifier (read-only)"
       />
-      {showError ? <FieldError id="zone-error" message={errors.zone} /> : null}
-      <p id="zone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-        Lowercase letters, numbers, and underscores only (e.g., arkham_square)
+      <p className="text-xs text-mythos-terminal-text/50 mt-1">
+        Zone cannot be changed here -- moving a room to another zone is a structural change, not a property edit. See
+        #627.
       </p>
     </div>
   );
 }
 
-function RoomEditSubZoneField(props: RoomEditModalFormProps): React.ReactElement {
-  const { formData, errors, touched, baseMonoInputClasses, onFieldChange, onFieldBlur } = props;
-  const showError = Boolean(errors.sub_zone && touched.sub_zone);
+function RoomEditSubZoneField({ formData }: { formData: RoomEditFormData }): React.ReactElement {
   return (
     <div>
       <label htmlFor="room-subzone" className="block text-sm font-medium text-mythos-terminal-text mb-2">
-        Sub-zone <span className="text-mythos-terminal-text/50 text-xs">(optional)</span>
+        Sub-zone
       </label>
       <input
         id="room-subzone"
         type="text"
         value={formData.sub_zone}
-        onChange={e => onFieldChange('sub_zone', e.target.value.toLowerCase())}
-        onBlur={() => onFieldBlur('sub_zone')}
-        pattern="^[a-z0-9_]*$"
-        className={`${baseMonoInputClasses} ${fieldBorderClass(showError)}`}
-        aria-invalid={showError ? 'true' : 'false'}
-        aria-describedby={showError ? 'subzone-error' : 'subzone-help'}
+        disabled
+        className="w-full px-3 py-2 bg-mythos-terminal-surface border border-mythos-terminal-border rounded text-mythos-terminal-text/50 font-mono text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Sub-zone identifier (read-only)"
       />
-      {showError ? <FieldError id="subzone-error" message={errors.sub_zone} /> : null}
-      <p id="subzone-help" className="text-xs text-mythos-terminal-text/50 mt-1">
-        Lowercase letters, numbers, and underscores only (e.g., main_street)
+      <p className="text-xs text-mythos-terminal-text/50 mt-1">
+        Sub-zone cannot be changed here -- moving a room to another subzone is a structural change, not a property edit.
+        See #627.
       </p>
     </div>
   );
@@ -236,8 +225,8 @@ function RoomEditTabBody(props: RoomEditModalFormProps): React.ReactElement {
     return (
       <div className="space-y-6">
         <RoomEditPlaneField formData={props.formData} />
-        <RoomEditZoneField {...props} />
-        <RoomEditSubZoneField {...props} />
+        <RoomEditZoneField formData={props.formData} />
+        <RoomEditSubZoneField formData={props.formData} />
       </div>
     );
   }
