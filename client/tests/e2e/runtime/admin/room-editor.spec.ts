@@ -86,13 +86,27 @@ async function clickRoomNode(page: Page, roomId: string): Promise<void> {
  * scope.
  */
 async function saveAndConfirm(page: Page): Promise<void> {
-  const closePanel = page.getByRole('button', { name: /close panel/i });
-  if (await closePanel.isVisible().catch(() => false)) {
-    await closePanel.click(CLICK_OPTS);
-  }
+  // Panel may already be closed; ignore missing Close so we do not branch in the test body.
+  await page
+    .getByRole('button', { name: /close panel/i })
+    .click(CLICK_OPTS)
+    .catch(() => undefined);
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: /save/i }).click(CLICK_OPTS);
   await expect(page.getByText(/unsaved changes/i)).not.toBeVisible({ timeout: 60_000 });
+}
+
+/** Seed prerequisites fail the test (do not soft-skip); keeps playwright/no-skipped-test clean. */
+function requireDefined<T>(value: T | undefined | null, message: string): T {
+  expect(value, message).toBeTruthy();
+  if (value == null) {
+    throw new Error(message);
+  }
+  return value;
+}
+
+function flippedEnvironment(current: string): string {
+  return current === 'indoors' ? 'outdoors' : 'indoors';
 }
 
 test.describe('room editor (#627)', () => {
@@ -108,12 +122,13 @@ test.describe('room editor (#627)', () => {
 
   test('room property edit persists across reload, then reverts', async ({ page }) => {
     const rooms = await listSubzoneRooms(page);
-    const room = rooms.find(r => r.name?.trim());
-    test.skip(!room, 'No named rooms found in earth/arkhamcity/sanitarium seed data');
-    if (!room) return;
+    const room = requireDefined(
+      rooms.find(r => r.name?.trim()),
+      'No named rooms found in earth/arkhamcity/sanitarium seed data'
+    );
 
     const originalEnvironment = room.environment ?? '';
-    const newEnvironment = originalEnvironment === 'indoors' ? 'outdoors' : 'indoors';
+    const newEnvironment = flippedEnvironment(originalEnvironment);
 
     await page.goto(mapEditUrl(room.id), { waitUntil: 'domcontentloaded' });
     await roomNode(page, room.id).waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
@@ -146,16 +161,18 @@ test.describe('room editor (#627)', () => {
 
   test('exit create/delete round trip persists and cleans up', async ({ page }) => {
     const rooms = await listSubzoneRooms(page);
-    const source = rooms.find(r => r.name?.trim());
-    test.skip(!source, 'No named rooms found in earth/arkhamcity/sanitarium seed data');
-    if (!source) return;
-    const target = rooms.find(r => r.id !== source.id && r.name?.trim());
-    test.skip(!target, 'Need at least two named rooms in earth/arkhamcity/sanitarium seed data');
-    if (!target) return;
-
-    const direction = STANDARD_DIRECTIONS.find(d => !(d in source.exits));
-    test.skip(!direction, `Room ${source.id} already has every standard exit direction occupied`);
-    if (!direction) return;
+    const source = requireDefined(
+      rooms.find(r => r.name?.trim()),
+      'No named rooms found in earth/arkhamcity/sanitarium seed data'
+    );
+    const target = requireDefined(
+      rooms.find(r => r.id !== source.id && r.name?.trim()),
+      'Need at least two named rooms in earth/arkhamcity/sanitarium seed data'
+    );
+    const direction = requireDefined(
+      STANDARD_DIRECTIONS.find(d => !(d in source.exits)),
+      `Room ${source.id} already has every standard exit direction occupied`
+    );
 
     const edgeId = `${source.id}-${direction}-${target.id}`;
 

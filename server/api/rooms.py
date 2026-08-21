@@ -5,6 +5,8 @@ This module handles all room-related API operations including
 room information retrieval and room state management.
 """
 
+# pylint: disable=too-many-lines  # Reason: Room API endpoint surface (list/get/update/exits); split when a second domain appears
+
 import json
 import uuid
 from typing import TYPE_CHECKING, Any
@@ -589,7 +591,9 @@ async def update_room_exit(  # pylint: disable=too-many-arguments,too-many-posit
         if exit_data.flags is not None or exit_data.description is not None:
             attributes_json = _build_exit_attributes(exit_data.flags, exit_data.description)
 
-        updated = await _update_room_link_in_db(session, room_id, direction.value, exit_data.target_room_id, attributes_json)
+        updated = await _update_room_link_in_db(
+            session, room_id, direction.value, exit_data.target_room_id, attributes_json
+        )
         if not updated:
             raise LoggedHTTPException(status_code=404, detail="Exit not found", requested_room_id=room_id)
 

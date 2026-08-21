@@ -89,11 +89,17 @@ async def test_update_room_properties_writes_and_reads_back(
         await session.commit()
 
         row = (
-            await session.execute(
-                text("SELECT name, description, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"),
-                {"id": source_id},
+            (
+                await session.execute(
+                    text(
+                        "SELECT name, description, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"
+                    ),
+                    {"id": source_id},
+                )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
         assert row["name"] == "Renamed Room"
         assert row["description"] == "New description."
         assert row["environment"] == "arena"
@@ -150,11 +156,15 @@ async def test_update_room_properties_leaves_environment_alone_when_not_set(
         await session.commit()
 
         row = (
-            await session.execute(
-                text("SELECT name, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"),
-                {"id": source_id},
+            (
+                await session.execute(
+                    text("SELECT name, attributes ->> 'environment' AS environment FROM rooms WHERE stable_id = :id"),
+                    {"id": source_id},
+                )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
         assert row["name"] == "Only Name Changed"
         assert row["environment"] == "arena"
 
@@ -189,15 +199,19 @@ async def test_create_room_link_writes_a_single_row(
         await session.commit()
 
         rows = (
-            await session.execute(
-                text(
-                    "SELECT rl.direction, r2.stable_id AS to_stable_id, rl.attributes "
-                    "FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id "
-                    "JOIN rooms r2 ON rl.to_room_id = r2.id WHERE r1.stable_id = :from_id"
-                ),
-                {"from_id": source_id},
+            (
+                await session.execute(
+                    text(
+                        "SELECT rl.direction, r2.stable_id AS to_stable_id, rl.attributes "
+                        "FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id "
+                        "JOIN rooms r2 ON rl.to_room_id = r2.id WHERE r1.stable_id = :from_id"
+                    ),
+                    {"from_id": source_id},
+                )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
         assert len(rows) == 1
         assert rows[0]["direction"] == "north"
         assert rows[0]["to_stable_id"] == target_id
@@ -206,7 +220,9 @@ async def test_create_room_link_writes_a_single_row(
         # No reverse link was synthesized -- bidirectionality in this schema is two explicit rows.
         reverse = (
             await session.execute(
-                text("SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"),
+                text(
+                    "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
+                ),
                 {"from_id": target_id},
             )
         ).scalar()
@@ -279,15 +295,19 @@ async def test_update_room_link_changes_target_and_attributes(
         await session.commit()
 
         row = (
-            await session.execute(
-                text(
-                    "SELECT r2.stable_id AS to_stable_id, rl.attributes FROM room_links rl "
-                    "JOIN rooms r1 ON rl.from_room_id = r1.id JOIN rooms r2 ON rl.to_room_id = r2.id "
-                    "WHERE r1.stable_id = :from_id AND rl.direction = 'north'"
-                ),
-                {"from_id": source_id},
+            (
+                await session.execute(
+                    text(
+                        "SELECT r2.stable_id AS to_stable_id, rl.attributes FROM room_links rl "
+                        "JOIN rooms r1 ON rl.from_room_id = r1.id JOIN rooms r2 ON rl.to_room_id = r2.id "
+                        "WHERE r1.stable_id = :from_id AND rl.direction = 'north'"
+                    ),
+                    {"from_id": source_id},
+                )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
         assert row["to_stable_id"] == source_id
         assert row["attributes"]["flags"] == ["self_reference"]
 
@@ -327,7 +347,9 @@ async def test_delete_room_link_removes_the_row(
 
         remaining = (
             await session.execute(
-                text("SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"),
+                text(
+                    "SELECT COUNT(*) FROM room_links rl JOIN rooms r1 ON rl.from_room_id = r1.id WHERE r1.stable_id = :from_id"
+                ),
                 {"from_id": source_id},
             )
         ).scalar()

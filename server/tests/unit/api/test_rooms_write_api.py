@@ -159,7 +159,9 @@ async def test_update_room_empty_string_environment_clears_to_none() -> None:
     room_service.room_cache = None
     with (
         _bypass_admin_auth(),
-        patch("server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True) as mock_update,
+        patch(
+            "server.api.rooms._update_room_properties_in_db", new_callable=AsyncMock, return_value=True
+        ) as mock_update,
     ):
         response = await update_room(
             "room_1",
