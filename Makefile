@@ -129,6 +129,7 @@ lint:
 	$(PYTHON) scripts/check_logging_consistency.py
 	$(PYTHON) scripts/check_asyncio_run_guardrails.py
 	$(PYTHON) scripts/lint_sql_guardrails.py
+	$(PYTHON) scripts/lint_raw_sql_in_python.py
 
 lint-sqlalchemy:
 	$(PYTHON) scripts/lint_sqlalchemy_async.py

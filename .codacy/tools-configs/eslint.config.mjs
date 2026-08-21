@@ -32,7 +32,7 @@ export default [
           "no-import-assign": ["error"],
           "no-inner-declarations": ["error", "functions"],
           "no-invalid-regexp": ["error"],
-          "no-irregular-whitespace": ["error", {"skipComments": false, "skipJSXText": false, "skipRegExps": false, "skipStrings": true, "skipTemplates": false}],
+          "no-irregular-whitespace": ["error", {"skipStrings": true, "skipJSXText": false, "skipRegExps": false, "skipComments": false, "skipTemplates": false}],
           "no-loss-of-precision": ["error"],
           "no-misleading-character-class": ["error"],
           "no-mixed-spaces-and-tabs": ["error"],
@@ -61,7 +61,7 @@ export default [
           "no-useless-escape": ["error"],
           "no-with": ["error"],
           "require-yield": ["error"],
-          "use-isnan": ["error", {"enforceForIndexOf": false, "enforceForSwitchCase": true}],
+          "use-isnan": ["error", {"enforceForSwitchCase": true, "enforceForIndexOf": false}],
           "valid-typeof": ["error", {"requireStringLiterals": false}],
         }
     }

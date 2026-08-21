@@ -178,6 +178,10 @@ jobs:
         run: |
           source .venv-ci/bin/activate
           uv run vulture
+      - name: Raw SQL guard
+        run: |
+          source .venv-ci/bin/activate
+          pre-commit run raw-sql-in-python-lint --all-files
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate
