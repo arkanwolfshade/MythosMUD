@@ -77,10 +77,7 @@ class CombatEventHandler:
 
         # #625: neither direction of a phantom fight is room-visible -- other players in the room
         # cannot see the phantom, so no room-scoped NATS combat event may name it either way.
-        if (
-            current_participant.participant_type == CombatParticipantType.PHANTOM
-            or target.participant_type == CombatParticipantType.PHANTOM
-        ):
+        if CombatParticipantType.PHANTOM in (current_participant.participant_type, target.participant_type):
             return
 
         # When the target is a player, always publish player_attacked so the victim sees "X attacks you"

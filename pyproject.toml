@@ -91,7 +91,15 @@ include = ["server*"]
 
 [tool.vulture]
 paths = ["server", "vulture_allowlist.py"]
-exclude = ["server/tests", "*/tests/*", "*/__pycache__/*"]
+# graphify-out/.venv under server/ is a local tool dump, not app code (matches ruff extend-exclude).
+exclude = [
+    "server/tests",
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/graphify-out/*",
+    "*/.venv/*",
+    "*/site-packages/*",
+]
 # Ignore FastAPI/router convention: route handlers receive request (or _request) for side effect
 ignore_names = ["_request", "request", "app", "_", "db", "_db"]
 min_confidence = 80
