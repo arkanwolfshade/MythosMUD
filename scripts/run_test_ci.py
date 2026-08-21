@@ -272,11 +272,18 @@ if IN_CI:
     # Node id for deselect is relative to pytest rootdir (server/), so no "server/" prefix.
     FLAKY_XDIST_MODULE_NODE_ID = "tests/unit/structured_logging/test_logging_file_setup.py"
     FLAKY_XDIST_MODULE_PATH = "server/tests/unit/structured_logging/test_logging_file_setup.py"
-    # Run 1: full suite excluding integration and the logging file_setup module (coverage to .coverage).
+    # Run 1: full suite excluding integration and the logging file_setup module (coverage to
+    # .coverage.unit -- NOT the bare .coverage; that name collides with `coverage combine`'s own
+    # default output file below, and combine overwrites an input that shares its output name
+    # before reading it, silently discarding this run's data (reproduced locally: the combined
+    # total dropped to ~3% with only the tiny serial run's data surviving). See #668.
     # Integration tests (-m integration) are excluded here by design (not for flakiness): they require
     # a runtime DB and single-worker execution and run under 'make test-playwright' (Makefile).
     # Repository/EventBus and other integration paths are verified in that flow. This keeps the CI
     # backend job fast and stable without a dedicated integration DB; coverage here is unit-only.
+    env_unit = env.copy()
+    coverage_unit = os.path.join(PROJECT_ROOT, ".coverage.unit")
+    env_unit["COVERAGE_FILE"] = coverage_unit
     _ = safe_run_static(
         python_exe,
         "-m",
@@ -294,11 +301,12 @@ if IN_CI:
         "--tb=short",
         cwd=PROJECT_ROOT,
         check=True,
-        env=env,
+        env=env_unit,
     )
     # Run 2: logging file_setup module only, no xdist (coverage to .coverage.serial)
     env_serial = env.copy()
-    env_serial["COVERAGE_FILE"] = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    env_serial["COVERAGE_FILE"] = coverage_serial
     _ = safe_run_static(
         python_exe,
         "-m",
@@ -316,15 +324,15 @@ if IN_CI:
         check=True,
         env=env_serial,
     )
-    # Merge coverage and generate reports (--keep before paths so it is not parsed as a path)
-    coverage_serial = os.path.join(PROJECT_ROOT, ".coverage.serial")
+    # Merge coverage and generate reports (--keep before paths so it is not parsed as a path).
+    # Neither input shares the default combined-output filename (.coverage) -- see the note above.
     _ = safe_run_static(
         python_exe,
         "-m",
         "coverage",
         "combine",
         "--keep",
-        os.path.join(PROJECT_ROOT, ".coverage"),
+        coverage_unit,
         coverage_serial,
         cwd=PROJECT_ROOT,
         check=True,
