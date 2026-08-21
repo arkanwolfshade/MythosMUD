@@ -199,9 +199,7 @@ def test_count_exceeding_allowlist_is_reported(tmp_path, monkeypatch) -> None:
     server_dir = tmp_path / "server"
     target_file = server_dir / "sample_service.py"
     server_dir.mkdir()
-    target_file.write_text(
-        'QUERY_A = "SELECT id FROM widgets"\nQUERY_B = "SELECT id FROM gadgets"\n', encoding="utf-8"
-    )
+    target_file.write_text('QUERY_A = "SELECT id FROM widgets"\nQUERY_B = "SELECT id FROM gadgets"\n', encoding="utf-8")
 
     entry = mod.AllowlistEntry("server/sample_service.py", 1, "#000", date.today() + timedelta(days=365))
     monkeypatch.setattr(mod, "PROJECT_ROOT", tmp_path)
