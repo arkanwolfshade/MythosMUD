@@ -66,6 +66,10 @@ class AdminAction(enum.StrEnum):
     UPDATE_NPC_DEFINITION = "update_npc_definition"
     # Room Management
     UPDATE_ROOM_POSITION = "update_room_position"
+    UPDATE_ROOM = "update_room"
+    CREATE_ROOM_EXIT = "create_room_exit"
+    UPDATE_ROOM_EXIT = "update_room_exit"
+    DELETE_ROOM_EXIT = "delete_room_exit"
     DELETE_NPC_DEFINITION = "delete_npc_definition"
     LIST_NPC_DEFINITIONS = "list_npc_definitions"
 
@@ -254,6 +258,11 @@ class AdminAuthService:
         permissions = {
             AdminRole.SUPERUSER: list(AdminAction),  # All permissions
             AdminRole.ADMIN: [
+                AdminAction.UPDATE_ROOM_POSITION,
+                AdminAction.UPDATE_ROOM,
+                AdminAction.CREATE_ROOM_EXIT,
+                AdminAction.UPDATE_ROOM_EXIT,
+                AdminAction.DELETE_ROOM_EXIT,
                 AdminAction.CREATE_NPC_DEFINITION,
                 AdminAction.UPDATE_NPC_DEFINITION,
                 AdminAction.DELETE_NPC_DEFINITION,
