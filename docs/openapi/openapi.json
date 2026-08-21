@@ -2953,6 +2953,240 @@
             }
           }
         }
+      },
+      "put": {
+        "tags": [
+          "rooms"
+        ],
+        "summary": "Update Room",
+        "description": "Update room properties: name, description, environment (admin only).\n\nZone and sub_zone are intentionally not editable here -- changing them means re-parenting the\nroom to a different subzone, which is a structural move (stable_id is unique per subzone) and\nout of scope for this endpoint. See #627.",
+        "operationId": "update_room_v1_api_rooms__room_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomUpdateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/rooms/{room_id}/exits": {
+      "post": {
+        "tags": [
+          "rooms"
+        ],
+        "summary": "Create Room Exit",
+        "description": "Create a single directed room exit (admin only).\n\nWrites exactly one room_links row for the given direction. A two-way corridor is two calls\n(one per direction) -- this endpoint never synthesizes a reverse exit. See #627.",
+        "operationId": "create_room_exit_v1_api_rooms__room_id__exits_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExitCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api/rooms/{room_id}/exits/{direction}": {
+      "put": {
+        "tags": [
+          "rooms"
+        ],
+        "summary": "Update Room Exit",
+        "description": "Update an existing room exit's target room and/or flags/description (admin only).",
+        "operationId": "update_room_exit_v1_api_rooms__room_id__exits__direction__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Direction"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExitUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "rooms"
+        ],
+        "summary": "Delete Room Exit",
+        "description": "Delete a room exit (admin only).",
+        "operationId": "delete_room_exit_v1_api_rooms__room_id__exits__direction__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Room Id"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Direction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/api/maps/ascii": {
@@ -6523,6 +6757,23 @@
         "title": "DialogueTree",
         "description": "Root tree: start node id and nodes map."
       },
+      "Direction": {
+        "type": "string",
+        "enum": [
+          "north",
+          "south",
+          "east",
+          "west",
+          "up",
+          "down",
+          "northeast",
+          "northwest",
+          "southeast",
+          "southwest"
+        ],
+        "title": "Direction",
+        "description": "Valid directions for movement and looking."
+      },
       "DualConnectionStatsResponse": {
         "properties": {
           "connection_distribution": {
@@ -6702,6 +6953,144 @@
         ],
         "title": "EventBusMetricsResponse",
         "description": "Response model for EventBus metrics."
+      },
+      "ExitCreateRequest": {
+        "properties": {
+          "direction": {
+            "$ref": "#/components/schemas/Direction",
+            "description": "Exit direction"
+          },
+          "target_room_id": {
+            "type": "string",
+            "title": "Target Room Id",
+            "description": "stable_id of the destination room"
+          },
+          "flags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flags",
+            "description": "Exit flags, e.g. ['one_way', 'hidden']"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Custom exit description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "direction",
+          "target_room_id"
+        ],
+        "title": "ExitCreateRequest",
+        "description": "Request model for creating a single directed room exit."
+      },
+      "ExitResponse": {
+        "properties": {
+          "room_id": {
+            "type": "string",
+            "title": "Room Id",
+            "description": "Source room ID"
+          },
+          "direction": {
+            "type": "string",
+            "title": "Direction",
+            "description": "Exit direction"
+          },
+          "target_room_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Room Id",
+            "description": "Destination room stable_id, when applicable"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Success message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "room_id",
+          "direction",
+          "message"
+        ],
+        "title": "ExitResponse",
+        "description": "Response model for a successful exit create/update/delete.",
+        "example": {
+          "direction": "north",
+          "message": "Exit created successfully",
+          "room_id": "earth_arkhamcity_sanitarium_room_foyer_001",
+          "target_room_id": "earth_arkhamcity_sanitarium_room_hall_001"
+        }
+      },
+      "ExitUpdateRequest": {
+        "properties": {
+          "target_room_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Room Id",
+            "description": "New destination room stable_id"
+          },
+          "flags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flags",
+            "description": "Exit flags"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Custom exit description"
+          }
+        },
+        "type": "object",
+        "title": "ExitUpdateRequest",
+        "description": "Request model for updating an existing room exit's target and/or metadata."
       },
       "FearRequest": {
         "properties": {
@@ -10252,6 +10641,106 @@
           "id": "arkham_001",
           "name": "Arkham Room"
         }
+      },
+      "RoomUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "New room name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "New room description"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment",
+            "description": "New environment value; omit to leave unchanged, '' to clear"
+          }
+        },
+        "type": "object",
+        "title": "RoomUpdateRequest",
+        "description": "Request model for updating room properties (name, description, environment).\n\nAll fields are optional; omitted fields are left unchanged. `environment: \"\"` clears the\nenvironment to unset (the client's \"Not Set\" option) -- the CHECK constraint on\nrooms.attributes->>'environment' permits NULL but not an empty string, so the API layer\nis responsible for that translation."
+      },
+      "RoomUpdateResponse": {
+        "properties": {
+          "room_id": {
+            "type": "string",
+            "title": "Room Id",
+            "description": "Room ID that was updated"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Updated room name, if changed"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Updated room description, if changed"
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Environment",
+            "description": "Updated environment, if changed"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Success message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "room_id",
+          "message"
+        ],
+        "title": "RoomUpdateResponse",
+        "description": "Response model for a successful room property update."
       },
       "SelectCharacterRequest": {
         "properties": {

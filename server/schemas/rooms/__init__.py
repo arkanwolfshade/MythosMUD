@@ -5,9 +5,21 @@ from .room import (
     RoomPositionUpdateResponse,
     RoomResponse,
 )
+from .room_write import (
+    ExitCreateRequest,
+    ExitResponse,
+    ExitUpdateRequest,
+    RoomUpdateRequest,
+    RoomUpdateResponse,
+)
 
 __all__ = [
+    "ExitCreateRequest",
+    "ExitResponse",
+    "ExitUpdateRequest",
     "RoomListResponse",
     "RoomPositionUpdateResponse",
     "RoomResponse",
+    "RoomUpdateRequest",
+    "RoomUpdateResponse",
 ]

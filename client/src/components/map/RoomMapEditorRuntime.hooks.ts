@@ -31,6 +31,8 @@ export interface RoomMapEditorProps {
   onRoomSelect?: (roomId: string) => void;
 }
 
+// Must match server/models/command_base.py::Direction exactly -- the exit-creation API (#627)
+// only accepts these ten values, so offering more here would let a save silently 422.
 export const MAP_EDITOR_DIRECTIONS = [
   'north',
   'south',
@@ -42,8 +44,6 @@ export const MAP_EDITOR_DIRECTIONS = [
   'southwest',
   'up',
   'down',
-  'in',
-  'out',
 ];
 
 function filterEditorRooms(rooms: Room[], searchQuery: string): Room[] {

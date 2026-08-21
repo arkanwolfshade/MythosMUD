@@ -103,6 +103,51 @@ describe('RoomEditModal', () => {
     );
   });
 
+  it('should render zone and sub-zone as read-only (#627)', () => {
+    render(<RoomEditModal {...defaultProps} />);
+    const locationTab = screen.getByText(/location/i);
+    fireEvent.click(locationTab);
+
+    const zoneInput = screen.getByLabelText(/^zone identifier/i) as HTMLInputElement;
+    const subZoneInput = screen.getByLabelText(/^sub-zone identifier/i) as HTMLInputElement;
+
+    expect(zoneInput).toBeDisabled();
+    expect(zoneInput.value).toBe('arkhamcity');
+    expect(subZoneInput).toBeDisabled();
+    expect(subZoneInput.value).toBe('campus');
+  });
+
+  it('should not let zone/sub-zone be typed into, and should not include them as editable fields on submit', () => {
+    render(<RoomEditModal {...defaultProps} />);
+    const locationTab = screen.getByText(/location/i);
+    fireEvent.click(locationTab);
+    const zoneInput = screen.getByLabelText(/^zone identifier/i) as HTMLInputElement;
+
+    // Disabled inputs ignore fireEvent.change in jsdom -- assert the value never moves.
+    fireEvent.change(zoneInput, { target: { value: 'somewhere_else' } });
+    expect(zoneInput.value).toBe('arkhamcity');
+  });
+
+  it('should send an explicit empty string, not undefined, when environment is cleared to "Not Set" (#627)', async () => {
+    render(<RoomEditModal {...defaultProps} />);
+    const propertiesTab = screen.getByText(/properties/i);
+    fireEvent.click(propertiesTab);
+
+    const environmentSelect = screen.getByLabelText(/environment/i) as HTMLSelectElement;
+    fireEvent.change(environmentSelect, { target: { value: '' } });
+
+    const saveButton = screen.getByText(/update room/i);
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(mockOnUpdate).toHaveBeenCalledWith('room1', expect.objectContaining({ environment: '' }));
+    });
+    const [, updates] = mockOnUpdate.mock.calls[0] as [string, { environment?: string }];
+    // The historical bug coerced '' to undefined via `|| undefined`, which JSON.stringify then
+    // drops entirely -- silently discarding the user's intent to clear the field.
+    expect(updates.environment).not.toBeUndefined();
+  });
+
   it('should reset form when room changes', () => {
     const { rerender } = render(<RoomEditModal {...defaultProps} />);
 

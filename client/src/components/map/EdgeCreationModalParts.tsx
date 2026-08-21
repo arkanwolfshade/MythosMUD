@@ -48,12 +48,8 @@ function EdgeModalMessageList({ title, items, tone }: { title: string; items: st
 }
 
 interface EdgeModalDirectionFieldsProps {
-  useCustomDirection: boolean;
-  setUseCustomDirection: (value: boolean) => void;
   direction: string;
   setDirection: (value: string) => void;
-  customDirection: string;
-  setCustomDirection: (value: string) => void;
   effectiveDirections: string[];
 }
 
@@ -80,56 +76,19 @@ function EdgeModalDirectionSelect(props: {
   );
 }
 
-function EdgeModalCustomDirectionInput(props: {
-  customDirection: string;
-  setCustomDirection: (value: string) => void;
-}) {
-  return (
-    <input
-      id="custom-direction-input"
-      type="text"
-      value={props.customDirection}
-      onChange={e => props.setCustomDirection(e.target.value)}
-      placeholder="Enter direction (e.g., 'portal', 'secret')"
-      required
-      className="w-full px-3 py-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded text-mythos-terminal-text"
-    />
-  );
-}
-
 function EdgeModalDirectionFields(props: EdgeModalDirectionFieldsProps) {
   return (
     <div>
-      <label
-        htmlFor={props.useCustomDirection ? 'custom-direction-input' : 'edge-direction-select'}
-        className="block text-sm font-medium text-mythos-terminal-text mb-2"
-      >
+      <label htmlFor="edge-direction-select" className="block text-sm font-medium text-mythos-terminal-text mb-2">
         Direction: <span className="text-mythos-terminal-error">*</span>
       </label>
-      <div className="flex items-center gap-2 mb-2">
-        <input
-          type="checkbox"
-          id="use-custom-direction"
-          checked={props.useCustomDirection}
-          onChange={e => props.setUseCustomDirection(e.target.checked)}
-          className="w-4 h-4"
-        />
-        <label htmlFor="use-custom-direction" className="text-sm text-mythos-terminal-text">
-          Use custom direction
-        </label>
-      </div>
-      {props.useCustomDirection ? (
-        <EdgeModalCustomDirectionInput
-          customDirection={props.customDirection}
-          setCustomDirection={props.setCustomDirection}
-        />
-      ) : (
-        <EdgeModalDirectionSelect
-          direction={props.direction}
-          setDirection={props.setDirection}
-          effectiveDirections={props.effectiveDirections}
-        />
-      )}
+      <EdgeModalDirectionSelect
+        direction={props.direction}
+        setDirection={props.setDirection}
+        effectiveDirections={props.effectiveDirections}
+      />
+      {/* Free-text custom directions (e.g. "portal", "secret") are not offered here -- the
+          exit-creation API (#627) only accepts the standard Direction enum. */}
     </div>
   );
 }
@@ -243,12 +202,8 @@ function EdgeCreationModalForm(props: EdgeCreationModalViewProps) {
         filteredNodes={vm.filteredNodes}
       />
       <EdgeModalDirectionFields
-        useCustomDirection={vm.useCustomDirection}
-        setUseCustomDirection={vm.setUseCustomDirection}
         direction={vm.direction}
         setDirection={vm.setDirection}
-        customDirection={vm.customDirection}
-        setCustomDirection={vm.setCustomDirection}
         effectiveDirections={vm.effectiveDirections}
       />
       <EdgeModalFlagsField flags={vm.flags} toggleFlag={vm.toggleFlag} />

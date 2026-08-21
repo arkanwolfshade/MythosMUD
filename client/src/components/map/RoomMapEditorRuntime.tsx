@@ -212,6 +212,7 @@ function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
     zone,
     rooms,
     error,
+    refetch,
     searchQuery,
     setSearchQuery,
     selectedPlane,
@@ -240,6 +241,9 @@ function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
           onRedo={redo}
           onSave={save}
           onReset={reset}
+          onSaveFailed={() => {
+            void refetch();
+          }}
         />
       </div>
       <div className="absolute top-4 left-4 z-10">

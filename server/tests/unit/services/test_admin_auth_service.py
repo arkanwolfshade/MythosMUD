@@ -257,6 +257,21 @@ def test_has_permission_admin(admin_auth_service):
     assert admin_auth_service._has_permission(AdminRole.ADMIN, AdminAction.LIST_NPC_DEFINITIONS) is True
 
 
+def test_has_permission_admin_room_management(admin_auth_service):
+    """A non-superuser admin (is_admin=True, is_superuser=False) must reach the room-editor
+    endpoints (#627) -- caught via e2e: these were missing from AdminRole.ADMIN's permission
+    list, so any real admin who isn't also a superuser got a silent 403 on every one of them,
+    including the pre-existing UPDATE_ROOM_POSITION."""
+    for action in (
+        AdminAction.UPDATE_ROOM_POSITION,
+        AdminAction.UPDATE_ROOM,
+        AdminAction.CREATE_ROOM_EXIT,
+        AdminAction.UPDATE_ROOM_EXIT,
+        AdminAction.DELETE_ROOM_EXIT,
+    ):
+        assert admin_auth_service._has_permission(AdminRole.ADMIN, action) is True
+
+
 def test_has_permission_moderator(admin_auth_service):
     """Test _has_permission for moderator role."""
     assert admin_auth_service._has_permission(AdminRole.MODERATOR, AdminAction.LIST_NPC_DEFINITIONS) is True

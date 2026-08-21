@@ -152,7 +152,10 @@ export function useRoomEditModal(props: RoomEditModalProps) {
         description: formData.description.trim(),
         zone: formData.zone.trim(),
         subZone: formData.sub_zone.trim() || undefined,
-        environment: formData.environment || undefined,
+        // Empty string ("Not Set") is a deliberate clear, not "no change" -- do not coerce to
+        // undefined here. undefined values are dropped by JSON.stringify, so an `|| undefined`
+        // coercion would silently discard the user's intent to clear the environment. See #627.
+        environment: formData.environment,
       });
       onClose();
     },
