@@ -4,6 +4,8 @@ Real-time communication API endpoints for MythosMUD server.
 This module handles WebSocket connections for real-time game communication.
 """
 
+# pylint: disable=too-many-lines  # Reason: WebSocket + session API surface; split when a second transport appears
+
 import importlib
 import os
 import time
@@ -25,7 +27,8 @@ from ..schemas.realtime import (
 
 
 class _ConnectionManagerUtilsModule(Protocol):
-    def resolve_connection_manager(self, candidate: object | None = None) -> object | None: ...
+    def resolve_connection_manager(self, candidate: object | None = None) -> object | None:
+        """Resolve the connection manager singleton (or optional candidate)."""
 
 
 # Load websocket_handler through importlib; a static import cycles with app.factory.

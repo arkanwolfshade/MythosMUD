@@ -27,6 +27,7 @@ AUTH_RATE_LIMITED_PATHS = frozenset(
 
 
 def is_auth_rate_limited_path(path: str) -> bool:
+    """Return True if path is an unauthenticated auth POST covered by the limiter."""
     normalized = path.rstrip("/") or "/"
     return normalized in AUTH_RATE_LIMITED_PATHS
 

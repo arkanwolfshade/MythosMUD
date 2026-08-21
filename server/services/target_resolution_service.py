@@ -5,7 +5,7 @@ This service provides unified target resolution for both players and NPCs,
 supporting partial name matching, disambiguation, and room-based filtering.
 """
 
-# pylint: disable=too-few-public-methods,unnecessary-ellipsis  # Reason: Protocol stubs use ellipsis per PEP 544; focused service interfaces
+# pylint: disable=too-few-public-methods,unnecessary-ellipsis,too-many-lines  # Reason: Protocol stubs use ellipsis per PEP 544; focused service interfaces; cohesive resolver (Protocols + matching) stays one module
 
 import asyncio
 import inspect
