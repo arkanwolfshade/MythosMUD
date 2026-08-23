@@ -153,6 +153,24 @@ def test_optimized_validate_player_name_empty():
     assert optimized_validate_player_name("") == ""
 
 
+def test_optimized_validate_player_name_too_short():
+    """Test validating player name below min length."""
+    with pytest.raises(ValueError, match="at least 3"):
+        _ = optimized_validate_player_name("Ab")
+
+
+def test_optimized_validate_player_name_too_long():
+    """Test validating player name above max length."""
+    with pytest.raises(ValueError, match="20 characters or less"):
+        _ = optimized_validate_player_name("A" * 21)
+
+
+def test_optimized_validate_player_name_rejects_spaces():
+    """Test validating player name with spaces."""
+    with pytest.raises(ValueError, match="must start with a letter"):
+        _ = optimized_validate_player_name("Arkan Lovecraft")
+
+
 def test_optimized_validate_player_name_valid():
     """Test validating valid player name."""
     name = "TestPlayer"

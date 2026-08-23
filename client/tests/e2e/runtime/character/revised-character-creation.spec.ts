@@ -146,10 +146,10 @@ async function assignAllSkillsAndProceedToName(page: Page): Promise<void> {
   await expect(combos).toHaveCount(13, { timeout: 10_000 });
   for (let i = 0; i < 13; i++) {
     const select = combos.nth(i);
-    await expect(select.locator('option')).not.toHaveCount(1, {
-      timeout: 30_000,
-      message: `Skill combobox ${i} still has only the placeholder option (empty catalog?)`,
-    });
+    await expect(
+      select.locator('option'),
+      `Skill combobox ${i} still has only the placeholder option (empty catalog?)`
+    ).not.toHaveCount(1, { timeout: 30_000 });
     await select.selectOption({ index: 1 });
   }
   await page.getByRole('button', { name: 'Next: Name character' }).click();
@@ -309,6 +309,31 @@ test.describe('Revised Character Creation', () => {
     } finally {
       await page.close();
     }
+  });
+
+  test('should reject spaced character names on the name screen', async ({ page }) => {
+    await loginAsIthaqua(page);
+    await openStatsRollingFromLogin(page);
+    await acceptStatsAndSelectFirstProfession(page);
+    await assignAllSkillsAndProceedToName(page);
+    await page.getByPlaceholder('Enter name').fill('Arkan Lovecraft');
+    const createButton = page.getByRole('button', { name: 'Create Character' });
+    await expect(createButton).toBeDisabled();
+    await expect(page.getByRole('alert')).toContainText(/letter|hyphens/i);
+  });
+
+  test('should complete stats → profession → skills → name → create, enter game, and go down', async ({ page }) => {
+    const creationCharName = `E2ERevised_${Date.now()}`;
+    await loginAsIthaqua(page);
+    await openStatsRollingFromLogin(page);
+    await acceptStatsAndSelectFirstProfession(page);
+    await assignAllSkillsAndProceedToName(page);
+    await submitCharacterName(page, creationCharName);
+    await assertCharacterVisibleOnList(page, creationCharName);
+    await enterGameWithCharacter(page, creationCharName);
+    const { executeCommand, waitForMessage } = await import('../fixtures/auth');
+    await executeCommand(page, 'go down');
+    await waitForMessage(page, /./, TEST_TIMEOUTS.MESSAGE);
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {

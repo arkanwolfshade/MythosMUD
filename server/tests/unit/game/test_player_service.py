@@ -340,14 +340,9 @@ async def test_validate_player_name_valid(player_service, mock_persistence):
 @pytest.mark.asyncio
 async def test_validate_player_name_too_short(player_service, mock_persistence):
     """Test validate_player_name() with name too short."""
-    # Name "Ab" is 2 chars, which is the minimum, so it should pass length check
-    # But if it doesn't find a player, it will return False
-    mock_persistence.get_player_by_name = AsyncMock(return_value=None)
-    mock_persistence.list_players = AsyncMock(return_value=[])
     valid, message = await player_service.validate_player_name("Ab")
-    # Since player not found, it returns False
     assert valid is False
-    assert "not found" in message.lower()
+    assert "3 characters" in message or "at least" in message
 
 
 @pytest.mark.asyncio

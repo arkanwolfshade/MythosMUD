@@ -24,6 +24,11 @@ import strip_ansi
 # Keep in sync with AttackCommand/PunchCommand Field(max_length=...).
 MAX_COMBAT_TARGET_LENGTH = 200
 
+# Character display name bounds (ADR-021). Keep in sync with client playerNameValidation.ts.
+PLAYER_NAME_MIN_LENGTH = 3
+PLAYER_NAME_MAX_LENGTH = 20
+PLAYER_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_-]*$")
+
 # Patterns to reject for command injection (expand as needed)
 # These patterns are more specific than the command model validators
 # to avoid false positives while still catching injection attempts
@@ -250,19 +255,24 @@ def validate_player_name(value: str) -> str:
     across command models, ensuring proper format and security.
 
     Args:
-        value: The player name to validate
+        value: The player name to validate (caller should strip whitespace)
 
     Returns:
         str: The validated player name
 
     Raises:
-        ValueError: If the player name has invalid format
+        ValueError: If the player name has invalid format or length
     """
     if not value:
         return value
 
-    # Check format: must start with letter, contain only letters, numbers, underscores, and hyphens
-    if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", value):
+    name_len = len(value)
+    if name_len < PLAYER_NAME_MIN_LENGTH:
+        raise ValueError(f"Player name must be at least {PLAYER_NAME_MIN_LENGTH} characters long")
+    if name_len > PLAYER_NAME_MAX_LENGTH:
+        raise ValueError(f"Player name must be {PLAYER_NAME_MAX_LENGTH} characters or less")
+
+    if not PLAYER_NAME_PATTERN.match(value):
         raise ValueError(
             "Player name must start with a letter and contain only letters, numbers, underscores, and hyphens"
         )

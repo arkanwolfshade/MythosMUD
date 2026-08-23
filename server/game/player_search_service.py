@@ -8,6 +8,7 @@ from typing import Any, cast
 
 from ..schemas.players import PlayerRead
 from ..structured_logging.enhanced_logging_config import get_logger
+from ..validators.security_validator import validate_player_name
 
 logger = get_logger(__name__)
 
@@ -173,18 +174,10 @@ class PlayerSearchService:
 
         clean_name = player_name.strip()
 
-        # Check length
-        if len(clean_name) < 2:
-            return False, "Player name must be at least 2 characters long"
-
-        if len(clean_name) > 20:
-            return False, "Player name must be 20 characters or less"
-
-        # Check for invalid characters
-        invalid_chars = ["<", ">", "&", '"', "'", "\\", "/", "|", ":", ";", "*", "?"]
-        for char in invalid_chars:
-            if char in clean_name:
-                return False, f"Player name cannot contain '{char}'"
+        try:
+            clean_name = validate_player_name(clean_name)
+        except ValueError as exc:
+            return False, str(exc)
 
         # Check if player exists
         player = await self.resolve_player_name(clean_name)

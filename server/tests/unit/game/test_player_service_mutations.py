@@ -277,7 +277,7 @@ async def test_validate_player_name_invalid_characters(player_service, mock_pers
     for char in invalid_chars:
         valid, message = await player_service.validate_player_name(f"Test{char}Name")
         assert valid is False
-        assert char in message or "cannot contain" in message.lower()
+        assert "Player name" in message
 
 
 @pytest.mark.asyncio
@@ -398,4 +398,4 @@ async def test_validate_player_name_too_short_one_char(player_service, mock_pers
     """Test validate_player_name() with name only 1 character."""
     valid, message = await player_service.validate_player_name("A")
     assert valid is False
-    assert "2 characters" in message or "at least" in message.lower()
+    assert "3 characters" in message or "at least" in message

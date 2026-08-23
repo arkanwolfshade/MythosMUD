@@ -7,6 +7,12 @@ import React, { useState } from 'react';
 import type { Stats } from '../hooks/useStatsRolling.js';
 import { getErrorMessage, isErrorResponse } from '../utils/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import {
+  PLAYER_NAME_MAX_LENGTH,
+  PLAYER_NAME_MIN_LENGTH,
+  PLAYER_NAME_RULES_HINT,
+  validatePlayerName,
+} from '../utils/playerNameValidation.js';
 import type { Profession } from './ProfessionCard.tsx';
 
 export interface OccupationSlotPayload {
@@ -91,19 +97,26 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputId = 'character-name-input';
+  const hintId = 'character-name-hint';
   const errorId = 'character-name-error';
+
+  const trimmedName = name.trim();
+  const nameValidation = validatePlayerName(trimmedName);
+  const inlineValidationError = trimmedName.length > 0 && !nameValidation.valid ? nameValidation.error : null;
+  const displayError = error ?? inlineValidationError;
+  const canSubmit = nameValidation.valid && !isSubmitting;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) {
-      setError('Please enter a character name');
+    if (!nameValidation.valid) {
+      const validationError = nameValidation.error ?? 'Please enter a valid character name';
+      setError(validationError);
       return;
     }
     setError(null);
     setIsSubmitting(true);
     try {
-      const payload = buildCreateCharacterPayload(trimmed, stats, profession.id, skillsPayload);
+      const payload = buildCreateCharacterPayload(trimmedName, stats, profession.id, skillsPayload);
       const response = await fetch(`${baseUrl}/api/players/create-character`, {
         method: 'POST',
         headers: {
@@ -113,7 +126,7 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
         body: JSON.stringify(payload),
       });
       if (response.ok) {
-        logger.info('CharacterNameScreen', 'Character created', { name: trimmed });
+        logger.info('CharacterNameScreen', 'Character created', { name: trimmedName });
         onComplete();
         return;
       }
@@ -154,26 +167,32 @@ export const CharacterNameScreen: React.FC<CharacterNameScreenProps> = ({
             value={name}
             onChange={e => {
               setName(e.target.value);
+              if (error) {
+                setError(null);
+              }
             }}
             placeholder="Enter name"
-            maxLength={50}
-            minLength={1}
+            maxLength={PLAYER_NAME_MAX_LENGTH}
+            minLength={PLAYER_NAME_MIN_LENGTH}
             disabled={isSubmitting}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? errorId : undefined}
+            aria-invalid={Boolean(displayError)}
+            aria-describedby={displayError ? `${hintId} ${errorId}` : hintId}
             // eslint-disable-next-line jsx-a11y/no-autofocus -- single field form: focus name input on this step
             autoFocus
           />
-          {error && (
+          <p id={hintId} className="character-name-hint">
+            {PLAYER_NAME_RULES_HINT}
+          </p>
+          {displayError && (
             <p id={errorId} className="error-message" role="alert" aria-live="assertive">
-              {error}
+              {displayError}
             </p>
           )}
           <div className="character-name-actions">
             <button type="button" onClick={onBack} className="back-button">
               Back
             </button>
-            <button type="submit" disabled={isSubmitting} className="submit-button">
+            <button type="submit" disabled={!canSubmit} className="submit-button">
               {isSubmitting ? 'Creating...' : 'Create Character'}
             </button>
           </div>
