@@ -38,7 +38,7 @@ if not SECRET_KEY:
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 # Match fastapi-users JWT audience so decode_access_token validates the same claim.
-TOKEN_AUDIENCE = "fastapi-users:auth"
+TOKEN_AUDIENCE = "fastapi-users:auth"  # nosec B105: JWT audience identifier, not a password
 
 logger.info("Auth utilities initialized", algorithm=ALGORITHM, token_expire_minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
