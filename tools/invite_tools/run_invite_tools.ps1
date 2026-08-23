@@ -57,13 +57,13 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 switch ($Command) {
     'generate' {
         Write-Host "Generating invite codes using generate_invites.py..." -ForegroundColor Green
-        python "$scriptDir\generate_invites.py"
+        uv run python "$scriptDir\generate_invites.py"
     }
     'generate_db' {
         Write-Host "Generating invite codes using generate_invites_db.py..." -ForegroundColor Green
         $args = @("--count", $Count)
         if ($Expires) { $args += "--expires"; $args += $Expires }
-        python "$scriptDir\generate_invites_db.py" @args
+        uv run python "$scriptDir\generate_invites_db.py" @args
     }
     'check' {
         if (-not $InviteCode) {
@@ -72,15 +72,15 @@ switch ($Command) {
             exit 1
         }
         Write-Host "Checking invite code: $InviteCode" -ForegroundColor Green
-        python "$scriptDir\check_invites.py" check $InviteCode
+        uv run python "$scriptDir\check_invites.py" check $InviteCode
     }
     'list' {
         Write-Host "Listing all invite codes..." -ForegroundColor Green
-        python "$scriptDir\check_invites.py" list
+        uv run python "$scriptDir\check_invites.py" list
     }
     'count' {
         Write-Host "Counting invite codes..." -ForegroundColor Green
-        python "$scriptDir\check_invites.py" count
+        uv run python "$scriptDir\check_invites.py" count
     }
 }
 
