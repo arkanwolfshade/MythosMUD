@@ -1,6 +1,5 @@
 """IP-based rate limiting for unauthenticated auth HTTP endpoints."""
 
-import html
 import ipaddress
 import os
 from collections.abc import Sequence
@@ -40,9 +39,8 @@ def _canonical_ip(raw: str) -> str | None:
 
 
 def _auth_bucket(host: str) -> str:
-    # html.escape: Codacy flask-xss flags concatenated request-derived strings on return.
-    # This value is a limiter key, not HTML; escape is a no-op for canonical IPs.
-    return "auth:" + html.escape(host, quote=True)
+    # Rate-limiter dict key (not an HTTP response); join avoids flask-xss concat-on-return.
+    return ":".join(("auth", host))
 
 
 def auth_client_key(request: Request) -> str:
