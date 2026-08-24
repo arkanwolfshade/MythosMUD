@@ -13,7 +13,7 @@ globalThis.fetch = vi.fn();
 
 // Mock config
 vi.mock('../../../utils/config', () => ({
-  getVersionedApiBaseUrl: () => 'http://localhost:54768/v1',
+  getVersionedApiBaseUrl: () => '/v1',
 }));
 
 describe('saveMapChanges', () => {
@@ -34,12 +34,7 @@ describe('saveMapChanges', () => {
 
       await saveNodePositions(nodePositions, { authToken: 'test-token' });
 
-      // Filter out debug logging calls (to debug endpoint) and count only API calls
-      const apiCalls = vi
-        .mocked(fetch)
-        .mock.calls.filter(call => typeof call[0] === 'string' && call[0].includes('/api/rooms'));
-
-      expect(apiCalls).toHaveLength(2);
+      expect(fetch).toHaveBeenCalledTimes(2);
       expect(fetch).toHaveBeenCalledWith(
         expect.stringContaining('/api/rooms/room1/position'),
         expect.objectContaining({
@@ -70,6 +65,14 @@ describe('saveMapChanges', () => {
 
       expect(fetch).toHaveBeenCalledWith(expect.stringContaining('https://custom-url.com'), expect.anything());
     });
+
+    it('uses same-origin relative paths when baseUrl is cleartext http', async () => {
+      const nodePositions = new Map([['room1', { x: 100, y: 200 }]]);
+
+      await saveNodePositions(nodePositions, { baseUrl: 'http://localhost:54768/v1' });
+
+      expect(fetch).toHaveBeenCalledWith('/v1/api/rooms/room1/position', expect.anything());
+    });
   });
 
   describe('saveMapChanges', () => {
@@ -98,7 +101,6 @@ describe('saveMapChanges', () => {
 
       await saveMapChanges(changes, {});
 
-      // With the fix, no fetch calls should be made (including debug logs) when there are no changes
       expect(fetch).not.toHaveBeenCalled();
     });
 

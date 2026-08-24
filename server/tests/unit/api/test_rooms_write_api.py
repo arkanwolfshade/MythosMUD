@@ -14,6 +14,8 @@ from server.api.rooms import (
     ExitCreateRequest,
     ExitUpdateRequest,
     RoomUpdateRequest,
+    _apply_room_exit_to_memory,
+    _apply_room_properties_to_memory,
     _build_exit_attributes,
     _create_room_link_in_db,
     _delete_room_link_in_db,
@@ -195,6 +197,41 @@ async def test_update_room_success_returns_updated_fields() -> None:
         )
     assert response.name == "New Foyer"
     assert response.environment == "arena"
+
+
+def test_apply_room_properties_to_memory_updates_environment() -> None:
+    """Regression: list_rooms reads RoomRepository memory; PUT must mutate it (#627)."""
+    memory_room = MagicMock()
+    memory_room.name = "Archives"
+    memory_room.description = "Dusty stacks"
+    memory_room.environment = "indoors"
+    memory_room.attributes = {"environment": "indoors"}
+    room_service = MagicMock(spec=RoomService)
+    persistence: MagicMock = MagicMock()
+    persistence.get_room_by_id.return_value = memory_room
+    room_service.persistence = persistence
+
+    _apply_room_properties_to_memory(room_service, "room_1", "Patient Archives", None, "outdoors", True)
+
+    assert memory_room.name == "Patient Archives"
+    assert memory_room.environment == "outdoors"
+    assert memory_room.attributes["environment"] == "outdoors"
+
+
+def test_apply_room_exit_to_memory_sets_and_deletes() -> None:
+    """Regression: list_rooms reads Room.exits from memory; exit CRUD must mutate it (#627)."""
+    memory_room = MagicMock()
+    memory_room.exits = {"north": "room_old"}
+    room_service = MagicMock(spec=RoomService)
+    persistence: MagicMock = MagicMock()
+    persistence.get_room_by_id.return_value = memory_room
+    room_service.persistence = persistence
+
+    _apply_room_exit_to_memory(room_service, "room_1", "east", "room_2")
+    assert memory_room.exits["east"] == "room_2"
+
+    _apply_room_exit_to_memory(room_service, "room_1", "east", None, delete=True)
+    assert "east" not in memory_room.exits
 
 
 # -- create_room_exit endpoint -------------------------------------------------

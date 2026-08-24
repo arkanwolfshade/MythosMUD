@@ -150,6 +150,64 @@ async def _invalidate_room_cache(room_service: RoomService, room_id: str) -> Non
         room_service.room_cache.invalidate_room(room_id)
 
 
+def _apply_room_properties_to_memory(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: mirrors DB property fields plus set_environment flag
+    room_service: RoomService,
+    room_id: str,
+    name: str | None,
+    description: str | None,
+    environment: str | None,
+    set_environment: bool,
+) -> None:
+    """Mutate RoomRepository memory so list_rooms sees property edits (LRU invalidate alone is not enough)."""
+    persistence = getattr(room_service, "persistence", None)
+    if persistence is None:
+        return
+    memory_room = persistence.get_room_by_id(room_id)
+    if memory_room is None:
+        return
+    if name is not None:
+        memory_room.name = name
+    if description is not None:
+        memory_room.description = description
+    if not set_environment:
+        return
+    attrs = getattr(memory_room, "attributes", None)
+    if environment is None:
+        if isinstance(attrs, dict):
+            attrs.pop("environment", None)
+        # Match Room.__init__ fallback when attributes.environment is cleared.
+        memory_room.environment = "outdoors"
+        return
+    if isinstance(attrs, dict):
+        attrs["environment"] = environment
+    memory_room.environment = environment
+
+
+def _apply_room_exit_to_memory(
+    room_service: RoomService,
+    room_id: str,
+    direction: str,
+    target_room_id: str | None,
+    *,
+    delete: bool = False,
+) -> None:
+    """Mutate Room.exits in memory so list_rooms sees exit CRUD (LRU invalidate alone is not enough)."""
+    persistence = getattr(room_service, "persistence", None)
+    if persistence is None:
+        return
+    memory_room = persistence.get_room_by_id(room_id)
+    if memory_room is None:
+        return
+    exits = getattr(memory_room, "exits", None)
+    if not isinstance(exits, dict):
+        return
+    if delete:
+        exits.pop(direction, None)
+        return
+    if target_room_id is not None:
+        exits[direction] = target_room_id
+
+
 async def _update_room_properties_in_db(  # pylint: disable=too-many-arguments,too-many-positional-arguments  # Reason: room property update needs each field plus the explicit set-environment flag
     session: AsyncSession,
     room_id: str,
@@ -467,6 +525,9 @@ async def update_room(
 
         logger.info("Room properties updated successfully", room_id=room_id)
 
+        _apply_room_properties_to_memory(
+            room_service, room_id, update_data.name, update_data.description, environment, set_environment
+        )
         await _invalidate_room_cache(room_service, room_id)
 
         return RoomUpdateResponse(
@@ -539,6 +600,7 @@ async def create_room_exit(
 
         logger.info("Room exit created successfully", room_id=room_id, direction=exit_data.direction.value)
 
+        _apply_room_exit_to_memory(room_service, room_id, exit_data.direction.value, exit_data.target_room_id)
         await _invalidate_room_cache(room_service, room_id)
 
         return ExitResponse(
@@ -599,6 +661,7 @@ async def update_room_exit(  # pylint: disable=too-many-arguments,too-many-posit
 
         logger.info("Room exit updated successfully", room_id=room_id, direction=direction.value)
 
+        _apply_room_exit_to_memory(room_service, room_id, direction.value, exit_data.target_room_id)
         await _invalidate_room_cache(room_service, room_id)
 
         return ExitResponse(
@@ -639,6 +702,7 @@ async def delete_room_exit(
 
         logger.info("Room exit deleted successfully", room_id=room_id, direction=direction.value)
 
+        _apply_room_exit_to_memory(room_service, room_id, direction.value, None, delete=True)
         await _invalidate_room_cache(room_service, room_id)
 
         return ExitResponse(
