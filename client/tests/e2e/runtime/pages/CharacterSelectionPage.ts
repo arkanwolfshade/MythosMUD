@@ -21,8 +21,28 @@ export class CharacterSelectionPage {
   }
 
   async selectFirstCharacter(): Promise<void> {
-    const selectButton = this.page.getByTestId('select-character-button').first();
-    await expect(selectButton).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
+    await this.selectCharacterByName(null);
+  }
+
+  /**
+   * Select a character card by display name. When name is null, falls back to the first card
+   * (only safe when the account has a single playable character).
+   */
+  async selectCharacterByName(characterName: string | null): Promise<void> {
+    const card =
+      characterName === null
+        ? this.page.locator('.character-card').first()
+        : this.page.locator('.character-card').filter({
+            has: this.page.locator('h3.character-name', { hasText: new RegExp(`^${escapeRegExp(characterName)}$`) }),
+          });
+    const selectButton = card.getByTestId('select-character-button');
+    await expect(selectButton).toBeVisible({
+      timeout: TEST_TIMEOUTS.LOGIN,
+      message:
+        characterName === null
+          ? 'No character card with Select Character'
+          : `Character card not found for name "${characterName}"`,
+    });
 
     const selectResponse = this.page.waitForResponse(
       response => isSelectCharacterPost(response.url(), response.request().method()),
@@ -46,4 +66,8 @@ export class CharacterSelectionPage {
       timeout: TEST_TIMEOUTS.LOGIN,
     });
   }
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

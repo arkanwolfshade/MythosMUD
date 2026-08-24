@@ -12,6 +12,11 @@ import { cleanupE2ECharacters } from '../fixtures/character-cleanup';
 import { TEST_TIMEOUTS } from '../fixtures/test-data';
 import { LoginPage } from '../pages';
 
+/** Unique name under ADR-021 max length 20 (E2ERevised_${Date.now()} is ~25 chars). */
+function uniqueE2eCharName(prefix: 'E2ER_' | 'E4Sk_'): string {
+  return `${prefix}${Date.now().toString(36)}`.slice(0, 20);
+}
+
 /**
  * Professions screen paints the h1 even when the API returns []; cards mount only with data.
  * Use Promise.all(waitForResponse, click) so a fast /professions response is never missed.
@@ -68,51 +73,38 @@ async function loginAsIthaqua(page: Page): Promise<void> {
 }
 
 async function deleteRevisedTestCharacterToMakeRoom(page: Page, createButton: Locator): Promise<void> {
-  const testCharPattern = /^(E2ERevised_|E4Skills_)/;
-
-  for (let attempt = 0; attempt < 6; attempt++) {
-    if (await createButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-      return;
-    }
-
-    const charHeadings = page.locator('h3');
-    const headingCount = await charHeadings.count();
-    let deletedOne = false;
-
-    for (let i = 0; i < headingCount; i++) {
-      const charName =
-        (await charHeadings
-          .nth(i)
-          .textContent()
-          .catch(() => '')) ?? '';
-      if (!testCharPattern.test(charName)) {
-        continue;
-      }
-
-      const card = page.locator('.character-card').filter({ hasText: charName });
-      const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
-      if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) {
-        continue;
-      }
-
-      await deleteBtn.evaluate((el: HTMLElement) => {
-        el.click();
-      });
-      await page.getByText(/Are you sure/i).waitFor({ state: 'visible', timeout: 5000 });
-      await page.getByRole('button', { name: 'Confirm Delete' }).evaluate((el: HTMLElement) => {
-        el.click();
-      });
-      await new Promise(r => setTimeout(r, 2000));
-      deletedOne = true;
-      break;
-    }
-
-    if (!deletedOne) {
-      break;
-    }
+  // beforeEach cleanup should leave a free slot; this is only a last-resort escape hatch at 3/3.
+  if (await createButton.isVisible({ timeout: 5000 }).catch(() => false)) {
+    return;
   }
 
-  await createButton.waitFor({ state: 'visible', timeout: 20000 });
+  const testCharPattern = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
+  const names = (await page.locator('.character-card h3.character-name').allTextContents()).map(n => n.trim());
+  const victim = names.find(n => testCharPattern.test(n));
+  if (!victim) {
+    await createButton.waitFor({ state: 'visible', timeout: 30_000 });
+    return;
+  }
+
+  const card = page.locator('.character-card').filter({
+    has: page.locator('h3.character-name', {
+      hasText: new RegExp(`^${victim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`),
+    }),
+  });
+  await card.getByRole('button', { name: 'Delete', exact: true }).evaluate((el: HTMLElement) => {
+    el.click();
+  });
+  await page.getByText(/Are you sure/i).waitFor({ state: 'visible', timeout: 5000 });
+  const deleteResponse = page.waitForResponse(
+    r => r.url().includes('/api/players/characters/') && r.request().method() === 'DELETE',
+    { timeout: 30_000 }
+  );
+  await page.getByRole('button', { name: 'Confirm Delete' }).evaluate((el: HTMLElement) => {
+    el.click();
+  });
+  const resp = await deleteResponse;
+  expect(resp.ok(), `Delete character failed: HTTP ${resp.status()}`).toBeTruthy();
+  await createButton.waitFor({ state: 'visible', timeout: 30_000 });
 }
 
 async function openStatsRollingFromLogin(page: Page): Promise<void> {
@@ -293,6 +285,7 @@ async function readSkillsMessageText(page: Page): Promise<string> {
 }
 
 test.describe('Revised Character Creation', () => {
+  test.describe.configure({ timeout: 180_000 });
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     try {
@@ -311,6 +304,11 @@ test.describe('Revised Character Creation', () => {
     }
   });
 
+  test.beforeEach(async ({ page }) => {
+    // Each creation test needs a free slot; leftover E2ER_/E4Sk_ from prior tests hit the 3-char cap.
+    await cleanupE2ECharacters(page);
+  });
+
   test('should reject spaced character names on the name screen', async ({ page }) => {
     await loginAsIthaqua(page);
     await openStatsRollingFromLogin(page);
@@ -323,7 +321,7 @@ test.describe('Revised Character Creation', () => {
   });
 
   test('should complete stats → profession → skills → name → create, enter game, and go down', async ({ page }) => {
-    const creationCharName = `E2ERevised_${Date.now()}`;
+    const creationCharName = uniqueE2eCharName('E2ER_');
     await loginAsIthaqua(page);
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
@@ -337,7 +335,7 @@ test.describe('Revised Character Creation', () => {
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
-    const creationCharName = `E2ERevised_${Date.now()}`;
+    const creationCharName = uniqueE2eCharName('E2ER_');
     await loginAsIthaqua(page);
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
@@ -354,7 +352,7 @@ test.describe('Revised Character Creation', () => {
     await openStatsRollingFromLogin(page);
     await acceptStatsAndSelectFirstProfession(page);
     await assignAllSkillsAndProceedToName(page);
-    const charName = `E4Skills_${Date.now()}`;
+    const charName = uniqueE2eCharName('E4Sk_');
     await submitCharacterName(page, charName);
     await assertCharacterVisibleOnList(page, charName);
     await enterGameWithCharacter(page, charName);

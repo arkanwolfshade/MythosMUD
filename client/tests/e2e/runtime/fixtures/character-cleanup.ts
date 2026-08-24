@@ -3,7 +3,7 @@
  *
  * Cleans up characters created during E2E tests. NEVER deletes protected
  * characters (ArkanWolfshade, Ithaqua). Only deletes names matching
- * test-creation patterns (e.g. E2ERevised_*, E4Skills_*).
+ * test-creation patterns (e.g. E2ER_, E4Sk_, legacy E2ERevised_, E4Skills_).
  */
 
 import type { Page } from '@playwright/test';
@@ -16,7 +16,7 @@ export const PROTECTED_CHARACTER_NAMES = ['ArkanWolfshade', 'Ithaqua'] as const;
 const PROTECTED_CHARACTER_NAME_SET = new Set<string>(PROTECTED_CHARACTER_NAMES);
 
 /** Regex for character names created by E2E tests (revised creation, skills tests). */
-export const TEST_CHARACTER_NAME_PATTERN = /^(E2ERevised_|E4Skills_)/;
+export const TEST_CHARACTER_NAME_PATTERN = /^(E2ER_|E4Sk_|E2ERevised_|E4Skills_)/;
 
 const MAX_CLEANUP_ITERATIONS = 10;
 
@@ -51,13 +51,6 @@ async function loginToCharacterSelection(page: Page): Promise<void> {
   await characterSelectionHeading.waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.LOGIN }).catch(() => {});
 }
 
-async function isCharacterCreationAvailable(page: Page): Promise<boolean> {
-  return page
-    .getByRole('button', { name: /Create New Character/i })
-    .isVisible({ timeout: 1000 })
-    .catch(() => false);
-}
-
 async function getCharacterNameFromCard(card: CharacterCardLocator): Promise<string> {
   const nameEl = card.locator('h3.character-name');
   return (await nameEl.textContent({ timeout: 2000 }).catch(() => ''))?.trim() ?? '';
@@ -69,8 +62,21 @@ async function confirmCharacterDeletion(page: Page): Promise<void> {
     .waitFor({ state: 'visible', timeout: 5000 })
     .catch(() => {});
   const confirmBtn = page.getByRole('button', { name: 'Confirm Delete' });
+  const deleteResponse = page.waitForResponse(
+    r => r.url().includes('/api/players/characters/') && r.request().method() === 'DELETE',
+    { timeout: 30_000 }
+  );
   await domClick(confirmBtn);
-  await new Promise(r => setTimeout(r, 1500));
+  const resp = await deleteResponse;
+  if (!resp.ok()) {
+    throw new Error(`E2E character delete failed: HTTP ${resp.status()}`);
+  }
+  // Parent setCharacters refresh; brief settle for Firefox card unmount.
+  await page
+    .locator('.character-card')
+    .first()
+    .waitFor({ state: 'attached', timeout: 5000 })
+    .catch(() => {});
 }
 
 async function deleteCharacterFromCard(page: Page, card: CharacterCardLocator): Promise<void> {
@@ -105,11 +111,9 @@ async function tryDeleteOneTestCharacter(page: Page): Promise<boolean> {
 export async function cleanupE2ECharacters(page: Page): Promise<void> {
   await loginToCharacterSelection(page);
 
+  // Do not treat "Create New Character (N/3)" as done — that button stays visible below the
+  // 3-character cap and used to make cleanup no-op while leftover E4Skills_* still poisoned login.
   for (let iteration = 0; iteration < MAX_CLEANUP_ITERATIONS; iteration += 1) {
-    if (await isCharacterCreationAvailable(page)) {
-      return;
-    }
-
     const deleted = await tryDeleteOneTestCharacter(page);
     if (!deleted) {
       return;
