@@ -26,6 +26,20 @@ function buildJsonHeaders(authToken?: string): HeadersInit {
   };
 }
 
+/** Same-origin relative paths in dev/prod; only absolute https when explicitly configured. */
+function resolveRoomsApiUrl(apiBase: string, resourcePath: string): string {
+  const base = (apiBase.trim() !== '' ? apiBase : getVersionedApiBaseUrl()).replace(/\/$/, '');
+  const path = resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`;
+  if (/^https:\/\//i.test(base)) {
+    return `${base}${path}`;
+  }
+  if (/^http:\/\//i.test(base)) {
+    const pathname = base.replace(/^https?:\/\/[^/]+/i, '');
+    return `${pathname}${path}`;
+  }
+  return `${base}${path}`;
+}
+
 async function readErrorDetail(response: Response): Promise<string> {
   try {
     const rawData: unknown = await response.json();
@@ -70,7 +84,7 @@ export async function saveNodePositions(
 
   // Save each node position
   const savePromises = Array.from(nodePositions.entries()).map(async ([roomId, position]) => {
-    const response = await fetch(`${apiBaseUrl}/api/rooms/${encodeURIComponent(roomId)}/position`, {
+    const response = await fetch(resolveRoomsApiUrl(apiBaseUrl, `/api/rooms/${encodeURIComponent(roomId)}/position`), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +118,10 @@ async function deleteExit(
   headers: HeadersInit
 ): Promise<void> {
   const response = await fetch(
-    `${apiBaseUrl}/api/rooms/${encodeURIComponent(sourceRoomId)}/exits/${encodeURIComponent(direction)}`,
+    resolveRoomsApiUrl(
+      apiBaseUrl,
+      `/api/rooms/${encodeURIComponent(sourceRoomId)}/exits/${encodeURIComponent(direction)}`
+    ),
     { method: 'DELETE', headers }
   );
   if (!response.ok) {
@@ -114,16 +131,19 @@ async function deleteExit(
 }
 
 async function createExit(apiBaseUrl: string, edgeData: ExitEdgeData, headers: HeadersInit): Promise<void> {
-  const response = await fetch(`${apiBaseUrl}/api/rooms/${encodeURIComponent(edgeData.sourceRoomId)}/exits`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      direction: edgeData.direction,
-      target_room_id: edgeData.targetRoomId,
-      flags: edgeData.flags,
-      description: edgeData.description,
-    }),
-  });
+  const response = await fetch(
+    resolveRoomsApiUrl(apiBaseUrl, `/api/rooms/${encodeURIComponent(edgeData.sourceRoomId)}/exits`),
+    {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        direction: edgeData.direction,
+        target_room_id: edgeData.targetRoomId,
+        flags: edgeData.flags,
+        description: edgeData.description,
+      }),
+    }
+  );
   if (!response.ok) {
     const detail = await readErrorDetail(response);
     throw new Error(`Failed to create exit ${edgeData.direction} from room ${edgeData.sourceRoomId}: ${detail}`);
@@ -138,7 +158,10 @@ async function updateExit(
   headers: HeadersInit
 ): Promise<void> {
   const response = await fetch(
-    `${apiBaseUrl}/api/rooms/${encodeURIComponent(sourceRoomId)}/exits/${encodeURIComponent(direction)}`,
+    resolveRoomsApiUrl(
+      apiBaseUrl,
+      `/api/rooms/${encodeURIComponent(sourceRoomId)}/exits/${encodeURIComponent(direction)}`
+    ),
     {
       method: 'PUT',
       headers,
@@ -256,7 +279,7 @@ export async function saveRoomUpdates(
 
     if (Object.keys(body).length === 0) continue;
 
-    const response = await fetch(`${apiBaseUrl}/api/rooms/${encodeURIComponent(roomId)}`, {
+    const response = await fetch(resolveRoomsApiUrl(apiBaseUrl, `/api/rooms/${encodeURIComponent(roomId)}`), {
       method: 'PUT',
       headers,
       body: JSON.stringify(body),

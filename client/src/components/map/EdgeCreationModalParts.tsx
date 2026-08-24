@@ -230,12 +230,10 @@ export function EdgeCreationModalView(props: EdgeCreationModalViewProps) {
   const { onClose, sourceRoomId, vm } = props;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button
-        type="button"
-        className="absolute inset-0 cursor-default bg-black bg-opacity-75 border-0 p-0"
-        onClick={onClose}
-        aria-label="Dismiss dialog (backdrop)"
-      />
+      {/* Dimmer only -- do not dismiss on backdrop click. Native <select> option picks in Firefox
+          synthesize a click that lands on a full-screen dismiss control and close the modal before
+          submit (room-editor E2E). Cancel / X / Escape still close. */}
+      <div className="absolute inset-0 bg-black bg-opacity-75" aria-hidden="true" />
       <div
         className="relative z-10 bg-mythos-terminal-background border-2 border-mythos-terminal-border rounded-lg p-6 w-full max-w-2xl max-h-modal overflow-y-auto shadow-xl"
         role="dialog"

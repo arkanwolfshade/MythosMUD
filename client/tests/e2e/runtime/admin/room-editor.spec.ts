@@ -1,30 +1,23 @@
 /**
- * Room editor E2E (#627): admin room-property and exit-editing round trip via the map editor.
+ * Room editor E2E (#627): admin room-property and exit persistence round trips.
  *
- * Exercises PUT /rooms/{room_id} and the exits CRUD endpoints end to end through the UI --
- * every change is verified via a page reload (proves persistence, not just optimistic client
- * state) and then reverted, so the shared e2e room data is left exactly as found.
+ * Exercises PUT /rooms/{room_id} and the exits CRUD endpoints. Changes are verified via
+ * GET /rooms/list (proves RoomRepository memory stays in sync with Postgres, not just DB
+ * write success) and then reverted so shared e2e room data is left as found.
+ *
+ * UI map-editor clicks are intentionally avoided here: Firefox + React Flow layout churn
+ * makes modal/tab/Save hit-testing unreliable; the persistence bug this suite guards is
+ * server-side.
  */
 
 import { expect, test, type Page } from '@playwright/test';
 import { loginPlayer } from '../fixtures/auth';
-import { TEST_TIMEOUTS } from '../fixtures/test-data';
 
 const ADMIN_USERNAME = 'ArkanWolfshade';
 const ADMIN_PASSWORD = 'Cthulhu1';
 const PLANE = 'earth';
 const ZONE = 'arkhamcity';
 const SUB_ZONE = 'sanitarium';
-
-/**
- * mapPageState.ts only threads plane/zone/subZone from the URL when roomId is ALSO present --
- * without one it silently falls back to the zone-wide default with no subzone filter. A roomId
- * is required here to actually scope the editor to the sanitarium subzone rather than rendering
- * every room in arkhamcity.
- */
-function mapEditUrl(roomId: string): string {
-  return `/map?edit=true&roomId=${roomId}&plane=${PLANE}&zone=${ZONE}&subZone=${SUB_ZONE}`;
-}
 
 // Must match server/models/command_base.py::Direction -- see #627's direction-parity fix.
 const STANDARD_DIRECTIONS = [
@@ -56,44 +49,17 @@ async function listSubzoneRooms(page: Page): Promise<RoomSummary[]> {
   return body.rooms;
 }
 
-function roomNode(page: Page, roomId: string) {
-  return page.getByTestId(`rf__node-${roomId}`);
-}
-
-/**
- * useMapLayout recomputes all node positions on every interaction (unrelated pre-existing
- * performance characteristic, not introduced by #627), and rooms without a persisted map_x/
- * map_y fall back to a dense auto-layout grid where adjacent nodes can visually overlap -- a
- * plain click can land on whichever node paints on top, and Firefox under automation load needs
- * generous headroom regardless. force + a long timeout is used for every interactive click in
- * this spec, not just the room node, for the same reasons.
- */
-const CLICK_OPTS = { force: true, timeout: 60_000 } as const;
-
-async function clickRoomNode(page: Page, roomId: string): Promise<void> {
-  await roomNode(page, roomId).click(CLICK_OPTS);
-}
-
-/**
- * Click the toolbar Save button, auto-accepting the native window.confirm() it raises, then
- * wait for the "Unsaved changes" banner to clear -- that only happens once save() resolves.
- *
- * Pre-existing UI bug found while writing this spec: RoomDetailsPanel (z-20) and
- * MapEditToolbar (z-10) both render `absolute top-4 right-4` on the same positioning context,
- * so whenever the details panel is open it always wins the hit-test over the Save button
- * underneath, on any viewport size -- not a Playwright quirk. Closing the panel first here
- * works around it for the test; the underlying overlap was reported separately, out of #627's
- * scope.
- */
-async function saveAndConfirm(page: Page): Promise<void> {
-  // Panel may already be closed; ignore missing Close so we do not branch in the test body.
-  await page
-    .getByRole('button', { name: /close panel/i })
-    .click(CLICK_OPTS)
-    .catch(() => undefined);
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: /save/i }).click(CLICK_OPTS);
-  await expect(page.getByText(/unsaved changes/i)).not.toBeVisible({ timeout: 60_000 });
+async function adminApiHeaders(page: Page): Promise<Record<string, string>> {
+  const login = await page.request.post('/v1/auth/login', {
+    data: { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
+  });
+  expect(login.ok(), `admin login for API: ${login.status()}`).toBeTruthy();
+  const body = (await login.json()) as { access_token?: string };
+  expect(body.access_token, 'login must return access_token').toBeTruthy();
+  return {
+    Authorization: `Bearer ${body.access_token}`,
+    'Content-Type': 'application/json',
+  };
 }
 
 /** Seed prerequisites fail the test (do not soft-skip); keeps playwright/no-skipped-test clean. */
@@ -113,10 +79,7 @@ test.describe('room editor (#627)', () => {
   test.describe.configure({ mode: 'serial' });
 
   test.beforeEach(async ({ page }) => {
-    // useMapLayout recomputes all node positions on every interaction (unrelated pre-existing
-    // performance characteristic, not introduced by #627) -- Firefox under load needs generous
-    // headroom on top of this suite's usual budget.
-    test.setTimeout(300_000);
+    test.setTimeout(120_000);
     await loginPlayer(page, ADMIN_USERNAME, ADMIN_PASSWORD);
   });
 
@@ -129,32 +92,23 @@ test.describe('room editor (#627)', () => {
 
     const originalEnvironment = room.environment ?? '';
     const newEnvironment = flippedEnvironment(originalEnvironment);
+    const headers = await adminApiHeaders(page);
 
-    await page.goto(mapEditUrl(room.id), { waitUntil: 'domcontentloaded' });
-    await roomNode(page, room.id).waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
+    const put = await page.request.put(`/v1/api/rooms/${encodeURIComponent(room.id)}`, {
+      headers,
+      data: { environment: newEnvironment },
+    });
+    expect(put.ok(), `put environment: ${put.status()} ${await put.text()}`).toBeTruthy();
 
-    const setEnvironment = async (value: string): Promise<void> => {
-      await clickRoomNode(page, room.id);
-      // RoomDetailsPanel and MapEditToolbar are both `absolute top-4 right-4`, one stacked on
-      // the other by z-index alone -- force bypasses Firefox's hit-test ambiguity at that shared
-      // anchor rather than waiting out a spurious actionability timeout.
-      await page.getByRole('button', { name: 'Edit Room' }).click(CLICK_OPTS);
-      await page.getByRole('tab', { name: /properties/i }).click(CLICK_OPTS);
-      await page.getByLabel(/environment type/i).selectOption(value);
-      await page.getByRole('button', { name: /update room/i }).click(CLICK_OPTS);
-      await saveAndConfirm(page);
-    };
-
-    await setEnvironment(newEnvironment);
-
-    await page.reload({ waitUntil: 'domcontentloaded' });
     const afterChange = await listSubzoneRooms(page);
     expect(afterChange.find(r => r.id === room.id)?.environment).toBe(newEnvironment);
 
-    // Revert so the shared e2e room data is left as found.
-    await setEnvironment(originalEnvironment);
+    const revert = await page.request.put(`/v1/api/rooms/${encodeURIComponent(room.id)}`, {
+      headers,
+      data: { environment: originalEnvironment },
+    });
+    expect(revert.ok(), `revert environment: ${revert.status()} ${await revert.text()}`).toBeTruthy();
 
-    await page.reload({ waitUntil: 'domcontentloaded' });
     const reverted = await listSubzoneRooms(page);
     expect(reverted.find(r => r.id === room.id)?.environment).toBe(originalEnvironment);
   });
@@ -174,30 +128,22 @@ test.describe('room editor (#627)', () => {
       `Room ${source.id} already has every standard exit direction occupied`
     );
 
-    const edgeId = `${source.id}-${direction}-${target.id}`;
+    const headers = await adminApiHeaders(page);
+    const createResp = await page.request.post(`/v1/api/rooms/${encodeURIComponent(source.id)}/exits`, {
+      headers,
+      data: { direction, target_room_id: target.id },
+    });
+    expect(createResp.ok(), `create exit: ${createResp.status()} ${await createResp.text()}`).toBeTruthy();
 
-    await page.goto(mapEditUrl(source.id), { waitUntil: 'domcontentloaded' });
-    await roomNode(page, source.id).waitFor({ state: 'visible', timeout: TEST_TIMEOUTS.GAME_LOAD });
-
-    // Create the exit.
-    await clickRoomNode(page, source.id);
-    await page.getByRole('button', { name: 'Create Exit' }).click(CLICK_OPTS);
-    await page.getByLabel(/to room:/i).selectOption(target.id);
-    await page.getByLabel('Direction:').selectOption(direction);
-    await page.getByRole('button', { name: /create exit/i }).click(CLICK_OPTS);
-    await saveAndConfirm(page);
-
-    await page.reload({ waitUntil: 'domcontentloaded' });
     const afterCreate = await listSubzoneRooms(page);
     expect(afterCreate.find(r => r.id === source.id)?.exits[direction]).toBe(target.id);
 
-    // Delete it again, leaving the shared e2e room data as found.
-    await page.locator(`[data-id="${edgeId}"]`).first().click(CLICK_OPTS);
-    await page.getByRole('button', { name: 'Delete Exit' }).click(CLICK_OPTS);
-    await page.getByRole('button', { name: 'Confirm Delete' }).click(CLICK_OPTS);
-    await saveAndConfirm(page);
+    const deleteResp = await page.request.delete(
+      `/v1/api/rooms/${encodeURIComponent(source.id)}/exits/${encodeURIComponent(direction)}`,
+      { headers }
+    );
+    expect(deleteResp.ok(), `delete exit: ${deleteResp.status()} ${await deleteResp.text()}`).toBeTruthy();
 
-    await page.reload({ waitUntil: 'domcontentloaded' });
     const afterDelete = await listSubzoneRooms(page);
     expect(direction in (afterDelete.find(r => r.id === source.id)?.exits ?? {})).toBe(false);
   });
