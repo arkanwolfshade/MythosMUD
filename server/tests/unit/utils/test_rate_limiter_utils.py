@@ -9,7 +9,13 @@ from unittest.mock import patch
 import pytest
 
 from server.exceptions import RateLimitError
-from server.utils.rate_limiter import RateLimiter, auth_login_limiter, character_creation_limiter, stats_roll_limiter
+from server.utils.rate_limiter import (
+    RateLimiter,
+    auth_login_limiter,
+    auth_login_rate_limit_settings,
+    character_creation_limiter,
+    stats_roll_limiter,
+)
 
 
 @pytest.fixture
@@ -193,6 +199,19 @@ def test_character_creation_limiter_initialized():
     assert character_creation_limiter.window_seconds == 300
 
 
-def test_auth_login_limiter_initialized():
-    assert auth_login_limiter.max_requests == 10
-    assert auth_login_limiter.window_seconds == 60
+def test_auth_login_rate_limit_settings_defaults(monkeypatch):
+    monkeypatch.delenv("AUTH_LOGIN_RATE_LIMIT_MAX", raising=False)
+    monkeypatch.delenv("AUTH_LOGIN_RATE_LIMIT_WINDOW", raising=False)
+    assert auth_login_rate_limit_settings() == (10, 60)
+
+
+def test_auth_login_rate_limit_settings_from_env(monkeypatch):
+    monkeypatch.setenv("AUTH_LOGIN_RATE_LIMIT_MAX", "1000")
+    monkeypatch.setenv("AUTH_LOGIN_RATE_LIMIT_WINDOW", "120")
+    assert auth_login_rate_limit_settings() == (1000, 120)
+
+
+def test_auth_login_limiter_matches_settings():
+    max_requests, window_seconds = auth_login_rate_limit_settings()
+    assert auth_login_limiter.max_requests == max_requests
+    assert auth_login_limiter.window_seconds == window_seconds
