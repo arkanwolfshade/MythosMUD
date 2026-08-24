@@ -237,18 +237,41 @@ def test_validate_player_name_empty():
 
 
 def test_validate_player_name_single_char():
-    """Test validating single character player name (valid if starts with letter)."""
-    # Single character starting with letter is valid
-    result = validate_player_name("A")
-    assert result == "A"
+    """Test validating single character player name (invalid under ADR-021 min length)."""
+    with pytest.raises(ValueError, match="at least 3"):
+        _ = validate_player_name("A")
+
+
+def test_validate_player_name_too_short():
+    """Test validating two-character player name (invalid under ADR-021)."""
+    with pytest.raises(ValueError, match="at least 3"):
+        _ = validate_player_name("Ab")
 
 
 def test_validate_player_name_long():
-    """Test validating long player name (no length limit in validator)."""
-    # validate_player_name doesn't check length, only format
-    long_name = "A" * 100
-    result = validate_player_name(long_name)
-    assert result == long_name
+    """Test validating player name over max length."""
+    long_name = "A" * 21
+    with pytest.raises(ValueError, match="20 characters or less"):
+        _ = validate_player_name(long_name)
+
+
+def test_validate_player_name_max_length_valid():
+    """Test validating player name at max length."""
+    name = "A" + "b" * 19
+    result = validate_player_name(name)
+    assert result == name
+
+
+def test_validate_player_name_min_length_valid():
+    """Test validating player name at min length."""
+    result = validate_player_name("Abc")
+    assert result == "Abc"
+
+
+def test_validate_player_name_rejects_spaces():
+    """Test validating player name with spaces (invalid)."""
+    with pytest.raises(ValueError, match="must start with a letter"):
+        _ = validate_player_name("Arkan Lovecraft")
 
 
 def test_validate_player_name_valid():

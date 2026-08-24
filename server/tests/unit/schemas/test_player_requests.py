@@ -42,6 +42,30 @@ def test_create_character_request_name_stripped():
     assert request.name == "TestCharacter"
 
 
+def test_create_character_request_rejects_spaces():
+    """Test CreateCharacterRequest rejects spaced names."""
+    with pytest.raises(ValidationError):
+        _ = CreateCharacterRequest(name="Arkan Lovecraft", stats={"strength": 50})
+
+
+def test_create_character_request_rejects_too_short():
+    """Test CreateCharacterRequest rejects names under min length."""
+    with pytest.raises(ValidationError):
+        _ = CreateCharacterRequest(name="Ab", stats={"strength": 50})
+
+
+def test_create_character_request_rejects_too_long():
+    """Test CreateCharacterRequest rejects names over max length."""
+    with pytest.raises(ValidationError):
+        _ = CreateCharacterRequest(name="A" * 21, stats={"strength": 50})
+
+
+def test_create_character_request_accepts_hyphen_and_underscore():
+    """Test CreateCharacterRequest accepts valid charset."""
+    request = CreateCharacterRequest(name="Test_Player-1", stats={"strength": 50})
+    assert request.name == "Test_Player-1"
+
+
 def test_select_character_request():
     """Test SelectCharacterRequest can be instantiated."""
     request = SelectCharacterRequest(character_id="player_001")

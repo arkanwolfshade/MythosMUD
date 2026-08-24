@@ -5,11 +5,31 @@ This module provides rate limiting functionality for preventing abuse
 of API endpoints, particularly for stats rolling and other sensitive operations.
 """
 
+import os
 import time
 from collections import defaultdict
 from typing import Any
 
 from ..exceptions import RateLimitError
+
+
+def _positive_int_env(name: str, default: int) -> int:
+    """Parse a positive integer from the environment, falling back to default."""
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    try:
+        value = int(raw)
+    except ValueError:
+        return default
+    return value if value > 0 else default
+
+
+def auth_login_rate_limit_settings() -> tuple[int, int]:
+    """Auth login/register limiter settings (AUTH_LOGIN_RATE_LIMIT_* env vars)."""
+    max_requests = _positive_int_env("AUTH_LOGIN_RATE_LIMIT_MAX", 10)
+    window_seconds = _positive_int_env("AUTH_LOGIN_RATE_LIMIT_WINDOW", 60)
+    return max_requests, window_seconds
 
 
 class RateLimiter:
@@ -112,4 +132,5 @@ class RateLimiter:
 # Global rate limiters for different endpoints
 stats_roll_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 10 rolls per minute
 character_creation_limiter = RateLimiter(max_requests=5, window_seconds=300)  # 5 creations per 5 minutes
-auth_login_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 10 login/register attempts per IP per minute
+_auth_login_max, _auth_login_window = auth_login_rate_limit_settings()
+auth_login_limiter = RateLimiter(max_requests=_auth_login_max, window_seconds=_auth_login_window)

@@ -8,6 +8,12 @@ from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
+from server.validators.security_validator import (
+    PLAYER_NAME_MAX_LENGTH,
+    PLAYER_NAME_MIN_LENGTH,
+    validate_player_name,
+)
+
 
 class OccupationSlot(BaseModel):
     """One occupation skill slot: skill_id and fixed value (70, 60, 50, or 40)."""
@@ -27,7 +33,12 @@ class CreateCharacterRequest(BaseModel):
 
     __slots__ = ()  # Performance optimization
 
-    name: str = Field(..., min_length=1, max_length=50, description="Character name")
+    name: str = Field(
+        ...,
+        min_length=PLAYER_NAME_MIN_LENGTH,
+        max_length=PLAYER_NAME_MAX_LENGTH,
+        description="Character name",
+    )
     stats: dict[str, Any] = Field(..., description="Rolled character stats (server applies profession stat_modifiers)")
     profession_id: int = Field(default=0, ge=0, description="Profession ID")
     occupation_slots: list[OccupationSlot] | None = Field(
@@ -46,7 +57,8 @@ class CreateCharacterRequest(BaseModel):
         """Validate character name format."""
         if not v or not v.strip():
             raise ValueError("Character name cannot be empty or whitespace")
-        return v.strip()
+        stripped = v.strip()
+        return validate_player_name(stripped)
 
 
 class SelectCharacterRequest(BaseModel):
