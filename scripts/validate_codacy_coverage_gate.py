@@ -44,16 +44,21 @@ def cobertura_root_line_rate(coverage_xml: Path) -> float:
 
 
 def cobertura_has_server_sources(coverage_xml: Path) -> bool:
-    """True if report lists at least one class under server/ (relative paths)."""
+    """True if report lists at least one instrumented class.
+
+    `coverage xml --cov=server` writes `<source>server</source>` and lists class filenames
+    relative to that source root (e.g. "async_persistence.py", never "server/async_persistence.py")
+    -- there is no "server/" prefix to match on the filename itself. Since the report is already
+    scoped to the server source tree, any class present confirms this isn't an empty or malformed
+    artifact, which is all this guard needs to catch before a Codacy upload.
+    """
     tree = _parse_cobertura_xml(coverage_xml)
     root = tree.getroot()
     if root is None:
         return False
     for el in root.iter():
-        if el.tag.endswith("class") or el.tag == "class":
-            fn = el.get("filename") or ""
-            if fn.startswith("server/") or fn.startswith("server\\"):
-                return True
+        if el.tag == "class" and el.get("filename"):
+            return True
     return False
 
 
