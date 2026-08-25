@@ -41,6 +41,8 @@ INJECTION_PATTERNS_COMPILED = [
 ]
 
 # Pre-compile validation patterns
+PLAYER_NAME_MIN_LENGTH = 3
+PLAYER_NAME_MAX_LENGTH = 20
 PLAYER_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_-]*$")
 ALIAS_NAME_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]*$")
 HELP_TOPIC_PATTERN = re.compile(r"^[a-zA-Z][a-zA-Z0-9_-]*$")
@@ -236,6 +238,22 @@ def optimized_validate_player_name(value: str) -> str:
         return value
 
     logger.debug("Validating player name", player_name=value)
+
+    name_len = len(value)
+    if name_len < PLAYER_NAME_MIN_LENGTH:
+        logger.warning(
+            "Player name validation failed - too short",
+            player_name=value,
+            min_length=PLAYER_NAME_MIN_LENGTH,
+        )
+        raise ValueError(f"Player name must be at least {PLAYER_NAME_MIN_LENGTH} characters long")
+    if name_len > PLAYER_NAME_MAX_LENGTH:
+        logger.warning(
+            "Player name validation failed - too long",
+            player_name=value,
+            max_length=PLAYER_NAME_MAX_LENGTH,
+        )
+        raise ValueError(f"Player name must be {PLAYER_NAME_MAX_LENGTH} characters or less")
 
     # Use pre-compiled pattern for faster matching
     if not PLAYER_NAME_PATTERN.match(value):

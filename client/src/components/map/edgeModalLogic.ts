@@ -3,6 +3,7 @@ import type { Node } from 'reactflow';
 import type { EdgeCreationData, EdgeValidationResult } from './hooks/useMapEditing';
 import type { RoomNodeData } from './types';
 
+// Must match server/models/command_base.py::Direction exactly -- see MAP_EDITOR_DIRECTIONS.
 export const STANDARD_DIRECTIONS = [
   'north',
   'south',
@@ -14,8 +15,6 @@ export const STANDARD_DIRECTIONS = [
   'southwest',
   'up',
   'down',
-  'in',
-  'out',
 ];
 
 const STANDARD_DIRECTION_SET = new Set(STANDARD_DIRECTIONS);

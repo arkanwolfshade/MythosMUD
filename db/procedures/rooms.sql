@@ -222,3 +222,126 @@ BEGIN
     SELECT r.stable_id FROM rooms r WHERE r.id = ANY(p_room_ids);
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- update_room_properties: update name/description/environment for the room editor.
+-- NULL means "leave alone" for p_name/p_description; p_set_environment distinguishes
+-- "leave environment alone" (false) from "clear environment to NULL" (true, p_environment NULL).
+CREATE OR REPLACE FUNCTION :schema_name.update_room_properties( -- noqa: PRS
+    p_room_id text,
+    p_name text,
+    p_description text,
+    p_environment text,
+    p_set_environment boolean
+)
+RETURNS boolean AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE rooms
+    SET
+        name = COALESCE(p_name, name),
+        description = COALESCE(p_description, description),
+        attributes = CASE
+            WHEN NOT p_set_environment THEN attributes
+            WHEN p_environment IS NULL THEN attributes - 'environment'
+            ELSE jsonb_set(attributes, '{environment}', to_jsonb(p_environment), TRUE)
+        END
+    WHERE stable_id = p_room_id;
+
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    RETURN v_updated > 0;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- create_room_link: create a single directed exit (room_links row). Resolves stable_ids to
+-- UUIDs internally. Room existence is the caller's responsibility (API layer checks both rooms
+-- via RoomService before calling, matching update_room_position's existing pattern) -- this
+-- procedure returns FALSE if either stable_id doesn't resolve, and lets a genuine
+-- unique_violation (SQLSTATE 23505, from room_links_from_room_id_direction_key) propagate as a
+-- real Postgres error for the API layer to map to 409.
+CREATE OR REPLACE FUNCTION :schema_name.create_room_link( -- noqa: PRS
+    p_from_room_id text,
+    p_direction text,
+    p_to_room_id text,
+    p_attributes jsonb
+)
+RETURNS boolean AS $$
+DECLARE
+    v_from_uuid uuid;
+    v_to_uuid uuid;
+BEGIN
+    SELECT id INTO v_from_uuid FROM rooms WHERE stable_id = p_from_room_id;
+    SELECT id INTO v_to_uuid FROM rooms WHERE stable_id = p_to_room_id;
+
+    IF v_from_uuid IS NULL OR v_to_uuid IS NULL THEN
+        RETURN FALSE;
+    END IF;
+
+    INSERT INTO room_links (id, from_room_id, to_room_id, direction, attributes)
+    VALUES (gen_random_uuid(), v_from_uuid, v_to_uuid, p_direction, COALESCE(p_attributes, '{}'::jsonb));
+
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- update_room_link: update the target room and/or attributes of an existing exit.
+-- NULL p_to_room_id leaves the target unchanged; NULL p_attributes leaves attributes unchanged.
+-- Returns FALSE if the source room, target room (when given), or the exit itself isn't found.
+CREATE OR REPLACE FUNCTION :schema_name.update_room_link( -- noqa: PRS
+    p_from_room_id text,
+    p_direction text,
+    p_to_room_id text,
+    p_attributes jsonb
+)
+RETURNS boolean AS $$
+DECLARE
+    v_from_uuid uuid;
+    v_to_uuid uuid;
+    v_updated integer;
+BEGIN
+    SELECT id INTO v_from_uuid FROM rooms WHERE stable_id = p_from_room_id;
+    IF v_from_uuid IS NULL THEN
+        RETURN FALSE;
+    END IF;
+
+    IF p_to_room_id IS NOT NULL THEN
+        SELECT id INTO v_to_uuid FROM rooms WHERE stable_id = p_to_room_id;
+        IF v_to_uuid IS NULL THEN
+            RETURN FALSE;
+        END IF;
+    END IF;
+
+    UPDATE room_links
+    SET
+        to_room_id = COALESCE(v_to_uuid, to_room_id),
+        attributes = COALESCE(p_attributes, attributes)
+    WHERE from_room_id = v_from_uuid AND direction = p_direction;
+
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    RETURN v_updated > 0;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- delete_room_link: delete a single directed exit by (from_room stable_id, direction).
+CREATE OR REPLACE FUNCTION :schema_name.delete_room_link(p_from_room_id text, p_direction text) -- noqa: PRS
+RETURNS boolean AS $$
+DECLARE
+    v_from_uuid uuid;
+    v_deleted integer;
+BEGIN
+    SELECT id INTO v_from_uuid FROM rooms WHERE stable_id = p_from_room_id;
+    IF v_from_uuid IS NULL THEN
+        RETURN FALSE;
+    END IF;
+
+    DELETE FROM room_links
+    WHERE from_room_id = v_from_uuid AND direction = p_direction;
+
+    GET DIAGNOSTICS v_deleted = ROW_COUNT;
+    RETURN v_deleted > 0;
+END;
+$$ LANGUAGE plpgsql;

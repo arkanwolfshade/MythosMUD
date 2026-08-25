@@ -74,14 +74,31 @@ def test_validate_python_gate_fails_low_aggregate(tmp_path: Path) -> None:
         _gate.validate_python_gate(xml, 0.63)
 
 
-def test_validate_python_gate_fails_no_server_paths(tmp_path: Path) -> None:
+def test_validate_python_gate_passes_with_unprefixed_filenames(tmp_path: Path) -> None:
+    """`coverage xml --cov=server` writes `<source>server</source>` and lists filenames relative
+    to it (e.g. "app.py", never "server/app.py") -- the gate must not require a "server/" prefix
+    that real Cobertura output never has. Regression test for the always-false-negative bug this
+    check shipped with (see #677's follow-on fix)."""
     xml = tmp_path / "coverage.xml"
     _ = xml.write_text(
         '<?xml version="1.0" ?><coverage line-rate="0.90" version="1">'
+        + "<sources><source>server</source></sources>"
         + "<packages><package><classes>"
-        + '<class filename="other/app.py" line-rate="1.0" name="x">'
+        + '<class filename="app.py" line-rate="1.0" name="x">'
         + "<methods/><lines/></class>"
         + "</classes></package></packages></coverage>",
+        encoding="utf-8",
+    )
+    _gate.validate_python_gate(xml, 0.63)
+
+
+def test_validate_python_gate_fails_when_report_has_no_classes(tmp_path: Path) -> None:
+    """An empty/malformed Cobertura report (no <class> elements at all) must still be rejected --
+    that's what the "server sources present" guard exists to catch."""
+    xml = tmp_path / "coverage.xml"
+    _ = xml.write_text(
+        '<?xml version="1.0" ?><coverage line-rate="0.90" version="1">'
+        + "<packages><package><classes></classes></package></packages></coverage>",
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="No server/"):

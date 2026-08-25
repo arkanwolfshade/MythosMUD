@@ -78,6 +78,20 @@ describe('EdgeCreationModal', () => {
     expect(directionLabel).toBeInTheDocument();
   });
 
+  it('should not offer a "use custom direction" option (#627)', () => {
+    // The exit-creation API only accepts server/models/command_base.py::Direction's ten values;
+    // free-text custom directions would silently 422 on save, so the control was removed.
+    render(<EdgeCreationModal {...defaultProps} />);
+    expect(screen.queryByLabelText(/use custom direction/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/enter direction/i)).not.toBeInTheDocument();
+  });
+
+  it('should only offer the standard direction select, not a free-text input', () => {
+    render(<EdgeCreationModal {...defaultProps} />);
+    const directionSelect = screen.getByLabelText(/direction:/i) as HTMLSelectElement;
+    expect(directionSelect.tagName).toBe('SELECT');
+  });
+
   it('should call onCreate when form is submitted with valid data', async () => {
     const mockOnValidateValid = vi.fn(() => ({ isValid: true, errors: [], warnings: [] }));
     render(

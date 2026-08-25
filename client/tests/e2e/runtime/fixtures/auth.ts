@@ -138,7 +138,9 @@ export async function loginPlayer(page: Page, username: string, password: string
   await expect(postLoginUi.first()).toBeVisible({ timeout: TEST_TIMEOUTS.LOGIN });
 
   if (await characterSelection.isVisible()) {
-    await characterSelection.selectFirstCharacter();
+    // Canonical E2E accounts use matching username/character names. Never selectFirst —
+    // leftover E2ERevised_/E4Skills_* cards sort first and poison who/chat/party.
+    await characterSelection.selectCharacterByName(username);
   }
 
   const motdCheck = await page
