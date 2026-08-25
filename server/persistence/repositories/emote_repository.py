@@ -7,8 +7,8 @@ prior EmoteService opened its own connection from a synchronous constructor as a
 sync/async boundary problem that this repository -- and EmoteService's new async load path --
 removes instead of working around.
 
-Query text is unchanged from the original inline queries (per the #618 allowlist: relocating raw
-SQL is tracked here, not converted to a stored procedure yet -- #633 owns that).
+Reads go through db/procedures/emotes.sql's get_emotes()/get_emote_aliases() (#633), not inline
+SQL.
 """
 
 from typing import Any
@@ -44,18 +44,7 @@ class EmoteRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(
-                    text(
-                        """
-                        SELECT
-                            stable_id,
-                            self_message,
-                            other_message
-                        FROM emotes
-                        ORDER BY stable_id
-                        """
-                    )
-                )
+                result = await session.execute(text("SELECT stable_id, self_message, other_message FROM get_emotes()"))
                 return [
                     {
                         "stable_id": row.stable_id,
@@ -86,18 +75,7 @@ class EmoteRepository:
         try:
             session_maker = get_session_maker()
             async with session_maker() as session:
-                result = await session.execute(
-                    text(
-                        """
-                        SELECT
-                            e.stable_id,
-                            ea.alias
-                        FROM emote_aliases ea
-                        JOIN emotes e ON ea.emote_id = e.id
-                        ORDER BY e.stable_id, ea.alias
-                        """
-                    )
-                )
+                result = await session.execute(text("SELECT stable_id, alias FROM get_emote_aliases()"))
                 return [{"stable_id": row.stable_id, "alias": row.alias} for row in result]
         except SQLAlchemyError as e:
             log_and_raise(

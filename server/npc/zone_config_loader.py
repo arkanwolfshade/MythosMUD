@@ -95,19 +95,10 @@ async def process_zone_rows(conn: asyncpg.Connection, result_container: ZoneLoad
         conn: Database connection
         result_container: Container to store results
     """
-    zone_query = """
-        SELECT
-            z.id,
-            z.stable_id as zone_stable_id,
-            z.zone_type,
-            z.environment,
-            z.description,
-            z.weather_patterns,
-            z.special_rules
-        FROM zones z
-        ORDER BY z.stable_id
-    """
-    zone_rows = await conn.fetch(zone_query)
+    zone_rows = await conn.fetch(
+        "SELECT id, zone_stable_id, zone_type, environment, description, weather_patterns, special_rules "
+        + "FROM get_zone_configs()"
+    )
 
     for row in zone_rows:
         zone_stable_id = cast(str, row["zone_stable_id"])
@@ -128,22 +119,6 @@ async def process_zone_rows(conn: asyncpg.Connection, result_container: ZoneLoad
 
         zone_config = ZoneConfiguration(config_data)
         result_container["configs"]["zone"][zone_name] = zone_config
-
-
-_SUBZONE_QUERY = """
-    SELECT
-        sz.id,
-        z.stable_id as zone_stable_id,
-        sz.stable_id as subzone_stable_id,
-        sz.environment,
-        sz.description,
-        sz.special_rules,
-        z.zone_type,
-        z.weather_patterns
-    FROM subzones sz
-    JOIN zones z ON sz.zone_id = z.id
-    ORDER BY z.stable_id, sz.stable_id
-"""
 
 
 def _store_subzone_row(row: asyncpg.Record, result_container: ZoneLoadResult) -> None:
@@ -185,7 +160,10 @@ async def process_subzone_rows(conn: asyncpg.Connection, result_container: ZoneL
         conn: Database connection
         result_container: Container to store results
     """
-    subzone_rows = await conn.fetch(_SUBZONE_QUERY)
+    subzone_rows = await conn.fetch(
+        "SELECT id, zone_stable_id, subzone_stable_id, environment, description, special_rules, "
+        + "zone_type, weather_patterns FROM get_subzone_configs()"
+    )
     for row in subzone_rows:
         _store_subzone_row(row, result_container)
 

@@ -1,11 +1,9 @@
 """Helper functions for container persistence operations."""
 
 import json
-from datetime import datetime
 from typing import cast
 from uuid import UUID
 
-from psycopg2 import sql
 from psycopg2.extensions import connection as PsycopgConnection
 from psycopg2.extensions import cursor as PsycopgCursor
 from psycopg2.extras import RealDictCursor
@@ -17,6 +15,17 @@ from ..utils.error_logging import log_and_raise
 from ..utils.int_coercion import coerce_int
 
 logger: BoundLogger = get_logger(__name__)
+
+# Column list shared by every containers.sql read procedure that returns a full container row
+# (get_container, get_containers_by_room_id, get_containers_by_entity_id, get_decayed_containers)
+# -- kept as one constant so the four call sites (container_persistence.py,
+# container_query_helpers.py) can't drift, and so none of them writes a bare "SELECT *" (the raw-SQL
+# lint guard flags that unconditionally, #633).
+CONTAINER_ROW_COLUMNS = (
+    "container_instance_id, source_type, owner_id, room_id, entity_id, lock_state, "
+    "capacity_slots, weight_limit, decay_at, allowed_roles, metadata_json, created_at, "
+    "updated_at, container_item_instance_id"
+)
 
 
 def _coerce_row_quantity(value: object) -> int:
@@ -50,21 +59,11 @@ def parse_jsonb_column(value: object, default: object) -> object:
     return value if value else default
 
 
-_FETCH_CONTAINER_ITEMS_SQL = """
-        SELECT
-            cc.item_instance_id,
-            ii.prototype_id as item_id,
-            COALESCE(ii.custom_name, ip.name) as item_name,
-            ii.quantity,
-            ii.condition,
-            ii.metadata,
-            cc.position
-        FROM container_contents cc
-        JOIN item_instances ii ON cc.item_instance_id = ii.item_instance_id
-        JOIN item_prototypes ip ON ii.prototype_id = ip.prototype_id
-        WHERE cc.container_id = %s
-        ORDER BY cc.position
-        """
+# Backed by db/procedures/containers.sql's fetch_container_items() (#633).
+_FETCH_CONTAINER_ITEMS_SQL = (
+    'SELECT item_instance_id, item_id, item_name, quantity, condition, metadata, "position" '
+    "FROM fetch_container_items(%s)"
+)
 
 
 def _metadata_dict_from_cell(md_raw: object | None) -> dict[str, object]:
@@ -220,33 +219,3 @@ def update_container_items(
                 "SELECT add_item_to_container(%s, %s, %s)",
                 (container_id_str, item_instance_id, position),
             )
-
-
-def build_update_query(
-    updates: list[str], params: list[object], container_id_str: str, current_time: datetime
-) -> sql.Composed:
-    """
-    Build SQL update query for container.
-
-    Args:
-        updates: List of update clauses
-        params: List of parameters
-        container_id_str: Container ID as string
-        current_time: Current timestamp
-
-    Returns:
-        SQL query object
-    """
-    updates.append("updated_at = %s")
-    params.append(current_time)
-    params.append(container_id_str)
-
-    set_clauses = sql.SQL(", ").join([sql.SQL(clause) for clause in updates])
-    query = sql.SQL("""
-        UPDATE containers
-        SET {}
-        WHERE container_instance_id = %s
-        RETURNING container_instance_id
-    """).format(set_clauses)
-
-    return query

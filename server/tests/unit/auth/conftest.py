@@ -33,6 +33,10 @@ def mock_session():
     """Create a mock async session."""
     session = MagicMock()
     session.execute = AsyncMock()
+    # _find_user_by_username (#633) resolves an id via SQL then fetches the mapped ORM entity via
+    # session.get() to preserve identity-map tracking -- tests that mock the login lookup must
+    # override this to return the user; see server/auth/endpoints.py.
+    session.get = AsyncMock()
     session.add = MagicMock()
     session.commit = AsyncMock()
     session.refresh = AsyncMock()

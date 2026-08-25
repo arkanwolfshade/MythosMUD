@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import cast
 from uuid import UUID, uuid4
 
@@ -28,7 +28,7 @@ from ..utils.error_logging import log_and_raise
 from .container_create_params import ContainerCreateParams
 from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
 from .container_helpers import (
-    build_update_query,
+    CONTAINER_ROW_COLUMNS,
     fetch_container_items,
     parse_jsonb_column,
     update_container_items,
@@ -125,16 +125,12 @@ def _opt_int_from_row(value: object) -> int | None:
     return None
 
 
-_INSERT_CONTAINER_SQL = """
-            INSERT INTO containers (
-                source_type, owner_id, room_id, entity_id, lock_state,
-                capacity_slots, weight_limit, decay_at, allowed_roles,
-                metadata_json, container_item_instance_id, created_at, updated_at
-            ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s, %s, %s
-            )
-            RETURNING container_instance_id, created_at, updated_at
-            """
+# Backed by db/procedures/containers.sql's create_container() (#633) -- sets created_at/updated_at
+# to NOW() itself, so the bind tuple carries no timestamps.
+_INSERT_CONTAINER_SQL = (
+    "SELECT container_instance_id, created_at, updated_at "
+    "FROM create_container(%s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s)"
+)
 
 
 @dataclass
@@ -152,7 +148,6 @@ class _InsertBindSource:
     allowed_roles: list[str] | None
     metadata_json: dict[str, object] | None
     container_item_instance_id: str | None
-    current_time: datetime
 
 
 @dataclass(frozen=True)
@@ -175,15 +170,8 @@ class _CreateOutcome:
     updated_at: datetime | None
 
 
-_SELECT_CONTAINER_BY_ID_SQL = """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE container_instance_id = %s
-            """
+# Backed by db/procedures/containers.sql's get_container() (#633).
+_SELECT_CONTAINER_BY_ID_SQL = f"SELECT {CONTAINER_ROW_COLUMNS} FROM get_container(%s)"
 
 
 def _validate_new_container_params(source_type: str, capacity_slots: int, lock_state: str) -> None:
@@ -256,8 +244,6 @@ def _insert_bind_tuple(src: _InsertBindSource) -> tuple[object, ...]:
         allowed_roles_jsonb,
         metadata_jsonb,
         src.container_item_instance_id,
-        src.current_time,
-        src.current_time,
     )
 
 
@@ -404,27 +390,29 @@ def _run_container_update_execute(
     items_json: list[dict[str, object]] | None,
     lock_state: str | None,
     metadata_json: dict[str, object] | None,
-    current_time: datetime,
 ) -> tuple[object | None, int]:
+    """Apply the items/lock/metadata update; returns (container_instance_id or None, field count).
+
+    Backed by db/procedures/containers.sql's update_container() (#633), which always bumps
+    updated_at and COALESCEs lock_state/metadata_json to their current value when NULL -- calling
+    it is itself the touch that keeps "at least one of the three args was given" behavior, matching
+    the prior dynamic-UPDATE-builder semantics exactly.
+    """
     if items_json is not None:
         update_container_items(cursor, container_id_str, items_json, conn)
-    updates: list[str] = []
-    params: list[object] = []
-    if lock_state is not None:
-        updates.append("lock_state = %s")
-        params.append(lock_state)
-    if metadata_json is not None:
-        updates.append("metadata_json = %s::jsonb")
-        params.append(json.dumps(metadata_json))
-    if not updates and items_json is None:
+    if lock_state is None and metadata_json is None and items_json is None:
         return None, 0
-    query = build_update_query(updates, params, container_id_str, current_time)
-    # nosemgrep: python.lang.security.audit.sql-injection.sql-injection
-    # nosec B608: Using psycopg2.sql.SQL for safe SQL construction (column names are hardcoded)
-    cursor.execute(query, params)
+    metadata_param = json.dumps(metadata_json) if metadata_json is not None else None
+    cursor.execute(
+        "SELECT update_container(%s, %s, %s::jsonb)",
+        (container_id_str, lock_state, metadata_param),
+    )
     row = cursor.fetchone()
-    # build_update_query appends updated_at; exclude it from "user" field count
-    return row, len(updates) - 1
+    # A scalar-function SELECT always returns exactly one row -- check the returned value, not
+    # row truthiness, to detect "container not found" (procedure returns NULL via RETURNING).
+    updated_id = row[0] if row else None
+    updated_fields = sum(1 for v in (lock_state, metadata_json) if v is not None)
+    return updated_id, updated_fields
 
 
 def create_container(
@@ -454,7 +442,6 @@ def create_container(
             allowed_roles=p.allowed_roles,
             metadata_json=p.metadata_json,
             container_item_instance_id=p.container_item_instance_id,
-            current_time=datetime.now(UTC).replace(tzinfo=None),
         )
         cid, c_at, u_at = _insert_container_row(conn, _insert_bind_tuple(src), source_type)
         created = _after_container_insert(conn, src, cid, c_at, u_at, p.items_json)
@@ -505,7 +492,6 @@ def update_container(
 
     try:
         container_id_str = str(container_id)
-        current_time = datetime.now(UTC).replace(tzinfo=None)
         cursor = conn.cursor()
         row, updated_fields = _run_container_update_execute(
             cursor,
@@ -514,7 +500,6 @@ def update_container(
             items_json,
             lock_state,
             metadata_json,
-            current_time,
         )
         conn.commit()
         cursor.close()
@@ -547,15 +532,12 @@ def delete_container(conn: PsycopgConnection, container_id: UUID) -> bool:
     try:
         cursor = conn.cursor()
         container_id_str = str(container_id)
-        cursor.execute(
-            "DELETE FROM containers WHERE container_instance_id = %s RETURNING container_instance_id",
-            (container_id_str,),
-        )
+        cursor.execute("SELECT delete_container(%s)", (container_id_str,))
         row = cursor.fetchone()
         conn.commit()
         cursor.close()
 
-        if row:
+        if row and row[0]:
             logger.info("Container deleted", container_id=str(container_id))
             return True
         return False

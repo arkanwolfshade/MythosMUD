@@ -19,38 +19,13 @@ from ..structured_logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
 
-_CONFLICTS_QUERY = text("""
-    SELECT
-        r1.stable_id as room1_id,
-        r1.name as room1_name,
-        r2.stable_id as room2_id,
-        r2.name as room2_name,
-        r1.map_x,
-        r1.map_y
-    FROM rooms r1
-    JOIN rooms r2 ON r1.map_x = r2.map_x AND r1.map_y = r2.map_y
-    JOIN subzones sz1 ON r1.subzone_id = sz1.id
-    JOIN zones z1 ON sz1.zone_id = z1.id
-    JOIN subzones sz2 ON r2.subzone_id = sz2.id
-    JOIN zones z2 ON sz2.zone_id = z2.id
-    WHERE r1.stable_id LIKE :pattern || '%'
-    AND r2.stable_id LIKE :pattern || '%'
-    AND r1.id < r2.id
-    AND r1.map_x IS NOT NULL
-    AND r1.map_y IS NOT NULL
-    AND r2.map_x IS NOT NULL
-    AND r2.map_y IS NOT NULL
-""")
+# Backed by db/procedures/exploration.sql's get_coordinate_conflicts() and
+# count_coordinated_rooms() (#633).
+_CONFLICTS_QUERY = text(
+    "SELECT room1_id, room1_name, room2_id, room2_name, map_x, map_y " + "FROM get_coordinate_conflicts(:pattern)"
+)
 
-_ROOM_COUNT_QUERY = text("""
-    SELECT COUNT(*)
-    FROM rooms r
-    JOIN subzones sz ON r.subzone_id = sz.id
-    JOIN zones z ON sz.zone_id = z.id
-    WHERE r.stable_id LIKE :pattern || '%'
-    AND r.map_x IS NOT NULL
-    AND r.map_y IS NOT NULL
-""")
+_ROOM_COUNT_QUERY = text("SELECT count_coordinated_rooms(:pattern)")
 
 
 def _zone_pattern(plane: str, zone: str, sub_zone: str | None) -> str:

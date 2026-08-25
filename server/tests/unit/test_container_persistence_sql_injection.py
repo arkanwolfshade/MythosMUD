@@ -14,7 +14,7 @@ import pytest
 from server.persistence.container_persistence import update_container
 
 
-def _create_mock_container_row(container_id: uuid.UUID) -> dict:
+def _create_mock_container_row(container_id: uuid.UUID) -> dict[str, object]:
     """Create a complete mock container row with all required columns."""
     return {
         "container_instance_id": str(container_id),
@@ -26,8 +26,8 @@ def _create_mock_container_row(container_id: uuid.UUID) -> dict:
         "capacity_slots": 10,
         "weight_limit": 100.0,
         "decay_at": None,
-        "allowed_roles": [],
-        "metadata_json": {},
+        "allowed_roles": list[object](),
+        "metadata_json": dict[str, object](),
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
         "container_item_instance_id": None,
@@ -70,7 +70,9 @@ class TestContainerPersistenceSQLInjection:
 
         # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
         update_cursor = MagicMock()
-        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        # update_container() (#633) is now a scalar function call ("SELECT update_container(...)")
+        # -- a plain (non-dict) cursor returns a 1-tuple of the returned uuid, not a dict.
+        update_cursor.fetchone.return_value = (str(container_id),)
         get_cursor = MagicMock()
         get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
         items_cursor = MagicMock()
@@ -80,7 +82,7 @@ class TestContainerPersistenceSQLInjection:
         conn.cursor.side_effect = [update_cursor, get_cursor, items_cursor]
 
         # Attempt SQL injection in metadata
-        malicious_metadata = {
+        malicious_metadata: dict[str, object] = {
             "key": "'; DROP TABLE containers; --",
             "value": "test",
         }
@@ -120,7 +122,9 @@ class TestContainerPersistenceSQLInjection:
 
         # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
         update_cursor = MagicMock()
-        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        # update_container() (#633) is now a scalar function call ("SELECT update_container(...)")
+        # -- a plain (non-dict) cursor returns a 1-tuple of the returned uuid, not a dict.
+        update_cursor.fetchone.return_value = (str(container_id),)
         get_cursor = MagicMock()
         get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
         items_cursor = MagicMock()
@@ -159,7 +163,9 @@ class TestContainerPersistenceSQLInjection:
 
         # Create cursors: first for update_container, second for get_container, third for _fetch_container_items
         update_cursor = MagicMock()
-        update_cursor.fetchone.return_value = {"container_instance_id": str(container_id)}
+        # update_container() (#633) is now a scalar function call ("SELECT update_container(...)")
+        # -- a plain (non-dict) cursor returns a 1-tuple of the returned uuid, not a dict.
+        update_cursor.fetchone.return_value = (str(container_id),)
         get_cursor = MagicMock()
         get_cursor.fetchone.return_value = _create_mock_container_row(container_id)
         items_cursor = MagicMock()
@@ -182,16 +188,12 @@ class TestContainerPersistenceSQLInjection:
         call_args = update_cursor.execute.call_args
         query = call_args[0][0] if call_args else None
 
-        # Column names should be hardcoded (lock_state, updated_at, container_instance_id)
+        # #633: update_container() is now a fixed call to the containers.sql stored procedure of
+        # the same name -- column names (lock_state, updated_at, container_instance_id) live only
+        # in the procedure body, never in Python-side SQL text at all. That's a stronger property
+        # than "hardcoded, not from user input": there's no dynamic SQL construction to audit.
         if query:
             query_str = str(query)
-            # These are the expected hardcoded column names
             # nosemgrep: python.lang.security.audit.assert_used.assert_used
             # nosec B101: pytest uses assert statements for test assertions
-            assert "lock_state" in query_str or "sql.SQL" in str(type(query))
-            # nosemgrep: python.lang.security.audit.assert_used.assert_used
-            # nosec B101: pytest uses assert statements for test assertions
-            assert "updated_at" in query_str or "sql.SQL" in str(type(query))
-            # nosemgrep: python.lang.security.audit.assert_used.assert_used
-            # nosec B101: pytest uses assert statements for test assertions
-            assert "container_instance_id" in query_str or "sql.SQL" in str(type(query))
+            assert query_str == "SELECT update_container(%s, %s, %s::jsonb)"

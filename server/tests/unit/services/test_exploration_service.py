@@ -210,32 +210,33 @@ async def test_get_room_uuid_by_stable_id_asyncpg_like_uuid_object(
 
 @pytest.mark.asyncio
 async def test_mark_explored_in_session_new_record(exploration_service: ExplorationService) -> None:
-    """Test _mark_explored_in_session() inserts new exploration record."""
+    """Test _mark_explored_in_session() makes one round trip via mark_room_explored() (#633:
+    collapsed from a check-then-insert pair -- see that procedure's comment in
+    db/procedures/exploration.sql), returning True whether the row was newly inserted..."""
     mock_session = AsyncMock()
     player_id = uuid.uuid4()
     room_uuid = uuid.uuid4()
-    # Mock check query to return None (no existing record)
-    mock_check_result = _row_scalar_one_or_none(None)
-    execute_mock: AsyncMock = AsyncMock(return_value=mock_check_result)
+    mock_result = _row_scalar_one(True)  # mark_room_explored() returns was_new=True
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
     mock_session.execute = execute_mock
     result: bool = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
     assert result is True
-    assert execute_mock.call_count == 2  # Check + insert
+    assert execute_mock.call_count == 1
 
 
 @pytest.mark.asyncio
 async def test_mark_explored_in_session_existing_record(exploration_service: ExplorationService) -> None:
-    """Test _mark_explored_in_session() returns True for existing record."""
+    """...or the row already existed -- mark_room_as_explored's contract is "explored", not
+    "explored just now", so the outer result is still True either way."""
     mock_session = AsyncMock()
     player_id = uuid.uuid4()
     room_uuid = uuid.uuid4()
-    # Mock check query to return existing record
-    mock_check_result = _row_scalar_one_or_none("existing_id")
-    execute_mock: AsyncMock = AsyncMock(return_value=mock_check_result)
+    mock_result = _row_scalar_one(False)  # mark_room_explored() returns was_new=False
+    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
     mock_session.execute = execute_mock
     result: bool = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
     assert result is True
-    assert execute_mock.call_count == 1  # Only check, no insert
+    assert execute_mock.call_count == 1
 
 
 @pytest.mark.asyncio
@@ -423,30 +424,6 @@ async def test_mark_explored_in_session_database_error(exploration_service: Expl
     mock_session.execute = AsyncMock(side_effect=SQLAlchemyError("Database error"))
     with pytest.raises(SQLAlchemyError):
         _ = await exploration_service._mark_explored_in_session(mock_session, player_id, room_uuid)
-
-
-@pytest.mark.asyncio
-async def test_get_explored_rooms_async_fetchall(exploration_service: ExplorationService) -> None:
-    """Test get_explored_rooms() handles async fetchall() result."""
-    mock_session = AsyncMock()
-    player_id = uuid.uuid4()
-    room_uuid1 = uuid.uuid4()
-    room_uuid2 = uuid.uuid4()
-    mock_rows = [(room_uuid1,), (room_uuid2,)]
-
-    # Create a mock result with async fetchall
-    async def async_fetchall() -> list[tuple[uuid.UUID]]:
-        return mock_rows
-
-    mock_result = MagicMock()
-    fetch_mock: MagicMock = MagicMock(side_effect=async_fetchall)
-    mock_result.fetchall = fetch_mock
-    execute_mock: AsyncMock = AsyncMock(return_value=mock_result)
-    mock_session.execute = execute_mock
-    result: list[str] = await exploration_service.get_explored_rooms(player_id, mock_session)
-    assert len(result) == 2
-    assert str(room_uuid1) in result
-    assert str(room_uuid2) in result
 
 
 @pytest.mark.asyncio

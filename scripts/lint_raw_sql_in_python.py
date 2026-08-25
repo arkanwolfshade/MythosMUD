@@ -68,25 +68,13 @@ class AllowlistEntry:
     target_date: date
 
 
-# Baseline as of #618 hardening (2026-08-20): 13 files, 30 sites -- re-derived by grouping the
-# previous (file, line) baseline by file, not hand-counted. #633 (Phase 4 of the ranked plan) owns
-# migrating these to stored procedures. Lower a file's count only when a site in it has actually
-# been migrated -- do not bump the date without fixing a site.
-RAW_SQL_ALLOWLIST: tuple[AllowlistEntry, ...] = (
-    AllowlistEntry("server/auth/endpoints.py", 1, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/npc/zone_config_loader.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/persistence/container_helpers.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/persistence/container_persistence.py", 3, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/persistence/container_query_helpers.py", 3, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/persistence/item_instance_persistence.py", 3, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/persistence/repositories/emote_repository.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/coordinate_generator.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/coordinate_validator.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/exploration_service.py", 6, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/holiday_service.py", 1, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/passive_lucidity_flux/rate_overrides.py", 2, "#633", date(2026, 11, 1)),
-    AllowlistEntry("server/services/schedule_service.py", 1, "#633", date(2026, 11, 1)),
-)
+# Emptied by #633 (2026-08-25): the 13-file, 30-site baseline from #618 hardening (2026-08-20) is
+# fully migrated to stored procedures -- every site now calls a db/procedures/*.sql function
+# instead of embedding SQL. The 2 further sites #633 found the guard couldn't see (ORM
+# select(User) calls in server/auth/endpoints.py, which don't match this guard's uppercase
+# literal-SQL-text regex at all) are migrated too. Leave this empty; a future debt allowlist entry
+# should look like the ones this replaced, not reuse this comment.
+RAW_SQL_ALLOWLIST: tuple[AllowlistEntry, ...] = ()
 
 _ALLOWLIST_BY_FILE: dict[str, AllowlistEntry] = {entry.file: entry for entry in RAW_SQL_ALLOWLIST}
 

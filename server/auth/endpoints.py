@@ -146,13 +146,12 @@ async def _validate_invite_code(
 
 async def _check_username_exists(session: AsyncSession, username: str, _request: Request) -> None:
     """Check if username already exists and raise exception if so."""
-    from sqlalchemy import func, select
+    from sqlalchemy import text
 
-    stmt = select(User).where(func.lower(User.username) == func.lower(username))
-    result = await session.execute(stmt)
-    existing_user = result.scalar_one_or_none()
+    result = await session.execute(text("SELECT get_user_id_by_username_ci(:username)"), {"username": username})
+    existing_user_id = result.scalar_one_or_none()
 
-    if existing_user:
+    if existing_user_id:
         raise LoggedHTTPException(
             status_code=400,
             detail="Username already exists (names are case-insensitive)",
@@ -196,13 +195,8 @@ async def _mark_invite_as_used(
         from sqlalchemy import text
 
         _ = await session.execute(
-            text("""
-                UPDATE invites
-                SET is_active = :is_active, used_by_user_id = CAST(:used_by_user_id AS UUID)
-                WHERE invite_code = :invite_code
-            """),
+            text("SELECT mark_invite_used(:invite_code, CAST(:used_by_user_id AS UUID))"),
             {
-                "is_active": False,
                 "used_by_user_id": str(user.id),
                 "invite_code": invite_code,
             },
@@ -335,11 +329,11 @@ async def register_user(
 
 async def _find_user_by_username(session: AsyncSession, username: str, _http_request: Request) -> User:
     """Find user by username (case-insensitive). Raises exception if not found."""
-    from sqlalchemy import func, select
+    from sqlalchemy import text
 
-    stmt = select(User).where(func.lower(User.username) == func.lower(username))
-    result = await session.execute(stmt)
-    user = result.scalar_one_or_none()
+    id_result = await session.execute(text("SELECT get_user_id_by_username_ci(:username)"), {"username": username})
+    user_id = id_result.scalar_one_or_none()
+    user = await session.get(User, user_id) if user_id else None
 
     logger.info("User lookup result", user=user)
 

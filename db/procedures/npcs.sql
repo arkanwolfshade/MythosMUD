@@ -2,6 +2,9 @@
 -- Apply with: psql -d <db> -v schema_name=<schema> -f npcs.sql
 --
 -- NPC definition and spawn rule procedures. Replaces ORM in NpcService.
+-- Also carries zone/subzone config reads (#633), replacing the raw SQL in
+-- server/npc/zone_config_loader.py -- kept here rather than a new file since both are
+-- NPC-adjacent configuration data with a single caller.
 -- Depends on subzones (npc_definitions.sub_zone_id).
 
 -- get_npc_definitions: fetch all NPC definitions ordered by name, sub_zone_id
@@ -429,5 +432,67 @@ BEGIN
         (SELECT count(*)::bigint FROM npc_definitions),
         COALESCE(v_by_type, '{}'::jsonb),
         (SELECT count(*)::bigint FROM npc_spawn_rules);
+END;
+$$;
+
+
+-- get_zone_configs: fetch all zone configuration rows, ordered by stable_id (#633)
+CREATE OR REPLACE FUNCTION :schema_name.get_zone_configs() -- noqa: PRS
+RETURNS TABLE (
+    id uuid,
+    zone_stable_id text,
+    zone_type text,
+    environment text,
+    description text,
+    weather_patterns jsonb,
+    special_rules jsonb
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        z.id,
+        z.stable_id,
+        z.zone_type,
+        z.environment,
+        z.description,
+        z.weather_patterns,
+        z.special_rules
+    FROM zones z
+    ORDER BY z.stable_id;
+END;
+$$;
+
+
+-- get_subzone_configs: fetch all subzone configuration rows joined to their parent zone,
+-- ordered by zone then subzone stable_id (#633)
+CREATE OR REPLACE FUNCTION :schema_name.get_subzone_configs() -- noqa: PRS
+RETURNS TABLE (
+    id uuid,
+    zone_stable_id text,
+    subzone_stable_id text,
+    environment text,
+    description text,
+    special_rules jsonb,
+    zone_type text,
+    weather_patterns jsonb
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        sz.id,
+        z.stable_id,
+        sz.stable_id,
+        sz.environment,
+        sz.description,
+        sz.special_rules,
+        z.zone_type,
+        z.weather_patterns
+    FROM subzones sz
+    JOIN zones z ON sz.zone_id = z.id
+    ORDER BY z.stable_id, sz.stable_id;
 END;
 $$;

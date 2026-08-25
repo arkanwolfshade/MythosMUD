@@ -229,19 +229,27 @@ END;
 $$ LANGUAGE plpgsql;
 
 
--- update_container: update lock_state and/or metadata_json
+-- update_container: update lock_state and/or metadata_json, return the updated row's id (NULL if
+-- not found). #633: was RETURNS void; changed to uuid so callers can detect "container not found"
+-- the way the raw UPDATE ... RETURNING it replaces used to (return-type change, drop first).
+DROP FUNCTION IF EXISTS :schema_name.update_container(uuid, text, jsonb); -- noqa: PRS
+
 CREATE OR REPLACE FUNCTION :schema_name.update_container( -- noqa: PRS
     p_container_id uuid,
     p_lock_state text,
     p_metadata_json jsonb
-) RETURNS void AS $$
+) RETURNS uuid AS $$
+DECLARE
+    v_id uuid;
 BEGIN
     UPDATE containers
     SET
         updated_at = NOW(),
         lock_state = COALESCE(p_lock_state, lock_state),
         metadata_json = COALESCE(p_metadata_json, metadata_json)
-    WHERE container_instance_id = p_container_id;
+    WHERE container_instance_id = p_container_id
+    RETURNING container_instance_id INTO v_id;
+    RETURN v_id;
 END;
 $$ LANGUAGE plpgsql;
 

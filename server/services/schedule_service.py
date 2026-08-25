@@ -39,22 +39,6 @@ def normalize_weekday_names(days: list[str]) -> list[str]:
     return [_LATIN_TO_STANDARD_WEEKDAY.get(d, d) for d in days]
 
 
-_CALENDAR_NPC_SCHEDULES_QUERY = """
-    SELECT
-        stable_id,
-        name,
-        category,
-        start_hour,
-        end_hour,
-        days,
-        applies_to,
-        effects,
-        notes
-    FROM calendar_npc_schedules
-    ORDER BY category, start_hour, name
-"""
-
-
 def _string_list_from_row(value: object) -> list[str]:
     """Normalize nullable PostgreSQL array columns to string values."""
     if value is None:
@@ -101,7 +85,10 @@ def _schedule_entry_from_row(row: asyncpg.Record) -> ScheduleEntry:
 
 async def _fetch_schedule_entries(conn: asyncpg.Connection) -> list[ScheduleEntry]:
     """Load and normalize schedule rows from PostgreSQL."""
-    rows = await conn.fetch(_CALENDAR_NPC_SCHEDULES_QUERY)
+    rows = await conn.fetch(
+        "SELECT stable_id, name, category, start_hour, end_hour, days, applies_to, effects, notes "
+        + "FROM get_calendar_npc_schedules()"
+    )
     return [_schedule_entry_from_row(row) for row in rows]
 
 

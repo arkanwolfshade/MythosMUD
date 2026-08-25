@@ -21,43 +21,10 @@ from ..utils.error_logging import log_and_raise
 
 logger = get_logger(__name__)
 
-_UPSERT_ITEM_INSTANCE_SQL = """
-            INSERT INTO item_instances (
-                item_instance_id,
-                prototype_id,
-                owner_type,
-                owner_id,
-                location_context,
-                quantity,
-                condition,
-                flags_override,
-                binding_state,
-                attunement_state,
-                custom_name,
-                metadata,
-                origin_source,
-                origin_metadata,
-                created_at,
-                updated_at
-            ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW()
-            )
-            ON CONFLICT (item_instance_id) DO UPDATE SET
-                prototype_id = EXCLUDED.prototype_id,
-                owner_type = EXCLUDED.owner_type,
-                owner_id = EXCLUDED.owner_id,
-                location_context = EXCLUDED.location_context,
-                quantity = EXCLUDED.quantity,
-                condition = EXCLUDED.condition,
-                flags_override = EXCLUDED.flags_override,
-                binding_state = EXCLUDED.binding_state,
-                attunement_state = EXCLUDED.attunement_state,
-                custom_name = EXCLUDED.custom_name,
-                metadata = EXCLUDED.metadata,
-                origin_source = EXCLUDED.origin_source,
-                origin_metadata = EXCLUDED.origin_metadata,
-                updated_at = NOW()
-            """
+# Backed by db/procedures/items.sql's upsert_item_instance() (#633) -- the async twin of this
+# module (item_instance_persistence_async) already called it; this sync/psycopg2 module had its
+# own inline duplicate of the same upsert until now.
+_UPSERT_ITEM_INSTANCE_SQL = "SELECT upsert_item_instance(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 
 def _item_instance_row_values(
@@ -155,27 +122,10 @@ def get_item_instance(conn: Any, item_instance_id: str) -> dict[str, Any] | None
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cursor.execute(
-            """
-            SELECT
-                item_instance_id,
-                prototype_id,
-                owner_type,
-                owner_id,
-                location_context,
-                quantity,
-                condition,
-                flags_override,
-                binding_state,
-                attunement_state,
-                custom_name,
-                metadata,
-                origin_source,
-                origin_metadata,
-                created_at,
-                updated_at
-            FROM item_instances
-            WHERE item_instance_id = %s
-            """,
+            "SELECT item_instance_id, prototype_id, owner_type, owner_id, location_context, "
+            + "quantity, condition, flags_override, binding_state, attunement_state, custom_name, "
+            + "metadata, origin_source, origin_metadata, created_at, updated_at "
+            + "FROM get_item_instance(%s)",
             (item_instance_id,),
         )
         row = cursor.fetchone()
@@ -191,10 +141,11 @@ def item_instance_exists(conn: Any, item_instance_id: str) -> bool:
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "SELECT 1 FROM item_instances WHERE item_instance_id = %s",
+            "SELECT item_instance_exists(%s)",
             (item_instance_id,),
         )
-        return cursor.fetchone() is not None
+        row = cursor.fetchone()
+        return bool(row[0]) if row else False
     finally:
         cursor.close()
 

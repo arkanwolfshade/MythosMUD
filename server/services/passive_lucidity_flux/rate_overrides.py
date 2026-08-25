@@ -146,24 +146,9 @@ async def _async_load_lucidity_rate_overrides(result_container: _LucidityRateLoa
         server_settings = get_asyncpg_server_settings_for_database_url(database_url)
         conn = await asyncpg.connect(database_url, server_settings=server_settings)
         try:
-            query = """
-                SELECT
-                    z.stable_id as zone_stable_id,
-                    NULL::text as subzone_stable_id,
-                    z.special_rules
-                FROM zones z
-                WHERE z.special_rules IS NOT NULL
-                UNION ALL
-                SELECT
-                    z.stable_id as zone_stable_id,
-                    sz.stable_id as subzone_stable_id,
-                    sz.special_rules
-                FROM subzones sz
-                JOIN zones z ON sz.zone_id = z.id
-                WHERE sz.special_rules IS NOT NULL
-                ORDER BY zone_stable_id, subzone_stable_id
-            """
-            rows = await conn.fetch(query)
+            rows = await conn.fetch(
+                "SELECT zone_stable_id, subzone_stable_id, special_rules FROM get_lucidity_rate_overrides()"
+            )
             for row in rows:
                 _process_override_row(row, result_container)
         finally:
