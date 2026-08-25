@@ -11,7 +11,7 @@ from ..exceptions import DatabaseError
 from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.error_logging import log_and_raise
 from .container_data import ContainerData, ContainerDataCore, ContainerDataExtras
-from .container_helpers import fetch_container_items, parse_jsonb_column
+from .container_helpers import CONTAINER_ROW_COLUMNS, fetch_container_items, parse_jsonb_column
 
 logger = get_logger(__name__)
 
@@ -68,19 +68,7 @@ def get_containers_by_room_id(conn: Any, room_id: str) -> list[ContainerData]:
     """
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE room_id = %s
-            ORDER BY created_at
-            """,
-            (room_id,),
-        )
+        cursor.execute(f"SELECT {CONTAINER_ROW_COLUMNS} FROM get_containers_by_room_id(%s)", (room_id,))
         rows = cursor.fetchall()
         cursor.close()
 
@@ -118,16 +106,7 @@ def get_containers_by_entity_id(conn: Any, entity_id: UUID) -> list[ContainerDat
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE entity_id = %s
-            ORDER BY created_at
-            """,
+            f"SELECT {CONTAINER_ROW_COLUMNS} FROM get_containers_by_entity_id(%s)",
             (str(entity_id) if isinstance(entity_id, UUID) else entity_id,),
         )
         rows = cursor.fetchall()
@@ -189,19 +168,7 @@ def get_decayed_containers(conn: Any, current_time: datetime | None = None) -> l
 
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(
-            """
-            SELECT
-                container_instance_id, source_type, owner_id, room_id, entity_id,
-                lock_state, capacity_slots, weight_limit, decay_at,
-                allowed_roles, metadata_json, created_at, updated_at,
-                container_item_instance_id
-            FROM containers
-            WHERE decay_at IS NOT NULL AND decay_at < %s
-            ORDER BY decay_at
-            """,
-            (current_time,),
-        )
+        cursor.execute(f"SELECT {CONTAINER_ROW_COLUMNS} FROM get_decayed_containers(%s)", (current_time,))
         rows = cursor.fetchall()
         cursor.close()
 

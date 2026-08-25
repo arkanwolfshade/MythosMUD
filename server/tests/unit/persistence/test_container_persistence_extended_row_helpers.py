@@ -181,7 +181,6 @@ def test_insert_container_row_raises_when_no_row_returned():
         allowed_roles=None,
         metadata_json=None,
         container_item_instance_id=None,
-        current_time=datetime.now(UTC).replace(tzinfo=None),
     )
     bind = _insert_bind_tuple(src)
     with pytest.raises(DatabaseError):
@@ -218,8 +217,7 @@ def test_get_container_wraps_psycopg2_error():
 def test_run_container_update_execute_no_op_when_no_fields():
     mock_cursor = MagicMock()
     mock_conn = MagicMock()
-    when = datetime.now(UTC).replace(tzinfo=None)
-    row, n = _run_container_update_execute(mock_cursor, mock_conn, str(uuid.uuid4()), None, None, None, when)
+    row, n = _run_container_update_execute(mock_cursor, mock_conn, str(uuid.uuid4()), None, None, None)
     assert row is None and n == 0
     mock_cursor.execute.assert_not_called()
 

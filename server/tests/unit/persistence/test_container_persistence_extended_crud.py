@@ -234,22 +234,29 @@ def test_update_container_success():
     container_id = uuid.uuid4()
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_cursor.fetchone.return_value = {
-        "container_instance_id": container_id,
-        "source_type": "environment",
-        "owner_id": None,
-        "room_id": "test_room",
-        "entity_id": None,
-        "lock_state": "locked",
-        "capacity_slots": 20,
-        "weight_limit": None,
-        "decay_at": None,
-        "allowed_roles": [],
-        "metadata_json": {"updated": True},
-        "created_at": datetime.now(UTC),
-        "updated_at": datetime.now(UTC),
-        "container_item_instance_id": None,
-    }
+    # First fetchone() is _run_container_update_execute's "SELECT update_container(...)" -- a
+    # scalar function call, so a plain (non-dict) cursor returns a 1-tuple of the returned uuid
+    # (#633: update_container() now returns uuid, not void, so a not-found container is
+    # detectable). The second fetchone() is get_container()'s own RealDictCursor read.
+    mock_cursor.fetchone.side_effect = [
+        (container_id,),
+        {
+            "container_instance_id": container_id,
+            "source_type": "environment",
+            "owner_id": None,
+            "room_id": "test_room",
+            "entity_id": None,
+            "lock_state": "locked",
+            "capacity_slots": 20,
+            "weight_limit": None,
+            "decay_at": None,
+            "allowed_roles": [],
+            "metadata_json": {"updated": True},
+            "created_at": datetime.now(UTC),
+            "updated_at": datetime.now(UTC),
+            "container_item_instance_id": None,
+        },
+    ]
     mock_conn.cursor.return_value = mock_cursor
 
     # Mock _fetch_container_items and ensure_item_instance (which may call commit)

@@ -29,25 +29,31 @@ setup. Use `scripts/apply_procedures.ps1` to apply manually:
 
 ## Apply Order
 
-Files are applied in alphabetical order. Procedures that depend on tables or other
-procedures must appear after their dependencies. Recommended order (enforced by
-filename prefix if needed):
+`scripts/apply_procedures.ps1` globs `*.sql` in this directory and applies them in plain
+alphabetical order -- there is no separate manifest to keep in sync. `CREATE OR REPLACE
+FUNCTION` is order-independent for function-to-function references (Postgres resolves those
+at call time), so alphabetical ordering is safe as long as no file's *table* dependencies
+(created by DDL/migrations, not by another procedure file) postdate it -- none currently do.
+The list below is the actual current directory contents (2026-08-25, #633), documentation
+only:
 
-1. `health.sql` - players table updates (depends on players from DDL)
-2. `experience.sql` - players table updates
-3. `players.sql` - players, player_inventories
-4. `professions.sql` - professions
-5. `skills.sql` - skills
-6. `player_skills.sql` - player_skills (depends on players, skills)
-7. `skill_use_log.sql` - skill_use_log
-8. `spells.sql` - spells
-9. `player_spells.sql` - player_spells (depends on players, spells)
-10. `quests.sql` - quest_definitions, quest_offers, quest_instances
+1. `calendar.sql` - calendar_holidays, calendar_npc_schedules (reads only)
+2. `containers.sql` - containers, container_contents
+3. `dialogues.sql` - dialogue_definitions
+4. `emotes.sql` - emotes, emote_aliases (reads only)
+5. `experience.sql` - players table updates
+6. `exploration.sql` - player_exploration, coordinate-generation reads over rooms/subzones/zones
+7. `health.sql` - players table updates (depends on players from DDL)
+8. `items.sql` - item_prototypes, item_instances
+9. `lucidity.sql` - zones/subzones special_rules reads
+10. `npcs.sql` - npc_definitions, npc_spawn_rules, zone/subzone config reads
 11. `player_effects.sql` - player_effects
-12. `items.sql` - item_prototypes, item_instances
-13. `containers.sql` - containers, container_contents (extends existing functions)
-14. `rooms.sql` - rooms, room_links, subzones, zones
-15. `npcs.sql` - npc_definitions, npc_spawn_rules
+12. `players.sql` - users, players, player_inventories, invites
+13. `professions.sql` - professions
+14. `quests.sql` - quest_definitions, quest_offers, quest_instances
+15. `rooms.sql` - rooms, room_links, subzones, zones
+16. `skills.sql` - skills
+17. `spells.sql` - spells
 
 ## Schema Notes
 

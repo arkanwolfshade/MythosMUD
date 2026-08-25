@@ -493,3 +493,36 @@ BEGIN
         equipped_json = EXCLUDED.equipped_json;
 END;
 $$;
+
+-- get_user_id_by_username_ci: case-insensitive username -> user id lookup (#633). Backs both
+-- the registration existence check and the login lookup in server/auth/endpoints.py -- callers
+-- that need the mapped User ORM entity follow up with session.get(User, id) to keep identity-map
+-- tracking, rather than hydrating User from this row directly.
+CREATE OR REPLACE FUNCTION :schema_name.get_user_id_by_username_ci(p_username text) -- noqa: PRS
+RETURNS UUID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_id uuid;
+BEGIN
+    SELECT id INTO v_id FROM users WHERE lower(username) = lower(p_username);
+    RETURN v_id;
+END;
+$$;
+
+-- mark_invite_used: mark an invite inactive and record which user consumed it. Returns true if
+-- the invite row was found and updated.
+CREATE OR REPLACE FUNCTION :schema_name.mark_invite_used(p_invite_code text, p_used_by_user_id UUID) -- noqa: PRS
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_updated integer;
+BEGIN
+    UPDATE invites
+    SET is_active = false, used_by_user_id = p_used_by_user_id
+    WHERE invite_code = p_invite_code;
+    GET DIAGNOSTICS v_updated = ROW_COUNT;
+    RETURN v_updated > 0;
+END;
+$$;

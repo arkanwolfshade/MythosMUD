@@ -38,21 +38,6 @@ class _HolidayLoadResult(TypedDict):
     error: BaseException | None
 
 
-_CALENDAR_HOLIDAYS_QUERY = """
-    SELECT
-        stable_id,
-        name,
-        tradition,
-        month,
-        day,
-        duration_hours,
-        season,
-        bonus_tags
-    FROM calendar_holidays
-    ORDER BY month, day, name
-"""
-
-
 def _string_list_from_row(value: object) -> list[str]:
     """Normalize nullable PostgreSQL array columns to string values."""
     if value is None:
@@ -168,7 +153,10 @@ class HolidayService:
             # Use asyncpg directly to avoid event loop conflicts; match engine search_path
             conn = await asyncpg.connect(database_url, server_settings=server_settings)
             try:
-                rows = await conn.fetch(_CALENDAR_HOLIDAYS_QUERY)
+                rows = await conn.fetch(
+                    "SELECT stable_id, name, tradition, month, day, duration_hours, season, "
+                    + "bonus_tags FROM get_calendar_holidays()"
+                )
                 holidays = [_holiday_entry_from_row(row) for row in rows]
                 result_container["collection"] = HolidayCollection(holidays=holidays)
             finally:

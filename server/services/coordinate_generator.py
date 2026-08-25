@@ -15,8 +15,9 @@ import json
 from collections import deque
 from typing import Any
 
-from sqlalchemy import text
+from sqlalchemy import bindparam, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.selectable import Select
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -102,37 +103,36 @@ class CoordinateGenerator:
             "origin_room": None,  # Could return per-subzone origins if needed
         }
 
-    def _rooms_query_and_pattern(self, plane: str, zone: str, sub_zone: str | None) -> tuple[Any, dict[str, str]]:
+    def _rooms_query_and_pattern(
+        self, plane: str, zone: str, sub_zone: str | None
+    ) -> tuple[Select[Any], dict[str, str]]:
         zone_pattern = f"{plane}_{zone}"
         pattern = f"{zone_pattern}_{sub_zone}" if sub_zone else zone_pattern
-        query = text("""
-            SELECT
-                r.id,
-                r.stable_id,
-                r.name,
-                r.attributes,
-                r.map_x,
-                r.map_y,
-                r.map_origin_zone,
-                r.map_symbol,
-                r.map_style,
-                z.stable_id as zone_stable_id,
-                sz.stable_id as subzone_stable_id
-            FROM rooms r
-            JOIN subzones sz ON r.subzone_id = sz.id
-            JOIN zones z ON sz.zone_id = z.id
-            WHERE r.stable_id LIKE :pattern || '%'
-        """)
-        return query, {"pattern": pattern}
+        rooms = func.get_rooms_for_coordinate_generation(bindparam("pattern")).table_valued(
+            "id",
+            "stable_id",
+            "name",
+            "attributes",
+            "map_x",
+            "map_y",
+            "map_origin_zone",
+            "map_symbol",
+            "map_style",
+            "zone_stable_id",
+            "subzone_stable_id",
+        )
+        return select(rooms), {"pattern": pattern}
 
     def _room_dict_from_row(self, row: Any) -> dict[str, Any]:
         stable_id = row[1]
+        raw_attrs = row[3]
+        attrs = raw_attrs if isinstance(raw_attrs, dict) else {}
         room_dict = {
             "id": stable_id,
             "uuid": str(row[0]),
             "stable_id": stable_id,
             "name": row[2],
-            "attributes": row[3] if row[3] else {},
+            "attributes": attrs,
             "map_x": float(row[4]) if row[4] is not None else None,
             "map_y": float(row[5]) if row[5] is not None else None,
             "map_origin_zone": bool(row[6]) if row[6] is not None else False,
@@ -141,7 +141,6 @@ class CoordinateGenerator:
             "zone": row[9].split("_", 1)[1] if "_" in str(row[9]) else str(row[9]),
             "sub_zone": row[10] if row[10] else None,
         }
-        attrs = room_dict.get("attributes", {})
         room_dict["environment"] = attrs.get("environment") or "outdoors"
         return room_dict
 
@@ -149,14 +148,12 @@ class CoordinateGenerator:
         if not rooms:
             return
         room_uuids = [room["uuid"] for room in rooms]
-        exits_query = text("""
-            SELECT r1.stable_id as from_stable_id, r2.stable_id as to_stable_id, rl.direction
-            FROM room_links rl
-            JOIN rooms r1 ON rl.from_room_id = r1.id
-            JOIN rooms r2 ON rl.to_room_id = r2.id
-            WHERE rl.from_room_id = ANY(:room_uuids)
-        """)
-        exits_result = await self._session.execute(exits_query, {"room_uuids": room_uuids})
+        exits = func.get_room_exits_for_coordinate_generation(bindparam("room_uuids")).table_valued(
+            "from_stable_id",
+            "to_stable_id",
+            "direction",
+        )
+        exits_result = await self._session.execute(select(exits), {"room_uuids": room_uuids})
         exits_by_room: dict[str, dict[str, str]] = {}
         for row in exits_result:
             from_stable = row[0]
@@ -356,8 +353,7 @@ class CoordinateGenerator:
                 for stable_id, (x, y) in coordinates.items()
             ]
         )
-        update_query = text("SELECT update_room_map_positions(:positions)")
-
+        update_query = select(func.update_room_map_positions(bindparam("positions")))
         await self._session.execute(update_query, {"positions": positions})
 
         await self._session.commit()

@@ -13,7 +13,6 @@ territories that have been traversed.
 # pylint: disable=too-many-return-statements  # Reason: Exploration service methods require multiple return statements for early validation returns (permission checks, validation, error handling)
 
 import asyncio
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
@@ -122,7 +121,7 @@ class ExplorationService:
         try:
             # Use provided session or create a new one
             if session:
-                query = text("SELECT id FROM rooms WHERE stable_id = :stable_id")
+                query = text("SELECT get_room_id_by_stable_id(:stable_id)")
                 result = await session.execute(query, {"stable_id": stable_id})
                 room_uuid_result = result.scalar_one_or_none()
                 if room_uuid_result:
@@ -142,7 +141,7 @@ class ExplorationService:
             # Create a new session
             async_session_maker = self._database_manager.get_session_maker()
             async with async_session_maker() as new_session:
-                query = text("SELECT id FROM rooms WHERE stable_id = :stable_id")
+                query = text("SELECT get_room_id_by_stable_id(:stable_id)")
                 result = await new_session.execute(query, {"stable_id": stable_id})
                 room_uuid_result = result.scalar_one_or_none()
                 if room_uuid_result:
@@ -182,6 +181,9 @@ class ExplorationService:
         """
         Mark room as explored using the provided session.
 
+        Backed by db/procedures/exploration.sql's mark_room_explored() (#633), which folds the
+        prior check-then-insert into one idempotent round trip -- see that procedure's comment.
+
         Args:
             session: Database session
             player_id: UUID of the player
@@ -191,39 +193,17 @@ class ExplorationService:
             True if successful, False otherwise
         """
         try:
-            # Check if exploration record already exists
-            check_query = text(
-                """
-                SELECT id FROM player_exploration
-                WHERE player_id = :player_id AND room_id = :room_id
-                """
+            result = await session.execute(
+                text("SELECT mark_room_explored(:player_id, :room_id)"),
+                {"player_id": str(player_id), "room_id": str(room_uuid)},
             )
-            result = await session.execute(check_query, {"player_id": str(player_id), "room_id": str(room_uuid)})
-            existing = result.scalar_one_or_none()
+            was_new = bool(result.scalar_one())
 
-            if existing:
-                # Room already marked as explored
+            if was_new:
+                logger.info("Room marked as explored", player_id=player_id, room_id=room_uuid)
+            else:
                 logger.debug("Room already marked as explored", player_id=player_id, room_id=room_uuid)
-                return True
 
-            # Insert new exploration record
-            insert_query = text(
-                """
-                INSERT INTO player_exploration (player_id, room_id, explored_at)
-                VALUES (:player_id, :room_id, :explored_at)
-                ON CONFLICT (player_id, room_id) DO NOTHING
-                """
-            )
-            await session.execute(
-                insert_query,
-                {
-                    "player_id": str(player_id),
-                    "room_id": str(room_uuid),
-                    "explored_at": datetime.now(UTC),
-                },
-            )
-
-            logger.info("Room marked as explored", player_id=player_id, room_id=room_uuid)
             return True
 
         except SQLAlchemyError as e:
@@ -250,19 +230,9 @@ class ExplorationService:
             DatabaseError: If database operation fails
         """
         try:
-            query = text(
-                """
-                SELECT room_id FROM player_exploration
-                WHERE player_id = :player_id
-                ORDER BY explored_at ASC
-                """
-            )
+            query = text("SELECT room_id FROM get_explored_rooms(:player_id)")
             result = await session.execute(query, {"player_id": str(player_id)})
-            # fetchall() is synchronous, but handle both sync and async mocks in tests
             rows = result.fetchall()
-            # Handle case where fetchall might return a coroutine (async mock in tests)
-            if hasattr(rows, "__await__"):
-                rows = await rows
             room_ids = [str(row[0]) for row in rows]
 
             logger.debug("Retrieved explored rooms", player_id=player_id, count=len(room_ids))
@@ -307,14 +277,7 @@ class ExplorationService:
             if not room_uuid:
                 return False
 
-            query = text(
-                """
-                SELECT EXISTS(
-                    SELECT 1 FROM player_exploration
-                    WHERE player_id = :player_id AND room_id = :room_id
-                )
-                """
-            )
+            query = text("SELECT is_room_explored(:player_id, :room_id)")
             result = await session.execute(query, {"player_id": str(player_id), "room_id": str(room_uuid)})
             exists = result.scalar_one()
 

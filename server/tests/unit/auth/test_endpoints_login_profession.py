@@ -32,8 +32,10 @@ async def test_login_user_profession_lookup_success(mock_request: MagicMock, moc
     from sqlalchemy.engine import Result
 
     result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=user)
+    result_mock.scalar_one_or_none = MagicMock(return_value=user.id)
     mock_session.execute = AsyncMock(return_value=result_mock)
+    # _find_user_by_username (#633) resolves the id via SQL, then fetches the mapped entity.
+    mock_session.get = AsyncMock(return_value=user)
 
     mock_user_manager = MagicMock()
     mock_user_manager.authenticate = AsyncMock(return_value=user)
@@ -95,8 +97,10 @@ async def test_login_user_profession_lookup_error(mock_request: MagicMock, mock_
     from sqlalchemy.engine import Result
 
     result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=user)
+    result_mock.scalar_one_or_none = MagicMock(return_value=user.id)
     mock_session.execute = AsyncMock(return_value=result_mock)
+    # _find_user_by_username (#633) resolves the id via SQL, then fetches the mapped entity.
+    mock_session.get = AsyncMock(return_value=user)
 
     mock_user_manager = MagicMock()
     mock_user_manager.authenticate = AsyncMock(return_value=user)
@@ -159,8 +163,10 @@ async def test_login_user_profession_lookup_none(mock_request: MagicMock, mock_s
     from sqlalchemy.engine import Result
 
     result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=user)
+    result_mock.scalar_one_or_none = MagicMock(return_value=user.id)
     mock_session.execute = AsyncMock(return_value=result_mock)
+    # _find_user_by_username (#633) resolves the id via SQL, then fetches the mapped entity.
+    mock_session.get = AsyncMock(return_value=user)
 
     mock_user_manager = MagicMock()
     mock_user_manager.authenticate = AsyncMock(return_value=user)
@@ -219,8 +225,10 @@ async def test_login_user_player_no_profession_id(mock_request: MagicMock, mock_
     from sqlalchemy.engine import Result
 
     result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=user)
+    result_mock.scalar_one_or_none = MagicMock(return_value=user.id)
     mock_session.execute = AsyncMock(return_value=result_mock)
+    # _find_user_by_username (#633) resolves the id via SQL, then fetches the mapped entity.
+    mock_session.get = AsyncMock(return_value=user)
 
     mock_user_manager = MagicMock()
     mock_user_manager.authenticate = AsyncMock(return_value=user)

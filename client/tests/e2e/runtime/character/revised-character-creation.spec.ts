@@ -286,16 +286,8 @@ async function readSkillsMessageText(page: Page): Promise<string> {
 
 test.describe('Revised Character Creation', () => {
   test.describe.configure({ timeout: 180_000 });
-  test.beforeAll(async ({ browser }) => {
-    const page = await browser.newPage();
-    try {
-      await cleanupE2ECharacters(page);
-    } finally {
-      await page.close();
-    }
-  });
 
-  test.afterAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     try {
       await cleanupE2ECharacters(page);
@@ -307,6 +299,15 @@ test.describe('Revised Character Creation', () => {
   test.beforeEach(async ({ page }) => {
     // Each creation test needs a free slot; leftover E2ER_/E4Sk_ from prior tests hit the 3-char cap.
     await cleanupE2ECharacters(page);
+  });
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await cleanupE2ECharacters(page);
+    } finally {
+      await page.close();
+    }
   });
 
   test('should reject spaced character names on the name screen', async ({ page }) => {
@@ -329,9 +330,10 @@ test.describe('Revised Character Creation', () => {
     await submitCharacterName(page, creationCharName);
     await assertCharacterVisibleOnList(page, creationCharName);
     await enterGameWithCharacter(page, creationCharName);
-    const { executeCommand, waitForMessage } = await import('../fixtures/auth');
+    const { executeCommand, waitForMessage, getMessages } = await import('../fixtures/auth');
     await executeCommand(page, 'go down');
-    await waitForMessage(page, /./, TEST_TIMEOUTS.MESSAGE);
+    await waitForMessage(page, /You go down|You move down|You head down|down/i, TEST_TIMEOUTS.MESSAGE);
+    expect((await getMessages(page)).join('\n')).toMatch(/down/i);
   });
 
   test('should complete stats → profession → skills → name → create and show character', async ({ page }) => {
