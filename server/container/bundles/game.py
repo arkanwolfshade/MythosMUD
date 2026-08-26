@@ -1,8 +1,10 @@
 """
 Game bundle: player, room, movement, exploration, user_manager, container_service,
-caches, temporal services, item services.
+caches, item services.
 
-Depends on CoreBundle and RealtimeBundle (for nats_message_handler.user_manager).
+Depends on CoreBundle and RealtimeBundle (for nats_message_handler.user_manager). Temporal
+services (holiday_service, schedule_service, mythos_tick_scheduler) live in TimeBundle (#635) --
+the documented Temporal bounded context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md).
 """
 
 # pyright: reportImportCycles=false
@@ -12,7 +14,6 @@ Depends on CoreBundle and RealtimeBundle (for nats_message_handler.user_manager)
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
@@ -20,7 +21,6 @@ from pydantic import ValidationError
 from server.container.utils import decode_json_column
 from server.structured_logging.enhanced_logging_config import get_logger
 from server.utils.project_paths import (
-    get_calendar_paths_for_environment,
     get_environment_data_dir,
     normalize_environment,
 )
@@ -45,9 +45,6 @@ GAME_ATTRS = (
     "skill_service",
     "room_cache_service",
     "profession_cache_service",
-    "holiday_service",
-    "schedule_service",
-    "mythos_tick_scheduler",
     "item_prototype_registry",
     "item_factory",
     "quest_definition_repository",
@@ -59,7 +56,7 @@ GAME_ATTRS = (
 
 
 class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
-    """Game services: movement, player, room, user, container, caches, temporal, items."""
+    """Game services: movement, player, room, user, container, caches, items."""
 
     instance_manager: Any = None
     movement_service: Any = None
@@ -75,9 +72,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
     skill_service: Any = None
     room_cache_service: Any = None
     profession_cache_service: Any = None
-    holiday_service: Any = None
-    schedule_service: Any = None
-    mythos_tick_scheduler: Any = None
     item_prototype_registry: Any = None
     item_factory: Any = None
     quest_definition_repository: Any = None
@@ -96,17 +90,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
             or container.database_manager is None
         ):
             raise RuntimeError("Core services must be initialized before GameBundle")
-
-    def _resolve_hourly_holidays(self, mythos_dt: datetime) -> list[str]:
-        """Resolve active holiday names for tick scheduler; return empty list on error or no service."""
-        if not self.holiday_service:
-            return []
-        try:
-            active = self.holiday_service.refresh_active(mythos_dt)
-            return [entry.name for entry in active]
-        except (ValueError, TypeError, AttributeError, RuntimeError) as exc:
-            logger.warning("Failed to resolve holiday window for tick scheduler", error=str(exc))
-            return []
 
     def _wire_user_manager_after_init(
         self,
@@ -191,40 +174,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         )
         logger.info("Exploration, movement, follow and party services initialized")
 
-    def _init_temporal_layer(self, container: ApplicationContainer, normalized_environment: str) -> None:
-        """Wire holiday/schedule services and Mythos tick scheduler."""
-        async_persistence = container.async_persistence
-        from server.services.holiday_service import HolidayService
-        from server.services.schedule_service import ScheduleService
-        from server.time.time_service import get_mythos_chronicle
-
-        holidays_path, schedules_dir = get_calendar_paths_for_environment(normalized_environment)
-        self.holiday_service = HolidayService(
-            chronicle=get_mythos_chronicle(),
-            data_path=holidays_path,
-            environment=normalized_environment,
-            async_persistence=async_persistence,
-        )
-        self.schedule_service = ScheduleService(
-            schedule_dir=schedules_dir,
-            environment=normalized_environment,
-            async_persistence=async_persistence,
-        )
-        logger.info(
-            "Temporal schedule and holiday services initialized",
-            holiday_count=len(self.holiday_service.collection.holidays),
-            schedule_entries=self.schedule_service.entry_count if self.schedule_service else 0,
-        )
-        from server.time.tick_scheduler import MythosTickScheduler
-
-        self.mythos_tick_scheduler = MythosTickScheduler(
-            chronicle=get_mythos_chronicle(),
-            event_bus=container.event_bus,
-            task_registry=container.task_registry,
-            holiday_resolver=self._resolve_hourly_holidays,
-        )
-        logger.info("Mythos tick scheduler prepared")
-
     def _init_quest_service(self, container: ApplicationContainer) -> None:
         from server.game.quest import QuestService
         from server.persistence.repositories.quest_definition_repository import QuestDefinitionRepository
@@ -303,8 +252,6 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         normalized_environment = normalize_environment(container.config.logging.environment)
         logger.debug("Initializing gameplay services...")
         self._init_movement_layer(container)
-        logger.debug("Initializing temporal services...")
-        self._init_temporal_layer(container, normalized_environment)
         logger.debug("Initializing game services...")
         self._init_player_quest_layer(container, normalized_environment)
         logger.info("Game services initialized")
