@@ -32,6 +32,12 @@ class AsyncPersistenceRoomLookup(Protocol):  # pylint: disable=too-few-public-me
     def get_room_by_id(self, room_id: str) -> object | None: ...  # pylint: disable=missing-function-docstring
 
 
+class PlayerMuteCleanup(Protocol):  # pylint: disable=too-few-public-methods
+    """Narrow UserManager surface for clearing a disconnected player's mute state."""
+
+    def cleanup_player_mutes(self, player_id: str) -> bool: ...  # pylint: disable=missing-function-docstring
+
+
 async def cleanup_websocket_connection(
     player_id: uuid.UUID, player_id_str: str, connection_manager: "ConnectionManager"
 ) -> None:
@@ -57,11 +63,15 @@ async def cleanup_websocket_connection(
         logger.error("Error disconnecting WebSocket", player_id=player_id, error=str(e))
 
     try:
-        from ..services.user_manager import user_manager
+        from ..container import get_container
 
-        _: bool = user_manager.cleanup_player_mutes(player_id_str)
-        logger.info("Cleaned up mute data", player_id=player_id)
-    except (WebSocketDisconnect, RuntimeError) as e:
+        um_container_raw = get_container()
+        um_container: object | None = cast(object | None, um_container_raw)
+        um = cast(object | None, getattr(um_container, "user_manager", None)) if um_container is not None else None
+        if um is not None:
+            _: bool = cast(PlayerMuteCleanup, um).cleanup_player_mutes(player_id_str)
+            logger.info("Cleaned up mute data", player_id=player_id)
+    except (WebSocketDisconnect, RuntimeError, TypeError) as e:
         logger.error("Error cleaning up mute data", player_id=player_id, error=str(e))
 
 

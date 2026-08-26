@@ -23,7 +23,6 @@ from ..exceptions import LoggedHTTPException
 from ..game.movement_monitor import get_movement_monitor
 from ..models.health import HealthErrorResponse, HealthResponse, HealthStatus
 from ..realtime.connection_manager import resolve_connection_manager
-from ..services.health_service import get_health_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .monitoring_models import (
     AlertsResponse,
@@ -179,7 +178,7 @@ async def get_memory_stats(_request: Request) -> MemoryStatsResponse:
 
         # Add memory leak metrics from unified collector
         try:
-            collector = _resolve_memory_leak_collector()
+            collector = _resolve_memory_leak_collector_from_request(_request)
             leak_metrics = collector.collect_all_metrics()
             # Add memory leak metrics to response
             memory_stats["memory_leak_metrics"] = {
@@ -246,7 +245,7 @@ async def get_dual_connection_stats(request: Request) -> DualConnectionStatsResp
 
         # Add memory leak metrics (Task 6: Memory Leak Monitoring)
         try:
-            collector = _resolve_memory_leak_collector()
+            collector = _resolve_memory_leak_collector_from_request(request)
             leak_metrics = collector.collect_all_metrics()
             dual_connection_stats["memory_leak_metrics"] = {
                 "connection": leak_metrics.get("connection", {}),
@@ -290,7 +289,7 @@ async def get_connection_health_stats(request: Request) -> ConnectionHealthStats
 
         # Add memory leak metrics (Task 6: Memory Leak Monitoring)
         try:
-            collector = _resolve_memory_leak_collector()
+            collector = _resolve_memory_leak_collector_from_request(request)
             leak_metrics = collector.collect_all_metrics()
             health_stats["memory_leak_metrics"] = {
                 "connection": leak_metrics.get("connection", {}),
@@ -486,30 +485,25 @@ async def get_task_metrics(_request: Request) -> TaskMetricsResponse:
         ) from e
 
 
-# Module-level singleton instance for MemoryLeakMetricsCollector
-_memory_leak_collector_instance: Any = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
-
-
-def _resolve_memory_leak_collector() -> Any:
+def _resolve_memory_leak_collector_from_request(request: Request) -> Any:
     """
-    Get or create MemoryLeakMetricsCollector instance.
+    Resolve the container-owned MemoryLeakMetricsCollector (#679: no module-level singleton).
 
     Returns:
         MemoryLeakMetricsCollector instance
     """
-    global _memory_leak_collector_instance  # pylint: disable=global-statement  # Reason: Module-level singleton pattern requires global
-    from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
-
-    if _memory_leak_collector_instance is None:
-        _memory_leak_collector_instance = MemoryLeakMetricsCollector()
-    return _memory_leak_collector_instance
+    container = getattr(request.app.state, "container", None)
+    collector = getattr(container, "memory_leak_collector", None) if container else None
+    if collector is None:
+        raise RuntimeError("Memory leak collector is not configured")
+    return collector
 
 
 @monitoring_router.get("/memory-leaks", response_model=MemoryLeakMetricsResponse)
-async def get_memory_leak_metrics(_request: Request) -> MemoryLeakMetricsResponse:
+async def get_memory_leak_metrics(request: Request) -> MemoryLeakMetricsResponse:
     """Get comprehensive memory leak metrics from all sources."""
     try:
-        collector = _resolve_memory_leak_collector()
+        collector = _resolve_memory_leak_collector_from_request(request)
         metrics = collector.collect_all_metrics()
         growth_rates = collector.calculate_growth_rates()
         alerts = collector.check_alerts(metrics)
@@ -572,7 +566,11 @@ async def get_health_status(request: Request) -> HealthResponse | JSONResponse:
     """Return aggregated health status for monitoring."""
     try:
         connection_manager = _resolve_connection_manager_from_request(request)
-        health_service = get_health_service(connection_manager=connection_manager)
+        container = getattr(request.app.state, "container", None)
+        health_service = getattr(container, "health_service", None) if container else None
+        if health_service is None:
+            raise RuntimeError("Health service is not configured")
+        health_service.connection_manager = connection_manager
         try:
             health_response = await _assemble_health_response(health_service)
             if health_response.status in (HealthStatus.HEALTHY, HealthStatus.DEGRADED):

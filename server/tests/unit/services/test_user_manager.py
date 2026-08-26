@@ -8,7 +8,7 @@ import json
 import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -377,90 +377,56 @@ def test_is_cache_valid_false_not_cached(user_manager):
 
 
 @pytest.mark.asyncio
-async def test_add_admin_no_container(user_manager):
-    """Test add_admin() handles missing container."""
-    with patch("server.container.ApplicationContainer.get_instance", return_value=None):
-        result = await user_manager.add_admin(uuid.uuid4(), "TestPlayer")
-        assert result is False
-
-
-@pytest.mark.asyncio
 async def test_add_admin_no_persistence(user_manager):
-    """Test add_admin() handles missing persistence."""
-    mock_container = MagicMock()
-    mock_container.async_persistence = None
-    with patch("server.container.ApplicationContainer.get_instance", return_value=mock_container):
-        result = await user_manager.add_admin(uuid.uuid4(), "TestPlayer")
-        assert result is False
+    """Test add_admin() handles missing persistence (#679: injected, not via container)."""
+    user_manager._async_persistence = None
+    result = await user_manager.add_admin(uuid.uuid4(), "TestPlayer")
+    assert result is False
 
 
 @pytest.mark.asyncio
 async def test_add_admin_player_not_found(user_manager):
     """Test add_admin() handles player not found."""
-    mock_container = MagicMock()
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    mock_container.async_persistence = mock_persistence
-    with patch("server.container.ApplicationContainer.get_instance", return_value=mock_container):
-        player_id = uuid.uuid4()
-        result = await user_manager.add_admin(player_id, "TestPlayer")
-        # The function logs an info message and continues even when player is None
-        # It adds to cache and returns True
-        assert result is True
-        assert player_id in user_manager._admin_players
-
-
-@pytest.mark.asyncio
-async def test_remove_admin_no_container(user_manager):
-    """Test remove_admin() handles missing container."""
-    with patch("server.container.ApplicationContainer.get_instance", return_value=None):
-        result = await user_manager.remove_admin(uuid.uuid4(), "TestPlayer")
-        assert result is False
+    user_manager._async_persistence = mock_persistence  # #679: injected, not via container
+    player_id = uuid.uuid4()
+    result = await user_manager.add_admin(player_id, "TestPlayer")
+    # The function logs an info message and continues even when player is None
+    # It adds to cache and returns True
+    assert result is True
+    assert player_id in user_manager._admin_players
 
 
 @pytest.mark.asyncio
 async def test_remove_admin_no_persistence(user_manager):
-    """Test remove_admin() handles missing persistence."""
-    mock_container = MagicMock()
-    mock_container.async_persistence = None
-    with patch("server.container.ApplicationContainer.get_instance", return_value=mock_container):
-        result = await user_manager.remove_admin(uuid.uuid4(), "TestPlayer")
-        assert result is False
+    """Test remove_admin() handles missing persistence (#679: injected, not via container)."""
+    user_manager._async_persistence = None
+    result = await user_manager.remove_admin(uuid.uuid4(), "TestPlayer")
+    assert result is False
 
 
 @pytest.mark.asyncio
 async def test_remove_admin_player_not_found(user_manager):
     """Test remove_admin() handles player not found."""
-    mock_container = MagicMock()
     mock_persistence = AsyncMock()
     mock_persistence.get_player_by_id = AsyncMock(return_value=None)
-    mock_container.async_persistence = mock_persistence
-    with patch("server.container.ApplicationContainer.get_instance", return_value=mock_container):
-        player_id = uuid.uuid4()
-        user_manager._admin_players.add(player_id)  # Add to cache first
-        result = await user_manager.remove_admin(player_id, "TestPlayer")
-        # The function logs an info message and continues even when player is None
-        # It removes from cache and returns True
-        assert result is True
-        assert player_id not in user_manager._admin_players
-
-
-@pytest.mark.asyncio
-async def test_is_admin_no_container(user_manager):
-    """Test is_admin() returns False when container not available."""
-    with patch("server.container.ApplicationContainer.get_instance", return_value=None):
-        result = await user_manager.is_admin(uuid.uuid4())
-        assert result is False
+    user_manager._async_persistence = mock_persistence  # #679: injected, not via container
+    player_id = uuid.uuid4()
+    user_manager._admin_players.add(player_id)  # Add to cache first
+    result = await user_manager.remove_admin(player_id, "TestPlayer")
+    # The function logs an info message and continues even when player is None
+    # It removes from cache and returns True
+    assert result is True
+    assert player_id not in user_manager._admin_players
 
 
 @pytest.mark.asyncio
 async def test_is_admin_no_persistence(user_manager):
-    """Test is_admin() returns False when persistence not available."""
-    mock_container = MagicMock()
-    mock_container.async_persistence = None
-    with patch("server.container.ApplicationContainer.get_instance", return_value=mock_container):
-        result = await user_manager.is_admin(uuid.uuid4())
-        assert result is False
+    """Test is_admin() returns False when persistence not available (#679: injected)."""
+    user_manager._async_persistence = None
+    result = await user_manager.is_admin(uuid.uuid4())
+    assert result is False
 
 
 def test_load_player_mutes_file_not_exists(user_manager):
@@ -603,24 +569,22 @@ async def test_add_admin_success(user_manager):
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.set_admin_status = MagicMock()
-    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence = AsyncMock()
-        mock_instance.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-        mock_instance.async_persistence.save_player = AsyncMock()
-        mock_get_instance.return_value = mock_instance
-        result = await user_manager.add_admin(player_id, "TestPlayer")
-        assert result is True
-        assert player_id in user_manager._admin_players
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.save_player = AsyncMock()
+    user_manager._async_persistence = mock_persistence  # #679: injected, not via container
+    result = await user_manager.add_admin(player_id, "TestPlayer")
+    assert result is True
+    assert player_id in user_manager._admin_players
 
 
 @pytest.mark.asyncio
 async def test_add_admin_no_container_duplicate(user_manager):
-    """Test add_admin() when container is not available."""
+    """Test add_admin() when persistence is not available (#679: injected, not via container)."""
     player_id = uuid.uuid4()
-    with patch("server.container.ApplicationContainer.get_instance", return_value=None):
-        result = await user_manager.add_admin(player_id, "TestPlayer")
-        assert result is False
+    user_manager._async_persistence = None
+    result = await user_manager.add_admin(player_id, "TestPlayer")
+    assert result is False
 
 
 @pytest.mark.asyncio
@@ -630,15 +594,13 @@ async def test_remove_admin_success(user_manager):
     user_manager._admin_players.add(player_id)
     mock_player = MagicMock()
     mock_player.set_admin_status = MagicMock()
-    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence = AsyncMock()
-        mock_instance.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-        mock_instance.async_persistence.save_player = AsyncMock()
-        mock_get_instance.return_value = mock_instance
-        result = await user_manager.remove_admin(player_id, "TestPlayer")
-        assert result is True
-        assert player_id not in user_manager._admin_players
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    mock_persistence.save_player = AsyncMock()
+    user_manager._async_persistence = mock_persistence  # #679: injected, not via container
+    result = await user_manager.remove_admin(player_id, "TestPlayer")
+    assert result is True
+    assert player_id not in user_manager._admin_players
 
 
 @pytest.mark.asyncio
@@ -656,11 +618,9 @@ async def test_is_admin_not_cached(user_manager):
     player_id = uuid.uuid4()
     mock_player = MagicMock()
     mock_player.is_admin_user = MagicMock(return_value=True)
-    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence = AsyncMock()
-        mock_instance.async_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
-        mock_get_instance.return_value = mock_instance
-        result = await user_manager.is_admin(player_id)
-        assert result is True
-        assert player_id in user_manager._admin_players
+    mock_persistence = AsyncMock()
+    mock_persistence.get_player_by_id = AsyncMock(return_value=mock_player)
+    user_manager._async_persistence = mock_persistence  # #679: injected, not via container
+    result = await user_manager.is_admin(player_id)
+    assert result is True
+    assert player_id in user_manager._admin_players

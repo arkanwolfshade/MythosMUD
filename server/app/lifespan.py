@@ -48,8 +48,8 @@ logger = get_logger("server.lifespan")
 # Re-export tick functions for backward compatibility
 __all__ = ["lifespan", "get_current_tick", "reset_current_tick"]
 
-# Global metrics collector instance
-_metrics_collector: MemoryLeakMetricsCollector | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
+# Startup metrics snapshot, used to compute the shutdown delta (#679: the collector itself is
+# container-owned, not a module-level singleton -- this is just a before/after data snapshot).
 _startup_metrics: dict[str, Any] | None = None  # pylint: disable=invalid-name  # Reason: Module-level singleton pattern uses underscore prefix to indicate private module variable, not a constant
 
 
@@ -231,15 +231,14 @@ async def _startup_application(app: FastAPI) -> ApplicationContainer:
     container.tick_task = tick_task
     app.state.tick_task = tick_task  # Backward compatibility
 
-    # Initialize memory leak metrics collector and start periodic logging
-    global _metrics_collector, _startup_metrics  # pylint: disable=global-statement  # Reason: Global collector instance for lifespan lifecycle tracking
-    _metrics_collector = MemoryLeakMetricsCollector()
-    _startup_metrics = _metrics_collector.collect_all_metrics()
+    # Snapshot startup memory metrics for the shutdown delta; collector itself is container-owned
+    global _startup_metrics  # pylint: disable=global-statement  # Reason: Global snapshot for lifespan lifecycle tracking
+    _startup_metrics = container.memory_leak_collector.collect_all_metrics()
     logger.info("Memory leak metrics collector initialized", startup_metrics=_startup_metrics)
 
     # Start periodic metrics logging task (5 minute interval)
     container.task_registry.register_task(
-        _log_memory_metrics_periodically(_metrics_collector, interval_seconds=300),
+        _log_memory_metrics_periodically(container.memory_leak_collector, interval_seconds=300),
         "lifecycle/memory_metrics_logging",
         "lifecycle",
     )
@@ -270,9 +269,9 @@ async def _shutdown_with_error_handling(app: FastAPI, container: ApplicationCont
 
     try:
         # Log final memory metrics and calculate delta
-        if _metrics_collector is not None:
-            shutdown_metrics = _metrics_collector.collect_all_metrics()
-            alerts = _metrics_collector.check_alerts(shutdown_metrics)
+        if container.memory_leak_collector is not None:
+            shutdown_metrics = container.memory_leak_collector.collect_all_metrics()
+            alerts = container.memory_leak_collector.check_alerts(shutdown_metrics)
 
             # Calculate metrics delta over application lifetime
             metrics_delta = _calculate_metrics_delta(shutdown_metrics, _startup_metrics)

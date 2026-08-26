@@ -198,11 +198,16 @@ def test_resolve_and_setup_app_state_services_user_manager_no_hasattr():
 
 @pytest.mark.asyncio
 async def test_cleanup_connection_mute_cleanup_error(mock_ws_connection_manager):
-    """Test _cleanup_connection handles error during mute cleanup."""
+    """Test _cleanup_connection handles error during mute cleanup.
+
+    #679: UserManager is resolved from the container instead of a module-level global.
+    """
     player_id = uuid.uuid4()
     mock_ws_connection_manager.disconnect_websocket = AsyncMock()
-    with patch("server.services.user_manager.user_manager") as mock_user_manager:
-        mock_user_manager.cleanup_player_mutes = MagicMock(side_effect=RuntimeError("Cleanup error"))
+    mock_user_manager = MagicMock()
+    mock_user_manager.cleanup_player_mutes = MagicMock(side_effect=RuntimeError("Cleanup error"))
+    mock_container = MagicMock(user_manager=mock_user_manager)
+    with patch("server.container.get_container", return_value=mock_container):
         await _cleanup_connection(player_id, str(player_id), mock_ws_connection_manager)
 
 

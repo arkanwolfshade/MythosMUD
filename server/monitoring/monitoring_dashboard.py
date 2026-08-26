@@ -75,12 +75,19 @@ class MonitoringDashboard:
     data including performance metrics, exception tracking, and log aggregation.
     """
 
-    def __init__(self) -> None:
-        """Initialize the monitoring dashboard."""
+    def __init__(self, memory_leak_collector: MemoryLeakMetricsCollector | None = None) -> None:
+        """Initialize the monitoring dashboard.
+
+        Args:
+            memory_leak_collector: Optional pre-built collector (#679: MonitoringBundle passes its
+                own container-owned instance so the dashboard doesn't construct a second one).
+                Falls back to constructing its own for the module-level get_monitoring_dashboard()
+                singleton, which is unaffected by this change.
+        """
         self.performance_monitor = get_performance_monitor()
         self.exception_tracker = get_exception_tracker()
         self.log_aggregator = get_log_aggregator()
-        self.memory_leak_collector = MemoryLeakMetricsCollector()
+        self.memory_leak_collector = memory_leak_collector or MemoryLeakMetricsCollector()
 
         # Alert system
         self.alerts: list[Alert] = []

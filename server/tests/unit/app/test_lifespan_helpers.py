@@ -166,13 +166,13 @@ async def test_shutdown_with_error_handling() -> None:
     from server.app.lifespan import _shutdown_with_error_handling
 
     mock_app = MagicMock()
-    mock_container = MagicMock()
     mock_collector = MagicMock()
     mock_collector.collect_all_metrics.return_value = {"connection": {"active_websockets_count": 0}}
     mock_collector.check_alerts.return_value = []
+    # #679: collector is container-owned, not a module-level global
+    mock_container = MagicMock(memory_leak_collector=mock_collector)
 
     with (
-        patch("server.app.lifespan._metrics_collector", mock_collector),
         patch("server.app.lifespan._startup_metrics", {"connection": {"active_websockets_count": 0}}),
         patch("server.app.lifespan._persist_metrics_to_file"),
         patch("server.app.lifespan.shutdown_services", new=AsyncMock()),

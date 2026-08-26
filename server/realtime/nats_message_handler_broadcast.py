@@ -287,13 +287,18 @@ class NATSMessageBroadcastMixin(  # pylint: disable=too-few-public-methods  # Re
             )
 
     def _get_user_manager(self) -> UserManager:
-        """Return the user manager instance to use for mute lookups."""
+        """Return the user manager instance to use for mute lookups.
+
+        #679: no module-level global to fall back to; production always supplies one via
+        GameBundle's post-init wiring. A fresh instance here is a back-compat/test convenience
+        for the unsupplied case, not a shared singleton.
+        """
         if self.user_manager is not None:
             return self.user_manager
 
-        from ..services.user_manager import user_manager as global_user_manager
+        from ..services.user_manager import UserManager as _UserManagerClass
 
-        return global_user_manager
+        return _UserManagerClass()
 
     def _format_message_for_receiver(self, channel: str, sender_name: str, content: str) -> str:
         """

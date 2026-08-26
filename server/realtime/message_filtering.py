@@ -33,20 +33,25 @@ class MessageFilteringHelper:
 
         Args:
             connection_manager: ConnectionManager instance
-            user_manager: Optional UserManager instance (defaults to global singleton)
+            user_manager: Optional UserManager instance (defaults to a fresh UserManager)
         """
         self.connection_manager = connection_manager
         self.user_manager = user_manager
 
     def _get_user_manager(self) -> "UserManager":
-        """Return the user manager instance to use for mute lookups."""
+        """Return the user manager instance to use for mute lookups.
+
+        #679: no module-level global to fall back to; production always supplies one via
+        NATSMessageHandler -> GameBundle's post-init wiring. A fresh instance here is a
+        back-compat/test convenience for the unsupplied case, not a shared singleton.
+        """
         if self.user_manager is not None:
             result: UserManager = cast("UserManager", self.user_manager)
             return result
 
-        from ..services.user_manager import user_manager as global_user_manager
+        from ..services.user_manager import UserManager as _UserManagerClass
 
-        return global_user_manager
+        return _UserManagerClass()
 
     def collect_room_targets(self, room_id: str) -> set[str]:
         """

@@ -4,7 +4,7 @@ Unit tests for event publisher helper functions.
 Tests the helper functions in event_publisher.py.
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -53,10 +53,9 @@ def test_reset_sequence_number(event_publisher):
 
 
 def test_get_async_persistence(event_publisher):
-    """Test _get_async_persistence() gets persistence from container."""
-    with patch("server.container.ApplicationContainer.get_instance") as mock_get_instance:
-        mock_container = MagicMock()
-        mock_container.async_persistence = MagicMock()
-        mock_get_instance.return_value = mock_container
-        result = event_publisher._get_async_persistence()
-        assert result == mock_container.async_persistence
+    """Test _get_async_persistence() returns the injected persistence layer (#679: injected at
+    construction by RealtimeBundle, not reached via ApplicationContainer.get_instance())."""
+    mock_persistence = MagicMock()
+    event_publisher._async_persistence = mock_persistence
+    result = event_publisher._get_async_persistence()
+    assert result == mock_persistence

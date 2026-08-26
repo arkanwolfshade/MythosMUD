@@ -5,6 +5,11 @@ caches, temporal services, item services.
 Depends on CoreBundle and RealtimeBundle (for nats_message_handler.user_manager).
 """
 
+# pyright: reportImportCycles=false
+# Reason: container/main.py imports this module (function-scoped) to construct GameBundle;
+# this file only imports ApplicationContainer under TYPE_CHECKING for parameter annotations.
+# Same precedent as server/models/player.py and server/services/combat_service.py.
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -115,6 +120,13 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         if nats_message_handler is not None:
             nats_message_handler.user_manager = user_manager
             nats_message_handler.party_service = self.party_service
+            # #679: NATSMessageHandler.__init__ builds its own MessageFilteringHelper before
+            # user_manager is available (RealtimeBundle runs before GameBundle); without this,
+            # the helper never learns about the real UserManager and always falls back to a
+            # fresh default instance instead of the shared, container-owned one.
+            filtering_helper = getattr(nats_message_handler, "_filtering_helper", None)
+            if filtering_helper is not None:
+                filtering_helper.user_manager = user_manager
 
     def _wire_item_registry_to_player_service(self) -> None:
         """Set item prototype registry on player service when both are available."""
@@ -241,7 +253,7 @@ class GameBundle:  # pylint: disable=too-many-instance-attributes,too-few-public
         self.player_service = PlayerService(persistence=persistence, instance_manager=self.instance_manager)
         self.room_service = RoomService(persistence=persistence)
         user_management_dir = get_environment_data_dir(normalized_environment) / "user_management"
-        self.user_manager = UserManager(data_dir=user_management_dir)
+        self.user_manager = UserManager(data_dir=user_management_dir, async_persistence=async_persistence)
         self._wire_user_manager_after_init(self.follow_service, container.nats_message_handler, self.user_manager)
         from server.services.container_service import ContainerService
 

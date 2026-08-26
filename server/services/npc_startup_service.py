@@ -74,8 +74,16 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
     proper population validation and lifecycle tracking.
     """
 
-    def __init__(self) -> None:
-        """Initialize the NPC startup service."""
+    _async_persistence: Any | None
+
+    def __init__(self, async_persistence: Any | None = None) -> None:
+        """Initialize the NPC startup service.
+
+        Args:
+            async_persistence: Optional async persistence layer for room-cache/lookup access (#679:
+                injected by NPCBundle instead of reached via ApplicationContainer.get_instance())
+        """
+        self._async_persistence = async_persistence
         logger.info("NPCStartupService initialized")
 
     async def spawn_npcs_on_startup(self) -> dict[str, Any]:
@@ -201,10 +209,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
     def _handle_required_no_room(
         self, results: dict[str, Any], npc_def: "NPCDefinition", empty_cache_error_added: bool
     ) -> bool:
-        from ..container import ApplicationContainer
-
-        container = ApplicationContainer.get_instance()
-        async_persistence = getattr(container, "async_persistence", None) if container else None
+        async_persistence = self._async_persistence
         cache_size = len(async_persistence._room_cache) if async_persistence else -1  # pylint: disable=protected-access  # Reason: Check if empty cache to avoid per-NPC error spam
         if not cache_size:
             if not empty_cache_error_added:
@@ -326,10 +331,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
 
     async def _warmup_room_cache_for_arena(self, results: dict[str, Any]) -> None:
         try:
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            async_persistence = getattr(container, "async_persistence", None) if container else None
+            async_persistence = self._async_persistence
             if async_persistence:
                 await async_persistence.warmup_room_cache()
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Warmup errors must not abort arena pass
@@ -396,10 +398,7 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             return None
 
     async def _get_persistence_for_spawn(self) -> Any | None:
-        from ..container import ApplicationContainer
-
-        container = ApplicationContainer.get_instance()
-        async_persistence = getattr(container, "async_persistence", None) if container else None
+        async_persistence = self._async_persistence
         if not async_persistence:
             logger.error("Persistence layer not available for room validation")
             return None
@@ -493,12 +492,3 @@ class NPCStartupService:  # pylint: disable=too-few-public-methods  # Reason: St
             "southside": "earth_arkhamcity_southside_intersection_derby_garrison",
         }
         return default_rooms.get(sub_zone_id.lower())
-
-
-# Global startup service instance
-npc_startup_service = NPCStartupService()
-
-
-def get_npc_startup_service() -> NPCStartupService:
-    """Get the global NPC startup service."""
-    return npc_startup_service

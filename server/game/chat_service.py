@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, cast
 
 from ..services.chat_logger import chat_logger
 from ..services.rate_limiter import rate_limiter
-from ..services.user_manager import user_manager
+from ..services.user_manager import UserManager
 from ..structured_logging.enhanced_logging_config import get_logger
 from .chat_channel_message_senders import (
     ChatEmoteService,
@@ -158,7 +158,7 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
             room_service: Room management service
             player_service: Player management service
             nats_service: NATS service instance (optional, defaults to global instance)
-            user_manager_instance: Optional user manager instance (defaults to global instance)
+            user_manager_instance: Optional user manager instance (defaults to a fresh UserManager)
             subject_manager: NATSSubjectManager instance (optional, for standardized subject patterns)
             emote_service: Container-loaded EmoteService (server/container/bundles/game.py),
                           used by send_predefined_emote (#624). Optional so the 12+ existing
@@ -178,8 +178,10 @@ class ChatService:  # pylint: disable=too-many-instance-attributes  # Reason: Ch
         self._pose_manager = ChatPoseManager()
         self._whisper_tracker = ChatWhisperTracker()
 
-        # User manager for muting and permissions
-        self.user_manager = cast(ChatUserManager, user_manager_instance or user_manager)
+        # User manager for muting and permissions. Production always passes an injected instance
+        # (ChatBundle -> container.user_manager, #679); the default here is a test/back-compat
+        # convenience, not a shared global -- each unsupplied instance gets its own UserManager.
+        self.user_manager = cast(ChatUserManager, user_manager_instance or UserManager())
         self._moderation = ChatModeration(
             cast("PlayerServiceProtocol", cast(object, self.player_service)),
             cast("UserManagerProtocol", cast(object, self.user_manager)),

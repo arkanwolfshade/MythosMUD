@@ -36,16 +36,28 @@ class PlayerDeathService:
     - Clearing combat state when player dies
     """
 
-    def __init__(self, event_bus: Any | None = None, player_combat_service: Any | None = None) -> None:
+    _event_bus: Any | None
+    _player_combat_service: Any | None
+    _async_persistence: Any | None
+
+    def __init__(
+        self,
+        event_bus: Any | None = None,
+        player_combat_service: Any | None = None,
+        async_persistence: Any | None = None,
+    ) -> None:
         """
         Initialize the player death service.
 
         Args:
             event_bus: Optional event bus for publishing events
             player_combat_service: Optional player combat service for clearing combat state
+            async_persistence: Optional async persistence layer for room-name lookups (#679:
+                injected by CombatBundle instead of reached via ApplicationContainer.get_instance())
         """
         self._event_bus = event_bus
         self._player_combat_service = player_combat_service
+        self._async_persistence = async_persistence
         logger.info(
             "PlayerDeathService initialized",
             event_bus_available=bool(event_bus),
@@ -248,12 +260,9 @@ class PlayerDeathService:
         if not death_location:
             return "Unknown"
 
-        from ..container import ApplicationContainer
-
-        container = ApplicationContainer.get_instance()
-        if container and container.async_persistence:
+        if self._async_persistence:
             try:
-                room = container.async_persistence.get_room_by_id(death_location)
+                room = self._async_persistence.get_room_by_id(death_location)
                 # Handle case where get_room_by_id might return a coroutine (if mocked as async)
                 if hasattr(room, "__await__"):
                     # It's a coroutine, can't await in sync context - just return location

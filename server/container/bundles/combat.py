@@ -4,6 +4,11 @@ Combat bundle: player combat, death, respawn, combat service, catatonia, lucidit
 Depends on Core, Realtime (connection_manager), Game (movement_service).
 """
 
+# pyright: reportImportCycles=false
+# Reason: container/main.py imports this module (function-scoped) to construct CombatBundle;
+# this file only imports ApplicationContainer under TYPE_CHECKING for parameter annotations.
+# Same precedent as server/models/player.py and server/services/combat_service.py.
+
 from __future__ import annotations
 
 import uuid as uuid_lib
@@ -110,7 +115,9 @@ class CombatBundle:
         logger.info("Player combat service initialized")
 
         self.player_death_service = PlayerDeathService(
-            event_bus=container.event_bus, player_combat_service=self.player_combat_service
+            event_bus=container.event_bus,
+            player_combat_service=self.player_combat_service,
+            async_persistence=container.async_persistence,
         )
         logger.info("Player death service initialized")
 

@@ -172,11 +172,15 @@ def test_get_user_manager_injected(nats_message_handler, mock_user_manager):
 
 
 def test_get_user_manager_fallback(nats_message_handler):
-    """Test _get_user_manager falls back to global manager."""
+    """Test _get_user_manager falls back to a fresh UserManager when none was injected.
+
+    #679: no module-level global to fall back to anymore.
+    """
+    from server.services.user_manager import UserManager
+
     nats_message_handler.user_manager = None
-    with patch("server.services.user_manager.user_manager", MagicMock()) as mock_global:
-        result = nats_message_handler._get_user_manager()
-        assert result == mock_global
+    result = nats_message_handler._get_user_manager()
+    assert isinstance(result, UserManager)
 
 
 @pytest.mark.asyncio

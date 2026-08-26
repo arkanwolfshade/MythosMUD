@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from server.models.health import HealthStatus
-from server.services.health_service import HealthService, get_health_service
+from server.services.health_service import HealthService
 
 
 @pytest.fixture
@@ -89,17 +89,14 @@ def test_get_cpu_usage_error(mock_cpu_percent, health_service):
     assert cpu_usage == 0.0
 
 
-@patch("server.container.ApplicationContainer")
-def test_check_database_health_healthy(mock_container_class, health_service):
+def test_check_database_health_healthy(health_service):
     """Test check_database_health returns healthy status."""
-    mock_container = MagicMock()
-    # Mock async_persistence with a pool that has size > 0
+    # Mock async_persistence with a pool that has size > 0 (#679: injected, not via container)
     mock_pool = MagicMock()
     mock_pool._size = 5  # Pool size > 0
     mock_async_persistence = MagicMock()
     mock_async_persistence._pool = mock_pool
-    mock_container.async_persistence = mock_async_persistence
-    mock_container_class.get_instance.return_value = mock_container
+    health_service.async_persistence = mock_async_persistence
 
     with patch("time.time", side_effect=[0, 0.05]):  # 50ms query time (< 100ms = healthy)
         result = health_service.check_database_health()
@@ -108,17 +105,14 @@ def test_check_database_health_healthy(mock_container_class, health_service):
         assert result["last_query_time_ms"] == 50.0
 
 
-@patch("server.container.ApplicationContainer")
-def test_check_database_health_degraded(mock_container_class, health_service):
+def test_check_database_health_degraded(health_service):
     """Test check_database_health returns degraded status."""
-    mock_container = MagicMock()
-    # Mock async_persistence with a pool that has size > 0
+    # Mock async_persistence with a pool that has size > 0 (#679: injected, not via container)
     mock_pool = MagicMock()
     mock_pool._size = 3  # Pool size > 0
     mock_async_persistence = MagicMock()
     mock_async_persistence._pool = mock_pool
-    mock_container.async_persistence = mock_async_persistence
-    mock_container_class.get_instance.return_value = mock_container
+    health_service.async_persistence = mock_async_persistence
 
     with patch("time.time", side_effect=[0, 0.5]):  # 500ms query time (between 100ms and timeout = degraded)
         result = health_service.check_database_health()
@@ -127,17 +121,14 @@ def test_check_database_health_degraded(mock_container_class, health_service):
         assert result["last_query_time_ms"] == 500.0
 
 
-@patch("server.container.ApplicationContainer")
-def test_check_database_health_unhealthy(mock_container_class, health_service):
+def test_check_database_health_unhealthy(health_service):
     """Test check_database_health returns unhealthy status."""
-    mock_container = MagicMock()
-    # Mock async_persistence with a pool that has size = 0 (unhealthy)
+    # Mock async_persistence with a pool that has size = 0 (unhealthy) (#679: injected)
     mock_pool = MagicMock()
     mock_pool._size = 0  # Pool size = 0 = unhealthy
     mock_async_persistence = MagicMock()
     mock_async_persistence._pool = mock_pool
-    mock_container.async_persistence = mock_async_persistence
-    mock_container_class.get_instance.return_value = mock_container
+    health_service.async_persistence = mock_async_persistence
 
     with patch("time.time", side_effect=[0, 1.5]):  # 1500ms query time
         result = health_service.check_database_health()
@@ -146,10 +137,16 @@ def test_check_database_health_unhealthy(mock_container_class, health_service):
         assert result["last_query_time_ms"] == 1500.0
 
 
-@patch("server.container.ApplicationContainer")
-def test_check_database_health_error(mock_container_class, health_service):
+class _RaisesOnBool:
+    """Test double whose truthiness check raises, to exercise the broad except path."""
+
+    def __bool__(self) -> bool:
+        raise RuntimeError("Unexpected error")
+
+
+def test_check_database_health_error(health_service):
     """Test check_database_health handles errors gracefully."""
-    mock_container_class.get_instance.side_effect = Exception("Container error")
+    health_service.async_persistence = _RaisesOnBool()
     result = health_service.check_database_health()
     assert result["status"] == HealthStatus.UNHEALTHY
     assert result["connection_count"] == 0
@@ -263,17 +260,14 @@ def test_get_server_component_health_unhealthy(mock_cpu, mock_process, health_se
     assert component.status == HealthStatus.UNHEALTHY
 
 
-@patch("server.container.ApplicationContainer")
-def test_get_database_component_health(mock_container_class, health_service):
+def test_get_database_component_health(health_service):
     """Test get_database_component_health returns database component."""
-    mock_container = MagicMock()
-    # Mock async_persistence with a pool that has size > 0
+    # Mock async_persistence with a pool that has size > 0 (#679: injected, not via container)
     mock_pool = MagicMock()
     mock_pool._size = 5  # Pool size > 0
     mock_async_persistence = MagicMock()
     mock_async_persistence._pool = mock_pool
-    mock_container.async_persistence = mock_async_persistence
-    mock_container_class.get_instance.return_value = mock_container
+    health_service.async_persistence = mock_async_persistence
 
     with patch("time.time", side_effect=[0, 0.05]):  # 50ms query time (< 100ms = healthy)
         component = health_service.get_database_component_health()
@@ -381,10 +375,7 @@ def test_determine_overall_status_unhealthy(health_service):
 @patch("importlib.metadata.version")
 @patch("server.services.health_service.psutil.Process")
 @patch("server.services.health_service.psutil.cpu_percent")
-@patch("server.container.ApplicationContainer")
-def test_get_health_status_success(
-    mock_container, mock_cpu, mock_process, mock_version, health_service, mock_connection_manager
-):
+def test_get_health_status_success(mock_cpu, mock_process, mock_version, health_service, mock_connection_manager):
     """Test get_health_status returns comprehensive health response."""
     mock_version.return_value = "1.0.0"
     mock_memory_info = MagicMock()
@@ -394,15 +385,13 @@ def test_get_health_status_success(
     mock_process.return_value = mock_process_instance
     mock_cpu.return_value = 50.0
 
-    mock_container_instance = MagicMock()
-    # Mock async_persistence with a pool that has size > 0
+    # Mock async_persistence with a pool that has size > 0 (#679: injected, not via container)
     mock_pool = MagicMock()
     mock_pool._size = 5  # Pool size > 0
     mock_async_persistence = MagicMock()
     mock_async_persistence._pool = mock_pool
-    mock_container_instance.async_persistence = mock_async_persistence
-    mock_container_instance.room_service = MagicMock()
-    mock_container.get_instance.return_value = mock_container_instance
+    health_service.async_persistence = mock_async_persistence
+    health_service.room_service = MagicMock()
 
     # Mock time.time to return consistent values
     # First call is in get_server_component_health -> get_server_uptime
@@ -449,38 +438,16 @@ def test_get_health_status_version_fallback(mock_version, health_service):
                 assert response.version == "0.1.0"  # Fallback version
 
 
-def test_get_health_service_creates_instance():
-    """Test get_health_service creates singleton instance."""
-    # Reset global state
-    import server.services.health_service as health_service_module
-
-    health_service_module._health_service = None
-    service = get_health_service()
-    assert service is not None
-    assert isinstance(service, HealthService)
+def test_health_service_accepts_injected_async_persistence():
+    """#679: HealthService no longer reaches ApplicationContainer.get_instance() for
+    async_persistence -- it's injected at construction by MonitoringBundle."""
+    mock_async_persistence = MagicMock()
+    service = HealthService(async_persistence=mock_async_persistence)
+    assert service.async_persistence is mock_async_persistence
 
 
-def test_get_health_service_returns_singleton():
-    """Test get_health_service returns same instance."""
-    import server.services.health_service as health_service_module
-
-    health_service_module._health_service = None
-    service1 = get_health_service()
-    service2 = get_health_service()
-    assert service1 is service2
-
-
-def test_get_health_service_updates_connection_manager():
-    """Test get_health_service updates connection manager when provided."""
-    import server.services.health_service as health_service_module
-
-    health_service_module._health_service = None
-    mock_manager = MagicMock()
-    service = get_health_service(connection_manager=mock_manager)
-    assert service.connection_manager is mock_manager
-
-    # Update with new manager
-    new_manager = MagicMock()
-    service2 = get_health_service(connection_manager=new_manager)
-    assert service2 is service
-    assert service2.connection_manager is new_manager
+def test_health_service_accepts_injected_room_service():
+    """#679: room_service is injected at construction, used as a degraded-health fallback."""
+    mock_room_service = MagicMock()
+    service = HealthService(room_service=mock_room_service)
+    assert service.room_service is mock_room_service

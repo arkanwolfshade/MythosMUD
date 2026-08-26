@@ -183,7 +183,7 @@ def test_realtime_bundle_setup_nats_dependent_services_without_nats() -> None:
     bundle = RealtimeBundle()
     bundle.nats_service = None
     bundle.connection_manager = MagicMock()
-    bundle._setup_nats_dependent_services()
+    bundle._setup_nats_dependent_services(MagicMock())
     assert bundle.event_publisher is None
     assert bundle.nats_message_handler is None
 
@@ -454,7 +454,7 @@ def test_realtime_bundle_setup_nats_dependent_services_with_nats() -> None:
     bundle.connection_manager = MagicMock()
     with patch("server.realtime.event_publisher.EventPublisher", return_value=MagicMock()):
         with patch("server.realtime.nats_message_handler.NATSMessageHandler", return_value=MagicMock()):
-            bundle._setup_nats_dependent_services()
+            bundle._setup_nats_dependent_services(MagicMock())
     assert bundle.event_publisher is not None
     assert bundle.nats_message_handler is not None
 
