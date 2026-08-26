@@ -411,11 +411,11 @@ Before applying to production:
 ## 9. Related Documentation
 
 **[SPEC]**
-[Migration 019 README](../db/migrations/019_POSTGRESQL_ANTI_PATTERNS_FIXES_README.md)
 
-- [PostgreSQL Anti-Patterns Review](../docs/POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
-- [Python Model Updates](../docs/PYTHON_MODEL_UPDATES_REQUIRED.md)
-- [Migration Verification](../docs/MIGRATION_019_VERIFICATION.md)
+- [DDL Migrations (Removed)](../../db/migrations/README.md)
+- [PostgreSQL Anti-Patterns Review](./POSTGRESQL_ANTI_PATTERNS_REVIEW.md)
+- [Python Model Updates](./PYTHON_MODEL_UPDATES_REQUIRED.md)
+- [Migration Verification](./MIGRATION_019_VERIFICATION.md)
 
 ## 10. Changelog
 
