@@ -589,3 +589,239 @@ async def test_transfer_to_container_player_not_found(service: ContainerService)
     item = _stack()
     with pytest.raises(ValidationError):
         _ = await service.transfer_to_container(container_id, player_id, token, item)
+
+
+def _open_from_fixture(service: ContainerService, item: InventoryStack) -> tuple[uuid.UUID, uuid.UUID, str]:
+    """Register an open session and return (container_id, player_id, token) for transfer_from tests."""
+    del item
+    container_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    token = "transfer-from-token"
+    _ = service.register_open_session(container_id, player_id, token)
+    return container_id, player_id, token
+
+
+def _allow_all_mutations(service: ContainerService) -> None:
+    """Patch mutation_guard.acquire_async to always approve the mutation."""
+    from contextlib import asynccontextmanager
+
+    from server.services.inventory_mutation_guard import MutationDecision
+
+    @asynccontextmanager
+    async def fake_acquire(player_id: str, token: str | None):
+        _ = (player_id, token)
+        yield MutationDecision(should_apply=True, duplicate=False)
+
+    service.mutation_guard.acquire_async = fake_acquire
+
+
+@pytest.mark.asyncio
+async def test_transfer_from_container_success(service: ContainerService):
+    item = _stack(item_name="Torch")
+    container_id, player_id, token = _open_from_fixture(service, item)
+
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(item)])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    service.persistence.update_container = AsyncMock(return_value=container_data)
+    _allow_all_mutations(service)
+
+    with patch("server.services.container_service_transfer_from.audit_logger.log_container_interaction"):
+        result = await service.transfer_from_container(container_id, player_id, token, item, quantity=1)
+
+    assert "container" in result
+    assert "player_inventory" in result
+    service.persistence.update_container.assert_awaited()
+
+
+@pytest.mark.asyncio
+async def test_transfer_from_container_item_not_found(service: ContainerService):
+    item = _stack(item_id="missing_item")
+    container_id, player_id, token = _open_from_fixture(service, item)
+
+    container_data = _container_data(container_id, room_id="room_a", items_json=[])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    _allow_all_mutations(service)
+
+    with pytest.raises(ContainerServiceError):
+        _ = await service.transfer_from_container(container_id, player_id, token, item)
+
+
+@pytest.mark.asyncio
+async def test_transfer_from_container_capacity_exceeded(service: ContainerService):
+    item = _stack(item_name="Torch")
+    container_id, player_id, token = _open_from_fixture(service, item)
+
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(item)])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    _allow_all_mutations(service)
+
+    from server.services.inventory_service import InventoryCapacityError
+
+    with patch(
+        "server.services.inventory_service.InventoryService.add_stack",
+        side_effect=InventoryCapacityError("full"),
+    ):
+        with pytest.raises(ContainerCapacityError):
+            _ = await service.transfer_from_container(container_id, player_id, token, item)
+
+
+@pytest.mark.asyncio
+async def test_transfer_from_container_mutation_guard_suppressed(service: ContainerService):
+    from contextlib import asynccontextmanager
+
+    from server.services.inventory_mutation_guard import MutationDecision
+
+    item = _stack()
+    container_id, player_id, token = _open_from_fixture(service, item)
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(item)])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+
+    @asynccontextmanager
+    async def suppressed(player_id: str, token: str | None):
+        _ = (player_id, token)
+        yield MutationDecision(should_apply=False, duplicate=True)
+
+    service.mutation_guard.acquire_async = suppressed
+    with pytest.raises(ContainerServiceError):
+        _ = await service.transfer_from_container(container_id, player_id, token, item)
+
+
+@pytest.mark.asyncio
+async def test_transfer_from_container_reraises_unexpected_error(service: ContainerService):
+    item = _stack(item_name="Torch")
+    container_id, player_id, token = _open_from_fixture(service, item)
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(item)])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+    service.persistence.update_container = AsyncMock(side_effect=RuntimeError("db down"))
+    _allow_all_mutations(service)
+
+    with pytest.raises(RuntimeError, match="db down"):
+        _ = await service.transfer_from_container(container_id, player_id, token, item)
+
+
+@pytest.mark.asyncio
+async def test_loot_all_success(service: ContainerService):
+    container_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    token = "loot-token"
+    _ = service.register_open_session(container_id, player_id, token)
+
+    item_a = _stack(item_id="torch", item_instance_id="inst-a")
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(item_a)])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+
+    transferred_inventory = [dict(item_a)]
+    service.transfer_from_container = AsyncMock(
+        return_value={
+            "container": _container_data(container_id, room_id="room_a", items_json=[]),
+            "player_inventory": transferred_inventory,
+        }
+    )
+
+    with patch("server.services.container_service_transfer_from.audit_logger.log_container_interaction"):
+        result = await service.loot_all(container_id, player_id, token)
+
+    assert result["player_inventory"] == transferred_inventory
+    assert "mutation_token" in result
+    service.transfer_from_container.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_loot_all_player_not_found(service: ContainerService):
+    container_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    token = "loot-token"
+    _ = service.register_open_session(container_id, player_id, token)
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(_stack())])
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=None)
+
+    with pytest.raises(ContainerServiceError):
+        _ = await service.loot_all(container_id, player_id, token)
+
+
+@pytest.mark.asyncio
+async def test_loot_all_stops_on_capacity_error(service: ContainerService):
+    container_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    token = "loot-token"
+    _ = service.register_open_session(container_id, player_id, token)
+
+    items = [
+        _stack(item_id="torch", item_instance_id="inst-a"),
+        _stack(item_id="rope", item_instance_id="inst-b"),
+    ]
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(i) for i in items])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+
+    service.transfer_from_container = AsyncMock(side_effect=ContainerCapacityError("full"))
+
+    with patch("server.services.container_service_transfer_from.audit_logger.log_container_interaction"):
+        result = await service.loot_all(container_id, player_id, token)
+
+    # Stopped after the first capacity error; only one attempt made.
+    service.transfer_from_container.assert_awaited_once()
+    assert "container" in result
+
+
+@pytest.mark.asyncio
+async def test_loot_all_continues_past_other_errors(service: ContainerService):
+    container_id = uuid.uuid4()
+    player_id = uuid.uuid4()
+    token = "loot-token"
+    _ = service.register_open_session(container_id, player_id, token)
+
+    items = [
+        _stack(item_id="torch", item_instance_id="inst-a"),
+        _stack(item_id="rope", item_instance_id="inst-b"),
+    ]
+    container_data = _container_data(container_id, room_id="room_a", items_json=[dict(i) for i in items])
+    player = MagicMock(spec=["name", "inventory", "player_id"])
+    player.name = "Investigator"
+    player.player_id = player_id
+    player.inventory = []
+    service.persistence.get_container = AsyncMock(return_value=container_data)
+    service.persistence.get_player_by_id = AsyncMock(return_value=player)
+
+    service.transfer_from_container = AsyncMock(side_effect=RuntimeError("transient error"))
+
+    with patch("server.services.container_service_transfer_from.audit_logger.log_container_interaction"):
+        result = await service.loot_all(container_id, player_id, token)
+
+    # Both items attempted despite each raising; loop continues rather than stopping.
+    assert service.transfer_from_container.await_count == 2
+    assert "container" in result

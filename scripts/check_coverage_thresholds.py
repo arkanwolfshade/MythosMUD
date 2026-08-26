@@ -64,19 +64,12 @@ CRITICAL_FILES = {
 NORMAL_THRESHOLD = 70
 
 # Known coverage debt, unmasked by the #668 CI pipefail fix (this check was silently failing on
-# main for an unknown period; `tee` swallowed the exit code before pipefail was added). These
-# floors sit at-or-below the coverage measured when the debt was discovered so CI is honest about
-# where things stand, not a blank check to regress further. Tracked in #677 — closing the gap with
-# real tests is preferred to raising these; only lower further if a genuine floor is warranted.
-KNOWN_COVERAGE_DEBT: dict[str, int] = {
-    "server/services/combat_messaging/combat_broadcasts.py": 85,  # critical file, was 90
-    "server/events/event_bus_lifecycle.py": 65,
-    "server/npc/threading.py": 59,
-    "server/realtime/connection_manager_health_cleanup.py": 0,
-    "server/realtime/connection_manager_lazy.py": 61,
-    "server/services/container_service_transfer_from.py": 36,
-    "server/services/nats_service_pool.py": 68,
-}
+# main for an unknown period; `tee` swallowed the exit code before pipefail was added). #677 paid
+# this down: `server/realtime/connection_manager_health_cleanup.py` (0%) turned out to be dead code
+# (zero importers) and was deleted rather than backfilled; the other six files were brought back up
+# to their normal/critical thresholds with real tests. Empty until new debt is discovered — keep
+# this mechanism rather than deleting it outright, so a future regression is measured, not silent.
+KNOWN_COVERAGE_DEBT: dict[str, int] = {}
 
 
 def parse_coverage_xml(coverage_xml_path: Path) -> dict[str, float]:

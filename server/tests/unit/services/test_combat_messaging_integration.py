@@ -199,6 +199,20 @@ async def test_send_dp_decay_message(messaging_integration, mock_connection_mana
 
 
 @pytest.mark.asyncio
+async def test_broadcast_combat_target_switch(messaging_integration, mock_connection_manager):
+    """Test broadcast_combat_target_switch broadcasts the NPC's aggro-switch room message (ADR-016)."""
+    result = await messaging_integration.broadcast_combat_target_switch(
+        "room_001", "combat_001", "Ghoul", "Investigator"
+    )
+    assert isinstance(result, dict)
+    mock_connection_manager.broadcast_to_room.assert_awaited_once()
+    args, _ = mock_connection_manager.broadcast_to_room.call_args
+    assert args[0] == "room_001"
+    assert args[1]["event_type"] == "combat_target_switch"
+    assert args[1]["data"]["message"] == "Ghoul turns its gaze to Investigator."
+
+
+@pytest.mark.asyncio
 async def test_send_dp_decay_message_error(messaging_integration, mock_connection_manager):
     """Test send_dp_decay_message handles errors gracefully."""
     mock_connection_manager.send_personal_message = AsyncMock(side_effect=RuntimeError("Error"))
