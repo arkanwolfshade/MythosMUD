@@ -56,7 +56,7 @@ async function getCharacterNameFromCard(card: CharacterCardLocator): Promise<str
   return (await nameEl.textContent({ timeout: 2000 }).catch(() => ''))?.trim() ?? '';
 }
 
-async function confirmCharacterDeletion(page: Page): Promise<void> {
+async function confirmCharacterDeletion(page: Page, charName: string): Promise<void> {
   await page
     .getByText(/Are you sure/i)
     .waitFor({ state: 'visible', timeout: 5000 })
@@ -71,18 +71,22 @@ async function confirmCharacterDeletion(page: Page): Promise<void> {
   if (!resp.ok()) {
     throw new Error(`E2E character delete failed: HTTP ${resp.status()}`);
   }
-  // Parent setCharacters refresh; brief settle for Firefox card unmount.
+  // Wait for THIS character's card to actually leave the DOM before the next cleanup
+  // iteration re-queries .character-card -- waiting for "any card attached" (the old check)
+  // is satisfied trivially by the protected Ithaqua card that never leaves, so it resolved
+  // before the parent's re-render and let the loop match the same stale card twice, firing
+  // a second DELETE for an id the server had already removed (404).
   await page
     .locator('.character-card')
-    .first()
-    .waitFor({ state: 'attached', timeout: 5000 })
+    .filter({ has: page.locator('h3.character-name', { hasText: charName, exact: true }) })
+    .waitFor({ state: 'detached', timeout: 5000 })
     .catch(() => {});
 }
 
-async function deleteCharacterFromCard(page: Page, card: CharacterCardLocator): Promise<void> {
+async function deleteCharacterFromCard(page: Page, card: CharacterCardLocator, charName: string): Promise<void> {
   const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
   await domClick(deleteBtn);
-  await confirmCharacterDeletion(page);
+  await confirmCharacterDeletion(page, charName);
 }
 
 async function tryDeleteOneTestCharacter(page: Page): Promise<boolean> {
@@ -97,7 +101,7 @@ async function tryDeleteOneTestCharacter(page: Page): Promise<boolean> {
     const deleteBtn = card.getByRole('button', { name: 'Delete', exact: true });
     if (!(await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false))) continue;
 
-    await deleteCharacterFromCard(page, card);
+    await deleteCharacterFromCard(page, card, charName);
     return true;
   }
   return false;

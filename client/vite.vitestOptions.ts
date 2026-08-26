@@ -54,9 +54,7 @@ export const vitestTestOptions: NonNullable<UserConfig['test']> = {
       'src/stores/commandStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
       'src/stores/containerStore.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
       'src/stores/stateNormalization.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
-      'src/hooks/useGameTerminal.ts': { statements: 85, branches: 85, functions: 85, lines: 85 },
       'src/hooks/useConnectionStateMachine.ts': { statements: 85, branches: 85, functions: 80, lines: 85 },
-      'src/contexts/GameTerminalContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
       'src/contexts/PanelContext.tsx': { statements: 85, branches: 85, functions: 85, lines: 85 },
       'src/components/ui-v2/eventHandlers/messageHandlers.ts': {
         statements: 90,

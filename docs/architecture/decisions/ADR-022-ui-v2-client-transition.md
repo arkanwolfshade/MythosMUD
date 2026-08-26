@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.0.0** · MythosMUD · 2026-08-26
+**Version 1.1.0** · MythosMUD · 2026-08-26
 
 ---
 
@@ -97,11 +97,18 @@ one-hop-only reachability (a module counts as live only if traced to something o
 candidate set, not merely to any importer). **82 of 155** legacy modules are orphaned under this
 definition; **73** remain live, including the six onboarding screens named in §3.
 
+**[NOTE]**
+Cluster 1's own removal PR (#690) found `MythosTimeHud.tsx` had a real behaviour gap (no `ui-v2`
+equivalent for daypart/season/witching-hour/holiday display) and carved it out rather than delete
+it — stub-exempted per this section's policy, tracked in
+[#699](https://github.com/arkanwolfshade/MythosMUD/issues/699). Updated counts: **81 of 155**
+orphaned, **74** live. Cluster 1 is 26 files, not 27.
+
 **Removal clusters** (one issue each, filed alongside this ADR):
 
 | Cluster | Files | Contents | Issue |
 | --- | --- | --- | --- |
-| Top-level demo/test + legacy GameTerminal | 27 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
+| Top-level demo/test + legacy GameTerminal | 26 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
 | `panels/` chat & game-log family | 35 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*` | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
 | `containers/` | 6 | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*` | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
 | `ui/` misc + stray singletons | 14 | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*` | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
@@ -132,3 +139,4 @@ what proves the retirement finished — not this ADR.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-08-26 | Initial version. Records the ui-v2 transition decision and the legacy retirement plan for #637. |
+| 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
