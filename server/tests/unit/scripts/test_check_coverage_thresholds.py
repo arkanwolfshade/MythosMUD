@@ -84,13 +84,19 @@ def test_test_files_are_never_checked() -> None:
     assert failures == []
 
 
-def test_known_coverage_debt_lowers_a_critical_files_floor() -> None:
-    """combat_broadcasts.py is CRITICAL (90%) but carries a KNOWN_COVERAGE_DEBT override -- the
-    debt floor must win, not the original CRITICAL_FILES threshold (#677)."""
+def test_known_coverage_debt_is_empty() -> None:
+    """#677 paid down every entry that was in KNOWN_COVERAGE_DEBT -- it should stay empty until a
+    new regression is discovered and deliberately floored, not silently re-accumulate debt."""
     mod = _load_script()
-    path = "server/services/combat_messaging/combat_broadcasts.py"
-    debt_floor = mod.KNOWN_COVERAGE_DEBT[path]
-    assert debt_floor < mod.CRITICAL_FILES[path], "test assumes the debt floor is a real reduction"
+    assert mod.KNOWN_COVERAGE_DEBT == {}
+
+
+def test_known_coverage_debt_lowers_a_critical_files_floor() -> None:
+    """A KNOWN_COVERAGE_DEBT entry lowers a CRITICAL_FILES floor, not just replaces it (#677)."""
+    mod = _load_script()
+    path = "server/database.py"  # a real CRITICAL_FILES entry (90%)
+    debt_floor = mod.CRITICAL_FILES[path] - 10
+    mod.KNOWN_COVERAGE_DEBT[path] = debt_floor
 
     # Just above the debt floor, below the original 90% -- must pass, not fail.
     coverage = _fully_covered(mod)
@@ -105,12 +111,11 @@ def test_known_coverage_debt_lowers_a_critical_files_floor() -> None:
 
 
 def test_known_coverage_debt_lowers_a_normal_files_floor() -> None:
-    """event_bus_lifecycle.py has no CRITICAL_FILES entry (blanket 70% would apply) but carries a
-    KNOWN_COVERAGE_DEBT override below that -- the debt floor must win (#677)."""
+    """A KNOWN_COVERAGE_DEBT entry lowers the blanket 70% normal-file floor (#677)."""
     mod = _load_script()
-    path = "server/events/event_bus_lifecycle.py"
-    debt_floor = mod.KNOWN_COVERAGE_DEBT[path]
-    assert debt_floor < mod.NORMAL_THRESHOLD, "test assumes the debt floor is a real reduction"
+    path = "server/services/some_debt_carrying_service.py"  # no CRITICAL_FILES entry -- blanket 70% applies
+    debt_floor = mod.NORMAL_THRESHOLD - 10
+    mod.KNOWN_COVERAGE_DEBT[path] = debt_floor
 
     coverage = _fully_covered(mod)
     coverage[path] = debt_floor + 0.5
