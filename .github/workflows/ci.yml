@@ -182,6 +182,10 @@ jobs:
         run: |
           source .venv-ci/bin/activate
           pre-commit run raw-sql-in-python-lint --all-files
+      - name: Container get_instance() guard
+        run: |
+          source .venv-ci/bin/activate
+          pre-commit run container-get-instance-lint --all-files
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate

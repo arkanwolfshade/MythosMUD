@@ -103,6 +103,26 @@ def test_collect_event_metrics_no_bus(collector):
         assert "error" in metrics
 
 
+def test_collect_event_metrics_uses_injected_event_bus():
+    """#636: an injected event_bus (MonitoringBundle's real construction path) is used
+    directly, with no ApplicationContainer.get_instance() lookup at all."""
+    mock_event_bus = MagicMock()
+    mock_event_bus.get_all_subscriber_counts.return_value = {}
+    mock_event_bus.get_subscriber_lifecycle_metrics.return_value = {
+        "total_subscribers": 4,
+        "subscription_churn_rate": 0.0,
+    }
+    mock_event_bus.get_active_task_count.return_value = 1
+    mock_event_bus.get_subscriber_stats.return_value = {"services_tracked": 1, "tracked_subscriptions": 4}
+    injected_collector = MemoryLeakMetricsCollector(event_bus=mock_event_bus)
+
+    with patch("server.container.ApplicationContainer") as mock_container_class:
+        metrics = injected_collector.collect_event_metrics()
+
+    mock_container_class.get_instance.assert_not_called()
+    assert metrics["total_subscribers"] == 4
+
+
 def test_collect_cache_metrics(collector):
     """Test collection of cache metrics."""
     with patch("server.caching.lru_cache.get_cache_manager") as mock_get_cache:
@@ -164,6 +184,21 @@ def test_collect_nats_metrics(collector):
         assert metrics["subscription_count"] == 3
         assert len(metrics["active_subscriptions"]) == 3
         assert metrics["last_cleanup_time"] == 1234567890.0
+
+
+def test_collect_nats_metrics_uses_injected_nats_service():
+    """#636: an injected nats_service (MonitoringBundle's real construction path) is used
+    directly, with no ApplicationContainer.get_instance() lookup at all."""
+    mock_nats_service = MagicMock()
+    mock_nats_service.get_active_subscriptions.return_value = ["subject1"]
+    mock_nats_service._last_cleanup_time = None  # pylint: disable=protected-access  # Reason: Test needs to set internal state on mock object
+    injected_collector = MemoryLeakMetricsCollector(nats_service=mock_nats_service)
+
+    with patch("server.container.ApplicationContainer") as mock_container_class:
+        metrics = injected_collector.collect_nats_metrics()
+
+    mock_container_class.get_instance.assert_not_called()
+    assert metrics["subscription_count"] == 1
 
 
 def test_collect_all_metrics(collector):

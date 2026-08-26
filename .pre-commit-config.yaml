@@ -86,6 +86,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: container-get-instance-lint
+        name: Container get_instance() Guard
+        entry: python scripts/lint_container_get_instance.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: fstring-logging-lint
         name: F-String Logging Anti-Pattern Detector
         entry: python scripts/check_logging_patterns.py
