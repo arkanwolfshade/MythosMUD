@@ -29,9 +29,6 @@ from structlog.contextvars import merge_contextvars
 from structlog.stdlib import BoundLogger, LoggerFactory
 from structlog.typing import EventDict, Processor
 
-if TYPE_CHECKING:
-    from server.config.models.security_logging import LoggingConfig
-
 # Import from refactored modules
 from server.structured_logging.logging_context import (
     bind_request_context as _bind_request_context,
@@ -61,6 +58,9 @@ from server.structured_logging.logging_utilities import (
     resolve_log_base,
     rotate_log_files,
 )
+
+if TYPE_CHECKING:
+    from server.config.models.security_logging import LoggingConfig
 
 # Re-export public functions for backward compatibility
 bind_request_context = _bind_request_context
