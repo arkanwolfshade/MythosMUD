@@ -12,7 +12,7 @@ from __future__ import annotations
 import uuid
 from collections.abc import Mapping
 from datetime import datetime
-from typing import Protocol, cast
+from typing import Protocol
 
 from ..services.nats_subject_manager import NATSSubjectManager
 from ..structured_logging.enhanced_logging_config import get_logger
@@ -57,6 +57,7 @@ class EventPublisher:
         nats_service: _NatsPublish | None,
         subject_manager: NATSSubjectManager | None = None,
         initial_sequence: int = 0,
+        async_persistence: _EventPersistence | None = None,
     ) -> None:
         """
         Initialize EventPublisher service.
@@ -65,6 +66,8 @@ class EventPublisher:
             nats_service: NATS service instance for publishing messages
             subject_manager: Subject manager for standardized NATS subjects (optional for backward compatibility)
             initial_sequence: Initial sequence number for event ordering
+            async_persistence: Optional async persistence layer for player/room name lookups (#679:
+                injected by RealtimeBundle instead of reached via ApplicationContainer.get_instance())
 
         AI: subject_manager is optional for backward compatibility but recommended for standardized patterns.
         AI: Falls back to legacy subject construction if subject_manager is None.
@@ -72,7 +75,7 @@ class EventPublisher:
         self.nats_service = nats_service
         self.subject_manager = subject_manager
         self.sequence_number = initial_sequence
-        self._async_persistence = None
+        self._async_persistence = async_persistence
 
         logger.info("EventPublisher initialized", subject_manager_enabled=subject_manager is not None)
 
@@ -354,17 +357,7 @@ class EventPublisher:
         logger.info("EventPublisher sequence number reset")
 
     def _get_async_persistence(self) -> _EventPersistence | None:
-        """Get async_persistence from ApplicationContainer (lazy-loaded)."""
-        if self._async_persistence is None:
-            try:
-                from ..container import ApplicationContainer  # noqa: I001,PLC0415  # Reason: lazy load avoids container import cycle
-
-                container = ApplicationContainer.get_instance()
-                persistence = getattr(container, "async_persistence", None) if container else None
-                if persistence is not None:
-                    self._async_persistence = cast(_EventPersistence, cast(object, persistence))
-            except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Container access errors unpredictable, must handle gracefully
-                logger.warning("Failed to get async_persistence from ApplicationContainer", error=str(e))
+        """Get async_persistence (#679: injected at construction by RealtimeBundle)."""
         return self._async_persistence
 
 

@@ -7,6 +7,7 @@ test_websocket_helpers_player.py.
 
 import logging
 import uuid
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -147,11 +148,16 @@ async def test_check_shutdown_and_reject_websocket_disconnect():
 
 @pytest.mark.asyncio
 async def test_load_player_mute_data_success():
-    """Test load_player_mute_data() successfully loads mute data."""
-    player_id_str = "player_123"
+    """Test load_player_mute_data() successfully loads mute data.
 
-    with patch("server.services.user_manager.user_manager") as mock_user_manager:
-        mock_user_manager.load_player_mutes_async = AsyncMock(return_value=True)
+    #679: resolves UserManager from the container instead of a module-level global.
+    """
+    player_id_str = "player_123"
+    mock_user_manager = MagicMock()
+    mock_user_manager.load_player_mutes_async = AsyncMock(return_value=True)
+    mock_container = MagicMock(user_manager=mock_user_manager)
+
+    with patch("server.container.get_container", return_value=mock_container):
         await load_player_mute_data(player_id_str)
         mock_user_manager.load_player_mutes_async.assert_called_once_with(player_id_str)
 
@@ -239,7 +245,7 @@ async def test_get_occupant_names_empty():
 @pytest.mark.asyncio
 async def test_get_occupant_names_none():
     """Test get_occupant_names() handles None occupants."""
-    result = await get_occupant_names(None, "room_123")  # type: ignore[arg-type]  # Reason: Intentionally testing None input
+    result = await get_occupant_names(None, "room_123")
     assert result == []
 
 
@@ -247,7 +253,7 @@ def test_convert_uuids_to_strings_dict():
     """Test convert_uuids_to_strings() converts UUIDs in dictionary."""
     test_uuid = uuid.uuid4()
     obj = {"id": test_uuid, "name": "Test"}
-    result = convert_uuids_to_strings(obj)
+    result = cast(dict[str, object], convert_uuids_to_strings(obj))
     assert result["id"] == str(test_uuid)
     assert result["name"] == "Test"
 
@@ -256,7 +262,7 @@ def test_convert_uuids_to_strings_list():
     """Test convert_uuids_to_strings() converts UUIDs in list."""
     test_uuid = uuid.uuid4()
     obj = [test_uuid, "string", 123]
-    result = convert_uuids_to_strings(obj)
+    result = cast(list[object], convert_uuids_to_strings(obj))
     assert result[0] == str(test_uuid)
     assert result[1] == "string"
     assert result[2] == 123
@@ -266,9 +272,11 @@ def test_convert_uuids_to_strings_nested():
     """Test convert_uuids_to_strings() converts UUIDs in nested structures."""
     test_uuid = uuid.uuid4()
     obj = {"data": {"id": test_uuid, "items": [test_uuid]}}
-    result = convert_uuids_to_strings(obj)
-    assert result["data"]["id"] == str(test_uuid)
-    assert result["data"]["items"][0] == str(test_uuid)
+    result = cast(dict[str, object], convert_uuids_to_strings(obj))
+    data = cast(dict[str, object], result["data"])
+    assert data["id"] == str(test_uuid)
+    items = cast(list[object], data["items"])
+    assert items[0] == str(test_uuid)
 
 
 def test_convert_uuids_to_strings_no_uuid():

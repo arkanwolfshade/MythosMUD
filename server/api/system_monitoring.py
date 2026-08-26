@@ -55,8 +55,14 @@ async def get_system_health(_request: Request) -> SystemHealthResponse:
         ) from error
 
 
+def _resolve_memory_leak_collector_from_request(request: Request) -> Any:
+    """Resolve the container-owned MemoryLeakMetricsCollector (#679: no per-request instance)."""
+    container = getattr(request.app.state, "container", None)
+    return getattr(container, "memory_leak_collector", None) if container else None
+
+
 @system_monitoring_router.get("/metrics", response_model=SystemMetricsResponse)
-async def get_system_metrics(_request: Request) -> SystemMetricsResponse:
+async def get_system_metrics(request: Request) -> SystemMetricsResponse:
     """Get system metrics from monitoring dashboard."""
     try:
         dashboard = get_monitoring_dashboard()
@@ -78,9 +84,9 @@ async def get_system_metrics(_request: Request) -> SystemMetricsResponse:
 
         # Add memory leak metrics from unified collector (Task 6: Memory Leak Monitoring)
         try:
-            from ..monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
-
-            collector = MemoryLeakMetricsCollector()
+            collector = _resolve_memory_leak_collector_from_request(request)
+            if collector is None:
+                raise RuntimeError("Memory leak collector is not configured")
             leak_metrics = collector.collect_all_metrics()
             result_dict["memory_leak_metrics"] = {
                 "connection": leak_metrics.get("connection", {}),

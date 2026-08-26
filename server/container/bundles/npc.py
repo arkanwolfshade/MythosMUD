@@ -4,6 +4,11 @@ NPC bundle: lifecycle manager, spawning service, population controller.
 Depends on Core (event_bus, persistence, async_persistence).
 """
 
+# pyright: reportImportCycles=false
+# Reason: container/main.py imports this module (function-scoped) to construct NPCBundle;
+# this file only imports ApplicationContainer under TYPE_CHECKING for parameter annotations.
+# Same precedent as server/models/player.py and server/services/combat_service.py.
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -19,6 +24,7 @@ NPC_ATTRS = (
     "npc_lifecycle_manager",
     "npc_spawning_service",
     "npc_population_controller",
+    "npc_startup_service",
 )
 
 
@@ -28,6 +34,7 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
     npc_lifecycle_manager: Any = None
     npc_spawning_service: Any = None
     npc_population_controller: Any = None
+    npc_startup_service: Any = None
 
     async def _create_npc_services(self, container: ApplicationContainer) -> None:
         from server.npc.combat_integration import NPCCombatIntegration
@@ -35,6 +42,9 @@ class NPCBundle:  # pylint: disable=too-few-public-methods
         from server.npc.population_control import NPCPopulationController
         from server.npc.spawning_service import NPCSpawningService
         from server.services.npc_instance_service import initialize_npc_instance_service
+        from server.services.npc_startup_service import NPCStartupService
+
+        self.npc_startup_service = NPCStartupService(async_persistence=container.async_persistence)
 
         combat_integration = NPCCombatIntegration(
             event_bus=container.event_bus, async_persistence=container.async_persistence

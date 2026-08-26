@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from server.services.npc_startup_service import ARENA_ROOM_IDS, NPCStartupService, get_npc_startup_service
+from server.services.npc_startup_service import ARENA_ROOM_IDS, NPCStartupService
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
 # pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
@@ -18,11 +18,6 @@ from server.services.npc_startup_service import ARENA_ROOM_IDS, NPCStartupServic
 
 # pyright: reportPrivateUsage=false
 # Reason: unit tests patch and observe NPCStartupService collaborators and private passes.
-
-
-def _assign_container_get_instance(mock_container: MagicMock, getter: MagicMock) -> None:
-    """Attach a typed get_instance mock to a patched ApplicationContainer."""
-    mock_container.get_instance = getter
 
 
 def _errors_len(results: Mapping[str, object]) -> int:
@@ -188,16 +183,13 @@ async def test_determine_spawn_room_with_room_id(npc_startup_service: NPCStartup
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = "room_001"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
-        mock_persistence.warmup_room_cache = AsyncMock()
-        mock_persistence._room_cache = {"room_001": MagicMock()}  # Mock cache
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result == "room_001"
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=MagicMock())
+    mock_persistence.warmup_room_cache = AsyncMock()
+    mock_persistence._room_cache = {"room_001": MagicMock()}  # Mock cache
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+    assert result == "room_001"
 
 
 @pytest.mark.asyncio
@@ -207,18 +199,15 @@ async def test_determine_spawn_room_with_sub_zone(npc_startup_service: NPCStartu
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = None
     mock_npc_def.sub_zone_id = "northside"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        mock_room = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
-        mock_persistence.warmup_room_cache = AsyncMock()
-        mock_persistence._room_cache = {}  # Mock cache
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-            assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    mock_persistence = MagicMock()
+    mock_room = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=mock_room)
+    mock_persistence.warmup_room_cache = AsyncMock()
+    mock_persistence._room_cache = {}  # Mock cache
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
@@ -228,18 +217,15 @@ async def test_determine_spawn_room_fallback(npc_startup_service: NPCStartupServ
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = None
     mock_npc_def.sub_zone_id = None
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        mock_room = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(return_value=None)
-        mock_persistence.warmup_room_cache = AsyncMock()
-        mock_persistence._room_cache = {}  # Mock cache
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-            assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    mock_persistence = MagicMock()
+    mock_room = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=None)
+    mock_persistence.warmup_room_cache = AsyncMock()
+    mock_persistence._room_cache = {}  # Mock cache
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
@@ -247,12 +233,9 @@ async def test_determine_spawn_room_no_persistence(npc_startup_service: NPCStart
     """Test _determine_spawn_room() returns None when persistence not available."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence = None
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result is None
+    npc_startup_service._async_persistence = None
+    result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+    assert result is None
 
 
 def test_get_default_room_for_sub_zone(npc_startup_service: NPCStartupService) -> None:
@@ -273,10 +256,12 @@ def test_get_default_room_for_sub_zone_case_insensitive(npc_startup_service: NPC
     assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
-def test_get_npc_startup_service() -> None:
-    """Test get_npc_startup_service() returns service instance."""
-    service = get_npc_startup_service()
-    assert isinstance(service, NPCStartupService)
+def test_npc_startup_service_accepts_injected_async_persistence() -> None:
+    """#679: NPCStartupService no longer reaches ApplicationContainer.get_instance() --
+    async_persistence is injected at construction by NPCBundle."""
+    mock_async_persistence = MagicMock()
+    service = NPCStartupService(async_persistence=mock_async_persistence)
+    assert service._async_persistence is mock_async_persistence
 
 
 @pytest.mark.asyncio
@@ -355,19 +340,16 @@ async def test_determine_spawn_room_room_id_not_found(npc_startup_service: NPCSt
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = "nonexistent_room"
     mock_npc_def.sub_zone_id = "northside"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        # First call (room_id check) returns None, second call (sub_zone) returns room
-        mock_room = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(side_effect=[None, mock_room])
-        mock_persistence.warmup_room_cache = AsyncMock()
-        mock_persistence._room_cache = {}  # Mock cache
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
-            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-            assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    mock_persistence = MagicMock()
+    # First call (room_id check) returns None, second call (sub_zone) returns room
+    mock_room = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(side_effect=[None, mock_room])
+    mock_persistence.warmup_room_cache = AsyncMock()
+    mock_persistence._room_cache = {}  # Mock cache
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=mock_room):
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
@@ -377,19 +359,16 @@ async def test_determine_spawn_room_sub_zone_room_not_found(npc_startup_service:
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = None
     mock_npc_def.sub_zone_id = "northside"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        # Sub-zone room not found, fallback room found
-        mock_room = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(return_value=None)
-        mock_persistence.warmup_room_cache = AsyncMock()
-        mock_persistence._room_cache = {}  # Mock cache
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        with patch("asyncio.to_thread", new_callable=AsyncMock, side_effect=[None, mock_room]):
-            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-            assert result == "earth_arkhamcity_northside_intersection_derby_high"
+    mock_persistence = MagicMock()
+    # Sub-zone room not found, fallback room found
+    mock_room = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=None)
+    mock_persistence.warmup_room_cache = AsyncMock()
+    mock_persistence._room_cache = {}  # Mock cache
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    with patch("asyncio.to_thread", new_callable=AsyncMock, side_effect=[None, mock_room]):
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        assert result == "earth_arkhamcity_northside_intersection_derby_high"
 
 
 @pytest.mark.asyncio
@@ -399,15 +378,12 @@ async def test_determine_spawn_room_fallback_not_found(npc_startup_service: NPCS
     mock_npc_def.name = "TestNPC"
     mock_npc_def.room_id = None
     mock_npc_def.sub_zone_id = None
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_persistence = MagicMock()
-        mock_persistence.get_room_by_id = MagicMock(return_value=None)
-        mock_instance.async_persistence = mock_persistence
-        _assign_container_get_instance(mock_container, MagicMock(return_value=mock_instance))
-        with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=None):
-            result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-            assert result is None
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id = MagicMock(return_value=None)
+    npc_startup_service._async_persistence = mock_persistence  # #679: injected, not via container
+    with patch("asyncio.to_thread", new_callable=AsyncMock, return_value=None):
+        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+        assert result is None
 
 
 @pytest.mark.asyncio
@@ -415,21 +391,21 @@ async def test_determine_spawn_room_exception(npc_startup_service: NPCStartupSer
     """Test _determine_spawn_room() handles exceptions gracefully."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        _assign_container_get_instance(mock_container, MagicMock(side_effect=Exception("Container error")))
-        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result is None
+    mock_persistence = MagicMock()
+    mock_persistence.warmup_room_cache = AsyncMock(side_effect=Exception("Persistence error"))
+    npc_startup_service._async_persistence = mock_persistence
+    result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+    assert result is None
 
 
 @pytest.mark.asyncio
 async def test_determine_spawn_room_no_container(npc_startup_service: NPCStartupService) -> None:
-    """Test _determine_spawn_room() handles None container."""
+    """Test _determine_spawn_room() handles no async_persistence available."""
     mock_npc_def = MagicMock()
     mock_npc_def.name = "TestNPC"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        _assign_container_get_instance(mock_container, MagicMock(return_value=None))
-        result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
-        assert result is None
+    npc_startup_service._async_persistence = None
+    result: str | None = await npc_startup_service._determine_spawn_room(mock_npc_def)
+    assert result is None
 
 
 @pytest.mark.asyncio
@@ -546,11 +522,9 @@ async def test_spawn_arena_npcs_spawns_each_spawned_definition(npc_startup_servi
     )
     mock_instance.spawn_npc_instance = spawn_inst
 
-    with patch("server.container.ApplicationContainer") as mock_ac:
-        inner = MagicMock(async_persistence=MagicMock(warmup_room_cache=AsyncMock()))
-        _assign_container_get_instance(mock_ac, MagicMock(return_value=inner))
-        with patch("server.services.npc_startup_service.random.choice", return_value=arena_room):
-            result = await npc_startup_service._spawn_arena_npcs([npc_def], required, optional, mock_instance)
+    npc_startup_service._async_persistence = MagicMock(warmup_room_cache=AsyncMock())  # #679: injected
+    with patch("server.services.npc_startup_service.random.choice", return_value=arena_room):
+        result = await npc_startup_service._spawn_arena_npcs([npc_def], required, optional, mock_instance)
 
     assert result["attempted"] == 1
     assert result["spawned"] == 1

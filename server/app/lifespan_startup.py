@@ -28,7 +28,6 @@ from ..services.lucidity_service import LucidityService
 from ..services.nats_subject_manager import nats_subject_manager
 from ..services.npc_instance_service import initialize_npc_instance_service
 from ..services.npc_service import NPCService
-from ..services.npc_startup_service import get_npc_startup_service
 from ..services.passive_lucidity_flux_service import PassiveLucidityFluxService
 from ..services.player_combat_service import PlayerCombatService
 from ..services.player_death_service import PlayerDeathService
@@ -405,12 +404,12 @@ def _log_npc_startup_errors(startup_results: dict[str, object]) -> None:
         logger.warning("Startup spawning error", error=str(error))
 
 
-async def initialize_npc_startup_spawning(_app: FastAPI) -> None:
+async def initialize_npc_startup_spawning(app: FastAPI) -> None:
     """Initialize and run NPC startup spawning."""
     logger.info("Starting NPC startup spawning process")
     try:
         await _ensure_room_cache_before_npc_startup()
-        startup_service = get_npc_startup_service()
+        startup_service = app.state.container.npc_startup_service
         startup_results = await startup_service.spawn_npcs_on_startup()
         logger.info(
             "NPC startup spawning completed",

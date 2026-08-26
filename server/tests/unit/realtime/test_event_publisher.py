@@ -4,7 +4,7 @@ Unit tests for event publisher.
 Tests the EventPublisher class.
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -212,12 +212,8 @@ async def test_publish_returns_false_when_nats_publish_fails(mock_nats_service, 
     assert await publisher.publish_game_tick_event() is False
 
 
-def test_get_async_persistence_handles_container_failure(mock_nats_service, mock_subject_manager):
-    """Container lookup failures should leave async_persistence unset."""
+def test_get_async_persistence_returns_none_when_unset(mock_nats_service, mock_subject_manager):
+    """#679: async_persistence is injected at construction (no container lookup at all now);
+    unset stays unset."""
     publisher = EventPublisher(mock_nats_service, mock_subject_manager)
-    publisher._async_persistence = None
-    with patch(
-        "server.container.ApplicationContainer.get_instance",
-        side_effect=RuntimeError("no container"),
-    ):
-        assert publisher._get_async_persistence() is None
+    assert publisher._get_async_persistence() is None

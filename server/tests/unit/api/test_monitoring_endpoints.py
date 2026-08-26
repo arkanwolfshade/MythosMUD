@@ -14,7 +14,7 @@ from server.api.monitoring import (
     _resolve_cache_manager_from_request,
     _resolve_connection_manager_from_request,
     _resolve_event_bus_from_request,
-    _resolve_memory_leak_collector,
+    _resolve_memory_leak_collector_from_request,
     force_memory_cleanup,
     get_cache_metrics,
     get_connection_health_stats,
@@ -35,7 +35,6 @@ from server.api.monitoring import (
 from server.exceptions import LoggedHTTPException
 from server.game.movement_monitor import MovementMonitor
 from server.models.health import HealthResponse, HealthStatus
-from server.monitoring.memory_leak_metrics import MemoryLeakMetricsCollector
 
 
 def _request_with_container(**attrs: MagicMock | None) -> MagicMock:
@@ -162,7 +161,6 @@ def _connection_manager_stub() -> MagicMock:
 @pytest.mark.asyncio
 async def test_get_memory_stats_with_leak_collector() -> None:
     cm = _connection_manager_stub()
-    req = _request_with_container(connection_manager=cm)
     mock_coll: MagicMock = MagicMock()
     collect_m: MagicMock = MagicMock(
         return_value={"connection": {}, "event": {}, "cache": {}, "task": {}, "nats": {}},
@@ -170,9 +168,9 @@ async def test_get_memory_stats_with_leak_collector() -> None:
     check_alerts_m: MagicMock = MagicMock(return_value=[])
     mock_coll.collect_all_metrics = collect_m
     mock_coll.check_alerts = check_alerts_m
+    req = _request_with_container(connection_manager=cm, memory_leak_collector=mock_coll)
     with patch("server.api.monitoring.resolve_connection_manager", return_value=cm):
-        with patch("server.api.monitoring._resolve_memory_leak_collector", return_value=mock_coll):
-            out = await get_memory_stats(req)
+        out = await get_memory_stats(req)
     collect_m.assert_called()
     assert out.timestamp
 
@@ -180,14 +178,11 @@ async def test_get_memory_stats_with_leak_collector() -> None:
 @pytest.mark.asyncio
 async def test_get_memory_stats_leak_collector_warning_branch() -> None:
     cm = _connection_manager_stub()
-    req = _request_with_container(connection_manager=cm)
-
-    def _boom() -> None:
-        raise RuntimeError("no collector")
-
+    # #679: no collector on the container -- the resolver raises, caught by the endpoint's
+    # try/except so the response still succeeds without memory-leak metrics.
+    req = _request_with_container(connection_manager=cm, memory_leak_collector=None)
     with patch("server.api.monitoring.resolve_connection_manager", return_value=cm):
-        with patch("server.api.monitoring._resolve_memory_leak_collector", side_effect=_boom):
-            out = await get_memory_stats(req)
+        out = await get_memory_stats(req)
     assert out.timestamp
 
 
@@ -207,17 +202,16 @@ async def test_memory_alerts_and_force_cleanup() -> None:
 @pytest.mark.asyncio
 async def test_dual_connection_and_performance_and_health_stats() -> None:
     cm = _connection_manager_stub()
-    req = _request_with_container(connection_manager=cm)
     mock_coll: MagicMock = MagicMock()
     collect_m: MagicMock = MagicMock(return_value={"connection": {}})
     check_alerts_m: MagicMock = MagicMock(return_value=["a"])
     mock_coll.collect_all_metrics = collect_m
     mock_coll.check_alerts = check_alerts_m
+    req = _request_with_container(connection_manager=cm, memory_leak_collector=mock_coll)
     with patch("server.api.monitoring.resolve_connection_manager", return_value=cm):
-        with patch("server.api.monitoring._resolve_memory_leak_collector", return_value=mock_coll):
-            d = await get_dual_connection_stats(req)
-            p = await get_performance_stats(req)
-            h = await get_connection_health_stats(req)
+        d = await get_dual_connection_stats(req)
+        p = await get_performance_stats(req)
+        h = await get_connection_health_stats(req)
     assert d.timestamp == 0.0
     assert p.timestamp == 0.0
     assert h.timestamp == 0.0
@@ -361,25 +355,16 @@ async def test_get_memory_leak_metrics_endpoint() -> None:
     coll.collect_all_metrics = collect_m
     coll.calculate_growth_rates = growth_m
     coll.check_alerts = alerts_m
-    with patch("server.api.monitoring._resolve_memory_leak_collector", return_value=coll):
-        out = await get_memory_leak_metrics(MagicMock(spec=Request))
+    req = _request_with_container(memory_leak_collector=coll)
+    out = await get_memory_leak_metrics(req)
     assert out.timestamp == 1.0
 
 
-def test_resolve_memory_leak_collector_singleton_resets_with_patch() -> None:
-    import server.api.monitoring as mon  # noqa: PLC0415
-
-    prev: MemoryLeakMetricsCollector | None = cast(
-        MemoryLeakMetricsCollector | None,
-        mon._memory_leak_collector_instance,  # noqa: SLF001
-    )
-    try:
-        mon._memory_leak_collector_instance = None  # noqa: SLF001
-        c1 = cast(MemoryLeakMetricsCollector, _resolve_memory_leak_collector())
-        c2 = cast(MemoryLeakMetricsCollector, _resolve_memory_leak_collector())
-        assert c1 is c2
-    finally:
-        mon._memory_leak_collector_instance = prev  # noqa: SLF001
+def test_resolve_memory_leak_collector_from_request() -> None:
+    """#679: collector is resolved from request.app.state.container, not a module singleton."""
+    coll: MagicMock = MagicMock()
+    req = _request_with_container(memory_leak_collector=coll)
+    assert _resolve_memory_leak_collector_from_request(req) is coll
 
 
 @pytest.mark.asyncio
@@ -422,10 +407,9 @@ async def test_get_health_status_healthy_returns_model() -> None:
     hs.generate_alerts = alerts_m
     hs.get_server_uptime = uptime_m
 
-    req = _request_with_container(connection_manager=cm)
-    with patch("server.api.monitoring.get_health_service", return_value=hs):
-        with patch("importlib.metadata.version", return_value="0.test"):
-            out = await get_health_status(req)
+    req = _request_with_container(connection_manager=cm, health_service=hs)
+    with patch("importlib.metadata.version", return_value="0.test"):
+        out = await get_health_status(req)
     assert isinstance(out, HealthResponse)
     assert out.status == HealthStatus.HEALTHY
 

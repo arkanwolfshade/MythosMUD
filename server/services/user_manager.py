@@ -34,15 +34,24 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
     chat_logger: ChatLogger
     data_dir: Path
     _mute_cache_ttl: timedelta
+    _async_persistence: AsyncPersistenceLayer | None
 
-    def __init__(self, data_dir: Path | None = None, mute_cache_ttl: int = 300) -> None:
+    def __init__(
+        self,
+        data_dir: Path | None = None,
+        mute_cache_ttl: int = 300,
+        async_persistence: AsyncPersistenceLayer | None = None,
+    ) -> None:
         """
         Initialize the user manager.
 
         Args:
             data_dir: Directory for player-specific mute files
             mute_cache_ttl: Cache TTL in seconds (default: 5 minutes)
+            async_persistence: Optional async persistence layer for admin-status lookups (#679:
+                injected by GameBundle instead of reached via ApplicationContainer.get_instance())
         """
+        self._async_persistence = async_persistence
         # Player mute storage: {player_id: {target_id: mute_info}}
         # Using UUID objects as keys for type safety and consistency
         self._player_mutes: dict[uuid.UUID, dict[uuid.UUID, dict[str, object]]] = {}
@@ -106,12 +115,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             player_id_uuid = self._normalize_to_uuid(player_id)
 
             # Update database
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            ap_layer: object | None = getattr(container, "async_persistence", None) if container else None
+            ap_layer = self._async_persistence
             if ap_layer:
-                persistence = cast(AsyncPersistenceLayer, ap_layer)
+                persistence = ap_layer
                 player = await persistence.get_player_by_id(player_id_uuid)
                 if player:
                     player.set_admin_status(True)
@@ -153,12 +159,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
             player_id_uuid = self._normalize_to_uuid(player_id)
 
             # Update database
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            ap_layer_rm: object | None = getattr(container, "async_persistence", None) if container else None
+            ap_layer_rm = self._async_persistence
             if ap_layer_rm:
-                persistence = cast(AsyncPersistenceLayer, ap_layer_rm)
+                persistence = ap_layer_rm
                 player = await persistence.get_player_by_id(player_id_uuid)
                 if player:
                     player.set_admin_status(False)
@@ -228,12 +231,9 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 return True
 
             # Check database if not in cache
-            from ..container import ApplicationContainer
-
-            container = ApplicationContainer.get_instance()
-            ap_layer_admin: object | None = getattr(container, "async_persistence", None) if container else None
+            ap_layer_admin = self._async_persistence
             if ap_layer_admin:
-                persistence = cast(AsyncPersistenceLayer, ap_layer_admin)
+                persistence = ap_layer_admin
                 player = await persistence.get_player_by_id(player_id_uuid)
             else:
                 player = None
@@ -299,7 +299,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
 
             # Store mute information (use UUID objects - convert to string only for JSON serialization)
-            mute_info = {
+            mute_info: dict[str, object] = {
                 "target_id": target_id_uuid,  # Store as UUID object
                 "target_name": target_name,
                 "muted_by": muter_id_uuid,  # Store as UUID object
@@ -445,7 +445,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
 
             # Store mute information
-            mute_info = {
+            mute_info: dict[str, object] = {
                 "channel": channel,
                 "muted_at": datetime.now(UTC),
                 "expires_at": expiry_time,
@@ -583,7 +583,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 expiry_time = datetime.now(UTC) + timedelta(minutes=duration_minutes)
 
             # Store global mute information (use UUID objects - convert to string only for JSON serialization)
-            mute_info = {
+            mute_info: dict[str, object] = {
                 "target_id": target_id_uuid,  # Store as UUID object
                 "target_name": target_name,
                 "muted_by": muter_id_uuid,  # Store as UUID object
@@ -1607,35 +1607,3 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         except Exception as e:  # pylint: disable=broad-except  # Catch-all for unexpected errors
             logger.error("Unexpected error cleaning up player mute data", error=str(e), error_type=type(e).__name__)
             return False
-
-
-def _get_proper_data_dir() -> Path:
-    """
-    Get the proper environment-aware data directory for user management.
-
-    Uses LOGGING_ENVIRONMENT from Pydantic config to determine the correct
-    environment subdirectory (local, unit_test, e2e_test, production).
-
-    AI: Environment separation prevents test data pollution.
-    """
-    from ..config import get_config
-
-    config = get_config()
-    environment = config.logging.environment
-
-    # Find the project root (where pyproject.toml is located)
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent
-    while project_root.parent != project_root:
-        if (project_root / "pyproject.toml").exists():
-            break
-        project_root = project_root.parent
-
-    # CRITICAL: Include environment in path for data isolation
-    # data/{environment}/user_management NOT data/user_management
-    data_path = project_root / "data" / environment / "user_management"
-    return data_path
-
-
-# Global user manager instance with environment-aware path resolution
-user_manager = UserManager(data_dir=_get_proper_data_dir())

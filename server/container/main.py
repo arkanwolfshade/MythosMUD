@@ -71,6 +71,8 @@ class ApplicationContainer:
     exception_tracker: Any
     monitoring_dashboard: Any
     log_aggregator: Any
+    memory_leak_collector: Any
+    health_service: Any
     holiday_service: Any
     schedule_service: Any
     mythos_tick_scheduler: Any
@@ -94,6 +96,7 @@ class ApplicationContainer:
     npc_lifecycle_manager: Any
     npc_spawning_service: Any
     npc_population_controller: Any
+    npc_startup_service: Any
     catatonia_registry: Any
     passive_lucidity_flux_service: Any
     mythos_time_consumer: Any
@@ -138,6 +141,8 @@ class ApplicationContainer:
         self.exception_tracker = None
         self.monitoring_dashboard = None
         self.log_aggregator = None
+        self.memory_leak_collector = None
+        self.health_service = None
         self.holiday_service = None
         self.schedule_service = None
         self.mythos_tick_scheduler = None
@@ -161,6 +166,7 @@ class ApplicationContainer:
         self.npc_lifecycle_manager = None
         self.npc_spawning_service = None
         self.npc_population_controller = None
+        self.npc_startup_service = None
         self.catatonia_registry = None
         self.passive_lucidity_flux_service = None
         self.mythos_time_consumer = None

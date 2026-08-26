@@ -4,6 +4,11 @@ Realtime bundle: NATS, connection manager, event handler, event publisher.
 Depends on CoreBundle (config, event_bus, task_registry, async_persistence).
 """
 
+# pyright: reportImportCycles=false
+# Reason: container/main.py imports this module (function-scoped) to construct RealtimeBundle;
+# this file only imports ApplicationContainer under TYPE_CHECKING for parameter annotations.
+# Same precedent as server/models/player.py and server/services/combat_service.py.
+
 from __future__ import annotations
 
 import asyncio
@@ -111,7 +116,7 @@ class RealtimeBundle:
             logger.info("NATS EventBus bridge enabled for distributed domain events")
         return nats_service
 
-    def _setup_nats_dependent_services(self) -> None:
+    def _setup_nats_dependent_services(self, async_persistence: Any) -> None:
         """Attach event publisher and message handler when NATS is available."""
         if not self.nats_service:
             self.event_publisher = None
@@ -122,7 +127,7 @@ class RealtimeBundle:
         from server.realtime.event_publisher import EventPublisher
         from server.realtime.nats_message_handler import NATSMessageHandler
 
-        self.event_publisher = EventPublisher(self.nats_service, subject_manager)
+        self.event_publisher = EventPublisher(self.nats_service, subject_manager, async_persistence=async_persistence)
         logger.info("Event publisher initialized")
         self.nats_message_handler = NATSMessageHandler(self.nats_service, subject_manager, self.connection_manager)
         logger.info("NATS message handler initialized with injected connection_manager")
@@ -152,7 +157,7 @@ class RealtimeBundle:
             connection_manager=self.connection_manager,
         )
 
-        self._setup_nats_dependent_services()
+        self._setup_nats_dependent_services(async_persistence)
         logger.info("Real-time communication initialized")
 
     async def shutdown(self, _container: ApplicationContainer) -> None:

@@ -14,7 +14,7 @@ and chaos in our digital realm.
 import asyncio
 import time
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import psutil
 
@@ -29,8 +29,6 @@ from ..models.health import (
 from ..realtime.connection_manager import resolve_connection_manager
 from ..structured_logging.enhanced_logging_config import get_logger
 
-if TYPE_CHECKING:
-    from ..realtime.connection_manager import ConnectionManager
 logger = get_logger(__name__)
 
 
@@ -42,12 +40,21 @@ class HealthService:
     including server metrics, database connectivity, and connection statistics.
     """
 
-    def __init__(self, connection_manager: Any | None = None) -> None:
+    def __init__(
+        self,
+        connection_manager: Any | None = None,
+        async_persistence: Any | None = None,
+        room_service: Any | None = None,
+    ) -> None:
         """
         Initialize the health service.
 
         Args:
             connection_manager: ConnectionManager instance (optional, for connection stats)
+            async_persistence: Async persistence layer for database health checks (#679: injected
+                by MonitoringBundle instead of reached via ApplicationContainer.get_instance())
+            room_service: Room service, used as a degraded-health fallback signal when
+                async_persistence is unavailable
 
         AI Agent: connection_manager injected via constructor to eliminate global singleton
         """
@@ -55,6 +62,8 @@ class HealthService:
         self.last_health_check: datetime | None = None
         self.health_check_count = 0
         self.connection_manager = connection_manager  # AI Agent: Injected dependency
+        self.async_persistence = async_persistence
+        self.room_service = room_service
 
         # Performance thresholds
         self.memory_threshold_mb = 1024  # 1GB
@@ -136,13 +145,8 @@ class HealthService:
     async def check_database_health_async(self) -> dict[str, Any]:
         """Async database health check."""
         try:
-            from ..container import ApplicationContainer
-
             start_time = time.time()
-            container = ApplicationContainer.get_instance()
-            if not container:
-                return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
-            async_persistence = getattr(container, "async_persistence", None)
+            async_persistence = self.async_persistence
             if async_persistence:
                 try:
                     query_start = time.time()
@@ -153,7 +157,7 @@ class HealthService:
                 except TimeoutError:
                     logger.warning("Database health check timed out")
                     return self._create_health_response(HealthStatus.UNHEALTHY, 0, self.database_timeout_ms)
-            if getattr(container, "room_service", None):
+            if self.room_service:
                 return self._create_health_response(HealthStatus.DEGRADED, 0, (time.time() - start_time) * 1000)
             return self._create_health_response(HealthStatus.UNHEALTHY, 0, None)
         except Exception as e:  # pylint: disable=broad-exception-caught  # noqa: B904  # Reason: Database health check errors unpredictable, must return fallback
@@ -163,17 +167,8 @@ class HealthService:
     def check_database_health(self) -> dict[str, Any]:
         """check_database_health."""
         try:
-            from ..container import ApplicationContainer
-
             start_time = time.time()
-            container = ApplicationContainer.get_instance()
-            if not container:
-                return {
-                    "status": HealthStatus.UNHEALTHY,
-                    "connection_count": 0,
-                    "last_query_time_ms": None,
-                }
-            async_persistence = getattr(container, "async_persistence", None)
+            async_persistence = self.async_persistence
             if async_persistence:
                 pool = getattr(async_persistence, "_pool", None)
                 if pool:
@@ -190,8 +185,7 @@ class HealthService:
                         "connection_count": pool_size,
                         "last_query_time_ms": query_time_ms,
                     }
-            room_service = getattr(container, "room_service", None)
-            if room_service:
+            if self.room_service:
                 return {
                     "status": HealthStatus.DEGRADED,  # Degraded because we can't validate connectivity
                     "connection_count": 0,
@@ -406,23 +400,3 @@ class HealthService:
         except Exception as e:
             logger.error("Health check failed", error=str(e), exc_info=True)
             raise
-
-
-# Global health service instance
-_health_service: HealthService | None = None  # pylint: disable=invalid-name  # Reason: Private module-level singleton, intentionally uses _ prefix
-
-
-def get_health_service(connection_manager: "ConnectionManager | None" = None) -> HealthService:
-    """
-    Get the global health service instance.
-
-    Args:
-        connection_manager: Optional ConnectionManager to bind to the service.
-            When provided, ensures the singleton tracks the current container-managed instance.
-    """
-    global _health_service  # pylint: disable=global-statement  # Reason: Singleton pattern requires global variable to maintain single instance across module scope
-    if _health_service is None:
-        _health_service = HealthService(connection_manager=connection_manager)
-    elif connection_manager is not None:
-        _health_service.connection_manager = connection_manager
-    return _health_service

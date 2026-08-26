@@ -5,7 +5,7 @@ Tests the PlayerDeathService class for managing player mortality and DP decay.
 """
 
 import uuid
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -320,22 +320,20 @@ def test_get_room_name_for_death_with_room(player_death_service):
     """Test _get_room_name_for_death() returns room name when available."""
     mock_room = MagicMock()
     mock_room.name = "Test Room"
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence.get_room_by_id.return_value = mock_room
-        mock_container.get_instance.return_value = mock_instance
-        result = player_death_service._get_room_name_for_death("room_001")
-        assert result == "Test Room"
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = mock_room
+    player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
+    result = player_death_service._get_room_name_for_death("room_001")
+    assert result == "Test Room"
 
 
 def test_get_room_name_for_death_no_room(player_death_service):
     """Test _get_room_name_for_death() returns room_id when room not found."""
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_instance = MagicMock()
-        mock_instance.async_persistence.get_room_by_id.return_value = None
-        mock_container.get_instance.return_value = mock_instance
-        result = player_death_service._get_room_name_for_death("room_001")
-        assert result == "room_001"
+    mock_persistence = MagicMock()
+    mock_persistence.get_room_by_id.return_value = None
+    player_death_service._async_persistence = mock_persistence  # #679: injected, not via container
+    result = player_death_service._get_room_name_for_death("room_001")
+    assert result == "room_001"
 
 
 def test_get_room_name_for_death_empty_location(player_death_service):
@@ -345,11 +343,10 @@ def test_get_room_name_for_death_empty_location(player_death_service):
 
 
 def test_get_room_name_for_death_no_container(player_death_service):
-    """Test _get_room_name_for_death() returns room_id when container unavailable."""
-    with patch("server.container.ApplicationContainer") as mock_container:
-        mock_container.get_instance.return_value = None
-        result = player_death_service._get_room_name_for_death("room_001")
-        assert result == "room_001"
+    """Test _get_room_name_for_death() returns room_id when async_persistence unavailable."""
+    player_death_service._async_persistence = None
+    result = player_death_service._get_room_name_for_death("room_001")
+    assert result == "room_001"
 
 
 def test_publish_death_event_with_event_bus(player_death_service, sample_player_id, mock_event_bus):

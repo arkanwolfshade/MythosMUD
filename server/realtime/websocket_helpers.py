@@ -6,7 +6,7 @@ This module contains utility functions used by the WebSocket handler.
 
 import json
 import uuid
-from collections.abc import Callable, Coroutine
+from collections.abc import Callable, Coroutine, Mapping, Sequence
 from typing import TYPE_CHECKING, Protocol, cast
 
 from fastapi import WebSocket, WebSocketDisconnect
@@ -25,6 +25,10 @@ class _PlayerServiceContainer(Protocol):
 class _AppStateForPlayerService(Protocol):
     container: _PlayerServiceContainer | None
     player_service: object | None
+
+
+class _MutePersistenceLoader(Protocol):
+    async def load_player_mutes_async(self, player_id: str) -> bool: ...  # pylint: disable=missing-function-docstring
 
 
 logger: BoundLogger = get_logger(__name__)
@@ -106,13 +110,19 @@ async def load_player_mute_data(player_id_str: str) -> None:
     """Load player mute data when they connect.
 
     AI: Uses async version to avoid blocking the event loop.
+    #679: resolves the container-owned UserManager instead of a module-level global.
     """
     try:
-        from ..services.user_manager import user_manager
+        from ..container import get_container
 
-        _ = await user_manager.load_player_mutes_async(player_id_str)
+        container = cast(object | None, get_container())
+        user_manager = cast(object | None, getattr(container, "user_manager", None)) if container else None
+        if user_manager is None:
+            logger.warning("UserManager not available for loading mute data", player_id=player_id_str)
+            return
+        _ = await cast(_MutePersistenceLoader, user_manager).load_player_mutes_async(player_id_str)
         logger.info("Loaded mute data", player_id=player_id_str)
-    except (ImportError, RuntimeError, AttributeError) as e:
+    except (ImportError, RuntimeError, AttributeError, TypeError) as e:
         logger.error("Error loading mute data", player_id=player_id_str, error=str(e))
 
 
@@ -124,7 +134,7 @@ def validate_occupant_name(name: object) -> bool:
     return not is_uuid
 
 
-def _accumulate_valid_occupant_name(occ: dict[str, object], room_id: str, occupant_names: list[str]) -> None:
+def _accumulate_valid_occupant_name(occ: Mapping[str, object], room_id: str, occupant_names: list[str]) -> None:
     """Parse one occupant row: append display name or log when it looks like a UUID."""
     raw = occ.get("player_name") or occ.get("name")
     name = raw if isinstance(raw, str) else None
@@ -136,7 +146,10 @@ def _accumulate_valid_occupant_name(occ: dict[str, object], room_id: str, occupa
     logger.warning("Skipping UUID as player name", name=name, room_id=room_id)
 
 
-async def get_occupant_names(room_occupants: list[dict[str, object]], room_id: str) -> list[str]:
+async def get_occupant_names(
+    room_occupants: Sequence[Mapping[str, object]] | None,
+    room_id: str,
+) -> list[str]:
     """Extract and validate occupant names from room occupants list."""
     occupant_names: list[str] = []
     try:
