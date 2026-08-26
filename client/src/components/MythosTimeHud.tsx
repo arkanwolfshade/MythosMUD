@@ -1,3 +1,7 @@
+// STUB: kept alive by MythosTimeHud.test.tsx only — carved out of the ui-v2 retirement cluster
+// (#690, ADR-022) because ui-v2/HeaderBar.tsx covers the clock/date but not the daypart/season/
+// witching-hour styling or the HolidayBanner below. Tracked in #699: decide whether to port this
+// into ui-v2 or retire it outright. Do not delete without resolving that issue first.
 import type { MythosHoliday, MythosTimeState } from '../types/mythosTime';
 import { formatMythosTime12Hour } from '../utils/mythosTime';
 

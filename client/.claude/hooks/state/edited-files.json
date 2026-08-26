@@ -1,8 +1,7 @@
 {
   "18651087-eccd-4683-80c2-551c9b33f45e": [
-    "C:\\projects\\MythosMUD\\client\\src\\components\\map\\AsciiNoise.tsx",
-    "C:\\projects\\MythosMUD\\client\\src\\utils\\lucidityTierRelay.ts",
-    "C:\\projects\\MythosMUD\\client\\src\\components\\ui-v2\\panels\\LocationPanel.tsx",
-    "C:\\projects\\MythosMUD\\client\\src\\utils\\directionHallucination.ts"
+    "C:\\projects\\MythosMUD\\client\\vite.vitestOptions.ts",
+    "C:\\projects\\MythosMUD\\docs\\architecture\\decisions\\ADR-022-ui-v2-client-transition.md",
+    "C:\\Users\\arkan\\AppData\\Local\\Temp\\claude\\C--projects-MythosMUD\\18651087-eccd-4683-80c2-551c9b33f45e\\scratchpad\\issue_690_updated_body.md"
   ]
 }
