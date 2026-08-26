@@ -283,6 +283,9 @@ jobs:
             echo "MYTHOSMUD_RESET_TOKEN_SECRET=${MYTHOSMUD_RESET_TOKEN_SECRET}" >> .env.unit_test
             echo "MYTHOSMUD_VERIFICATION_TOKEN_SECRET=${MYTHOSMUD_VERIFICATION_TOKEN_SECRET}" >> .env.unit_test
           fi
+      - name: Check OpenAPI spec and tag table are current
+        # No continue-on-error: a drifted spec/table must fail the build (#638, per ADR-022 §6).
+        run: .venv-ci/bin/python scripts/check_openapi_drift.py
       - name: Run tests with coverage
         run: |
           # pipefail: without it, this step's exit code is tee's (always 0), so a crash in

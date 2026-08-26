@@ -69,26 +69,35 @@ make openapi-spec
 ## 4. API Tag Organization
 
 **[SPEC]**
-Endpoints are grouped by tag in the specification:
+Endpoints are grouped by tag in the specification. This table is generated from the tags routes
+actually declare — do not hand-edit the rows between the markers below; edit `OPENAPI_TAGS` in
+`server/app/factory.py` and run `make openapi-spec` instead.
+
+<!-- BEGIN GENERATED: openapi-tags -- edit server/app/factory.py OPENAPI_TAGS, then run `make openapi-spec` -->
 
 | Tag | Description |
 |-----|-------------|
-| auth | JWT login, registration, user management |
-| users | User account operations (FastAPI Users) |
-| players | Player characters: create, list, select, delete, stats, effects |
-| professions | Character class and profession data |
-| game | Game state: enter game, movement, combat actions |
-| containers | Unified container system: environmental, wearable, corpse storage |
-| rooms | Room data and exploration |
-| maps | ASCII map rendering and exploration views |
-| realtime | WebSocket connection and real-time game events |
-| monitoring | Health checks, performance metrics, observability |
-| metrics | NATS and system metrics |
-| admin | Administrative endpoints: NPC management, teleport |
-| npc | NPC spawn and lifecycle administration |
-| nats | NATS subject management (admin) |
-| subjects | NATS subject inspection and management |
-| system | System-level monitoring and diagnostics |
+| auth | Authentication: JWT login, registration, user management. |
+| users | User account operations (FastAPI Users). |
+| players | Player characters: create, list, select, delete, stats, effects. |
+| professions | Character class and profession data. |
+| command | Unified command handler: parses and dispatches player commands. |
+| skills | Player skill assignment and progression. |
+| game | Game state: enter game, movement, combat actions. |
+| containers | Unified container system: environmental, wearable, corpse storage. |
+| rooms | Room data and exploration. |
+| maps | ASCII map rendering and exploration views. |
+| realtime | WebSocket connection and real-time game events. |
+| monitoring | Health checks, performance metrics, observability. |
+| metrics | NATS and system metrics. |
+| admin | Administrative endpoints: NPC management, teleport. |
+| npc | NPC spawn and lifecycle administration. |
+| dialogue | NPC dialogue definition administration. |
+| nats | NATS subject management (admin). |
+| subjects | NATS subject inspection and management. |
+| system | System-level monitoring and diagnostics. |
+
+<!-- END GENERATED: openapi-tags -->
 
 ---
 

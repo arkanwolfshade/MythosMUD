@@ -233,6 +233,8 @@ OPENAPI_TAGS = [
     {"name": "users", "description": "User account operations (FastAPI Users)."},
     {"name": "players", "description": "Player characters: create, list, select, delete, stats, effects."},
     {"name": "professions", "description": "Character class and profession data."},
+    {"name": "command", "description": "Unified command handler: parses and dispatches player commands."},
+    {"name": "skills", "description": "Player skill assignment and progression."},
     {"name": "game", "description": "Game state: enter game, movement, combat actions."},
     {"name": "containers", "description": "Unified container system: environmental, wearable, corpse storage."},
     {"name": "rooms", "description": "Room data and exploration."},
@@ -242,10 +244,10 @@ OPENAPI_TAGS = [
     {"name": "metrics", "description": "NATS and system metrics."},
     {"name": "admin", "description": "Administrative endpoints: NPC management, teleport."},
     {"name": "npc", "description": "NPC spawn and lifecycle administration."},
+    {"name": "dialogue", "description": "NPC dialogue definition administration."},
     {"name": "nats", "description": "NATS subject management (admin)."},
     {"name": "subjects", "description": "NATS subject inspection and management."},
     {"name": "system", "description": "System-level monitoring and diagnostics."},
-    {"name": "api", "description": "Base API utilities."},
 ]
 
 

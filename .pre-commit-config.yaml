@@ -102,6 +102,14 @@ repos:
         pass_filenames: true
         always_run: false
         stages: [pre-commit]
+      - id: openapi-drift-check
+        name: OpenAPI Spec/Tag Table Drift Check
+        entry: python scripts/check_openapi_drift.py
+        language: python
+        pass_filenames: false
+        always_run: false
+        files: ^(server/(api|app|command_handler_unified\.py)|docs/architecture/API_OPENAPI_SPECIFICATION\.md|docs/openapi/openapi\.json)
+        stages: [pre-commit]
         exclude: ^docs/examples/logging/
       - id: no-production-assert
         name: No assert in production server Python

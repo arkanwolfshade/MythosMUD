@@ -32,6 +32,80 @@ if env_local.exists():
 sys.path.insert(0, str(project_root))
 
 
+TAG_TABLE_START = "<!-- BEGIN GENERATED: openapi-tags -- edit server/app/factory.py OPENAPI_TAGS, then run `make openapi-spec` -->"  # noqa: E501
+TAG_TABLE_END = "<!-- END GENERATED: openapi-tags -->"
+TAG_TABLE_DOC = Path("docs") / "architecture" / "API_OPENAPI_SPECIFICATION.md"
+
+
+def _route_declared_tags(spec: dict[str, object]) -> list[str]:
+    """Tags actually declared by routes, in first-seen order. This is the authority."""
+    paths = spec.get("paths", {})
+    if not isinstance(paths, dict):
+        return []
+    seen: dict[str, None] = {}
+    for operations in paths.values():
+        if not isinstance(operations, dict):
+            continue
+        for operation in operations.values():
+            if not isinstance(operation, dict):
+                continue
+            for tag in operation.get("tags", []):
+                if isinstance(tag, str):
+                    seen[tag] = None
+    return list(seen)
+
+
+def _tag_descriptions(spec: dict[str, object]) -> dict[str, str]:
+    """name -> description, from the spec's top-level tags block (OPENAPI_TAGS)."""
+    tags = spec.get("tags", [])
+    if not isinstance(tags, list):
+        return {}
+    descriptions: dict[str, str] = {}
+    for entry in tags:
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str):
+            descriptions[entry["name"]] = str(entry.get("description", ""))
+    return descriptions
+
+
+def _render_tag_table(spec: dict[str, object]) -> str:
+    """Build the markdown table, failing loudly if a route tag has no description."""
+    route_tags = _route_declared_tags(spec)
+    descriptions = _tag_descriptions(spec)
+
+    undescribed = [t for t in route_tags if t not in descriptions]
+    if undescribed:
+        raise SystemExit(
+            f"OpenAPI tag(s) declared by routes but missing from OPENAPI_TAGS "
+            f"(server/app/factory.py): {', '.join(sorted(undescribed))}"
+        )
+
+    dead = [name for name in descriptions if name not in route_tags]
+    if dead:
+        raise SystemExit(
+            f"OPENAPI_TAGS entry(ies) not declared by any route "
+            f"(server/app/factory.py): {', '.join(sorted(dead))}"
+        )
+
+    lines = ["| Tag | Description |", "|-----|-------------|"]
+    for name in descriptions:
+        lines.append(f"| {name} | {descriptions[name]} |")
+    return "\n".join(lines)
+
+
+def _update_tag_table_doc(spec: dict[str, object]) -> None:
+    """Rewrite the generated tag table between its markers in the spec doc."""
+    doc_path = project_root / TAG_TABLE_DOC
+    content = doc_path.read_text(encoding="utf-8")
+    if TAG_TABLE_START not in content or TAG_TABLE_END not in content:
+        raise SystemExit(f"Generated tag table markers not found in {TAG_TABLE_DOC}")
+
+    before, rest = content.split(TAG_TABLE_START, 1)
+    _, after = rest.split(TAG_TABLE_END, 1)
+    table = _render_tag_table(spec)
+    new_content = f"{before}{TAG_TABLE_START}\n\n{table}\n\n{TAG_TABLE_END}{after}"
+    doc_path.write_text(new_content, encoding="utf-8", newline="\n")
+
+
 def _sanitize_token_examples(obj: object) -> object:
     """Replace auth token examples with clearly fake placeholders."""
     if isinstance(obj, dict):
@@ -53,6 +127,8 @@ def main() -> int:
 
     app = create_app()
     spec = _sanitize_token_examples(app.openapi())
+    if not isinstance(spec, dict):
+        raise SystemExit("app.openapi() did not produce a JSON object")
 
     out_dir = project_root / "docs" / "openapi"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -64,6 +140,10 @@ def main() -> int:
         _ = f.write(rendered.rstrip("\n") + "\n")
 
     print(f"OpenAPI spec written to {out_path}")
+
+    _update_tag_table_doc(spec)
+    print(f"Tag table regenerated in {TAG_TABLE_DOC}")
+
     return 0
 
 
