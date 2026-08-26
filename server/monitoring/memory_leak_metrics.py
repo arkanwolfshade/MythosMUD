@@ -25,8 +25,19 @@ class MemoryLeakMetricsCollector:
     growth rate calculation, and alerting threshold checking.
     """
 
-    def __init__(self) -> None:
-        """Initialize the memory leak metrics collector."""
+    def __init__(self, event_bus: Any | None = None, nats_service: Any | None = None) -> None:
+        """Initialize the memory leak metrics collector.
+
+        Args:
+            event_bus: Optional event bus for collect_event_metrics() (#636: injected by
+                MonitoringBundle instead of reached via ApplicationContainer.get_instance()).
+                Falls back to a container lookup when not provided -- used by the standalone
+                get_monitoring_dashboard() singleton, which is unaffected by this change.
+            nats_service: Optional NATS service for collect_nats_metrics(), same fallback.
+        """
+        self._event_bus = event_bus
+        self._nats_service = nats_service
+
         # Track metrics history (last 100 measurements)
         self._history: deque[dict[str, Any]] = deque(maxlen=100)
 
@@ -104,13 +115,14 @@ class MemoryLeakMetricsCollector:
             Dictionary with event metrics
         """
         try:
-            from ..container import ApplicationContainer
+            event_bus = self._event_bus
+            if event_bus is None:
+                from ..container import ApplicationContainer
 
-            container = ApplicationContainer.get_instance()
-            if not container or not hasattr(container, "event_bus") or not container.event_bus:
+                container = ApplicationContainer.get_instance()
+                event_bus = getattr(container, "event_bus", None) if container else None
+            if not event_bus:
                 return {"error": "EventBus not available"}
-
-            event_bus = container.event_bus
             subscriber_counts = event_bus.get_all_subscriber_counts()
             lifecycle_metrics = event_bus.get_subscriber_lifecycle_metrics()
             subscriber_stats = event_bus.get_subscriber_stats()  # Task 2: Event Subscriber Cleanup
@@ -186,13 +198,14 @@ class MemoryLeakMetricsCollector:
             Dictionary with NATS metrics
         """
         try:
-            from ..container import ApplicationContainer
+            nats_service = self._nats_service
+            if nats_service is None:
+                from ..container import ApplicationContainer
 
-            container = ApplicationContainer.get_instance()
-            if not container or not hasattr(container, "nats_service") or not container.nats_service:
+                container = ApplicationContainer.get_instance()
+                nats_service = getattr(container, "nats_service", None) if container else None
+            if not nats_service:
                 return {"error": "NATSService not available"}
-
-            nats_service = container.nats_service
             active_subscriptions = nats_service.get_active_subscriptions()
 
             return {

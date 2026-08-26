@@ -1,6 +1,6 @@
 # Database Access Patterns
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-25
 
 ---
 
@@ -46,9 +46,29 @@ The codebase currently uses two database access patterns:
 - Raw SQL queries with parameterized placeholders (`$1`, `$2`, etc.)
 - Connection pooling with configurable pool size
 - Non-blocking event loop operations
-- Access via `ApplicationContainer.async_persistence` (container from `server/container/` package)
+- Exposed as `ApplicationContainer.async_persistence`; how a service reaches it depends on whether the
+  container constructs that service (see ADR-002 §3's injection-vs-service-location rule)
 
-**Example**:
+**Example — service constructed by a bundle (the common case)**: accept `async_persistence` as a
+constructor parameter, injected at the bundle's construction site. Never reach into
+`ApplicationContainer.get_instance()` from inside such a service — see
+`docs/CONTAINER_INJECTION_AUDIT.md`.
+
+```python
+class MyService:
+    def __init__(self, async_persistence: AsyncPersistenceLayer) -> None:
+        self._async_persistence = async_persistence
+
+    async def get_player(self, player_id: uuid.UUID) -> Player | None:
+        return await self._async_persistence.get_player_by_id(player_id)
+
+
+# server/container/bundles/my_bundle.py
+self.my_service = MyService(async_persistence=container.async_persistence)
+```
+
+**Example — a domain entity, mixin, or free function the container does not construct** (sanctioned
+service location; see ADR-002 §3):
 
 ```python
 from server.container import ApplicationContainer  # server/container/ package
@@ -344,3 +364,4 @@ prefer the ORM for new work, lest you summon the N+1 query demon."*
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-25 | AsyncPersistenceLayer example (§3) split into constructed-by-container (inject) vs sanctioned-service-location cases, per ADR-002 v1.1.0's rule (#636) -- the prior single example taught the anti-pattern as the default |

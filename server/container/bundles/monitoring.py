@@ -52,7 +52,10 @@ class MonitoringBundle:
 
         self.performance_monitor = PerformanceMonitor()
         self.exception_tracker = ExceptionTracker()
-        self.memory_leak_collector = MemoryLeakMetricsCollector()
+        self.memory_leak_collector = MemoryLeakMetricsCollector(
+            event_bus=getattr(container, "event_bus", None),
+            nats_service=getattr(container, "nats_service", None),
+        )
         self.monitoring_dashboard = MonitoringDashboard(memory_leak_collector=self.memory_leak_collector)
         self.log_aggregator = LogAggregator()
         self.health_service = HealthService(

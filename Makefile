@@ -130,6 +130,7 @@ lint:
 	$(PYTHON) scripts/check_asyncio_run_guardrails.py
 	$(PYTHON) scripts/lint_sql_guardrails.py
 	$(PYTHON) scripts/lint_raw_sql_in_python.py
+	$(PYTHON) scripts/lint_container_get_instance.py
 
 lint-sqlalchemy:
 	$(PYTHON) scripts/lint_sqlalchemy_async.py

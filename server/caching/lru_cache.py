@@ -9,7 +9,7 @@ import threading
 import time
 from collections import OrderedDict
 from collections.abc import Callable
-from typing import Any, TypeVar
+from typing import Any, Generic, TypeVar
 
 from ..structured_logging.enhanced_logging_config import get_logger
 
@@ -20,7 +20,7 @@ K = TypeVar("K")
 V = TypeVar("V")
 
 
-class LRUCache[K, V]:  # pylint: disable=too-many-instance-attributes  # Reason: LRU cache requires 8 instance attributes for configuration (max_size, ttl_seconds), storage (_cache), thread safety (_lock), and metrics tracking (_hits, _misses, _evictions, _expired_count); extracting metrics into a separate object would add unnecessary complexity
+class LRUCache(Generic[K, V]):  # noqa: UP046  # Reason: PEP 695 `class LRUCache[K, V]:` syntax is unparseable by the Jedi language server (IDE tooling), even though it's valid Python 3.12; Generic[K, V] is understood by every tool.  # pylint: disable=too-many-instance-attributes  # Reason: LRU cache requires 8 instance attributes for configuration (max_size, ttl_seconds), storage (_cache), thread safety (_lock), and metrics tracking (_hits, _misses, _evictions, _expired_count); extracting metrics into a separate object would add unnecessary complexity
     """
     Thread-safe LRU (Least Recently Used) cache implementation.
 
