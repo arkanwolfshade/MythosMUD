@@ -19,7 +19,6 @@ from fastapi.websockets import WebSocket
 
 from ..exceptions import (
     AuthenticationError,
-    ConfigurationError,
     DatabaseError,
     ErrorContext,
     MythosMUDError,
@@ -60,10 +59,6 @@ THIRD_PARTY_EXCEPTION_MAPPING = {
     # Validation exceptions
     "pydantic.ValidationError": ValidationError,
     "pydantic.error_wrappers.ValidationError": ValidationError,
-    # Configuration exceptions
-    "yaml.YAMLError": ConfigurationError,
-    "yaml.scanner.ScannerError": ConfigurationError,
-    "yaml.parser.ParserError": ConfigurationError,
 }
 
 

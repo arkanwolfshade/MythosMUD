@@ -16,7 +16,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from server.async_persistence import (
-    PLAYER_COLUMNS,
     PROFESSION_COLUMNS,
     AsyncPersistenceLayer,
     get_container_async_persistence,
@@ -347,13 +346,6 @@ def test_get_container_async_persistence_raises_when_not_initialized():
 
         with pytest.raises(RuntimeError, match="AsyncPersistenceLayer not initialized"):
             get_container_async_persistence()
-
-
-def test_player_columns_constant():
-    """Test PLAYER_COLUMNS constant is defined."""
-    assert isinstance(PLAYER_COLUMNS, str)
-    assert len(PLAYER_COLUMNS) > 0
-    assert "player_id" in PLAYER_COLUMNS
 
 
 def test_profession_columns_constant():

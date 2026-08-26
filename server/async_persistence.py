@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
-from .async_persistence_constants import PLAYER_COLUMNS, PROFESSION_COLUMNS, CreateItemInstanceInput
+from .async_persistence_constants import PROFESSION_COLUMNS, CreateItemInstanceInput
 from .async_persistence_direct_queries import fetch_professions, fetch_user_by_username_case_insensitive
 from .async_persistence_room_loader import RoomCacheLoader
 from .events import EventBus
@@ -47,7 +47,6 @@ logger = get_logger(__name__)
 __all__ = [
     "AsyncPersistenceLayer",
     "get_container_async_persistence",
-    "PLAYER_COLUMNS",
     "PROFESSION_COLUMNS",
 ]
 
@@ -99,9 +98,7 @@ class AsyncPersistenceLayer:  # pylint: disable=too-many-instance-attributes  # 
         self._experience_repo = ExperienceRepository(event_bus=event_bus)
         self._health_repo = HealthRepository(event_bus=event_bus)
         self._container_repo = ContainerRepository()
-        self._item_repo = ItemRepository(
-            None
-        )  # ItemRepository handles None persistence layer by using sync persistence internally if needed
+        self._item_repo = ItemRepository()
         self._player_effect_repo = PlayerEffectRepository()
         self._instance_manager: Any = None
         self._room_loader = RoomCacheLoader(self._room_cache, self._room_mappings, self._logger, event_bus)

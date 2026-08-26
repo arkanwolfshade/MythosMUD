@@ -10,16 +10,27 @@ are split across multiple modules for better maintainability.
 
 # pylint: disable=too-few-public-methods  # Reason: Logging configuration classes with focused responsibility, minimal public interface
 
+from __future__ import annotations
+
+# pyright: reportImportCycles=false
+# TYPE_CHECKING edge to LoggingConfig is for annotations only; the runtime import is acyclic --
+# importing server.config.models.security_logging (even just for typing, at module scope) forces
+# Python to execute the whole server.config.models package __init__ first, and several of its
+# modules (_helpers.py, cors.py, nats.py, server_db.py) import get_logger from *this* module --
+# while it is still mid-import. Keeping the import TYPE_CHECKING-only sidesteps that entirely.
 import json
 import logging
 import re
-from collections.abc import Iterable, Mapping
-from typing import cast
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, cast
 
 import structlog
 from structlog.contextvars import merge_contextvars
 from structlog.stdlib import BoundLogger, LoggerFactory
 from structlog.typing import EventDict, Processor
+
+if TYPE_CHECKING:
+    from server.config.models.security_logging import LoggingConfig
 
 # Import from refactored modules
 from server.structured_logging.logging_context import (
@@ -77,14 +88,6 @@ class _LoggingState:  # pylint: disable=too-few-public-methods  # Reason: State 
 
 
 _logging_state = _LoggingState()
-
-
-def _as_str_key_object_dict(raw: object) -> dict[str, object]:
-    """Normalize a nested config mapping to dict[str, object] for typing (no reportExplicitAny)."""
-    if not isinstance(raw, dict):
-        return {}
-    # JSON/YAML logging sections use string keys; cast narrows dict[Unknown, Unknown] for type checkers.
-    return dict(cast(dict[str, object], raw).items())
 
 
 def configure_enhanced_structlog(
@@ -196,7 +199,7 @@ def configure_enhanced_structlog(
 
 
 def setup_enhanced_logging(
-    config: Mapping[str, object],
+    config: LoggingConfig,
     player_service: object | None = None,
     *,
     force_reconfigure: bool = False,
@@ -205,11 +208,11 @@ def setup_enhanced_logging(
     Set up enhanced logging configuration with MDC and security features.
 
     Args:
-        config: Server configuration dictionary
+        config: Logging configuration
         player_service: Optional player service for GUID-to-name conversion
         force_reconfigure: When True, tear down existing handlers before reconfiguring
     """
-    config_signature = json.dumps(config, sort_keys=True, default=str)
+    config_signature = json.dumps(config.model_dump(), sort_keys=True, default=str)
 
     if _logging_state.initialized and not force_reconfigure:
         setup_logger = get_logger("server.structured_logging.setup")
@@ -219,16 +222,24 @@ def setup_enhanced_logging(
         )
         return
 
-    logging_config = _as_str_key_object_dict(config.get("logging", {}))
-    environment_val = logging_config.get("environment")
-    environment = detect_environment() if environment_val is None else str(environment_val)
-    level_val = logging_config.get("level", "INFO")
-    log_level = str(level_val) if level_val is not None else "INFO"
-    enable_async_raw = logging_config.get("enable_async", True)
-    enable_async = enable_async_raw if isinstance(enable_async_raw, bool) else True
+    logging_config: dict[str, object] = {
+        "environment": config.environment,
+        "level": config.level,
+        "format": config.format,
+        "log_base": config.log_base,
+        "rotation": {
+            "max_size": config.rotation_max_size,
+            "backup_count": config.rotation_backup_count,
+        },
+        "compression": config.compression,
+        "disable_logging": config.disable_logging,
+    }
+    environment = config.environment
+    log_level = config.level
+    enable_async = True  # no LoggingConfig field yet; preserves the historical flat-dict default
 
     # Check if logging should be disabled
-    disable_logging = bool(logging_config.get("disable_logging", False))
+    disable_logging = config.disable_logging
 
     if disable_logging:
         # Configure minimal logging without file handlers

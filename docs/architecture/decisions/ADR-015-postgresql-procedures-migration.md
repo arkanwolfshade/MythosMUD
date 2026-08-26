@@ -55,7 +55,8 @@ Migrate all Python–PostgreSQL data access to **stored procedures and functions
 
 - **Positive**: Single place for query logic; procedure return shape is a clear contract; fewer round-trips where procedures aggregate data (e.g. get_rooms_with_exits); test and dev DBs get procedures via the same script; integration tests can assert procedure return shape.
 - **Negative**: Procedure definitions must be kept in sync with table schema; DB type mismatches (e.g. json vs jsonb) surface at call sites until fixed in the procedure.
-- **Neutral**: SQLAlchemy ORM mappings remain for now where used by Alembic or other tooling; `postgres_adapter.py` can be deprecated or removed once unused.
+- **Neutral**: SQLAlchemy ORM mappings remain for now where used by Alembic or other tooling.
+- **[NOTE]** `postgres_adapter.py` was removed in #630 (2026-08): it had no remaining importer outside its own test.
 
 ## 6. Related ADRs
 

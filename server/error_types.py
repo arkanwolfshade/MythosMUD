@@ -59,7 +59,6 @@ class ErrorType(Enum):
 
     # Real-time Communication
     WEBSOCKET_ERROR = "websocket_error"
-    SSE_ERROR = "sse_error"  # Deprecated - kept for backward compatibility
     MESSAGE_PROCESSING_ERROR = "message_processing_error"
 
 
@@ -205,36 +204,6 @@ def create_websocket_error_response(
     }
 
 
-def create_sse_error_response(
-    error_type: ErrorType,
-    message: str,
-    user_friendly: str | None = None,
-    details: ErrorResponseDetailsInput | None = None,
-) -> RealtimeErrorResponse:
-    """
-    DEPRECATED: SSE connections are no longer supported.
-    This function is kept for backward compatibility but returns the same format as WebSocket errors.
-
-    Args:
-        error_type: The type of error
-        message: Technical error message
-        user_friendly: User-friendly error message (optional)
-        details: Additional error details (optional)
-
-    Returns:
-        Error response dictionary (same format as WebSocket errors)
-    """
-    normalized_details = _normalize_error_response_details(details)
-
-    return {
-        "type": "error",
-        "error_type": error_type.value,
-        "message": message,
-        "user_friendly": user_friendly or message,
-        "details": normalized_details,
-    }
-
-
 # Common error messages for consistency
 class ErrorMessages:  # pylint: disable=too-few-public-methods  # Reason: Utility class with class-level constants, no instance methods needed
     """Common error messages for consistent user experience."""
@@ -272,6 +241,5 @@ class ErrorMessages:  # pylint: disable=too-few-public-methods  # Reason: Utilit
 
     # Real-time
     WEBSOCKET_ERROR = "WebSocket connection error"
-    SSE_ERROR = "Server-Sent Events connection error"  # Deprecated - kept for backward compatibility
     MESSAGE_PROCESSING_ERROR = "Error processing message"
     RATE_LIMIT_EXCEEDED = "Rate limit exceeded. Please slow down your requests."

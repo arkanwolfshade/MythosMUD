@@ -10,7 +10,6 @@ from server.error_types import (
     ErrorMessages,
     ErrorSeverity,
     ErrorType,
-    create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
 )
@@ -115,28 +114,6 @@ def test_create_websocket_error_response_with_details():
     response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Connection closed", details=details)
 
     assert response["details"] == details
-
-
-def test_create_sse_error_response_basic():
-    """Test create_sse_error_response with basic parameters."""
-    response = create_sse_error_response(ErrorType.SSE_ERROR, "SSE connection failed")
-
-    assert response["type"] == "error"
-    assert response["error_type"] == "sse_error"
-    assert response["message"] == "SSE connection failed"
-    assert response["user_friendly"] == "SSE connection failed"
-    assert isinstance(response["details"], dict)
-
-
-def test_create_sse_error_response_same_format_as_websocket():
-    """Test that SSE error response has same format as WebSocket."""
-    ws_response = create_websocket_error_response(ErrorType.WEBSOCKET_ERROR, "Test message")
-    sse_response = create_sse_error_response(ErrorType.SSE_ERROR, "Test message")
-
-    # Should have same structure (except error_type value)
-    assert set(ws_response.keys()) == set(sse_response.keys())
-    assert ws_response["type"] == sse_response["type"]
-    assert ws_response["message"] == sse_response["message"]
 
 
 def test_error_messages_class_attributes():

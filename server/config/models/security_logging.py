@@ -2,8 +2,9 @@
 Security and logging configuration models.
 """
 
-from typing import Any
-
+# pyright: reportImportCycles=false
+# enhanced_logging_config.py has a TYPE_CHECKING-only edge back to this module's LoggingConfig
+# (for annotations only); the runtime import below is acyclic.
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -76,22 +77,3 @@ class LoggingConfig(BaseSettings):
         return v
 
     model_config = SettingsConfigDict(env_prefix="LOGGING_", case_sensitive=False, extra="ignore")
-
-    def to_legacy_dict(self) -> dict[str, Any]:
-        """
-        Convert to legacy logging config dict format for backward compatibility.
-
-        Returns a dict with the structure expected by logging_config.py
-        """
-        return {
-            "environment": self.environment,
-            "level": self.level,
-            "format": self.format,
-            "log_base": self.log_base,
-            "rotation": {
-                "max_size": self.rotation_max_size,
-                "backup_count": self.rotation_backup_count,
-            },
-            "compression": self.compression,
-            "disable_logging": self.disable_logging,
-        }
