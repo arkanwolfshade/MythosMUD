@@ -71,9 +71,13 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
         # Chat logger for AI processing
         self.chat_logger = chat_logger
 
-        # Data directory for player-specific mute files
+        # Data directory for player-specific mute files. Created lazily on first write
+        # (save_player_mutes), not here: eager creation made every UserManager() construction do
+        # real filesystem I/O relative to CWD, which is fine on a dev machine but broke in CI where
+        # data/ (a separate submodule checkout) isn't writable -- and most constructions are the
+        # message_filtering.py/chat_service.py/nats_message_handler_broadcast.py fallback default,
+        # which never touches a mute file at all.
         self.data_dir = data_dir or Path("data/user_management")
-        self.data_dir.mkdir(parents=True, exist_ok=True)
 
         # Mute data cache with TTL: {player_id: (load_time, data_loaded)}
         # Using UUID objects as keys for type safety and consistency
@@ -1531,6 +1535,7 @@ class UserManager:  # pylint: disable=too-many-instance-attributes  # Reason: Us
                 return False
 
             # Write to file atomically to prevent corruption
+            self.data_dir.mkdir(parents=True, exist_ok=True)
 
             # Create a temporary file
             temp_file = mute_file.with_suffix(".tmp")

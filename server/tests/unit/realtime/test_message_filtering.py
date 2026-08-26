@@ -4,7 +4,7 @@ Unit tests for message filtering.
 Tests the MessageFilteringHelper class.
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -227,11 +227,19 @@ def test_get_user_manager_custom(message_filtering_helper):
 
 
 def test_get_user_manager_global(message_filtering_helper):
-    """Test _get_user_manager() returns global user manager when custom not set."""
+    """Test _get_user_manager() falls back to a fresh UserManager when none was injected.
+
+    #679: no module-level global to fall back to anymore. UserManager's constructor does real
+    filesystem I/O (mkdir on its data_dir), which isn't guaranteed writable in every test
+    environment (e.g. CI's read-only data/ submodule mount) -- patch the class so this test
+    exercises the fallback wiring, not UserManager's own I/O.
+    """
     message_filtering_helper.user_manager = None
-    result = message_filtering_helper._get_user_manager()
-    # Should return global user_manager
-    assert result is not None
+    mock_instance = MagicMock()
+    with patch("server.services.user_manager.UserManager", return_value=mock_instance) as mock_cls:
+        result = message_filtering_helper._get_user_manager()
+    mock_cls.assert_called_once_with()
+    assert result is mock_instance
 
 
 @pytest.mark.asyncio
