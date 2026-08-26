@@ -13,7 +13,6 @@ export const vitestTestOptions: NonNullable<UserConfig['test']> = {
     'tests/**/*',
     'node_modules/**/*',
     '**/*.spec.tsx',
-    '**/components/__tests__/game-log-panel.test.tsx',
     '**/App.integration.test.tsx',
     '**/__tests__/CharacterCreationNavigation.test.tsx',
     '**/__tests__/App.logout.test.tsx',
