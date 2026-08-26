@@ -54,6 +54,7 @@ Each ADR follows this structure:
 | [ADR-018](ADR-018-new-game-session-replacement.md)               | New Game Session vs Grace Reconnect                  | Accepted | 2026-08-14 |
 | [ADR-020](ADR-020-websocket-authentication-and-csrf.md)          | WebSocket Authentication and CSRF                    | Accepted | 2026-08-19 |
 | [ADR-021](ADR-021-character-display-name-validation.md)          | Character Display Name Validation                    | Accepted | 2026-08-23 |
+| [ADR-022](ADR-022-ui-v2-client-transition.md)                    | ui-v2 Client Transition and Legacy Retirement         | Accepted | 2026-08-26 |
 
 ## 4. Related Documentation
 

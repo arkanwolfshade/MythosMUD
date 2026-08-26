@@ -8,7 +8,7 @@
   "rules": {
     "exports": "off",
     "types": "off",
-    "files": "off",
+    "files": "error",
     "devDependencies": "error",
     "dependencies": "error",
     "unlisted": "error",
