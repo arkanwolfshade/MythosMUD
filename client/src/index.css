@@ -36,18 +36,6 @@ body {
   /* Sepia ink accents (scholarly occult; pairs with tentacle backdrop) */
   --color-mythos-sepia: #a88e76;
   --color-mythos-sepia-muted: #84705c;
-  /* Aliases used by MonitoringPanel.css and similar islands */
-  --mythos-bg-primary: var(--color-mythos-terminal-background);
-  --mythos-bg-secondary: var(--color-mythos-terminal-surface);
-  --mythos-bg-tertiary: #121212;
-  --mythos-border-primary: var(--color-mythos-terminal-border);
-  --mythos-border-secondary: #2a2a2a;
-  --mythos-border-tertiary: #222;
-  --mythos-text-primary: var(--color-mythos-terminal-text);
-  --mythos-text-secondary: var(--color-mythos-terminal-text-secondary);
-  --mythos-accent-primary: var(--color-mythos-terminal-primary);
-  --mythos-accent-secondary: var(--color-mythos-terminal-secondary);
-
   --mythos-tentacle-sepia: rgba(168, 142, 118, 0.48);
   --mythos-tentacle-sepia-mid: rgba(150, 128, 104, 0.4);
   --mythos-tentacle-sepia-soft: rgba(132, 112, 92, 0.34);
