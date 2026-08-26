@@ -109,7 +109,6 @@ Bounded contexts are logical boundaries within which a particular model and voca
 - `user_manager`
 - `container_service`, `environmental_container_loader`, `wearable_container_service`, `inventory_service`, `inventory_mutation_guard`, `equipment_service`
 - `profession_cache_service`
-- `holiday_service`, `schedule_service`, `mythos_tick_scheduler`
 - `item_prototype_registry`, `item_factory`
 - `coordinate_generator`, `coordinate_validator`
 - `ascii_map_renderer`
@@ -214,9 +213,10 @@ Bounded contexts are logical boundaries within which a particular model and voca
 
 **Services / components:**
 
+- `holiday_service`, `schedule_service`, `mythos_tick_scheduler` <sup>[#635]</sup>
 - `mythos_time_consumer`
 
-**Inbound:** Depends on Core (event_bus), Game (holiday_service, schedule_service, room_service), NPC (npc_lifecycle_manager).
+**Inbound:** Depends on Core (async_persistence, event_bus, task_registry, config), Game (room_service), NPC (npc_lifecycle_manager).
 
 **Outbound:** Subscribes to time/tick events; may trigger room or NPC updates.
 
@@ -256,7 +256,7 @@ Core
  ├── Magic (async_persistence, Game.player_service, Combat.*)
  ├── NPC (event_bus, persistence, async_persistence)
  ├── Chat (persistence, Game.player_service, Game.user_manager, Realtime.nats_service)
- ├── Temporal (event_bus, Game.holiday/schedule/room_service, NPC.npc_lifecycle_manager)
+ ├── Temporal (async_persistence, event_bus, task_registry, Game.room_service, NPC.npc_lifecycle_manager)
  └── Monitoring (standalone)
 ```
 

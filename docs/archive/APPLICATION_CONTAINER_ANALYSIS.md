@@ -113,13 +113,13 @@ Keep a single **ApplicationContainer** as the public facade and singleton. Split
 | -------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **CoreBundle**       | `server/container/bundles/core.py`       | config, database_manager, task_registry, tracked_task_manager, event_bus, persistence, async_persistence                                                                                                                                            |
 | **RealtimeBundle**   | `server/container/bundles/realtime.py`   | connection_manager, real_time_event_handler, nats_service, nats_message_handler, event_publisher                                                                                                                                                    |
-| **GameBundle**       | `server/container/bundles/game.py`       | movement_service, exploration_service, player_service, room_service, user_manager, container_service, room_cache_service, profession_cache_service, holiday_service, schedule_service, mythos_tick_scheduler, item_prototype_registry, item_factory |
+| **GameBundle**       | `server/container/bundles/game.py`       | movement_service, exploration_service, player_service, room_service, user_manager, container_service, room_cache_service, profession_cache_service, item_prototype_registry, item_factory |
 | **MonitoringBundle** | `server/container/bundles/monitoring.py` | performance_monitor, exception_tracker, monitoring_dashboard, log_aggregator                                                                                                                                                                        |
 | **CombatBundle**     | `server/container/bundles/combat.py`     | player_combat_service, player_death_service, player_respawn_service, combat_service, catatonia_registry, passive_lucidity_flux_service                                                                                                              |
 | **NPCBundle**        | `server/container/bundles/npc.py`        | npc_lifecycle_manager, npc_spawning_service, npc_population_controller                                                                                                                                                                              |
 | **MagicBundle**      | `server/container/bundles/magic.py`      | spell_registry, spell_targeting_service, spell_effects, spell_learning_service, mp_regeneration_service, magic_service                                                                                                                              |
 | **ChatBundle**       | `server/container/bundles/chat.py`       | chat_service                                                                                                                                                                                                                                        |
-| **TimeBundle**       | `server/container/bundles/time.py`       | mythos_time_consumer                                                                                                                                                                                                                                |
+| **TimeBundle**       | `server/container/bundles/time.py`       | holiday_service, schedule_service, mythos_tick_scheduler, mythos_time_consumer <sup>[#635]</sup>                                                                                                                                                    |
 
 **ApplicationContainer** (orchestrator in `server/container/main.py`):
 
@@ -152,7 +152,7 @@ CoreBundle (config, db, tasks, event_bus, persistence)
     ├── RealtimeBundle (nats, connection_manager, event_handler, event_publisher, nats_message_handler)
     │       └── depends on: Core
     │
-    ├── GameBundle (movement, exploration, player, room, user_manager, container_service, caches, temporal, items)
+    ├── GameBundle (movement, exploration, player, room, user_manager, container_service, caches, items)
     │       └── depends on: Core, Realtime (for user_manager / nats_message_handler)
     │
     ├── MonitoringBundle
@@ -170,9 +170,16 @@ CoreBundle (config, db, tasks, event_bus, persistence)
     ├── ChatBundle
     │       └── depends on: Core, Game (player_service, user_manager), Realtime (nats_service)
     │
-    └── TimeBundle (mythos_time_consumer)
-            └── depends on: Core (event_bus), Game (holiday_service, schedule_service, room_service), NPCBundle (npc_lifecycle_manager)
+    └── TimeBundle (holiday_service, schedule_service, mythos_tick_scheduler, mythos_time_consumer)
+            └── depends on: Core (async_persistence, event_bus, task_registry, config), Game (room_service), NPCBundle (npc_lifecycle_manager)
 ```
+
+**[#635]** `holiday_service`/`schedule_service`/`mythos_tick_scheduler` moved from GameBundle into
+TimeBundle -- they were constructed in GameBundle but documented as the Temporal bounded context
+(`docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`), splitting that context across two bundles.
+GameBundle no longer has a dependency edge to TimeBundle for these; TimeBundle now owns them
+outright and only depends on Game for `room_service` (the mythos time consumer's own dependency,
+unrelated to the moved services).
 
 Initialization order: Core → Realtime → Game → Monitoring → Combat → NPC → (NATS/combat wiring) → Magic → Chat → Time. Shutdown: reverse order.
 

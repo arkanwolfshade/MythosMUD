@@ -10,39 +10,61 @@ from server.time.time_service import MythosChronicle, _ensure_utc, _season_for_m
 
 
 def test_time_bundle_attrs() -> None:
-    assert TIME_ATTRS == ("mythos_time_consumer",)
+    # #635: holiday_service/schedule_service/mythos_tick_scheduler moved here from GameBundle --
+    # the Temporal bounded context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md) now lives in
+    # exactly one bundle.
+    assert TIME_ATTRS == ("holiday_service", "schedule_service", "mythos_tick_scheduler", "mythos_time_consumer")
+
+
+def _time_bundle_container() -> MagicMock:
+    container = MagicMock()
+    container.config.logging.environment = "unit_test"
+    container.async_persistence = MagicMock()
+    container.event_bus = MagicMock()
+    container.task_registry = MagicMock()
+    container.room_service = MagicMock()
+    container.npc_lifecycle_manager = MagicMock()
+    return container
 
 
 @pytest.mark.asyncio
 async def test_time_bundle_initialize_with_dependencies() -> None:
     bundle = TimeBundle()
-    container = MagicMock()
-    container.event_bus = MagicMock()
-    container.holiday_service = MagicMock()
-    container.schedule_service = MagicMock()
-    container.room_service = MagicMock()
-    container.npc_lifecycle_manager = MagicMock()
+    container = _time_bundle_container()
 
-    with patch("server.time.time_event_consumer.MythosTimeEventConsumer") as mock_consumer_cls:
-        with patch("server.time.time_service.get_mythos_chronicle", return_value=MagicMock()):
-            mock_consumer_cls.return_value = MagicMock()
-            await bundle.initialize(container)
+    with patch("server.services.holiday_service.HolidayService") as holiday_cls:
+        holiday_cls.return_value.collection.holidays = []
+        with patch("server.services.schedule_service.ScheduleService"):
+            with patch("server.time.tick_scheduler.MythosTickScheduler"):
+                with patch("server.time.time_event_consumer.MythosTimeEventConsumer") as mock_consumer_cls:
+                    with patch("server.time.time_service.get_mythos_chronicle", return_value=MagicMock()):
+                        mock_consumer_cls.return_value = MagicMock()
+                        await bundle.initialize(container)
 
+    assert bundle.holiday_service is not None
+    assert bundle.schedule_service is not None
+    assert bundle.mythos_tick_scheduler is not None
     assert bundle.mythos_time_consumer is not None
     mock_consumer_cls.assert_called_once()
 
 
 @pytest.mark.asyncio
 async def test_time_bundle_initialize_missing_dependencies() -> None:
+    """#635: holiday_service/schedule_service construct unconditionally now (no dependency on
+    event_bus), so a missing event_bus only skips the mythos_time_consumer, not the temporal
+    services themselves."""
     bundle = TimeBundle()
-    container = MagicMock()
+    container = _time_bundle_container()
     container.event_bus = None
-    container.holiday_service = MagicMock()
-    container.schedule_service = MagicMock()
-    container.room_service = MagicMock()
-    container.npc_lifecycle_manager = MagicMock()
 
-    await bundle.initialize(container)
+    with patch("server.services.holiday_service.HolidayService") as holiday_cls:
+        holiday_cls.return_value.collection.holidays = []
+        with patch("server.services.schedule_service.ScheduleService"):
+            with patch("server.time.tick_scheduler.MythosTickScheduler"):
+                with patch("server.time.time_service.get_mythos_chronicle", return_value=MagicMock()):
+                    await bundle.initialize(container)
+
+    assert bundle.holiday_service is not None
     assert bundle.mythos_time_consumer is None
 
 

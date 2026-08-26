@@ -20,6 +20,7 @@ from server.container.bundles.monitoring import MONITORING_ATTRS, MonitoringBund
 from server.container.bundles.npc import NPC_ATTRS, NPCBundle
 from server.container.bundles.realtime import REALTIME_ATTRS, RealtimeBundle
 from server.container.bundles.time import TIME_ATTRS, TimeBundle
+from server.container.main import _flatten_bundle
 
 
 def test_bundle_attr_constants() -> None:
@@ -32,6 +33,14 @@ def test_bundle_attr_constants() -> None:
     assert "npc_lifecycle_manager" in NPC_ATTRS
     assert "connection_manager" in REALTIME_ATTRS
     assert "mythos_time_consumer" in TIME_ATTRS
+    assert "holiday_service" in TIME_ATTRS
+    assert "schedule_service" in TIME_ATTRS
+    assert "mythos_tick_scheduler" in TIME_ATTRS
+    # #635: temporal services moved out of GameBundle into TimeBundle -- the Temporal bounded
+    # context (docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md) should live in exactly one bundle.
+    assert "holiday_service" not in GAME_ATTRS
+    assert "schedule_service" not in GAME_ATTRS
+    assert "mythos_tick_scheduler" not in GAME_ATTRS
 
 
 def test_game_bundle_require_core_services_raises() -> None:
@@ -40,8 +49,8 @@ def test_game_bundle_require_core_services_raises() -> None:
         GameBundle._require_core_services(container)
 
 
-def test_game_bundle_resolve_hourly_holidays() -> None:
-    bundle = GameBundle()
+def test_time_bundle_resolve_hourly_holidays() -> None:
+    bundle = TimeBundle()
     assert bundle._resolve_hourly_holidays(datetime.now()) == []
     bundle.holiday_service = MagicMock()
     entry = MagicMock()
@@ -235,27 +244,78 @@ async def test_chat_bundle_initialize_missing_player_service() -> None:
         await bundle.initialize(container)
 
 
+def _time_bundle_container(**overrides: object) -> MagicMock:
+    """Container stand-in with the deps TimeBundle.initialize() needs, before overrides."""
+    container = MagicMock()
+    container.config.logging.environment = "unit_test"
+    container.async_persistence = MagicMock()
+    container.event_bus = MagicMock()
+    container.task_registry = MagicMock()
+    container.room_service = MagicMock()
+    container.npc_lifecycle_manager = MagicMock()
+    for key, value in overrides.items():
+        setattr(container, key, value)
+    return container
+
+
+def _patch_temporal_construction():
+    """Patch the classes TimeBundle._init_temporal_services() constructs."""
+    holiday_cls = patch("server.services.holiday_service.HolidayService")
+    sched_cls = patch("server.services.schedule_service.ScheduleService")
+    tick_cls = patch("server.time.tick_scheduler.MythosTickScheduler")
+    chronicle = patch("server.time.time_service.get_mythos_chronicle", return_value=MagicMock())
+    return holiday_cls, sched_cls, tick_cls, chronicle
+
+
 @pytest.mark.asyncio
 async def test_time_bundle_initialize_with_deps() -> None:
     bundle = TimeBundle()
-    container = MagicMock()
-    container.event_bus = MagicMock()
-    container.holiday_service = MagicMock()
-    container.schedule_service = MagicMock()
-    container.room_service = MagicMock()
-    container.npc_lifecycle_manager = MagicMock()
-    with patch("server.time.time_event_consumer.MythosTimeEventConsumer"):
-        with patch("server.time.time_service.get_mythos_chronicle", return_value=MagicMock()):
+    container = _time_bundle_container()
+    holiday_cls, sched_cls, tick_cls, chronicle = _patch_temporal_construction()
+    with holiday_cls as holiday_mock, sched_cls, tick_cls, chronicle:
+        holiday_mock.return_value.collection.holidays = []
+        with patch("server.time.time_event_consumer.MythosTimeEventConsumer"):
             await bundle.initialize(container)
+    assert bundle.holiday_service is not None
+    assert bundle.schedule_service is not None
+    assert bundle.mythos_tick_scheduler is not None
     assert bundle.mythos_time_consumer is not None
 
 
 @pytest.mark.asyncio
 async def test_time_bundle_initialize_missing_deps() -> None:
+    """#635: holiday_service/schedule_service construct unconditionally now, so the consumer's
+    'missing dependencies' case is driven by room_service/npc_lifecycle_manager, not by them."""
     bundle = TimeBundle()
-    container = MagicMock(event_bus=None, holiday_service=None)
-    await bundle.initialize(container)
+    container = _time_bundle_container(room_service=None, npc_lifecycle_manager=None)
+    holiday_cls, sched_cls, tick_cls, chronicle = _patch_temporal_construction()
+    with holiday_cls as holiday_mock, sched_cls, tick_cls, chronicle:
+        holiday_mock.return_value.collection.holidays = []
+        await bundle.initialize(container)
+    assert bundle.holiday_service is not None
     assert bundle.mythos_time_consumer is None
+
+
+@pytest.mark.asyncio
+async def test_time_bundle_attrs_flatten_onto_container() -> None:
+    """#635 regression: container.holiday_service/schedule_service/mythos_tick_scheduler must
+    resolve via _flatten_bundle(TimeBundle) after the move -- root-container attribute access
+    unchanged, per the issue's own acceptance criterion, not merely GameBundle no longer setting
+    them."""
+    bundle = TimeBundle()
+    container = _time_bundle_container()
+    holiday_cls, sched_cls, tick_cls, chronicle = _patch_temporal_construction()
+    with holiday_cls as holiday_mock, sched_cls, tick_cls, chronicle:
+        holiday_mock.return_value.collection.holidays = []
+        with patch("server.time.time_event_consumer.MythosTimeEventConsumer"):
+            await bundle.initialize(container)
+
+    _flatten_bundle(container, bundle, TIME_ATTRS)
+
+    assert container.holiday_service is bundle.holiday_service
+    assert container.schedule_service is bundle.schedule_service
+    assert container.mythos_tick_scheduler is bundle.mythos_tick_scheduler
+    assert container.holiday_service is not None
 
 
 @pytest.mark.asyncio
@@ -622,33 +682,31 @@ async def test_game_bundle_initialize_wiring() -> None:
                 with patch("server.game.follow_service.FollowService"):
                     with patch("server.services.player_position_service.PlayerPositionService"):
                         with patch("server.game.party_service.PartyService"):
-                            with patch("server.services.holiday_service.HolidayService") as holiday_cls:
-                                holiday_cls.return_value.collection.holidays = []
-                                holiday_cls.return_value.entry_count = 0
-                                with patch("server.services.schedule_service.ScheduleService") as sched_cls:
-                                    sched_cls.return_value.entry_count = 0
-                                    with patch("server.time.tick_scheduler.MythosTickScheduler"):
-                                        with patch("server.game.player_service.PlayerService"):
-                                            with patch("server.game.room_service.RoomService"):
-                                                with patch("server.services.user_manager.UserManager"):
-                                                    with patch("server.services.container_service.ContainerService"):
-                                                        with patch("server.game.skill_service.SkillService"):
-                                                            with patch("server.game.level_service.LevelService"):
-                                                                with patch("server.game.quest.QuestService"):
-                                                                    with patch(
-                                                                        "server.persistence.repositories.quest_definition_repository.QuestDefinitionRepository"
+                            with patch("server.game.player_service.PlayerService"):
+                                with patch("server.game.room_service.RoomService"):
+                                    with patch("server.services.user_manager.UserManager"):
+                                        with patch("server.services.container_service.ContainerService"):
+                                            with patch("server.game.skill_service.SkillService"):
+                                                with patch("server.game.level_service.LevelService"):
+                                                    with patch("server.game.quest.QuestService"):
+                                                        with patch(
+                                                            "server.persistence.repositories.quest_definition_repository.QuestDefinitionRepository"
+                                                        ):
+                                                            with patch(
+                                                                "server.persistence.repositories.quest_instance_repository.QuestInstanceRepository"
+                                                            ):
+                                                                with patch.object(
+                                                                    bundle,
+                                                                    "_initialize_item_services",
+                                                                    AsyncMock(),
+                                                                ):
+                                                                    with patch.object(
+                                                                        bundle,
+                                                                        "_initialize_caching_services",
                                                                     ):
-                                                                        with patch(
-                                                                            "server.persistence.repositories.quest_instance_repository.QuestInstanceRepository"
-                                                                        ):
-                                                                            with patch.object(
-                                                                                bundle,
-                                                                                "_initialize_item_services",
-                                                                                AsyncMock(),
-                                                                            ):
-                                                                                with patch.object(
-                                                                                    bundle,
-                                                                                    "_initialize_caching_services",
-                                                                                ):
-                                                                                    await bundle.initialize(container)
+                                                                        await bundle.initialize(container)
     assert bundle.player_service is not None
+    # #635: temporal services no longer exist on GameBundle at all
+    assert not hasattr(bundle, "holiday_service")
+    assert not hasattr(bundle, "schedule_service")
+    assert not hasattr(bundle, "mythos_tick_scheduler")
