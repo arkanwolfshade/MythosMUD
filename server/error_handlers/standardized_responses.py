@@ -362,8 +362,8 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         return self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
     def _handle_http_exception(
-        self, exc: HTTPException, include_details: bool, response_type: Literal["http", "websocket"]
-    ) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
+        self, exc: HTTPException, include_details: bool, _response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
         """Handle standard HTTPException instances."""
         # Map status code to error type
         error_type = self._map_status_code_to_error_type(exc.status_code)
@@ -390,8 +390,8 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         return JSONResponse(status_code=exc.status_code, content=response_data)
 
     def _handle_generic_exception(
-        self, exc: Exception, include_details: bool, response_type: Literal["http", "websocket"]
-    ) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
+        self, exc: Exception, include_details: bool, _response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
         """Handle generic exceptions."""
         error_type = ErrorType.INTERNAL_ERROR
         user_friendly = ErrorMessages.INTERNAL_ERROR
