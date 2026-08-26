@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.1.0** · MythosMUD · 2026-08-26
+**Version 1.2.0** · MythosMUD · 2026-08-26
 
 ---
 
@@ -104,12 +104,32 @@ it — stub-exempted per this section's policy, tracked in
 [#699](https://github.com/arkanwolfshade/MythosMUD/issues/699). Updated counts: **81 of 155**
 orphaned, **74** live. Cluster 1 is 26 files, not 27.
 
+**[NOTE]**
+Cluster 2's own removal PR (#691) found the issue's list undercounted the legacy `panels/` tree by
+7: `chatPanelChannelFilter.ts`, `chatPanelChannelVisibility.ts`, `chatPanelMessageClass.ts`,
+`chatPanelRuntimeUtils.ts`, `chatPanelUnreadBump.ts`, `chatPanelUnreadCounts.ts`, and
+`MonitoringPanel.css` — a closed loop with the listed 35, missed because the cluster tables were
+hand-assembled thematically and these `chatPanel*Utils`-style names read as shared infrastructure.
+Cluster 2 is 42 files, not 35. Unlike cluster 1's gap (three files just outside the scanned
+`client/src/components/` tree), this PR found a **second, farther-out scope gap**: two files in
+`src/utils/` (`gameLogFilter.ts`, `performanceTester.ts`) that were orphaned only by this cluster's
+own removals. `gameLogFilter.ts` was deleted with its test; `performanceTester.ts` was kept alive
+by porting its caller (`performance.test.tsx`) to benchmark `ui-v2` panels instead of the deleted
+legacy ones. Four real behaviour gaps were found (chat transcript export, chat statistics, chat
+history search, monitoring dashboard) and — unlike `MythosTimeHud`'s carve-out — **deleted, not
+stub-exempted**: each is tracked in its own decide-then-port issue
+([#706](https://github.com/arkanwolfshade/MythosMUD/issues/706),
+[#707](https://github.com/arkanwolfshade/MythosMUD/issues/707),
+[#708](https://github.com/arkanwolfshade/MythosMUD/issues/708),
+[#709](https://github.com/arkanwolfshade/MythosMUD/issues/709)) rather than adding four more
+permanent exceptions to the knip gate #694 is meant to enforce.
+
 **Removal clusters** (one issue each, filed alongside this ADR):
 
 | Cluster | Files | Contents | Issue |
 | --- | --- | --- | --- |
 | Top-level demo/test + legacy GameTerminal | 26 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
-| `panels/` chat & game-log family | 35 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*` | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
+| `panels/` chat & game-log family | 42 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*`, plus 7 `chatPanel*` satellite modules found during removal | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
 | `containers/` | 6 | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*` | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
 | `ui/` misc + stray singletons | 14 | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*` | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
 
@@ -140,3 +160,4 @@ what proves the retirement finished — not this ADR.
 | --- | --- | --- |
 | 1.0.0 | 2026-08-26 | Initial version. Records the ui-v2 transition decision and the legacy retirement plan for #637. |
 | 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
+| 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
