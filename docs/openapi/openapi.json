@@ -12154,6 +12154,14 @@
       "description": "Character class and profession data."
     },
     {
+      "name": "command",
+      "description": "Unified command handler: parses and dispatches player commands."
+    },
+    {
+      "name": "skills",
+      "description": "Player skill assignment and progression."
+    },
+    {
       "name": "game",
       "description": "Game state: enter game, movement, combat actions."
     },
@@ -12190,6 +12198,10 @@
       "description": "NPC spawn and lifecycle administration."
     },
     {
+      "name": "dialogue",
+      "description": "NPC dialogue definition administration."
+    },
+    {
       "name": "nats",
       "description": "NATS subject management (admin)."
     },
@@ -12200,10 +12212,6 @@
     {
       "name": "system",
       "description": "System-level monitoring and diagnostics."
-    },
-    {
-      "name": "api",
-      "description": "Base API utilities."
     }
   ]
 }

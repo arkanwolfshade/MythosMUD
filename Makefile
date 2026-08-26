@@ -91,6 +91,7 @@ help:
 	@echo ""
 	@echo "Documentation:"
 	@echo "  openapi-spec          - Generate OpenAPI spec to docs/openapi/openapi.json"
+	@echo "  openapi-check          - Regenerate OpenAPI spec + tag table, fail if either drifted"
 	@echo "  sync-obsidian-graphify - Sync graphify community wiki into Obsidian LLM vault"
 	@echo ""
 	@echo "Testing:"
@@ -254,6 +255,11 @@ openapi-spec:
 	@echo "Generating OpenAPI spec..."
 	$(UV) python scripts/generate_openapi_spec.py
 
+# Regenerates the OpenAPI spec + tag table and fails if either drifted from what's committed.
+.PHONY: openapi-check
+openapi-check:
+	$(UV) python scripts/check_openapi_drift.py
+
 # Sync graphify community wiki into data/MythosMUD-Obsidian/raw/graphify/
 sync-obsidian-graphify:
 	@echo "Syncing graphify wiki into Obsidian LLM vault..."
@@ -361,7 +367,7 @@ run-production:
 # still fail even on exit 0. Grepping tool "WARNING" strings is not a fail condition here.
 ALL_STAGES := format mypy lint lint-sqlalchemy \
 	$(CODACY_TOOL_STAGES) \
-	quality-fragmentation-guard check-postgresql build openapi-spec \
+	quality-fragmentation-guard check-postgresql build openapi-spec openapi-check \
 	test-client-coverage test-server-coverage \
 	sync-obsidian-graphify
 
