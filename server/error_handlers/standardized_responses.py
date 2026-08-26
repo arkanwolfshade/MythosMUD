@@ -15,7 +15,7 @@ by the chaos of inconsistent error reporting."
 # Reason: Standardized response handlers require multiple return statements for different error type handling.
 # Module slightly exceeds 550-line limit; refactoring would fragment cohesive error response logic.
 
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
@@ -26,7 +26,6 @@ from ..error_types import (
     ErrorSeverity,
     ErrorType,
     StandardizedErrorResponseDict,
-    create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
 )
@@ -117,7 +116,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         ErrorType.INTERNAL_ERROR: status.HTTP_500_INTERNAL_SERVER_ERROR,
         # Real-time communication
         ErrorType.WEBSOCKET_ERROR: status.HTTP_400_BAD_REQUEST,
-        ErrorType.SSE_ERROR: status.HTTP_400_BAD_REQUEST,
         ErrorType.MESSAGE_PROCESSING_ERROR: status.HTTP_400_BAD_REQUEST,
     }
 
@@ -150,7 +148,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         ErrorType.SYSTEM_ERROR: "System error occurred",
         ErrorType.INTERNAL_ERROR: ErrorMessages.INTERNAL_ERROR,
         ErrorType.WEBSOCKET_ERROR: ErrorMessages.WEBSOCKET_ERROR,
-        ErrorType.SSE_ERROR: ErrorMessages.SSE_ERROR,
         ErrorType.MESSAGE_PROCESSING_ERROR: ErrorMessages.MESSAGE_PROCESSING_ERROR,
     }
 
@@ -218,7 +215,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         return create_error_context(**context_data)
 
     def handle_exception(
-        self, exc: Exception, include_details: bool = False, response_type: str = "http"
+        self, exc: Exception, include_details: bool = False, response_type: Literal["http", "websocket"] = "http"
     ) -> JSONResponse:
         """
         Handle any exception and return a standardized error response.
@@ -226,7 +223,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         Args:
             exc: The exception to handle
             include_details: Whether to include detailed error information
-            response_type: Type of response ("http", "websocket", "sse")
+            response_type: Type of response ("http", "websocket")
 
         Returns:
             Standardized JSONResponse
@@ -248,7 +245,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
             logger.error("Error in StandardizedErrorResponse", error=str(e), exc_info=True)
             return self._create_fallback_response(exc, response_type)
 
-    def _handle_mythos_error(self, error: MythosMUDError, include_details: bool, response_type: str) -> JSONResponse:
+    def _handle_mythos_error(
+        self, error: MythosMUDError, include_details: bool, response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:
         """Handle MythosMUDError instances."""
         # Determine error type and status code
         error_type = self._determine_error_type_from_exception(error)
@@ -267,10 +266,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
             response_data = create_websocket_error_response(
                 error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
             )
-        elif response_type == "sse":
-            response_data = create_sse_error_response(
-                error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
-            )
         else:
             response_data = create_standard_error_response(
                 error_type=error_type,
@@ -285,7 +280,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         self,
         error: ValidationError,
         include_details: bool,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future use
-        response_type: str,  # pylint: disable=unused-argument  # Reason: Parameters used indirectly via handler
+        response_type: Literal["http", "websocket"],  # pylint: disable=unused-argument  # Reason: used indirectly via handler
     ) -> JSONResponse:
         """Handle Pydantic ValidationError instances."""
         # Use PydanticErrorHandler for consistent processing
@@ -299,7 +294,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         return JSONResponse(status_code=status_code, content=response_data)
 
     def _handle_logged_http_exception(
-        self, exc: LoggedHTTPException, include_details: bool, response_type: str
+        self, exc: LoggedHTTPException, include_details: bool, response_type: Literal["http", "websocket"]
     ) -> JSONResponse:
         """Handle LoggedHTTPException instances."""
         # Map status code to error type
@@ -321,10 +316,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         response_data: StandardizedErrorResponseDict
         if response_type == "websocket":
             response_data = create_websocket_error_response(
-                error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
-            )
-        elif response_type == "sse":
-            response_data = create_sse_error_response(
                 error_type=error_type, message=user_friendly, user_friendly=user_friendly, details=details
             )
         else:  # HTTP
@@ -370,7 +361,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
 
         return self.USER_FRIENDLY_MESSAGES.get(error_type, ErrorMessages.INTERNAL_ERROR)
 
-    def _handle_http_exception(self, exc: HTTPException, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
+    def _handle_http_exception(
+        self, exc: HTTPException, include_details: bool, response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle standard HTTPException instances."""
         # Map status code to error type
         error_type = self._map_status_code_to_error_type(exc.status_code)
@@ -396,7 +389,9 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
 
         return JSONResponse(status_code=exc.status_code, content=response_data)
 
-    def _handle_generic_exception(self, exc: Exception, include_details: bool, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
+    def _handle_generic_exception(
+        self, exc: Exception, include_details: bool, response_type: Literal["http", "websocket"]
+    ) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: response_type unused in this handler
         """Handle generic exceptions."""
         error_type = ErrorType.INTERNAL_ERROR
         user_friendly = ErrorMessages.INTERNAL_ERROR
@@ -520,7 +515,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
 
         return message
 
-    def _create_fallback_response(self, _exc: Exception, response_type: str) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: exc unused in fallback
+    def _create_fallback_response(self, _exc: Exception, response_type: Literal["http", "websocket"]) -> JSONResponse:  # pylint: disable=unused-argument  # Reason: exc unused in fallback
         """Create fallback error response when normal handling fails."""
         message = "An unexpected error occurred"
         user_friendly = "Please try again later"
@@ -528,13 +523,6 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
         response_data: StandardizedErrorResponseDict
         if response_type == "websocket":
             response_data = create_websocket_error_response(
-                error_type=ErrorType.INTERNAL_ERROR,
-                message=message,
-                user_friendly=user_friendly,
-                details={"fallback": True},
-            )
-        elif response_type == "sse":
-            response_data = create_sse_error_response(
                 error_type=ErrorType.INTERNAL_ERROR,
                 message=message,
                 user_friendly=user_friendly,
@@ -556,7 +544,7 @@ class StandardizedErrorResponse:  # pylint: disable=too-few-public-methods  # Re
 def create_standardized_error_response(
     request: Request | None = None,
     _include_details: bool = False,  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
-    _response_type: str = "http",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
+    _response_type: Literal["http", "websocket"] = "http",  # pylint: disable=unused-argument  # Reason: Parameter reserved for future response customization
 ) -> StandardizedErrorResponse:
     """
     Create a standardized error response handler.
@@ -564,7 +552,7 @@ def create_standardized_error_response(
     Args:
         request: Optional FastAPI request for context
         include_details: Whether to include detailed error information
-        response_type: Type of response ("http", "websocket", "sse")
+        response_type: Type of response ("http", "websocket")
 
     Returns:
         StandardizedErrorResponse instance
@@ -576,7 +564,7 @@ def handle_api_error(
     exc: Exception,
     request: Request | None = None,
     include_details: bool = False,
-    response_type: str = "http",
+    response_type: Literal["http", "websocket"] = "http",
 ) -> JSONResponse:
     """
     Convenience function to handle API errors with standardized responses.
@@ -585,7 +573,7 @@ def handle_api_error(
         exc: The exception to handle
         request: Optional FastAPI request for context
         include_details: Whether to include detailed error information
-        response_type: Type of response ("http", "websocket", "sse")
+        response_type: Type of response ("http", "websocket")
 
     Returns:
         Standardized JSONResponse

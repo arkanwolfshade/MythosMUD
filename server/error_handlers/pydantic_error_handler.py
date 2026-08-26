@@ -12,7 +12,7 @@ translated into terms the mortal mind can comprehend, lest madness take hold."
 # pylint: disable=too-many-return-statements  # Reason: Error handlers require multiple return statements for different error type handling and response generation
 
 from collections.abc import Sequence
-from typing import ClassVar, TypedDict, Unpack
+from typing import ClassVar, Literal, TypedDict, Unpack
 
 from pydantic import ValidationError
 
@@ -23,7 +23,6 @@ from ..error_types import (
     ErrorType,
     StandardizedErrorResponseDict,
     ValidationFieldErrorDetail,
-    create_sse_error_response,
     create_standard_error_response,
     create_websocket_error_response,
 )
@@ -107,7 +106,10 @@ class PydanticErrorHandler:
         self.context = context or create_error_context()
 
     def handle_validation_error(
-        self, error: ValidationError, model_class: type | None = None, response_type: str = "http"
+        self,
+        error: ValidationError,
+        model_class: type | None = None,
+        response_type: Literal["http", "websocket"] = "http",
     ) -> StandardizedErrorResponseDict:
         """
         Handle a Pydantic ValidationError and convert it to a standardized response.
@@ -115,7 +117,7 @@ class PydanticErrorHandler:
         Args:
             error: The Pydantic ValidationError to handle
             model_class: Optional model class for additional context
-            response_type: Type of response ("http", "websocket", "sse")
+            response_type: Type of response ("http", "websocket")
 
         Returns:
             Standardized error response dictionary
@@ -138,10 +140,6 @@ class PydanticErrorHandler:
             public_message = user_friendly
             if response_type == "websocket":
                 return create_websocket_error_response(
-                    error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
-                )
-            if response_type == "sse":
-                return create_sse_error_response(
                     error_type=error_type, message=public_message, user_friendly=user_friendly, details=details
                 )
             # Default to HTTP
@@ -349,7 +347,7 @@ class PydanticErrorHandler:
         return details
 
     def _create_fallback_error_response(
-        self, error: ValidationError, response_type: str
+        self, error: ValidationError, response_type: Literal["http", "websocket"]
     ) -> StandardizedErrorResponseDict:
         """
         Create a fallback error response when normal processing fails.
@@ -367,13 +365,6 @@ class PydanticErrorHandler:
 
         if response_type == "websocket":
             return create_websocket_error_response(
-                error_type=ErrorType.VALIDATION_ERROR,
-                message=message,
-                user_friendly=user_friendly,
-                details=fallback_details,
-            )
-        if response_type == "sse":
-            return create_sse_error_response(
                 error_type=ErrorType.VALIDATION_ERROR,
                 message=message,
                 user_friendly=user_friendly,
@@ -428,7 +419,7 @@ class PydanticErrorHandler:
 def handle_pydantic_error(
     error: ValidationError,
     model_class: type | None = None,
-    response_type: str = "http",
+    response_type: Literal["http", "websocket"] = "http",
     **context_kwargs: Unpack[ErrorContextInitKwargs],
 ) -> StandardizedErrorResponseDict:
     """
@@ -437,7 +428,7 @@ def handle_pydantic_error(
     Args:
         error: The Pydantic ValidationError to handle
         model_class: Optional model class for context
-        response_type: Type of response ("http", "websocket", "sse")
+        response_type: Type of response ("http", "websocket")
         **context_kwargs: Context arguments for ErrorContext
 
     Returns:

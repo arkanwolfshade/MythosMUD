@@ -9,7 +9,7 @@ from server.persistence.repositories.item_repository import ItemRepository
 
 @pytest.fixture
 def repository() -> ItemRepository:
-    return ItemRepository(persistence_layer=MagicMock())
+    return ItemRepository()
 
 
 @pytest.mark.asyncio

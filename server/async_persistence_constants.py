@@ -6,15 +6,6 @@ Extracted to keep async_persistence.py under file-nloc limit.
 
 from typing import Any, TypedDict
 
-# Player table columns for explicit SELECT queries (avoids SELECT * anti-pattern)
-# Exported for security tests that verify compile-time constants
-PLAYER_COLUMNS = (  # pylint: disable=invalid-name  # Reason: Module-level constant exported for tests
-    "player_id, user_id, name, current_room_id, profession_id, "
-    "experience_points, level, stats, inventory, status_effects, "
-    "created_at, last_active, is_admin"
-)
-PLAYER_COLUMNS = "".join(PLAYER_COLUMNS)  # pylint: disable=invalid-name  # Reason: Exported constant
-
 # Profession table columns for explicit SELECT queries
 PROFESSION_COLUMNS = "id, name, description, flavor_text, is_available"
 

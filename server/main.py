@@ -47,7 +47,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="passlib")
 # Early logging setup - must happen before any logger creation
 # This ensures all startup information is captured in logfiles
 config = get_config()
-setup_enhanced_logging(config.to_legacy_dict())
+setup_enhanced_logging(config.logging)
 
 # Get logger - now created AFTER logging is set up
 logger = get_logger(__name__)

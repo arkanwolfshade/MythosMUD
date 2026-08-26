@@ -5,8 +5,6 @@ This module provides async item instance operations using SQLAlchemy AsyncSessio
 delegating to item_instance_persistence_async (no thread-pool wrappers).
 """
 
-from typing import Any
-
 from server.async_persistence_constants import CreateItemInstanceInput, EnsureItemInstanceInput
 from server.database import get_session_maker
 from server.persistence.item_instance_persistence_async import (
@@ -26,9 +24,8 @@ class ItemRepository:
     Uses async SQLAlchemy sessions; no sync wrappers or thread pool.
     """
 
-    def __init__(self, persistence_layer: Any = None) -> None:
+    def __init__(self) -> None:
         """Initialize the item repository."""
-        self._persistence = persistence_layer
         self._logger = get_logger(__name__)
 
     async def create_item_instance(
