@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.5.0** · MythosMUD · 2026-08-27
+**Version 1.5.1** · MythosMUD · 2026-08-27
 
 ---
 
@@ -33,10 +33,13 @@ Issue #637 asked to replace "ADR-021 section 6." No ADR named
 remainder (155 modules) — with nothing indicating which one ships.
 
 **[BUG]**
-The 2026-08 design audit that filed #637 both cited a document that never existed and
+**Symptom:** The 2026-08 design audit that filed #637 both cited a document that never existed and
 undercounted the legacy surface by roughly 6x (~26 claimed vs. 155 actual `.ts`/`.tsx` files
 outside `ui-v2/`, tests excluded). This is the fourth ranked item in the 618-639 campaign with a
 materially false premise, and the first citing a nonexistent document.
+**Fix:** this ADR records which architecture ships (`ui-v2/`) against the corrected file count,
+and the retirement clusters that followed (#690–#694) deleted the undercounted legacy surface
+file by file rather than trusting the audit's number.
 
 ## 3. Decision
 
@@ -256,3 +259,4 @@ this gate issue, filed separately as
 | 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |
 | 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |
 | 1.5.0 | 2026-08-27 | #694 removed CI's `continue-on-error` exception — the knip gate now enforces. Its own 14-finding baseline resolved: 12 genuinely dead files deleted, one (`LoginGracePeriodBanner.tsx`) deleted as superseded by a live `HeaderBar` effect (no tracking issue needed), one false positive suppressed by name, one unused devDependency removed. `exports`/`types` stay `"off"`: flipping them for real (not the flawed CLI check used during planning) surfaces 94 findings, triaged separately in #718. Retirement sequence from #637 complete; #718 and the nine open decide-then-port issues are independent backlog. |
+| 1.5.1 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields; registered in `docs/hads.manifest` for the first time (audit deferred register, #648). |

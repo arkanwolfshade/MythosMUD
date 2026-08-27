@@ -23,6 +23,11 @@ docs/architecture/decisions/ADR-014-nats-error-boundaries.md
 docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md
 docs/architecture/decisions/ADR-016-aggro-threat-management.md
 docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md
+docs/architecture/decisions/ADR-018-new-game-session-replacement.md
+docs/architecture/decisions/ADR-019-player-effects-system.md
+docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md
+docs/architecture/decisions/ADR-021-character-display-name-validation.md
+docs/architecture/decisions/ADR-022-ui-v2-client-transition.md
 docs/architecture/decisions/README.md
 docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md
 docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md

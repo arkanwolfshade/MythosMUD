@@ -120,7 +120,7 @@ class Player(Base):
     spells: Mapped[list[PlayerSpell]] = relationship(
         "PlayerSpell", back_populates="player", cascade="all, delete-orphan"
     )
-    # Effects system (ADR-009): persistent tick-based effects in player_effects table
+    # Effects system (ADR-019): persistent tick-based effects in player_effects table
     player_effects: Mapped[list[PlayerEffect]] = relationship(
         "PlayerEffect", back_populates="player", cascade="all, delete-orphan"
     )

@@ -1,6 +1,6 @@
 # ADR-020: WebSocket Authentication and CSRF
 
-**Version 1.0.0** · MythosMUD · 2026-08-19
+**Version 1.1.0** · MythosMUD · 2026-08-27
 
 ---
 
@@ -31,8 +31,10 @@ Realtime traffic is WebSocket-only. The handshake JWT is stored as connection
 `player_id` query fallback was a test convenience and a production hole.
 
 **[BUG]**
-GHSA-pc52-rx52-9jwc: CSRF fail-open, optional JWT on `/ws/{player_id}`, anonymous
+**Symptom:** GHSA-pc52-rx52-9jwc: CSRF fail-open, optional JWT on `/ws/{player_id}`, anonymous
 player_id query, and missing auth-endpoint rate limits.
+**Fix:** mandatory JWT on the WebSocket handshake, CSRF token validation, and rate limits on
+auth endpoints — shipped in #632.
 
 ## 3. Decision
 
@@ -75,3 +77,12 @@ player_id query, and missing auth-endpoint rate limits.
 - Negative: clients that omit `csrfToken` are disconnected; tests and harnesses
   must send CSRF.
 - Neutral: no database schema change; env flags default off.
+
+## 6. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| ------- | ---------- | ------ |
+| 1.0.0 | 2026-08-19 | Initial decision closing GHSA-pc52-rx52-9jwc. |
+| 1.1.0 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields (audit deferred register, #648). |

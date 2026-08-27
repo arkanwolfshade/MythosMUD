@@ -1,6 +1,6 @@
 # ADR-021: Character Display Name Validation
 
-**Version 1.0.0** · MythosMUD · 2026-08-23
+**Version 1.1.0** · MythosMUD · 2026-08-27
 
 ---
 
@@ -34,8 +34,11 @@ which rejects spaces. Players could finish creation then crash on normal command
 such as `go down` during alias expansion.
 
 **[BUG]**
-`go down` raised `ValueError` from `alias_storage.get_alias_file_path` when the
+**Symptom:** `go down` raised `ValueError` from `alias_storage.get_alias_file_path` when the
 display name contained spaces ([#670](https://github.com/arkanwolfshade/MythosMUD/issues/670)).
+**Fix:** enforce `validate_player_name`'s charset/length policy at character creation too, not
+just at runtime — closing the gap between what creation allowed and what alias/command
+paths required.
 
 ## 3. Decision
 
@@ -98,3 +101,12 @@ WHERE name !~ '^[a-zA-Z][a-zA-Z0-9_-]*$'
 
 Rename or delete affected rows by hand. Do not run bulk updates against
 `mythos_dev` without explicit owner approval.
+
+## 7. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| ------- | ---------- | ------ |
+| 1.0.0 | 2026-08-23 | Initial decision closing #670 and #671. |
+| 1.1.0 | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields (audit deferred register, #648). |
