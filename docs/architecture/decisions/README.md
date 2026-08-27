@@ -52,6 +52,7 @@ Each ADR follows this structure:
 | [ADR-016](ADR-016-aggro-threat-management.md)                    | Aggro and Threat Management System                   | Accepted | 2026-02-26 |
 | [ADR-017](ADR-017-ast-console-pruning-client-build.md)           | AST-Based Console Pruning in Client Production Build | Proposed | 2026-03-25 |
 | [ADR-018](ADR-018-new-game-session-replacement.md)               | New Game Session vs Grace Reconnect                  | Accepted | 2026-08-14 |
+| [ADR-019](ADR-019-player-effects-system.md)                      | Player Effects System                                | Accepted | 2026-08-19 |
 | [ADR-020](ADR-020-websocket-authentication-and-csrf.md)          | WebSocket Authentication and CSRF                    | Accepted | 2026-08-19 |
 | [ADR-021](ADR-021-character-display-name-validation.md)          | Character Display Name Validation                    | Accepted | 2026-08-23 |
 | [ADR-022](ADR-022-ui-v2-client-transition.md)                    | ui-v2 Client Transition and Legacy Retirement         | Accepted | 2026-08-26 |

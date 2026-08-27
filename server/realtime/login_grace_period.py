@@ -7,7 +7,7 @@ providing immunity to damage and negative effects while allowing movement.
 As documented in "Protective Wards Upon Entering the Realms" - Dr. Armitage, 1930,
 the grace period provides a brief window of protection for newly arrived characters.
 
-Effects system (ADR-009): Grace period is implemented as LOGIN_WARDED effect in
+Effects system (ADR-019): Grace period is implemented as LOGIN_WARDED effect in
 player_effects table; tick processing expires it and clears in-memory state.
 """
 
@@ -199,7 +199,7 @@ async def start_login_grace_period(
     get_current_tick: Callable[[], int] | None = None,
     get_tick_interval: Callable[[], float] | None = None,
 ) -> None:
-    """Start LOGIN_WARDED via effects (ADR-009) or a legacy asyncio timeout task."""
+    """Start LOGIN_WARDED via effects (ADR-019) or a legacy asyncio timeout task."""
     mgr = _as_grace(manager)
     if player_id in mgr.login_grace_period_players:
         logger.debug("Player already in login grace period", player_id=player_id)

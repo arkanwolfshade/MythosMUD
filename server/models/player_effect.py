@@ -1,5 +1,5 @@
 """
-Player effect model for the effects system (ADR-009).
+Player effect model for the effects system (ADR-019).
 
 Persistent, tick-based status effects stored in a separate player_effects table.
 """
@@ -22,7 +22,7 @@ class PlayerEffect(Base):
     """
     Persistent player effect (status effect) with tick-based duration.
 
-    Table: player_effects. Per ADR-009: separate table, duration and applied_at_tick
+    Table: player_effects. Per ADR-019: separate table, duration and applied_at_tick
     for remaining = duration - (current_tick - applied_at_tick).
     """
 

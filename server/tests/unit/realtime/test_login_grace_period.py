@@ -3,7 +3,7 @@ Unit tests for login grace period functionality.
 
 Tests the core login grace period module functions including
 start, cancel, check status, and remaining time calculation.
-Covers both legacy (asyncio task) and effect-based (ADR-009) paths.
+Covers both legacy (asyncio task) and effect-based (ADR-019) paths.
 """
 
 import asyncio
@@ -222,7 +222,7 @@ async def test_grace_period_task_cancellation_cleanup(mock_connection_manager): 
     assert player_id not in mock_connection_manager.login_grace_period_start_times
 
 
-# --- Effect-based grace period (ADR-009) ---
+# --- Effect-based grace period (ADR-019) ---
 
 
 @pytest.mark.asyncio

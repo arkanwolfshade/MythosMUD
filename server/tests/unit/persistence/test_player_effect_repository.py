@@ -1,5 +1,5 @@
 """
-Unit tests for PlayerEffectRepository (ADR-009 effects system).
+Unit tests for PlayerEffectRepository (ADR-019 effects system).
 
 Tests add_effect, delete_effect, get_active_effects_for_player, has_effect,
 get_effect_remaining_ticks, and expire_effects_for_tick.

@@ -1,6 +1,6 @@
 # ADR-018: New Game Session vs Grace Reconnect
 
-**Version 1.0.0** · MythosMUD · 2026-08-14
+**Version 1.1.0** · MythosMUD · 2026-08-27
 
 ---
 
@@ -31,9 +31,11 @@ sockets leave via `cleanup_dead_websocket`, `force_disconnect`, or
 `new_game_session`.
 
 **[BUG]**
-Rewriting `player_websockets[player_id] = [new_id]` on register (2026-08 E2E)
+**Symptom:** Rewriting `player_websockets[player_id] = [new_id]` on register (2026-08 E2E)
 starved occupancy: the looking tab was dropped from the send list while a
 harness-recovered socket stayed registered. That shortcut is forbidden.
+**Fix:** keep the two reconnect kinds distinct, per the table below — append on grace
+reconnect, close-then-append on new game session.
 
 Two reconnect kinds must stay distinct:
 
@@ -117,3 +119,4 @@ and differs from `manager.player_sessions.get(player_id)`, call existing
 | Version | Date       | Change                                                      |
 | ------- | ---------- | ----------------------------------------------------------- |
 | 1.0.0   | 2026-08-14 | Initial decision for session replacement vs grace reconnect |
+| 1.1.0   | 2026-08-27 | Restructure the `[BUG]` block into HADS-required Symptom/Fix fields (audit deferred register, #648). |
