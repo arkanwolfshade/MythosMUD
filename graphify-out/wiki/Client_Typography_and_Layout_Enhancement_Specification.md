@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Client Typography and Layout Enhancement Specification** (0 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- **gh-stack Skill** (0 connections) — `.agents/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- `.agents/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 

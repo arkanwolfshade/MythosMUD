@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_status_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_status_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_send_occupants_snapshot_to_player_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- **Test send_occupants_snapshot_to_player() skips when connection manager not…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [pyrightconfig.json](pyrightconfig.json.md) (1 shared connections)
+- [Dialogue Content Tools (Content Creators)](Dialogue_Content_Tools_Content_Creators.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_player_event_handlers_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

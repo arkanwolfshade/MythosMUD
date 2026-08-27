@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Codacy 8100+ Remediation** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- **Python Best Practices Remediation** (1 connections) — `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
+- `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

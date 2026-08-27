@@ -1,27 +1,29 @@
 # 🔍 Anti-Pattern Check
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **🔍 Anti-Pattern Check** (6 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Blocking Calls in Async Functions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Ignoring Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Long-Running Coroutines?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **cli.sh** (7 connections) — `.codacy/cli.sh`
+- **download()** (3 connections) — `.codacy/cli.sh`
+- **download_cli()** (3 connections) — `.codacy/cli.sh`
+- **download_file()** (2 connections) — `.codacy/cli.sh`
+- **get_latest_version()** (2 connections) — `.codacy/cli.sh`
+- **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
+- **cli.sh script** (2 connections) — `.codacy/cli.sh`
+- **get_version_from_yaml()** (1 connections) — `.codacy/cli.sh`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `.codacy/cli.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

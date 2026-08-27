@@ -1,26 +1,32 @@
 # applies_to
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **instance_manager()** (5 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **tutorial_room()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **room_cache()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **fixture** (3 connections)
+- **Create tutorial bedroom template room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
 
 ## Relationships
 
-- [days](days.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [Decisions required](Decisions_required.md) (3 shared connections)
+- [🎯 Async Remediation - Final Report](🎯_Async_Remediation_-_Final_Report.md) (1 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (1 shared connections)
+- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/game/test_instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 9 (75%)
+- INFERRED: 3 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

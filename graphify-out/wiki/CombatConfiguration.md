@@ -1,55 +1,56 @@
 # CombatConfiguration
 
-> 79 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **CombatConfiguration** (26 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
-- **TestCombatConfiguration** (16 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **test_combat_configuration_service.py** (9 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
-- **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_settings_summary()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.validate_configuration()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
-- **Any** (5 connections)
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.get_active_overrides()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.refresh_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.test_from_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 54 more nodes in this community*
+- **test_logging_handlers.py** (29 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **create_aggregator_handler()** (19 connections) — `server/structured_logging/logging_handlers.py`
+- **logging_handlers.py** (17 connections) — `server/structured_logging/logging_handlers.py`
+- **SafeRotatingFileHandler** (13 connections) — `server/structured_logging/logging_handlers.py`
+- **WarningOnlyFilter** (12 connections) — `server/structured_logging/logging_handlers.py`
+- **AsyncioConnLostWriteFilter** (7 connections) — `server/structured_logging/logging_handlers.py`
+- **load_player_guid_formatter_class()** (6 connections) — `server/structured_logging/logging_utilities.py`
+- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **test_create_aggregator_handler_warning_level()** (5 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **RotatingFileHandler** (4 connections)
+- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
+- **temp_log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **temp_log_file()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_with_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_without_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_open_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_open_returns_stringio_on_final_failure()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [TestCombatConfigurationService](TestCombatConfigurationService.md) (7 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (7 shared connections)
+- [CombatMonitoringService](CombatMonitoringService.md) (3 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (2 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [performance.test.tsx](performance.test.tsx.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/structured_logging/logging_handlers.py`
+- `server/structured_logging/logging_utilities.py`
+- `server/tests/unit/structured_logging/test_logging_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 124 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

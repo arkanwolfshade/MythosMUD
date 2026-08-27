@@ -1,51 +1,43 @@
 # test_inventory_mutation_guard_internal.py
 
-> 26 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_internal.py** (16 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **asyncio** (6 connections)
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_cleanup_async_state_empty()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_cleanup_async_state_locked()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_enforce_limit_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_get_async_state_creates_lazily()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_async_ttl_zero()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_get_async_global_lock()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **fixture** (1 connections)
-- **Unit tests for inventory mutation guard - internal helper methods. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _cleanup_async_state removes empty state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens_async removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens_async with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _enforce_limit_async removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _prune_tokens with token_ttl=0 doesn't prune.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _enforce_limit removes oldest tokens when limit exceeded.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _get_async_global_lock creates lock lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- **Test _get_async_state creates state lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
-- *... and 1 more nodes in this community*
+- **populate_npc_sample_data.py** (11 connections) — `scripts/populate_npc_sample_data.py`
+- **populate_database()** (9 connections) — `scripts/populate_npc_sample_data.py`
+- **main()** (4 connections) — `scripts/populate_npc_sample_data.py`
+- **_process_select_statement()** (4 connections) — `scripts/populate_npc_sample_data.py`
+- **_get_column_names()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **_process_other_statement()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **_read_sql_file()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **_split_sql_statements()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **_validate_database_url()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **_verify_foreign_keys()** (3 connections) — `scripts/populate_npc_sample_data.py`
+- **Verify foreign key constraints.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Populate a PostgreSQL database with sample NPC data. Args: database_url: The…** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Main function to populate NPC sample data.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Get NPC database URL for the specified environment. Args: environment:…** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Validate database URL.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Read SQL file content.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Split SQL content into individual statements.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Get column names from result metadata.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Process SELECT statement for verification.** (1 connections) — `scripts/populate_npc_sample_data.py`
+- **Process non-SELECT statements.** (1 connections) — `scripts/populate_npc_sample_data.py`
 
 ## Relationships
 
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- `scripts/populate_npc_sample_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

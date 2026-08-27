@@ -1,10 +1,11 @@
 # Test Migration Validation
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test Migration Validation** (0 connections) — `docs/archive/TEST_REFACTORING_STATUS.md`
+- **Harden Skill** (1 connections) — `.cursor/skills/harden/SKILL.md`
+- **Normalize Skill** (1 connections) — `.cursor/skills/normalize/SKILL.md`
 
 ## Relationships
 
@@ -12,12 +13,13 @@
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_STATUS.md`
+- `.cursor/skills/harden/SKILL.md`
+- `.cursor/skills/normalize/SKILL.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

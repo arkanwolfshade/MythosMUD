@@ -1,48 +1,49 @@
 # ContainerTransferToMixin
 
-> 22 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
-- **._execute_transfer_to_container()** (12 connections) — `server/services/container_service_transfer_to.py`
-- **._require_container_component()** (10 connections) — `server/services/container_service_transfer_to.py`
-- **.transfer_to_container()** (9 connections) — `server/services/container_service_transfer_to.py`
-- **UUID** (9 connections)
-- **._add_stack_to_container_or_raise()** (7 connections) — `server/services/container_service_transfer_to.py`
-- **._audit_transfer_to_container()** (7 connections) — `server/services/container_service_transfer_to.py`
-- **._require_container_has_capacity()** (7 connections) — `server/services/container_service_transfer_to.py`
-- **._require_player_for_transfer()** (7 connections) — `server/services/container_service_transfer_to.py`
-- **InventoryStack** (7 connections)
-- **ContainerComponent** (5 connections)
-- **._log_container_data_before_validation()** (4 connections) — `server/services/container_service_transfer_to.py`
-- **Player** (3 connections)
-- **Best-effort audit log for transfer-to-container (must not fail the transfer).** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Add a stack via InventoryService; map capacity failures to…** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Load player or raise ValidationError for transfer ops.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Load and validate container component for transfer-to.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Mutation-guarded body: add stack, persist, audit, return response.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Transfer items from player inventory to container.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Transfer items into containers.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Debug shape of container_data from persistence before Pydantic validate.** (1 connections) — `server/services/container_service_transfer_to.py`
-- **Raise ContainerCapacityError when the container has no free slots.** (1 connections) — `server/services/container_service_transfer_to.py`
+- **handle_command()** (10 connections) — `server/command_handler_unified.py`
+- **CommandRequest** (8 connections) — `server/command_handler_unified.py`
+- **asyncio** (7 connections)
+- **TestProcessCommandUnified** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_success()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_handle_command_unauthorized()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_legacy()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_blocked()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_normal_processing()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_rate_limited()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **.test_process_command_unified_special_routing()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **BaseModel** (1 connections)
+- **post** (1 connections)
+- **Request** (1 connections)
+- **Handle incoming HTTP command requests.** (1 connections) — `server/command_handler_unified.py`
+- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
+- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test handle_command raises HTTPException when not authenticated.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test handle_command successfully processes command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command() legacy function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified function.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns rate limit result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- **Test process_command_unified returns block result.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (14 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [test_connection_statistics.py](test_connection_statistics.py.md) (14 shared connections)
 
 ## Source Files
 
-- `server/services/container_service_transfer_to.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/commands/test_command_handler_unified.py`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (88%)
-- INFERRED: 8 (12%)
+- EXTRACTED: 46 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

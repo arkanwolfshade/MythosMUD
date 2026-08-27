@@ -1,48 +1,60 @@
 # Pre-commit Hooks Best Practices
 
-> 27 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **Pre-commit Hooks Best Practices** (8 connections) — `.claude/rules/pre-commit.md`
-- **7. Tooling and Environment** (5 connections) — `.claude/rules/pre-commit.md`
-- **1. Code Organization and Structure** (4 connections) — `.claude/rules/pre-commit.md`
-- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/pre-commit.md`
-- **3. Performance Considerations** (3 connections) — `.claude/rules/pre-commit.md`
-- **4. Security Best Practices** (3 connections) — `.claude/rules/pre-commit.md`
-- **5. Testing Approaches** (3 connections) — `.claude/rules/pre-commit.md`
-- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/pre-commit.md`
-- **pre-commit.md** (1 connections) — `.claude/rules/pre-commit.md`
-- **1.1. Configuration Structure** (1 connections) — `.claude/rules/pre-commit.md`
-- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/pre-commit.md`
-- **1.3. Module Organization** (1 connections) — `.claude/rules/pre-commit.md`
-- **2.1. Design Patterns** (1 connections) — `.claude/rules/pre-commit.md`
-- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/pre-commit.md`
-- **2.3. Anti-patterns** (1 connections) — `.claude/rules/pre-commit.md`
-- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/pre-commit.md`
-- **3.2. Memory Management** (1 connections) — `.claude/rules/pre-commit.md`
-- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/pre-commit.md`
-- **4.2. Security Implementation** (1 connections) — `.claude/rules/pre-commit.md`
-- **5.1. Unit Testing** (1 connections) — `.claude/rules/pre-commit.md`
-- **5.2. Integration Testing** (1 connections) — `.claude/rules/pre-commit.md`
-- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/pre-commit.md`
-- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/pre-commit.md`
-- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/pre-commit.md`
-- **7.2. Build Configuration** (1 connections) — `.claude/rules/pre-commit.md`
-- *... and 2 more nodes in this community*
+- **InventorySchemaValidationError** (20 connections) — `server/schemas/shared/inventory_schema.py`
+- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
+- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_inventory_schema.py** (12 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
+- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
+- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
+- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Any** (3 connections)
+- **Exception** (1 connections)
+- **Shared schemas: base models, target resolution, inventory validation.** (1 connections) — `server/schemas/shared/__init__.py`
+- **Inventory JSON schema validation utilities. As recorded in the restricted…** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate a complete inventory payload against the canonical schema. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Validate only the inventory portion to simplify testing workflows. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Raised when inventory payloads fail schema validation.** (1 connections) — `server/schemas/shared/inventory_schema.py`
+- **Unit tests for inventory_schema validation functions. Tests the validation…** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (9 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (3 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (2 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (2 shared connections)
+- [HealthService](HealthService.md) (1 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
+- [TestErrorHandlers](TestErrorHandlers.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/pre-commit.md`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/inventory_schema.py`
+- `server/tests/unit/schemas/test_inventory_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 69 (95%)
+- INFERRED: 4 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

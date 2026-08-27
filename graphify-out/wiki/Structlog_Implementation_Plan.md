@@ -1,11 +1,12 @@
 # Structlog Implementation Plan
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Structlog Implementation Plan** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Main.py Refactoring Plan** (1 connections) — `docs/archive/PLANNING_main_refactor.md`
+- **check_postgresql.sh** (2 connections) — `scripts/check_postgresql.sh`
+- **PGPASSWORD** (1 connections) — `scripts/check_postgresql.sh`
+- **check_postgresql.sh script** (1 connections) — `scripts/check_postgresql.sh`
 
 ## Relationships
 
@@ -13,13 +14,12 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_logging.md`
-- `docs/archive/PLANNING_main_refactor.md`
+- `scripts/check_postgresql.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

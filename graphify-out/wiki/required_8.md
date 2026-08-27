@@ -1,30 +1,41 @@
 # required
 
-> 9 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **required** (9 connections) — `db/static/schemas/holidays.schema.json`
-- **bonus_tags** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **day** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **duration_hours** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **id** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **month** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **name** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **season** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **tradition** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (15 connections) — `schemas/items/item_prototype.schema.json`
+- **item_prototype.schema.json** (6 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **$schema** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **title** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **effect_components** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **flags** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **item_type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **long_description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **metadata** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **prototype_id** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **short_description** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **tags** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **wear_slots** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **weight** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [items](items.md) (1 shared connections)
+- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

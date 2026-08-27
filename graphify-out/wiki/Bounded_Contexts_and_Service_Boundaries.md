@@ -1,13 +1,14 @@
 # Bounded Contexts and Service Boundaries
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Bounded Contexts and Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- **Container System Architecture** (2 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
-- **ConnectionManager Modular Architecture** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
-- **Container System API Reference** (1 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **rename_players_to_population.py** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **Rename columns from min_players/max_players to min_population/max_population.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **Revert column names back to min_players/max_players.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
 
 ## Relationships
 
@@ -15,15 +16,12 @@
 
 ## Source Files
 
-- `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
-- `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
-- `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
-- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- `server/alembic/versions/rename_players_to_population.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 3 (100%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

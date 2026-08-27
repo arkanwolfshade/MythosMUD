@@ -1,66 +1,60 @@
 # map/types.ts
 
-> 38 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **map/types.ts** (35 connections) — `client/src/components/map/types.ts`
-- **map/config.ts** (14 connections) — `client/src/components/map/config.ts`
-- **ExitEdge.tsx** (14 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **RoomNode** (5 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
-- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- **getEdgeStrokeStyle()** (3 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- **getNodeClasses()** (3 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
-- **layout.test-fixtures.ts** (3 connections) — `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
-- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
-- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
-- **ExitEdgeBody()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
-- *... and 13 more nodes in this community*
+- **test_optimized_security_validator.py** (82 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **optimized_validate_message_content()** (19 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_message_content_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_data_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_event_handler()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_format_string()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_injection_pattern()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_javascript_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_logging()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_logging_warning()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_path_traversal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_python_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_sql_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_message_content_xss()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with injection pattern.** (2 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Unit tests for optimized security validation utilities. Tests the optimized…** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with dangerous characters.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with XSS pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with path traversal pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with javascript: URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with event handler.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with data URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with Python injection.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [RoomNodeData](RoomNodeData.md) (16 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (7 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (5 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (4 shared connections)
-- [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
-- [edgeModalLogic.ts](edgeModalLogic.ts.md) (1 shared connections)
-- [useRoomEditModal.ts](useRoomEditModal.ts.md) (1 shared connections)
+- [seed_e2e_users.py](seed_e2e_users.py.md) (10 shared connections)
+- [overrides](overrides.md) (10 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (9 shared connections)
+- [validate.mjs](validate.mjs.md) (5 shared connections)
+- [Corrections · `docs/subsystems/` was missing from the corpus](Corrections_·_`docs-subsystems-`_was_missing_from_the_corpus.md) (5 shared connections)
+- [Server Realtime Module](Server_Realtime_Module.md) (5 shared connections)
+- [TestValidateCommandBasics](TestValidateCommandBasics.md) (4 shared connections)
+- [intersection_schema.json](intersection_schema.json.md) (4 shared connections)
+- [integration](integration.md) (4 shared connections)
+- [mock_player](mock_player.md) (4 shared connections)
+- [room_schema.json](room_schema.json.md) (4 shared connections)
+- [CORSConfigDict](CORSConfigDict.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
-- `client/src/components/map/config.ts`
-- `client/src/components/map/edges/ExitEdge.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
-- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
-- `client/src/components/map/nodes/IntersectionNode.tsx`
-- `client/src/components/map/nodes/RoomNode.tsx`
-- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
-- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
-- `client/src/components/map/types.ts`
-- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 114 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

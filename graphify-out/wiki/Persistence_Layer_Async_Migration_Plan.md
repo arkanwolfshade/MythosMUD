@@ -1,40 +1,35 @@
 # Persistence Layer Async Migration Plan
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Persistence Layer Async Migration Plan** (16 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Migration Timeline** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **PERSISTENCE_ASYNC_MIGRATION_PLAN.md** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Aggressive Timeline (Focused Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Conservative Timeline (Gradual Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 1: Foundation Complete ✅** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **References** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Total Migration Effort** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **test_nats_event_bridge.py** (10 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **test_handle_nats_message_injects_remote_origin()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **test_publish_adds_origin_and_calls_nats()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **test_handle_nats_message_bad_payload_logs_warning()** (4 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **test_handle_nats_message_skips_own_origin()** (4 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **asyncio** (4 connections)
+- **Tests for NATS EventBus bridge - skip self-echo to prevent duplicate event…** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **NATS bridge must not inject events that originated from this instance (prevents…** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **NATS bridge must inject events from other instances.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **publish() serializes event and forwards to NATS with origin metadata.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **Invalid payloads are ignored without injecting.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
 
 ## Relationships
 
-- [Migration Roadmap](Migration_Roadmap.md) (1 shared connections)
-- [Migration Workflow (Per File)](Migration_Workflow_Per_File.md) (1 shared connections)
-- [Common Conversion Patterns](Common_Conversion_Patterns.md) (1 shared connections)
-- [API Endpoints (Phase 2)](API_Endpoints_Phase_2.md) (1 shared connections)
-- [Testing Strategy](Testing_Strategy.md) (1 shared connections)
-- [Rollback Procedures](Rollback_Procedures.md) (1 shared connections)
-- [Success Metrics](Success_Metrics.md) (1 shared connections)
-- [Monitoring & Validation](Monitoring_&_Validation.md) (1 shared connections)
-- [Gotchas & Solutions](Gotchas_&_Solutions.md) (1 shared connections)
-- [Decision Points](Decision_Points.md) (1 shared connections)
+- [pylint.py](pylint.py.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `server/tests/unit/events/test_nats_event_bridge.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 18 (75%)
+- INFERRED: 6 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

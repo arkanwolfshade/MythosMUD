@@ -1,10 +1,11 @@
 # Client message handling and GameState projection
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Client message handling and GameState projection** (0 connections) — `docs/client-message-handling.md`
+- **room_validator/tests/__init__.py** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
+- **Test suite for the MythosMUD room validator. This module contains comprehensive…** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/client-message-handling.md`
+- `tools/room_toolkit/room_validator/tests/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,29 @@
 # Dark Young of Shub-Niggurath.md
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Dark Young of Shub-Niggurath.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- **ZyMedBio.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
-- **Dark Young of Shub-Niggurath** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- **ZyMedBio** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
+- **._compute_max_dp_if_missing()** (4 connections) — `server/models/game.py`
+- **.__init__()** (4 connections) — `server/models/game.py`
+- **Any** (2 connections)
+- **model_validator** (2 connections)
+- **Initialize Stats with provided data. For random stat generation, use…** (1 connections) — `server/models/game.py`
+- **Populate max_dp from (CON+SIZ)/5 when not provided (stored value takes…** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
+- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (1 shared connections)
+- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
-- `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
+- `server/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

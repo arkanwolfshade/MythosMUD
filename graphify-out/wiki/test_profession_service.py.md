@@ -1,39 +1,37 @@
 # test_profession_service.py
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_profession_service.py** (16 connections) — `server/tests/unit/game/test_profession_service.py`
-- **asyncio** (6 connections)
-- **_profession()** (5 connections) — `server/tests/unit/game/test_profession_service.py`
-- **service()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_all_professions_dict()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_profession_by_id_dict_found()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_none_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_not_found_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_validate_and_get_profession_success()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
-- **persistence()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_get_profession_by_id_dict_missing()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
-- **test_profession_to_dict_list_formats()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_players_procedures.py** (10 connections) — `server/tests/integration/test_players_procedures.py`
+- **async_sessionmaker** (6 connections)
+- **AsyncSession** (6 connections)
+- **invite_row()** (5 connections) — `server/tests/integration/test_players_procedures.py`
+- **test_get_user_id_by_username_ci_matches_regardless_of_case()** (5 connections) — `server/tests/integration/test_players_procedures.py`
+- **test_mark_invite_used_deactivates_and_records_user()** (5 connections) — `server/tests/integration/test_players_procedures.py`
+- **test_mark_invite_used_unknown_code_returns_false()** (5 connections) — `server/tests/integration/test_players_procedures.py`
+- **user_row()** (5 connections) — `server/tests/integration/test_players_procedures.py`
+- **test_get_user_id_by_username_ci_unknown_username_returns_null()** (4 connections) — `server/tests/integration/test_players_procedures.py`
+- **asyncio** (4 connections)
+- **UUID** (4 connections)
 - **fixture** (2 connections)
-- **Unit tests for ProfessionService.** (1 connections) — `server/tests/unit/game/test_profession_service.py`
+- **Integration tests for db/procedures/players.sql's #633 additions:…** (1 connections) — `server/tests/integration/test_players_procedures.py`
+- **Create one user with a mixed-case username. Yields (user_id, username).** (1 connections) — `server/tests/integration/test_players_procedures.py`
+- **Create one active invite. Yields its invite_code.** (1 connections) — `server/tests/integration/test_players_procedures.py`
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_profession_service.py`
+- `server/tests/integration/test_players_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (90%)
-- INFERRED: 3 (10%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

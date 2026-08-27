@@ -1,31 +1,35 @@
 # P4 · Intent Sweep — Plan Documents
 
-> 10 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **P4 · Intent Sweep — Plan Documents** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **P4-Intent-Plan-Docs.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **Conforming — substantial features that check out** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **Correction to a prior audit finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **CRITICAL · The guard that was supposed to prevent raw SQL was never connected** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **HIGH · ADR-009 number collision — code cites a decision that does not exist** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **Meta-finding · plan status is unreliable in *both* directions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **PLAN CLAIMED COMPLETE, CODE ABSENT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **PLANNED BUT NOT BUILT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
-- **Unverifiable — do not read as passing** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **verify_npc_occupants.py** (8 connections) — `server/scripts/verify_npc_occupants.py`
+- **verify_npcs_in_lifecycle_manager()** (6 connections) — `server/scripts/verify_npc_occupants.py`
+- **_check_service_availability()** (5 connections) — `server/scripts/verify_npc_occupants.py`
+- **_collect_npcs_by_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **_test_query_for_room()** (4 connections) — `server/scripts/verify_npc_occupants.py`
+- **_print_summary()** (3 connections) — `server/scripts/verify_npc_occupants.py`
+- **Any** (3 connections)
+- **Verification script to check NPCs in lifecycle manager and test occupant query…** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Print verification summary. Args: npc_count: Total number of active NPCs…** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Verify NPCs exist in lifecycle manager and test query logic.** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Check if NPC service, lifecycle manager, and active_npcs are available.…** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Collect NPCs grouped by room ID. Args: active_npcs: Dictionary of active NPC…** (1 connections) — `server/scripts/verify_npc_occupants.py`
+- **Test query logic for a specific room. Args: active_npcs: Dictionary of active…** (1 connections) — `server/scripts/verify_npc_occupants.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [test_look_room.py](test_look_room.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- `server/scripts/verify_npc_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

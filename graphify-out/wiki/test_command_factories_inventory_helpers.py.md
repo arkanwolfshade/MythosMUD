@@ -1,53 +1,53 @@
 # test_command_factories_inventory_helpers.py
 
-> 22 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_command_factories_inventory_helpers.py** (23 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **.create_inventory_command()** (6 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_inventory_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command_with_name_and_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_inventory_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_name()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Unit tests for inventory command factory helper functions. Tests the helper…** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_equip_command() with item name and inferred slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_unequip_command() with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_unequip_command() with item name.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_inventory_command() creates InventoryCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_inventory_command() raises error with args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() raises error for invalid quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() raises error for invalid index.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_put_command() creates PutCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_equip_command() with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Create InventoryCommand from arguments.** (1 connections) — `server/utils/command_factories_inventory.py`
+- **validate_message_content()** (21 connections) — `server/validators/security_validator.py`
+- **field_validator** (9 connections)
+- **.validate_message()** (4 connections) — `server/models/command_communication.py`
+- **.validate_message()** (4 connections) — `server/models/command_communication.py`
+- **.validate_message()** (4 connections) — `server/models/command_communication.py`
+- **.validate_message()** (4 connections) — `server/models/command_communication.py`
+- **.validate_message()** (4 connections) — `server/models/command_communication.py`
+- **Validate message content for security using centralized validation.** (4 connections) — `server/models/command_communication.py`
+- **test_validate_message_content_allows_safe_special_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_angle_brackets()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_html_tags()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_javascript_urls()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_path_traversal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_message_content_rejects_shell_metacharacters()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate system message content for security using centralized validation.** (1 connections) — `server/models/command_communication.py`
+- **Test validating empty message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating normal message content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects HTML tags.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects angle brackets.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects shell metacharacters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects javascript: URLs.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content rejects path traversal patterns.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_message_content allows safe special characters.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [InventoryCommandFactory](InventoryCommandFactory.md) (15 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [.create_put_command](create_put_command.md) (3 shared connections)
-- [.create_equip_command](create_equip_command.md) (2 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.create_drop_command](create_drop_command.md) (2 shared connections)
-- [.create_get_command](create_get_command.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (11 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (4 shared connections)
+- [test_lucidity_service.py](test_lucidity_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/utils/command_factories_inventory.py`
+- `server/models/command_communication.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (79%)
-- INFERRED: 12 (21%)
+- EXTRACTED: 54 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

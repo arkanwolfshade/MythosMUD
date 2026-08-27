@@ -1,25 +1,23 @@
 # prototype_id
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **prototype_id** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **server/game/magic/__init__.py** (1 connections) — `server/game/magic/__init__.py`
+- **Magic and spellcasting system for MythosMUD. This package contains the core…** (1 connections) — `server/game/magic/__init__.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/game/magic/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

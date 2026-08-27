@@ -1,49 +1,48 @@
 # test_audit_logger.py
 
-> 47 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **AuditLogger** (15 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger.py** (15 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
-- **.get_recent_entries()** (5 connections) — `server/utils/audit_logger.py`
-- **._get_log_file_path()** (4 connections) — `server/utils/audit_logger.py`
-- **.get_statistics()** (4 connections) — `server/utils/audit_logger.py`
-- **.__init__()** (4 connections) — `server/utils/audit_logger.py`
-- **JsonMap** (4 connections)
-- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_command()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_container_interaction()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
-- **.log_security_event()** (3 connections) — `server/utils/audit_logger.py`
-- **_json_map_from_line()** (3 connections) — `server/utils/audit_logger.py`
-- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- **test_audit_logger_log_container_interaction()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
-- *... and 22 more nodes in this community*
+- **Test Value Distribution Chart** (17 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Projected Optimization Impact** (7 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Measurement and Validation** (6 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Risk Assessment and Mitigation** (5 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Detailed Category Value Breakdown** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Time Distribution Analysis** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Appendix: Quick Reference Commands** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Visual Test Value Distribution** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Success Celebration Criteria** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Execution Time Efficiency** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Removal Workflow** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Test Value Heat Map** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Value Score Distribution** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Each Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 1-3: Pruning (Month 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 4: Consolidation (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **After Phase 5: Gap Filling (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Automatic Rollback If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Before Starting Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Capture Baseline** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Coverage vs Value Analysis** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **🔴 CRITICAL VALUE TESTS (1,272 tests = 25.6%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Current State (Baseline)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Current Time Allocation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Declare Success When** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [Claims by cluster](Claims_by_cluster.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_audit_logger.py`
-- `server/utils/audit_logger.py`
+- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

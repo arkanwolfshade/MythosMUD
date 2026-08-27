@@ -1,53 +1,47 @@
 # AsciiMapRenderer
 
-> 105 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **AsciiMapRenderer** (54 connections) — `server/services/ascii_map_renderer.py`
-- **Any** (13 connections)
-- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
-- **test_ascii_map_renderer_exits.py** (10 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestVerticalExitCharBetween** (9 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **ascii_map_renderer.py** (9 connections) — `server/services/ascii_map_renderer.py`
-- **test_ascii_map_renderer_grid.py** (8 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
-- **_ExitRowContext** (5 connections) — `server/services/ascii_map_renderer.py`
-- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_exit_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
-- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestBuildGridPlayerMarker** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_grid.py`
-- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
-- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
-- *... and 80 more nodes in this community*
+- **validate_secure_path()** (16 connections) — `server/security_utils.py`
+- **test_validate_secure_path_absolute_base()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_commonpath_mismatch_with_mock()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_different_drives_windows()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_empty_user_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_nested_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_path_traversal_commonpath()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_leading_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_tilde()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path rejects path traversal with ..** (2 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path detects when common_path != base_path (lines 59-66)…** (2 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Validate and sanitize a user-provided path to prevent path traversal attacks.…** (1 connections) — `server/security_utils.py`
+- **Test validate_secure_path with valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles different drives on Windows.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with nested valid path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with empty user path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path handles leading slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path normalizes base path to absolute.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path detects path traversal via commonpath check.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (3 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [asyncio](asyncio.md) (12 shared connections)
+- [Monitoring and Validation](Monitoring_and_Validation.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/ascii_map_renderer.py`
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- `server/tests/unit/services/test_ascii_map_renderer_grid.py`
+- `server/security_utils.py`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 167 (95%)
-- INFERRED: 8 (5%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

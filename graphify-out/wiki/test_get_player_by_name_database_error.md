@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_player_by_name_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_name handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_database_config_validate_url_postgresql()** (2 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig URL validation with PostgreSQL URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [click Best Practices](click_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

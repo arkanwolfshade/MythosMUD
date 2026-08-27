@@ -1,60 +1,60 @@
 # test_who_commands.py
 
-> 114 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **test_who_commands.py** (48 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **utility_commands.py** (20 connections) — `server/commands/utility_commands.py`
-- **who_commands.py** (16 connections) — `server/commands/who_commands.py`
-- **filter_players_by_name()** (14 connections) — `server/commands/who_commands.py`
-- **handle_who_command()** (14 connections) — `server/commands/who_commands.py`
-- **parse_last_active_datetime()** (14 connections) — `server/commands/who_commands.py`
-- **format_player_entry()** (13 connections) — `server/commands/who_commands.py`
-- **format_player_location()** (13 connections) — `server/commands/who_commands.py`
-- **test_who_commands_helpers.py** (12 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- **filter_online_players()** (10 connections) — `server/commands/who_commands.py`
-- **format_who_result()** (10 connections) — `server/commands/who_commands.py`
-- **asyncio** (9 connections)
-- **get_players_for_who()** (8 connections) — `server/commands/who_commands.py`
-- **Any** (6 connections)
-- **test_filter_online_players_all_online()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_invalid_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_no_last_active()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_online_players_some_offline()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_format_player_entry_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_no_players()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_success()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_handle_who_command_with_filter()** (4 connections) — `server/tests/unit/commands/test_who_commands.py`
-- **test_filter_players_by_name_empty_filter()** (3 connections) — `server/tests/unit/commands/test_who_commands_helpers.py`
-- *... and 89 more nodes in this community*
+- **lifespan_startup.py** (49 connections) — `server/app/lifespan_startup.py`
+- **test_lifespan_startup.py** (42 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **asyncio** (18 connections)
+- **FastAPI** (16 connections)
+- **FastAPI** (15 connections)
+- **initialize_container_and_legacy_services()** (14 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_startup_spawning()** (9 connections) — `server/app/lifespan_startup.py`
+- **setup_connection_manager()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_combat_services()** (8 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_entries()** (7 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (7 connections) — `server/app/lifespan_startup.py`
+- **_validate_npc_services_prerequisites()** (7 connections) — `server/app/lifespan_startup.py`
+- **nats_is_connected()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_attach_combat_service()** (6 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_count()** (6 connections) — `server/app/lifespan_startup.py`
+- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
+- **test_setup_connection_manager()** (6 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **_create_npc_services_on_app()** (5 connections) — `server/app/lifespan_startup.py`
+- **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
+- **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
+- **mock_app()** (5 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **test_initialize_chat_service()** (5 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [.state](state.md) (3 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (3 shared connections)
-- [test_status_commands.py](test_status_commands.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [TestLogoutCommand](TestLogoutCommand.md) (1 shared connections)
-- [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (14 shared connections)
+- [NPCDefinition](NPCDefinition.md) (8 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
+- [MythosMUDError](MythosMUDError.md) (2 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (2 shared connections)
+- [3. REFACTOR Findings (935 findings)](3._REFACTOR_Findings_935_findings.md) (2 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/utility_commands.py`
-- `server/commands/who_commands.py`
-- `server/tests/unit/commands/test_who_commands.py`
-- `server/tests/unit/commands/test_who_commands_helpers.py`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_startup.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 211 (99%)
+- EXTRACTED: 246 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

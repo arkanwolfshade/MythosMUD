@@ -1,34 +1,35 @@
 # Execution Timeline
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Execution Timeline** (13 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 1: Pruning Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Ongoing Tasks** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 1: Quick Wins** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 2: Infrastructure Reduction** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 3: Coverage Test Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 4: Verification and Validation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 6: Parametrization (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **FStringLoggingDetector** (5 connections) — `scripts/check_logging_patterns.py`
+- **find_fstring_logging_violations()** (5 connections) — `scripts/check_logging_patterns.py`
+- **main()** (5 connections) — `scripts/check_logging_patterns.py`
+- **check_logging_patterns.py** (4 connections) — `scripts/check_logging_patterns.py`
+- **format_violation_report()** (3 connections) — `scripts/check_logging_patterns.py`
+- **.visit_Call()** (3 connections) — `scripts/check_logging_patterns.py`
+- **Path** (3 connections)
+- **.__init__()** (2 connections) — `scripts/check_logging_patterns.py`
+- **Call** (1 connections)
+- **Main function to scan files and report violations.** (1 connections) — `scripts/check_logging_patterns.py`
+- **AST visitor to detect f-string logging violations.** (1 connections) — `scripts/check_logging_patterns.py`
+- **Check for f-string logging patterns.** (1 connections) — `scripts/check_logging_patterns.py`
+- **Find f-string logging violations in a Python file using AST parsing. This…** (1 connections) — `scripts/check_logging_patterns.py`
+- **Format violation report for display. Args: violations: List of (file_path,…** (1 connections) — `scripts/check_logging_patterns.py`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `scripts/check_logging_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

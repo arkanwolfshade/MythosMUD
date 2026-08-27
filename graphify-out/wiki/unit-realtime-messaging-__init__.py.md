@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **unit/realtime/messaging/__init__.py** (1 connections) — `server/tests/unit/realtime/messaging/__init__.py`
-- **Realtime messaging unit tests.** (1 connections) — `server/tests/unit/realtime/messaging/__init__.py`
+- **test_profession_get_requirement_display_text_capitalizes_stat_names()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_requirement_display_text capitalizes stat names.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/messaging/__init__.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

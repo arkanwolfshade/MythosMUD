@@ -1,34 +1,35 @@
 # Party
 
-> 10 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Party** (9 connections) — `server/game/party_service.py`
-- **.get_party()** (3 connections) — `server/game/party_service.py`
-- **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **.__post_init__()** (2 connections) — `server/game/party_service.py`
-- **In-memory party model. Ephemeral: not persisted. party_id and member_ids are…** (1 connections) — `server/game/party_service.py`
-- **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
-- **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
-- **Party __post_init__ ensures leader is in member_ids.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Party __post_init__ keeps existing members and adds leader.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **check_no_production_assert.py** (6 connections) — `scripts/check_no_production_assert.py`
+- **_AssertFinder** (5 connections) — `scripts/check_no_production_assert.py`
+- **find_assert_line_numbers()** (5 connections) — `scripts/check_no_production_assert.py`
+- **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
+- **main()** (4 connections) — `scripts/check_no_production_assert.py`
+- **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
+- **Path** (3 connections)
+- **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
+- **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
+- **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
+- **Assert** (1 connections)
+- **True for MythosMUD backend modules under ``server/``, excluding tests and…** (1 connections) — `scripts/check_no_production_assert.py`
+- **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`
+- **Return sorted unique line numbers of ``assert`` in file; empty if none or…** (1 connections) — `scripts/check_no_production_assert.py`
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [_str_id](_str_id.md) (2 shared connections)
-- [PartyService](PartyService.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/party_service.py`
-- `server/tests/unit/game/test_party_service.py`
+- `scripts/check_no_production_assert.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

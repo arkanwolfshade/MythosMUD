@@ -1,30 +1,33 @@
 # Security Implementation
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Security Implementation** (4 connections) — `docs/archive/SECURITY.md`
-- **Argon2 Password Hashing** (2 connections) — `docs/archive/PLANNING_users_db.md`
-- **FastAPI Users Migration** (2 connections) — `docs/archive/PLANNING_users_db.md`
-- **Invite System** (1 connections) — `docs/archive/PLANNING_users_db.md`
-- **Secure Path Validation** (1 connections) — `docs/archive/SECURITY.md`
-- **Client XSS Protection** (1 connections) — `docs/archive/SECURITY.md`
-- **SSE Authentication System** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
+- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **UUID** (6 connections)
+- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Count active connections not tied to any online player.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the connections subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build the sessions subsection of memory stats.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Return numerator/denominator, or 0 when denominator is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [_find_dead_connections](_find_dead_connections.md) (4 shared connections)
+- [Step 2: Ask UX-Focused Questions](Step_2-_Ask_UX-Focused_Questions.md) (3 shared connections)
+- [Migration Workflow (Per File)](Migration_Workflow_Per_File.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PLANNING_users_db.md`
-- `docs/archive/SECURITY.md`
-- `docs/archive/SSE_AUTHENTICATION.md`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

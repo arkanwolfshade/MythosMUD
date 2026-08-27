@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **e2e-run-parallel.ps1** (0 connections) — `scripts/e2e-run-parallel.ps1`
+- **Cursor Hooks** (0 connections) — `docs/CURSOR_HOOKS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/e2e-run-parallel.ps1`
+- `docs/CURSOR_HOOKS.md`
 
 ## Audit Trail
 

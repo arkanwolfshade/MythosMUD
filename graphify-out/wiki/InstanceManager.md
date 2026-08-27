@@ -4,56 +4,47 @@
 
 ## Key Concepts
 
-- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
-- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
-- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
-- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
-- **.__init__()** (5 connections) — `server/game/instance_manager.py`
-- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
-- **Room** (5 connections)
-- **Instance** (4 connections) — `server/game/instance_manager.py`
-- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
-- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
-- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
-- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
-- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
-- **.destroy_instance()** (2 connections) — `server/game/instance_manager.py`
-- **.get_exit_room_id()** (2 connections) — `server/game/instance_manager.py`
-- **.get_first_room_id()** (2 connections) — `server/game/instance_manager.py`
-- **UUID** (2 connections)
-- **Wire exploration, movement, follow, and party services.** (1 connections) — `server/container/bundles/game.py`
-- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
-- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
-- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
-- **Remap exit targets: same-instance rooms use instance IDs, outside exits use…** (1 connections) — `server/game/instance_manager.py`
-- **Extract stable_id from a room ID (may be full path or short form).** (1 connections) — `server/game/instance_manager.py`
-- **Return the instance if it exists.** (1 connections) — `server/game/instance_manager.py`
-- **Remove the instance from the store.** (1 connections) — `server/game/instance_manager.py`
+- **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **asyncio** (15 connections)
+- **test_cancel_background_tasks()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_cancel_background_tasks_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_disconnect_removes_all_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_flush_batch_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_flush_batch_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_error()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_no_client()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_perform_health_check_timeout()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_publish_batch_adds_to_batch()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_publish_batch_flushes_when_full()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_service_restart_no_duplicate_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_stop_health_monitoring()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_stop_health_monitoring_no_task()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **test_get_connection_stats()** (3 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _cancel_background_tasks() cancels all tasks.** (2 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **NATS health-check, batch flush, and subscription-lifecycle tests.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _stop_health_monitoring() handles no task.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test publish_batch() adds message to batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test publish_batch() flushes when batch is full.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _flush_batch() successfully flushes batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test _flush_batch() handles empty batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
 - *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [test_instance_manager.py](test_instance_manager.py.md) (2 shared connections)
-- [ExplorationService](ExplorationService.md) (1 shared connections)
-- [MovementService](MovementService.md) (1 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (1 shared connections)
-- [PartyService](PartyService.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (19 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/game.py`
-- `server/game/instance_manager.py`
+- `server/tests/unit/services/test_nats_service_health.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 52 (78%)
+- INFERRED: 15 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

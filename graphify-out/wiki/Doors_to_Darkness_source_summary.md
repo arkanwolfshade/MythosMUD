@@ -1,13 +1,14 @@
 # Doors to Darkness (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Doors to Darkness (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **Doors to Darkness.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **PostgreSQL database names (MythosMUD)** (4 connections) — `.claude/rules/database.md`
+- **database.md** (1 connections) — `.claude/rules/database.md`
+- **CRITICAL: Which databases may be reset** (1 connections) — `.claude/rules/database.md`
+- **Database placement (production vs test)** (1 connections) — `.claude/rules/database.md`
+- **Enforcement** (1 connections) — `.claude/rules/database.md`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- `.claude/rules/database.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

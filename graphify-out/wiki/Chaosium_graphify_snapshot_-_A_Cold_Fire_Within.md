@@ -1,12 +1,13 @@
 # Chaosium graphify snapshot - A Cold Fire Within
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - A Cold Fire Within** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **a-cold-fire-within/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- **Call of Cthulhu Keeper Tips (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Call of Cthulhu Keeper Tips.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

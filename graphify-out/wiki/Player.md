@@ -1,48 +1,54 @@
 # Player
 
-> 47 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **Player** (20 connections)
-- **._ensure_room_cache_loaded()** (12 connections) — `server/async_persistence.py`
-- **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
-- **.get_players_batch()** (5 connections) — `server/async_persistence.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_name()** (4 connections) — `server/async_persistence.py`
-- **.get_player_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_players_by_user_id()** (4 connections) — `server/async_persistence.py`
-- **.get_players_in_room()** (4 connections) — `server/async_persistence.py`
-- **.list_players()** (4 connections) — `server/async_persistence.py`
-- **.apply_corruption()** (3 connections) — `server/async_persistence.py`
-- **.apply_fear()** (3 connections) — `server/async_persistence.py`
-- **.apply_lucidity_loss()** (3 connections) — `server/async_persistence.py`
-- **.async_damage_player()** (3 connections) — `server/async_persistence.py`
-- **.async_heal_player()** (3 connections) — `server/async_persistence.py`
-- **.damage_player()** (3 connections) — `server/async_persistence.py`
-- **.gain_experience()** (3 connections) — `server/async_persistence.py`
-- **.gain_occult_knowledge()** (3 connections) — `server/async_persistence.py`
-- **.heal_player()** (3 connections) — `server/async_persistence.py`
-- **._load_room_cache_async()** (3 connections) — `server/async_persistence.py`
-- **.save_player()** (3 connections) — `server/async_persistence.py`
-- **.save_players()** (3 connections) — `server/async_persistence.py`
-- **.validate_and_fix_player_room()** (3 connections) — `server/async_persistence.py`
-- **.warmup_room_cache()** (3 connections) — `server/async_persistence.py`
-- **Ensure room cache is loaded (lazy loading with lock). This method uses a lock…** (1 connections) — `server/async_persistence.py`
-- *... and 22 more nodes in this community*
+- **test_lifecycle_periodic.py** (41 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **lifecycle_periodic.py** (19 connections) — `server/npc/lifecycle_periodic.py`
+- **check_optional_npc_spawns_impl()** (13 connections) — `server/npc/lifecycle_periodic.py`
+- **run_periodic_maintenance_impl()** (11 connections) — `server/npc/lifecycle_periodic.py`
+- **cleanup_old_records_impl()** (10 connections) — `server/npc/lifecycle_periodic.py`
+- **NPCMaintenanceConfig** (9 connections) — `server/config/npc_config.py`
+- **_attempt_optional_npc_spawn()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **_check_spawn_conditions_for_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **get_zone_key_for_definition()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **_should_skip_optional_npc()** (9 connections) — `server/npc/lifecycle_periodic.py`
+- **get_spawn_room_for_definition()** (8 connections) — `server/npc/lifecycle_periodic.py`
+- **Any** (8 connections)
+- **npc_config.py** (5 connections) — `server/config/npc_config.py`
+- **_make_record()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_cleanup_old_records_removes_stale_despawned()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_cleanup_old_records_removes_stale_error()** (4 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **.get_config_summary()** (3 connections) — `server/config/npc_config.py`
+- **.cleanup_old_records()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.periodic_maintenance()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **test_should_not_skip_when_interval_elapsed()** (3 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **.get_respawn_delay()** (2 connections) — `server/config/npc_config.py`
+- **.should_run_maintenance()** (2 connections) — `server/config/npc_config.py`
+- **test_attempt_optional_npc_spawn_no_controller()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_attempt_optional_npc_spawn_no_zone_config()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- **test_attempt_optional_npc_spawn_probability_miss()** (2 connections) — `server/tests/unit/npc/test_lifecycle_periodic.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (25 shared connections)
+- [CombatService](CombatService.md) (9 shared connections)
+- [NPCDefinition](NPCDefinition.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
+- `server/config/npc_config.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_periodic.py`
+- `server/tests/unit/npc/test_lifecycle_periodic.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 131 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

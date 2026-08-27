@@ -1,59 +1,31 @@
 # PartyService
 
-> 23 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **PartyService** (36 connections) — `server/game/party_service.py`
-- **party_service.py** (17 connections) — `server/game/party_service.py`
-- **test_party_flow.py** (14 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyUpdated** (11 connections) — `server/events/event_types.py`
-- **party_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_invite_join_leave_disband_state_and_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **test_party_leader_leaves_disbands()** (5 connections) — `server/tests/integration/test_party_flow.py`
-- **event_bus()** (4 connections) — `server/tests/integration/test_party_flow.py`
-- **party_service()** (4 connections) — `server/tests/unit/game/test_party_service.py`
-- **asyncio** (3 connections)
-- **fixture** (3 connections)
-- **fixture** (1 connections)
-- **Event fired when party membership or leadership changes. Emitted by…** (1 connections) — `server/events/event_types.py`
-- **Party service for MythosMUD. In-memory ephemeral party state: parties exist…** (1 connections) — `server/game/party_service.py`
-- **In-memory party management: create, disband, add/remove/kick members, leader…** (1 connections) — `server/game/party_service.py`
-- **Integration tests for party (ephemeral grouping) feature. Flow: Two players;…** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **When leader leaves, party is disbanded and disbanded event is emitted.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Collect PartyUpdated events published during test.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyService wired to real EventBus.** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **Two players: A creates party, adds B; B leaves; A disbands. Verify in-memory…** (1 connections) — `server/tests/integration/test_party_flow.py`
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **FastAPI Best Practices** (9 connections) — `.claude/rules/fastapi.md`
+- **1. Code Organization: Domain-Driven Modularity** (1 connections) — `.claude/rules/fastapi.md`
+- **2. Type Hints: Mandatory Everywhere** (1 connections) — `.claude/rules/fastapi.md`
+- **3. Dependency Injection: Decouple Components** (1 connections) — `.claude/rules/fastapi.md`
+- **4. API Design: Versioning & Thin Endpoints** (1 connections) — `.claude/rules/fastapi.md`
+- **5. Error Handling: Use `HTTPException`** (1 connections) — `.claude/rules/fastapi.md`
+- **6. Performance: Async-First & Production Deployment** (1 connections) — `.claude/rules/fastapi.md`
+- **7. Security: Environment Variables & Auth** (1 connections) — `.claude/rules/fastapi.md`
+- **8. Logging: Structured & Centralized** (1 connections) — `.claude/rules/fastapi.md`
 
 ## Relationships
 
-- [_str_id](_str_id.md) (17 shared connections)
-- [EventBus](EventBus.md) (11 shared connections)
-- [.accept_party_invite](accept_party_invite.md) (6 shared connections)
-- [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.__post_init__](__post_init__.md) (1 shared connections)
-- [InstanceManager](InstanceManager.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/game/party_service.py`
-- `server/tests/integration/test_party_flow.py`
-- `server/tests/unit/game/test_party_service.py`
+- `.claude/rules/fastapi.md`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (85%)
-- INFERRED: 13 (15%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

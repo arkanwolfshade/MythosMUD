@@ -1,61 +1,62 @@
 # disconnect_grace_period.py
 
-> 81 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **disconnect_grace_period.py** (27 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_rest_and_grace_period.py** (26 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
-- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
-- **test_disconnect_grace_period.py** (19 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **MockPersistenceFull** (14 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **cancel_grace_period()** (14 connections) — `server/realtime/disconnect_grace_period.py`
-- **asyncio** (13 connections)
-- **asyncio** (9 connections)
-- **test_intentional_disconnect_no_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_blocks_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_command_starts_countdown_not_in_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_countdown_completes_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_blocked_during_combat()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_location_instant_disconnect()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_unintentional_disconnect_starts_grace_period()** (5 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_start_grace_period_reconnection_cancels()** (5 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **mock_persistence_full()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_can_auto_attack()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_grace_period_player_cannot_use_commands()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_reconnection_cancels_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_rest_interrupts_combat_action()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_visual_indicator_in_grace_period()** (4 connections) — `server/tests/integration/test_rest_and_grace_period.py`
-- **test_cancel_grace_period_cancels_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **test_cancel_grace_period_not_in_grace_period()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- *... and 56 more nodes in this community*
+- **coerce_int()** (32 connections) — `server/utils/int_coercion.py`
+- **int_coercion.py** (17 connections) — `server/utils/int_coercion.py`
+- **_stats_int()** (14 connections) — `server/models/player.py`
+- **test_inventory_command_coercion.py** (13 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **.get_stats()** (12 connections) — `server/models/player.py`
+- **.set_stats()** (6 connections) — `server/models/player.py`
+- **inventory_command_coercion.py** (6 connections) — `server/commands/inventory_command_coercion.py`
+- **.apply_dp_change()** (5 connections) — `server/models/player.py`
+- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
+- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
+- **.get_combat_stats()** (4 connections) — `server/models/player.py`
+- **.get_health_percentage()** (4 connections) — `server/models/player.py`
+- **.get_health_state()** (4 connections) — `server/models/player.py`
+- **.is_alive()** (4 connections) — `server/models/player.py`
+- **.is_dead()** (4 connections) — `server/models/player.py`
+- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
+- **test_coerce_int_string_parsing()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
+- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (9 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (6 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (6 shared connections)
-- [test_game_state_provider.py](test_game_state_provider.py.md) (4 shared connections)
-- [connection_establishment.py](connection_establishment.py.md) (3 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
-- [test_look_player.py](test_look_player.py.md) (3 shared connections)
-- [occupant_display.py](occupant_display.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (18 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (7 shared connections)
+- [ClientLogger](ClientLogger.md) (5 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (2 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (1 shared connections)
+- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (1 shared connections)
+- [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/disconnect_grace_period.py`
-- `server/tests/integration/test_rest_and_grace_period.py`
-- `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- `server/commands/inventory_command_coercion.py`
+- `server/models/player.py`
+- `server/tests/unit/commands/test_inventory_command_coercion.py`
+- `server/utils/int_coercion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 195 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 106 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

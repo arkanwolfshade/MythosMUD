@@ -1,78 +1,78 @@
 # pytest.md
 
-> 505 nodes
+> 263 nodes
 
 ## Key Concepts
 
-- **pytest.md** (518 connections) — `.claude/rules/pytest.md`
-- **Player** (232 connections) — `server/models/player.py`
-- **models/player.py** (98 connections) — `server/models/player.py`
-- **PlayerLucidity** (69 connections) — `server/models/lucidity.py`
-- **test_player_respawn_service.py** (55 connections) — `server/tests/unit/services/test_player_respawn_service.py`
-- **test_player_model.py** (48 connections) — `server/tests/unit/models/test_player_model.py`
-- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- **player_respawn_service.py** (40 connections) — `server/services/player_respawn_service.py`
-- **lucidity.py** (35 connections) — `server/models/lucidity.py`
-- **HealthRepository** (31 connections) — `server/persistence/repositories/health_repository.py`
-- **test_lucidity_models.py** (28 connections) — `server/tests/unit/models/test_lucidity_models.py`
-- **LucidityRepository** (27 connections) — `server/services/lucidity_repository.py`
-- **asyncio** (27 connections)
-- **test_lucidity_repository.py** (25 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **LucidityExposureState** (24 connections) — `server/models/lucidity.py`
-- **asyncio** (23 connections)
-- **LucidityCooldown** (22 connections) — `server/models/lucidity.py`
-- **LucidityAdjustmentLog** (20 connections) — `server/models/lucidity.py`
-- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **PlayerInventory** (16 connections) — `server/models/player.py`
-- **_MockAsyncSession** (16 connections) — `server/tests/unit/services/test_lucidity_repository.py`
-- **PlayerChannelPreferences** (15 connections) — `server/models/player.py`
-- **lucidity_repository.py** (13 connections) — `server/services/lucidity_repository.py`
-- **test_procedures_return_shape.py** (13 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- *... and 480 more nodes in this community*
+- **command_service.py** (108 connections) — `server/commands/command_service.py`
+- **get_username_from_user()** (45 connections) — `server/utils/command_helpers.py`
+- **admin_teleport_commands.py** (39 connections) — `server/commands/admin_teleport_commands.py`
+- **admin_summon_command.py** (35 connections) — `server/commands/admin_summon_command.py`
+- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
+- **test_teleport_helpers.py** (32 connections) — `server/tests/unit/commands/test_teleport_helpers.py`
+- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
+- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
+- **admin_setstat_command.py** (28 connections) — `server/commands/admin_setstat_command.py`
+- **get_admin_actions_logger()** (27 connections) — `server/structured_logging/admin_actions_logger.py`
+- **teleport_helpers.py** (24 connections) — `server/commands/teleport_helpers.py`
+- **admin_actions_logger.py** (19 connections) — `server/structured_logging/admin_actions_logger.py`
+- **handle_mute_command()** (18 connections) — `server/commands/admin_mute_commands.py`
+- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers_functions.py** (17 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **Any** (16 connections)
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
+- **get_help_content()** (13 connections) — `server/help/help_content.py`
+- **system_commands.py** (13 connections) — `server/commands/system_commands.py`
+- **help_content.py** (12 connections) — `server/help/help_content.py`
+- **asyncio** (12 connections)
+- **handle_mutes_command()** (11 connections) — `server/commands/admin_mute_commands.py`
+- **handle_unmute_command()** (11 connections) — `server/commands/admin_mute_commands.py`
+- **handle_help_command()** (11 connections) — `server/commands/system_commands.py`
+- **execute_confirm_teleport()** (11 connections) — `server/commands/teleport_helpers.py`
+- *... and 238 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (121 shared connections)
-- [LucidityService](LucidityService.md) (31 shared connections)
-- [command_result_text](command_result_text.md) (20 shared connections)
-- [coerce_int](coerce_int.md) (17 shared connections)
-- [ValidationError](ValidationError.md) (17 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (13 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (13 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (13 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (12 shared connections)
-- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (12 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (11 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (11 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (79 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (31 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (22 shared connections)
+- [ContainerComponent](ContainerComponent.md) (18 shared connections)
+- [CombatParticipant](CombatParticipant.md) (17 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (17 shared connections)
+- [RoomService](RoomService.md) (14 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (13 shared connections)
+- [test_inventory_mutation_guard.py](test_inventory_mutation_guard.py.md) (11 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (9 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (8 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (7 shared connections)
 
 ## Source Files
 
-- `.claude/rules/pytest.md`
-- `server/models/lucidity.py`
-- `server/models/player.py`
-- `server/persistence/repositories/health_repository.py`
-- `server/persistence/repositories/player_repository_mappers.py`
-- `server/persistence/repositories/player_repository_save.py`
-- `server/services/lucidity_repository.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/integration/test_lucidity_round_trip.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/unit/infrastructure/conftest.py`
-- `server/tests/unit/infrastructure/test_async_persistence_core.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
-- `server/tests/unit/models/test_lucidity_models.py`
-- `server/tests/unit/models/test_player_model.py`
-- `server/tests/unit/models/test_player_related_models.py`
-- `server/tests/unit/persistence/repositories/test_health_repository.py`
-- `server/tests/unit/persistence/test_health_repository_cold_resistance.py`
-- `server/tests/unit/services/test_game_tick_service.py`
+- `server/commands/__init__.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/admin_permission_utils.py`
+- `server/commands/admin_setstat_command.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/commands/command_service.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/help_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/system_commands.py`
+- `server/commands/teleport_helpers.py`
+- `server/help/__init__.py`
+- `server/help/help_content.py`
+- `server/structured_logging/admin_actions_logger.py`
+- `server/structured_logging/log_time_formats.py`
+- `server/tests/unit/commands/test_admin_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
+- `server/tests/unit/commands/test_help_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1628 (90%)
-- INFERRED: 181 (10%)
+- EXTRACTED: 712 (86%)
+- INFERRED: 118 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

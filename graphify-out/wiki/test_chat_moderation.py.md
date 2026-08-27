@@ -1,49 +1,51 @@
 # test_chat_moderation.py
 
-> 30 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **test_chat_moderation.py** (31 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **asyncio** (14 connections)
-- **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **fixture** (3 connections)
-- **player_service()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_add_admin_returns_true()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_handles_internal_error()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_includes_player_name()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_invalid_player_id()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_get_mute_status_with_personal_mutes()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_channel_delegates_to_user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_unmute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- *... and 5 more nodes in this community*
+- **revised-character-creation.spec.ts** (20 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **character-cleanup.ts** (18 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **tryDeleteOneTestCharacter()** (5 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **pollUntilCharacterListed()** (4 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **cleanupE2ECharacters()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **deleteCharacterFromCard()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isDeletableTestCharacter()** (4 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **assertCharacterVisibleOnList()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **recoverCharacterSelectionAfterCreation()** (3 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **confirmCharacterDeletion()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **domClick()** (3 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **deleteRevisedTestCharacterToMakeRoom()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **needsRecoveryFromWrongCreationScreen()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **openStatsRollingFromLogin()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **readSkillsMessageText()** (2 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **getCharacterNameFromCard()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isProtected()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **isTestCharacter()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **loginToCharacterSelection()** (2 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **CharacterCardLocator** (1 connections) — `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
+- **acceptStatsAndSelectFirstProfession()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **assignAllSkillsAndProceedToName()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **enterGameWithCharacter()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **loginAsIthaqua()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- **submitCharacterName()** (1 connections) — `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (6 shared connections)
+- [NATSConfig](NATSConfig.md) (2 shared connections)
+- [GameTickService](GameTickService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_chat_moderation.py`
+- `client/tests/e2e/runtime/character/revised-character-creation.spec.ts`
+- `client/tests/e2e/runtime/fixtures/character-cleanup.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 53 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,29 @@
 # 🎓 Key Learnings
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🎓 Key Learnings** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Best Practices Reinforced** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **What We Found** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Container System Architecture** (2 connections) — `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
+- **Bounded Contexts and Service Boundaries** (2 connections) — `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- **ConnectionManager Modular Architecture** (1 connections) — `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
+- **Container System API Reference** (1 connections) — `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md`
+- `docs/CONNECTION_MANAGER_ARCHITECTURE.md`
+- `docs/CONTAINER_SYSTEM_API_REFERENCE.md`
+- `docs/CONTAINER_SYSTEM_ARCHITECTURE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 3 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

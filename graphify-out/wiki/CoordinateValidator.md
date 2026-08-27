@@ -1,46 +1,47 @@
 # CoordinateValidator
 
-> 21 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **CoordinateValidator** (11 connections) — `server/services/coordinate_validator.py`
-- **coordinate_validator.py** (9 connections) — `server/services/coordinate_validator.py`
-- **test_coordinate_validator.py** (7 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **.validate_coordinates()** (6 connections) — `server/services/coordinate_validator.py`
-- **._fetch_conflicts()** (4 connections) — `server/services/coordinate_validator.py`
-- **_conflict_from_row()** (3 connections) — `server/services/coordinate_validator.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_validator.py`
-- **validator()** (3 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **Any** (3 connections)
-- **._count_coordinated_rooms()** (2 connections) — `server/services/coordinate_validator.py`
-- **_zone_pattern()** (2 connections) — `server/services/coordinate_validator.py`
-- **test_validate_coordinates_no_conflicts()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **test_validate_coordinates_reports_conflicts()** (2 connections) — `server/tests/unit/services/test_coordinate_validator.py`
-- **asyncio** (2 connections)
-- **AsyncSession** (1 connections)
-- **fixture** (1 connections)
-- **Coordinate validation service for ASCII maps. This module provides conflict…** (1 connections) — `server/services/coordinate_validator.py`
-- **Validate coordinates for rooms in a zone/subzone and detect conflicts. Args:…** (1 connections) — `server/services/coordinate_validator.py`
-- **Validates room coordinates and detects conflicts. A conflict occurs when…** (1 connections) — `server/services/coordinate_validator.py`
-- **Initialize coordinate validator. Args: session: Database session for coordinate…** (1 connections) — `server/services/coordinate_validator.py`
-- **Unit tests for coordinate validation.** (1 connections) — `server/tests/unit/services/test_coordinate_validator.py`
+- **.claude/hooks/record_edited_file.py** (11 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_test_file()** (7 connections) — `.claude/hooks/record_edited_file.py`
+- **main()** (7 connections) — `.claude/hooks/record_edited_file.py`
+- **_should_skip_recording()** (5 connections) — `.claude/hooks/record_edited_file.py`
+- **Path** (5 connections)
+- **_is_client_test_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_load_payload()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_load_state()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_write_state_atomic()** (4 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_agent_config_path()** (3 connections) — `.claude/hooks/record_edited_file.py`
+- **_is_server_test_path()** (3 connections) — `.claude/hooks/record_edited_file.py`
+- **Any** (2 connections)
+- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return True if we should not record (missing data or test file).** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return workspace-relative path for pattern matching.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is under server/tests/.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.claude/hooks/record_edited_file.py`
+- **Load state from file; return empty dict on failure.** (1 connections) — `.claude/hooks/record_edited_file.py`
 
 ## Relationships
 
-- [maps.py](maps.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/coordinate_validator.py`
-- `server/tests/unit/services/test_coordinate_validator.py`
+- `.claude/hooks/record_edited_file.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

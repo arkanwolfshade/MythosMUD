@@ -1,48 +1,54 @@
 # get_help_content
 
-> 21 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **get_help_content()** (15 connections) — `server/help/help_content.py`
-- **help_content.py** (12 connections) — `server/help/help_content.py`
-- **test_websocket_handler_help.py** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **get_commands_by_category()** (3 connections) — `server/help/help_content.py`
-- **_get_general_help()** (3 connections) — `server/help/help_content.py`
-- **test_get_help_content_general()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_specific()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **test_get_help_content_talk()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **help/__init__.py** (3 connections) — `server/help/__init__.py`
-- **get_command_categories()** (2 connections) — `server/help/help_content.py`
-- **Any** (1 connections)
-- **Help content and command documentation for MythosMUD. This module contains the…** (1 connections) — `server/help/help_content.py`
-- **Get help content for commands. Args: command_name: Optional specific command…** (1 connections) — `server/help/help_content.py`
-- **Get general help content with command categories.** (1 connections) — `server/help/help_content.py`
-- **Get list of all command categories.** (1 connections) — `server/help/help_content.py`
-- **Get all commands in a specific category.** (1 connections) — `server/help/help_content.py`
-- **Help system for MythosMUD. This package provides help content and command…** (1 connections) — `server/help/__init__.py`
-- **Unit tests for help content used in the realtime/WebSocket path. Uses the…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **Test get_help_content() returns general help when no command specified.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **Test get_help_content() returns specific command help for look.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
-- **talk has in-game help for dialogue trees (#583).** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_help.py`
+- **test_chat_validator.py** (22 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **validate_chat_message()** (12 connections) — `server/game/chat_validator.py`
+- **chat_validator.py** (10 connections) — `server/game/chat_validator.py`
+- **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
+- **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
+- **_chat_passes_nats_validation()** (5 connections) — `server/game/chat_nats_publisher.py`
+- **test_contains_malicious_content_detects_patterns()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_empty_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_malicious_script()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_missing_sender()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_chat_message_rejects_too_long_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_allows_safe_text()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_contains_malicious_content_fails_safe_on_type_error()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_accepts_valid_room()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_allows_none_room_for_system()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_blank_room_id()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
+- **ChatMessage** (1 connections)
+- **parametrize** (1 connections)
+- **Return True when message content and room access checks pass.** (1 connections) — `server/game/chat_nats_publisher.py`
+- **Chat message validation utilities. This module provides validation functions…** (1 connections) — `server/game/chat_validator.py`
+- **Validate chat message before transmission. Args: chat_message: The chat message…** (1 connections) — `server/game/chat_validator.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
-- [system_commands.py](system_commands.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [magic_service.py](magic_service.py.md) (5 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/help/__init__.py`
-- `server/help/help_content.py`
-- `server/tests/unit/realtime/test_websocket_handler_help.py`
+- `server/game/chat_nats_publisher.py`
+- `server/game/chat_validator.py`
+- `server/tests/unit/game/test_chat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 63 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

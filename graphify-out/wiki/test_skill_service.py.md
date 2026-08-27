@@ -1,52 +1,53 @@
 # test_skill_service.py
 
-> 39 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_skill_service.py** (37 connections) — `server/tests/unit/game/test_skill_service.py`
-- **asyncio** (23 connections)
-- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_overlap_occupation_and_personal_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_personal_interest_not_four_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_set_player_skills_wrong_occupation_count_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_non_owner_returns_none()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_player_skills_owner_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_catalog_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_get_skills_used_this_level_returns_repo_result()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_record_successful_skill_use_calls_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_roll_skill_check_failure_does_not_record()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_roll_skill_check_success_records_use_and_returns_true()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_roll_skill_check_unknown_skill_returns_false()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_high_skill_gains_one()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_improvement_applied_when_roll_exceeds_value()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_no_skills_used_no_updates()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_previous_level_under_1_no_op()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_run_improvement_rolls_roll_under_current_no_change()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Unit tests for SkillService (get_skills_catalog, set_player_skills,…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **get_skills_catalog returns list of skill dicts.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **occupation_slots not length 9 raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 14 more nodes in this community*
+- **test_movement_monitor.py** (34 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **get_movement_monitor()** (9 connections) — `server/game/movement_monitor.py`
+- **reset_movement_monitor()** (5 connections) — `server/game/movement_monitor.py`
+- **movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_reset_movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_movement_monitor_returns_singleton()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_concurrent()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_high_failure_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_no_alerts()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_alerts_slow_movement_time()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_integrity_rate()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_log_performance_summary()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_movement_monitor_init()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_concurrent_movement_updates_max()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_no_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_integrity_check_with_violation()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_failure()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_multiple_players()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_string_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_success()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- **test_record_movement_attempt_uuid_player_id()** (2 connections) — `server/tests/unit/game/test_movement_monitor.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [_occupation_slots_9](_occupation_slots_9.md) (17 shared connections)
-- [fixture](fixture.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [SkillService](SkillService.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Migration 019: Complete Implementation Summary](Migration_019-_Complete_Implementation_Summary.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [testing_examples.py](testing_examples.py.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `server/game/movement_monitor.py`
+- `server/tests/unit/game/test_movement_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 76 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

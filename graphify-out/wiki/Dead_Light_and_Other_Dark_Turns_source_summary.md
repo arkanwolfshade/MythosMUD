@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **Dead Light and Other Dark Turns (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **Dead Light and Other Dark Turns.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **Monitoring and Alerting** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Alerting Rules** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Health Checks** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Metrics to Monitor** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

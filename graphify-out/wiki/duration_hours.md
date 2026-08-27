@@ -1,25 +1,27 @@
 # duration_hours
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **integration()** (5 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **fixture** (2 connections)
+- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **NPCCombatIntegration wired to the mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `server/tests/unit/npc/test_npc_combat_integration_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,38 +1,39 @@
 # ✅ Async Remediation Complete
 
-> 17 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **✅ Async Remediation Complete** (7 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🚀 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🎯 What Was Done** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **🎓 Key Takeaway** (3 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Status**: ✅**COMPLETE AND READY FOR DEPLOYMENT** (2 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **ASYNC_REMEDIATION_COMPLETE.md** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Adjusts spectacles with scholarly satisfaction** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Critical Fixes Implemented (4 Code Changes)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **December 3, 2025** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Documentation Created (5 Documents, ~2,500 lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **📚 Key Documents** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Mission Accomplished** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Next Sprint (Optional)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **📊 Results Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Tests Created (1 Comprehensive Suite)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **This Week** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
-- **Today** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **overrides** (16 connections) — `client/package.json`
+- **@stoplight/spectral-core** (2 connections) — `client/package.json`
+- **@stoplight/spectral-ruleset-bundler** (2 connections) — `client/package.json`
+- **@asyncapi/generator** (1 connections) — `client/package.json`
+- **@asyncapi/generator-components** (1 connections) — `client/package.json`
+- **@asyncapi/generator-helpers** (1 connections) — `client/package.json`
+- **@asyncapi/specs** (1 connections) — `client/package.json`
+- **fast-uri** (1 connections) — `client/package.json`
+- **flatted** (1 connections) — `client/package.json`
+- **glob** (1 connections) — `client/package.json`
+- **js-yaml** (1 connections) — `client/package.json`
+- **linkify-it** (1 connections) — `client/package.json`
+- **lodash** (1 connections) — `client/package.json`
+- **magic-string** (1 connections) — `client/package.json`
+- **markdown-it** (1 connections) — `client/package.json`
+- **undici** (1 connections) — `client/package.json`
+- **minimatch** (1 connections) — `client/package.json`
+- **rollup** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

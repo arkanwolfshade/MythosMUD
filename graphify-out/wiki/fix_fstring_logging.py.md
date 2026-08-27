@@ -1,46 +1,47 @@
 # fix_fstring_logging.py
 
-> 25 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **fix_fstring_logging.py** (11 connections) — `scripts/fix_fstring_logging.py`
-- **_create_replacement_for_fstring()** (8 connections) — `scripts/fix_fstring_logging.py`
-- **fix_fstring_logging_in_file()** (7 connections) — `scripts/fix_fstring_logging.py`
-- **Path** (5 connections)
-- **main()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_read_file_content()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_validate_file()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_write_file_if_changed()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_build_structured_params()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **_clean_message()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **create_structured_log_message()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **extract_variables_from_fstring()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **_handle_no_variables_case()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **Match** (1 connections)
-- **Create replacement string for f-string logging call.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Write file if content has changed.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Fix f-string logging violations in a single file. Args: file_path: Path to the…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Main function to fix f-string logging violations.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Extract variable names from f-string content. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Create structured logging message and parameters. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Validate that file exists and is a Python file.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Read file content with error handling.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Handle case where f-string has no variables.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Build structured parameters list from variables.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Clean message by removing variable placeholders.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **test_load_world_seed.py** (12 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **LoadWorldSeedTestApi** (10 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_validate_environment_rejects_non_allowlist_database_name()** (6 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_asyncpg_server_settings_defaults_to_db_name()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_asyncpg_server_settings_respects_postgres_search_path()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **world_seed_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_LoadWorldSeedScriptInternals** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_database_url_for_cli_replaces_asyncpg_prefix()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_decodes_user_password()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_rejects_missing_host()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **regression** (3 connections)
+- **MonkeyPatch** (3 connections)
+- **CaptureFixture** (1 connections)
+- **fixture** (1 connections)
+- **Protocol** (1 connections)
+- **Regression tests for scripts/load_world_seed.py (URL parsing, allowlist,…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **When POSTGRES_SEARCH_PATH is unset, search_path defaults to the DB name from…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **POSTGRES_SEARCH_PATH overrides the default schema/search_path.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Attributes of scripts/load_world_seed.py we read after dynamic import (not on…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Typed facade over scripts/load_world_seed.py helpers (dynamic import).** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Dynamically loaded scripts/load_world_seed.py for unit tests.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **database_url_for_cli strips the asyncpg driver prefix for CLI tools.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **parse_pg_url_for_psql URL-decodes credentials and returns connection parts.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **parse_pg_url_for_psql requires a host in the URL.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_fstring_logging.py`
+- `server/tests/unit/scripts/test_load_world_seed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

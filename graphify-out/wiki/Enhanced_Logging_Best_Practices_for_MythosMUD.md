@@ -1,42 +1,33 @@
 # Enhanced Logging Best Practices for MythosMUD
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Best Practices for MythosMUD** (16 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Common Anti-Patterns** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **LOGGING_BEST_PRACTICES.md** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Conclusion** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **✅ Do This Instead** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ Don't Do This** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Overview** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **FakeHallucinationService** (6 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **UUID** (3 connections)
+- **.__init__()** (2 connections) — `server/services/fake_hallucination_service.py`
+- **.select_hallucination_type()** (2 connections) — `server/services/fake_hallucination_service.py`
+- **Any** (2 connections)
+- **Generate a room text overlay hallucination. Args: player_id: Player UUID who…** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Select which type of fake hallucination to trigger (50/50 chance). Returns:…** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Service for generating fake NPC tells and room text overlays. These…** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Initialize the fake hallucination service.** (1 connections) — `server/services/fake_hallucination_service.py`
+- **Generate a fake NPC tell hallucination. Args: player_id: Player UUID who will…** (1 connections) — `server/services/fake_hallucination_service.py`
 
 ## Relationships
 
-- [Log Levels and Usage](Log_Levels_and_Usage.md) (1 shared connections)
-- [Context Management](Context_Management.md) (1 shared connections)
-- [Enhanced Logging Features](Enhanced_Logging_Features.md) (1 shared connections)
-- [Security Considerations](Security_Considerations.md) (1 shared connections)
-- [Performance Logging](Performance_Logging.md) (1 shared connections)
-- [Log Analysis and Monitoring](Log_Analysis_and_Monitoring.md) (1 shared connections)
-- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
-- [🚨 CRITICAL ANTI-PATTERNS - DO NOT USE](🚨_CRITICAL_ANTI-PATTERNS_-_DO_NOT_USE.md) (1 shared connections)
-- [Core Logging Principles](Core_Logging_Principles.md) (1 shared connections)
-- [Testing Logging](Testing_Logging.md) (1 shared connections)
-- [Log Rotation and Management](Log_Rotation_and_Management.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/services/fake_hallucination_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

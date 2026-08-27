@@ -1,41 +1,31 @@
 # MockPersistence
 
-> 20 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **fixture** (5 connections)
-- **mock_persistence()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock FastAPI app.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock request.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock player.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **Repository Details** (8 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **What Was Created** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **1. PlayerRepository (439 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **2. RoomRepository (42 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **3. ProfessionRepository (74 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **4. HealthRepository (165 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **5. ExperienceRepository (203 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **6. ContainerRepository (80 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **7. ItemRepository (84 lines)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Async Repository Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- [PlayerPositionService](PlayerPositionService.md) (6 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_rest_command.py`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

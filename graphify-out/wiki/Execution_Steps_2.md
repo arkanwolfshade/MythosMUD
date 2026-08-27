@@ -1,44 +1,50 @@
 # Execution Steps
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **scenario-04-muting-system-emotes.md** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 1: Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 2: AW Mutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 3: Ithaqua Uses Dance Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 4: Verify AW Does NOT See Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 5: Test Other Communication Still Works** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 6: AW Unmutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 7: Ithaqua Uses Dance Emote Again** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 8: Verify AW Now Sees Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Step 9: Test Multiple Emotes** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **DialogueEditorPage.tsx** (22 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **dialogue.ts** (16 connections) — `client/src/api/dialogue.ts`
+- **useDialogueEditor()** (6 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **baseUrl()** (5 connections) — `client/src/api/dialogue.ts`
+- **deleteDialogueDefinition()** (5 connections) — `client/src/api/dialogue.ts`
+- **listDialogueDefinitions()** (5 connections) — `client/src/api/dialogue.ts`
+- **upsertDialogueDefinition()** (5 connections) — `client/src/api/dialogue.ts`
+- **validateDialogueTreeClient()** (5 connections) — `client/src/api/dialogue.ts`
+- **buildHeaders()** (4 connections) — `client/src/api/dialogue.ts`
+- **DialogueTreeDto** (3 connections) — `client/src/api/dialogue.ts`
+- **validateDialogueNode()** (3 connections) — `client/src/api/dialogue.ts`
+- **buildSavePayload()** (3 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **dialogue.test.ts** (3 connections) — `client/src/api/__tests__/dialogue.test.ts`
+- **DialogueDefinitionDto** (2 connections) — `client/src/api/dialogue.ts`
+- **validateDialogueOption()** (2 connections) — `client/src/api/dialogue.ts`
+- **DialogueEditorPage()** (2 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **DialogueNodeDto** (1 connections) — `client/src/api/dialogue.ts`
+- **DialogueOptionDto** (1 connections) — `client/src/api/dialogue.ts`
+- **EditorViewProps** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **SavePayload** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **DialogueEditorView()** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **DialogueTreeForm()** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **DialogueTreeList()** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
+- **EMPTY_TREE** (1 connections) — `client/src/pages/DialogueEditorPage.tsx`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (3 shared connections)
+- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (2 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- `client/src/api/__tests__/dialogue.test.ts`
+- `client/src/api/dialogue.ts`
+- `client/src/pages/DialogueEditorPage.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 54 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

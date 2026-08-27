@@ -1,25 +1,26 @@
 # Movement Message Dual Panel Routing
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Movement Message Dual Panel Routing** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- **Missing game_tick Client Handler** (1 connections) — `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
+- **test_list_rooms_with_plane_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_list_rooms_with_sub_zone()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test list_rooms() filters by plane and zone.** (2 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (2 shared connections)
+- [get_room_environment](get_room_environment.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
-- `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

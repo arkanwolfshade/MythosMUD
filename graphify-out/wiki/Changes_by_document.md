@@ -1,41 +1,43 @@
 # Changes by document
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **Changes by document** (16 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **Documentation vs. Code Accuracy Audit Log** (4 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **DOCUMENTATION_AUDIT.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **Audit date** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **CLAUDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONTAINER_SYSTEM_API_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/E2E_TESTING_GUIDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/NATS_SUBJECT_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/QUICK_START_E2E_TESTS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/realtime.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **e2e-tests/MULTIPLAYER_TEST_RULES.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **server/README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **Pydantic Code Review - feature/sqlite-to-postgresql Branch** (11 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Medium Priority Issues** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Code Quality Observations** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **High Priority Issues** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Critical Issues** (2 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **⚠️ Areas for Improvement** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Business Logic in Models - Stats.**init**** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🔴 CRITICAL: Security Vulnerability - `extra="allow"` in Stats Model** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Field Validator Organization** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **✅ Good Practices Found** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Immediate Actions (High Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Long-term Improvements (Low Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Missing `model_rebuild()` Usage** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Optional Fields Without Explicit Defaults** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Performance: Missing `__slots__` in Frequently Used Models** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **References** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Short-term Improvements (Medium Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Test Suite Analysis](Test_Suite_Analysis.md) (1 shared connections)
+- [CRITICAL SERVER MANAGEMENT RULES](CRITICAL_SERVER_MANAGEMENT_RULES.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DOCUMENTATION_AUDIT.md`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

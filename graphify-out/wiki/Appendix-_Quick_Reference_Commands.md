@@ -1,21 +1,22 @@
 # Appendix: Quick Reference Commands
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Appendix: Quick Reference Commands** (3 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Removal Workflow** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Analysis Commands** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **"The optimization of tests is not destruction, but refinement — removing the dross to reveal the gold beneath."** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **2026_02_19_seed_quest_leave_the_tutorial.py** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Insert leave_the_tutorial quest and quest_offers row.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Remove seed quest and its offer.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Audit Trail
 

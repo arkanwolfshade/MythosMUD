@@ -4,57 +4,49 @@
 
 ## Key Concepts
 
-- **AdminActionsLogger** (31 connections) — `server/structured_logging/admin_actions_logger.py`
-- **get_admin_actions_logger()** (27 connections) — `server/structured_logging/admin_actions_logger.py`
-- **test_admin_actions_logger.py** (22 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._log_entry()** (8 connections) — `server/structured_logging/admin_actions_logger.py`
+- **handle_read_command()** (23 connections) — `server/commands/read_command.py`
+- **test_read_command.py** (19 connections) — `server/tests/unit/commands/test_read_command.py`
+- **read_command.py** (16 connections) — `server/commands/read_command.py`
+- **asyncio** (15 connections)
+- **_process_spellbook_read()** (8 connections) — `server/commands/read_command.py`
 - **Any** (8 connections)
-- **_read_log_entries()** (7 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._read_actions_from_file()** (6 connections) — `server/structured_logging/admin_actions_logger.py`
-- **Path** (6 connections)
-- **._get_log_file_path()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.get_recent_actions()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.__init__()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_teleport_action()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
-- **TeleportActionInput** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **._action_entry_matches_filters()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.get_teleport_statistics()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_admin_command()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **.log_permission_check()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
-- **admin_logger()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_get_admin_actions_logger_singleton()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_teleport_action_success()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **._ensure_log_file_exists()** (3 connections) — `server/structured_logging/admin_actions_logger.py`
-- **log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_admin_logger_init_from_config()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_admin_command()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
-- **test_log_admin_command_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **_format_learn_spell_message()** (5 connections) — `server/commands/read_command.py`
+- **_learn_single_spell()** (5 connections) — `server/commands/read_command.py`
+- **_learn_specific_spell()** (5 connections) — `server/commands/read_command.py`
+- **_find_item_in_inventory()** (4 connections) — `server/commands/read_command.py`
+- **_list_spells_in_book()** (4 connections) — `server/commands/read_command.py`
+- **_validate_spellbook()** (4 connections) — `server/commands/read_command.py`
+- **test_handle_read_command()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_empty_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_inventory_json_error()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_item_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_multiple_spells()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_spell_learning_service()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_no_target()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_not_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_single_spell_learn()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
+- **test_handle_read_command_specific_spell()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
 - *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (4 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (4 shared connections)
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (3 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (3 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
-- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/admin_actions_logger.py`
-- `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- `server/commands/read_command.py`
+- `server/tests/unit/commands/test_read_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (91%)
-- INFERRED: 12 (9%)
+- EXTRACTED: 102 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

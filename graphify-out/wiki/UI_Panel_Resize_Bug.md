@@ -1,24 +1,24 @@
 # UI Panel Resize Bug
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **UI Panel Resize Bug** (1 connections) — `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
-- **UI Panel Resize Fix Verified** (1 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- **fixture** (1 connections)
+- **Create a mock ConnectionManager.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
-- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
+- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

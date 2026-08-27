@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Enhanced Logging System Guide** (0 connections) — `server/structured_logging/README.md`
+- **apply_container_migration_to_test_db.ps1** (0 connections) — `scripts/apply_container_migration_to_test_db.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/structured_logging/README.md`
+- `scripts/apply_container_migration_to_test_db.ps1`
 
 ## Audit Trail
 

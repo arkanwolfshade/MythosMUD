@@ -1,22 +1,23 @@
 # ADR-016: Aggro and Threat Management System
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ADR-016: Aggro and Threat Management System** (0 connections) — `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _contains_suspicious_patterns with clean target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-016-aggro-threat-management.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

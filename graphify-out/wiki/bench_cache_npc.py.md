@@ -1,33 +1,33 @@
 # bench_cache_npc.py
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **_FakeNPCService** (6 connections) — `scripts/bench_cache_npc.py`
-- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
-- **bench_npc_cache()** (5 connections) — `scripts/bench_cache_npc.py`
-- **Any** (4 connections)
-- **.get_npc_definition()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.get_npc_definitions()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.get_spawn_rules()** (2 connections) — `scripts/bench_cache_npc.py`
-- **main()** (2 connections) — `scripts/bench_cache_npc.py`
-- **.__init__()** (1 connections) — `scripts/bench_cache_npc.py`
-- **NPC cache micro-benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache_npc.py`
+- **Codacy Rules** (10 connections) — `.claude/rules/codacy.md`
+- **codacy.md** (1 connections) — `.claude/rules/codacy.md`
+- **After every response** (1 connections) — `.claude/rules/codacy.md`
+- **CRITICAL: After ANY successful file edit** (1 connections) — `.claude/rules/codacy.md`
+- **CRITICAL: Dependencies and Security Checks** (1 connections) — `.claude/rules/codacy.md`
+- **General** (1 connections) — `.claude/rules/codacy.md`
+- **Trying to call a tool that needs a `rootPath` parameter** (1 connections) — `.claude/rules/codacy.md`
+- **Using any tool that accepts `provider`, `organization`, or `repository`** (1 connections) — `.claude/rules/codacy.md`
+- **When `codacy_cli_analyze` fails because the Codacy CLI is not installed** (1 connections) — `.claude/rules/codacy.md`
+- **When Codacy MCP tools are unavailable or unreachable** (1 connections) — `.claude/rules/codacy.md`
+- **Whenever a Codacy tool using `repository` or `organization` returns a 404** (1 connections) — `.claude/rules/codacy.md`
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/bench_cache_npc.py`
+- `.claude/rules/codacy.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

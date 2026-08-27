@@ -1,36 +1,33 @@
 # test_websocket_handler_validation.py
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_failure()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_validator()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **test_validate_message_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
-- **Unit tests for websocket handler message validation. Tests the message…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Create a mock message validator.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns message when validation succeeds.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
-- **Test _validate_message() returns None when validation fails.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- **Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **📋 REMEDIATION PLAN** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 3: Medium Priority Improvements (Week 4) - POLISH** (2 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.2: Eliminate asyncio.run() from Library Code** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.3: Ensure Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.4: Add Exception Handling to Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.5: Fix Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 1.6: Audit and Fix F-String Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Tasks 3.1-3.7: Medium Priority Fixes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [.get_professions](get_professions.md) (1 shared connections)
+- [optimized_validate_command_content](optimized_validate_command_content.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_validation.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,60 +1,58 @@
 # websocket_helpers.py
 
-> 59 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **websocket_helpers.py** (39 connections) — `server/realtime/websocket_helpers.py`
-- **test_websocket_helpers_player.py** (24 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **get_player_and_room()** (14 connections) — `server/realtime/websocket_helpers.py`
-- **prepare_player_data()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_service_from_connection_manager()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **get_player_stats_data()** (9 connections) — `server/realtime/websocket_helpers.py`
-- **build_basic_player_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **convert_schema_to_dict()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **asyncio** (7 connections)
-- **_ensure_player_in_room_occupancy()** (6 connections) — `server/realtime/websocket_helpers.py`
+- **test_magic_healing_events.py** (21 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **magic_healing_events.py** (15 connections) — `server/game/magic/magic_healing_events.py`
+- **MagicServiceHealingMixin** (14 connections) — `server/game/magic/magic_healing_events.py`
+- **_HealingService** (12 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **._publish_dp_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_healing_update_event()** (7 connections) — `server/game/magic/magic_healing_events.py`
+- **._publish_or_send_dp_update()** (6 connections) — `server/game/magic/magic_healing_events.py`
 - **UUID** (6 connections)
-- **_get_tracked_player_from_connection_manager()** (4 connections) — `server/realtime/websocket_helpers.py`
-- **test_get_player_and_room_adds_player_to_room()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_and_room_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_no_service()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_service_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_prepare_player_data_with_service()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **_fetch_room_for_tracked_player()** (3 connections) — `server/realtime/websocket_helpers.py`
-- **test_build_basic_player_data()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_build_basic_player_data_defaults()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_app()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_no_state()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- **test_get_player_service_from_connection_manager_success()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers_player.py`
-- *... and 34 more nodes in this community*
+- **asyncio** (6 connections)
+- **._is_heal_other_target()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **._send_instant_heal_event_if_applied()** (5 connections) — `server/game/magic/magic_healing_events.py`
+- **test_send_instant_heal_event_if_applied()** (5 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **Any** (5 connections)
+- **._effect_result_has_healing()** (4 connections) — `server/game/magic/magic_healing_events.py`
+- **test_is_heal_other_target()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_dp_event_fallback_send_game_event()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_dp_event_uses_event_bus()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_or_send_dp_update_no_player()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_publish_or_send_dp_update_publishes_event()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_send_healing_update_event_skips_without_healing()** (4 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **test_effect_result_has_healing()** (3 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **.__init__()** (1 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **Healing event notification for spellcasting. Mixin that sends player_dp_updated…** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **Publish DP update via event bus, or send fallback game event.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- **If instant cast applied healing, send DP update event to the healed player.** (1 connections) — `server/game/magic/magic_healing_events.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (11 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (9 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (13 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [npc_database.py](npc_database.py.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers_player.py`
+- `server/game/magic/magic_healing_events.py`
+- `server/tests/unit/game/magic/test_magic_healing_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 95 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

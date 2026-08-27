@@ -4,44 +4,52 @@
 
 ## Key Concepts
 
-- **vim Best Practices and Coding Standards** (8 connections) — `.cursor/rules/vim.md`
-- **1. Code Organization and Structure** (6 connections) — `.cursor/rules/vim.md`
-- **2. Common Patterns and Anti-patterns** (6 connections) — `.cursor/rules/vim.md`
-- **3. Performance Considerations** (6 connections) — `.cursor/rules/vim.md`
-- **4. Security Best Practices** (6 connections) — `.cursor/rules/vim.md`
-- **5. Testing Approaches** (6 connections) — `.cursor/rules/vim.md`
-- **6. Common Pitfalls and Gotchas** (6 connections) — `.cursor/rules/vim.md`
-- **7. Tooling and Environment** (6 connections) — `.cursor/rules/vim.md`
-- **vim.md** (1 connections) — `.cursor/rules/vim.md`
-- **1.1 Directory Structure Best Practices for vim** (1 connections) — `.cursor/rules/vim.md`
-- **1.2 File Naming Conventions** (1 connections) — `.cursor/rules/vim.md`
-- **1.3 Module Organization Best Practices** (1 connections) — `.cursor/rules/vim.md`
-- **1.4 Component Architecture Recommendations** (1 connections) — `.cursor/rules/vim.md`
-- **1.5 Code Splitting Strategies** (1 connections) — `.cursor/rules/vim.md`
-- **2.1 Design Patterns Specific to vim** (1 connections) — `.cursor/rules/vim.md`
-- **2.2 Recommended Approaches for Common Tasks** (1 connections) — `.cursor/rules/vim.md`
-- **2.3 Anti-Patterns and Code Smells to Avoid** (1 connections) — `.cursor/rules/vim.md`
-- **2.4 State Management Best Practices** (1 connections) — `.cursor/rules/vim.md`
-- **2.5 Error Handling Patterns** (1 connections) — `.cursor/rules/vim.md`
-- **3.1 Optimization Techniques** (1 connections) — `.cursor/rules/vim.md`
-- **3.2 Memory Management Considerations** (1 connections) — `.cursor/rules/vim.md`
-- **3.3 Rendering Optimization (GUI vim)** (1 connections) — `.cursor/rules/vim.md`
-- **3.4 Bundle Size Optimization (Plugins)** (1 connections) — `.cursor/rules/vim.md`
-- **3.5 Lazy Loading Strategies** (1 connections) — `.cursor/rules/vim.md`
-- **4.1 Common Vulnerabilities and Prevention** (1 connections) — `.cursor/rules/vim.md`
+- **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
+- **room_utils.py** (10 connections) — `server/utils/room_utils.py`
+- **chat_channel_logger.py** (8 connections) — `server/services/chat_channel_logger.py`
+- **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
+- **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_downtown()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_dream()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_subzone_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_subzone_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_innsmouth()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_is_valid_room_id_format()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_zone_from_room_id() extracts zone.** (2 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Extract zone from room ID. Room ID format:…** (2 connections) — `server/utils/room_utils.py`
 - *... and 19 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [magic_service.py](magic_service.py.md) (2 shared connections)
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (1 shared connections)
+- [test_map_helpers.py](test_map_helpers.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/rules/vim.md`
+- `server/services/chat_channel_logger.py`
+- `server/tests/unit/utils/test_room_utils.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 81 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **load_seed_data_safe.ps1** (0 connections) — `scripts/load_seed_data_safe.ps1`
+- **MythosMUD Player Command Developer's Guide** (0 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_seed_data_safe.ps1`
+- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
 
 ## Audit Trail
 

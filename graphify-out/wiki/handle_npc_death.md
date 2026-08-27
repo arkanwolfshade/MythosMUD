@@ -1,23 +1,27 @@
 # .handle_npc_death
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.handle_npc_death()** (2 connections) — `server/npc/combat_integration.py`
-- **Handle NPC death and related effects. Args: npc_id: ID of the dead NPC room_id:…** (1 connections) — `server/npc/combat_integration.py`
+- **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **postgresql_procedures_audit.md** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Audit Table** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Domain Grouping Summary** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **Scope** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `docs/archive/postgresql_procedures_audit.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

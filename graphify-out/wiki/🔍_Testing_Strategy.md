@@ -1,20 +1,24 @@
 # 🔍 Testing Strategy
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🔍 Testing Strategy** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Immediate Testing (This Session)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Performance Testing (After Deployment)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Cursor Subagents Documentation** (2 connections) — `docs/CURSOR_SUBAGENTS.md`
+- **Cursor Workflows Documentation** (2 connections) — `docs/CURSOR_WORKFLOWS.md`
+- **Cursor CLI Documentation** (1 connections) — `docs/CURSOR_CLI.md`
+- **Cursor IDE Setup Guide** (1 connections) — `docs/CURSOR_SETUP_GUIDE.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/CURSOR_CLI.md`
+- `docs/CURSOR_SETUP_GUIDE.md`
+- `docs/CURSOR_SUBAGENTS.md`
+- `docs/CURSOR_WORKFLOWS.md`
 
 ## Audit Trail
 

@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_process_combined_rows_no_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _process_combined_rows processes rows without exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **server/structured_logging/__init__.py** (1 connections) — `server/structured_logging/__init__.py`
+- **Structured logging package for MythosMUD. This package provides enhanced…** (1 connections) — `server/structured_logging/__init__.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/structured_logging/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,57 +1,67 @@
 # test_admin_teleport_commands.py
 
-> 43 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_admin_teleport_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **handle_teleport_command()** (30 connections) — `server/commands/admin_teleport_commands.py`
-- **patch** (29 connections)
-- **asyncio** (28 connections)
-- **handle_goto_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
-- **_request_with_services()** (17 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **handle_confirm_goto_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
-- **handle_confirm_teleport_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
-- **test_handle_confirm_goto_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_goto_exception()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_goto_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_goto_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_goto_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_exception()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_goto_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_goto_exception_logs_failure()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_goto_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_goto_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_goto_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_goto_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- **test_handle_confirm_teleport_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
-- *... and 18 more nodes in this community*
+- **security.ts** (41 connections) — `client/src/utils/security.ts`
+- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
+- **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
+- **logoutHandler()** (11 connections) — `client/src/utils/logoutHandler.ts`
+- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
+- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
+- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **AppSessionOutroViews.tsx** (5 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
+- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
+- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
+- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
+- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
+- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **createLogoutHandler()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **logSuccessfulLogoutResponse()** (3 connections) — `client/src/utils/logoutHandler.ts`
+- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **createLogoutAbortTimer()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **logServerLogoutCommandError()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **nestedErrorMessage()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- **performClientSideCleanup()** (2 connections) — `client/src/utils/logoutHandler.ts`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (15 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (7 shared connections)
-- [command_service.py](command_service.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (10 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (9 shared connections)
+- [RoomNodeData](RoomNodeData.md) (7 shared connections)
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (6 shared connections)
+- [test_item.py](test_item.py.md) (5 shared connections)
+- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (5 shared connections)
+- [WebSocket Code Review - Branch: feature/sqlite-to-postgresql](WebSocket_Code_Review_-_Branch-_feature-sqlite-to-postgresql.md) (4 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
+- [Execution Steps](Execution_Steps.md) (2 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\character_sheets  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_character_sheets__2026-08-12.md) (2 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_teleport_commands.py`
-- `server/tests/unit/commands/test_admin_teleport_commands.py`
+- `client/src/__tests__/App.logout.test.tsx`
+- `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- `client/src/mythosApp/AppSessionOutroViews.tsx`
+- `client/src/utils/__tests__/csrfProtection.test.ts`
+- `client/src/utils/__tests__/logoutHandler.test.ts`
+- `client/src/utils/__tests__/secureTokenStorage.test.ts`
+- `client/src/utils/__tests__/security.test-utils.ts`
+- `client/src/utils/logoutHandler.ts`
+- `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 128 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

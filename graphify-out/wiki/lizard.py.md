@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **lizard.py** (0 connections) — `scripts/lizard.py`
+- **NATS Manual Acknowledgment Guide** (0 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/lizard.py`
+- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Audit Trail
 

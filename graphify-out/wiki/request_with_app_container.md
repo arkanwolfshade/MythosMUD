@@ -1,58 +1,53 @@
 # request_with_app_container
 
-> 129 nodes
+> 90 nodes
 
 ## Key Concepts
 
-- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
-- **test_communication_commands_say_me_pose.py** (23 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- **test_communication_commands_channels.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **handle_whisper_command()** (20 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_whisper_reply.py** (18 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
-- **asyncio** (15 connections)
-- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
-- **test_whisper_command.py** (14 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **asyncio** (13 connections)
-- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
-- **asyncio** (11 connections)
-- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
-- **handle_reply_command()** (10 connections) — `server/commands/communication_commands.py`
-- **handle_system_command()** (10 connections) — `server/commands/communication_commands.py`
-- **handle_me_command()** (7 connections) — `server/commands/communication_commands.py`
-- **asyncio** (7 connections)
-- **test_handle_global_command_level_too_low()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_no_room()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_not_admin()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_pose_command_clear_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- *... and 104 more nodes in this community*
+- **FeatureFlagService** (35 connections) — `server/services/feature_flag_service.py`
+- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **feature_flag_service.py** (13 connections) — `server/services/feature_flag_service.py`
+- **test_feature_flag_service.py** (10 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **get_feature_flags()** (9 connections) — `server/services/feature_flag_service.py`
+- **TestGlobalFunctions** (8 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.get_combat_configuration()** (8 connections) — `server/services/feature_flag_service.py`
+- **is_combat_enabled()** (8 connections) — `server/services/feature_flag_service.py`
+- **.get_feature_status()** (7 connections) — `server/services/feature_flag_service.py`
+- **is_combat_logging_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **is_combat_monitoring_enabled()** (6 connections) — `server/services/feature_flag_service.py`
+- **.validate_combat_requirements()** (5 connections) — `server/services/feature_flag_service.py`
+- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
+- **.check_combat_availability()** (4 connections) — `server/services/feature_flag_service.py`
+- **refresh_feature_flags()** (4 connections) — `server/services/feature_flag_service.py`
+- **.__init__()** (3 connections) — `server/services/feature_flag_service.py`
+- **.test_check_combat_availability_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_enabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_invalid_requirements()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_check_combat_availability_with_player_id()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_clear_cache()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_get_feature_status()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (21 shared connections)
-- [AliasStorage](AliasStorage.md) (8 shared connections)
-- [command_service.py](command_service.py.md) (8 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [test_level_service.py](test_level_service.py.md) (3 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/communication_commands_mocks.py`
-- `server/tests/unit/commands/test_communication_commands_channels.py`
-- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- `server/tests/unit/commands/test_whisper_command.py`
+- `server/services/combat_configuration_service.py`
+- `server/services/feature_flag_service.py`
+- `server/tests/unit/services/test_feature_flag_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 279 (97%)
-- INFERRED: 10 (3%)
+- EXTRACTED: 145 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,54 @@
 # test_quest_service.py
 
-> 85 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **test_quest_service.py** (43 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_MockDefRepo** (30 connections) — `server/tests/unit/game/test_quest_service.py`
-- **asyncio** (27 connections)
-- **_MockInstanceRepo** (25 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_make_definition_row()** (18 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_InstanceStub** (15 connections) — `server/tests/unit/game/test_quest_service.py`
-- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_completed()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_reaccept_after_abandon()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_no_instance()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_get_quest_log_returns_entries()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_auto_completes_when_goals_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_suppresses_intermediate_progress_notify()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_prereq_not_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_requires_any_satisfied()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 60 more nodes in this community*
+- **test_zone_config_loader.py** (36 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **zone_config_loader.py** (19 connections) — `server/npc/zone_config_loader.py`
+- **process_zone_rows()** (13 connections) — `server/npc/zone_config_loader.py`
+- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **async_load_zone_configurations()** (12 connections) — `server/npc/zone_config_loader.py`
+- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
+- **asyncio** (11 connections)
+- **ZoneLoadResult** (9 connections) — `server/npc/zone_config_loader.py`
+- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
+- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
+- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
+- **_store_subzone_row()** (9 connections) — `server/npc/zone_config_loader.py`
+- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
+- **test_async_load_zone_configurations_converts_url()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_json_strings()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_closes_connection()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_error()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_no_database_url()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_async_load_zone_configurations_success()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_subzone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_process_zone_rows_empty()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- **test_extract_zone_name_empty()** (3 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (31 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
-- [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
-- [test_game_state_provider.py](test_game_state_provider.py.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (1 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service.py`
+- `server/npc/zone_config_loader.py`
+- `server/tests/unit/npc/test_zone_config_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (88%)
-- INFERRED: 31 (12%)
+- EXTRACTED: 158 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,47 @@
 # .load_room_data
 
-> 37 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **.load_room_data()** (11 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Path** (8 connections)
-- **._load_referenced_intersections()** (7 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.build_room_database()** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_room_files()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_or_update_room_id()** (5 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.discover_config_files()** (4 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_intersection_to_database()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._add_location_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._check_intersection_references_rooms()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.count_config_subzones()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._extract_location_from_path()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.generate_room_id()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.load_config_file()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.parse_room_filename()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.validate_file_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_required_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **._validate_room_structure()** (3 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Generate room ID from parsed filename and location data. Args: parsed_filename:…** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Recursively scan directory for all room JSON files. Args: base_path: Optional…** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate basic room structure.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Extract plane, zone, sub_zone from file path.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate or update room ID based on filename and location.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **Validate required fields are present.** (1 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- *... and 12 more nodes in this community*
+- **PostgreSQL & SQL Audit Report** (13 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **3. Anti-patterns and Semantic Problems** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **4. Data Types** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **10. Prioritized Fixes** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **7. Security / Prepared Statements** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1. Naming Conventions** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5. Time Handling** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **9. Broader Risk Areas** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **2. SQL Formatting (Keywords Lowercase)** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **6. Legacy Constructs** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **8. Tests and Fixtures** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **11. Summary Table** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1.1. Snake_case (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **1.2. Quoted Identifier** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **2.1. Uppercase SQL Keywords** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **3.1. Explicit Joins (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **3.2. `NOT IN` Avoidance** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **3.3. `SELECT *` in Non-Test, Non-Migration Code** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **3.4. `SELECT *` in Test and Documentation** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **4.1. IDs: `serial` / `bigserial` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **4.2. `char(n)` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **4.3. `money` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **4.4. Unnecessary `varchar(n)` / `character varying(n)`** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5.1. `timestamp with time zone` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **5.2. `BETWEEN` on Timestamps** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (18 shared connections)
+- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

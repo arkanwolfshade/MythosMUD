@@ -1,36 +1,37 @@
 # Delight Techniques
 
-> 19 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Delight Techniques** (9 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Skill** (7 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Principles** (5 connections) — `.claude/skills/delight/SKILL.md`
-- **Appropriate to Context** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Assess Delight Opportunities** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Celebration Moments** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Compound Over Time** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Amplifies, Never Blocks** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Easter Eggs & Hidden Delights** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Illustrations & Visual Personality** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Implementation Patterns** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Loading & Waiting States** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Micro-interactions & Animation** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Personality in Copy** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Satisfying Interactions** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Sound Design** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Surprise and Discovery** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Verify Delight Quality** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **Communities (10 total, 0 thin omitted)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Petersen's Abominations  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **petersen-s-abominations/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 0 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 1 - "Petersen's Abominations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 2 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 3 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 4 - "Mohole"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 5 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 6 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 7 - "Petersen's Abominations Pre-Generated Investigators v2"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 8 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community 9 - "The Derelict"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/delight/SKILL.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
 
 ## Audit Trail
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_022_heal_self_heal_other_rename.ps1** (0 connections) — `scripts/apply_022_heal_self_heal_other_rename.ps1`
+- **Dependency Upgrade Report** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_022_heal_self_heal_other_rename.ps1`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
 
 ## Audit Trail
 

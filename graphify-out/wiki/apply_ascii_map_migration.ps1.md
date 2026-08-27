@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_ascii_map_migration.ps1** (0 connections) — `scripts/apply_ascii_map_migration.ps1`
+- **Simultaneous WebSocket and SSE** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_ascii_map_migration.ps1`
+- `docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md`
 
 ## Audit Trail
 

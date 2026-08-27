@@ -1,11 +1,12 @@
 # container_test_client Fixture
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **container_test_client Fixture** (1 connections) — `docs/archive/fixture-optimization-plan.md`
-- **Class-Scoped Container Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
+- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/fixture-optimization-plan.md`
-- `docs/archive/fixture-optimization-summary.md`
+- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

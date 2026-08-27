@@ -1,50 +1,34 @@
 # test_lucidity_service.py
 
-> 34 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_lucidity_service.py** (25 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **asyncio** (13 connections)
-- **test_add_liability_increments_stack()** (5 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_clear_liability_decrements_stack()** (5 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_clear_liability_remove_all()** (5 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_add_liability_new_entry()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_apply_lucidity_adjustment_adds_liability_on_large_drop()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_apply_lucidity_adjustment_clamps_to_max()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_apply_lucidity_adjustment_clamps_to_min()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_apply_lucidity_adjustment_negative_delta()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_apply_lucidity_adjustment_positive_delta()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_clear_hallucination_timers()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_cooldown_get_and_set()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_get_player_lucidity_delegates()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_increment_exposure_state_delegates()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **test_default_liability_picker()** (3 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **fixture** (2 connections)
-- **Unit tests for lucidity service.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test that lucidity adjustment clamps to minimum value.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test adding a new liability code.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test stacking an existing liability.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test clearing all stacks of a liability.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test decrementing liability stacks.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- **Test get_player_lucidity delegates to repository.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
-- *... and 9 more nodes in this community*
+- **validate_security_comprehensive()** (9 connections) — `server/validators/security_validator.py`
+- **test_validate_security_comprehensive_action()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_default()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_message()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_security_comprehensive_player_name()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation for message type.** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test comprehensive validation with unknown field type defaults to message.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Comprehensive security validation for any text field. This is the main…** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [LucidityService](LucidityService.md) (18 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (4 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (1 shared connections)
+- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_lucidity_service.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (82%)
-- INFERRED: 13 (18%)
+- EXTRACTED: 15 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

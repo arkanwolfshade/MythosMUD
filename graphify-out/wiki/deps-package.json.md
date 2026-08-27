@@ -1,11 +1,12 @@
 # deps/package.json
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **deps/package.json** (1 connections) — `client/.vite/deps/package.json`
-- **type** (1 connections) — `client/.vite/deps/package.json`
+- **Archive Directory README** (2 connections) — `docs/archive/README.md`
+- **HADS Archive Exclusion** (1 connections) — `docs/archive/README.md`
+- **PLANNING.md Single Source of Truth** (1 connections) — `docs/archive/README.md`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `client/.vite/deps/package.json`
+- `docs/archive/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

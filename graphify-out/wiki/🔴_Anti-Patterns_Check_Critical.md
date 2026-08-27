@@ -1,30 +1,34 @@
 # 🔴 Anti-Patterns Check (Critical)
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **🔴 Anti-Patterns Check (Critical)** (9 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **1. Blocking the Event Loop?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **2. Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **3. Using `asyncio.run()` in Library Code?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **4. Mixing Sync and Async Code Incorrectly?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **5. Forgetting to Await Awaitable Objects?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **6. Not Handling Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **7. Over-using Locks?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **8. Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **add_request_context()** (9 connections) — `server/structured_logging/logging_processors.py`
+- **test_add_request_context_adds_logger_name()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_request_context_adds_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_request_context_adds_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_request_context_preserves_request_id()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **test_add_request_context_preserves_timestamp()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test add_request_context() preserves existing timestamp.** (2 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Add request context information to log entries. This processor adds contextual…** (1 connections) — `server/structured_logging/logging_processors.py`
+- **Test add_request_context() adds timestamp when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test add_request_context() adds logger_name.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **Test add_request_context() adds request_id when missing.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [zone](zone.md) (6 shared connections)
+- [required](required.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/structured_logging/logging_processors.py`
+- `server/tests/unit/structured_logging/test_logging_processors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

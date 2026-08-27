@@ -1,36 +1,41 @@
 # .accept_party_invite
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **.accept_party_invite()** (8 connections) — `server/game/party_service.py`
-- **._send_result_to_player()** (8 connections) — `server/game/party_service.py`
-- **.decline_party_invite()** (7 connections) — `server/game/party_service.py`
-- **._expire_pending_invites()** (7 connections) — `server/game/party_service.py`
-- **.request_party_invite()** (7 connections) — `server/game/party_service.py`
-- **._send_party_invite_to_target()** (4 connections) — `server/game/party_service.py`
-- **Remove expired pending invites and notify inviters.** (1 connections) — `server/game/party_service.py`
-- **Send a command_response-style message to a single player.** (1 connections) — `server/game/party_service.py`
-- **Send party_invite event to the target player only.** (1 connections) — `server/game/party_service.py`
-- **Create a pending party invite and send party_invite event to target. Target…** (1 connections) — `server/game/party_service.py`
-- **Accept a party invite. Target is the player who accepted (the invitee).** (1 connections) — `server/game/party_service.py`
-- **Decline a party invite.** (1 connections) — `server/game/party_service.py`
+- **Test Coverage Summary: Disconnect Grace Period & Rest Command** (12 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Test Categories** (5 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **New Test Files Created** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Test Coverage Summary** (4 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Integration Tests** (3 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Test Coverage by File** (3 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **E2E Test Scenarios** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Unit Tests** (2 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Coverage Targets** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Coverage Verification** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Critical Files (90% Target)** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **E2E Scenarios** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Expected Coverage Results** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Grace Period System Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Next Steps** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Normal Files (70% Target)** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Notes** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Overview** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
+- **Rest Command Tests** (1 connections) — `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Relationships
 
-- [_str_id](_str_id.md) (13 shared connections)
-- [PartyService](PartyService.md) (6 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [send_game_event](send_game_event.md) (1 shared connections)
+- [.__call__](__call__.md) (1 shared connections)
+- [🎯 Audit Compliance Score](🎯_Audit_Compliance_Score.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `docs/archive/TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

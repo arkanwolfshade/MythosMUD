@@ -1,11 +1,12 @@
 # Dietrich Zann.md
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Dietrich Zann.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dietrich Zann.md`
-- **Dietrich Zann** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dietrich Zann.md`
+- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Relationships
 
@@ -13,11 +14,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Dietrich Zann.md`
+- `docs/archive/WHO_COMMAND_FRD.md`
+- `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

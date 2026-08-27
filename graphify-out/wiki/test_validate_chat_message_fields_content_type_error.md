@@ -1,19 +1,20 @@
 # test_validate_chat_message_fields_content_type_error
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_chat_message_fields_content_type_error()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid content type.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Chaosium graphify snapshot - The Grand Grimoire of Cthulhu Mythos Magic** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
+- **the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
 
 ## Audit Trail
 

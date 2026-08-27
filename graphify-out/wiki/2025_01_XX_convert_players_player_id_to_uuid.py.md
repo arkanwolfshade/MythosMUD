@@ -1,26 +1,27 @@
 # 2025_01_XX_convert_players_player_id_to_uuid.py
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **2025_01_XX_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from VARCHAR to UUID. PostgreSQL can directly cast…** (1 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
-- **Convert players.player_id from UUID back to VARCHAR. This is a downgrade path,…** (1 connections) — `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
+- **2. Primitive Anti-Patterns: Direct `asyncio` Primitive Usage** (6 connections) — `docs/archive/anyio_code_review.md`
+- **2.1 `asyncio.sleep()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.2 `asyncio.Lock()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.3 `asyncio.Event()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.4 `asyncio.Queue()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **2.5 `asyncio.wait_for()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alembic/versions/2025_01_XX_convert_players_player_id_to_uuid.py`
+- `docs/archive/anyio_code_review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Does Love Forgive_
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Does Love Forgive_** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
-- **does-love-forgive/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **Success Criteria** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Non-Functional Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **User Experience Requirements** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

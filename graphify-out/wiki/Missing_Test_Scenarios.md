@@ -1,25 +1,23 @@
 # Missing Test Scenarios
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Missing Test Scenarios** (4 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Database Connection Loss** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **NATS Unavailability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Room Data Corruption** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **passive_lucidity_flux_tick Performance Alert** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- **Warnings Log Investigation** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Relationships
 
-- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_GAPS.md`
+- `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,30 +1,30 @@
 # Modular E2E Test Suite
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Modular E2E Test Suite** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Validation Passed** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **AI Context Limit 20KB** (1 connections) — `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Test Suite README** (1 connections) — `e2e-tests/README.md`
+- **.__init__()** (6 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **Any** (3 connections)
+- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (3 shared connections)
 
 ## Source Files
 
-- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- `e2e-tests/END_TO_END_VALIDATION.md`
-- `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- `e2e-tests/README.md`
+- `server/models/lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (79%)
+- INFERRED: 3 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

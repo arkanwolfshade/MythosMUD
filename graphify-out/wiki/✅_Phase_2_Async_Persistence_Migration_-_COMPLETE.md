@@ -1,40 +1,34 @@
 # ✅ Phase 2 Async Persistence Migration - COMPLETE
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **✅ Phase 2 Async Persistence Migration - COMPLETE** (18 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🏆 Achievement Summary** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **PHASE2_MIGRATION_COMPLETE.md** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📝 Git Commit Message** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📋 Migration Checklist** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎯 Mission Accomplished** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Phase 1 + Phase 2 Complete** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Status**: ✅**100% COMPLETE** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **test_event_publisher_helpers.py** (10 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Unit tests for event publisher helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _get_async_persistence() returns the injected persistence layer (#679:…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Relationships
 
-- [📈 Performance Impact](📈_Performance_Impact.md) (1 shared connections)
-- [🎯 Async Compliance Score](🎯_Async_Compliance_Score.md) (1 shared connections)
-- [🧪 Testing Status](🧪_Testing_Status.md) (1 shared connections)
-- [🚀 Deployment Readiness](🚀_Deployment_Readiness.md) (1 shared connections)
-- [📊 Final Results](📊_Final_Results.md) (1 shared connections)
-- [📚 Changes by Category](📚_Changes_by_Category.md) (1 shared connections)
-- [💡 Key Improvements](💡_Key_Improvements.md) (1 shared connections)
-- [🎓 Lessons Learned](🎓_Lessons_Learned.md) (1 shared connections)
-- [🚦 Next Steps](🚦_Next_Steps.md) (1 shared connections)
-- [🎭 Closing Remarks](🎭_Closing_Remarks.md) (1 shared connections)
-- [🔧 Changes Summary](🔧_Changes_Summary.md) (1 shared connections)
-- [✅ Verification Results](✅_Verification_Results.md) (1 shared connections)
+- [Shared JSON schemas](Shared_JSON_schemas.md) (2 shared connections)
+- [.load_container_from_room_json](load_container_from_room_json.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

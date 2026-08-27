@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_not_chat_message()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False for non-chat messages.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

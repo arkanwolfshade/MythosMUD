@@ -1,56 +1,49 @@
 # SpellTargetingService
 
-> 22 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
-- **UUID** (8 connections)
-- **._get_player()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._match_combat_opponent()** (7 connections) — `server/game/magic/spell_targeting.py`
-- **._get_combat_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
-- **spell_targeting_service()** (5 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **Player** (1 connections)
-- **Resolve the target for a spell cast. Args: player_id: ID of the player casting…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get player from persistence.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Build a TargetMatch for a combat opponent, or None if unresolved.** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Get the combat target for a player if they are in combat. Args: player_id:…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Service for resolving spell targets. Handles target resolution based on spell…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Initialize the spell targeting service. Args: target_resolution_service:…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve self-target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve area/all target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Resolve entity/location target spell with explicit target. Returns…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Create SpellTargetingService with mocks.** (1 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **Persistence Layer Refactoring - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📊 Final Metrics** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🔍 Validation Results** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🚀 What's Now Possible** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📈 Benefits** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🏗️ What Was Built** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Code Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎉 Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Directory Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Documentation Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📚 Documentation Index** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Existing Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Gradual Migration** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For New Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Future (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Immediate (Available Now)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Import Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Linting** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎯 Mission Accomplished** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📝 Next Steps (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Recommendations** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Repository Breakdown** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Tests** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (9 shared connections)
-- [magic_service.py](magic_service.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [SpellEffectType](SpellEffectType.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (2 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [rename_players_to_population.py](rename_players_to_population.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_targeting.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (85%)
-- INFERRED: 10 (15%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

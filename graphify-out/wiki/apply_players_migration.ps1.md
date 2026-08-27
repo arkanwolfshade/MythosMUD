@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_players_migration.ps1** (0 connections) — `scripts/apply_players_migration.ps1`
+- **Dual Command Processing Architecture** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_players_migration.ps1`
+- `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Audit Trail
 

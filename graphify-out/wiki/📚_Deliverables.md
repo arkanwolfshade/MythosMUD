@@ -1,25 +1,26 @@
 # 📚 Deliverables
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **📚 Deliverables** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Code Changes (4 files modified)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Documentation (5 files, ~2,500 lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Tests (1 file, 250+ lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.accept()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.client()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.receive_text()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.send_text()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- [Profession](Profession.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/examples/logging/fastapi_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

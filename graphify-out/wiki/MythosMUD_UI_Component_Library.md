@@ -1,12 +1,13 @@
 # MythosMUD UI Component Library
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **MythosMUD UI Component Library** (2 connections) — `client/src/components/ui/README.md`
-- **Mythos Terminal Theme Tokens** (1 connections) — `client/src/components/ui/README.md`
-- **StatusPanel** (1 connections) — `client/src/components/ui/README.md`
+- **Dark Young of Shub-Niggurath.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- **ZyMedBio.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
+- **Dark Young of Shub-Niggurath** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- **ZyMedBio** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
 
 ## Relationships
 
@@ -14,11 +15,12 @@
 
 ## Source Files
 
-- `client/src/components/ui/README.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Dark Young of Shub-Niggurath.md`
+- `data/MythosMUD-Obsidian/wiki/entities/ZyMedBio.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,50 +1,48 @@
 # validate_inventory_payload
 
-> 23 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **validate_inventory_payload()** (13 connections) — `server/schemas/shared/inventory_schema.py`
-- **test_inventory_schema.py** (12 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **validate_inventory_items()** (9 connections) — `server/schemas/shared/inventory_schema.py`
-- **inventory_schema.py** (7 connections) — `server/schemas/shared/inventory_schema.py`
-- **_build_validator()** (5 connections) — `server/schemas/shared/inventory_schema.py`
-- **test_validate_inventory_items_invalid_quantity()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_invalid_inventory()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_missing_required()** (4 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_items_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **test_validate_inventory_payload_valid()** (3 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Any** (3 connections)
-- **Inventory JSON schema validation utilities. As recorded in the restricted…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Internal helper to construct a Draft7 validator instance.** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate a complete inventory payload against the canonical schema. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Validate only the inventory portion to simplify testing workflows. Raises:…** (1 connections) — `server/schemas/shared/inventory_schema.py`
-- **Unit tests for inventory_schema validation functions. Tests the validation…** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() accepts valid payload.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_payload() raises error for invalid inventory.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() accepts valid items.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() raises error for missing required fields.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
-- **Test validate_inventory_items() raises error for invalid quantity.** (1 connections) — `server/tests/unit/schemas/test_inventory_schema.py`
+- **Test Pruning Candidates - Detailed List** (10 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Recommended Pruning Order** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Specific Test Removal Justifications** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **High-Impact Consolidations** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Immediate Pruning Candidates (High Confidence)** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category A: Infrastructure Tests Testing Framework Behavior** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category B: Coverage Tests Written for Metrics** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Total Impact Estimate** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category C: Model Property Tests** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Consolidation Candidates** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Coverage Impact Analysis** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **1. Command Validation Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **2. Error Response Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **3. Permission Check Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Aggressive Estimate (Full Optimization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Conclusion** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Conservative Estimate (Implement Phase A + Basic Parametrization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/coverage/test_command_handler_coverage.py` (1,039 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/coverage/test_error_logging_coverage.py` (691 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/unit/infrastructure/test_dependency_injection.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/unit/infrastructure/test_lifespan.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Files: `server/tests/unit/models/test_*.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 1: Testing Python Language Features** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 2: Testing Framework Behavior** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 3: Tests with No Real Assertions** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [migrate_combat_data.py](migrate_combat_data.py.md) (1 shared connections)
-- [PlayerSavePreparer](PlayerSavePreparer.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/shared/inventory_schema.py`
-- `server/tests/unit/schemas/test_inventory_schema.py`
+- `docs/archive/TEST_PRUNING_CANDIDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

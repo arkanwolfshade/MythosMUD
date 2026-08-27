@@ -1,29 +1,32 @@
 # test_run_make_stages.py
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_run_make_stages.py** (7 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **_load_module()** (5 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_keep_going_requested()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_nonzero()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_ok()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_traceback()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_makefile_composites_use_fail_fast_runner()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **Tests for scripts/run_make_stages.py fail-fast helpers.** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **holidays.schema.json** (7 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **required** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **holidays** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **$id** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **$schema** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **title** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [check_and_apply_map_migrations.py](check_and_apply_map_migrations.py.md) (1 shared connections)
+- [fix_markdown_common_issues.py](fix_markdown_common_issues.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_run_make_stages.py`
+- `db/static/schemas/holidays.schema.json`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

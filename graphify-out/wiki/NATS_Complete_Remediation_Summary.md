@@ -4,31 +4,31 @@
 
 ## Key Concepts
 
-- **NATS Complete Remediation Summary** (15 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Detailed Implementation** (9 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Code Quality Improvements** (5 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Complete Fix Summary** (4 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Configuration Options Added** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Impact Assessment** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Metrics Enhancements** (3 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **1. Error Handling Standardization** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **2. Message Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **3. Batch Flush Error Recovery** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **4. Connection Pool Error Handling** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **5. Subject Manager Integration** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **6. Health Monitoring** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **7. Acknowledgment Metrics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **8. Wildcard Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **After Remediation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Before Remediation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Conclusion** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Documentation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Documentation Created** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Enhanced Configuration Usage** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Enhanced Metrics** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Exception Handling** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **Execution Steps** (18 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Scenario 25: Wearable Container Management **[REQUIRES MULTI-PLAYER]**** (11 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🤖 MANDATORY AI EXECUTION CONTRACT 🤖** (5 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Testing Approach Rationale** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **scenario-25-container-wearable-management.md** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **CONFIRMATION CHECKLIST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **EXECUTION AFFIRMATION (Type this before proceeding)** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Scenario Completion Verification** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ SCENARIO FILE CREATED** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 1 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 1 of 8: Setup - Player Connected** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 2 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 2 of 8: Check Inventory for Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 3 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 3 of 8: Equip Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 4 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
 - *... and 12 more nodes in this community*
 
 ## Relationships
@@ -37,7 +37,7 @@
 
 ## Source Files
 
-- `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
 
 ## Audit Trail
 

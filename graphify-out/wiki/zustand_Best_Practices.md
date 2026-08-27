@@ -1,33 +1,36 @@
 # zustand Best Practices
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **zustand Best Practices** (9 connections) — `.claude/rules/zustand.md`
-- **2. Slice-Based Organization** (2 connections) — `.claude/rules/zustand.md`
-- **zustand.md** (1 connections) — `.claude/rules/zustand.md`
-- **1. Typed Store Shape (TypeScript First)** (1 connections) — `.claude/rules/zustand.md`
-- **3. Naming Conventions** (1 connections) — `.claude/rules/zustand.md`
-- **4. Functional Updates to Prevent Stale Closures** (1 connections) — `.claude/rules/zustand.md`
-- **5. Selectors and Shallow Comparison for Performance** (1 connections) — `.claude/rules/zustand.md`
-- **6. Essential Middleware Usage** (1 connections) — `.claude/rules/zustand.md`
-- **7. Initializing Stores Outside Components** (1 connections) — `.claude/rules/zustand.md`
-- **8. Asynchronous Actions** (1 connections) — `.claude/rules/zustand.md`
-- **MythosMUD client** (1 connections) — `.claude/rules/zustand.md`
+- **test_emote_repository.py** (14 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **asyncio** (5 connections)
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **test_get_emote_aliases()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **test_get_emotes()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **test_get_emotes_empty()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **_alias_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **_emote_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **test_get_emote_aliases_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **test_get_emotes_db_error()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **fixture** (1 connections)
+- **Unit tests for EmoteRepository (#624).** (1 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/zustand.md`
+- `server/tests/unit/persistence/repositories/test_emote_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

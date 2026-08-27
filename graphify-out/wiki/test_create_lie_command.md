@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_lie_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_lie_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_restore_mp_from_rest_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_rest() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [utils/config.ts](utils-config.ts.md) (1 shared connections)
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

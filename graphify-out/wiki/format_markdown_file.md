@@ -1,45 +1,48 @@
 # format_markdown_file
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **format_markdown_file()** (13 connections) — `scripts/format_markdown_files.py`
-- **format_markdown_files.py** (11 connections) — `scripts/format_markdown_files.py`
-- **main()** (4 connections) — `scripts/format_markdown_files.py`
-- **fix_blank_lines_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_bold_items_without_list_marker()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_checklist_items()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_checkmark_items()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_code_block_spacing()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_heading_trailing_colons()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_items_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_plain_text_after_colons()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_url_formatting()** (3 connections) — `scripts/format_markdown_files.py`
-- **Path** (2 connections)
-- **Remove leading `-` from plain text items after lines ending with `:`.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from checklist items in certain contexts.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove trailing colons from headings.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from items that follow headings (not part of lists).** (1 connections) — `scripts/format_markdown_files.py`
-- **Add blank lines after headings when content follows.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from bold text that isn't part of a list.** (1 connections) — `scripts/format_markdown_files.py`
-- **Format a single markdown file. Returns: (changed, lines_modified): Whether file…** (1 connections) — `scripts/format_markdown_files.py`
-- **Main function to process all markdown files.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from checkmark/status items.** (1 connections) — `scripts/format_markdown_files.py`
-- **Add angle brackets around bare URLs in markdown.** (1 connections) — `scripts/format_markdown_files.py`
-- **Fix spacing in code blocks (e.g., `@#` -> ` @#`).** (1 connections) — `scripts/format_markdown_files.py`
+- **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_find_uvicorn_processes()** (4 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_uvicorn_processes()** (4 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_child_processes()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **_terminate_with_signals()** (3 connections) — `server/commands/shutdown_process_termination.py`
+- **test_find_uvicorn_processes_collects_uvicorn_names()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_schedule_process_termination_disabled_by_env()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_schedule_process_termination_starts_thread()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_child_processes()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_uvicorn_processes_kills_stubborn()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminate_with_signals_sends_to_child_and_parent()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **test_terminator_thread_import_error_falls_back_to_signals()** (3 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **Any** (2 connections)
+- **Find all uvicorn processes using psutil.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all uvicorn processes.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Terminate all child processes of the current process.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Fallback signal-based termination when psutil is not available.** (1 connections) — `server/commands/shutdown_process_termination.py`
+- **Unit tests for shutdown process termination helpers.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **schedule_process_termination starts daemon thread when enabled.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_find_uvicorn_processes returns processes whose name contains uvicorn.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_with_signals attempts SIGINT and SIGTERM on child and parent.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_uvicorn_processes kills processes still running after terminate.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_terminate_child_processes terminates and kills surviving children.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **Terminator thread uses signal fallback when psutil import fails.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **schedule_process_termination returns early when exit is disabled.** (1 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [EventBusLifecycleMixin](EventBusLifecycleMixin.md) (3 shared connections)
 
 ## Source Files
 
-- `scripts/format_markdown_files.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/tests/unit/commands/test_shutdown_process_termination.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/realtime/__init__.py** (0 connections) — `server/tests/unit/realtime/__init__.py`
+- **cursor-cli-test-fix.ps1** (0 connections) — `scripts/cursor-cli-test-fix.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/realtime/__init__.py`
+- `scripts/cursor-cli-test-fix.ps1`
 
 ## Audit Trail
 

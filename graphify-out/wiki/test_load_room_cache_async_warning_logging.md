@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_load_room_cache_async_warning_logging()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async logs warning when table not found.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **unit/realtime/integration/__init__.py** (1 connections) — `server/tests/unit/realtime/integration/__init__.py`
+- **Realtime integration unit tests.** (1 connections) — `server/tests/unit/realtime/integration/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/tests/unit/realtime/integration/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

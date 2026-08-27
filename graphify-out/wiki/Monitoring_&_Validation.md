@@ -1,20 +1,21 @@
 # Monitoring & Validation
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Monitoring & Validation** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Metrics to Track** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Performance Validation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **verify_schema_match.sh** (3 connections) — `scripts/verify_schema_match.sh`
+- **find_pg_dump()** (1 connections) — `scripts/verify_schema_match.sh`
+- **find_pg_isready()** (1 connections) — `scripts/verify_schema_match.sh`
+- **verify_schema_match.sh script** (1 connections) — `scripts/verify_schema_match.sh`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `scripts/verify_schema_match.sh`
 
 ## Audit Trail
 

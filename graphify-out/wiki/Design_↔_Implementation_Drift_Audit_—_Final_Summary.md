@@ -1,32 +1,42 @@
 # Design ↔ Implementation Drift Audit — Final Summary
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Design ↔ Implementation Drift Audit — Final Summary** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Working the backlog** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Decisions made — do not re-litigate** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Do first — small, high value** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Loose ends outside the tracker** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Sequencing that matters** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **User-visible defects** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **Weight the evidence correctly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **What the audit concluded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
-- **What was not examined — see #639** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Multi-Character Support System** (5 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 30 Case-Insensitive Name Uniqueness** (3 connections) — `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- **Scenario 38 Revised Character Creation** (3 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Skills Subsystem** (3 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 28 Multi-Character Creation** (2 connections) — `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- **Scenario 29 Character Soft Deletion** (2 connections) — `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- **Stats-Profession-Skills-Name Creation Flow** (2 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Scenario 41 Skills After Creation** (2 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
+- **Scenario 27 Character Selection** (1 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 31 Administrative Set Stat** (1 connections) — `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- **Scenario 39 Skills New Tab** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 40 Skills Slash Command** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- `e2e-tests/scenarios/scenario-27-character-selection.md`
+- `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- `e2e-tests/scenarios/scenario-40-skills-command.md`
+- `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

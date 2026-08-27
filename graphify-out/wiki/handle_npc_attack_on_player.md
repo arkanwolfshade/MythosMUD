@@ -1,30 +1,32 @@
 # .handle_npc_attack_on_player
 
-> 6 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.handle_npc_attack_on_player()** (5 connections) — `server/services/npc_combat_integration_service.py`
-- **._run_npc_attack_on_player_after_grace()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **.handle_npc_attack()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **NPC attack path after login grace check passes.** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Aggressive-mob entrypoint; matches NPCCombatIntegration.handle_npc_attack for…** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Handle an NPC attacking a player (aggro) using the same combat codepath as…** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Communities (1 total, 1 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (1 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (90%)
-- INFERRED: 1 (10%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

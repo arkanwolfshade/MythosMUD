@@ -1,24 +1,27 @@
 # ._publish_attack_event
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
-- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **Test Suite Analysis** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current Test Organization** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Dependency Access Patterns** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 1: Direct app.state Access (Broken - 445 instances)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 2: Using Real Lifespan (Works - Limited)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 3: Fixture-Based Mocking (Mixed)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [EventBus](EventBus.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

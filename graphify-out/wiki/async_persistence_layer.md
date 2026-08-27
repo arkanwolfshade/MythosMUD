@@ -1,27 +1,30 @@
 # async_persistence_layer
 
-> 5 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **async_persistence_layer()** (4 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **fixture** (2 connections)
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
-- **Create an AsyncPersistenceLayer instance with skipped room cache.** (1 connections) — `server/tests/unit/infrastructure/conftest.py`
+- **run-playwright-tests.js** (8 connections) — `client/scripts/run-playwright-tests.js`
+- **checkBackendServer()** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **clientRoot** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **__dirname** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **E2E_BACKEND_BASE_URL** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **env** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **__filename** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **playwright** (1 connections) — `client/scripts/run-playwright-tests.js`
+- **testsDir** (1 connections) — `client/scripts/run-playwright-tests.js`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/conftest.py`
+- `client/scripts/run-playwright-tests.js`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

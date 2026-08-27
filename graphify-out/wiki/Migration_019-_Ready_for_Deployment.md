@@ -1,37 +1,38 @@
 # Migration 019: Ready for Deployment
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Migration 019: Ready for Deployment** (8 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Files Ready** (4 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Quick Start** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **What Changed** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **MIGRATION_019_READY_FOR_DEPLOYMENT.md** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Application Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Database Schema** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Documentation** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Implementation Complete** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Migration Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Next Action** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Python Code** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Risk Level: **MEDIUM** ⚠️** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Test the Migration** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Testing Checklist** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Verify Python Models** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **exits** (5 connections) — `schemas/unified_room_schema.json`
+- **down** (2 connections) — `schemas/unified_room_schema.json`
+- **east** (2 connections) — `schemas/unified_room_schema.json`
+- **north** (2 connections) — `schemas/unified_room_schema.json`
+- **south** (2 connections) — `schemas/unified_room_schema.json`
+- **up** (2 connections) — `schemas/unified_room_schema.json`
+- **west** (2 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
+- **oneOf** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command_result_text](command_result_text.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,34 @@
 # optimized_validate_help_topic
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **optimized_validate_help_topic()** (6 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_help_topic_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_help_topic_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_help_topic_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating invalid help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for help topic fields. Args: value: The help topic to…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Ruff C901 McCabe Complexity** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Lizard CCN Threshold** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **McCabe Cyclomatic Complexity** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Fat Endpoints** (2 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Extract Exception Handling Pattern** (2 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **create_app** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **Pylint R0911-R0915 Complexity Metrics** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff-Pylint Rule Parity** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Service Layer Delegation** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
-- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (78%)
+- INFERRED: 2 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

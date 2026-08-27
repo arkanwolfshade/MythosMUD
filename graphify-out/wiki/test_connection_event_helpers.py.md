@@ -1,50 +1,48 @@
 # test_connection_event_helpers.py
 
-> 24 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_connection_event_helpers.py** (14 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
-- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
-- **asyncio** (8 connections)
-- **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **FStringLoggingFixer** (16 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_fstring_logging_in_file()** (7 connections) — `scripts/automated_fstring_fixer.py`
+- **Path** (6 connections)
+- **.extract_variables_from_fstring()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **._handle_complex_pattern_replacement()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.process_files()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_simple_pattern()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._read_file_content()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._validate_file()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._write_file_if_changed()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **main()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._build_complex_params()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.create_structured_message()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_complex_pattern()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.generate_report()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **automated_fstring_fixer.py** (2 connections) — `scripts/automated_fstring_fixer.py`
 - **Any** (2 connections)
-- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
-- **Unit tests for connection event helpers. Tests the connection_event_helpers…** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **.__init__()** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Match** (1 connections)
+- **Validate that file exists and is a Python file.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Read file content with error handling.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Build parameters list for complex patterns.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Handle replacement for complex f-string patterns with additional parameters.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Write file if content has changed.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Fix f-string logging violations in a single file.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_event_helpers.py`
-- `server/tests/unit/realtime/test_connection_event_helpers.py`
+- `scripts/automated_fstring_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,24 @@
 # TestCheckRateLimit
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **remove_dir()** (2 connections) — `scripts/clean.py`
-- **clean.py** (1 connections) — `scripts/clean.py`
-- **Path** (1 connections)
+- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition Keeper Screen Pack** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- **call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `scripts/clean.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-screen-pack/MANIFEST.md`
 
 ## Audit Trail
 

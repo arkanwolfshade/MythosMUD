@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **start_local.ps1** (2 connections) — `scripts/start_local.ps1`
-- **Start-Client()** (1 connections) — `scripts/start_local.ps1`
-- **Start-Server()** (1 connections) — `scripts/start_local.ps1`
+- **Chaosium graphify snapshot - character_sheets** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- **character-sheets/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `scripts/start_local.ps1`
+- `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/MANIFEST.md`
 
 ## Audit Trail
 

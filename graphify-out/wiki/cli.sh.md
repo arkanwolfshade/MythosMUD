@@ -1,17 +1,12 @@
 # cli.sh
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **cli.sh** (7 connections) — `.codacy/cli.sh`
-- **download()** (3 connections) — `.codacy/cli.sh`
-- **download_cli()** (3 connections) — `.codacy/cli.sh`
-- **download_file()** (2 connections) — `.codacy/cli.sh`
-- **get_latest_version()** (2 connections) — `.codacy/cli.sh`
-- **handle_rate_limit()** (2 connections) — `.codacy/cli.sh`
-- **cli.sh script** (2 connections) — `.codacy/cli.sh`
-- **get_version_from_yaml()** (1 connections) — `.codacy/cli.sh`
+- **Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
 
 ## Relationships
 
@@ -19,11 +14,11 @@
 
 ## Source Files
 
-- `.codacy/cli.sh`
+- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

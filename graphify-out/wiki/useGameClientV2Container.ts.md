@@ -1,78 +1,58 @@
 # useGameClientV2Container.ts
 
-> 59 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **useGameClientV2Container.ts** (22 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
-- **useGameClientV2ContainerNetworkPhase.ts** (21 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
-- **useGameClientV2ContainerLifecycle.ts** (20 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
-- **gameClientV2ContainerTypes.ts** (17 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- **useGameClientV2ContainerState.ts** (17 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
-- **gameClientV2ContainerBuildReturn.ts** (16 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- **GameClientV2MergedSlice** (13 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- **useGameClientV2ContainerLogoutAndRespawn.ts** (13 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
-- **useGameClientV2Container()** (12 connections) — `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
-- **emptyOccupantsDiagnostics.ts** (12 connections) — `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
-- **gameClientV2ContainerReturnParts.ts** (11 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
-- **useGameClientV2ContainerConnectionEffects.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
-- **useGameClientV2ContainerPlayerAndCommands.ts** (10 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
-- **GameClientV2NetworkPhase** (9 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
-- **ActiveEffectDisplay** (9 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **GameClientV2Container.tsx** (9 connections) — `client/src/components/ui-v2/GameClientV2Container.tsx`
-- **GameClientV2ContainerProps** (8 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- **useGameClientV2ContainerLifecycle()** (8 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
-- **GameClientV2ContainerPublicApi** (7 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- **useGameClientV2ContainerRefsAndBootstrap()** (7 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- **clientErrorReporter.ts** (7 connections) — `client/src/utils/clientErrorReporter.ts`
-- **buildGameClientV2ContainerReturn()** (6 connections) — `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- **useEventProcessing()** (6 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **useGameClientV2ContainerNetworkPhase()** (6 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
-- **deriveHealthStatusFromPlayer()** (6 connections) — `client/src/types/health.ts`
-- *... and 34 more nodes in this community*
+- **NPCMovementIntegration** (50 connections) — `server/npc/movement_integration.py`
+- **test_movement_integration.py** (30 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
+- **.__init__()** (5 connections) — `server/npc/idle_movement.py`
+- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
+- **._get_destination_subzone()** (4 connections) — `server/npc/movement_integration.py`
+- **._get_room_objects()** (4 connections) — `server/npc/movement_integration.py`
+- **._update_npc_instance_room_tracking()** (4 connections) — `server/npc/movement_integration.py`
+- **._update_room_occupancy()** (4 connections) — `server/npc/movement_integration.py`
+- **._is_npc_in_combat()** (3 connections) — `server/npc/movement_integration.py`
+- **._validate_room_ids()** (3 connections) — `server/npc/movement_integration.py`
+- **.validate_subzone_boundary()** (3 connections) — `server/npc/movement_integration.py`
+- **.find_path_between_rooms()** (2 connections) — `server/npc/movement_integration.py`
+- **.get_available_exits()** (2 connections) — `server/npc/movement_integration.py`
+- **.get_npc_room()** (2 connections) — `server/npc/movement_integration.py`
+- **.get_room_npcs()** (2 connections) — `server/npc/movement_integration.py`
+- **.validate_npc_movement()** (2 connections) — `server/npc/movement_integration.py`
+- **persistence()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_direct_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_find_path_returns_none_without_connection()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_available_exits_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_destination_subzone_from_room_id()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_npc_room_returns_none()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_and_exits()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- **test_get_room_npcs_empty_when_missing()** (2 connections) — `server/tests/unit/npc/test_movement_integration.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (32 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (14 shared connections)
-- [logger.ts](logger.ts.md) (9 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (7 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
-- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (2 shared connections)
-- [security.ts](security.ts.md) (1 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (1 shared connections)
-- [playerHandlers.ts](playerHandlers.ts.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
+- [login_user](login_user.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [vim Best Practices and Coding Standards](vim_Best_Practices_and_Coding_Standards.md) (1 shared connections)
+- [testing_examples.py](testing_examples.py.md) (1 shared connections)
+- [test_look_room.py](test_look_room.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/GameClientV2Container.tsx`
-- `client/src/components/ui-v2/__tests__/GameClientV2Container.test.tsx`
-- `client/src/components/ui-v2/hooks/emptyOccupantsDiagnostics.ts`
-- `client/src/components/ui-v2/hooks/gameClientLogout.ts`
-- `client/src/components/ui-v2/hooks/gameClientV2ContainerActiveEffects.ts`
-- `client/src/components/ui-v2/hooks/gameClientV2ContainerBuildReturn.ts`
-- `client/src/components/ui-v2/hooks/gameClientV2ContainerReturnParts.ts`
-- `client/src/components/ui-v2/hooks/gameClientV2ContainerTypes.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2Container.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerConnectionEffects.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerEscapeMenuEffect.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerHealthSync.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerLifecycle.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerLogoutAndRespawn.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerNetworkPhase.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerPlayerAndCommands.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
-- `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
+- `server/npc/idle_movement.py`
+- `server/npc/movement_integration.py`
+- `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 241 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 109 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

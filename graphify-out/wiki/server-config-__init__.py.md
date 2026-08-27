@@ -1,63 +1,51 @@
 # server/config/__init__.py
 
-> 89 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **server/config/__init__.py** (26 connections) — `server/config/__init__.py`
-- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
-- **combat_integration_base.py** (23 connections) — `server/npc/combat_integration_base.py`
-- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
-- **reset_config()** (9 connections) — `server/config/__init__.py`
-- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
-- **test_config_init.py** (9 connections) — `server/tests/unit/config/test_config_init.py`
-- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
-- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
-- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
-- **_create_config_instance()** (5 connections) — `server/config/__init__.py`
-- **_get_config_cached()** (5 connections) — `server/config/__init__.py`
-- **_get_config_test()** (5 connections) — `server/config/__init__.py`
-- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
-- **_is_test_mode()** (4 connections) — `server/config/__init__.py`
-- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
-- **test_reset_config_in_test_mode()** (4 connections) — `server/tests/unit/config/test_config_init.py`
-- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
-- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
-- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
-- *... and 64 more nodes in this community*
+- **E2E Test Suite AI Execution Improvements - Summary** (11 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **What Was Done** (7 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Key Features of Improvements** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Key Improvements by Failure Mode** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Next Actions** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Expected Benefits** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Files Changed** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Infinite Loop Prevention** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Mandatory Execution Protocol** (4 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
+- **Implementation Status** (3 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **IMPROVEMENTS_SUMMARY.md** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **1. Updated Core Configuration** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **1. Visual Emphasis** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **2. Enhanced Execution Guards** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **2. Multi-Layer Protection** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **3. Created Comprehensive Template** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **3. Psychological Design** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **4. Created Implementation Guide** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **4. Documentation Quality** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **5. Created Quick Reference** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **6. Updated README** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **✅ Completed** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Conclusion** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **Executive Summary** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **For AI Executors** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (23 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [NATSError](NATSError.md) (6 shared connections)
-- [AppConfig](AppConfig.md) (4 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
-- [test_combat_integration_base.py](test_combat_integration_base.py.md) (3 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (2 shared connections)
-- [server/tests/conftest.py](server-tests-conftest.py.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/config/__init__.py`
-- `server/npc/combat_integration_base.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/tests/unit/config/test_config.py`
-- `server/tests/unit/config/test_config_init.py`
+- `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
+- `e2e-tests/AI_EXECUTOR_QUICK_REFERENCE.md`
+- `e2e-tests/EXECUTION_GUARDS.md`
+- `e2e-tests/IMPROVEMENTS_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 184 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

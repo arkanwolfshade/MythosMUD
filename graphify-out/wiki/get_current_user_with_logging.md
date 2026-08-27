@@ -1,42 +1,47 @@
 # get_current_user_with_logging
 
-> 18 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
-- **asyncio** (7 connections)
-- **test_get_current_user_with_logging_generic_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_http_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_long_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_request()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_user()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_success()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **DependsParam** (1 connections)
-- **Enhanced get_current_user with detailed logging.** (1 connections) — `server/auth/users.py`
-- **Test _get_current_user_with_logging when HTTPException is raised.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with successful authentication.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when generic Exception is raised.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with long Authorization header.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when Authorization header is missing.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when request is None.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when no user is returned.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **Get all behavior rules.** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate equality condition (==). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate inequality condition (!=). Returns: bool if condition matches, None if…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate numeric comparison conditions (>=, <=, >, <). Args: condition:…** (1 connections) — `server/npc/behavior_engine.py`
+- **Try multiple evaluator methods in sequence. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate boolean conditions and variable lookups. Args: condition: Condition…** (1 connections) — `server/npc/behavior_engine.py`
+- **Evaluate a condition string against context. Args: condition: Condition string…** (1 connections) — `server/npc/behavior_engine.py`
+- **Get rules that are applicable given the current context. Args: context: Current…** (1 connections) — `server/npc/behavior_engine.py`
+- **Register an action handler for a specific action. Args: action_name: Name of…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute a specific action. Args: action_name: Name of the action to execute…** (1 connections) — `server/npc/behavior_engine.py`
+- **Execute all applicable rules based on context. Args: context: Current context…** (1 connections) — `server/npc/behavior_engine.py`
+- **Add a behavior rule to the engine. Args: rule: Rule dictionary with name,…** (1 connections) — `server/npc/behavior_engine.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (9 shared connections)
-- [User](User.md) (7 shared connections)
+- [test_player_spell_repository.py](test_player_spell_repository.py.md) (12 shared connections)
 
 ## Source Files
 
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `server/npc/behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (82%)
-- INFERRED: 7 (18%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,53 +1,58 @@
 # retry.py
 
-> 44 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **retry.py** (19 connections) — `server/utils/retry.py`
-- **test_retry.py** (14 connections) — `server/tests/unit/utils/test_retry.py`
-- **is_transient_error()** (13 connections) — `server/utils/retry.py`
-- **Exception** (9 connections)
-- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_failure_then_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_async_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
-- **_create_async_wrapper()** (4 connections) — `server/utils/retry.py`
-- **_create_sync_wrapper()** (4 connections) — `server/utils/retry.py`
-- **_is_psycopg2_transient()** (4 connections) — `server/utils/retry.py`
-- **_is_wrapped_transient_message()** (4 connections) — `server/utils/retry.py`
-- **_iter_exception_chain()** (4 connections) — `server/utils/retry.py`
-- **_should_retry_error()** (4 connections) — `server/utils/retry.py`
-- **test_is_transient_error_non_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
-- **_is_asyncpg_transient()** (3 connections) — `server/utils/retry.py`
-- **asyncio** (3 connections)
-- **_calculate_retry_delay()** (2 connections) — `server/utils/retry.py`
-- **_log_retry_attempt()** (2 connections) — `server/utils/retry.py`
-- **_log_retry_failure()** (2 connections) — `server/utils/retry.py`
-- **Any** (2 connections)
-- **BaseException** (1 connections)
-- *... and 19 more nodes in this community*
+- **required** (8 connections) — `db/static/schemas/room.schema.json`
+- **required** (8 connections) — `schemas/intersection_schema.json`
+- **required** (8 connections) — `schemas/room_schema.json`
+- **required** (8 connections) — `schemas/unified_room_schema.json`
+- **required** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (6 connections) — `schemas/room_schema.json`
+- **required** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **sub_zone** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **exits** (1 connections) — `db/static/schemas/room.schema.json`
+- **id** (1 connections) — `db/static/schemas/room.schema.json`
+- **name** (1 connections) — `db/static/schemas/room.schema.json`
+- **plane** (1 connections) — `db/static/schemas/room.schema.json`
+- **zone** (1 connections) — `db/static/schemas/room.schema.json`
+- **plane** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **exits** (1 connections) — `schemas/intersection_schema.json`
+- **id** (1 connections) — `schemas/intersection_schema.json`
+- **name** (1 connections) — `schemas/intersection_schema.json`
+- **plane** (1 connections) — `schemas/intersection_schema.json`
+- **zone** (1 connections) — `schemas/intersection_schema.json`
+- **exits** (1 connections) — `schemas/room_schema.json`
+- **id** (1 connections) — `schemas/room_schema.json`
+- **name** (1 connections) — `schemas/room_schema.json`
+- **plane** (1 connections) — `schemas/room_schema.json`
+- **zone** (1 connections) — `schemas/room_schema.json`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [_StubPlayerRepo](_StubPlayerRepo.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [test_admin_commands_helpers.py](test_admin_commands_helpers.py.md) (1 shared connections)
+- [coerce_int](coerce_int.md) (1 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
+- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_retry.py`
-- `server/utils/retry.py`
+- `db/static/schemas/room.schema.json`
+- `schemas/intersection_schema.json`
+- `schemas/room_schema.json`
+- `schemas/unified_room_schema.json`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

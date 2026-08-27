@@ -1,25 +1,26 @@
 # ensure_e2e_database.ps1
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **ensure_e2e_database.ps1** (3 connections) — `scripts/ensure_e2e_database.ps1`
-- **Get-ProfessionCount()** (1 connections) — `scripts/ensure_e2e_database.ps1`
-- **Invoke-ProfessionSeedFile()** (1 connections) — `scripts/ensure_e2e_database.ps1`
-- **Resolve-PsqlPath()** (1 connections) — `scripts/ensure_e2e_database.ps1`
+- **messaging_integration()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **fixture** (2 connections)
+- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Create CombatMessagingIntegration instance.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [asyncio](asyncio.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/ensure_e2e_database.ps1`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

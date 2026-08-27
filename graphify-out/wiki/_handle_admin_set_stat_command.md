@@ -1,42 +1,40 @@
 # _handle_admin_set_stat_command
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_handle_admin_set_stat_command()** (32 connections) — `server/commands/admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_stat_name()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_app_context()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_non_admin_denied()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **_validate_set_stat_inputs()** (3 connections) — `server/commands/admin_setstat_command.py`
-- **Validate stat name and value inputs.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Handle the admin set command to set a player's statistic. Usage: admin set…** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Test non-admin user is denied.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test missing stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test handling when app context is not available.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **TestApplyRateLimitingForCloseContainer** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForLootAll** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestApplyRateLimitingForTransfer** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_close_container_exceeded()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_loot_all_exceeded()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_transfer_exceeded()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_close_container_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_loot_all_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_apply_rate_limiting_for_transfer_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_transfer passes when allowed.** (2 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_transfer raises exception when rate limited.** (2 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_transfer function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_close_container function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_close_container raises exception when rate limited.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_loot_all function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test apply_rate_limiting_for_loot_all passes when allowed.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
 
 ## Relationships
 
-- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (19 shared connections)
-- [Any](Any.md) (3 shared connections)
-- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [_parse_set_stat_args](_parse_set_stat_args.md) (1 shared connections)
-- [test_handle_admin_set_stat_command_invalid_stat_name](test_handle_admin_set_stat_command_invalid_stat_name.md) (1 shared connections)
-- [test_handle_admin_set_stat_command_success_all_stat_types](test_handle_admin_set_stat_command_success_all_stat_types.md) (1 shared connections)
-- [test_handle_admin_set_stat_command_success_str](test_handle_admin_set_stat_command_success_str.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [ChatService](ChatService.md) (9 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `server/tests/unit/api/test_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (82%)
+- INFERRED: 6 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

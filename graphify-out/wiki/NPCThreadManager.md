@@ -1,60 +1,59 @@
 # NPCThreadManager
 
-> 72 nodes
+> 92 nodes
 
 ## Key Concepts
 
-- **NPCThreadManager** (33 connections) — `server/npc/threading.py`
-- **test_npc_threading_messages.py** (24 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **NPCMessageQueue** (17 connections) — `server/npc/threading_messages.py`
-- **NPCCommunicationBridge** (13 connections) — `server/npc/threading.py`
-- **asyncio** (11 connections)
-- **._execute_wander_movement()** (7 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (5 connections) — `server/npc/threading.py`
-- **.__init__()** (4 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (4 connections) — `server/npc/threading.py`
-- **._resolve_wander_npc()** (4 connections) — `server/npc/threading.py`
-- **.stop_npc_thread()** (4 connections) — `server/npc/threading.py`
-- **._stop_npc_thread_internal()** (4 connections) — `server/npc/threading.py`
-- **.get_npc_definition()** (3 connections) — `server/npc/threading.py`
-- **._parse_behavior_config()** (3 connections) — `server/npc/threading.py`
-- **.stop()** (3 connections) — `server/npc/threading.py`
-- **test_bridge_broadcast_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_bridge_receive_message_failure()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_communication_bridge_messages()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_restart_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_start_stop_npc_thread()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_thread_manager_stop_cancels_running_task()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_dispatches_wander()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_process_npc_message_handles_errors()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_thread_stop_and_shutdown_drop_pending_keys()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- *... and 47 more nodes in this community*
+- **test_container_helpers_inventory_find.py** (56 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
+- **asyncio** (19 connections)
+- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
+- **UUID** (16 connections)
+- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
+- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_get_container_pair()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
+- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
+- **patch** (8 connections)
+- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_id()** (6 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
+- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- **test_create_wearable_container_uses_equip_dict_branch()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (7 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (5 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (2 shared connections)
-- [MetricsCollector](MetricsCollector.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [.get_instance](get_instance.md) (2 shared connections)
-- [lifecycle_manager.py](lifecycle_manager.py.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (15 shared connections)
+- [ContainerComponent](ContainerComponent.md) (10 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (3 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
+- [test_combat_death_handler.py](test_combat_death_handler.py.md) (3 shared connections)
+- [ClientLogger](ClientLogger.md) (2 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading.py`
-- `server/npc/threading_messages.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
+- `server/commands/container_helpers_inventory.py`
+- `server/commands/container_helpers_inventory_find.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 
 ## Audit Trail
 
-- EXTRACTED: 111 (84%)
-- INFERRED: 21 (16%)
+- EXTRACTED: 267 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,36 @@
 # occupant_display.py
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **occupant_display.py** (11 connections) — `server/realtime/occupant_display.py`
-- **format_occupant_display_name()** (10 connections) — `server/realtime/occupant_display.py`
-- **_apply_grace_badges()** (6 connections) — `server/realtime/occupant_display.py`
-- **UUID** (4 connections)
-- **_parse_occupant_player_id()** (3 connections) — `server/realtime/occupant_display.py`
-- **Any** (2 connections)
-- **Shared occupant display names for look text and Occupants panel events.** (1 connections) — `server/realtime/occupant_display.py`
-- **Format an in-room player's Occupants/look name. Always list; grace badges only.** (1 connections) — `server/realtime/occupant_display.py`
+- **test_websocket_handler_rate_limit.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **asyncio** (3 connections)
+- **fixture** (2 connections)
+- **Unit tests for websocket handler rate limiting. Tests the rate limiting…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Relationships
 
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
-- [test_look_room.py](test_look_room.py.md) (3 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_display.py`
+- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

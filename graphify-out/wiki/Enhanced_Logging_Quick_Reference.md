@@ -1,40 +1,41 @@
 # Enhanced Logging Quick Reference
 
-> 19 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Quick Reference** (10 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Common Patterns** (6 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Context Binding** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Validation Checklist** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **API Requests** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Clear Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **🚨 CRITICAL: DO NOT USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Database Operations** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Errors with Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Log Levels** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **✅ MANDATORY: ALWAYS USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **One-page cheat sheet for MythosMUD enhanced logging patterns** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Quick Fixes** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Request Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Security Features** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **User Actions** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **ConnectionManager Refactoring Summary** (9 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Extracted Modules** (8 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Architecture Improvements** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Refactoring Results** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **1. Statistics & Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **2. Error Handling (`realtime/errors/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **3. Health Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **4. Cleanup & Maintenance (`realtime/maintenance/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **5. Game State Management (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **6. Room Event Integration (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **7. Message Broadcasting (`realtime/messaging/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **After** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Before** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Benefits Achieved** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **File Size Reduction** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Future Refactoring Opportunities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Overview** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Remaining Core Responsibilities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Test Coverage** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- `docs/archive/REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

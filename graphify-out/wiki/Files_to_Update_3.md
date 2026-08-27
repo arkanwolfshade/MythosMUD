@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Files to Update** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **3.3 Consolidate Duplicate Test Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **test_evaluate_numeric_comparison_non_numeric()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_numeric_comparison() raises ValueError for non-numeric values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Uplift Strategy](Uplift_Strategy.md) (1 shared connections)
+- [test_player_spell_repository.py](test_player_spell_repository.py.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,34 @@
 # multiplayer-browser-helpers.bundle.js
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.bundle.js** (23 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isElementVisible()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoAnyMessageInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasTickMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **recordPresenceEvent()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
-- **installPresenceRecorder()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **Feature Requirements Document: Random Stats Generator** (12 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Implementation Phases** (5 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Technical Requirements** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Flow** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **UI/UX Requirements** (3 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **FRD_random_stats_generator.md** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **1. Registration Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **2. Stats Rolling Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **3. Error Handling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Acceptance Criteria** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Backend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Dependencies** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Frontend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Future Enhancements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Overview** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 1: Core Stats Rolling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 2: Integration** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 3: Error Handling & Polish** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Phase 4: Testing & Validation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Risks & Mitigation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Security Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Success Metrics** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Experience** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **User Story** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **Visual Design** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
 
 ## Relationships
 
@@ -35,11 +36,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- `docs/archive/FRD_random_stats_generator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,27 +1,27 @@
 # Structured Error Logging
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Structured Error Logging** (2 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
-- **log_and_raise Utilities** (1 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
-- **Test/Production Environment Separation** (1 connections) — `docs/archive/TEST_PROD_SEPARATION.md`
+- **_RandomChoiceSource** (5 connections) — `server/services/player_respawn_service.py`
+- **.choice()** (2 connections) — `server/services/player_respawn_service.py`
+- **Subset of random.Random / random module API used for liability picks.** (1 connections) — `server/services/player_respawn_service.py`
+- **Return one element from a non-empty sequence of liability codes.** (1 connections) — `server/services/player_respawn_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
-- `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
-- `docs/archive/TEST_PROD_SEPARATION.md`
+- `server/services/player_respawn_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

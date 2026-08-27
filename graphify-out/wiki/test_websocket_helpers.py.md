@@ -1,57 +1,73 @@
 # test_websocket_helpers.py
 
-> 66 nodes
+> 102 nodes
 
 ## Key Concepts
 
-- **test_websocket_helpers.py** (42 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **check_shutdown_and_reject()** (13 connections) — `server/realtime/websocket_helpers.py`
-- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
-- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
-- **asyncio** (9 connections)
-- **load_player_mute_data()** (7 connections) — `server/realtime/websocket_helpers.py`
-- **test_check_shutdown_and_reject_not_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_check_shutdown_and_reject_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_empty()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_filters_uuid()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_none()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_occupant_names_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_load_player_mute_data_import_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_load_player_mute_data_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_schema_to_dict_with_model_dump()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_convert_uuids_to_strings_no_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- **test_get_npc_name_from_instance_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
-- *... and 41 more nodes in this community*
+- **useMythosAppActions.ts** (34 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **deleteCharacterFlow.ts** (29 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **errorHandler.ts** (28 connections) — `client/src/utils/errorHandler.ts`
+- **getErrorMessage()** (25 connections) — `client/src/utils/errorHandler.ts`
+- **isErrorResponse()** (25 connections) — `client/src/utils/errorHandler.ts`
+- **CharacterSelectionScreen.tsx** (25 connections) — `client/src/components/CharacterSelectionScreen.tsx`
+- **CharacterInfo** (21 connections) — `client/src/types/auth.ts`
+- **creationCompleteFlow.ts** (20 connections) — `client/src/mythosApp/creationCompleteFlow.ts`
+- **isObject()** (18 connections) — `client/src/mythosApp/guards.ts`
+- **isServerUnavailable()** (18 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **characterSessionApi.ts** (18 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **creationCompleteActions.ts** (16 connections) — `client/src/mythosApp/creationCompleteActions.ts`
+- **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **types/auth.ts** (15 connections) — `client/src/types/auth.ts`
+- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
+- **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **errorHandler.test.ts** (14 connections) — `client/src/utils/errorHandler.test.ts`
+- **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
+- **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
+- **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **mapServerCharacters.ts** (10 connections) — `client/src/mythosApp/mapServerCharacters.ts`
+- **registerFailureMessage.ts** (10 connections) — `client/src/mythosApp/registerFailureMessage.ts`
+- **runDeleteCharacterFlow()** (9 connections) — `client/src/mythosApp/deleteCharacterFlow.ts`
+- **guards.ts** (9 connections) — `client/src/mythosApp/guards.ts`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (14 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (9 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (9 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (5 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (2 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_item.py](test_item.py.md) (34 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (23 shared connections)
+- [test_delete_container_success](test_delete_container_success.md) (18 shared connections)
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (11 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (10 shared connections)
+- [GameTickService](GameTickService.md) (5 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_helpers.py`
+- `client/src/components/CharacterSelectionScreen.tsx`
+- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
+- `client/src/mythosApp/apiErrorMessage.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/creationCompleteActions.ts`
+- `client/src/mythosApp/creationCompleteFlow.ts`
+- `client/src/mythosApp/deleteCharacterActions.ts`
+- `client/src/mythosApp/deleteCharacterFlow.ts`
+- `client/src/mythosApp/guards.ts`
+- `client/src/mythosApp/loginFailureMessage.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/motdContinueFlow.ts`
+- `client/src/mythosApp/registerFailureMessage.ts`
+- `client/src/mythosApp/selectCharacterFlow.ts`
+- `client/src/mythosApp/serverAvailability.ts`
+- `client/src/mythosApp/startLoginGracePeriod.ts`
+- `client/src/mythosApp/useMythosAppActions.ts`
+- `client/src/mythosApp/useMythosSessionChrome.ts`
+- `client/src/types/auth.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 129 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 402 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

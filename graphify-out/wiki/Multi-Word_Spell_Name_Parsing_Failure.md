@@ -1,32 +1,31 @@
 # Multi-Word Spell Name Parsing Failure
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Multi-Word Spell Name Parsing Failure** (3 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- **Spell Slash Commands Missing From Validation** (2 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **Missing async_heal_player Method** (2 connections) — `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
-- **Heal Spell SQLAlchemy Session Boundary Error** (2 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
-- **Missing cast spell spells Pydantic Models** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- **create_cast_command First-Word-Only Parse** (1 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- **record_spell_cast Cross-Session Object Use** (1 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_player()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **Create a mock player object.** (1 connections) — `server/tests/unit/commands/test_logout_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [asyncio](asyncio.md) (4 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
-- `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
-- `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
-- `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- `server/tests/unit/commands/test_logout_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (50%)
-- INFERRED: 3 (50%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

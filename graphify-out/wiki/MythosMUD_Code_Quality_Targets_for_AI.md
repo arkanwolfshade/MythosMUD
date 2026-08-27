@@ -1,36 +1,37 @@
 # MythosMUD Code Quality Targets for AI
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **MythosMUD Code Quality Targets for AI** (7 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **High Priority** (4 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **As You Touch** (3 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Medium Priority** (3 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **`__all__` for public modules** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Client return types (TypeScript)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Complexity policy** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Docstrings (D)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Naming (N)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **No assert in production (S101)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Priority Tiers** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Review Checklist** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Type hints (TCH + policy)** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
-- **Code Quality AI Skill** (1 connections) — `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
+- **Implement Adaptations** (6 connections) — `.claude/skills/adapt/SKILL.md`
+- **Plan Adaptation Strategy** (6 connections) — `.claude/skills/adapt/SKILL.md`
+- **Adapt Skill** (6 connections) — `.claude/skills/adapt/SKILL.md`
+- **Assess Adaptation Challenge** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Content Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Desktop Adaptation (Mobile → Desktop)** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Email Adaptation (Web → Email)** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Layout Adaptation Techniques** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Mobile Adaptation (Desktop → Mobile)** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Navigation Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Print Adaptation (Screen → Print)** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Responsive Breakpoints** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Tablet Adaptation (Hybrid Approach)** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Touch Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Verify Adaptations** (1 connections) — `.claude/skills/adapt/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-code-quality-ai/SKILL.md`
+- `.claude/skills/adapt/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

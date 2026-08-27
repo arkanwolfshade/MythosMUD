@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [CombatMessagingService](CombatMessagingService.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
 
 ## Source Files
 

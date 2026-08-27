@@ -1,36 +1,45 @@
 # compilerOptions
 
-> 15 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (7 connections) — `client/tests/e2e/tsconfig.json`
-- **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
-- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **include** (2 connections) — `client/tests/e2e/tsconfig.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **exclude** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../tsconfig.json** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
-- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **edgeModalLogic.ts** (26 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **useEdgeCreationModal.ts** (19 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **useEdgeCreationModal()** (15 connections) — `client/src/components/map/useEdgeCreationModal.ts`
+- **getInitialEdgeFormState()** (5 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **filterNodesForTargetSelection()** (4 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **applyModalBodyScrollLock()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **deriveEdgeCreationData()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormCanSubmit()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **edgeFormStateFromExisting()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **findRoomNodeById()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **resetEdgeFormFields()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **runValidationAndPreviewSync()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **submitValidatedEdge()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **subscribeEscapeToClose()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **toggleStringFlag()** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTIONS** (3 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **emptyEdgeFormState()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **isStandardExitDirection()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **roomNodeMatchesSearchQuery()** (2 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormFields** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **EdgeFormResetters** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
+- **STANDARD_DIRECTION_SET** (1 connections) — `client/src/components/map/edgeModalLogic.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_rescue_service.py](test_rescue_service.py.md) (13 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/tsconfig.json`
+- `client/src/components/map/edgeModalLogic.ts`
+- `client/src/components/map/useEdgeCreationModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 63 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

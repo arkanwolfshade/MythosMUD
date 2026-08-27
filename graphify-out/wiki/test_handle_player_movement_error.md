@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **test_handle_player_movement_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test handle_player_movement handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_query_rooms_with_exits_async_table_not_found()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async handles table not found error.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
+- [Codacy Rules](Codacy_Rules.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

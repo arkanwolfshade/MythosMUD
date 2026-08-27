@@ -1,52 +1,55 @@
 # PostgresCursor
 
-> 22 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **PostgresCursor** (16 connections) — `server/postgres_adapter.py`
-- **TestPostgresCursor** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.rowcount()** (4 connections) — `server/postgres_adapter.py`
-- **.test_postgres_cursor_fetchall_empty()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchall_with_rows()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchone_none()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_fetchone_with_row()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_cursor_rowcount()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.fetchall()** (2 connections) — `server/postgres_adapter.py`
-- **.fetchone()** (2 connections) — `server/postgres_adapter.py`
-- **.__init__()** (2 connections) — `server/postgres_adapter.py`
-- **cursor** (1 connections)
-- **PostgreSQL cursor wrapper for query result access.** (1 connections) — `server/postgres_adapter.py`
-- **Get the number of rows affected.** (1 connections) — `server/postgres_adapter.py`
-- **Test PostgresCursor class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchone() with row.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchone() with None.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchall() with rows.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.fetchall() with empty result.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresCursor.rowcount().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **test_combat_integration_base.py** (25 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **asyncio** (11 connections)
+- **_resolve_npc_combat_service_raw()** (7 connections) — `server/npc/combat_integration_base.py`
+- **test_apply_combat_effects_validation_error()** (5 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **integration()** (4 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_attribute_error_raises()** (4 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_grace_period_blocks_damage()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_invalid_uuid_raises()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_npc_target()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_combat_effects_player()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_apply_mental_effects_occult()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_npc_attack_delegated()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_npc_attack_direct_path()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_is_target_in_login_grace_period_false()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_perform_direct_npc_attack()** (3 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_calculate_damage_minimum_on_bad_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_calculate_damage_with_stats()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_convert_target_id_to_uuid()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_handle_unexpected_error_logs()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **test_resolve_npc_combat_service_from_container()** (2 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
+- **fixture** (1 connections)
+- **Return the live NPC combat integration service for delegation. Prefer…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Unit tests for NPCCombatIntegrationBase helpers.** (1 connections) — `server/tests/unit/npc/test_combat_integration_base.py`
 
 ## Relationships
 
-- [PostgresRow](PostgresRow.md) (3 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [PostgresConnection](PostgresConnection.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (17 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [GameConfig](GameConfig.md) (1 shared connections)
+- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/npc/combat_integration_base.py`
+- `server/tests/unit/npc/test_combat_integration_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (87%)
-- INFERRED: 5 (13%)
+- EXTRACTED: 43 (68%)
+- INFERRED: 20 (32%)
 - AMBIGUOUS: 0 (0%)
 
 ---

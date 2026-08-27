@@ -1,26 +1,28 @@
 # apply_migration
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
-- **main()** (2 connections) — `scripts/apply_players_migration.py`
-- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
-- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
+- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **fixture** (2 connections)
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Create a MessageFilteringHelper instance.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (2 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/apply_players_migration.py`
+- `server/tests/unit/realtime/test_message_filtering.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

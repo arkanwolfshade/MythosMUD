@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - The Malleus Monstrorum Keeper Deck
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - The Malleus Monstrorum Keeper Deck** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **the-malleus-monstrorum-keeper-deck/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- **Phase 3: Real-Time Communication Protection** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.1 NATS Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.2 WebSocket Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Startup Duplication Analysis](NPC_Startup_Duplication_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

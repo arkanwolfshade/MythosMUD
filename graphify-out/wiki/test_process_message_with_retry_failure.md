@@ -1,24 +1,24 @@
 # test_process_message_with_retry_failure
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_process_message_with_retry_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _process_message_with_retry adds to DLQ on failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Call of Cthulhu Investigator Handbook 7th Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,36 +1,50 @@
 # properties
 
-> 10 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/holiday.schema.json`
-- **id** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **name** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **notes** (2 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **scripts** (20 connections) — `client/package.json`
+- **client/package.json** (10 connections) — `client/package.json`
+- **engines** (2 connections) — `client/package.json`
+- **optionalDependencies** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **node** (1 connections) — `client/package.json`
+- **name** (1 connections) — `client/package.json`
+- **private** (1 connections) — `client/package.json`
+- **build** (1 connections) — `client/package.json`
+- **dead-code** (1 connections) — `client/package.json`
+- **dev** (1 connections) — `client/package.json`
+- **format** (1 connections) — `client/package.json`
+- **knip** (1 connections) — `client/package.json`
+- **lint** (1 connections) — `client/package.json`
+- **postinstall** (1 connections) — `client/package.json`
+- **preview** (1 connections) — `client/package.json`
+- **test** (1 connections) — `client/package.json`
+- **test:coverage** (1 connections) — `client/package.json`
+- **test:e2e:runtime** (1 connections) — `client/package.json`
+- **test:e2e:runtime:debug** (1 connections) — `client/package.json`
+- **test:e2e:runtime:headed** (1 connections) — `client/package.json`
+- **test:e2e:runtime:ui** (1 connections) — `client/package.json`
+- **test:headed** (1 connections) — `client/package.json`
+- **test:ui** (1 connections) — `client/package.json`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [enum](enum.md) (2 shared connections)
-- [holiday](holiday.md) (1 shared connections)
-- [month](month.md) (1 shared connections)
-- [day](day.md) (1 shared connections)
-- [duration_hours](duration_hours.md) (1 shared connections)
-- [items](items.md) (1 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (1 shared connections)
+- [✅ Async Remediation Complete](✅_Async_Remediation_Complete.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

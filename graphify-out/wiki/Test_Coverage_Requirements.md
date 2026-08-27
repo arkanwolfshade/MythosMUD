@@ -1,16 +1,18 @@
 # Test Coverage Requirements
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Test Coverage Requirements** (4 connections) — `.claude/rules/test-coverage.md`
-- **Test Quality Standards** (3 connections) — `.claude/rules/test-coverage.md`
-- **test-coverage.md** (1 connections) — `.claude/rules/test-coverage.md`
-- **Coverage Measurement** (1 connections) — `.claude/rules/test-coverage.md`
-- **Forbidden Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
-- **Minimum Coverage Standard** (1 connections) — `.claude/rules/test-coverage.md`
-- **Required Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
+- **Python Code Coverage Status** (5 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Priority Recommendations** (3 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Normal Files Below 70% Threshold** (2 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **PYTHON_COVERAGE_STATUS.md** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Critical Files Below Threshold** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Immediate Priority (Critical Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Secondary Priority (Normal Files)** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Showing top 50 files with largest coverage gaps** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
+- **Summary** (1 connections) — `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Relationships
 
@@ -18,11 +20,11 @@
 
 ## Source Files
 
-- `.claude/rules/test-coverage.md`
+- `docs/archive/PYTHON_COVERAGE_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

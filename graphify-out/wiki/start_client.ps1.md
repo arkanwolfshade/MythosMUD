@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **start_client.ps1** (0 connections) — `scripts/start_client.ps1`
+- **Testing Guide for MythosMUD** (0 connections) — `docs/TESTING.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/start_client.ps1`
+- `docs/TESTING.md`
 
 ## Audit Trail
 

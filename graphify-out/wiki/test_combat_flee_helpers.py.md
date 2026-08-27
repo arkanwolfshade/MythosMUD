@@ -1,59 +1,57 @@
 # test_combat_flee_helpers.py
 
-> 70 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **test_combat_flee_helpers.py** (28 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **combat_flee.py** (22 connections) — `server/commands/combat_flee.py`
-- **_FleeCommandHandlerLike** (16 connections) — `server/commands/combat_flee.py`
-- **_resolve_flee_preconditions()** (15 connections) — `server/commands/combat_flee.py`
-- **_validate_flee_combat_and_room()** (12 connections) — `server/commands/combat_flee.py`
-- **FleePreconditionError** (10 connections) — `server/commands/combat_helpers.py`
-- **_PlayerForFlee** (8 connections) — `server/commands/combat_flee.py`
-- **_ensure_flee_standing()** (8 connections) — `server/commands/combat_flee.py`
-- **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
-- **run_handle_flee_command()** (8 connections) — `server/commands/combat_flee.py`
-- **_get_flee_room_id()** (7 connections) — `server/commands/combat_flee.py`
-- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
-- **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **asyncio** (6 connections)
-- **test_resolve_flee_preconditions_player_error()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_movement_service()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **_PlayerPositionServiceLike** (4 connections) — `server/commands/combat_flee.py`
-- **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_already_standing()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_sitting()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **UUID** (4 connections)
-- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_flee.py`
-- **.combat_service()** (3 connections) — `server/commands/combat_flee.py`
-- **.get_player_and_room()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 45 more nodes in this community*
+- **PlayerRespawnEventHandler** (32 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **RespawnPlayerEventPayload** (11 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_delirium_respawn_player_snapshot()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_respawned()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.send_respawn_event_with_retry()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.validate_name()** (6 connections) — `server/schemas/players/player_requests.py`
+- **UUID** (6 connections)
+- **._build_fallback_respawn_player_payload()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._build_player_respawned_event()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_current_lucidity()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **.handle_player_delirium_respawned()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._send_room_occupants_after_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **PlayerRespawnedEvent** (5 connections)
+- **_append_unique_valid_occupant()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **_ensure_respawned_player_in_lists()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._convert_npc_ids_to_names()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (8 shared connections)
-- [CombatService](CombatService.md) (7 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
-- [combat_loader.py](combat_loader.py.md) (4 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (1 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (9 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
+- [field_validator](field_validator.md) (3 shared connections)
+- [InventoryCommandFactory](InventoryCommandFactory.md) (2 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [CombatAuditLogger](CombatAuditLogger.md) (1 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (1 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_flee.py`
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_flee_helpers.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/schemas/players/player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 142 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 122 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

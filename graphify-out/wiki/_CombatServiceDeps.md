@@ -1,33 +1,39 @@
 # _CombatServiceDeps
 
-> 12 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **_CombatServiceDeps** (8 connections) — `server/services/combat_death_handler.py`
-- **.__init__()** (3 connections) — `server/services/combat_death_handler.py`
-- **.get_npc_combat_integration_service()** (2 connections) — `server/services/combat_death_handler.py`
-- **.publish_npc_died_event_to_nats()** (2 connections) — `server/services/combat_death_handler.py`
-- **.publish_player_died_event_to_nats()** (2 connections) — `server/services/combat_death_handler.py`
-- **.publish_player_mortally_wounded_event_to_nats()** (2 connections) — `server/services/combat_death_handler.py`
-- **Minimal CombatService surface required by CombatDeathHandler.** (1 connections) — `server/services/combat_death_handler.py`
-- **Return NPC combat integration service when available.** (1 connections) — `server/services/combat_death_handler.py`
-- **Publish NPCDiedEvent to NATS.** (1 connections) — `server/services/combat_death_handler.py`
-- **Publish PlayerDiedEvent to NATS (#634).** (1 connections) — `server/services/combat_death_handler.py`
-- **Publish PlayerMortallyWoundedEvent to NATS (#634).** (1 connections) — `server/services/combat_death_handler.py`
-- **Initialize the death handler. Args: combat_service: Reference to the parent…** (1 connections) — `server/services/combat_death_handler.py`
+- **click Best Practices** (8 connections) — `.claude/rules/click.md`
+- **1. Code Organization & Structure** (3 connections) — `.claude/rules/click.md`
+- **2. Argument Parsing: Arguments vs. Options** (3 connections) — `.claude/rules/click.md`
+- **3. Output: `click.echo` and `click.secho`** (3 connections) — `.claude/rules/click.md`
+- **4. Type Hints** (3 connections) — `.claude/rules/click.md`
+- **5. Comprehensive Help Text & Examples** (3 connections) — `.claude/rules/click.md`
+- **6. Packaging with `pyproject.toml`** (1 connections) — `.claude/rules/click.md`
+- **7. Testing with `CliRunner`** (1 connections) — `.claude/rules/click.md`
+- **❌ BAD: Inconsistent Output** (1 connections) — `.claude/rules/click.md`
+- **❌ BAD: Minimalist Help Text** (1 connections) — `.claude/rules/click.md`
+- **❌ BAD: Misusing Arguments for Optional Settings** (1 connections) — `.claude/rules/click.md`
+- **❌ BAD: Monolithic `cli.py`** (1 connections) — `.claude/rules/click.md`
+- **❌ BAD: Untyped Parameters** (1 connections) — `.claude/rules/click.md`
+- **✅ GOOD: Clear Distinction** (1 connections) — `.claude/rules/click.md`
+- **✅ GOOD: Detailed Help with Examples** (1 connections) — `.claude/rules/click.md`
+- **✅ GOOD: Fully Type-Hinted** (1 connections) — `.claude/rules/click.md`
+- **✅ GOOD: Modular `src` Layout** (1 connections) — `.claude/rules/click.md`
+- **✅ GOOD: Platform-Agnostic, Styled Output** (1 connections) — `.claude/rules/click.md`
 
 ## Relationships
 
-- [NATSError](NATSError.md) (3 shared connections)
+- [SpellEffectType](SpellEffectType.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_death_handler.py`
+- `.claude/rules/click.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,27 @@
 # WebSocket and SSE Dual Connections
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **WebSocket and SSE Dual Connections** (3 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Dual Connection API Reference** (1 connections) — `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- **Dual Connection Client Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
-- **Dual Connection Deployment Guide** (1 connections) — `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
+- **self_message** (5 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **maxLength** (1 connections) — `schemas/emote_schema.json`
+- **minLength** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [optimized_validate_target_player](optimized_validate_target_player.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_API_REFERENCE.md`
-- `docs/archive/DUAL_CONNECTION_CLIENT_GUIDE.md`
-- `docs/archive/DUAL_CONNECTION_DEPLOYMENT_GUIDE.md`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,28 @@
 # Church of Sunyata.md
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **The Faceless Men.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
-- **Church of Sunyata.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
-- **Church of Sunyata** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
-- **The Faceless Men** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- **.validate_equip_requirements()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_pickup_requirements()** (3 connections) — `server/models/command_inventory.py`
+- **.validate_unequip_requirements()** (3 connections) — `server/models/command_inventory.py`
+- **model_validator** (3 connections)
+- **Ensure either index or search_term is provided.** (2 connections) — `server/models/command_inventory.py`
+- **Ensure either slot or search_term is provided.** (1 connections) — `server/models/command_inventory.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [devDependencies](devDependencies.md) (2 shared connections)
+- [maps/__init__.py](maps-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
-- `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- `server/models/command_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

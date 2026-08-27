@@ -1,33 +1,36 @@
 # ._get_npc_display_name
 
-> 8 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
-- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
-- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
-- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the NPC lifecycle manager from the app state, if available.** (1 connections) — `server/npc/combat_integration.py`
-- **Fallback name derivation: first segment of npc_id (e.g. nightgaunt_limbo_... ->…** (1 connections) — `server/npc/combat_integration.py`
+- **Decisions required** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **P6 · Review Clusters (draft — P4 findings still to fold in)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Proposed for bulk confirmation (mechanical, no judgement needed)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **A · Hard-coded metrics in documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **B · Migration scaffolding that outlived its migration** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **C · Broken links to archived documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **D · The design record was built from the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **E · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **F · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **G · Doc ↔ doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **H · Contract/path drift, rooted in one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **I · Undocumented systems** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **J · Operational defects — recommend removing from this audit entirely** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Not findings — recorded so they are not re-litigated** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
-- [._build_player_attacked_event](_build_player_attacked_event.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

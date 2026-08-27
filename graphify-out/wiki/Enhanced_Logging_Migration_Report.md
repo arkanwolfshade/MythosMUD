@@ -1,27 +1,30 @@
 # Enhanced Logging Migration Report
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
-- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
-- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
-- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
-- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
-- **Summary** (1 connections) — `docs/archive/migration_report.md`
+- **1. Enhanced ChatPanel (New Chat Input Panel)** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Proposed Changes** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **2. Renamed Game Log Panel (Formerly ChatPanel)** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **ChatPanel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Enhanced ChatPanel Interface** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Game Log Panel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **New Features to Add** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Purpose and Functionality** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- [Real-World Impact for MythosMUD](Real-World_Impact_for_MythosMUD.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/migration_report.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

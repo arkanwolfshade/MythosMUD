@@ -1,25 +1,24 @@
 # zone
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **test_room_service_init()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test RoomService initialization.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,49 +1,57 @@
 # CombatAuditLogger
 
-> 71 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **CombatAuditLogger** (30 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit.py** (25 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **combat_audit.py** (11 connections) — `server/structured_logging/combat_audit.py`
-- **_ts()** (10 connections) — `server/structured_logging/combat_audit.py`
-- **CombatParties** (8 connections) — `server/structured_logging/combat_audit.py`
-- **CombatMonitoringAlert** (7 connections) — `server/structured_logging/combat_audit.py`
-- **_parties()** (7 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **datetime** (7 connections)
-- **CombatSecurityEvent** (6 connections) — `server/structured_logging/combat_audit.py`
-- **CombatAttackDetails** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_death()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_end()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_start()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_validation_failure()** (5 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit_logger_log_combat_attack()** (5 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **.log_combat_attack()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_monitoring_alert()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_rate_limit()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **.log_combat_security_event()** (4 connections) — `server/structured_logging/combat_audit.py`
-- **test_combat_audit_logger_log_combat_death()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_end()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_high()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_low()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_monitoring_alert_with_player()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- **test_combat_audit_logger_log_combat_security_event()** (4 connections) — `server/tests/unit/structured_logging/test_combat_audit.py`
-- *... and 46 more nodes in this community*
+- **test_websocket_helpers.py** (41 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **validate_occupant_name()** (14 connections) — `server/realtime/websocket_helpers.py`
+- **get_npc_name_from_instance()** (12 connections) — `server/realtime/websocket_helpers.py`
+- **convert_uuids_to_strings()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **get_occupant_names()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **check_shutdown_and_reject()** (10 connections) — `server/realtime/websocket_helpers.py`
+- **asyncio** (9 connections)
+- **_accumulate_valid_occupant_name()** (4 connections) — `server/realtime/websocket_helpers.py`
+- **test_check_shutdown_and_reject_not_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_shutting_down()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_check_shutdown_and_reject_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_empty()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_filters_uuid()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_none()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_occupant_names_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_import_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_load_player_mute_data_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_schema_to_dict_with_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_schema_to_dict_with_model_dump()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_convert_uuids_to_strings_no_uuid()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_import_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- **test_get_npc_name_from_instance_no_name_attribute()** (3 connections) — `server/tests/unit/realtime/test_websocket_helpers.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (11 shared connections)
+- [field_validator](field_validator.md) (8 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (6 shared connections)
+- [build_event](build_event.md) (5 shared connections)
+- [App.tsx](App.tsx.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/combat_audit.py`
-- `server/tests/unit/structured_logging/test_combat_audit.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 135 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

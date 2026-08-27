@@ -1,10 +1,11 @@
 # Async Anti-Patterns Quick Reference
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Async Anti-Patterns Quick Reference** (0 connections) — `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- **One Server Only Rule** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **MythosMUD Server Runbook Skill** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md`
+- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,39 @@
 # properties
 
-> 13 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **Python Model Updates Required for Migration 019** (7 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **2. Files Requiring Updates** (6 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Impact Assessment** (3 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Required Changes** (3 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Type Compatibility Notes** (3 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **1. Import BigInteger** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Integer → BigInteger** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Low Risk Changes** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **No Breaking Changes Expected** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Overview** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Related Files** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/lucidity.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/npc.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/player.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/player_spells.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **`server/models/profession.py`** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **String(length=n) → Text** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
+- **Testing Checklist** (1 connections) — `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Relationships
 
-- [exits](exits.md) (1 shared connections)
+- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `docs/archive/PYTHON_MODEL_UPDATES_REQUIRED.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

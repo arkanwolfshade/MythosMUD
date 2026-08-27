@@ -1,55 +1,63 @@
 # PlayerRespawnEventHandler
 
-> 66 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **PlayerRespawnEventHandler** (33 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **RespawnPlayerEventPayload** (11 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._extract_occupant_names()** (9 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_delirium_respawn_player_snapshot()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_player_data_for_respawn()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_respawned()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._resolve_player_data_for_respawn_event()** (8 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_respawn_player_payload()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._fetch_fallback_player_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._prepare_room_data_for_respawn()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.send_respawn_event_with_retry()** (7 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_fallback_respawn_player_payload()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._build_player_respawned_event()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._enrich_room_data_with_occupant_names()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.handle_player_delirium_respawned()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._send_room_occupants_after_respawn()** (6 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **UUID** (6 connections)
-- **.get_current_lucidity()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.get_player_data_for_delirium_respawn()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._room_data_from_persistence_room()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._convert_npc_ids_to_names()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **._position_from_stats()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- **.update_connection_manager_position()** (4 connections) — `server/realtime/player_event_handlers_respawn.py`
-- *... and 41 more nodes in this community*
+- **CommandPanel.tsx** (26 connections) — `client/src/components/panels/CommandPanel.tsx`
+- **performance.test.tsx** (15 connections) — `client/src/components/__tests__/performance.test.tsx`
+- **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
+- **CommandPanel()** (10 connections) — `client/src/components/panels/CommandPanel.tsx`
+- **commandPanelSubmit.ts** (10 connections) — `client/src/components/panels/commandPanelSubmit.ts`
+- **LogoutButton.tsx** (8 connections) — `client/src/components/ui/LogoutButton.tsx`
+- **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
+- **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
+- **prepareCommandForSubmit()** (5 connections) — `client/src/components/panels/commandPanelSubmit.ts`
+- **applyChannelPrefix()** (4 connections) — `client/src/components/panels/commandPanelSubmit.ts`
+- **LogoutButton()** (4 connections) — `client/src/components/ui/LogoutButton.tsx`
+- **.generateReport()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **.runTest()** (4 connections) — `client/src/utils/performanceTester.ts`
+- **command-panel.spec.tsx** (4 connections) — `client/src/components/panels/__tests__/command-panel.spec.tsx`
+- **panels/__tests__/command-panel.test.tsx** (4 connections) — `client/src/components/panels/__tests__/command-panel.test.tsx`
+- **components/__tests__/command-panel.test.tsx** (4 connections) — `client/src/components/__tests__/command-panel.test.tsx`
+- **performanceTester.test.ts** (4 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
+- **.getResults()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.runComponentRenderTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **.runMemoryTest()** (3 connections) — `client/src/utils/performanceTester.ts`
+- **CommandPanel.test.tsx** (3 connections) — `client/src/components/__tests__/CommandPanel.test.tsx`
+- **PerformanceTestResult** (2 connections) — `client/src/utils/performanceTester.ts`
+- **logCommandPanelConnectionDebug()** (2 connections) — `client/src/components/panels/CommandPanel.tsx`
+- **useCommandPanelEffects()** (2 connections) — `client/src/components/panels/CommandPanel.tsx`
+- **prependChannelShortcut()** (2 connections) — `client/src/components/panels/commandPanelSubmit.ts`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (12 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (6 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (5 shared connections)
-- [coerce_int](coerce_int.md) (4 shared connections)
-- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (14 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (2 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
+- [Phase 2 Async Persistence Migration - Status Update](Phase_2_Async_Persistence_Migration_-_Status_Update.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_event_handlers_respawn.py`
+- `client/src/components/__tests__/CommandPanel.test.tsx`
+- `client/src/components/__tests__/command-panel.test.tsx`
+- `client/src/components/__tests__/performance.test.tsx`
+- `client/src/components/panels/CommandPanel.tsx`
+- `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
+- `client/src/components/panels/__tests__/command-panel.spec.tsx`
+- `client/src/components/panels/__tests__/command-panel.test.tsx`
+- `client/src/components/panels/commandPanelSubmit.ts`
+- `client/src/components/ui/LogoutButton.tsx`
+- `client/src/components/ui/__tests__/LogoutButton.test.tsx`
+- `client/src/utils/__tests__/performanceTester.test.ts`
+- `client/src/utils/performanceTester.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 105 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

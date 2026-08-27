@@ -1,57 +1,62 @@
 # MetricsCollector
 
-> 34 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
-- **Lock** (8 connections)
-- **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
-- **.__init__()** (3 connections) — `server/npc/threading.py`
-- **.get_lock()** (3 connections) — `server/services/inventory_mutation_guard.py`
-- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
-- **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
-- **test_circuit_state_change_trims_history()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_get_summary()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
-- **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **NPCSpawnRule** (47 connections) — `server/models/npc.py`
+- **NPCSpawnRuleCRUDMixin** (10 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **_row_to_npc_spawn_rule()** (8 connections) — `server/services/npc_service_models.py`
+- **._execute_create_spawn_rule()** (8 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.create_spawn_rule()** (7 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._check_dict_condition()** (6 connections) — `server/models/npc.py`
+- **._spawn_value_allows_spawn()** (6 connections) — `server/models/npc.py`
+- **.get_spawn_rule()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **.get_spawn_rules()** (6 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **AsyncSession** (6 connections)
+- **._single_spawn_condition_ok()** (5 connections) — `server/models/npc.py`
+- **.check_spawn_conditions()** (4 connections) — `server/models/npc.py`
+- **.__init__()** (4 connections) — `server/npc/spawning_models.py`
+- **.delete_spawn_rule()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._validate_spawn_rule_inputs()** (4 connections) — `server/services/npc_service/spawn_rule_crud.py`
+- **._check_list_condition()** (3 connections) — `server/models/npc.py`
+- **._check_missing_key_condition()** (3 connections) — `server/models/npc.py`
+- **._check_simple_condition()** (3 connections) — `server/models/npc.py`
+- **._game_value_above_bound()** (3 connections) — `server/models/npc.py`
+- **._game_value_below_bound()** (3 connections) — `server/models/npc.py`
+- **.load_spawn_rules()** (3 connections) — `server/npc/population_control.py`
+- **.can_spawn_with_population()** (2 connections) — `server/models/npc.py`
+- **.__repr__()** (2 connections) — `server/models/npc.py`
 - **Any** (2 connections)
-- **Record a circuit breaker state change. Args: old_state: Previous circuit state…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Record message processing time. Args: duration_ms: Processing duration in…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
-- **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
-- *... and 9 more nodes in this community*
+- **Any** (2 connections)
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (15 shared connections)
+- [test_security_headers.py](test_security_headers.py.md) (8 shared connections)
+- [test_magic_healing_events.py](test_magic_healing_events.py.md) (4 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [Invite](Invite.md) (2 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (1 shared connections)
+- [Recommended Test Additions](Recommended_Test_Additions.md) (1 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/metrics_collector.py`
-- `server/npc/threading.py`
-- `server/services/inventory_mutation_guard.py`
-- `server/tests/unit/middleware/test_metrics_collector.py`
+- `server/models/npc.py`
+- `server/npc/population_control.py`
+- `server/npc/spawning_models.py`
+- `server/services/npc_service/spawn_rule_crud.py`
+- `server/services/npc_service_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 110 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

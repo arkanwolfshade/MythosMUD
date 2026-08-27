@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_apply_dampening_and_send_message_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _apply_dampening_and_send_message handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_room_occupants_with_cache_room_object()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_occupants() handles Room object with get_players/get_npcs.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

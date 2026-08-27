@@ -1,55 +1,56 @@
 # test_channel_commands.py
 
-> 40 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **test_channel_commands.py** (21 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
-- **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (9 connections) — `server/commands/channel_commands.py`
-- **asyncio** (9 connections)
-- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
-- **test_get_persistence_and_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_get_persistence_and_player_not_found()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_default_subcommand()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_switch_valid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_usage_when_channel_missing()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_invalid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_sqlalchemy_error()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_success()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Any** (4 connections)
-- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle the channel command for switching channels or setting default channel.…** (1 connections) — `server/commands/channel_commands.py`
-- **Get persistence and player. Returns (persistence, player) or (None, None) if…** (1 connections) — `server/commands/channel_commands.py`
-- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
-- *... and 15 more nodes in this community*
+- **PopulationStats** (40 connections) — `server/npc/population_stats.py`
+- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_should_spawn_npc()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
+- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
+- **.get_population_stats()** (3 connections) — `server/npc/spawning_service.py`
+- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_add_npc_multiple_same_room()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_multiple_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_add_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_mixed_required_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_multiple_definitions_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_different_definition()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_partial()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_prevents_negative()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- **test_remove_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (3 shared connections)
+- [Invite](Invite.md) (3 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/channel_commands.py`
-- `server/tests/unit/commands/test_channel_commands.py`
+- `server/npc/population_stats.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/npc/test_population_control.py`
+- `server/tests/unit/npc/test_population_stats.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 95 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,58 +1,62 @@
 # test_connection_helpers_impl.py
 
-> 30 nodes
+> 120 nodes
 
 ## Key Concepts
 
-- **test_connection_helpers_impl.py** (38 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **send_personal_message_old_impl()** (12 connections) — `server/realtime/connection_helpers.py`
-- **Any** (10 connections)
-- **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
-- **test_broadcast_room_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_personal_message_old_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_personal_message_old_impl_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_queue_message_if_needed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_failed()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_update_delivery_status_success()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **fixture** (1 connections)
-- **Queue message for later delivery if no active connections. Args: player_id: The…** (1 connections) — `server/realtime/connection_helpers.py`
-- **Update final delivery status based on connection results. Args:…** (1 connections) — `server/realtime/connection_helpers.py`
-- **Send a personal message to a player via WebSocket (deprecated implementation).…** (1 connections) — `server/realtime/connection_helpers.py`
-- **Broadcast a room-specific event to all players in the room.** (1 connections) — `server/realtime/connection_helpers.py`
-- **Broadcast a global event to all connected players.** (1 connections) — `server/realtime/connection_helpers.py`
-- **Unit tests for connection helpers implementation functions. Tests the…** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test send_personal_message_old_impl() sends message.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test broadcast_room_event_impl() broadcasts room event.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test _update_delivery_status() when no connection attempts.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- *... and 5 more nodes in this community*
+- **PlayerPositionService** (45 connections) — `server/services/player_position_service.py`
+- **test_rest_command.py** (41 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **rest_command.py** (28 connections) — `server/commands/rest_command.py`
+- **cancel_rest_countdown()** (23 connections) — `server/commands/rest_command.py`
+- **asyncio** (22 connections)
+- **is_player_resting()** (17 connections) — `server/commands/rest_command.py`
+- **_start_rest_countdown()** (12 connections) — `server/commands/rest_command.py`
+- **Any** (12 connections)
+- **asyncio** (12 connections)
+- **_execute_rest_flow()** (11 connections) — `server/commands/rest_command.py`
+- **UUID** (10 connections)
+- **_check_player_in_combat()** (9 connections) — `server/commands/rest_command.py`
+- **_check_rest_location()** (9 connections) — `server/commands/rest_command.py`
+- **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
+- **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
+- **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
+- **_stand_after_cancelled_rest()** (6 connections) — `server/commands/rest_command.py`
+- **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
+- **test_cancel_rest_countdown_cancels_task()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_cancel_rest_countdown_not_resting()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_cancel_rest_countdown_restores_standing()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_false()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_no_service()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_player_in_combat_true()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **test_check_rest_location_false()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (14 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [_optimize_payload](_optimize_payload.md) (6 shared connections)
-- [convert_uuids_to_strings](convert_uuids_to_strings.md) (6 shared connections)
-- [handle_new_login_impl](handle_new_login_impl.md) (4 shared connections)
-- [mark_player_seen_impl](mark_player_seen_impl.md) (3 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (29 shared connections)
+- [character-cleanup.ts](character-cleanup.ts.md) (17 shared connections)
+- [LogAnalyzer](LogAnalyzer.md) (10 shared connections)
+- [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (6 shared connections)
+- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (5 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (5 shared connections)
+- [NATSService](NATSService.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
+- [test_combat_integration_base.py](test_combat_integration_base.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/commands/rest_command.py`
+- `server/services/player_position_service.py`
+- `server/tests/unit/commands/test_rest_command.py`
+- `server/tests/unit/services/test_player_position_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 291 (95%)
+- INFERRED: 14 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

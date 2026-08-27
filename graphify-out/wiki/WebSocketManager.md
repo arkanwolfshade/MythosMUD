@@ -1,34 +1,39 @@
 # WebSocketManager
 
-> 11 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **.disconnect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.connect()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.send_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket connection manager with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Establish WebSocket connection with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Disconnect WebSocket with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Send message to specific client with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **Broadcast message to all connected clients with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Communities (9 total, 4 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **call-of-cthulhu-starter-set/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 0 - "De Vermiis Mysteriis; Dust of Ibn-Ghazi"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 1 - "Character Creation"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 2 - "Alone Against the Flame"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 3 - "Cover Art"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 4 - "Azathoth; Banishment Chant (Latin)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (87%)
-- INFERRED: 2 (13%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

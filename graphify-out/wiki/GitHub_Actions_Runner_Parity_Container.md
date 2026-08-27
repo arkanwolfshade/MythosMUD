@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **GitHub Actions Runner Parity Container** (0 connections) — `docs/GHA_RUNNER_CONTAINER.md`
+- **Structlog Best Practices** (0 connections) — `.claude/rules/structlog.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/GHA_RUNNER_CONTAINER.md`
+- `.claude/rules/structlog.md`
 
 ## Audit Trail
 

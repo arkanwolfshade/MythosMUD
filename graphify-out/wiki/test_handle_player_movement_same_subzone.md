@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_player_movement_same_subzone()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test handle_player_movement handles movement within same subzone.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_process_exit_rows_empty_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with empty list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

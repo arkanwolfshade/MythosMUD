@@ -1,28 +1,31 @@
 # 🚫 Anti-Patterns NOT Found (Good!)
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **🚫 Anti-Patterns NOT Found (Good!)** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Calling async without await** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Creating tasks without tracking** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Global state issues** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Nested event loops** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Not closing resources** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **❌ Using time.sleep() in async functions** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **_PlayerIdCarrier** (4 connections) — `server/realtime/connection_delegates.py`
+- **_TokenPersistence** (4 connections) — `server/realtime/connection_delegates.py`
+- **_TokenValidateManager** (4 connections) — `server/realtime/connection_delegates.py`
+- **Protocol** (4 connections)
+- **.get_player_by_user_id()** (3 connections) — `server/realtime/connection_delegates.py`
+- **Minimal player shape for token validation.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Persistence surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Look up a player by auth user id.** (1 connections) — `server/realtime/connection_delegates.py`
+- **ConnectionManager surface used by validate_token_impl.** (1 connections) — `server/realtime/connection_delegates.py`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [security.ts](security.ts.md) (4 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/realtime/connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

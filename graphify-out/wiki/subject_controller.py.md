@@ -1,61 +1,55 @@
 # subject_controller.py
 
-> 43 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
-- **test_subject_controller.py** (22 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **InvalidPatternError** (15 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
-- **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (9 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (8 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **_register_pattern_try()** (7 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
-- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_register_pattern_invalid()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **BaseModel** (6 connections)
-- **asyncio** (6 connections)
-- **RegisterPatternResponse** (5 connections) — `server/api/admin/subject_controller.py`
-- **test_register_pattern_success()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_invalid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_valid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **test_get_patterns()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_get_subject_statistics()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_require_admin_user_allows_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- *... and 18 more nodes in this community*
+- **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
+- **normalize_command()** (8 connections) — `server/validators/command_validator.py`
+- **validate_command_length()** (7 connections) — `server/validators/command_validator.py`
+- **test_clean_command_input_basic()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_unicode()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_clean_command_input_whitespace()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_is_suspicious_input_safe()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_is_suspicious_input_sql_injection()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_is_suspicious_input_xss()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_normalize_command_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_normalize_command_no_slash()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_normalize_command_whitespace()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_normalize_command_with_slash()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_empty()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_suspicious()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_format_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_length_custom_max()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_length_too_long()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_validate_command_length_valid()** (3 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test validate_command_format returns False for empty command.** (2 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test normalizing command without slash prefix.** (2 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Unit tests for command validator.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (9 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (6 shared connections)
-- [manager.py](manager.py.md) (1 shared connections)
-- [test_manager.py](test_manager.py.md) (1 shared connections)
-- [test_validation.py](test_validation.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_room_service.py](test_room_service.py.md) (13 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (11 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [apply_migration](apply_migration.md) (4 shared connections)
+- [generate_sql.mjs](generate_sql.mjs.md) (4 shared connections)
+- [holidays](holidays.md) (3 shared connections)
+- [schedules](schedules.md) (3 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 97 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

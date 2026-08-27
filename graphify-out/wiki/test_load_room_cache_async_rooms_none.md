@@ -1,25 +1,31 @@
 # test_load_room_cache_async_rooms_none
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_load_room_cache_async_rooms_none()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _load_room_cache_async handles case when rooms is None.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Combat Client Crash** (3 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **NATS Event Message Field Mismatch** (2 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **Combat Disconnect At NPC Death** (2 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **event_data vs data Field Name Mismatch** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **CombatMessaging Connection Manager Init Failure** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **Passive Lucidity Flux Performance Degradation** (1 connections) — `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

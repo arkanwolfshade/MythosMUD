@@ -1,53 +1,56 @@
 # test_admin_setstat_command.py
 
-> 28 nodes
+> 69 nodes
 
 ## Key Concepts
 
-- **test_admin_setstat_command.py** (22 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **asyncio** (18 connections)
-- **test_handle_admin_set_stat_command_logging()** (5 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_dp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_invalid_value()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_target_player()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_value()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_mp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_target_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_value_out_of_range()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **patch** (1 connections)
-- **Unit tests for admin set stat command handler. Tests the admin set command…** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test invalid value (non-integer) handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test value out of range (warn but allow).** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test DP above maximum (warn but allow).** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test MP above maximum (warn but allow).** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test target player not found handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test missing target player handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test missing value handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test case-insensitive stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test handling when user manager is not available.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- *... and 3 more nodes in this community*
+- **WebSocketMessageValidator** (44 connections) — `server/realtime/message_validator.py`
+- **MessageValidationError** (39 connections) — `server/realtime/message_validator.py`
+- **test_message_validator.py** (31 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **message_validator.py** (10 connections) — `server/realtime/message_validator.py`
+- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
+- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
+- **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
+- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
+- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
+- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
+- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
+- **_deep_dict()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_inner_json_depth_exceeded()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **._validate_string_lengths()** (4 connections) — `server/realtime/message_validator.py`
+- **test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_parse_and_validate_rejects_oversized_raw_payload()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_accepts_depth_equal_to_limit()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_depth_exceeded()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_json_structure_list_nesting_counts_toward_depth()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **test_validate_size_counts_utf8_bytes()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **validator()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
+- **._calculate_depth()** (3 connections) — `server/realtime/message_validator.py`
+- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
+- *... and 44 more nodes in this community*
 
 ## Relationships
 
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (19 shared connections)
-- [test_handle_admin_set_stat_command_invalid_stat_name](test_handle_admin_set_stat_command_invalid_stat_name.md) (2 shared connections)
-- [test_handle_admin_set_stat_command_success_str](test_handle_admin_set_stat_command_success_str.md) (2 shared connections)
-- [test_handle_admin_set_stat_command_success_all_stat_types](test_handle_admin_set_stat_command_success_all_stat_types.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [UUID](UUID.md) (4 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (4 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (4 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [load_test_10_players.spec.ts](load_test_10_players.spec.ts.md) (2 shared connections)
+- [test_lucidity_service.py](test_lucidity_service.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `server/realtime/message_validator.py`
+- `server/tests/unit/realtime/test_message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 120 (75%)
+- INFERRED: 40 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

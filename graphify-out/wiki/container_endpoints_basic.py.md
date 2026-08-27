@@ -1,72 +1,63 @@
 # container_endpoints_basic.py
 
-> 453 nodes
+> 176 nodes
 
 ## Key Concepts
 
-- **container_endpoints_basic.py** (64 connections) — `server/api/container_endpoints_basic.py`
-- **LootAllRequest** (58 connections) — `server/api/container_models.py`
-- **test_container_helpers.py** (44 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **api/container_helpers.py** (43 connections) — `server/api/container_helpers.py`
-- **TransferContainerRequest** (39 connections) — `server/api/container_models.py`
-- **loot_all_items()** (34 connections) — `server/api/container_endpoints_loot.py`
-- **container_endpoints_loot.py** (32 connections) — `server/api/container_endpoints_loot.py`
-- **test_containers.py** (29 connections) — `server/tests/unit/api/test_containers.py`
-- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
-- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
-- **test_container_exception_handlers.py** (28 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
-- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
-- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
-- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
-- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
-- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
-- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
-- **asyncio** (17 connections)
-- **TestLootAllItems** (16 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- *... and 428 more nodes in this community*
+- **NPCCombatIntegrationService** (80 connections) — `server/services/npc_combat_integration_service.py`
+- **test_npc_combat_integration_service.py** (47 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **NPCCombatUUIDMapping** (38 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **asyncio** (25 connections)
+- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.__init__()** (12 connections) — `server/services/npc_combat_integration_service.py`
+- **._init_npc_submodules()** (9 connections) — `server/services/npc_combat_integration_service.py`
+- **npc_combat_uuid_mapping.py** (8 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **UUID** (7 connections)
+- **._init_messaging_handlers_and_publisher()** (6 connections) — `server/services/npc_combat_integration_service.py`
+- **_StubConfigRoot** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **.handle_npc_attack_on_player()** (5 connections) — `server/services/npc_combat_integration_service.py`
+- **._init_persistence_and_event_bus()** (5 connections) — `server/services/npc_combat_integration_service.py`
+- **test_validate_combat_location_limbo_cross_room_uses_debug()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **.is_alive()** (4 connections) — `server/models/combat.py`
+- **._complete_player_attack_on_npc_after_grace()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **._init_combat_service()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **._run_npc_attack_on_player_after_grace()** (4 connections) — `server/services/npc_combat_integration_service.py`
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **test_end_combat_if_participant_in_combat_ends_combat()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_in_combat_no_combat()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_end_combat_if_participant_skips_when_player_id_unparseable()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_get_integration_config()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_delegates_to_handle_npc_attack_on_player()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- *... and 151 more nodes in this community*
 
 ## Relationships
 
-- [ContainerServiceError](ContainerServiceError.md) (62 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (52 shared connections)
-- [models/container.py](models-container.py.md) (41 shared connections)
-- [get_logger](get_logger.md) (33 shared connections)
-- [transfer_all_items_from_container](transfer_all_items_from_container.md) (31 shared connections)
-- [User](User.md) (31 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (27 shared connections)
-- [ContainerComponent](ContainerComponent.md) (26 shared connections)
-- [ValidationError](ValidationError.md) (8 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (6 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
+- [command_service.py](command_service.py.md) (16 shared connections)
+- [JsonMap](JsonMap.md) (11 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (9 shared connections)
+- [Invite](Invite.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [MythosMUDError](MythosMUDError.md) (4 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_endpoints_loot.py`
-- `server/api/container_exception_handlers.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/schemas/containers/__init__.py`
-- `server/schemas/containers/container.py`
-- `server/schemas/containers/container_data.py`
-- `server/tests/unit/api/test_container_endpoints_loot.py`
-- `server/tests/unit/api/test_container_endpoints_loot_register.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
-- `server/tests/unit/api/test_containers.py`
+- `server/models/combat.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_uuid_mapping.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1074 (89%)
-- INFERRED: 127 (11%)
+- EXTRACTED: 295 (86%)
+- INFERRED: 50 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

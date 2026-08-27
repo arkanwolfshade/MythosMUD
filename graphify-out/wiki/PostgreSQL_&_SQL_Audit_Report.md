@@ -4,44 +4,44 @@
 
 ## Key Concepts
 
-- **PostgreSQL & SQL Audit Report** (13 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3. Anti-patterns and Semantic Problems** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4. Data Types** (5 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **10. Prioritized Fixes** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **7. Security / Prepared Statements** (4 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1. Naming Conventions** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **5. Time Handling** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **9. Broader Risk Areas** (3 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **2. SQL Formatting (Keywords Lowercase)** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **6. Legacy Constructs** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **8. Tests and Fixtures** (2 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **POSTGRESQL_AUDIT_REPORT_2026.md** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **11. Summary Table** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1.1. Snake_case (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **1.2. Quoted Identifier** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **2.1. Uppercase SQL Keywords** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.1. Explicit Joins (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.2. `NOT IN` Avoidance** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.3. `SELECT *` in Non-Test, Non-Migration Code** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **3.4. `SELECT *` in Test and Documentation** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.1. IDs: `serial` / `bigserial` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.2. `char(n)` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.3. `money` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **4.4. Unnecessary `varchar(n)` / `character varying(n)`** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
-- **5.1. `timestamp with time zone` (GOOD)** (1 connections) — `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- **properties** (7 connections) — `schemas/unified_room_schema.json`
+- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
+- **container** (6 connections) — `schemas/unified_room_schema.json`
+- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
+- **enum** (4 connections) — `schemas/unified_room_schema.json`
+- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
+- **enabled** (4 connections) — `schemas/unified_room_schema.json`
+- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
+- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
+- **items** (2 connections) — `schemas/unified_room_schema.json`
+- **required** (2 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **maximum** (1 connections) — `schemas/unified_room_schema.json`
+- **minimum** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
 - *... and 12 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [command_result_text](command_result_text.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/POSTGRESQL_AUDIT_REPORT_2026.md`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 37 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

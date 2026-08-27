@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_local_chat_scope()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_local_chat_scope() returns current room and adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- **Authoritative Database Schema from mythos_dev** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

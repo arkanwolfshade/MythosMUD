@@ -1,48 +1,48 @@
 # DialogueDefinitionRepository
 
-> 22 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **DialogueDefinitionRepository** (30 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_dialogue_definition_repository.py** (21 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **asyncio** (8 connections)
-- **_definition_dict()** (6 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **_mock_session_with_rows()** (6 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_id_not_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_get_by_npc_definition_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_list_all_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_list_all_success()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_upsert_success()** (4 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_delete_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_delete_true()** (3 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **.__init__()** (2 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **test_definition_dict_coerces_keys()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_definition_dict_non_dict()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **test_row_to_dialogue()** (2 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
-- **fixture** (1 connections)
-- **Coerce JSONB definition cell to a plain string-keyed dict.** (1 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **Repository for dialogue_definitions via stored procedures.** (1 connections) — `server/persistence/repositories/dialogue_definition_repository.py`
-- **Unit tests for DialogueDefinitionRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Positive Findings ✅** (5 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Critical Issues 🔴** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS Code Review** (2 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **10. **Inconsistent Error Handling**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **11. **Missing Input Validation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **7. **Batch Flush Uses Deprecated Event Loop Method**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **8. **No Connection Health Monitoring**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **9. **Memory Leak Risk in Metrics**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (18 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (6 shared connections)
-- [talk_command.py](talk_command.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/repositories/dialogue_definition_repository.py`
-- `server/tests/unit/persistence/repositories/test_dialogue_definition_repository.py`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (83%)
-- INFERRED: 12 (17%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

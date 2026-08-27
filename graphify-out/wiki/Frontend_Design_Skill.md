@@ -1,52 +1,38 @@
 # Frontend Design Skill
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Frontend Design Skill** (30 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Frontend Aesthetics Guidelines** (9 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Normalize Skill** (5 connections) — `.claude/skills/normalize/SKILL.md`
-- **Color & Theme** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Context Gathering Protocol** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Design Direction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Implementation Principles** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Interaction** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Layout & Space** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Motion** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Responsive** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **The AI Slop Test** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Typography** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **UX Writing** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Visual Details** (1 connections) — `.claude/skills/frontend-design/SKILL.md`
-- **Clean Up** (1 connections) — `.claude/skills/normalize/SKILL.md`
-- **Execute** (1 connections) — `.claude/skills/normalize/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/normalize/SKILL.md`
-- **Plan** (1 connections) — `.claude/skills/normalize/SKILL.md`
+- **fix_file()** (10 connections) — `scripts/fix_markdownlint.py`
+- **fix_markdownlint.py** (8 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_fences()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_headings()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_lists()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_fence_language()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_line_length()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_trailing_punctuation_in_headings()** (3 connections) — `scripts/fix_markdownlint.py`
+- **main()** (3 connections) — `scripts/fix_markdownlint.py`
+- **Path** (2 connections)
+- **Add language tags to fenced code blocks without them.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Break long lines at word boundaries.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after headings.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Remove trailing punctuation from headings.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Fix markdownlint issues in a file.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after lists.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after fenced code blocks.** (1 connections) — `scripts/fix_markdownlint.py`
 
 ## Relationships
 
-- [Interaction Design](Interaction_Design.md) (1 shared connections)
-- [Responsive Design](Responsive_Design.md) (1 shared connections)
-- [UX Writing](UX_Writing.md) (1 shared connections)
-- [Typography](Typography.md) (1 shared connections)
-- [Color & Contrast](Color_&_Contrast.md) (1 shared connections)
-- [Spatial Design](Spatial_Design.md) (1 shared connections)
-- [Motion Design](Motion_Design.md) (1 shared connections)
-- [Adapt Skill](Adapt_Skill.md) (1 shared connections)
-- [Animate Skill](Animate_Skill.md) (1 shared connections)
-- [Improve Layout Systematically](Improve_Layout_Systematically.md) (1 shared connections)
-- [Generate Comprehensive Report](Generate_Comprehensive_Report.md) (1 shared connections)
-- [Amplify the Design](Amplify_the_Design.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/SKILL.md`
-- `.claude/skills/normalize/SKILL.md`
+- `scripts/fix_markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

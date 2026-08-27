@@ -1,47 +1,48 @@
 # test_postgres_adapter.py
 
-> 18 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_postgres_adapter.py** (15 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **TestUtilityFunctions** (8 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **connect_postgres()** (6 connections) — `server/postgres_adapter.py`
-- **convert_sqlite_to_postgres_query()** (6 connections) — `server/postgres_adapter.py`
-- **.test_connect_postgres()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_connect_postgres_with_driver_prefix()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_basic()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_insert_replace()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_convert_sqlite_to_postgres_query_no_params()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a PostgreSQL connection. Args: database_url: PostgreSQL connection URL…** (1 connections) — `server/postgres_adapter.py`
-- **Convert legacy SQLite query syntax to PostgreSQL syntax. Note: This function is…** (1 connections) — `server/postgres_adapter.py`
-- **Unit tests for PostgreSQL adapter. Tests PostgresRow, PostgresConnection,…** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test utility functions.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test connect_postgres().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test connect_postgres() with driver prefix.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() basic conversion.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() with no parameters.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test convert_sqlite_to_postgres_query() with INSERT OR REPLACE.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Bug Investigator Subagent** (11 connections) — `.claude/agents/bug-investigator.md`
+- **Methodology** (6 connections) — `.claude/agents/bug-investigator.md`
+- **Capabilities** (5 connections) — `.claude/agents/bug-investigator.md`
+- **Investigation Scenarios** (5 connections) — `.claude/agents/bug-investigator.md`
+- **Critical Requirements** (4 connections) — `.claude/agents/bug-investigator.md`
+- **bug-investigator.md** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Authentication/Login Issues** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Best Practices** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Chat/Communication Issues** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Evidence Collection** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Evidence Standards** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Integration** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Investigation Only** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Movement/Command Issues** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Notes** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Output Format** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Performance/System Issues** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Phase 1: Initial Bug Report Analysis** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Phase 2: System State Investigation** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Phase 3: Code Analysis** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Phase 4: Evidence Collection** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Phase 5: Analysis and Reporting** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Purpose** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Regression Analysis** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Root Cause Analysis** (1 connections) — `.claude/agents/bug-investigator.md`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [PostgresConnection](PostgresConnection.md) (4 shared connections)
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [PostgresCursor](PostgresCursor.md) (2 shared connections)
-- [PostgresRow](PostgresRow.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [is_postgres_url](is_postgres_url.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `.claude/agents/bug-investigator.md`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

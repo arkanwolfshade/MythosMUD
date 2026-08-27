@@ -1,32 +1,33 @@
 # TestValidateCommandBasics
 
-> 10 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **TestValidateCommandBasics** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_empty()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_invalid_content()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_too_long()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_validate_command_basics_valid()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for empty command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for command too long.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns result for invalid command content.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _validate_command_basics returns None for valid command.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **optimized_strip_ansi_codes()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_no_ansi()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_strip_ansi_codes_with_ansi()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **_cached_strip_ansi()** (3 connections) — `server/validators/optimized_security_validator.py`
+- **Test stripping ANSI codes from text without ANSI.** (2 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test stripping ANSI codes from empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Cached version of strip_ansi for repeated inputs.** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Optimized ANSI code removal with caching. Args: text: Input text that may…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (2 shared connections)
+- [seed_e2e_users.py](seed_e2e_users.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

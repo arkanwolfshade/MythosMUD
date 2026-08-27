@@ -1,25 +1,28 @@
 # _FakeClientState
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **_FakeClientState** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (2 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Test Coverage Requirements** (4 connections) — `.claude/rules/test-coverage.md`
+- **Test Quality Standards** (3 connections) — `.claude/rules/test-coverage.md`
+- **test-coverage.md** (1 connections) — `.claude/rules/test-coverage.md`
+- **Coverage Measurement** (1 connections) — `.claude/rules/test-coverage.md`
+- **Forbidden Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
+- **Minimum Coverage Standard** (1 connections) — `.claude/rules/test-coverage.md`
+- **Required Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
 
 ## Relationships
 
-- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `.claude/rules/test-coverage.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

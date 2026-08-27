@@ -1,43 +1,38 @@
 # extract_subzone_from_room_id
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
-- **room_utils.py** (10 connections) — `server/utils/room_utils.py`
-- **chat_channel_logger.py** (8 connections) — `server/services/chat_channel_logger.py`
-- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
-- **log_time_formats.py** (6 connections) — `server/structured_logging/log_time_formats.py`
-- **Channel-specific chat log methods for MythosMUD. Mixin used by ChatLogger:…** (1 connections) — `server/services/chat_channel_logger.py`
-- **Stable strftime patterns for log filenames and aggregation keys. These are…** (1 connections) — `server/structured_logging/log_time_formats.py`
-- **Room utility functions for MythosMUD. This module provides utility functions…** (1 connections) — `server/utils/room_utils.py`
-- **Extract sub-zone from room ID. Room ID format:…** (1 connections) — `server/utils/room_utils.py`
-- **Generate NATS subject for sub-zone local channel messages. This creates a…** (1 connections) — `server/utils/room_utils.py`
+- **test_inventory_mutation_guard_async.py** (11 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **asyncio** (6 connections)
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_cleanup_empty_state()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_concurrent_same_player()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_enforces_max_tokens()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_expiry()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_acquire_async_token_ttl_zero()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **fixture** (1 connections)
+- **Unit tests for inventory mutation guard - asynchronous acquire operations.…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Relationships
 
-- [test_room_utils.py](test_room_utils.py.md) (12 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
-- [chat_service.py](chat_service.py.md) (2 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
-- [NATSMessageSubscriptionMixin](NATSMessageSubscriptionMixin.md) (1 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
-- [LogAggregator](LogAggregator.md) (1 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
 
 ## Source Files
 
-- `server/services/chat_channel_logger.py`
-- `server/structured_logging/log_time_formats.py`
-- `server/utils/room_utils.py`
+- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

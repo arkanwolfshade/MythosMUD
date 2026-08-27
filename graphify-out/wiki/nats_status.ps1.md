@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **nats_status.ps1** (0 connections) — `scripts/nats_status.ps1`
+- **Quest System Features** (0 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/nats_status.ps1`
+- `docs/QUEST_SYSTEM_FEATURES.md`
 
 ## Audit Trail
 

@@ -1,26 +1,27 @@
 # 2025_11_26_ensure_item_instance_foreign_keys.py
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **2025_11_26_ensure_item_instance_foreign_keys.py** (3 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
-- **Ensure foreign key constraints exist for item_instances.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
-- **This migration only ensures constraints exist - no downgrade needed.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **Common Mistakes and How to Fix Them** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 1: Forgetting to Update Imports** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 2: Using Deprecated Context Parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 3: String Formatting in Log Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 4: Missing Context in Error Logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 5: Wrong Log Levels** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [system_commands.py](system_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

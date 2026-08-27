@@ -1,47 +1,51 @@
 # 🔴 CRITICAL ISSUES
 
-> 29 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **🔴 CRITICAL ISSUES** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **PostgreSQL Anti-Patterns Code Review** (9 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (6 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **📋 SUMMARY OF RECOMMENDATIONS** (4 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **POSTGRESQL_ANTI_PATTERNS_REVIEW.md** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **10. Use of `BETWEEN` with Integer Ranges** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **11. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **12. Inconsistent Constraint Naming** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **13. Mixed Case in Table/Column Names** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **14. Missing `UNIQUE` Constraints Where Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **15. Inconsistent Use of `NOT NULL` Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **16. Missing Documentation for Complex Constraints** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **1. Use of `serial`/`SERIAL` Instead of `bigint generated always as identity`** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **2. Use of `INTEGER` Instead of `bigint` for Primary Keys** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **3. Inconsistent SQL Keyword Formatting** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **4. Use of `varchar(n)` Where `text` Would Be Appropriate** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **5. Missing Table and Column Comments** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **6. Mixed Naming Conventions (snake_case vs UPPER_CASE)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **7. Use of Quoted Identifiers (Double Quotes)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **8. Missing Explicit `AS` Keywords in Aliases** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **9. Inconsistent Primary Key Types (UUID vs varchar vs integer)** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **🔍 FILES REQUIRING IMMEDIATE ATTENTION** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- **✅ GOOD PRACTICES FOUND** (1 connections) — `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
-- *... and 4 more nodes in this community*
+- **test_connection_room_utils.py** (16 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **canonical_room_id_impl()** (14 connections) — `server/realtime/connection_room_utils.py`
+- **prune_player_from_all_rooms_impl()** (5 connections) — `server/realtime/connection_room_utils.py`
+- **reconcile_room_presence_impl()** (5 connections) — `server/realtime/connection_room_utils.py`
+- **canonical_room_id_public_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
+- **test_canonical_room_id_impl_database_error()** (4 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_attribute_error()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_empty_string()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_fallback_to_main_persistence()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_no_room_found()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_none()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_room_no_id_attribute()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_canonical_room_id_impl_success_room_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_prune_player_from_all_rooms_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **test_reconcile_room_presence_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Any** (3 connections)
+- **Test canonical_room_id_impl() returns original room_id when room not found.** (2 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager_methods.py`
+- **Resolve a room id to the canonical Room.id value. Args: room_id: The room ID to…** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Ensure room_occupants only contains currently online players.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Remove a player from all room subscriptions and occupant lists.** (1 connections) — `server/realtime/connection_room_utils.py`
+- **Unit tests for connection room utils. Tests the connection_room_utils module…** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test canonical_room_id_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- **Test reconcile_room_presence_impl() calls…** (1 connections) — `server/tests/unit/realtime/test_connection_room_utils.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/POSTGRESQL_ANTI_PATTERNS_REVIEW.md`
+- `server/realtime/connection_manager_methods.py`
+- `server/realtime/connection_room_utils.py`
+- `server/tests/unit/realtime/test_connection_room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 51 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

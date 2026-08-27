@@ -1,25 +1,31 @@
 # test_get_user_by_username_case_insensitive_no_session
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_get_user_by_username_case_insensitive_no_session()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test get_user_by_username_case_insensitive when no session is yielded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Whisper Channel System** (4 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 13 Whisper Basic** (2 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- **Scenario 16 Whisper Movement** (2 connections) — `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- **Scenario 18 Whisper Logging** (2 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- **Scenario 14 Whisper Errors** (1 connections) — `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- **Whisper Moderation Logging** (1 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
+- `e2e-tests/scenarios/scenario-14-whisper-errors.md`
+- `e2e-tests/scenarios/scenario-16-whisper-movement.md`
+- `e2e-tests/scenarios/scenario-18-whisper-logging.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

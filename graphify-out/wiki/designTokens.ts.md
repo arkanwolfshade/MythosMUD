@@ -1,44 +1,57 @@
 # designTokens.ts
 
-> 21 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **designTokens.ts** (21 connections) — `client/src/components/ui/designTokens.ts`
-- **designTokens.test.ts** (13 connections) — `client/src/components/ui/__tests__/designTokens.test.ts`
-- **buildClasses** (3 connections) — `client/src/components/ui/designTokens.ts`
-- **animations** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **borderRadius** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **breakpoints** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **colors** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **layout** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **shadows** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **sizes** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **spacing** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **typography** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **variants** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **zIndex** (2 connections) — `client/src/components/ui/designTokens.ts`
-- **ButtonVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **ColorVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **ComponentSize** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **InputVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **PanelVariant** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **SpacingSize** (1 connections) — `client/src/components/ui/designTokens.ts`
-- **TypographySize** (1 connections) — `client/src/components/ui/designTokens.ts`
+- **session_factory()** (19 connections) — `server/tests/fixtures/integration/__init__.py`
+- **fixtures/integration/__init__.py** (19 connections) — `server/tests/fixtures/integration/__init__.py`
+- **db_cleanup()** (11 connections) — `server/tests/fixtures/integration/__init__.py`
+- **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
+- **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
+- **_delete_mutable_integration_test_rows()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
+- **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
+- **integration_db_url()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
+- **_get_db_name_from_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
+- **_is_allowed_integration_test_db()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
+- **fixture** (4 connections)
+- **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
+- **FixtureRequest** (3 connections)
+- **AsyncSession** (3 connections)
+- **async_sessionmaker** (2 connections)
+- **_IntegrationState** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **AsyncEngine** (1 connections)
+- **Database fixtures for integration tests. This module provides database…** (1 connections) — `server/tests/fixtures/integration/db.py`
+- **Integration-tier fixtures with real database connections.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Provide an async session factory for integration tests. CRITICAL: This fixture…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Return True for alembic_version and reference/world seed tables.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Remove test-created rows; preserve reference seed (world topology, professions).** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Clean up database after each test. Deletes test-created rows from mutable…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Extract database name from a PostgreSQL URL. Returns empty string on parse…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **Return True only if the URL points to an allowed test-only database…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (2 shared connections)
+- [Net Impact Summary](Net_Impact_Summary.md) (5 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (3 shared connections)
+- [Dependency Upgrade](Dependency_Upgrade.md) (2 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [test_normalize_npc_stats_adds_hp_from_determination_points](test_normalize_npc_stats_adds_hp_from_determination_points.md) (1 shared connections)
+- [Issue Template Config](Issue_Template_Config.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui/__tests__/designTokens.test.ts`
-- `client/src/components/ui/designTokens.ts`
+- `server/tests/fixtures/integration/__init__.py`
+- `server/tests/fixtures/integration/db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 56 (82%)
+- INFERRED: 12 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

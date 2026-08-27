@@ -1,27 +1,29 @@
 # Mythos Holiday Candidates
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Mythos Holiday Candidates** (4 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Implementation Notes** (2 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **MYTHOS_HOLIDAY_CANDIDATES.md** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Canonical and Derived Observances** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Narrative Flavor Seeds** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Opportunities for Expansion** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **✅ Verified Already Implemented** (8 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **10. TLS Configuration** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **4. Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **5. Mute Data Caching** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **6. F-String Logging** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **7. Database Flush Operations** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **8. Active Player Filtering** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **9. NATS Connection Pooling** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,22 +1,23 @@
 # tailwind.config.js
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **tailwind.config.js** (0 connections) — `client/tailwind.config.js`
+- **test_create_rest_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_rest_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tailwind.config.js`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,22 +1,23 @@
 # Codacy CLI via WSL on Windows
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Codacy CLI via WSL on Windows** (0 connections) — `.codacy/README.md`
+- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_punch_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.codacy/README.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

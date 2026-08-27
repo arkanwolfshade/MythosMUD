@@ -1,37 +1,30 @@
 # Async Code Review - Post Phase 2 Migration
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Async Code Review - Post Phase 2 Migration** (16 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📋 Checklist Against Best Practices** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **🟡 Minor Recommendations (Not Blocking)** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **ASYNC_CODE_REVIEW_POST_MIGRATION.md** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **anyio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **asyncio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📊 Compliance Scorecard** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **📝 Conclusion** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Executive Summary** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Recommendation 1: Consider Caching for Frequently Called Methods** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Recommendation 2: Add Performance Monitoring** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **.validate_current_vs_max_stats()** (6 connections) — `server/models/game.py`
+- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
+- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
+- **.max_lucidity()** (4 connections) — `server/models/game.py`
+- **.max_magic_points()** (4 connections) — `server/models/game.py`
+- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
+- **computed_field** (2 connections)
+- **Calculate max magic points (MP) using formula: 20% of Power (ceiling rounded).…** (2 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education. AI: This computed field uses the…** (1 connections) — `server/models/game.py`
+- **Calculate max determination points (DP) using formula: (CON + SIZ) / 5. AI:…** (1 connections) — `server/models/game.py`
+- **Calculate max lucidity based on education. AI: Helper method to calculate…** (1 connections) — `server/models/game.py`
+- **Ensure current_dp (DP), magic_points (MP), and lucidity don't exceed their max…** (1 connections) — `server/models/game.py`
 
 ## Relationships
 
-- [✅ Best Practices Compliance](✅_Best_Practices_Compliance.md) (1 shared connections)
-- [✅ Positive Findings](✅_Positive_Findings_2.md) (1 shared connections)
-- [🔍 Anti-Pattern Check](🔍_Anti-Pattern_Check.md) (1 shared connections)
-- [🎯 Code Quality Assessment](🎯_Code_Quality_Assessment.md) (1 shared connections)
-- [🔍 Specific File Reviews](🔍_Specific_File_Reviews.md) (1 shared connections)
-- [🔴 Anti-Patterns Check (Critical)](🔴_Anti-Patterns_Check_Critical.md) (1 shared connections)
-- [🎓 Best Practice Examples to Share](🎓_Best_Practice_Examples_to_Share.md) (1 shared connections)
-- [🚫 Anti-Patterns NOT Found (Good!)](🚫_Anti-Patterns_NOT_Found_Good!.md) (1 shared connections)
-- [📈 Performance Impact Assessment](📈_Performance_Impact_Assessment.md) (1 shared connections)
-- [🎯 Final Verdict](🎯_Final_Verdict.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (6 shared connections)
+- [Dark Young of Shub-Niggurath.md](Dark_Young_of_Shub-Niggurath.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/models/game.py`
 
 ## Audit Trail
 

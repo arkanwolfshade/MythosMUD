@@ -1,57 +1,47 @@
 # test_config_models.py
 
-> 37 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_config_models.py** (25 connections) — `server/tests/unit/config/test_config_models.py`
-- **DatabaseConfig** (14 connections) — `server/config/models/server_db.py`
-- **ServerConfig** (12 connections) — `server/config/models/server_db.py`
-- **_default_cors_origins()** (9 connections) — `server/config/models/_helpers.py`
-- **.validate_database_url()** (3 connections) — `server/config/models/server_db.py`
-- **.validate_pool_config()** (3 connections) — `server/config/models/server_db.py`
-- **.validate_port()** (3 connections) — `server/config/models/server_db.py`
-- **test_database_config_validate_pool_config_invalid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_pool_config_positive()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_empty()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_database_config_validate_url_postgresql()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_no_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_default_cors_origins_with_env()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_default_host()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_high()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_invalid_low()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_server_config_validate_port_valid()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **field_validator** (3 connections)
-- **test_default_cors_origins_fallback()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **BaseSettings** (2 connections)
-- **Derive default CORS origins with environment taking precedence.** (1 connections) — `server/config/models/_helpers.py`
-- **Server network configuration.** (1 connections) — `server/config/models/server_db.py`
-- **Validate port is in valid range.** (1 connections) — `server/config/models/server_db.py`
-- **Database configuration.** (1 connections) — `server/config/models/server_db.py`
-- **Validate database URL format - PostgreSQL only.** (1 connections) — `server/config/models/server_db.py`
-- *... and 12 more nodes in this community*
+- **MythosMUD Database Placement** (7 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **MythosMUD Full-Stack Feature** (7 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **MythosMUD OpenAPI Workflow** (6 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Full Stack Feature Skill** (3 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Database Placement Skill** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **OpenAPI Workflow Skill** (2 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Allowed Paths Only** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Data Types** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Forbidden** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **PostgreSQL Access (Procedures and Functions)** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **When Adding or Moving Persistence** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
+- **Authority** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Checklist** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Principle** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Stack Summary** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **When to Touch Each Layer** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Output** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **Requirements** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
+- **When to Regenerate** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Relationships
 
-- [config/models/__init__.py](config-models-__init__.py.md) (7 shared connections)
-- [_parse_env_list](_parse_env_list.md) (6 shared connections)
-- [GameConfig](GameConfig.md) (5 shared connections)
-- [test_config_model_helpers.py](test_config_model_helpers.py.md) (3 shared connections)
-- [AppConfig](AppConfig.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_model_helpers.py`
-- `server/tests/unit/config/test_config_models.py`
+- `.claude/skills/mythosmud-database-placement/SKILL.md`
+- `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
+- `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 72 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

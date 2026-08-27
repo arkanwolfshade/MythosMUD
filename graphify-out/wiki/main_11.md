@@ -1,32 +1,38 @@
 # main
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **_write_state_atomic()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **.claude/hooks/trigger_test_agent.py** (4 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Path** (3 connections)
-- **NoReturn** (1 connections)
-- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Unique Pylint Findings Analysis** (8 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **4. WARNINGS Findings (5 findings)** (3 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Linting Complexity Alignment** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **2. ERROR Findings (33 findings)** (2 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **2.1 No Name in Module (E0611)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **4.1 Unused Variable (W0612)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **4.2 Unused Argument (W0613)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Configure Ruff to Catch (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Executive Summary** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Fix Manually (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Next Steps** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Suppress in `.pylintrc` (Majority of findings)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [💡 Key Improvements](💡_Key_Improvements.md) (1 shared connections)
+- [Four-Level Room Hierarchy](Four-Level_Room_Hierarchy.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/hooks/trigger_test_agent.py`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

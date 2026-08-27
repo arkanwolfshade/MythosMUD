@@ -1,70 +1,56 @@
 # get_admin_auth_service
 
-> 146 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **get_admin_auth_service()** (44 connections) — `server/services/admin_auth_service.py`
-- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
-- **test_npc_definitions_api.py** (33 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
-- **npc_definitions_api.py** (32 connections) — `server/api/admin/npc_definitions_api.py`
-- **npc_schemas.py** (25 connections) — `server/api/admin/npc_schemas.py`
-- **test_npc_instances_api.py** (22 connections) — `server/tests/unit/api/test_npc_instances_api.py`
-- **test_npc_spawn_rules_api.py** (18 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- **_update_npc_definition_internal()** (16 connections) — `server/api/admin/npc_definitions_api.py`
-- **get_npc_definitions()** (15 connections) — `server/api/admin/npc_definitions_api.py`
-- **spawn_npc_instance()** (15 connections) — `server/api/admin/npc_instances_api.py`
-- **create_npc_spawn_rule()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **get_npc_spawn_rules()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **test_npc_population_api.py** (15 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
-- **create_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
-- **get_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
-- **get_npc_population_stats()** (14 connections) — `server/api/admin/npc_population_api.py`
-- **despawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **move_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
-- **delete_npc_definition()** (12 connections) — `server/api/admin/npc_definitions_api.py`
-- **get_npc_instances()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **get_npc_stats()** (12 connections) — `server/api/admin/npc_instances_api.py`
-- **get_npc_system_status()** (12 connections) — `server/api/admin/npc_population_api.py`
-- **get_npc_zone_stats()** (12 connections) — `server/api/admin/npc_population_api.py`
-- **delete_npc_spawn_rule()** (12 connections) — `server/api/admin/npc_spawn_rules_api.py`
-- **_admin_user()** (12 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
-- *... and 121 more nodes in this community*
+- **test_status_commands.py** (32 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **status_commands.py** (18 connections) — `server/commands/status_commands.py`
+- **handle_status_command()** (14 connections) — `server/commands/status_commands.py`
+- **asyncio** (14 connections)
+- **test_status_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **_add_additional_stats_lines()** (12 connections) — `server/commands/status_commands.py`
+- **handle_whoami_command()** (12 connections) — `server/commands/status_commands.py`
+- **_add_profession_lines()** (11 connections) — `server/commands/status_commands.py`
+- **_build_base_status_lines()** (11 connections) — `server/commands/status_commands.py`
+- **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
+- **_build_status_result()** (9 connections) — `server/commands/status_commands.py`
+- **_get_combat_status()** (9 connections) — `server/commands/status_commands.py`
+- **Any** (9 connections)
+- **test_get_profession_info_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_no_app()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_player_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_player_not_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_player_dict_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_profession_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_with_profession()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (54 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (38 shared connections)
-- [User](User.md) (16 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (11 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (8 shared connections)
-- [NPCDefinition](NPCDefinition.md) (8 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [npc_database.py](npc_database.py.md) (3 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (2 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [enum](enum.md) (3 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/npc_definitions_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_schemas.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/services/admin_auth_service.py`
-- `server/tests/unit/api/admin/test_npc_population_api.py`
-- `server/tests/unit/api/test_npc_definitions_api.py`
-- `server/tests/unit/api/test_npc_instances_api.py`
-- `server/tests/unit/api/test_npc_spawn_rules_api.py`
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `server/commands/status_commands.py`
+- `server/tests/unit/commands/test_status_commands.py`
+- `server/tests/unit/commands/test_status_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 475 (93%)
-- INFERRED: 35 (7%)
+- EXTRACTED: 163 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

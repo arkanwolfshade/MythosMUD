@@ -1,36 +1,45 @@
 # _apply_stat_change_and_build_result
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_apply_stat_change_and_build_result()** (8 connections) — `server/commands/admin_setstat_command.py`
-- **_build_set_stat_error_response()** (6 connections) — `server/commands/admin_setstat_command.py`
-- **_log_admin_set_stat()** (6 connections) — `server/commands/admin_setstat_command.py`
-- **_AdminSetStatLogContext** (5 connections) — `server/commands/admin_setstat_command.py`
-- **_AdminSetStatApplyContext** (4 connections) — `server/commands/admin_setstat_command.py`
-- **BaseException** (1 connections)
-- **Log admin set stat command.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Context for logging an admin set-stat command (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Log error and admin action failure, return error result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Apply stat change, persist, notify, log; return success result dict.** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Context for applying an admin set-stat change (reduces parameter count).** (1 connections) — `server/commands/admin_setstat_command.py`
+- **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
+- **test_admin_permission_utils.py** (12 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **asyncio** (6 connections)
+- **_BrokenAdminPlayer** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_attribute_error()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_logs_secondary_failure()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_missing_is_admin_attr()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_granted()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_is_admin_false()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **test_validate_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **.is_admin()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **mock_admin_logger()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **Any** (1 connections)
+- **fixture** (1 connections)
+- **Validate that a player has admin permissions. Args: player: Player object to…** (1 connections) — `server/commands/admin_permission_utils.py`
+- **Unit tests for admin permission validation.** (1 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (7 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (3 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
+- `server/commands/admin_permission_utils.py`
+- `server/tests/unit/commands/test_admin_permission_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 41 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

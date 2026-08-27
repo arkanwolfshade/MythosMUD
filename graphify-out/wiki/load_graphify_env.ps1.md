@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **load_graphify_env.ps1** (0 connections) — `scripts/load_graphify_env.ps1`
+- **Persistence Layer Async Migration Guide** (0 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_graphify_env.ps1`
+- `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Audit Trail
 

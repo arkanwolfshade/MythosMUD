@@ -1,55 +1,49 @@
 # PlayerRepositoryProtocol
 
-> 51 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **PlayerRepositoryProtocol** (23 connections) — `server/persistence/protocols.py`
-- **test_protocol_ellipsis_bodies_via_unbound_methods()** (22 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **protocols.py** (12 connections) — `server/persistence/protocols.py`
-- **RoomRepositoryProtocol** (11 connections) — `server/persistence/protocols.py`
-- **Player** (11 connections)
-- **test_protocols.py** (11 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (6 connections)
-- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
-- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
-- **test_player_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **_StubRoomRepo** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **.get_active_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_name()** (4 connections) — `server/persistence/protocols.py`
-- **.get_player_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
-- **.get_players_in_room()** (4 connections) — `server/persistence/protocols.py`
-- **.save_player()** (4 connections) — `server/persistence/protocols.py`
-- **.save_players()** (4 connections) — `server/persistence/protocols.py`
-- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
-- **.validate_and_fix_player_room()** (4 connections) — `server/persistence/protocols.py`
-- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
-- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
-- **.list_players()** (3 connections) — `server/persistence/protocols.py`
-- *... and 26 more nodes in this community*
+- **AuditLogger** (15 connections) — `server/utils/audit_logger.py`
+- **test_audit_logger.py** (15 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **_logger()** (13 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **._write_entry()** (10 connections) — `server/utils/audit_logger.py`
+- **.get_recent_entries()** (5 connections) — `server/utils/audit_logger.py`
+- **._get_log_file_path()** (4 connections) — `server/utils/audit_logger.py`
+- **.get_statistics()** (4 connections) — `server/utils/audit_logger.py`
+- **.__init__()** (4 connections) — `server/utils/audit_logger.py`
+- **JsonMap** (4 connections)
+- **test_audit_logger_get_recent_entries()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_recent_entries_filters_and_bad_lines()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_get_statistics()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_init()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_command()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_permission_change()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_player_action()** (3 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **.log_alias_expansion()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_command()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_container_interaction()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_permission_change()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_player_action()** (3 connections) — `server/utils/audit_logger.py`
+- **.log_security_event()** (3 connections) — `server/utils/audit_logger.py`
+- **_json_map_from_line()** (3 connections) — `server/utils/audit_logger.py`
+- **test_audit_logger_log_alias_expansion_cycle()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- **test_audit_logger_log_container_interaction()** (2 connections) — `server/tests/unit/utils/test_audit_logger.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (3 shared connections)
-- [_StubPlayerRepo](_StubPlayerRepo.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/persistence/protocols.py`
-- `server/tests/unit/persistence/test_protocols.py`
+- `server/tests/unit/utils/test_audit_logger.py`
+- `server/utils/audit_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 75 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

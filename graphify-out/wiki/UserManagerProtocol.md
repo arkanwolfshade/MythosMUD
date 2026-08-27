@@ -1,49 +1,50 @@
 # UserManagerProtocol
 
-> 27 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **UserManagerProtocol** (20 connections) — `server/game/chat_moderation.py`
-- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
-- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
-- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.load_player_mutes()** (1 connections) — `server/game/chat_moderation.py`
-- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
-- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
-- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
-- **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
-- *... and 2 more nodes in this community*
+- **migration_examples.py** (20 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_4()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **process_item()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **expensive_operation()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_10()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_11()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_14()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_3()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_5()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_1()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_12()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_13()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_15()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_2()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_6()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_7()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_8()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **migration_example_9()** (2 connections) — `docs/examples/logging/migration_examples.py`
+- **async_work()** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 8: API logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 9: WebSocket logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 10: Batch processing logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 1: Basic logging migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- **Example 11: Exception tracking migration.** (1 connections) — `docs/examples/logging/migration_examples.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (4 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (1 shared connections)
+- [NATSMessageBroadcastMixin](NATSMessageBroadcastMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `docs/examples/logging/migration_examples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 43 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

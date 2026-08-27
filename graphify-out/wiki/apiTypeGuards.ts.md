@@ -1,59 +1,47 @@
 # apiTypeGuards.ts
 
-> 57 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **apiTypeGuards.ts** (73 connections) — `client/src/utils/apiTypeGuards.ts`
-- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
-- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isString()** (12 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertServerCharacterResponseArray()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
-- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **hasSharedCharacterRecordCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isCharacterInfoArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isMechanicalEffect()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isProfessionCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **isStatRequirement()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- *... and 32 more nodes in this community*
+- **verify_enhanced_logging_compliance.py** (14 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **LoggingComplianceChecker** (12 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Path** (10 connections)
+- **check_file()** (8 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **main()** (7 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Call()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_violations_report()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_check_all_files()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_violations_for_file()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_read_and_parse()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_run_regex_checks()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_find_python_files()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_deprecated_context_param()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_fstring_logging()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **._check_getlogger_call()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_should_skip_file()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **Call** (4 connections)
+- **_group_violations_by_type()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Assign()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_Import()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.visit_ImportFrom()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_compliance_success()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
+- **AST** (2 connections)
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (18 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (8 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (8 shared connections)
-- [useAsciiMapState.ts](useAsciiMapState.ts.md) (6 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [useRoomMapData.ts](useRoomMapData.ts.md) (3 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/hooks/useProfessions.ts`
-- `client/src/utils/__tests__/apiTypeGuards.test.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `scripts/verify_enhanced_logging_compliance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (100%)
+- EXTRACTED: 76 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

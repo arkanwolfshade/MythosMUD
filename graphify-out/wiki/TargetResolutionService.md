@@ -1,67 +1,70 @@
 # TargetResolutionService
 
-> 209 nodes
+> 110 nodes
 
 ## Key Concepts
 
-- **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
-- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
-- **test_target_resolution_service.py** (43 connections) — `server/tests/unit/services/test_target_resolution_service.py`
-- **TargetType** (42 connections) — `server/schemas/shared/target_resolution.py`
-- **target_resolution_service.py** (29 connections) — `server/services/target_resolution_service.py`
-- **test_party_commands.py** (23 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **handle_party_command()** (21 connections) — `server/commands/party_commands.py`
-- **party_commands.py** (21 connections) — `server/commands/party_commands.py`
-- **asyncio** (21 connections)
-- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
-- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **TargetMetadata** (15 connections) — `server/schemas/shared/target_metadata.py`
-- **asyncio** (13 connections)
-- **target_resolution.py** (12 connections) — `server/schemas/shared/target_resolution.py`
-- **_party_request()** (11 connections) — `server/tests/unit/commands/test_party_commands.py`
-- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **SkillService** (35 connections) — `server/game/skill_service.py`
+- **SkillRepository** (26 connections) — `server/persistence/repositories/skill_repository.py`
+- **PlayerSkillRepository** (21 connections) — `server/persistence/repositories/player_skill_repository.py`
+- **skill_service.py** (21 connections) — `server/game/skill_service.py`
+- **skills.py** (19 connections) — `server/api/skills.py`
+- **skill_repository.py** (19 connections) — `server/persistence/repositories/skill_repository.py`
+- **test_skill_repository.py** (17 connections) — `server/tests/unit/persistence/repositories/test_skill_repository.py`
+- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
+- **skill_use_log_repository.py** (15 connections) — `server/persistence/repositories/skill_use_log_repository.py`
+- **test_player_skill_repository.py** (13 connections) — `server/tests/unit/persistence/repositories/test_player_skill_repository.py`
+- **SkillUseLogRepository** (12 connections) — `server/persistence/repositories/skill_use_log_repository.py`
+- **get_skills_catalog()** (12 connections) — `server/api/skills.py`
+- **test_skill_use_log_repository.py** (11 connections) — `server/tests/unit/persistence/repositories/test_skill_use_log_repository.py`
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **_row_to_skill()** (9 connections) — `server/persistence/repositories/skill_repository.py`
 - **Any** (9 connections)
-- **._gather_room_target_matches()** (8 connections) — `server/services/target_resolution_service.py`
-- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
-- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
-- **_handle_party_chat()** (7 connections) — `server/commands/party_commands.py`
-- **._match_npcs_by_name()** (7 connections) — `server/services/target_resolution_service.py`
-- **._search_phantoms_in_room()** (7 connections) — `server/services/target_resolution_service.py`
-- **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
+- **players/skill.py** (9 connections) — `server/schemas/players/skill.py`
+- **asyncio** (8 connections)
 - **UUID** (7 connections)
-- *... and 184 more nodes in this community*
+- **SkillListResponse** (6 connections) — `server/schemas/players/skill.py`
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **asyncio** (6 connections)
+- **PlayerSkillEntry** (5 connections) — `server/schemas/players/skill.py`
+- *... and 85 more nodes in this community*
 
 ## Relationships
 
-- [TargetResolutionResult](TargetResolutionResult.md) (23 shared connections)
-- [TargetMatch](TargetMatch.md) (22 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (8 shared connections)
-- [CombatService](CombatService.md) (6 shared connections)
-- [handle_teach_command](handle_teach_command.md) (5 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (3 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (43 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (26 shared connections)
+- [get_logger](get_logger.md) (17 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (13 shared connections)
+- [CacheManager](CacheManager.md) (11 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (11 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [main](main.md) (1 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (1 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/party_commands.py`
-- `server/schemas/shared/__init__.py`
-- `server/schemas/shared/target_metadata.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/services/target_resolution_service.py`
-- `server/tests/unit/commands/test_party_commands.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
-- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/api/skills.py`
+- `server/commands/skills_commands.py`
+- `server/dependencies.py`
+- `server/game/skill_service.py`
+- `server/persistence/repositories/player_skill_repository.py`
+- `server/persistence/repositories/skill_repository.py`
+- `server/persistence/repositories/skill_use_log_repository.py`
+- `server/schemas/players/skill.py`
+- `server/tests/unit/api/test_skills.py`
+- `server/tests/unit/persistence/repositories/test_player_skill_repository.py`
+- `server/tests/unit/persistence/repositories/test_skill_repository.py`
+- `server/tests/unit/persistence/repositories/test_skill_use_log_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 496 (94%)
-- INFERRED: 30 (6%)
+- EXTRACTED: 294 (90%)
+- INFERRED: 32 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

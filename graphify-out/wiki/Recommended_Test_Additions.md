@@ -1,31 +1,40 @@
 # Recommended Test Additions
 
-> 10 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Recommended Test Additions** (10 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **1. MessageBroker Integration Tests (15 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **3. Database Migration Tests (10 tests, ~1.5 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **4. WebSocket Edge Case Tests (15 tests, ~2 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **5. Error Recovery Tests (20 tests, ~3 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Immediate Priority (Add First)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Secondary Priority (Add Second)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~3.5 hours effort, closes critical gaps** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~5 hours effort, improves reliability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **NPCService** (10 connections) — `server/services/npc_service/__init__.py`
+- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **test_npc_service_init()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
+- **fixture** (4 connections)
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **sample_spawn_rule()** (3 connections) — `server/tests/unit/services/test_npc_service.py`
+- **.__init__()** (2 connections) — `server/services/npc_service/__init__.py`
+- **Comprehensive NPC management service. Handles CRUD operations for NPC…** (1 connections) — `server/services/npc_service/__init__.py`
+- **Initialize the NPC service.** (1 connections) — `server/services/npc_service/__init__.py`
+- **Test NPCService initialization.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a mock AsyncSession.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create NPCService instance.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a sample NPC definition.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
+- **Create a sample spawn rule.** (1 connections) — `server/tests/unit/services/test_npc_service.py`
 
 ## Relationships
 
-- [Net Impact Summary](Net_Impact_Summary.md) (1 shared connections)
+- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_GAPS.md`
+- `server/services/npc_service/__init__.py`
+- `server/tests/unit/services/test_npc_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,32 @@
 # messaging_integration
 
-> 5 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **messaging_integration()** (4 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **fixture** (2 connections)
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Create CombatMessagingIntegration instance.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **`docs/**/*` files: Multiple rules** (6 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Per-File Ignores (pyproject.toml)** (5 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B904 - Broad except** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E402 - Module level import not at top** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F811 - Redefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F821 - Undefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **F841 - Unused variable** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`__init__.py` files: F401 (unused import)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`server/stubs/**/*.pyi` files: UP046 (old Generic syntax)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **`tests/**/*` files: B011 (assert on exception)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (2 shared connections)
-- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
+- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

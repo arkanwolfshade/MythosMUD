@@ -1,28 +1,36 @@
 # Implementation Approach Decision
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Alternative: **GREENFIELD REWRITE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Cons** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pros** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Recommended: **PHASED UPLIFT**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Would Choose If** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Multiplayer Architecture Planning** (3 connections) — `docs/archive/PLANNING_multiplayer.md`
+- **NATS Service** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Chat System Implementation Plan** (2 connections) — `docs/archive/PLANNING_chat_system.md`
+- **Planning Completion Summary** (2 connections) — `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- **Redis to NATS Migration Plan** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Performance Optimization Summary** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- **Alias System Implementation Plan** (1 connections) — `docs/archive/PLANNING_aliases.md`
+- **Movement System Planning** (1 connections) — `docs/archive/PLANNING_movement_system.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- `docs/archive/PLANNING_aliases.md`
+- `docs/archive/PLANNING_chat_system.md`
+- `docs/archive/PLANNING_movement_system.md`
+- `docs/archive/PLANNING_multiplayer.md`
+- `docs/archive/PLANNING_redis_to_nats_migration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (14%)
+- INFERRED: 6 (86%)
 - AMBIGUOUS: 0 (0%)
 
 ---

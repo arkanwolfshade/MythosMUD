@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/utils/__init__.py** (0 connections) — `server/tests/unit/utils/__init__.py`
+- **fix_professions_flavor_text.py** (0 connections) — `scripts/fix_professions_flavor_text.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/utils/__init__.py`
+- `scripts/fix_professions_flavor_text.py`
 
 ## Audit Trail
 

@@ -1,35 +1,20 @@
 # emote_schema.json
 
-> 39 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **emote_schema.json** (8 connections) — `schemas/emote_schema.json`
-- **emotes** (6 connections) — `schemas/emote_schema.json`
-- **other_message** (6 connections) — `schemas/emote_schema.json`
-- **^[a-z0-9_]+$** (5 connections) — `schemas/emote_schema.json`
-- **aliases** (5 connections) — `schemas/emote_schema.json`
-- **self_message** (5 connections) — `schemas/emote_schema.json`
-- **properties** (4 connections) — `schemas/emote_schema.json`
-- **required** (3 connections) — `schemas/emote_schema.json`
-- **patternProperties** (2 connections) — `schemas/emote_schema.json`
-- **properties** (2 connections) — `schemas/emote_schema.json`
-- **required** (2 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **items** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **uniqueItems** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **minProperties** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
-- **$id** (1 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- *... and 14 more nodes in this community*
+- **main()** (6 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_write_state_atomic()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **.claude/hooks/trigger_test_agent.py** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Path** (3 connections)
+- **NoReturn** (1 connections)
+- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
 
 ## Relationships
 
@@ -37,11 +22,11 @@
 
 ## Source Files
 
-- `schemas/emote_schema.json`
+- `.claude/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

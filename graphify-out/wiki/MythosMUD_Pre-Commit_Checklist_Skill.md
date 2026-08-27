@@ -1,14 +1,15 @@
 # MythosMUD Pre-Commit Checklist Skill
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **MythosMUD Pre-Commit Checklist Skill** (4 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **Definition of Done Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **MythosMUD Code Quality AI Skill** (1 connections) — `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- **MythosMUD Commit Messages Skill** (1 connections) — `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- **NPC Combat Start Race Condition** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **NPCs Incorrectly Marked is_alive False** (2 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **December 3 Final Investigation Summary** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- **Room Occupants Duplicates and Missing Player** (2 connections) — `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
+- **Redundant NPC Instance Lookup Failure** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **Character Info Panel Missing Stats Field** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
 
 ## Relationships
 
@@ -16,15 +17,16 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-code-quality-ai/SKILL.md`
-- `.cursor/skills/mythosmud-commit-messages/SKILL.md`
-- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- `.cursor/skills/mythosmud-test-writing/SKILL.md`
+- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (25%)
-- INFERRED: 3 (75%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

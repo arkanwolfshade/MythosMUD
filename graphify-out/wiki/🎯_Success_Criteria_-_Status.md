@@ -1,25 +1,29 @@
 # 🎯 Success Criteria - Status
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🎯 Success Criteria - Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Phase 1 (Critical) - ✅ COMPLETE** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Phase 2 (Performance) - 📋 PLANNED** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
+- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- `e2e-tests/TEST_RESULTS_scenario-01.md`
+- `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- `e2e-tests/scenarios/scenario-02-clean-game-state.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

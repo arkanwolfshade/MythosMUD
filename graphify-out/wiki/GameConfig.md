@@ -1,51 +1,56 @@
 # GameConfig
 
-> 28 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **GameConfig** (20 connections) — `server/config/models/game.py`
-- **field_validator** (8 connections)
-- **.validate_aliases_dir()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_alert_threshold()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_error_threshold()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_performance_threshold()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_tick_interval()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_timeout()** (3 connections) — `server/config/models/game.py`
-- **.validate_combat_xp_multiplier()** (3 connections) — `server/config/models/game.py`
-- **.validate_max_connections()** (3 connections) — `server/config/models/game.py`
-- **test_game_config_default_tick_rate()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_game_config_tick_rate_accepts_positive_override()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_game_config_tick_rate_rejects_negative()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_game_config_tick_rate_rejects_zero()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **BaseSettings** (1 connections)
-- **Game-specific configuration.** (1 connections) — `server/config/models/game.py`
-- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate combat error threshold.** (1 connections) — `server/config/models/game.py`
-- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
-- **Validate aliases directory path.** (1 connections) — `server/config/models/game.py`
-- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
-- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
-- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
-- **Test GameConfig server_tick_rate accepts a valid positive override.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- *... and 3 more nodes in this community*
+- **NPCCombatIntegrationBase** (25 connections) — `server/npc/combat_integration_base.py`
+- **._perform_direct_npc_attack()** (10 connections) — `server/npc/combat_integration_base.py`
+- **.apply_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._apply_player_combat_effects()** (8 connections) — `server/npc/combat_integration_base.py`
+- **._is_target_in_login_grace_period()** (7 connections) — `server/npc/combat_integration_base.py`
+- **._convert_target_id_to_uuid()** (6 connections) — `server/npc/combat_integration_base.py`
+- **._handle_npc_attack_core()** (6 connections) — `server/npc/combat_integration_base.py`
+- **._try_delegate_npc_attack_to_combat_service()** (5 connections) — `server/npc/combat_integration_base.py`
+- **._handle_attribute_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._handle_unexpected_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._handle_validation_error()** (4 connections) — `server/npc/combat_integration_base.py`
+- **._apply_mental_effects()** (3 connections) — `server/npc/combat_integration_base.py`
+- **.calculate_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._get_npc_stats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._get_target_stats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **.handle_npc_attack()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_npc_attack_to_nats()** (3 connections) — `server/npc/combat_integration_base.py`
+- **._publish_player_dp_updated_after_npc_damage()** (3 connections) — `server/npc/combat_integration_base.py`
+- **ABC** (2 connections)
+- **UUID** (2 connections)
+- **Exception** (1 connections)
+- **ValidationError** (1 connections)
+- **Apply combat effects to a target (player or NPC). Args: target_id: ID of the…** (1 connections) — `server/npc/combat_integration_base.py`
+- **Convert target_id to UUID, accepting either string or UUID input.** (1 connections) — `server/npc/combat_integration_base.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [test_config_models.py](test_config_models.py.md) (5 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (3 shared connections)
-- [AppConfig](AppConfig.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (2 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (1 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/game.py`
-- `server/tests/unit/config/test_config_models.py`
+- `server/npc/combat_integration_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 73 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

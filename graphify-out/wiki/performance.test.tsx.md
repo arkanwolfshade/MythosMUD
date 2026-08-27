@@ -1,65 +1,43 @@
 # performance.test.tsx
 
-> 45 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **performance.test.tsx** (15 connections) — `client/src/components/__tests__/performance.test.tsx`
-- **PerformanceTester** (12 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanel()** (12 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
-- **ChatPanel.tsx** (11 connections) — `client/src/components/panels/ChatPanel.tsx`
-- **chat-panel.spec.tsx** (10 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- **performanceTester.ts** (8 connections) — `client/src/utils/performanceTester.ts`
-- **usePerformanceTester()** (7 connections) — `client/src/utils/performanceTester.ts`
-- **chat-panel.test.tsx** (7 connections) — `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- **ChatPanel.test.tsx** (7 connections) — `client/src/components/__tests__/ChatPanel.test.tsx`
-- **ChatPanel.edgeCases.test.tsx** (6 connections) — `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- **chatPanelTestHelpers.ts** (5 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **.generateReport()** (4 connections) — `client/src/utils/performanceTester.ts`
-- **.runTest()** (4 connections) — `client/src/utils/performanceTester.ts`
-- **ChatPanelCore.tsx** (4 connections) — `client/src/components/panels/ChatPanelCore.tsx`
-- **performanceTester.test.ts** (4 connections) — `client/src/utils/__tests__/performanceTester.test.ts`
-- **createChatPanelDefaultProps()** (3 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **.getResults()** (3 connections) — `client/src/utils/performanceTester.ts`
-- **.runComponentRenderTest()** (3 connections) — `client/src/utils/performanceTester.ts`
-- **.runMemoryTest()** (3 connections) — `client/src/utils/performanceTester.ts`
-- **chatPanelTestSetup.tsx** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **mockConsoleLog** (3 connections) — `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- **PerformanceTestResult** (2 connections) — `client/src/utils/performanceTester.ts`
-- **.getAverageResults()** (2 connections) — `client/src/utils/performanceTester.ts`
-- **mockMessages** (2 connections) — `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- **Channel** (1 connections) — `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- *... and 20 more nodes in this community*
+- **logging_file_categories.py** (9 connections) — `server/structured_logging/logging_file_categories.py`
+- **create_handler_for_category()** (8 connections) — `server/structured_logging/logging_file_categories.py`
+- **LoggerNameFilter** (7 connections) — `server/structured_logging/logging_file_categories.py`
+- **add_handler_to_loggers()** (6 connections) — `server/structured_logging/logging_file_categories.py`
+- **create_formatter()** (6 connections) — `server/structured_logging/logging_file_categories.py`
+- **.filter()** (3 connections) — `server/structured_logging/logging_file_categories.py`
+- **.__init__()** (2 connections) — `server/structured_logging/logging_file_categories.py`
+- **Handler** (2 connections)
+- **Formatter** (1 connections)
+- **LogRecord** (1 connections)
+- **Path** (1 connections)
+- **RotatingFileHandler** (1 connections)
+- **Logger-name categories and per-category file handlers for enhanced logging. The…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Create formatter (with or without PlayerGuidFormatter).** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Filter that only allows logs from loggers matching specified prefixes. This…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Initialize filter with allowed logger name prefixes. Args: allowed_prefixes:…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Check if the log record's logger name matches any allowed prefix. Args: record:…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Add handler to loggers that match the prefixes. Adds a filter to the handler to…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **# NOTE: When async logging is enabled, this filter is added to the QueueHandler,** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Create handler for a log category with graceful error handling. If handler…** (1 connections) — `server/structured_logging/logging_file_categories.py`
 
 ## Relationships
 
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (5 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (4 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [debugLogger](debugLogger.md) (2 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (9 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/ChatPanel.edgeCases.test.tsx`
-- `client/src/components/__tests__/ChatPanel.test.tsx`
-- `client/src/components/__tests__/chatPanelTestHelpers.ts`
-- `client/src/components/__tests__/chatPanelTestSetup.tsx`
-- `client/src/components/__tests__/performance.test.tsx`
-- `client/src/components/panels/ChatPanel.tsx`
-- `client/src/components/panels/ChatPanelCore.tsx`
-- `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/__tests__/chat-panel.spec.tsx`
-- `client/src/components/panels/__tests__/chat-panel.test.tsx`
-- `client/src/utils/__tests__/performanceTester.test.ts`
-- `client/src/utils/performanceTester.ts`
+- `server/structured_logging/logging_file_categories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

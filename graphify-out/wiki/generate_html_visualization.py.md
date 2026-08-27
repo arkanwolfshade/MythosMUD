@@ -1,32 +1,33 @@
 # generate_html_visualization.py
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **generate_html_visualization.py** (11 connections) — `scripts/generate_html_visualization.py`
-- **generate_html_visualization()** (8 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_list_html()** (5 connections) — `scripts/generate_html_visualization.py`
-- **_format_exits()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_intersection_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
-- **main()** (4 connections) — `scripts/generate_html_visualization.py`
-- **_generate_edge_data()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_generate_intersection_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_generate_room_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
-- **_get_subzone_colors()** (3 connections) — `scripts/generate_html_visualization.py`
-- **load_room_data()** (3 connections) — `scripts/generate_html_visualization.py`
-- **Generate edge data for JavaScript.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Format exits data for display.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate room items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate intersection items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate room list HTML.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Get color scheme for subzones.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate node data for rooms.** (1 connections) — `scripts/generate_html_visualization.py`
-- **Generate node data for intersections.** (1 connections) — `scripts/generate_html_visualization.py`
+- **multiplayer-browser-helpers.bundle.js** (23 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isElementVisible()** (10 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasCommandInputInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoAnyMessageInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasGameInfoPanelInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasPrimaryGameUiMarkersInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isLoginFormVisibleInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **fieldHasCommandPlaceholder()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **getBodyInnerText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasRoomStateIndicatorsInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasTickMessageInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isEmptyGameInfoPanelText()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **isValidElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **recordPresenceEvent()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **elementShowsConnectedStatus()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **hasBodyTextGameUiIndicators()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
+- **installPresenceRecorder()** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Relationships
 
@@ -34,11 +35,11 @@
 
 ## Source Files
 
-- `scripts/generate_html_visualization.py`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.bundle.js`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 44 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

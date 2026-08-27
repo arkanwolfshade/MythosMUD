@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_null_exit()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Father-son Mythos MUD vision** (1 connections) — `PLANNING.md`
+- **Comprehensive planning document** (1 connections) — `PLANNING.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

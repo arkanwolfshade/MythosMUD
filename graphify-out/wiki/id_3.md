@@ -1,25 +1,24 @@
 # id
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **id** (4 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **pattern** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
+- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

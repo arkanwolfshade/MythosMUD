@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **unit/persistence/__init__.py** (1 connections) — `server/tests/unit/persistence/__init__.py`
-- **Persistence unit tests.** (1 connections) — `server/tests/unit/persistence/__init__.py`
+- **test_build_room_objects_with_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects includes exits in room data.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/__init__.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,21 +1,22 @@
 # Detailed Category Value Breakdown
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Detailed Category Value Breakdown** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **🔴 CRITICAL VALUE TESTS (1,272 tests = 25.6%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **🟡 IMPORTANT VALUE TESTS (2,943 tests = 59.3%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **🟢 LOW VALUE TESTS (750 tests = 15.1%)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **2026_02_26_add_arena_zone_type.py** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Allow zone_type 'arena' in zones CHECK.** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Remove 'arena' from zones.zone_type CHECK (fails if arena zone exists).** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Audit Trail
 

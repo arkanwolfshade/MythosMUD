@@ -1,24 +1,26 @@
 # test_calculate_damage_physical_strength_bonus
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_calculate_damage_physical_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Physical damage adds strength modifier from base 50.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **VirtualizedMessageList.tsx** (3 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
+- **Message** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
+- **VirtualizedMessageListProps** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
+- **VirtualizedMessageList()** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `client/src/components/ui/VirtualizedMessageList.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

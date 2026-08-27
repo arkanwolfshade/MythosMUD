@@ -1,30 +1,31 @@
 # Improve Layout Systematically
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Improve Layout Systematically** (8 connections) — `.claude/skills/arrange/SKILL.md`
-- **Arrange Skill** (6 connections) — `.claude/skills/arrange/SKILL.md`
-- **Assess Current Layout** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Break Card Grid Monotony** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Choose the Right Layout Tool** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Create Visual Rhythm** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Establish a Spacing System** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Manage Depth & Elevation** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Optical Adjustments** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Plan Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Strengthen Visual Hierarchy** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Verify Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **Semgrep Configuration** (13 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Jackson Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java JMS Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Path Traversal Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Unvalidated Redirect Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java Weak SSL Context Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XPath Injection Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XSS Response Writer Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Java XXE DocumentBuilderFactory Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Spring SQL Injection Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express JWT Hardcoded Secret Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express Object Deserialization Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express SSRF Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
+- **Express XXE Rule** (1 connections) — `.codacy/tools-configs/semgrep.yaml`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/arrange/SKILL.md`
+- `.codacy/tools-configs/semgrep.yaml`
 
 ## Audit Trail
 

@@ -1,43 +1,48 @@
 # Test Value Distribution Chart
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Test Value Distribution Chart** (17 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Success Celebration Criteria** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Execution Time Efficiency** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Value Heat Map** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Value Score Distribution** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **TEST_VALUE_DISTRIBUTION.md** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Coverage vs Value Analysis** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Declare Success When** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Efficiency = Value per Second of Execution** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Interpretation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Target Quadrants** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Test Maintenance Burden** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Unit Test Breakdown by Subdomain** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Value vs Time Efficiency Matrix** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **_AppWithState** (10 connections) — `server/realtime/websocket_initial_state.py`
+- **persistence()** (7 connections) — `server/tests/unit/game/test_mechanics.py`
+- **._get_persistence_from_app()** (6 connections) — `server/commands/combat_handler.py`
+- **.check_and_interrupt_rest()** (5 connections) — `server/commands/combat_handler.py`
+- **.get_player_and_room()** (5 connections) — `server/commands/combat_handler.py`
+- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_taunt.py`
+- **.get_player_and_room()** (3 connections) — `server/commands/combat_taunt.py`
+- **fixture** (2 connections)
+- **Check if player is resting or in login grace period, interrupt rest if needed.…** (1 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails. Public API.** (1 connections) — `server/commands/combat_handler.py`
+- **Resolve persistence from app (container preferred, then app.state). Returns…** (1 connections) — `server/commands/combat_handler.py`
+- **Get player data and room, returning error dict if any step fails.** (1 connections) — `server/commands/combat_handler.py`
+- **Load player and room from the request context, or return an error dict.** (1 connections) — `server/commands/combat_taunt.py`
+- **Return a blocking error dict (e.g. rest), or None if the player may act.** (1 connections) — `server/commands/combat_taunt.py`
+- **Minimal FastAPI/Starlette app shape for reading ``state``.** (1 connections) — `server/realtime/websocket_initial_state.py`
 
 ## Relationships
 
-- [Detailed Category Value Breakdown](Detailed_Category_Value_Breakdown.md) (1 shared connections)
-- [Projected Optimization Impact](Projected_Optimization_Impact.md) (1 shared connections)
-- [Execution Timeline](Execution_Timeline.md) (1 shared connections)
-- [Risk Assessment and Mitigation](Risk_Assessment_and_Mitigation.md) (1 shared connections)
-- [Measurement and Validation](Measurement_and_Validation.md) (1 shared connections)
-- [Appendix: Quick Reference Commands](Appendix-_Quick_Reference_Commands.md) (1 shared connections)
-- [Visual Test Value Distribution](Visual_Test_Value_Distribution.md) (1 shared connections)
-- [Time Distribution Analysis](Time_Distribution_Analysis.md) (1 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (3 shared connections)
+- [field_validator](field_validator.md) (2 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `server/commands/combat_handler.py`
+- `server/commands/combat_taunt.py`
+- `server/realtime/websocket_initial_state.py`
+- `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (81%)
+- INFERRED: 6 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

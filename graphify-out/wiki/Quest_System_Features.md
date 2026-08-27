@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Quest System Features** (0 connections) — `docs/QUEST_SYSTEM_FEATURES.md`
+- **Client Layer Layout** (0 connections) — `client/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/QUEST_SYSTEM_FEATURES.md`
+- `client/README.md`
 
 ## Audit Trail
 

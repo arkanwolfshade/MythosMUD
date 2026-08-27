@@ -1,29 +1,35 @@
 # enum
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Critical Issues** (6 connections) — `docs/archive/anyio_code_review.md`
+- **5. Special Cases Requiring Attention** (5 connections) — `docs/archive/anyio_code_review.md`
+- **1. Entry Point Anti-Pattern: `asyncio.run()` Usage** (3 connections) — `docs/archive/anyio_code_review.md`
+- **3. Task Management Anti-Patterns** (3 connections) — `docs/archive/anyio_code_review.md`
+- **3.1 `asyncio.create_task()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **3.2 `asyncio.gather()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
+- **4. Missing Explicit Dependency** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.1 Uvicorn Integration** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.2 Test Files** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.3 Event Bus Queue Migration** (1 connections) — `docs/archive/anyio_code_review.md`
+- **5.4 Tracked Task Manager** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Root Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Server Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
 
 ## Relationships
 
-- [days](days.md) (1 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- [2025_01_XX_convert_players_player_id_to_uuid.py](2025_01_XX_convert_players_player_id_to_uuid.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/anyio_code_review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

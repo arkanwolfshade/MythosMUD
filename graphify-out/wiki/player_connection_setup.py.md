@@ -1,61 +1,53 @@
 # player_connection_setup.py
 
-> 41 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **player_connection_setup.py** (26 connections) — `server/realtime/player_connection_setup.py`
-- **handle_new_connection_setup()** (19 connections) — `server/realtime/player_connection_setup.py`
-- **test_player_connection_setup.py** (18 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **_trigger_quests_for_room_on_spawn()** (11 connections) — `server/realtime/player_connection_setup.py`
-- **_manager()** (11 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **asyncio** (11 connections)
-- **_broadcast_player_entered_game()** (9 connections) — `server/realtime/player_connection_setup.py`
-- **_update_player_last_active()** (8 connections) — `server/realtime/player_connection_setup.py`
-- **_send_room_occupants_update_after_connection()** (7 connections) — `server/realtime/player_connection_setup.py`
-- **UUID** (7 connections)
-- **_add_player_to_room_silently()** (6 connections) — `server/realtime/player_connection_setup.py`
-- **Any** (6 connections)
-- **test_player_connection_setup_grace_period.py** (6 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **test_broadcast_player_entered_game_success_and_error()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_send_room_occupants_update_paths()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_update_player_last_active_database_error()** (5 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **_stable_room_id_for_quest()** (4 connections) — `server/realtime/player_connection_setup.py`
-- **test_reconnection_cancels_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **test_reconnection_no_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
-- **test_add_player_to_room_silently_paths()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_handle_new_connection_setup_ends_combat_on_login()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_handle_new_connection_setup_room_none_early_return()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_trigger_quests_no_service()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_trigger_quests_success_and_failure()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- **test_update_player_last_active_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_player_connection_setup.py`
-- *... and 16 more nodes in this community*
+- **HealthRepository** (29 connections) — `server/persistence/repositories/health_repository.py`
+- **test_health_repository.py** (20 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **asyncio** (9 connections)
+- **._damage_player_inner()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **.update_player_health()** (7 connections) — `server/persistence/repositories/health_repository.py`
+- **._heal_player_inner()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **_stats_int()** (6 connections) — `server/persistence/repositories/health_repository.py`
+- **.damage_player()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._log_damage_error()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **._update_player_health_inner()** (5 connections) — `server/persistence/repositories/health_repository.py`
+- **Player** (5 connections)
+- **.heal_player()** (4 connections) — `server/persistence/repositories/health_repository.py`
+- **test_damage_player_logs_and_reraises_on_unexpected_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_damage_player_rejects_negative()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_logs_and_reraises_on_unexpected_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_max_dp_fallback_when_zero()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_no_op_when_already_full()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_rejects_negative()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_heal_player_success_and_capped()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_update_player_health_raises_database_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **._calculate_effective_damage()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/health_repository.py`
+- **test_calculate_effective_damage_zero_and_resistance_edge_cases()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_stats_int_defaults_and_coercion()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- **test_update_player_health_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_health_repository.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [extract_player_name](extract_player_name.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (22 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (2 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_connection_setup.py`
-- `server/tests/unit/realtime/test_player_connection_setup.py`
-- `server/tests/unit/realtime/test_player_connection_setup_grace_period.py`
+- `server/persistence/repositories/health_repository.py`
+- `server/tests/unit/persistence/repositories/test_health_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 77 (77%)
+- INFERRED: 23 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

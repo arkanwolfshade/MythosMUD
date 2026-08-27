@@ -1,13 +1,14 @@
 # The Malleus Monstrorum Keeper Deck (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **The Malleus Monstrorum Keeper Deck (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **The Malleus Monstrorum Keeper Deck.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- **AI PR Reviewer Instructions** (4 connections) — `.codacy/instructions/review.md`
+- **COPPA and Security Review Mandates** (1 connections) — `.codacy/instructions/review.md`
+- **Review Coverage Thresholds** (1 connections) — `.codacy/instructions/review.md`
+- **player_id UUID Type Rule** (1 connections) — `.codacy/instructions/review.md`
+- **Server Authority Review Rule** (1 connections) — `.codacy/instructions/review.md`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/The Malleus Monstrorum Keeper Deck.md`
+- `.codacy/instructions/review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

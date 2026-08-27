@@ -1,36 +1,44 @@
 # test_emote_repository.py
 
-> 13 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_emote_repository.py** (15 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **asyncio** (5 connections)
-- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emote_aliases()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes()** (4 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emote_aliases_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **test_get_emotes_empty()** (3 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **_alias_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
-- **_emote_row()** (2 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **fixtures/unit/__init__.py** (9 connections) — `server/tests/fixtures/unit/__init__.py`
+- **strict_mocker()** (6 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **mock_helpers.py** (5 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **dummy_request()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fakerandom()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
+- **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **test_container()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
+- **fixture** (3 connections)
+- **MockerFixture** (2 connections)
+- **Any** (2 connections)
+- **Any** (1 connections)
+- **SimpleNamespace** (1 connections)
 - **fixture** (1 connections)
-- **Unit tests for EmoteRepository (#624).** (1 connections) — `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- **Unit-tier fixtures with strict mocking and in-memory fakes.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a minimal request object for testing with container support.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Provide a mock ApplicationContainer for testing. This fixture creates a…** (1 connections) — `server/tests/fixtures/unit/__init__.py`
+- **Strict mocking helpers for unit tests. Provides fixtures and helpers that…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Return a patch helper that enables autospec by default. Usage: patched_fn =…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Convenience helper for direct calls with autospec=True by default.** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/repositories/test_emote_repository.py`
+- `server/tests/fixtures/unit/__init__.py`
+- `server/tests/fixtures/unit/mock_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (90%)
-- INFERRED: 3 (10%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

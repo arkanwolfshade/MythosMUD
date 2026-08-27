@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PostgreSQL Audit Remediation** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- **PostgreSQL Procedures Migration** (1 connections) — `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
+- **wsl-bashrc-codacy.sh** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
+- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
-- `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
+- `.codacy/wsl-bashrc-codacy.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

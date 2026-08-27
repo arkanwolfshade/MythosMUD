@@ -1,50 +1,59 @@
 # convert_uuids_to_strings
 
-> 24 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_convert_uuids_to_strings_dict()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_int()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_list()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_nested()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_string()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **test_convert_uuids_to_strings_uuid()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Recursively convert UUID objects to strings for JSON serialization. Args: obj:…** (1 connections) — `server/realtime/connection_helpers.py`
-- **Test convert_uuids_to_strings() converts UUIDs in dict.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test convert_uuids_to_strings() converts UUIDs in list.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test convert_uuids_to_strings() converts UUID object.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Test convert_uuids_to_strings() converts UUIDs in nested structures.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Unit tests for connection helpers. Tests the connection helper functions.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with UUID object.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with dict containing UUID.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with list containing UUID.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with nested structures.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with string (no conversion).** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **Test convert_uuids_to_strings() with int (no conversion).** (1 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
+- **Chaosium CoC Catalog** (14 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **Geography Overview.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- **MythosMUD** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Petersen's Abominations** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **Dreamlands.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- **Bleak Prospect.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
+- **Paris (Reign of Terror).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
+- **MythosMUD.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- **Bleak Prospect** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
+- **Dreamlands** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- **Hotel Hell** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- **Mohole** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- **Paris (Reign of Terror)** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
+- **Nameless Horrors - 2nd Edition** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Reign of Terror** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- **S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **Chaosium CoC Catalog.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **Hotel Hell.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- **Mohole.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- **Creature / motif families (adaptation stubs)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **How to use** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **MythosMUD adaptation notes** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **Ongoing ops** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **Tier A (full or batch-promoted)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- **Tier B (source-only)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (6 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_optimize_payload](_optimize_payload.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
+- `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
+- `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
+- `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
+- `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
+- `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
+- `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
+- `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
+- `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

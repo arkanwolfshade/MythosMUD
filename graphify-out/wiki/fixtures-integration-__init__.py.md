@@ -1,55 +1,48 @@
 # fixtures/integration/__init__.py
 
-> 49 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **session_factory()** (19 connections) — `server/tests/fixtures/integration/__init__.py`
-- **fixtures/integration/__init__.py** (19 connections) — `server/tests/fixtures/integration/__init__.py`
-- **db_cleanup()** (11 connections) — `server/tests/fixtures/integration/__init__.py`
-- **test_add_player_effect_generates_id()** (9 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_delete_mutable_integration_test_rows()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
-- **test_db_connectivity_create_and_read_user()** (6 connections) — `server/tests/integration/test_db_connectivity.py`
-- **test_get_npc_system_statistics_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_get_player_by_id_return_shape_and_not_found()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_get_rooms_with_exits_includes_arena_zone_rooms()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **test_get_rooms_with_exits_return_shape()** (6 connections) — `server/tests/integration/test_procedures_return_shape.py`
-- **quest_seed_data()** (6 connections) — `server/tests/integration/test_quest_flow.py`
-- **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
-- **integration_db_url()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
-- **async_sessionmaker** (5 connections)
-- **asyncio** (5 connections)
-- **AsyncSession** (5 connections)
-- **_get_db_name_from_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_is_allowed_integration_test_db()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **fixture** (4 connections)
-- **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
-- **FixtureRequest** (3 connections)
-- **AsyncSession** (3 connections)
-- **async_sessionmaker** (2 connections)
-- *... and 24 more nodes in this community*
+- **vim Best Practices and Coding Standards** (8 connections) — `.cursor/rules/vim.md`
+- **1. Code Organization and Structure** (6 connections) — `.cursor/rules/vim.md`
+- **2. Common Patterns and Anti-patterns** (6 connections) — `.cursor/rules/vim.md`
+- **3. Performance Considerations** (6 connections) — `.cursor/rules/vim.md`
+- **4. Security Best Practices** (6 connections) — `.cursor/rules/vim.md`
+- **5. Testing Approaches** (6 connections) — `.cursor/rules/vim.md`
+- **6. Common Pitfalls and Gotchas** (6 connections) — `.cursor/rules/vim.md`
+- **7. Tooling and Environment** (6 connections) — `.cursor/rules/vim.md`
+- **vim.md** (1 connections) — `.cursor/rules/vim.md`
+- **1.1 Directory Structure Best Practices for vim** (1 connections) — `.cursor/rules/vim.md`
+- **1.2 File Naming Conventions** (1 connections) — `.cursor/rules/vim.md`
+- **1.3 Module Organization Best Practices** (1 connections) — `.cursor/rules/vim.md`
+- **1.4 Component Architecture Recommendations** (1 connections) — `.cursor/rules/vim.md`
+- **1.5 Code Splitting Strategies** (1 connections) — `.cursor/rules/vim.md`
+- **2.1 Design Patterns Specific to vim** (1 connections) — `.cursor/rules/vim.md`
+- **2.2 Recommended Approaches for Common Tasks** (1 connections) — `.cursor/rules/vim.md`
+- **2.3 Anti-Patterns and Code Smells to Avoid** (1 connections) — `.cursor/rules/vim.md`
+- **2.4 State Management Best Practices** (1 connections) — `.cursor/rules/vim.md`
+- **2.5 Error Handling Patterns** (1 connections) — `.cursor/rules/vim.md`
+- **3.1 Optimization Techniques** (1 connections) — `.cursor/rules/vim.md`
+- **3.2 Memory Management Considerations** (1 connections) — `.cursor/rules/vim.md`
+- **3.3 Rendering Optimization (GUI vim)** (1 connections) — `.cursor/rules/vim.md`
+- **3.4 Bundle Size Optimization (Plugins)** (1 connections) — `.cursor/rules/vim.md`
+- **3.5 Lazy Loading Strategies** (1 connections) — `.cursor/rules/vim.md`
+- **4.1 Common Vulnerabilities and Prevention** (1 connections) — `.cursor/rules/vim.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [User](User.md) (3 shared connections)
-- [test_quest_start_by_trigger_then_abandon](test_quest_start_by_trigger_then_abandon.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/fixtures/integration/__init__.py`
-- `server/tests/fixtures/integration/db.py`
-- `server/tests/integration/test_db_connectivity.py`
-- `server/tests/integration/test_procedures_return_shape.py`
-- `server/tests/integration/test_quest_flow.py`
+- `.cursor/rules/vim.md`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (86%)
-- INFERRED: 15 (14%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

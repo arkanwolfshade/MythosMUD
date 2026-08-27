@@ -1,30 +1,34 @@
 # WebSocket-Only Migration
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **WebSocket-Only Migration** (3 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **WebSocket-Only Architecture** (2 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unify Client Message Handling** (2 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **SSE Connection Removal** (1 connections) — `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- **Unified Client Message Pipeline** (1 connections) — `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- **WebSocket Best-Practices Remediation** (1 connections) — `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- **RoomBasedChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_room_based_channel_strategy_broadcast_no_room_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for room-based channels (say, local, emote, pose).** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize room-based channel strategy. Args: channel_type: Type of room-based…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() broadcasts to room.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test RoomBasedChannelStrategy.broadcast() handles missing room_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (4 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (3 shared connections)
+- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (2 shared connections)
+- [_make_mock_row](_make_mock_row.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/unify-client-message-handling_5ae18c30.plan.md`
-- `.cursor/plans/websocket-only-migration-347bcba3.plan.md`
-- `.cursor/plans/websocket_best-practices_remediation.plan.md`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 14 (82%)
+- INFERRED: 3 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

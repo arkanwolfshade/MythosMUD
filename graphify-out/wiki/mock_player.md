@@ -1,29 +1,32 @@
 # mock_player
 
-> 5 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **mock_player()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **player_repository()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **fixture** (2 connections)
-- **Create a PlayerRepository instance.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Create a mock player for save operations.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **optimized_validate_help_topic()** (6 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_help_topic_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_help_topic_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_help_topic_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating invalid help topic.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for help topic fields. Args: value: The help topic to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

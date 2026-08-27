@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Server Authority Remediation** (2 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **game_state Room Replace (not Merge)** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **Chaosium graphify snapshot - Berlin - The Wicked City** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **berlin-the-wicked-city/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Audit Trail
 

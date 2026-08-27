@@ -1,33 +1,42 @@
 # Implementation Phases
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Implementation Phases** (7 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Phase 1: Core Infrastructure Enhancement** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Phase 5: Authentication and Security** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.1 Enhance CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.2 Create CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **1.3 Add Configuration Support** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **5.1 Authentication Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **5.2 Rate Limiting Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **test_async_persistence_room_loading.py** (30 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_build_room_objects_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_exit_rows_with_full_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Unit tests for async persistence layer: process_room_rows, process_exit_rows,…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with stable_ids that already contain full hierarchical…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _load_room_cache successfully loads rooms.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
-- [Phase 3: Real-Time Communication Protection](Phase_3-_Real-Time_Communication_Protection.md) (1 shared connections)
-- [Phase 4: File System Operations](Phase_4-_File_System_Operations.md) (1 shared connections)
-- [Phase 6: Monitoring and Observability](Phase_6-_Monitoring_and_Observability.md) (1 shared connections)
-- [Phase 2: Database Layer Integration](Phase_2-_Database_Layer_Integration.md) (1 shared connections)
+- [days](days.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [test_unsubscribe_from_subzone_unsubscribe_failure](test_unsubscribe_from_subzone_unsubscribe_failure.md) (1 shared connections)
+- [test_handle_combat_started_event](test_handle_combat_started_event.md) (1 shared connections)
+- [test_handle_combat_ended_event](test_handle_combat_ended_event.md) (1 shared connections)
+- [test_handle_npc_attacked_event](test_handle_npc_attacked_event.md) (1 shared connections)
+- [test_handle_npc_took_damage_event](test_handle_npc_took_damage_event.md) (1 shared connections)
+- [test_handle_npc_died_event](test_handle_npc_died_event.md) (1 shared connections)
+- [test_handle_player_movement_different_subzone](test_handle_player_movement_different_subzone.md) (1 shared connections)
+- [test_handle_player_movement_same_subzone](test_handle_player_movement_same_subzone.md) (1 shared connections)
+- [test_create_unequip_command](test_create_unequip_command.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

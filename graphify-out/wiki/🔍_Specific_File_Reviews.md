@@ -1,32 +1,33 @@
 # 🔍 Specific File Reviews
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **🔍 Specific File Reviews** (11 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ container_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ corpse_lifecycle_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ database.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ exploration_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ npc_combat_integration_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ passive_lucidity_flux_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ persistence.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ player_death_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ user_manager.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ wearable_container_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **mcp.json** (4 connections) — `.cursor/mcp.json`
+- **jcodemunch** (4 connections) — `.cursor/mcp.json`
+- **codacy** (3 connections) — `.cursor/mcp.json`
+- **context7** (3 connections) — `.cursor/mcp.json`
+- **playwright** (3 connections) — `.cursor/mcp.json`
+- **npx** (3 connections) — `.cursor/mcp.json`
+- **JCODEMUNCH_MAX_FOLDER_FILES** (1 connections) — `.cursor/mcp.json`
+- **uvx** (1 connections) — `.cursor/mcp.json`
+- **@codacy/codacy-mcp** (1 connections) — `.cursor/mcp.json`
+- **jcodemunch-mcp** (1 connections) — `.cursor/mcp.json`
+- **@playwright/mcp** (1 connections) — `.cursor/mcp.json`
+- **@upstash/context7-mcp** (1 connections) — `.cursor/mcp.json`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `.cursor/mcp.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

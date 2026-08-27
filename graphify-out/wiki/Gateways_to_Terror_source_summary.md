@@ -1,13 +1,14 @@
 # Gateways to Terror (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Gateways to Terror (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Gateways to Terror.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **ConnectionPanel.tsx** (3 connections) — `client/src/components/panels/ConnectionPanel.tsx`
+- **ConnectionPanel.test.tsx** (3 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
+- **ConnectionPanel()** (2 connections) — `client/src/components/panels/ConnectionPanel.tsx`
+- **ConnectionPanelProps** (1 connections) — `client/src/components/panels/ConnectionPanel.tsx`
+- **localStorageMock** (1 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
 
 ## Relationships
 
@@ -15,11 +16,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- `client/src/components/panels/ConnectionPanel.tsx`
+- `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,55 +1,47 @@
 # combat_attack.py
 
-> 41 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **combat_attack.py** (17 connections) — `server/commands/combat_attack.py`
-- **test_combat_attack.py** (13 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **run_handle_attack_command()** (9 connections) — `server/commands/combat_attack.py`
-- **_resolve_combat_damage()** (8 connections) — `server/commands/combat_attack.py`
-- **asyncio** (8 connections)
-- **_execute_combat_action()** (7 connections) — `server/commands/combat_attack.py`
-- **_validate_attack_player_and_room()** (7 connections) — `server/commands/combat_attack.py`
-- **Any** (7 connections)
-- **_validate_attack_preconditions()** (6 connections) — `server/commands/combat_attack.py`
-- **_get_combat_action_context()** (5 connections) — `server/commands/combat_attack.py`
-- **_validate_attack_target_and_action()** (5 connections) — `server/commands/combat_attack.py`
-- **test_execute_combat_action_failure_message()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_get_combat_action_context_missing_player()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_run_handle_attack_command_blocked_by_rest()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_run_handle_attack_command_success_path()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_validate_attack_player_and_room_incapacitated()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_validate_attack_player_and_room_missing_target()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_validate_attack_player_and_room_no_combat_zone()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_validate_attack_target_and_action_invalid()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **mock_handler()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **test_resolve_combat_damage_unarmed_fallback()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
-- **fixture** (1 connections)
-- **Attack command flow: validation and execution. Extracted from combat.py to…** (1 connections) — `server/commands/combat_attack.py`
-- **Resolve damage from equipped weapon or fall back to config unarmed damage.** (1 connections) — `server/commands/combat_attack.py`
-- **Execute combat action using the proper combat service.** (1 connections) — `server/commands/combat_attack.py`
-- *... and 16 more nodes in this community*
+- **Memory Leak Prevention System - Implementation Summary** (13 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔧 **Key Features Implemented**** (6 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****API Usage Examples**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🎉 **Benefits Achieved**** (4 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📈 **Configuration Options**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🚀 **Deployment and Usage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔮 **Future Enhancements**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📋 **Implementation Checklist**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📊 **Monitoring Capabilities**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🔒 **Security and Performance**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🧪 **Testing Coverage**** (3 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **🏗️ **Architecture Overview**** (2 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **MEMORY_LEAK_PREVENTION_SUMMARY.md** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****1. Memory Usage Monitoring**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****2. Automatic Cleanup System**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****3. Connection Management Enhancements**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****4. Data Structure Management**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****5. Comprehensive Alerting**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Check Memory Status**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Cleanup Thresholds**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****✅ Completed Tasks**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Comprehensive Test Suite** (`server/tests/test_memory_leak_prevention.py`)** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- **📝 **Conclusion**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Core Components**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- ****Dependencies Added**** (1 connections) — `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/combat_attack.py`
-- `server/tests/unit/commands/test_combat_attack.py`
+- `docs/archive/MEMORY_LEAK_PREVENTION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

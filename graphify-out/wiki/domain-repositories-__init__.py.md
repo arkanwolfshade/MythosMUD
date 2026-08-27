@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **domain/repositories/__init__.py** (1 connections) — `server/domain/repositories/__init__.py`
-- **Domain repository interfaces for MythosMUD. Repositories provide an abstraction…** (1 connections) — `server/domain/repositories/__init__.py`
+- **Bug Report Issue Template** (1 connections) — `.github/ISSUE_TEMPLATE/bug_report.yml`
+- **Feature Request Issue Template** (1 connections) — `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `server/domain/repositories/__init__.py`
+- `.github/ISSUE_TEMPLATE/bug_report.yml`
+- `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,64 +1,55 @@
 # fastapi_integration.py
 
-> 73 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **fastapi_integration.py** (28 connections) — `docs/examples/logging/fastapi_integration.py`
-- **log_with_context()** (20 connections) — `server/structured_logging/logging_context.py`
-- **bind_request_context()** (18 connections) — `server/structured_logging/logging_context.py`
-- **clear_request_context()** (13 connections) — `server/structured_logging/logging_context.py`
-- **test_logging_context.py** (13 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
-- **get_current_context()** (8 connections) — `server/structured_logging/logging_context.py`
-- **logging_context.py** (8 connections) — `server/structured_logging/logging_context.py`
-- **structlog.md** (8 connections) — `.claude/rules/structlog.md`
-- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
-- **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **general_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **http_exception_handler()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **upload_avatar()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
-- **HTTPException** (6 connections)
-- **WebSocket** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **create_player()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **list_players()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
-- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **get_player()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **log_api_requests()** (4 connections) — `docs/examples/logging/fastapi_integration.py`
-- **Request** (4 connections)
-- **auth_service()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- **BackgroundTasks** (3 connections) — `docs/examples/logging/fastapi_integration.py`
-- *... and 48 more nodes in this community*
+- **test_rate_limiter_utils.py** (26 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **utils/rate_limiter.py** (12 connections) — `server/utils/rate_limiter.py`
+- **auth_login_rate_limit_settings()** (7 connections) — `server/utils/rate_limiter.py`
+- **_positive_int_env()** (3 connections) — `server/utils/rate_limiter.py`
+- **test_auth_login_limiter_matches_settings()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_auth_login_rate_limit_settings_defaults()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_auth_login_rate_limit_settings_from_env()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_includes_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_raises_when_exceeded()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info returns correct info for no requests.** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (8 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [middleware](middleware.md) (6 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
-- [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (3 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (3 shared connections)
-- [testing_examples.py](testing_examples.py.md) (3 shared connections)
-- [WebSocketManager](WebSocketManager.md) (2 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
-- [User](User.md) (1 shared connections)
+- [Commands](Commands.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [Execution Steps](Execution_Steps.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/structlog.md`
-- `docs/examples/logging/correct_patterns.py`
-- `docs/examples/logging/fastapi_integration.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/structured_logging/logging_context.py`
-- `server/tests/unit/structured_logging/test_logging_context.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (79%)
-- INFERRED: 34 (21%)
+- EXTRACTED: 59 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

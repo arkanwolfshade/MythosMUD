@@ -1,28 +1,32 @@
 # intersection_schema.json
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **intersection_schema.json** (7 connections) — `schemas/intersection_schema.json`
-- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **$schema** (1 connections) — `schemas/intersection_schema.json`
-- **title** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **optimized_validate_command_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_command_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating command content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for command content fields. Args: value: The command…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [seed_e2e_users.py](seed_e2e_users.py.md) (1 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

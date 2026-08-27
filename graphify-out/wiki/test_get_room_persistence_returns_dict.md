@@ -1,25 +1,27 @@
 # test_get_room_persistence_returns_dict
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_persistence_returns_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() handles dict from persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Comprehensive System Audit** (2 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- **CI/CD Enhanced Logging Validation** (1 connections) — `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- **Database Migration Guide** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- `docs/archive/DATABASE_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

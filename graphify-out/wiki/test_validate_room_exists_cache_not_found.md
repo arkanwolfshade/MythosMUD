@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_room_exists_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() returns False when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **4:1 Temporal Compression Ratio** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- **Temporal System 4:1 Calendar Conversion** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

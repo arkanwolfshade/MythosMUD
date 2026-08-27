@@ -1,63 +1,55 @@
 # StandardizedErrorResponse
 
-> 84 nodes
+> 125 nodes
 
 ## Key Concepts
 
-- **StandardizedErrorResponse** (46 connections) — `server/error_handlers/standardized_responses.py`
-- **test_standardized_responses.py** (30 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
-- **JSONResponse** (21 connections) — `docs/examples/logging/fastapi_integration.py`
-- **._handle_logged_http_exception()** (11 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_mythos_error()** (11 connections) — `server/error_handlers/standardized_responses.py`
-- **TestStandardizedResponsesSecurity** (10 connections) — `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- **.handle_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_generic_exception()** (10 connections) — `server/error_handlers/standardized_responses.py`
-- **handle_api_error()** (9 connections) — `server/error_handlers/standardized_responses.py`
-- **error_handlers/__init__.py** (9 connections) — `server/error_handlers/__init__.py`
-- **._create_fallback_response()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **._extract_context_from_request()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_http_exception()** (8 connections) — `server/error_handlers/standardized_responses.py`
-- **create_standardized_error_response()** (7 connections) — `server/error_handlers/standardized_responses.py`
-- **._handle_pydantic_validation_error()** (7 connections) — `server/error_handlers/standardized_responses.py`
-- **webhook()** (5 connections) — `monitoring/webhook-receiver.py`
-- **._create_error_details()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._determine_error_type_from_exception()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._extract_user_id_from_state()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._generate_user_friendly_message()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._get_logged_http_user_friendly_message()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._map_status_code_to_error_type()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._sanitize_exception_message()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **._sanitize_http_detail()** (5 connections) — `server/error_handlers/standardized_responses.py`
-- **test_handle_mythos_error_response()** (5 connections) — `server/tests/unit/error_handlers/test_standardized_responses.py`
-- *... and 59 more nodes in this community*
+- **test_command_moderation.py** (40 connections) — `server/tests/unit/models/test_command_moderation.py`
+- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
+- **test_command_factories_moderation.py** (30 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **MuteCommand** (18 connections) — `server/models/command_moderation.py`
+- **AdminCommand** (15 connections) — `server/models/command_moderation.py`
+- **.create_mute_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mute_global_command()** (9 connections) — `server/utils/command_factories_moderation.py`
+- **.create_add_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_admin_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_unmute_global_command()** (7 connections) — `server/utils/command_factories_moderation.py`
+- **.create_mutes_command()** (6 connections) — `server/utils/command_factories_moderation.py`
+- **test_create_add_admin_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_add_admin_command_with_multiple_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_admin_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_admin_command_status_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mute_global_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_mutes_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_command_with_multiple_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_global_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_unmute_global_command_with_multiple_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_add_admin_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- **test_create_admin_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
+- *... and 100 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (41 shared connections)
-- [MythosMUDError](MythosMUDError.md) (8 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (4 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (3 shared connections)
-- [TestErrorHandlers](TestErrorHandlers.md) (3 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (2 shared connections)
-- [HealthStatus](HealthStatus.md) (1 shared connections)
-- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (57 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [holidays.schema.json](holidays.schema.json.md) (1 shared connections)
+- [test_look_player.py](test_look_player.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `monitoring/webhook-receiver.py`
-- `server/error_handlers/__init__.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/tests/unit/error_handlers/test_standardized_responses.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
+- `server/models/command_moderation.py`
+- `server/tests/unit/models/test_command_moderation.py`
+- `server/tests/unit/utils/test_command_factories_moderation.py`
+- `server/utils/command_factories_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (94%)
-- INFERRED: 14 (6%)
+- EXTRACTED: 219 (85%)
+- INFERRED: 38 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

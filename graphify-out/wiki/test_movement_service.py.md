@@ -1,61 +1,62 @@
 # test_movement_service.py
 
-> 101 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_movement_service.py** (52 connections) — `server/tests/unit/game/test_movement_service.py`
-- **movement_service.py** (35 connections) — `server/game/movement_service.py`
-- **asyncio** (20 connections)
-- **movement_helpers.py** (17 connections) — `server/game/movement_helpers.py`
-- **validate_exit()** (11 connections) — `server/game/movement_helpers.py`
-- **validate_player_room_membership()** (11 connections) — `server/game/movement_helpers.py`
-- **check_combat_state()** (10 connections) — `server/game/movement_helpers.py`
-- **check_player_posture()** (8 connections) — `server/game/movement_helpers.py`
-- **extract_player_id()** (6 connections) — `server/game/movement_helpers.py`
-- **Any** (5 connections)
-- **UUID** (5 connections)
-- **movement_service()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_empty_player_id()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_invalid_from_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_move_player_invalid_to_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_room_membership_auto_add()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_validate_player_room_membership_db_mismatch()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_room_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_add_player_to_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_combat_state_allows_without_service()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_combat_state_blocks_when_in_combat()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- **test_check_player_posture_blocks_sitting()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
-- *... and 76 more nodes in this community*
+- **communication_commands_flows.py** (33 connections) — `server/commands/communication_commands_flows.py`
+- **communication_commands.py** (31 connections) — `server/commands/communication_commands.py`
+- **test_communication_commands_support.py** (22 connections) — `server/tests/unit/commands/test_communication_commands_support.py`
+- **ChatCommandsProtocol** (19 connections) — `server/commands/communication_commands_support.py`
+- **communication_commands_support.py** (16 connections) — `server/commands/communication_commands_support.py`
+- **PlayerResolutionProtocol** (15 connections) — `server/commands/communication_commands_support.py`
+- **app_from_request()** (13 connections) — `server/commands/communication_commands_support.py`
+- **get_services_from_container()** (13 connections) — `server/commands/communication_commands_support.py`
+- **primary_id()** (13 connections) — `server/commands/communication_commands_support.py`
+- **flow_global_command()** (12 connections) — `server/commands/communication_commands_flows.py`
+- **chat_result_map()** (11 connections) — `server/commands/communication_commands_support.py`
+- **get_pose_persistence()** (11 connections) — `server/commands/communication_commands_support.py`
+- **message_id_from_result()** (11 connections) — `server/commands/communication_commands_support.py`
+- **flow_reply_command()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **_require_chat_pair()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **_system_send_if_admin()** (10 connections) — `server/commands/communication_commands_flows.py`
+- **flow_system_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **flow_whisper_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_str_error_from_chat_result()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **UserManagerProtocol** (8 connections) — `server/commands/communication_commands_support.py`
+- **_deliver_reply_to_last_whisper()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_deliver_whisper_message()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_system_services_triple()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **AsyncPersistenceForPose** (6 connections) — `server/commands/communication_commands_support.py`
+- **_player_id_bundle()** (6 connections) — `server/commands/communication_commands_flows.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [MovementService](MovementService.md) (11 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (45 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (7 shared connections)
+- [validate_room_data](validate_room_data.md) (6 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (6 shared connections)
+- [apply_communication_dampening](apply_communication_dampening.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/movement_helpers.py`
-- `server/game/movement_service.py`
-- `server/tests/unit/game/test_movement_service.py`
+- `server/commands/communication_commands.py`
+- `server/commands/communication_commands_flows.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_communication_commands_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 196 (98%)
-- INFERRED: 5 (2%)
+- EXTRACTED: 214 (90%)
+- INFERRED: 25 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

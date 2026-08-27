@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **JSON Schema Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **schemas/room_schema.json** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **test_handle_container_overflow_empty_overflow()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles empty overflow list.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

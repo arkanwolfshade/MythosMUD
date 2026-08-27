@@ -1,36 +1,45 @@
 # test_enhanced_logging_config.py
 
-> 12 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **test_enhanced_logging_config.py** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_StubBoundLogger** (7 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **.__init__()** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **BoundLogger** (1 connections)
-- **Unit tests for enhanced_logging_config helpers. Covers log_exception_once…** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **Minimal stand-in for BoundLogger: only what log_exception_once touches for…** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **Adapt test double to the function param type (structural use only).** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **Plain exceptions get _already_logged via __setattr__ fallback; second log is…** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
-- **LoggedException uses mark_logged(); repeat call does not log again.** (1 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
+- **RollStatsResponse** (11 connections) — `server/schemas/players/character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
+- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
+- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
+- **_stats_to_rolled_stats()** (7 connections) — `server/api/character_creation.py`
+- **_stat_or_default()** (3 connections) — `server/api/character_creation.py`
+- **_as_float()** (2 connections) — `server/api/character_creation.py`
+- **_as_int()** (2 connections) — `server/api/character_creation.py`
+- **Stats** (2 connections)
+- **Convert Stats model to RolledStats schema.** (1 connections) — `server/api/character_creation.py`
+- **Roll stats with no profession or class requirement. Plan 10.5 A1.** (1 connections) — `server/api/character_creation.py`
+- **Roll once, apply profession stat_modifiers for preview. Plan 10.5 A1.** (1 connections) — `server/api/character_creation.py`
+- **Roll stats using legacy class-based method.** (1 connections) — `server/api/character_creation.py`
+- **Treat missing stats as the generator default (50).** (1 connections) — `server/api/character_creation.py`
+- **Convert get_stat_summary dict to StatSummary model format. Args: stats: Stats…** (1 connections) — `server/api/character_creation.py`
+- **Response model for rolling character stats.** (1 connections) — `server/schemas/players/character_creation.py`
 
 ## Relationships
 
-- [test_player_death_service.py](test_player_death_service.py.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (24 shared connections)
+- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (4 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (2 shared connections)
+- [maps.py](maps.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/api/character_creation.py`
+- `server/schemas/players/character_creation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,60 +1,62 @@
 # ZoneConfiguration
 
-> 140 nodes
+> 96 nodes
 
 ## Key Concepts
 
-- **ZoneConfiguration** (54 connections) — `server/npc/zone_configuration.py`
-- **test_zone_config_loader.py** (36 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **zone_config_loader.py** (23 connections) — `server/npc/zone_config_loader.py`
-- **test_zone_configuration.py** (23 connections) — `server/tests/unit/npc/test_zone_configuration.py`
-- **process_zone_rows()** (14 connections) — `server/npc/zone_config_loader.py`
-- **async_load_zone_configurations()** (13 connections) — `server/npc/zone_config_loader.py`
-- **_empty_zone_load_result()** (13 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **parse_json_field()** (11 connections) — `server/npc/zone_config_loader.py`
-- **zone_configuration.py** (11 connections) — `server/npc/zone_configuration.py`
-- **asyncio** (11 connections)
-- **_store_subzone_row()** (10 connections) — `server/npc/zone_config_loader.py`
-- **ZoneLoadResult** (9 connections) — `server/npc/zone_config_loader.py`
-- **extract_zone_name()** (9 connections) — `server/npc/zone_config_loader.py`
-- **load_zone_configurations()** (9 connections) — `server/npc/zone_config_loader.py`
-- **process_subzone_rows()** (9 connections) — `server/npc/zone_config_loader.py`
-- **ZoneConfigurationData** (7 connections) — `server/npc/zone_configuration.py`
-- **parse_zone_special_rules()** (6 connections) — `server/npc/zone_config_loader.py`
-- **test_async_load_zone_configurations_converts_url()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_passes_search_path_for_mythos_e2e()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_subzone_rows()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_process_zone_rows_json_strings()** (6 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **ZoneSpecialRules** (5 connections) — `server/npc/zone_configuration.py`
-- **test_async_load_zone_configurations_closes_connection()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- **test_async_load_zone_configurations_error()** (5 connections) — `server/tests/unit/npc/test_zone_config_loader.py`
-- *... and 115 more nodes in this community*
+- **test_command_service.py** (37 connections) — `server/tests/unit/commands/test_command_service.py`
+- **CommandService** (19 connections) — `server/commands/command_service.py`
+- **asyncio** (12 connections)
+- **MythosValidationError** (10 connections)
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (6 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (5 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **test_process_validated_command_validation_error()** (5 connections) — `server/tests/unit/commands/test_command_service.py`
+- **Command** (5 connections)
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **command_service()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_parse_command_string_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_create_command_object_re_raises_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **test_process_command_string_mythos_validation_error()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
+- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_user()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [NPCSpawnRule](NPCSpawnRule.md) (8 shared connections)
-- [test_population_control.py](test_population_control.py.md) (6 shared connections)
-- [population_control.py](population_control.py.md) (4 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [test_config_model_helpers.py](test_config_model_helpers.py.md) (2 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
+- [lifecycle_manager.py](lifecycle_manager.py.md) (1 shared connections)
+- [test_status_commands.py](test_status_commands.py.md) (1 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (1 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/zone_config_loader.py`
-- `server/npc/zone_configuration.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_zone_config_loader.py`
-- `server/tests/unit/npc/test_zone_configuration.py`
+- `server/commands/command_service.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 266 (95%)
-- INFERRED: 14 (5%)
+- EXTRACTED: 137 (93%)
+- INFERRED: 10 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

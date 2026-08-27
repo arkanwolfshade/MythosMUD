@@ -1,51 +1,67 @@
 # test_combat_cleanup_handler.py
 
-> 28 nodes
+> 111 nodes
 
 ## Key Concepts
 
-- **test_combat_cleanup_handler.py** (19 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **cleanup_handler()** (4 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_stale_combats_no_end_combat_method()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_stale_combats_no_stale_combats()** (3 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **asyncio** (3 connections)
-- **fixture** (3 connections)
-- **test_check_connection_state()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_check_connection_state_error()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_check_connection_state_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_check_connection_state_no_room_subscriptions()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_combat_tracking()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **test_cleanup_handler_init()** (2 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Unit tests for combat cleanup handler. Tests the CombatCleanupHandler class for…** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test cleanup_stale_combats handles missing end_combat method.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test cleanup_stale_combats when no stale combats exist.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test check_connection_state handles no connection manager.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test check_connection_state handles missing room_subscriptions.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Create CombatCleanupHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Create mock combat instance.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test CombatCleanupHandler initialization.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **Test cleanup_combat_tracking removes combat from tracking.** (1 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- *... and 3 more nodes in this community*
+- **ApplicationContainer** (152 connections) — `server/container/main.py`
+- **test_application_container.py** (29 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_main.py** (18 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **._init_player_quest_layer()** (10 connections) — `server/container/bundles/game.py`
+- **reset_container()** (10 connections) — `server/container/main.py`
+- **.initialize_nats_combat()** (7 connections) — `server/container/bundles/combat.py`
+- **._init_temporal_services()** (7 connections) — `server/container/bundles/time.py`
+- **.reset_instance()** (7 connections) — `server/container/main.py`
+- **.__init__()** (6 connections) — `server/container/main.py`
+- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
+- **._create_combat_service_with_nats()** (5 connections) — `server/container/bundles/combat.py`
+- **.initialize()** (5 connections) — `server/container/main.py`
+- **test_get_and_reset_container_helpers()** (5 connections) — `server/tests/unit/container/test_application_container_main.py`
+- **.initialize()** (4 connections) — `server/container/bundles/chat.py`
+- **._sanitarium_failover_callback()** (4 connections) — `server/container/bundles/combat.py`
+- **._start_nats_message_handler()** (4 connections) — `server/container/bundles/combat.py`
+- **._validate_nats_combat_prerequisites()** (4 connections) — `server/container/bundles/combat.py`
+- **._init_quest_service()** (4 connections) — `server/container/bundles/game.py`
+- **.initialize()** (4 connections) — `server/container/bundles/time.py`
+- **.set_instance()** (4 connections) — `server/container/main.py`
+- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_application_container_reset_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_get_container_singleton()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container()** (4 connections) — `server/tests/unit/test_application_container.py`
+- **test_reset_container_creates_new_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
+- *... and 86 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (1 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (45 shared connections)
+- [Any](Any.md) (14 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (14 shared connections)
+- [ContainerComponent](ContainerComponent.md) (12 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (8 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [ChatMessage](ChatMessage.md) (5 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (4 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
+- `server/container/bundles/chat.py`
+- `server/container/bundles/combat.py`
+- `server/container/bundles/game.py`
+- `server/container/bundles/monitoring.py`
+- `server/container/bundles/realtime.py`
+- `server/container/bundles/time.py`
+- `server/container/main.py`
+- `server/tests/unit/container/test_application_container_main.py`
+- `server/tests/unit/test_application_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 295 (93%)
+- INFERRED: 23 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

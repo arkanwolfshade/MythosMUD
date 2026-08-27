@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Cursor Hooks** (0 connections) — `docs/CURSOR_HOOKS.md`
+- **Performance Profiler Agent** (0 connections) — `.claude/agents/performance-profiler.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CURSOR_HOOKS.md`
+- `.claude/agents/performance-profiler.md`
 
 ## Audit Trail
 

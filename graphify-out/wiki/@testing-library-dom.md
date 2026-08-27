@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **@testing-library/dom** (2 connections) — `client/package.json`
-- **@testing-library/dom** (1 connections) — `client/package.json`
+- **test_profession_get_stat_requirements_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns empty dict for invalid value.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

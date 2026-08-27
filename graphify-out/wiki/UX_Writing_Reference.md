@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Verb+Object Button Labels** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
-- **UX Writing Reference** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
+- **test_handle_equip_wearable_container_filters_non_equipment()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container filters out non-equipment containers.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/ux-writing.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

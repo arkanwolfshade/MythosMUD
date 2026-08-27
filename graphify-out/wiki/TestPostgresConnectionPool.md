@@ -1,46 +1,45 @@
 # TestPostgresConnectionPool
 
-> 20 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **TestPostgresConnectionPool** (11 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.get_pool()** (7 connections) — `server/postgres_adapter.py`
-- **patch** (7 connections)
-- **PostgresConnectionPool** (6 connections) — `server/postgres_adapter.py`
-- **.get_connection()** (6 connections) — `server/postgres_adapter.py`
-- **.test_get_connection_context_manager()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_connection_context_manager_exception()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_creates_new_pool()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_normalizes_url()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_get_pool_reuses_existing_pool()** (4 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **ThreadedConnectionPool** (1 connections)
-- **Thread-safe PostgreSQL connection pool.** (1 connections) — `server/postgres_adapter.py`
-- **Get or create a connection pool for the given database URL.** (1 connections) — `server/postgres_adapter.py`
-- **Get a connection from the pool.** (1 connections) — `server/postgres_adapter.py`
-- **Test PostgresConnectionPool class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() creates new pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() reuses existing pool.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_pool() normalizes database URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test get_connection() context manager with exception.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **asyncio** (12 connections)
+- **PartyChannelStrategy** (10 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **test_global_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_no_party_id()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_no_party_service_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_party_not_found_no_send()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_party_channel_strategy_broadcast_sends_only_to_party_members()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **test_whisper_channel_strategy_broadcast_no_target()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Strategy for party channel broadcasting. Delivers only to current party members.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **When party_service is missing on handler, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **When party does not exist, no message is sent.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test PartyChannelStrategy.broadcast() handles missing party_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() sends personal message.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test WhisperChannelStrategy.broadcast() handles missing target_player_id.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Test GlobalChannelStrategy.broadcast() broadcasts globally.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **Party chat is delivered only to current party members (visibility).** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (4 shared connections)
-- [is_postgres_url](is_postgres_url.md) (2 shared connections)
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [required](required.md) (8 shared connections)
+- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (6 shared connections)
+- [WebSocket-Only Migration](WebSocket-Only_Migration.md) (2 shared connections)
+- [Round-Based Combat](Round-Based_Combat.md) (2 shared connections)
+- [_make_mock_row](_make_mock_row.md) (1 shared connections)
+- [NPC Combat Start Race Condition](NPC_Combat_Start_Race_Condition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/realtime/channel_broadcasting_strategies.py`
+- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 32 (82%)
+- INFERRED: 7 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,42 +1,35 @@
 # test_channel_broadcasting_strategies.py
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_channel_broadcasting_strategies.py** (27 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **ChannelBroadcastingStrategyFactory** (11 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_known()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_get_strategy_unknown()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_init()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_channel_broadcasting_strategy_factory_register_strategy()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **test_global_channel_strategy_factory_instance()** (3 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Factory for creating channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Unit tests for channel broadcasting strategies. Tests the…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.__init__() initializes with default…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns known strategy.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.get_strategy() returns…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test ChannelBroadcastingStrategyFactory.register_strategy() registers new…** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **Test global channel_strategy_factory instance exists.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **.broadcast_combat_attack()** (7 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **.broadcast_combat_target_switch()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._build_combat_attack_event()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._send_attacker_personal_message_if_needed()** (4 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._build_combat_attack_messages()** (3 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **._send_attacker_personal_combat_message()** (3 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Any** (3 connections)
+- **Broadcast combat attack to room. Excludes attacker from broadcast; sends them a…** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Broadcast one short room message when an NPC switches aggro target (ADR-016).** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Build perspective-specific attack messages.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Build combat_attack event payload.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Send personal combat message to attacker. Logs warning on failure.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **Send personal combat message to attacker when attacker_id is present.** (1 connections) — `server/services/combat_messaging/combat_broadcasts.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (8 shared connections)
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (6 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (4 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (4 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,24 @@
 # Quick Start E2E Tests
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **E2E Test Server Quick Start** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Quick Start E2E Tests** (1 connections) — `docs/QUICK_START_E2E_TESTS.md`
+- **normalize_path_from_url_or_path()** (3 connections) — `server/container/utils.py`
+- **Path** (1 connections)
+- **Normalize an item database override into a filesystem path. DEPRECATED: Items…** (1 connections) — `server/container/utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/QUICK_START_E2E_TESTS.md`
+- `server/container/utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

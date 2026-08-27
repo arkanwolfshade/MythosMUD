@@ -1,24 +1,26 @@
 # test_calculate_max_dp_from_constitution_and_size
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_calculate_max_dp_from_constitution_and_size()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Fallback max_dp uses (con+siz)//5.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
+- **main()** (2 connections) — `scripts/apply_players_migration.py`
+- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
+- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `scripts/apply_players_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,20 +1,21 @@
 # Client Test Remediation
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Client Test Remediation** (7 connections) — `.cursor/commands/client-test-remediation.md`
-- **Fix patterns by tier** (4 connections) — `.cursor/commands/client-test-remediation.md`
-- **client-test-remediation.md** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🔴 Critical — TypeScript/rendering errors** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Entry point** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Fix-verify loop** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟡 High — component issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **🟢 Medium — hook/async issues** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Never** (1 connections) — `.cursor/commands/client-test-remediation.md`
-- **Priority** (1 connections) — `.cursor/commands/client-test-remediation.md`
+- **Docker Best Practices** (11 connections) — `.claude/rules/docker.md`
+- **docker.md** (1 connections) — `.claude/rules/docker.md`
+- **10. Manage Secrets Securely with Docker Compose** (1 connections) — `.claude/rules/docker.md`
+- **1. Optimize for Multi-Stage Builds** (1 connections) — `.claude/rules/docker.md`
+- **2. Choose Minimal, Trusted Base Images** (1 connections) — `.claude/rules/docker.md`
+- **3. Leverage `.dockerignore`** (1 connections) — `.claude/rules/docker.md`
+- **4. Optimize Layer Caching** (1 connections) — `.claude/rules/docker.md`
+- **5. Run as a Non-Root User** (1 connections) — `.claude/rules/docker.md`
+- **6. Distinguish `ARG` and `ENV`** (1 connections) — `.claude/rules/docker.md`
+- **7. Implement Health Checks** (1 connections) — `.claude/rules/docker.md`
+- **8. Log to `stdout`/`stderr`** (1 connections) — `.claude/rules/docker.md`
+- **9. Use Docker Compose for Local Development** (1 connections) — `.claude/rules/docker.md`
 
 ## Relationships
 
@@ -22,11 +23,11 @@
 
 ## Source Files
 
-- `.cursor/commands/client-test-remediation.md`
+- `.claude/rules/docker.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,26 @@
 # Chat Messages Not Displayed to Sender (Bug #2)
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
-- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **.__init__()** (6 connections) — `server/game/party_service.py`
+- **ConnectionManager** (1 connections)
+- **Initialize empty party store. Optionally provide event_bus, connection_manager,…** (1 connections) — `server/game/party_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Best Practices](WebSocket_Best_Practices.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/BUGS_FOUND.md`
+- `server/game/party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

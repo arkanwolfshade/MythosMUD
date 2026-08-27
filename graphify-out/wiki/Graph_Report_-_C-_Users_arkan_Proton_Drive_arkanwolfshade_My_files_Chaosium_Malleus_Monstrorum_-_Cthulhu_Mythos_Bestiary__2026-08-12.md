@@ -1,23 +1,24 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Malleus Monstrorum - Cthulhu Mythos Bestiary  (2026-08-12)
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Malleus Monstrorum - Cthulhu Mythos Bestiary  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Communities (3 total, 0 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 0 - "Call of Cthulhu Stat Block; Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 1 - "Mythos Elements"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 2 - "Mythos Elements (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
+- **fix_markdown_file()** (7 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_markdown_common_issues.py** (7 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_first_line_heading()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **fix_link_fragments()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **main()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_common_issues.py`
+- **Path** (4 connections)
+- **fix_emphasis_as_heading()** (3 connections) — `scripts/fix_markdown_common_issues.py`
+- **generate_anchor()** (3 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD051: Fix invalid link fragments by generating proper anchors. Scans for…** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Generate a markdown anchor from text.** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix common markdown issues in a file. Returns: (changed, list of fixes applied)** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Parse markdownlint output to get files with fixable issues.** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD041: Add top-level heading if file doesn't start with one. Returns:…** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **Fix MD036: Convert bold/italic used as headings to proper headings. This is…** (1 connections) — `scripts/fix_markdown_common_issues.py`
 
 ## Relationships
 
@@ -25,11 +26,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
+- `scripts/fix_markdown_common_issues.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

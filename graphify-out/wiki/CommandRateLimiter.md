@@ -1,48 +1,48 @@
 # CommandRateLimiter
 
-> 30 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **CommandRateLimiter** (17 connections) — `server/middleware/command_rate_limiter.py`
-- **test_command_rate_limiter.py** (11 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **_fixed_clock()** (8 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **datetime** (8 connections)
-- **test_get_stats_and_cleanup_inactive()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_get_wait_time_when_rate_limited()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_blocks_at_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_under_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_reset_player_and_all()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_sliding_window_expires_old_commands()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.__init__()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.cleanup_inactive_players()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_remaining_commands()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_wait_time()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.is_allowed()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_all()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_player()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **datetime** (2 connections)
-- **Any** (1 connections)
-- **Get number of commands player can still execute. Args: player_name: Player to…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for a specific player. Useful for admin commands or when…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for all players. Clears all accumulated timestamp data.…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get system-wide rate limiting statistics. Returns: Dictionary containing rate…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Remove timestamp data for players who haven't been active recently. Prevents…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- *... and 5 more nodes in this community*
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- [Dependency Upgrade Strategy Specification](Dependency_Upgrade_Strategy_Specification.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/command_rate_limiter.py`
-- `server/tests/unit/middleware/test_command_rate_limiter.py`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

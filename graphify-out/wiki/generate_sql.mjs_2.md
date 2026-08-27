@@ -1,32 +1,41 @@
 # generate_sql.mjs
 
-> 8 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **generate_sql.mjs** (5 connections) — `scripts/static_data/README.md`
-- **Canonical DML Merge (mythos_*_dml.sql)** (2 connections) — `scripts/static_data/README.md`
-- **world_and_emotes_generated.sql** (2 connections) — `scripts/static_data/README.md`
-- **PostgreSQL DDL Initialization** (1 connections) — `scripts/README.md`
-- **AJV JSON Schema Validation** (1 connections) — `scripts/static_data/README.md`
-- **Deterministic UUID v5 Namespace** (1 connections) — `scripts/static_data/README.md`
-- **Static Data SQL Generation** (1 connections) — `scripts/static_data/README.md`
-- **generate_sql.mjs Path Resolution Failure** (1 connections) — `scripts/static_data/temp_debug.txt`
+- **Stats** (11 connections)
+- **.roll_stats_with_profession()** (7 connections) — `server/game/stats_generator.py`
+- **.roll_stats()** (6 connections) — `server/game/stats_generator.py`
+- **.get_available_classes()** (5 connections) — `server/game/stats_generator.py`
+- **._roll_3d6()** (5 connections) — `server/game/stats_generator.py`
+- **.roll_stats_with_validation()** (5 connections) — `server/game/stats_generator.py`
+- **._check_profession_requirements()** (4 connections) — `server/game/stats_generator.py`
+- **.get_stat_summary()** (4 connections) — `server/game/stats_generator.py`
+- **.validate_class_prerequisites()** (4 connections) — `server/game/stats_generator.py`
+- **Any** (2 connections)
+- **Roll stats and validate against class requirements. Args: method: The rolling…** (2 connections) — `server/game/stats_generator.py`
+- **Roll stats using 3d6 method (scaled to 15-90 range).** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet the prerequisites for a given class. Args: stats: The…** (1 connections) — `server/game/stats_generator.py`
+- **Get a list of classes that the character qualifies for. Args: stats: The…** (1 connections) — `server/game/stats_generator.py`
+- **Check if stats meet profession requirements. Args: stats: The character's stats…** (1 connections) — `server/game/stats_generator.py`
+- **Get a summary of the character's stats including modifiers and totals. Args:…** (1 connections) — `server/game/stats_generator.py`
+- **Roll character stats using the specified method. Args: method: Rolling method…** (1 connections) — `server/game/stats_generator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (9 shared connections)
+- [Graphify Code Graph](Graphify_Code_Graph.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/README.md`
-- `scripts/static_data/README.md`
-- `scripts/static_data/temp_debug.txt`
+- `server/game/stats_generator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 37 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,58 +1,60 @@
 # PrototypeRegistry
 
-> 30 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **PrototypeRegistry** (47 connections) — `server/game/items/prototype_registry.py`
-- **test_prototype_registry.py** (18 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **.load_from_path()** (6 connections) — `server/game/items/prototype_registry.py`
-- **._load_one_prototype()** (6 connections) — `server/game/items/prototype_registry.py`
-- **._record_validation_failure()** (5 connections) — `server/game/items/prototype_registry.py`
-- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Path** (5 connections)
-- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Any** (4 connections)
-- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
-- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
-- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **Path** (3 connections)
-- **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
-- **ValidationError** (1 connections)
-- **Find all prototypes that have a specific tag. Args: tag: The tag to search for…** (1 connections) — `server/game/items/prototype_registry.py`
-- *... and 5 more nodes in this community*
+- **disconnect_grace_period.py** (27 connections) — `server/realtime/disconnect_grace_period.py`
+- **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
+- **test_disconnect_grace_period.py** (19 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **cancel_grace_period()** (14 connections) — `server/realtime/disconnect_grace_period.py`
+- **asyncio** (9 connections)
+- **test_start_grace_period_reconnection_cancels()** (5 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_cancel_grace_period_cancels_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_cancel_grace_period_not_in_grace_period()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_grace_period_handles_errors_gracefully()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_grace_period_handles_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_start_grace_period_already_in_grace_period()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_start_grace_period_creates_task()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_start_grace_period_timer_expires()** (4 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **UUID** (4 connections)
+- **mock_manager()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_false()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **test_is_player_in_grace_period_true()** (3 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **Any** (3 connections)
+- **fixture** (1 connections)
+- **Disconnect grace period management for MythosMUD. This module handles the…** (1 connections) — `server/realtime/disconnect_grace_period.py`
+- **Cancel grace period for a player (e.g., on reconnection). Args: player_id: The…** (1 connections) — `server/realtime/disconnect_grace_period.py`
+- **Start a grace period for a disconnected player. During the grace period, the…** (1 connections) — `server/realtime/disconnect_grace_period.py`
+- **Unit tests for disconnect grace period management. Tests the grace period…** (1 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **Test grace period is cancelled when player reconnects.** (1 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (12 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (10 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
-- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [get_monitoring_dashboard](get_monitoring_dashboard.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [character-cleanup.ts](character-cleanup.ts.md) (10 shared connections)
+- [TargetMatch](TargetMatch.md) (9 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [test_go_command.py](test_go_command.py.md) (3 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (3 shared connections)
+- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (3 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (3 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [test_connection_statistics.py](test_connection_statistics.py.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [generate_invites.py](generate_invites.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/prototype_registry.py`
-- `server/tests/unit/game/items/test_prototype_registry.py`
+- `server/realtime/disconnect_grace_period.py`
+- `server/tests/unit/realtime/test_disconnect_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (74%)
-- INFERRED: 25 (26%)
+- EXTRACTED: 101 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

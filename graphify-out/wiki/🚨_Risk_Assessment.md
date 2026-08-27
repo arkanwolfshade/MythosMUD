@@ -1,20 +1,23 @@
 # 🚨 Risk Assessment
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🚨 Risk Assessment** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Remaining Risks** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Risks Eliminated** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Per-Recipient Whisper Rate Limiting** (2 connections) — `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
+- **Scenario 15 Rate Limiting Blocked** (2 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- **Whisper System Remediation** (1 connections) — `e2e-tests/REMAINING_WORK_SUMMARY.md`
+- **Global Whisper Rate Limit** (1 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `e2e-tests/REMAINING_WORK_SUMMARY.md`
+- `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
+- `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
 
 ## Audit Trail
 

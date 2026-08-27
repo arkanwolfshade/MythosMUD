@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_event_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_event_subjects handles partial failure.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_process_exits_for_room_multiple_exits()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exits_for_room handles multiple exits.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

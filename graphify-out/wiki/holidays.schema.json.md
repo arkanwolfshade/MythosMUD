@@ -1,29 +1,38 @@
 # holidays.schema.json
 
-> 8 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **holidays.schema.json** (7 connections) — `db/static/schemas/holidays.schema.json`
-- **required** (2 connections) — `db/static/schemas/holidays.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **$id** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **title** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **holidays** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **validate_reason_content()** (10 connections) — `server/validators/security_validator.py`
+- **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
+- **.validate_reason()** (4 connections) — `server/models/command_moderation.py`
+- **test_validate_reason_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_reason_content_rejects_html()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Validate mute reason for security using centralized validation.** (2 connections) — `server/models/command_moderation.py`
+- **Test validating empty reason content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_reason_content rejects HTML tags.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Centralized validation for reason content fields. This function provides…** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [items](items.md) (1 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (2 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `server/models/command_moderation.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

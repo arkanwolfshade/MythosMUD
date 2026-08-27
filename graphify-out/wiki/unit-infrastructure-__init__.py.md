@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **unit/infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
-- **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **domain/__init__.py** (1 connections) — `server/domain/__init__.py`
+- **Domain layer for MythosMUD. This package contains the core business logic and…** (1 connections) — `server/domain/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/__init__.py`
+- `server/domain/__init__.py`
 
 ## Audit Trail
 

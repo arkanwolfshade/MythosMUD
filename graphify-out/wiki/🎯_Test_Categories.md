@@ -1,13 +1,12 @@
 # 🎯 Test Categories
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
+- **Complexity Refactoring Test Plan** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **🎯 Test Categories** (8 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **Complexity Refactoring Test Plan** (7 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **🔍 Specific Edge Cases to Test** (7 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
-- **COMPLEXITY_REFACTORING_TEST_PLAN.md** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **1. Application Startup & CORS (create_app)** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **2. WebSocket Connections** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **3. Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
@@ -25,6 +24,8 @@
 - **Room Operations** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **✅ Success Criteria** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 - **WebSocket Token Parsing** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **create_app CORS Configuration** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
+- **WebSocket Connection Routes** (1 connections) — `docs/archive/COMPLEXITY_REFACTORING_TEST_PLAN.md`
 
 ## Relationships
 
@@ -36,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

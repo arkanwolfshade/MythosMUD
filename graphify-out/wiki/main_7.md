@@ -1,22 +1,21 @@
 # main
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **main()** (7 connections) — `scripts/arkham_rooms_summary.py`
-- **arkham_rooms_summary.py** (6 connections) — `scripts/arkham_rooms_summary.py`
-- **analyze_connectivity()** (3 connections) — `scripts/arkham_rooms_summary.py`
-- **generate_dot_file()** (3 connections) — `scripts/arkham_rooms_summary.py`
-- **load_room_data()** (3 connections) — `scripts/arkham_rooms_summary.py`
-- **print_detailed_statistics()** (3 connections) — `scripts/arkham_rooms_summary.py`
-- **print_room_listing()** (3 connections) — `scripts/arkham_rooms_summary.py`
-- **Print a detailed listing of all rooms by subzone.** (1 connections) — `scripts/arkham_rooms_summary.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/arkham_rooms_summary.py`
-- **Generate a DOT file for visualization with Graphviz.** (1 connections) — `scripts/arkham_rooms_summary.py`
-- **Main function to analyze the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
-- **Analyze the connectivity of the rooms.** (1 connections) — `scripts/arkham_rooms_summary.py`
-- **Print detailed statistics about the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Zustand Best Practices** (10 connections) — `.claude/rules/zustand.md`
+- **2. Slice-Based Organization** (2 connections) — `.claude/rules/zustand.md`
+- **zustand.md** (1 connections) — `.claude/rules/zustand.md`
+- **1. Typed Store Shape (TypeScript First)** (1 connections) — `.claude/rules/zustand.md`
+- **3. Naming Conventions** (1 connections) — `.claude/rules/zustand.md`
+- **4. Functional Updates to Prevent Stale Closures** (1 connections) — `.claude/rules/zustand.md`
+- **5. Selectors and Shallow Comparison for Performance** (1 connections) — `.claude/rules/zustand.md`
+- **6. Essential Middleware Usage** (1 connections) — `.claude/rules/zustand.md`
+- **7. Initializing Stores Outside Components** (1 connections) — `.claude/rules/zustand.md`
+- **8. Asynchronous Actions** (1 connections) — `.claude/rules/zustand.md`
+- **MythosMUD client** (1 connections) — `.claude/rules/zustand.md`
+- **Slice-Based Organization** (1 connections) — `.claude/rules/zustand.md`
 
 ## Relationships
 
@@ -24,11 +23,11 @@
 
 ## Source Files
 
-- `scripts/arkham_rooms_summary.py`
+- `.claude/rules/zustand.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMudProcessScope.Tests.ps1** (0 connections) — `scripts/tests/MythosMudProcessScope.Tests.ps1`
+- **gh-stack Skill** (0 connections) — `.cursor/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/MythosMudProcessScope.Tests.ps1`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 

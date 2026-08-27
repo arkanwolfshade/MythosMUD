@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_dialogue_migration.ps1** (0 connections) — `scripts/apply_dialogue_migration.ps1`
+- **.env and YAML Config Split** (0 connections) — `docs/archive/.ENV_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_dialogue_migration.ps1`
+- `docs/archive/.ENV_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 

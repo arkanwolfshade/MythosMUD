@@ -1,63 +1,52 @@
 # PassiveMobNPC
 
-> 104 nodes
+> 106 nodes
 
 ## Key Concepts
 
-- **PassiveMobNPC** (57 connections) — `server/npc/passive_mob_npc.py`
-- **test_npc_base.py** (25 connections) — `server/tests/unit/npc/test_npc_base.py`
-- **NPCEventReactionSystem** (24 connections) — `server/npc/event_reaction_system.py`
-- **test_passive_mob_npc.py** (20 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
-- **passive_mob_npc.py** (18 connections) — `server/npc/passive_mob_npc.py`
-- **.schedule_idle_movement()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **.wander()** (6 connections) — `server/npc/passive_mob_npc.py`
-- **Any** (6 connections)
-- **.__init__()** (5 connections) — `server/npc/passive_mob_npc.py`
-- **._queue_wander_action()** (5 connections) — `server/npc/passive_mob_npc.py`
-- **.execute()** (4 connections) — `server/npc/event_reaction_system.py`
-- **.__init__()** (4 connections) — `server/npc/event_reaction_system.py`
-- **.should_trigger()** (4 connections) — `server/npc/event_reaction_system.py`
-- **._get_npc_context()** (4 connections) — `server/npc/event_reaction_system.py`
-- **._handle_event()** (4 connections) — `server/npc/event_reaction_system.py`
-- **.__init__()** (4 connections) — `server/npc/event_reaction_system.py`
-- **._create_wander_action()** (4 connections) — `server/npc/passive_mob_npc.py`
-- **.get_npc_reaction_stats()** (3 connections) — `server/npc/event_reaction_system.py`
-- **.register_npc_reactions()** (3 connections) — `server/npc/event_reaction_system.py`
-- **.set_npc_context()** (3 connections) — `server/npc/event_reaction_system.py`
-- **._subscribe_to_events()** (3 connections) — `server/npc/event_reaction_system.py`
-- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._handle_wander()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
-- **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
-- *... and 79 more nodes in this community*
+- **ExplorationCommandFactory** (59 connections) — `server/utils/command_factories_exploration.py`
+- **test_command_factories_exploration.py** (49 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **.create_look_command()** (18 connections) — `server/utils/command_factories_exploration.py`
+- **.create_party_command()** (12 connections) — `server/utils/command_factories_exploration.py`
+- **.create_lie_command()** (8 connections) — `server/utils/command_factories_exploration.py`
+- **.create_follow_command()** (7 connections) — `server/utils/command_factories_exploration.py`
+- **.create_go_command()** (7 connections) — `server/utils/command_factories_exploration.py`
+- **.create_ground_command()** (7 connections) — `server/utils/command_factories_exploration.py`
+- **.create_following_command()** (6 connections) — `server/utils/command_factories_exploration.py`
+- **.create_sit_command()** (6 connections) — `server/utils/command_factories_exploration.py`
+- **.create_stand_command()** (6 connections) — `server/utils/command_factories_exploration.py`
+- **.create_unfollow_command()** (6 connections) — `server/utils/command_factories_exploration.py`
+- **test_create_follow_command_empty_target()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_follow_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_following_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_go_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_ground_command_empty_target()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_ground_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_lie_command_with_invalid_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_lie_command_with_multiple_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_party_command_invite_no_target()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_party_command_kick_no_target()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_sit_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_stand_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- **test_create_unfollow_command_with_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
+- *... and 81 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (12 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (9 shared connections)
-- [AggressiveMobNPC](AggressiveMobNPC.md) (3 shared connections)
-- [NPCBase](NPCBase.md) (3 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (3 shared connections)
-- [NPCActionMessage](NPCActionMessage.md) (2 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [NPCCommunicationIntegration](NPCCommunicationIntegration.md) (1 shared connections)
-- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (1 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (37 shared connections)
+- [TestCombatConfigurationService](TestCombatConfigurationService.md) (3 shared connections)
+- [test_look_player.py](test_look_player.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/event_reaction_system.py`
-- `server/npc/passive_mob_npc.py`
-- `server/tests/unit/npc/test_event_reaction_speech.py`
-- `server/tests/unit/npc/test_npc_base.py`
-- `server/tests/unit/npc/test_passive_mob_npc.py`
+- `server/tests/unit/utils/test_command_factories_exploration.py`
+- `server/utils/command_factories_exploration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 179 (90%)
-- INFERRED: 21 (10%)
+- EXTRACTED: 179 (76%)
+- INFERRED: 57 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

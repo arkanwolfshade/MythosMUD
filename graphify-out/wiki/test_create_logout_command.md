@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_logout_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_logout_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_is_player_disconnecting_no_connection_manager()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns False when connection manager not…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [Responsive Design](Responsive_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

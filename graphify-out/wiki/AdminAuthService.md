@@ -4,49 +4,55 @@
 
 ## Key Concepts
 
-- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
-- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
-- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
-- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
-- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
-- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
-- **.get_user_role()** (4 connections) — `server/services/admin_auth_service.py`
-- **Request** (4 connections)
-- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_user_id()** (3 connections) — `server/services/admin_auth_service.py`
-- **.get_username()** (3 connections) — `server/services/admin_auth_service.py`
-- **.cleanup_expired_sessions()** (2 connections) — `server/services/admin_auth_service.py`
-- **.__init__()** (2 connections) — `server/services/admin_auth_service.py`
-- **Any** (2 connections)
-- **Service for admin authentication and authorization.** (1 connections) — `server/services/admin_auth_service.py`
-- **Initialize the admin auth service.** (1 connections) — `server/services/admin_auth_service.py`
-- **Determine the admin role for a user. Args: current_user: The current user…** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get username from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Safely get user ID from current user object.** (1 connections) — `server/services/admin_auth_service.py`
-- **Validate that the current user has permission to perform the action. Args:…** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if a role has permission for an action. Args: role: The user's role…** (1 connections) — `server/services/admin_auth_service.py`
-- **Check if user has exceeded rate limits. Args: user_id: The user ID request: The…** (1 connections) — `server/services/admin_auth_service.py`
-- **Update or create admin session. Args: user_id: The user ID username: The…** (1 connections) — `server/services/admin_auth_service.py`
-- **Log an audit event. Args: user_id: The user ID username: The username action:…** (1 connections) — `server/services/admin_auth_service.py`
+- **playerHandlers.ts** (24 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **healthEventUtils.ts** (16 connections) — `client/src/utils/healthEventUtils.ts`
+- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- **buildHealthStatusFromEvent()** (9 connections) — `client/src/utils/healthEventUtils.ts`
+- **determineDpTier()** (7 connections) — `client/src/types/health.ts`
+- **healthEventUtils.test.ts** (6 connections) — `client/src/utils/__tests__/healthEventUtils.test.ts`
+- **buildHealthChangeMessage()** (4 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerDpUpdated()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerRespawned()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerUpdate()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **mergePlayerStats()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **parseHealthEventNumbers()** (3 connections) — `client/src/utils/healthEventUtils.ts`
+- **readDpField()** (3 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerDeliriumRespawned()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDied()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEntered()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEnteredGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeft()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeftGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **pickStatNumber()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **formatSource()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **humanizeReason()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **inferReasonFromDelta()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **parseNumber()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **resolveInCombat()** (2 connections) — `client/src/utils/healthEventUtils.ts`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [admin_auth_service](admin_auth_service.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (10 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (4 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [LogAggregator](LogAggregator.md) (1 shared connections)
+- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- `client/src/types/__tests__/health.test.ts`
+- `client/src/types/health.ts`
+- `client/src/utils/__tests__/healthEventUtils.test.ts`
+- `client/src/utils/healthEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 74 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

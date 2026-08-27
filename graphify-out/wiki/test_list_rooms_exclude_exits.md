@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_list_rooms_exclude_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms() excludes exits when include_exits=False.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **ensure_codacy_coverage_reporter_ci.sh** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
+- **ensure_codacy_coverage_reporter_ci.sh script** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,57 +1,56 @@
 # MythosTickScheduler
 
-> 37 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
-- **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **asyncio** (9 connections)
-- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
-- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
-- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
-- **._run()** (5 connections) — `server/time/tick_scheduler.py`
-- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
-- **fixture** (4 connections)
-- **scheduler()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_emit_pending_ticks_initializes_last_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_emit_pending_ticks_publishes_hours()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_clamps_max()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_clamps_min()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_sleep_until_next_hour_no_last_emitted()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_start_idempotent()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_start_registers_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_stop_cancels_task()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **test_truncate_to_hour()** (3 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **._sleep_until_next_hour()** (3 connections) — `server/time/tick_scheduler.py`
-- **.start()** (3 connections) — `server/time/tick_scheduler.py`
-- **datetime** (3 connections)
-- **mock_chronicle()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_event_bus()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- **mock_task_registry()** (2 connections) — `server/tests/unit/time/test_tick_scheduler.py`
-- *... and 12 more nodes in this community*
+- **connection_cleanup_methods.py** (19 connections) — `server/realtime/connection_cleanup_methods.py`
+- **test_connection_cleanup_methods.py** (17 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
+- **cleanup_dead_connections_impl()** (8 connections) — `server/realtime/connection_cleanup_methods.py`
+- **check_and_cleanup_impl()** (7 connections) — `server/realtime/connection_cleanup_methods.py`
+- **cleanup_orphaned_data_impl()** (7 connections) — `server/realtime/connection_cleanup_methods.py`
+- **cleanup_ghost_players_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
+- **force_cleanup_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
+- **prune_stale_players_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
+- **Any** (6 connections)
+- **asyncio** (5 connections)
+- **test_check_and_cleanup_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_cleanup_dead_connections_default_when_cleaner_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_cleanup_dead_connections_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_cleanup_orphaned_data_impl_ages_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_force_cleanup_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_delegate_connection_cleaner_sync_none()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
+- **manager()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_cleanup_ghost_players_impl_delegates()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **test_prune_stale_players_impl_delegates()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- **UUID** (2 connections)
+- **fixture** (1 connections)
+- **Cleanup method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_cleanup_methods.py`
+- **Clean up dead connections for a specific player or all players.** (1 connections) — `server/realtime/connection_cleanup_methods.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [TaskRegistry](TaskRegistry.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (6 shared connections)
+- [security.ts](security.ts.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [PhantomHostileService](PhantomHostileService.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/time/test_tick_scheduler.py`
-- `server/time/tick_scheduler.py`
+- `server/realtime/connection_cleanup_methods.py`
+- `server/realtime/connection_delegates.py`
+- `server/tests/unit/realtime/test_connection_cleanup_methods.py`
+- `server/tests/unit/realtime/test_connection_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (81%)
-- INFERRED: 16 (19%)
+- EXTRACTED: 83 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

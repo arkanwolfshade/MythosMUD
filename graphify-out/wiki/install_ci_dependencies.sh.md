@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **install_ci_dependencies.sh** (1 connections) — `scripts/install_ci_dependencies.sh`
-- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
+- **Temporal NPC Schedules** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **Schedule Service** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `scripts/install_ci_dependencies.sh`
+- `docs/archive/temporal-npc-schedule-integration-status.md`
 
 ## Audit Trail
 

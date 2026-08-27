@@ -1,31 +1,33 @@
 # Disconnect Grace Period and Rest Command
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **30-Second Disconnect Grace Period** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **LOGIN_WARDED Effect** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Disconnect Grace Period and Rest Command** (2 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **Effects System ADR and Implementation** (2 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
-- **Effects System Implementation** (2 connections) — `.cursor/plans/effects_system_implementation.plan.md`
-- **Rest Command** (1 connections) — `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- **ADR-009 Effects System Architecture** (1 connections) — `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
+- **mp_regeneration_service()** (5 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **fixture** (4 connections)
+- **mock_player()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **mock_player_service()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player service.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create an MPRegenerationService instance.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Create a mock player.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (4 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_and_rest_command_c5c6e64a.plan.md`
-- `.cursor/plans/effects_system_adr_and_implementation_2d137198.plan.md`
-- `.cursor/plans/effects_system_implementation.plan.md`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

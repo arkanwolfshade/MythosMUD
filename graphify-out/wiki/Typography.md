@@ -1,36 +1,37 @@
 # Typography
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Typography** (6 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Classic Typography Principles** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Font Selection & Pairing** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Modern Web Typography** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **typography.md** (2 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Accessibility Considerations** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Choosing Distinctive Fonts** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Fluid Type** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Modular Scale & Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **OpenType Features** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Pairing Principles** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Readability & Measure** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Typography System Architecture** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Vertical Rhythm** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **Web Font Loading** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
+- **Codebase Explorer Subagent** (10 connections) — `.claude/agents/codebase-explorer.md`
+- **Capabilities** (5 connections) — `.claude/agents/codebase-explorer.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/codebase-explorer.md`
+- **Architecture Analysis** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **Dependency Research** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **codebase-explorer.md** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Best Practices** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Finding All Implementations** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Integration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Methodology** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Notes** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Output Format** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Parallel Exploration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Pattern Discovery** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Purpose** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Usage** (1 connections) — `.claude/agents/codebase-explorer.md`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/typography.md`
+- `.claude/agents/codebase-explorer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,60 +4,58 @@
 
 ## Key Concepts
 
-- **test_nats_service.py** (63 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_service.py** (33 connections) — `server/services/nats_service.py`
-- **NATSSubscribeError** (23 connections) — `server/services/nats_exceptions.py`
-- **asyncio** (23 connections)
-- **NATSUnsubscribeError** (14 connections) — `server/services/nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **TestNATSSubscribeError** (8 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **test_publish_no_available_connections()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_not_initialized()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_timeout()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_running()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_not_found()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **nats_metrics.py** (5 connections) — `server/services/nats_metrics.py`
-- **test_connect_circuit_breaker_opens()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_failure()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_state_machine_blocked()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_flushes_batch()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_handles_drain_error()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_is_connected_true()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
+- **TransferContainerRequest** (39 connections) — `server/api/container_models.py`
+- **test_container_events.py** (26 connections) — `server/tests/unit/api/test_container_events.py`
+- **asyncio** (21 connections)
+- **ConnectionManager** (19 connections)
+- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
+- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
+- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitCloseContainerEvent** (11 connections) — `server/tests/unit/api/test_container_events.py`
+- **_assert_warning_once()** (10 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitContainerOpenedEvents** (9 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_container_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_to_player_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
+- **TestEmitTransferEventDirections** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_success()** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_validation_error()** (7 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_close_container_event_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_close_container_event_persistence_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_container_opened_events_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_container_opened_events_validation_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_container_opened_events_missing_mutation_token()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_container_opened_events_room_emission_error()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_connection_manager()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_container_in_result()** (6 connections) — `server/tests/unit/api/test_container_events.py`
+- **.test_emit_transfer_event_no_room_id()** (6 connections) — `server/tests/unit/api/test_container_events.py`
 - *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (35 shared connections)
-- [NATSMetrics](NATSMetrics.md) (17 shared connections)
-- [NATSError](NATSError.md) (14 shared connections)
-- [NATSConfig](NATSConfig.md) (8 shared connections)
-- [JsonMap](JsonMap.md) (7 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (7 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (4 shared connections)
-- [.__init__](__init__.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
+- [ChatService](ChatService.md) (19 shared connections)
+- [ValidationError](ValidationError.md) (19 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (11 shared connections)
+- [PopulationStats](PopulationStats.md) (7 shared connections)
+- [P7 · Rulings — complete](P7_·_Rulings_—_complete.md) (3 shared connections)
+- [.disconnect](disconnect.md) (3 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
+- [asyncio](asyncio.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_exceptions.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_service.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/api/container_events.py`
+- `server/api/container_models.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_containers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 186 (81%)
-- INFERRED: 43 (19%)
+- EXTRACTED: 207 (90%)
+- INFERRED: 22 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

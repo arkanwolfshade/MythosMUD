@@ -1,26 +1,24 @@
 # description
 
-> 5 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **description** (5 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
-- **minLength** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **test_validate_exit_exists_from_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_exit_exists() returns False when from_room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

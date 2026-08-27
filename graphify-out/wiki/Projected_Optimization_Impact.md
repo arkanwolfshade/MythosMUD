@@ -1,28 +1,32 @@
 # Projected Optimization Impact
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Projected Optimization Impact** (7 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 1-3: Pruning (Month 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 4: Consolidation (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Phase 5: Gap Filling (Month 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Current State (Baseline)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Final State Comparison** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Net Benefit** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **_ExitRowContext** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_vertical_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_exit_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._vertical_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **NamedTuple** (1 connections)
+- **Render a single row of vertical exits between room rows.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Viewport and style context for vertical exit row rendering.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return the vertical exit character (|, v, or ^) given south/north exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get exit character to display between rows for vertical (north/south) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- [rate_overrides.py](rate_overrides.py.md) (4 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

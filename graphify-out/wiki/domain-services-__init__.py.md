@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **domain/services/__init__.py** (1 connections) — `server/domain/services/__init__.py`
-- **Domain services for MythosMUD. Domain services contain business logic that…** (1 connections) — `server/domain/services/__init__.py`
+- **Private Security Advisory Channel** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
+- **Issue Template Config** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/services/__init__.py`
+- `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Audit Trail
 

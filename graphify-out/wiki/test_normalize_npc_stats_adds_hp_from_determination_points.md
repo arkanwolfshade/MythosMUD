@@ -1,24 +1,29 @@
 # test_normalize_npc_stats_adds_hp_from_determination_points
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_normalize_npc_stats_adds_hp_from_determination_points()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **hp alias filled from determination_points.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **test_lucidity_adjustment_round_trip()** (9 connections) — `server/tests/integration/test_lucidity_round_trip.py`
+- **asyncio** (1 connections)
+- **serial** (1 connections)
+- **Test that LucidityService can adjust lucidity and persist changes. This test…** (1 connections) — `server/tests/integration/test_lucidity_round_trip.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (1 shared connections)
+- [designTokens.ts](designTokens.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/integration/test_lucidity_round_trip.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 4 (44%)
+- INFERRED: 5 (56%)
 - AMBIGUOUS: 0 (0%)
 
 ---

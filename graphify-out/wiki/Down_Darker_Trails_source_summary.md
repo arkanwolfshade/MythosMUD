@@ -1,13 +1,14 @@
 # Down Darker Trails (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Down Darker Trails (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Down Darker Trails.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

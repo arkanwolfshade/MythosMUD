@@ -1,38 +1,49 @@
 # Phase 2 Async Persistence Migration - Status Update
 
-> 17 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Phase 2 Async Persistence Migration - Status Update** (7 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **🎯 Decision Point** (4 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **✅ Completed Today** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **📊 Effort Analysis** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Awaiting Your Direction, Professor Wolfshade** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **🚦 Current Status** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **PHASE2_MIGRATION_STATUS.md** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **adjusts spectacles and awaits instruction** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Critical Phase 1 Fixes (100% Complete)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **My Recommendation** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option A: Deploy Critical Fixes Now (RECOMMENDED)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option B: Complete Full Migration First** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Option C: Hybrid Approach** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Phase 2 Migration Progress (17% Complete - 2/12 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Remaining Estimate** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **Time Invested** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **📝 What Needs Your Decision** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **useChatPanelRefactored.ts** (13 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactored.tsx** (11 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- **DEFAULT_CHANNEL** (9 connections) — `client/src/config/channels.ts`
+- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
+- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactored.test.tsx** (6 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- **filterNonSystemMessages()** (4 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- **ChatPanelRefactored()** (3 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **ChatPanelRefactoredProps** (2 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
+- **base()** (1 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCBase](NPCBase.md) (10 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (7 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (1 shared connections)
+- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- `client/src/components/panels/ChatPanelRefactored.tsx`
+- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
+- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
+- `client/src/components/panels/chatPanelRefactoredDerived.ts`
+- `client/src/components/panels/chatPanelRefactoredTypes.ts`
+- `client/src/components/panels/useChatPanelRefactored.ts`
+- `client/src/config/channels.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 69 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,31 @@
 # Recommended Decision
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Recommended Decision** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Commit to full 2-month optimization plan** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Implement gap filling only (skip pruning)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Implement only Phase 1 (Quick Wins)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Option A: Full Optimization (Recommended)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Option B: Quick Wins Only** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Option C: Strategic Focus** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **players/profession.py** (8 connections) — `server/schemas/players/profession.py`
+- **BaseModel** (5 connections)
+- **MechanicalEffect** (4 connections) — `server/schemas/players/profession.py`
+- **ProfessionData** (4 connections) — `server/schemas/players/profession.py`
+- **StatRequirement** (4 connections) — `server/schemas/players/profession.py`
+- **Profession API response schemas for MythosMUD server. This module provides…** (1 connections) — `server/schemas/players/profession.py`
+- **Stat requirement for a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Mechanical effect of a profession.** (1 connections) — `server/schemas/players/profession.py`
+- **Profession data model.** (1 connections) — `server/schemas/players/profession.py`
 
 ## Relationships
 
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `server/schemas/players/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

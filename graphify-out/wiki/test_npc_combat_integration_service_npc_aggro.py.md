@@ -1,52 +1,51 @@
 # test_npc_combat_integration_service_npc_aggro.py
 
-> 34 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_integration_service_npc_aggro.py** (20 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **asyncio** (9 connections)
-- **mock_async_persistence()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_combat_service()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **mock_connection_manager()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **fixture** (5 connections)
-- **mock_messaging_integration()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_happy_path()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_invalid_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_no_combat_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_npc_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_npc_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_handle_npc_attack_on_player_skips_already_dead_target()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_setup_combat_uuids_npc_attacker_valid()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **test_setup_combat_uuids_npc_attacker_value_error()** (2 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Unit tests for NPC combat integration service - NPC-initiated aggro combat…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when NPC instance cannot be…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when NPC is dead.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when combat location is invalid.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when combat service is missing.** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns True when combat already exists with…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- **Test handle_npc_attack_on_player returns False when player is in combat with…** (1 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
-- *... and 9 more nodes in this community*
+- **test_chat_logger.py** (21 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_chat_logger_initialization_with_directory()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_channel_log_stats_and_cleanup()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_get_log_file_paths()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_get_log_stats()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_chat_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_local_global_system_channel_messages()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_moderation_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_joined_room()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_muted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_player_unmuted()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_rate_limit_violation()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_system_event()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_whisper_channel_message()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_shutdown()** (2 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **test_log_message_flagged_and_player_left()** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Unit tests for chat logger service. Tests the ChatLogger class for structured…** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_muted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_unmuted writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_player_joined_room writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_rate_limit_violation writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test get_log_file_paths returns correct paths.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test get_log_stats returns statistics.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Test log_whisper_channel_message writes entry.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Local/global/system channel writers create daily log files.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (8 shared connections)
-- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [HallucinationFrequencyService](HallucinationFrequencyService.md) (2 shared connections)
+- [Container Contents Synchronization Bug](Container_Contents_Synchronization_Bug.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_integration_service.py`
-- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- `server/tests/unit/services/test_chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (88%)
-- INFERRED: 7 (12%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

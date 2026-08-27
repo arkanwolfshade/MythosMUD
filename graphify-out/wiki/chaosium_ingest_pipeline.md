@@ -1,24 +1,24 @@
 # Chaosium Ingest Pipeline
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Chaosium Ingest Pipeline** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **MythosMUD LLM Wiki (Obsidian)** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **🎯 Next Steps** (3 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Future Enhancements** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Immediate Actions** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
-- `data/MythosMUD-Obsidian/AGENTS.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

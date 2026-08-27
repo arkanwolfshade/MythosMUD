@@ -1,21 +1,22 @@
 # Rollback Procedures
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Rollback Procedures** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Emergency Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Individual File Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **HADS tooling (MythosMUD)** (4 connections) — `scripts/hads/README.md`
+- **hads/README.md** (1 connections) — `scripts/hads/README.md`
+- **Policy** (1 connections) — `scripts/hads/README.md`
+- **Source pin** (1 connections) — `scripts/hads/README.md`
+- **Usage** (1 connections) — `scripts/hads/README.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `scripts/hads/README.md`
 
 ## Audit Trail
 

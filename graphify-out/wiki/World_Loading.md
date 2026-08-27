@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **World Loading** (0 connections) — `server/README.md`
+- **apply_019_postgresql_anti_patterns_fixes.ps1** (0 connections) — `scripts/apply_019_postgresql_anti_patterns_fixes.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/README.md`
+- `scripts/apply_019_postgresql_anti_patterns_fixes.ps1`
 
 ## Audit Trail
 

@@ -1,14 +1,16 @@
 # ConnectionPanel.tsx
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **ConnectionPanel.tsx** (3 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **ConnectionPanel.test.tsx** (3 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
-- **ConnectionPanel()** (2 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **ConnectionPanelProps** (1 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **localStorageMock** (1 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
+- **MythosMUD ADR Authoring** (6 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Index Update** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Location** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Structure** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Template** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **ADR Authoring Skill** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Relationships
 
@@ -16,12 +18,11 @@
 
 ## Source Files
 
-- `client/src/components/panels/ConnectionPanel.tsx`
-- `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
+- `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_player_in_room_with_cache_false()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns False when player not in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **app.state Global State Anti-Pattern** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **Uvicorn Best Practices Remediation** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

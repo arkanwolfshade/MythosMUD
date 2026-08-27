@@ -1,55 +1,54 @@
 # test_corpse_lifecycle_service.py
 
-> 103 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **test_corpse_lifecycle_service.py** (56 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **CorpseLifecycleService** (24 connections) — `server/services/corpse_lifecycle_service.py`
-- **asyncio** (23 connections)
-- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
-- **CorpseServiceError** (11 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerComponent** (9 connections)
-- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpse()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (7 connections)
-- **CorpseNotFoundError** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **._persist_corpse()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **._build_corpse_component()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.can_access_corpse()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **test_cleanup_decayed_corpse_not_corpse()** (5 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_create_corpse_on_death_success()** (5 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **Any** (5 connections)
-- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- *... and 78 more nodes in this community*
+- **logging_file_setup.py** (29 connections) — `server/structured_logging/logging_file_setup.py`
+- **setup_enhanced_file_logging()** (20 connections) — `server/structured_logging/logging_file_setup.py`
+- **test_logging_file_setup.py** (20 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_setup_aggregator_handlers()** (9 connections) — `server/structured_logging/logging_file_setup.py`
+- **Queue** (9 connections)
+- **DropOldestQueueHandler** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_category_handlers()** (8 connections) — `server/structured_logging/logging_file_setup.py`
+- **_restore_root_handlers()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_root_handlers_snapshot()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_queue_listener_has_aggregator_handlers()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_warning_and_error_reach_aggregator_files()** (8 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **get_queue_listener()** (7 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_console_handler()** (7 connections) — `server/structured_logging/logging_file_setup.py`
+- **stop_queue_listener()** (7 connections) — `server/structured_logging/logging_file_setup.py`
+- **test_async_log_queue_is_bounded()** (7 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_get_or_create_log_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_prepare_log_environment()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **_setup_async_logging_queue()** (6 connections) — `server/structured_logging/logging_file_setup.py`
+- **test_aggregator_handlers_on_root_when_async()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **test_log_directory_under_env()** (6 connections) — `server/tests/unit/structured_logging/test_logging_file_setup.py`
+- **_get_handler_class()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- **_new_log_queue()** (5 connections) — `server/structured_logging/logging_file_setup.py`
+- **LogRecord** (5 connections)
+- **Path** (5 connections)
+- **_CategoryHandlerConfig** (4 connections) — `server/structured_logging/logging_file_setup.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (29 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (4 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [models/container.py](models-container.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [performance.test.tsx](performance.test.tsx.md) (9 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `server/structured_logging/logging_file_setup.py`
+- `server/tests/unit/structured_logging/test_logging_file_setup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 207 (92%)
-- INFERRED: 17 (8%)
+- EXTRACTED: 155 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

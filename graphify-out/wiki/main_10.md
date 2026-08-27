@@ -1,21 +1,22 @@
 # main
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **visualize_arkham_rooms_simple.py** (5 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Graph** (2 connections)
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Entries** (5 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Summary (from Codacy UI snapshot)** (4 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **codacy_high_critical_baseline.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Codacy High/Critical Baseline – MythosMUD** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **codacy_high_critical_progress.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Codacy High/Critical Remediation Progress** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **Distribution notes** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Example issue types** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **Top code patterns by issue count** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
+- **2026-02-24 — Wave 3 (Backend security) completed** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 4 (Frontend security) verified** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 5 (Complexity refactors)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **2026-02-24 — Wave 6 (Metrics and hardening)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Relationships
 
@@ -23,11 +24,12 @@
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms_simple.py`
+- `docs/archive/investigations/codacy_high_critical_baseline.md`
+- `docs/archive/investigations/codacy_high_critical_progress.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,34 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Frost  (2026-08-11)
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Frost  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Communities (2 total, 1 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **alone-against-the-frost/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Community 0 - "Expedition Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
+- **ClientLogger** (13 connections) — `client/src/utils/logger.ts`
+- **.info()** (6 connections) — `client/src/utils/logger.ts`
+- **.addToBuffer()** (5 connections) — `client/src/utils/logger.ts`
+- **.createLogEntry()** (5 connections) — `client/src/utils/logger.ts`
+- **.error()** (5 connections) — `client/src/utils/logger.ts`
+- **.initializeLogging()** (5 connections) — `client/src/utils/logger.ts`
+- **.flushLogs()** (4 connections) — `client/src/utils/logger.ts`
+- **.warn()** (4 connections) — `client/src/utils/logger.ts`
+- **.debug()** (3 connections) — `client/src/utils/logger.ts`
+- **.clearLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.constructor()** (2 connections) — `client/src/utils/logger.ts`
+- **.downloadLogs()** (2 connections) — `client/src/utils/logger.ts`
+- **.getLogBuffer()** (1 connections) — `client/src/utils/logger.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCCombatMemory](NPCCombatMemory.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/GRAPH_REPORT.md`
+- `client/src/utils/logger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

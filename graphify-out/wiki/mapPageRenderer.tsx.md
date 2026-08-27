@@ -1,54 +1,49 @@
 # mapPageRenderer.tsx
 
-> 22 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **mapPageRenderer.tsx** (19 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **mapPageState.ts** (11 connections) — `client/src/pages/mapPageState.ts`
-- **MapPage.tsx** (8 connections) — `client/src/pages/MapPage.tsx`
-- **renderMapPageState()** (6 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **useMapPageState()** (5 connections) — `client/src/pages/mapPageState.ts`
-- **MapPage.test.tsx** (5 connections) — `client/src/pages/__tests__/MapPage.test.tsx`
-- **MapPage()** (4 connections) — `client/src/pages/MapPage.tsx`
-- **mapPageStatusViews.tsx** (4 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **RoomMapViewerProps** (2 connections) — `client/src/components/map/RoomMapViewer.tsx`
-- **MapPageState** (2 connections) — `client/src/pages/mapPageState.ts`
-- **renderAuthenticatedMapView()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **renderStatusGate()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **resolveMapViewProps()** (2 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **fetchFallbackCurrentRoom()** (2 connections) — `client/src/pages/mapPageState.ts`
-- **parseMapRouteParams()** (2 connections) — `client/src/pages/mapPageState.ts`
-- **MapPageAuthRequiredView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPageErrorView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPageLoadingView()** (2 connections) — `client/src/pages/mapPageStatusViews.tsx`
-- **MapPage** (2 connections) — `client/src/AppRouter.tsx`
-- **AuthenticatedMapProps** (1 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **MapViewResolvedProps** (1 connections) — `client/src/pages/mapPageRenderer.tsx`
-- **RoomData** (1 connections) — `client/src/pages/mapPageState.ts`
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **room_hierarchy_schema.json** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **anyOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [retry.py](retry.py.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
+- [pytest Best Practices](pytest_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/AppRouter.tsx`
-- `client/src/components/map/RoomMapViewer.tsx`
-- `client/src/pages/MapPage.tsx`
-- `client/src/pages/__tests__/MapPage.test.tsx`
-- `client/src/pages/mapPageRenderer.tsx`
-- `client/src/pages/mapPageState.ts`
-- `client/src/pages/mapPageStatusViews.tsx`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

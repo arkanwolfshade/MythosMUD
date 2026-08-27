@@ -1,24 +1,27 @@
 # Testing Strategy
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Advanced Chat Channels Specification** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Global Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Local Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Whisper Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Advanced Chat Channels Tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,38 +1,44 @@
 # _apply_arena_seed_patch.py
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **_apply_arena_seed_patch.py** (12 connections) — `scripts/_apply_arena_seed_patch.py`
-- **patch_file()** (8 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Path** (7 connections)
-- **_append_before_copy_terminator()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_arena_room_links()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_arena_room_rows()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_zone_configuration_row()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_insert_after_line_containing()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_apply_zones_and_subzones()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **main()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_with_trailing_nl()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_load_arena_links()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
-- **_load_arena_rooms()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
-- **One-off idempotent patch: add limbo arena world seed to e2e/unit DML (mirrors…** (1 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Apply arena seed slices to one DML file; return human-readable action lines.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
-- **Patch mythos_e2e and mythos_unit DML files when patch snippet files are present.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **test_party_flow.py** (14 connections) — `server/tests/integration/test_party_flow.py`
+- **PartyUpdated** (11 connections) — `server/events/event_types.py`
+- **party_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
+- **party_service()** (5 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_invite_join_leave_disband_state_and_events()** (5 connections) — `server/tests/integration/test_party_flow.py`
+- **test_party_leader_leaves_disbands()** (5 connections) — `server/tests/integration/test_party_flow.py`
+- **event_bus()** (4 connections) — `server/tests/integration/test_party_flow.py`
+- **asyncio** (3 connections)
+- **fixture** (3 connections)
+- **.__post_init__()** (2 connections) — `server/events/event_types.py`
+- **Event fired when party membership or leadership changes. Emitted by…** (1 connections) — `server/events/event_types.py`
+- **Integration tests for party (ephemeral grouping) feature. Flow: Two players;…** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **When leader leaves, party is disbanded and disbanded event is emitted.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **Collect PartyUpdated events published during test.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **PartyService wired to real EventBus.** (1 connections) — `server/tests/integration/test_party_flow.py`
+- **Two players: A creates party, adds B; B leaves; A disbands. Verify in-memory…** (1 connections) — `server/tests/integration/test_party_flow.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [WebSocket Best Practices](WebSocket_Best_Practices.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [NPCMovementIntegration](NPCMovementIntegration.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/_apply_arena_seed_patch.py`
+- `server/events/event_types.py`
+- `server/tests/integration/test_party_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (80%)
+- INFERRED: 8 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

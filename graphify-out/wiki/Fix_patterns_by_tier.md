@@ -1,24 +1,25 @@
 # Fix patterns by tier
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Fix patterns by tier** (5 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Mypy Remediation** (5 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Mypy Remediation — Reference** (4 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **mypy-remediation/SKILL.md** (2 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **mypy-remediation/reference.md** (2 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🔴 Critical — import and name errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Error code table** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🟡 High — type errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🔵 Low — type precision** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🟢 Medium — type refinement** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Entry point** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Fix-verify loop** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Priority** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **Pylint Best Practices** (6 connections) — `.claude/rules/pylint.md`
+- **2. Code Organization & Readability** (4 connections) — `.claude/rules/pylint.md`
+- **1. Configuration is King: `pyproject.toml`** (3 connections) — `.claude/rules/pylint.md`
+- **3. Robustness & Error Prevention** (3 connections) — `.claude/rules/pylint.md`
+- **4. Integration into Workflow** (3 connections) — `.claude/rules/pylint.md`
+- **pylint.md** (1 connections) — `.claude/rules/pylint.md`
+- **1.1. Silence the Noise, Enable What Matters** (1 connections) — `.claude/rules/pylint.md`
+- **1.2. Filter by Confidence** (1 connections) — `.claude/rules/pylint.md`
+- **2.1. Docstrings for Everything** (1 connections) — `.claude/rules/pylint.md`
+- **2.2. Naming Conventions** (1 connections) — `.claude/rules/pylint.md`
+- **2.3. Manage Complexity** (1 connections) — `.claude/rules/pylint.md`
+- **3.1. Specific Exception Handling** (1 connections) — `.claude/rules/pylint.md`
+- **3.2. Avoid Unused Code** (1 connections) — `.claude/rules/pylint.md`
+- **4.1. Pre-commit Hooks** (1 connections) — `.claude/rules/pylint.md`
+- **4.2. CI/CD Integration** (1 connections) — `.claude/rules/pylint.md`
+- **5. Pylint in the Modern Python Stack** (1 connections) — `.claude/rules/pylint.md`
 
 ## Relationships
 
@@ -26,12 +27,11 @@
 
 ## Source Files
 
-- `.claude/skills/mypy-remediation/SKILL.md`
-- `.claude/skills/mypy-remediation/reference.md`
+- `.claude/rules/pylint.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

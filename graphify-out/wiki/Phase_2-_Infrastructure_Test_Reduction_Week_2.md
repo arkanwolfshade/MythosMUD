@@ -1,26 +1,28 @@
 # Phase 2: Infrastructure Test Reduction (Week 2)
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 2: Infrastructure Test Reduction (Week 2)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.1: Reduce Dependency Injection Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.2: Consolidate Dependency Injection Test Files (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.3: Reduce App Factory Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 2.4: Review Lifespan Tests (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Methods Extracted** (7 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 1: Player Operations (~800 lines → ~80 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 2: Health & XP Operations (~400 lines → ~40 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 3: Container Operations (~300 lines → ~30 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 4: Item Operations (~200 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 5: Profession Operations (~100 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Group 6: Room Operations (~100 lines → ~20 lines)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

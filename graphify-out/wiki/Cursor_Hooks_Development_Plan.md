@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Cursor hooks.json** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
-- **Cursor Hooks Development Plan** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- **Test Suite Analyzer Agent** (1 connections) — `.claude/agents/test-analyzer.md`
+- **CONTRIBUTING.md** (1 connections) — `CONTRIBUTING.md`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- `.claude/agents/test-analyzer.md`
+- `CONTRIBUTING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

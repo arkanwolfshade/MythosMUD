@@ -4,43 +4,33 @@
 
 ## Key Concepts
 
-- **test_command_factories.py** (60 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_aliases_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_drop_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **test_create_sit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Unit tests for command factories. Tests the CommandFactory class.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_sit_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_drop_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_kick_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_alias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_aliases_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_reply_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Spatial Design** (10 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Visual Hierarchy** (4 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Spacing Systems** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Grid Systems** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Optical Adjustments** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Cards Are Not Required** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Container Queries** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Depth & Elevation** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Hierarchy Through Multiple Dimensions** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Name Tokens Semantically** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **The Self-Adjusting Grid** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **The Squint Test** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Touch Targets vs Visual Size** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **Use 4pt Base, Not 8pt** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
-- [test_create_go_command](test_create_go_command.md) (1 shared connections)
-- [test_create_stand_command](test_create_stand_command.md) (1 shared connections)
-- [test_create_lie_command](test_create_lie_command.md) (1 shared connections)
-- [test_create_ground_command](test_create_ground_command.md) (1 shared connections)
-- [test_create_pickup_command](test_create_pickup_command.md) (1 shared connections)
-- [test_create_put_command](test_create_put_command.md) (1 shared connections)
-- [test_create_get_command](test_create_get_command.md) (1 shared connections)
-- [factory](factory.md) (1 shared connections)
-- [test_create_equip_command](test_create_equip_command.md) (1 shared connections)
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- [compilerOptions](compilerOptions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.claude/skills/frontend-design/reference/spatial-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

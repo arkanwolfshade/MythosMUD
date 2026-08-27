@@ -1,25 +1,23 @@
 # start_hour
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **start_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **gen_arena_uuids.py** (1 connections) — `scripts/gen_arena_uuids.py`
+- **Generate deterministic UUIDs for arena zone, subzone, 121 rooms. One-off script.** (1 connections) — `scripts/gen_arena_uuids.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `scripts/gen_arena_uuids.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,39 @@
 # Phase 4: Testing and Refinement
 
-> 13 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Phase 4: Testing and Refinement** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.1: Comprehensive Testing of All Panels** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.2: Performance Optimization** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.3: User Feedback Integration** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Task 4.4: Documentation Updates** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
-- **Sub-tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- **lint_raw_sql_in_python.py** (9 connections) — `scripts/lint_raw_sql_in_python.py`
+- **scan()** (6 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_find_raw_sql_lines()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_overdue_message()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_strip_comments()** (4 connections) — `scripts/lint_raw_sql_in_python.py`
+- **AllowlistEntry** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_collect_python_files()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **main()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **_strip_line_comment()** (3 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Path** (1 connections)
+- **Guard against raw table CRUD SQL string literals inside Python source. Replaces…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return line with a trailing '# ...' comment removed, so prose mentioning SQL…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return content with every '# ...' line comment blanked out, preserving line…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Return 1-based line numbers containing a raw-SQL violation. Matches against the…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Format an overdue-allowlist-entry message, as a GitHub Actions annotation in CI…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Scan server/ for raw SQL. Returns (new_violations, overdue_warnings,…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **Run the raw-SQL guard and return 1 if any file's raw-SQL count doesn't match…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
+- **One file's grandfathered raw-SQL debt: expected site count, owning issue,…** (1 connections) — `scripts/lint_raw_sql_in_python.py`
 
 ## Relationships
 
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_TASKS.md`
+- `scripts/lint_raw_sql_in_python.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

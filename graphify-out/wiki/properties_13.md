@@ -1,38 +1,43 @@
 # properties
 
-> 12 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **Any** (7 connections)
+- **.validate_data()** (6 connections) — `schemas/validator.py`
+- **.validate_room()** (6 connections) — `schemas/validator.py`
+- **.__init__()** (4 connections) — `schemas/validator.py`
+- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
+- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
+- **.validate_room_database()** (4 connections) — `schemas/validator.py`
+- **.validate_room_file()** (4 connections) — `schemas/validator.py`
+- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
+- **.get_exit_target()** (3 connections) — `schemas/validator.py`
+- **._load_schema()** (3 connections) — `schemas/validator.py`
+- **Path** (3 connections)
+- **Validate a room file against the schema. Args: file_path: Path to the room JSON…** (1 connections) — `schemas/validator.py`
+- **Validate all rooms in a database against the schema. Args: room_database:…** (1 connections) — `schemas/validator.py`
+- **Validate a serialized alias bundle against the alias schema. Args: alias_data:…** (1 connections) — `schemas/validator.py`
+- **Validate emote definition data against the emote schema. Args: emote_data:…** (1 connections) — `schemas/validator.py`
+- **Extract target room ID from exit data, handling both formats. Args: exit_data:…** (1 connections) — `schemas/validator.py`
+- **Extract flags from exit data, handling both formats. Args: exit_data: Exit data…** (1 connections) — `schemas/validator.py`
+- **Initialize the schema validator. Args: schema_path: Path to the JSON schema…** (1 connections) — `schemas/validator.py`
+- **Load and cache the JSON schema.** (1 connections) — `schemas/validator.py`
+- **Validate a JSON document against the loaded schema. Args: data: Data to…** (1 connections) — `schemas/validator.py`
+- **Validate a single room against the schema. Args: room_data: Room data to…** (1 connections) — `schemas/validator.py`
 
 ## Relationships
 
-- [start_hour](start_hour.md) (1 shared connections)
-- [end_hour](end_hour.md) (1 shared connections)
-- [days](days.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
-- [effects](effects.md) (1 shared connections)
-- [items](items.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (11 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `schemas/validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

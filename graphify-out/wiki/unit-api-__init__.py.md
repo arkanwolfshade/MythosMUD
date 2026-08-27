@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/api/__init__.py** (0 connections) — `server/tests/unit/api/__init__.py`
+- **apply_flavor_text_fix.py** (0 connections) — `scripts/apply_flavor_text_fix.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/api/__init__.py`
+- `scripts/apply_flavor_text_fix.py`
 
 ## Audit Trail
 

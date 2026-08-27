@@ -1,10 +1,11 @@
 # command_handler_v2
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **command_handler_v2** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
+- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_unified_command_handler.md`
+- `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

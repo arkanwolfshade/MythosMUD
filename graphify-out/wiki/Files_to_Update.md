@@ -1,23 +1,26 @@
 # Files to Update
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Files to Update** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2025_11_26_ensure_item_instance_foreign_keys.py** (3 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **Ensure foreign key constraints exist for item_instances.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **This migration only ensures constraints exist - no downgrade needed.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Relationships
 
-- [Uplift Strategy](Uplift_Strategy.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

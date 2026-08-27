@@ -1,24 +1,26 @@
 # Comprehensive planning document
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Father-son Mythos MUD vision** (1 connections) — `PLANNING.md`
-- **Comprehensive planning document** (1 connections) — `PLANNING.md`
+- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **fixture** (1 connections)
+- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [enum](enum.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `PLANNING.md`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

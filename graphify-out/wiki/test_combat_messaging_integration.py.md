@@ -1,46 +1,42 @@
 # test_combat_messaging_integration.py
 
-> 14 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **test_combat_messaging_integration.py** (29 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_log_room_broadcast_result_debug_on_success()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_log_room_broadcast_result_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_connection_manager_setter_overrides_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_messaging_integration_init()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Unit tests for combat messaging integration. Tests the…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager setter overrides lazy load mechanism.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **A room broadcast with failed_deliveries must log at error level, not just debug…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **A clean room broadcast (no failures) stays at debug level.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test CombatMessagingIntegration initialization.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager property lazy loads from container.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test _resolve_connection_manager_from_container resolves manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_exploration_procedures.py** (14 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **async_sessionmaker** (10 connections)
+- **AsyncSession** (10 connections)
+- **asyncio** (8 connections)
+- **UUID** (8 connections)
+- **test_get_coordinate_conflicts_pairs_same_coordinate_rooms()** (6 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_mark_room_explored_new_then_existing()** (6 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **player_row()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **room_pair()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_count_coordinated_rooms_counts_positioned_rooms()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_get_explored_rooms_and_is_room_explored()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_get_room_exits_for_coordinate_generation_returns_the_link()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_get_room_id_by_stable_id_resolves_the_uuid()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_get_rooms_for_coordinate_generation_matches_pattern()** (5 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **test_get_room_id_by_stable_id_unknown_returns_null()** (4 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **fixture** (2 connections)
+- **Integration tests for db/procedures/exploration.sql (#633). Replaces raw SQL…** (1 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **A third room at the source room's exact coordinates conflicts with it -- one…** (1 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **One zone/subzone with two rooms linked by a 'north' exit, both positioned on…** (1 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **Create a user and a player row. Yields the player_id.** (1 connections) — `server/tests/integration/test_exploration_procedures.py`
+- **First call is newly-inserted (True); second, idempotent call is already-existed…** (1 connections) — `server/tests/integration/test_exploration_procedures.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (7 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [messaging_integration](messaging_integration.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
-- [test_connection_manager_lazy_load_called](test_connection_manager_lazy_load_called.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_death_personal_message_error](test_broadcast_player_death_personal_message_error.md) (1 shared connections)
-- [test_send_dp_decay_message_error](test_send_dp_decay_message_error.md) (1 shared connections)
-- [test_connection_manager_setter](test_connection_manager_setter.md) (1 shared connections)
-- [test_messaging_integration_init_no_connection_manager](test_messaging_integration_init_no_connection_manager.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/integration/test_exploration_procedures.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 55 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

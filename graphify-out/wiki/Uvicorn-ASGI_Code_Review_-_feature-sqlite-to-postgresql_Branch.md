@@ -1,48 +1,52 @@
 # Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch
 
-> 27 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch** (10 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **✅ POSITIVE FINDINGS** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **UVICORN_CODE_REVIEW.md** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Deprecated `asyncio.get_event_loop()` Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Proper Connection Pool Management** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. Good Error Handling Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. SQL Injection Risk in Field Name Construction** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Async/Await Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Connection Pool Cleanup Verification** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Blocking Operations in Async Context** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Security Considerations** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **5. Event Loop Change Detection Complexity** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **6. Missing Error Context in Some Exception Handlers** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **7. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **8. Inconsistent Async/Sync Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **9. Missing Type Hints in Some Areas** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **CONCLUSION** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Immediate Actions (Before Production)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Long-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📚 REFERENCES** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- *... and 2 more nodes in this community*
+- **SubjectValidator** (19 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
+- **custom_length_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **strict_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **fixture** (3 connections)
+- **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **.validate_subscription_pattern()** (2 connections) — `server/services/nats_subject_manager/validation.py`
+- **Any** (2 connections)
+- **Validate all parameters used in the pattern. Args: pattern: Pattern template…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Validate that a subscription pattern is not overly broad. Prevents patterns…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Validator for NATS subjects and parameters. Provides validation logic that can…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Initialize validator. Args: max_subject_length: Maximum allowed subject length…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Perform basic validation checks on subject. Args: subject: Subject string to…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Validate each component of the subject. Args: subject: Subject string to…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Validate a parameter value. Args: param_name: Name of the parameter…** (1 connections) — `server/services/nats_subject_manager/validation.py`
+- **Create SubjectValidator instance.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **Create SubjectValidator with strict validation.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **Create SubjectValidator with custom max length.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (7 shared connections)
+- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (4 shared connections)
+- [connection_establishment.py](connection_establishment.py.md) (1 shared connections)
+- [DatabaseManager](DatabaseManager.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/UVICORN_CODE_REVIEW.md`
+- `server/services/nats_subject_manager/validation.py`
+- `server/tests/unit/services/nats_subject_manager/test_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 39 (89%)
+- INFERRED: 5 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

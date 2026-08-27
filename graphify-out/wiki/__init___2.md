@@ -1,39 +1,40 @@
 # .__init__
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.__init__()** (5 connections) — `server/models/invite.py`
-- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
-- **.is_active()** (4 connections) — `server/models/game.py`
-- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
-- **Any** (1 connections)
-- **setter** (1 connections)
-- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
-- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
-- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
-- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
+- **Authoritative Environment DML** (7 connections) — `db/LEGACY_FILES.md`
+- **Historical DDL Final Status** (3 connections) — `db/verification/ddl_final_status.md`
+- **Removed Schema and Migration SQL** (2 connections) — `db/LEGACY_FILES.md`
+- **Historical DDL Partial Status** (2 connections) — `db/verification/ddl_status.md`
+- **Historical DDL Verification Summary** (2 connections) — `db/verification/ddl_verification_summary.md`
+- **static_seed.sql (Deprecated)** (1 connections) — `data/static/generated_sql/README.md`
+- **DB Bootstrap Execution Order** (1 connections) — `db/databases/README.md`
+- **mythos_dev players UUID Schema Variation** (1 connections) — `db/verification/ddl_verification_summary.md`
+- **Spells Seed Data (Deprecated)** (1 connections) — `data/spells/README.md`
+- **Generated World and Emotes SQL** (1 connections) — `data/static/generated_sql/README.md`
+- **Legacy Schema Files Removed** (1 connections) — `db/schema/README.md`
 
 ## Relationships
 
-- [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
-- [Invite](Invite.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/models/invite.py`
-- `server/npc/idle_movement.py`
-- `server/npc/npc_base.py`
+- `data/spells/README.md`
+- `data/static/generated_sql/README.md`
+- `db/LEGACY_FILES.md`
+- `db/databases/README.md`
+- `db/schema/README.md`
+- `db/verification/ddl_final_status.md`
+- `db/verification/ddl_status.md`
+- `db/verification/ddl_verification_summary.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (73%)
-- INFERRED: 4 (27%)
+- EXTRACTED: 9 (82%)
+- INFERRED: 2 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

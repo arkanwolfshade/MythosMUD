@@ -1,61 +1,50 @@
 # coerce_int
 
-> 42 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **coerce_int()** (51 connections) — `server/utils/int_coercion.py`
-- **int_coercion.py** (17 connections) — `server/utils/int_coercion.py`
-- **_stats_int()** (14 connections) — `server/models/player.py`
-- **.get_stats()** (13 connections) — `server/models/player.py`
-- **test_inventory_command_coercion.py** (13 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **.set_stats()** (6 connections) — `server/models/player.py`
-- **.apply_dp_change()** (5 connections) — `server/models/player.py`
-- **.apply_dp_decay()** (5 connections) — `server/models/player.py`
-- **.restore_to_full_health()** (5 connections) — `server/models/player.py`
-- **.get_combat_stats()** (4 connections) — `server/models/player.py`
-- **.get_health_percentage()** (4 connections) — `server/models/player.py`
-- **.get_health_state()** (4 connections) — `server/models/player.py`
-- **.is_alive()** (4 connections) — `server/models/player.py`
-- **.is_dead()** (4 connections) — `server/models/player.py`
-- **.is_mortally_wounded()** (4 connections) — `server/models/player.py`
-- **test_coerce_int_string_parsing()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_stats_int_delegates_to_coerce_int()** (3 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_bool_before_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_inf_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_float_nan_falls_back_to_default()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_plain_int()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **test_coerce_int_unknown_type()** (2 connections) — `server/tests/unit/commands/test_inventory_command_coercion.py`
-- **_int_from_decimal_string()** (2 connections) — `server/utils/int_coercion.py`
-- **_int_from_float_safe()** (2 connections) — `server/utils/int_coercion.py`
-- *... and 17 more nodes in this community*
+- **properties** (12 connections) — `schemas/intersection_schema.json`
+- **intersection_schema.json** (7 connections) — `schemas/intersection_schema.json`
+- **description** (5 connections) — `schemas/intersection_schema.json`
+- **name** (5 connections) — `schemas/intersection_schema.json`
+- **id** (4 connections) — `schemas/intersection_schema.json`
+- **plane** (4 connections) — `schemas/intersection_schema.json`
+- **sub_zone** (4 connections) — `schemas/intersection_schema.json`
+- **zone** (4 connections) — `schemas/intersection_schema.json`
+- **field1** (2 connections) — `schemas/intersection_schema.json`
+- **field2** (2 connections) — `schemas/intersection_schema.json`
+- **field3** (2 connections) — `schemas/intersection_schema.json`
+- **additionalProperties** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **pattern** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (17 shared connections)
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [game_tick_death.py](game_tick_death.py.md) (5 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (5 shared connections)
-- [test_look_container.py](test_look_container.py.md) (5 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (5 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (4 shared connections)
-- [command_result_text](command_result_text.md) (4 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (3 shared connections)
-- [PlayerRespawnService](PlayerRespawnService.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [retry.py](retry.py.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\S. Petersen's Field Guide to Lovecraftian Horrors  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_S._Petersen's_Field_Guide_to_Lovecraftian_Horrors__2026-08-12.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/commands/test_inventory_command_coercion.py`
-- `server/utils/int_coercion.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

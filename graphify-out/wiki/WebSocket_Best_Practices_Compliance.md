@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **WebSocket Best Practices Compliance** (0 connections) — `.cursor/websocket-compliance-verification.md`
+- **generate_nats_local_certs.ps1** (0 connections) — `scripts/generate_nats_local_certs.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/websocket-compliance-verification.md`
+- `scripts/generate_nats_local_certs.ps1`
 
 ## Audit Trail
 

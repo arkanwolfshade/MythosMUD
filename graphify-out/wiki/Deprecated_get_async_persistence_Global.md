@@ -1,23 +1,25 @@
 # Deprecated get_async_persistence Global
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
-- **Architecture Review Remediation** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **test_get_wearable_containers_for_player_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_get_wearable_containers_for_player_exception_in_validation()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test get_wearable_containers_for_player handles errors gracefully.** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

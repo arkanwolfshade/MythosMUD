@@ -1,29 +1,34 @@
 # Dependency Upgrade
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Dependency Upgrade** (6 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **deps-upgrade/SKILL.md** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Before starting** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Rollback** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Upgrade procedure** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Verify** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **integration** (13 connections)
+- **test_quest_start_by_trigger_then_abandon()** (10 connections) — `server/tests/integration/test_quest_flow.py`
+- **test_quest_start_log_abandon_flow()** (10 connections) — `server/tests/integration/test_quest_flow.py`
+- **_make_shared_session_factory()** (4 connections) — `server/tests/integration/test_quest_flow.py`
+- **asyncio** (2 connections)
+- **serial** (2 connections)
+- **Integration: start leave_the_tutorial, get_quest_log shows it, abandon, log…** (1 connections) — `server/tests/integration/test_quest_flow.py`
+- **Start quest via start_quest_by_trigger(room), then abandon. Verifies trigger-…** (1 connections) — `server/tests/integration/test_quest_flow.py`
+- **Return a callable that behaves like a session maker but always yields the same…** (1 connections) — `server/tests/integration/test_quest_flow.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_lifecycle_respawn.py](test_lifecycle_respawn.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [Room](Room.md) (2 shared connections)
+- [designTokens.ts](designTokens.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `.claude/skills/deps-upgrade/SKILL.md`
+- `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (82%)
+- INFERRED: 6 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

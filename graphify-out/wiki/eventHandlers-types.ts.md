@@ -1,73 +1,70 @@
 # eventHandlers/types.ts
 
-> 55 nodes
+> 156 nodes
 
 ## Key Concepts
 
-- **eventHandlers/types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **stateUpdateUtils.ts** (43 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **projector.ts** (21 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- **eventLog/index.ts** (12 connections) — `client/src/components/ui-v2/eventLog/index.ts`
-- **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- **eventLog/types.ts** (11 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **projector.projectState.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **EventLog** (9 connections) — `client/src/components/ui-v2/eventLog/types.ts`
-- **projectState()** (9 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **projectEvent()** (7 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
-- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- **applyEventUpdates()** (7 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **IEventStore** (6 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
-- **getInitialGameState()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- **mergeOccupantData()** (5 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **projectorConstants.ts** (5 connections) — `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- *... and 30 more nodes in this community*
+- **Spell** (136 connections) — `server/models/spell.py`
+- **SpellEffectType** (45 connections) — `server/models/spell.py`
+- **SpellSchool** (37 connections) — `server/models/spell.py`
+- **SpellTargetType** (34 connections) — `server/models/spell.py`
+- **SpellRangeType** (32 connections) — `server/models/spell.py`
+- **test_spell.py** (32 connections) — `server/tests/unit/models/test_spell.py`
+- **spell.py** (29 connections) — `server/models/spell.py`
+- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
+- **SpellMaterial** (25 connections) — `server/models/spell.py`
+- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
+- **test_spell_materials.py** (23 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_spell_costs.py** (20 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_spell_registry.py** (19 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **_spell()** (15 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **spell_costs.py** (13 connections) — `server/game/magic/spell_costs.py`
+- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
+- **_spell()** (10 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_get_combat_target_auto_selects_opponent()** (10 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
+- **_spell()** (9 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
+- **self_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_spell_with_materials()** (8 connections) — `server/tests/unit/models/test_spell.py`
+- **UUID** (8 connections)
+- *... and 131 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (38 shared connections)
-- [logger.ts](logger.ts.md) (20 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (14 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (14 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (12 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (9 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
-- [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (45 shared connections)
+- [Any](Any.md) (36 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (23 shared connections)
+- [test_metrics.py](test_metrics.py.md) (16 shared connections)
+- [ContainerComponent](ContainerComponent.md) (15 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (15 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (13 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (12 shared connections)
+- [debugLogger](debugLogger.md) (10 shared connections)
+- [extract_player_name](extract_player_name.md) (8 shared connections)
+- [SkillService](SkillService.md) (7 shared connections)
+- [PlayerStatsConfig](PlayerStatsConfig.md) (7 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
-- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
-- `client/src/components/ui-v2/eventLog/eventStore.ts`
-- `client/src/components/ui-v2/eventLog/index.ts`
-- `client/src/components/ui-v2/eventLog/projector.ts`
-- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
-- `client/src/components/ui-v2/eventLog/types.ts`
-- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
-- `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
-- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
-- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
-- `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
-- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
-- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- `server/game/magic/spell_costs.py`
+- `server/game/magic/spell_materials.py`
+- `server/game/magic/spell_registry.py`
+- `server/game/magic/spell_targeting.py`
+- `server/models/spell.py`
+- `server/tests/unit/game/magic/test_magic_healing_events.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/tests/unit/game/magic/test_spell_costs.py`
+- `server/tests/unit/game/magic/test_spell_materials.py`
+- `server/tests/unit/game/magic/test_spell_registry.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/models/test_spell.py`
 
 ## Audit Trail
 
-- EXTRACTED: 264 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 448 (73%)
+- INFERRED: 168 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

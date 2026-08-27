@@ -1,51 +1,50 @@
 # test_map_helpers.py
 
-> 45 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_map_helpers.py** (16 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **map_helpers.py** (15 connections) — `server/api/map_helpers.py`
-- **load_rooms_with_coordinates()** (14 connections) — `server/api/map_helpers.py`
-- **load_single_room_with_coordinates()** (11 connections) — `server/api/map_helpers.py`
-- **load_room_exits()** (9 connections) — `server/api/map_helpers.py`
-- **build_room_dict()** (8 connections) — `server/api/map_helpers.py`
-- **_MockResultRows** (7 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **build_zone_pattern()** (7 connections) — `server/api/map_helpers.py`
-- **TestBuildZonePattern** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **test_load_room_exits_attaches_exits_by_stable_id()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **test_load_rooms_with_coordinates_executes_zone_query_and_exits()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **test_load_single_room_with_coordinates_loads_exits()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **asyncio** (5 connections)
-- **TestBuildRoomDict** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **test_load_room_exits_no_rooms_no_query()** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **test_load_single_room_with_coordinates_none_when_missing()** (4 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **Any** (4 connections)
-- **.test_full_row()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **.test_null_map_coords()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **.test_empty_sub_zone_treated_as_none()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **.test_plane_zone_only()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **.test_plane_zone_sub_zone()** (3 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **AsyncSession** (3 connections)
-- **.__init__()** (1 connections) — `server/tests/unit/api/test_map_helpers.py`
-- **.__iter__()** (1 connections) — `server/tests/unit/api/test_map_helpers.py`
-- *... and 20 more nodes in this community*
+- **NATSMessageSubscriptionMixin** (31 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **Any** (12 connections)
+- **.handle_player_movement()** (6 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.cleanup_empty_subzone_subscriptions()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.unsubscribe_from_subzone()** (4 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._get_event_handler_map()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_players_in_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_combat_ended_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_combat_started_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_game_tick_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_died_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_npc_took_damage_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_attacked_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_entered_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._handle_player_left_event()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_subzone()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.track_player_subzone_subscription()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **._validate_event_message()** (3 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_active_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_event_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.get_subscription_count()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.is_event_subscription_active()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- **.subscribe_to_event_subjects()** (2 connections) — `server/realtime/nats_message_handler_subscriptions.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (6 shared connections)
-- [maps.py](maps.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
+- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
+- [vim Best Practices and Coding Standards](vim_Best_Practices_and_Coding_Standards.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/tests/unit/api/test_map_helpers.py`
+- `server/realtime/nats_message_handler_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
+- EXTRACTED: 75 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

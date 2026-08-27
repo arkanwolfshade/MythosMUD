@@ -1,57 +1,50 @@
 # test_npc_combat_handlers.py
 
-> 59 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **test_npc_combat_handlers.py** (23 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
-- **npc_combat_handlers.py** (16 connections) — `server/services/npc_combat_handlers.py`
-- **CombatResultCtx** (12 connections) — `server/services/npc_combat_handlers.py`
-- **asyncio** (9 connections)
-- **fixture** (8 connections)
-- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
-- **.handle_combat_result()** (5 connections) — `server/services/npc_combat_handlers.py`
-- **npc_combat_handlers()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_broadcast_error()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_combat_ended()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_combat_result_unsuccessful()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **._broadcast_combat_success()** (3 connections) — `server/services/npc_combat_handlers.py`
-- **.handle_npc_death()** (3 connections) — `server/services/npc_combat_handlers.py`
-- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_handlers.py`
-- **mock_combat_memory()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_combat_result()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_data_provider()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_lifecycle()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_messaging_integration()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_npc_instance()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **mock_rewards()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
-- *... and 34 more nodes in this community*
+- **test_lucidity_service.py** (25 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **asyncio** (15 connections)
+- **test_add_liability_increments_stack()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_add_liability_new_entry()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_adds_liability_on_large_drop()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_clamps_to_max()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_clamps_to_min()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_clears_phantoms_on_tier_improvement()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_keeps_phantoms_within_eligible_tiers()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_negative_delta()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_apply_lucidity_adjustment_positive_delta()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_clear_hallucination_timers()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_clear_liability_decrements_stack()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_clear_liability_remove_all()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_cooldown_get_and_set()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_get_player_lucidity_delegates()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_increment_exposure_state_delegates()** (4 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **mock_lucidity_record()** (3 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **test_default_liability_picker()** (3 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **fixture** (2 connections)
+- **Unit tests for lucidity service.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **Test that lucidity adjustment clamps to minimum value.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **Test adding a new liability code.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- **Test stacking an existing liability.** (1 connections) — `server/tests/unit/services/test_lucidity_service.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (8 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
-- [NPCCombatMemory](NPCCombatMemory.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatRewards](NPCCombatRewards.md) (3 shared connections)
-- [._complete_player_attack_on_npc_after_grace](_complete_player_attack_on_npc_after_grace.md) (1 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (18 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_handlers.py`
-- `server/tests/unit/services/test_npc_combat_handlers.py`
+- `server/tests/unit/services/test_lucidity_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (90%)
-- INFERRED: 12 (10%)
+- EXTRACTED: 61 (80%)
+- INFERRED: 15 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

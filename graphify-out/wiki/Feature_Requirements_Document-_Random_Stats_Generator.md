@@ -1,46 +1,62 @@
 # Feature Requirements Document: Random Stats Generator
 
-> 25 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **Feature Requirements Document: Random Stats Generator** (12 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Implementation Phases** (5 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Technical Requirements** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Flow** (4 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **UI/UX Requirements** (3 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **FRD_random_stats_generator.md** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **1. Registration Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **2. Stats Rolling Process** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **3. Error Handling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Acceptance Criteria** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Backend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Dependencies** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Frontend Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Future Enhancements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Overview** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 1: Core Stats Rolling** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 2: Integration** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 3: Error Handling & Polish** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Phase 4: Testing & Validation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Risks & Mitigation** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Security Requirements** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Success Metrics** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Experience** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **User Story** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
-- **Visual Design** (1 connections) — `docs/archive/FRD_random_stats_generator.md`
+- **messageHandlers.ts** (21 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **statusParser.ts** (11 connections) — `client/src/utils/statusParser.ts`
+- **EventHandler** (7 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **handleCommandResponse()** (6 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **handleCommandResponse.test.ts** (6 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
+- **createMockAppendMessage()** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **createMockContext()** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **handleChatMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
+- **handleRoomMessage.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts`
+- **handleSystem.test.ts** (5 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
+- **handleRoomMessage()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **resolveChatTypeFromChannel()** (4 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **convertToPlayerInterface()** (4 connections) — `client/src/utils/statusParser.ts`
+- **parseStatusResponse()** (4 connections) — `client/src/utils/statusParser.ts`
+- **statusParser.test.ts** (4 connections) — `client/src/utils/__tests__/statusParser.test.ts`
+- **handleChatMessage()** (3 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **ParsedPlayerData** (2 connections) — `client/src/utils/statusParser.ts`
+- **handleSystem()** (2 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- **PlayerWithProfession** (1 connections) — `client/src/utils/statusParser.ts`
+- **StatusLineHandler** (1 connections) — `client/src/utils/statusParser.ts`
+- **ensureProfession()** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseIntField()** (1 connections) — `client/src/utils/statusParser.ts`
+- **parseSlashPair()** (1 connections) — `client/src/utils/statusParser.ts`
+- **CHANNEL_TO_TYPE_MAP** (1 connections) — `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (7 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (6 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (4 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [AdminAuthService](AdminAuthService.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/FRD_random_stats_generator.md`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleChatMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleCommandResponse.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleRoomMessage.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/handleSystem.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- `client/src/components/ui-v2/eventHandlers/messageHandlers.ts`
+- `client/src/components/ui-v2/eventHandlers/types.ts`
+- `client/src/utils/__tests__/statusParser.test.ts`
+- `client/src/utils/statusParser.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 75 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

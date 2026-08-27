@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_broadcast_by_channel_type_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_by_channel_type handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Lucidity -10 Delirium Threshold** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **Missing Delirium Respawn Feature** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,60 +1,67 @@
 # test_look_room.py
 
-> 107 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **test_look_room.py** (36 connections) — `server/tests/unit/commands/test_look_room.py`
-- **look_room.py** (26 connections) — `server/commands/look_room.py`
-- **test_look_room_helpers.py** (22 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **_handle_room_look()** (18 connections) — `server/commands/look_room.py`
-- **_filter_other_players()** (17 connections) — `server/commands/look_room.py`
-- **test_visual_indicator.py** (14 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **asyncio** (13 connections)
-- **_format_items_section()** (11 connections) — `server/commands/look_room.py`
-- **_format_exits_list()** (10 connections) — `server/commands/look_room.py`
-- **_get_room_description()** (10 connections) — `server/commands/look_room.py`
-- **_format_containers_section()** (9 connections) — `server/commands/look_room.py`
-- **_format_players_section()** (9 connections) — `server/commands/look_room.py`
-- **_get_room_id()** (9 connections) — `server/commands/look_room.py`
-- **_handle_direction_look()** (9 connections) — `server/commands/look_room.py`
-- **_format_npcs_section()** (8 connections) — `server/commands/look_room.py`
-- **Any** (8 connections)
-- **test_filter_other_players()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **test_filter_other_players_all_filtered()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **test_filter_other_players_includes_player_without_websocket()** (4 connections) — `server/tests/unit/commands/test_look_room_helpers.py`
-- **test_filter_other_players_excludes_current()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_filter_other_players_no_name_attribute()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_containers_section_empty()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_containers_section_no_persistence()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_containers_section_no_room_id()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- **test_format_containers_section_with_containers()** (4 connections) — `server/tests/unit/commands/test_look_room.py`
-- *... and 82 more nodes in this community*
+- **get_npc_instance_service()** (64 connections) — `server/services/npc_instance_service.py`
+- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
+- **npc_admin/__init__.py** (25 connections) — `server/commands/npc_admin/__init__.py`
+- **instance.py** (23 connections) — `server/commands/npc_admin/instance.py`
+- **npc_admin_commands.py** (22 connections) — `server/commands/npc_admin_commands.py`
+- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
+- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
+- **definition.py** (17 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_behavior_command()** (14 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
+- **NPCDefinitionType** (11 connections) — `server/models/npc.py`
+- **handle_npc_delete_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_list_command()** (11 connections) — `server/commands/npc_admin/definition.py`
+- **handle_npc_despawn_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_move_command()** (11 connections) — `server/commands/npc_admin/instance.py`
+- **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **behavior.py** (11 connections) — `server/commands/npc_admin/behavior.py`
+- **npc_admin/monitoring.py** (11 connections) — `server/commands/npc_admin/monitoring.py`
+- **handle_npc_stats_command()** (10 connections) — `server/commands/npc_admin/instance.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (7 shared connections)
-- [test_look_player.py](test_look_player.py.md) (7 shared connections)
-- [look_command.py](look_command.py.md) (5 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (4 shared connections)
-- [occupant_display.py](occupant_display.py.md) (3 shared connections)
+- [HealthStatus](HealthStatus.md) (51 shared connections)
+- [CombatParticipant](CombatParticipant.md) (21 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (18 shared connections)
+- [NPCDefinition](NPCDefinition.md) (13 shared connections)
+- [maps.py](maps.py.md) (10 shared connections)
+- [factory](factory.md) (5 shared connections)
+- [RoomLoader](RoomLoader.md) (5 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [Stats](Stats.md) (4 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (3 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_room.py`
-- `server/tests/unit/commands/test_look_room.py`
-- `server/tests/unit/commands/test_look_room_helpers.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/commands/npc_admin/__init__.py`
+- `server/commands/npc_admin/behavior.py`
+- `server/commands/npc_admin/definition.py`
+- `server/commands/npc_admin/instance.py`
+- `server/commands/npc_admin/monitoring.py`
+- `server/commands/npc_admin/router.py`
+- `server/commands/npc_admin_commands.py`
+- `server/models/npc.py`
+- `server/services/npc_instance_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 225 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 326 (91%)
+- INFERRED: 32 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

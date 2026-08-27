@@ -1,27 +1,28 @@
 # Playwright MCP Scenarios
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
+- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
+- **increment_exception()** (2 connections) — `server/monitoring/exception_metrics.py`
+- **Any** (1 connections)
+- **Exception metrics tracking for monitoring. This module provides thread-safe…** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Increment the count for a specific exception type. Args: exc_type: The…** (1 connections) — `server/monitoring/exception_metrics.py`
+- **Get a summary of exception counts. Returns: dict[str, Any]: Dictionary…** (1 connections) — `server/monitoring/exception_metrics.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- `server/monitoring/exception_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

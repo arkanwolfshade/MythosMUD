@@ -1,54 +1,61 @@
 # test_websocket_handler_validation_errors.py
 
-> 63 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_validation_errors.py** (40 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **asyncio** (25 connections)
-- **test_validate_message_validation_error()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_chat_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_chat_message_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_broadcast_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_game_command_with_broadcast()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_handle_websocket_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_process_websocket_command_player_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_runtime_error_close_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_runtime_error_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_runtime_error_other()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_error_response_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_send_system_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_cleanup_connection_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_cleanup_connection_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_process_exception_in_message_loop()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- **test_validate_message_passes_expected_token_from_connection_metadata()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
-- *... and 38 more nodes in this community*
+- **EventHandler** (33 connections) — `server/realtime/event_handlers.py`
+- **event_handlers.py** (24 connections) — `server/realtime/event_handlers.py`
+- **test_event_handlers_combat.py** (23 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **asyncio** (11 connections)
+- **_send_combat_participant_updates()** (10 connections) — `server/realtime/event_handlers.py`
+- **_as_event_data_dict()** (8 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_broadcast_and_bridge()** (8 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
+- **_publish_npc_died_to_event_bus()** (6 connections) — `server/realtime/event_handlers.py`
+- **_refresh_room_after_npc_death()** (6 connections) — `server/realtime/event_handlers.py`
+- **.handle_event_message()** (5 connections) — `server/realtime/event_handlers.py`
+- **_npc_died_ids_or_warn()** (5 connections) — `server/realtime/event_handlers.py`
+- **_participant_key_strings()** (5 connections) — `server/realtime/event_handlers.py`
+- **ConnectionManager** (5 connections)
+- **test_handle_npc_took_damage_flattens_event_data_for_websocket()** (4 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- **.get_event_handler_map()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_ended_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_combat_started_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_died_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_npc_took_damage_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.handle_player_attacked_event()** (3 connections) — `server/realtime/event_handlers.py`
+- **.__init__()** (3 connections) — `server/realtime/event_handlers.py`
+- **.validate_event_message()** (3 connections) — `server/realtime/event_handlers.py`
+- **test_handle_combat_ended_event()** (3 connections) — `server/tests/unit/realtime/test_event_handlers_combat.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (7 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (6 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (4 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (4 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [PopulationStats](PopulationStats.md) (6 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
+- [verify_npc_occupants.py](verify_npc_occupants.py.md) (2 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
+- [test_command_service.py](test_command_service.py.md) (1 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
+- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
+- [test_connection_disconnection.py](test_connection_disconnection.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- `server/realtime/event_handlers.py`
+- `server/realtime/nats_message_handler.py`
+- `server/tests/unit/realtime/test_event_handlers_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (88%)
-- INFERRED: 13 (12%)
+- EXTRACTED: 127 (88%)
+- INFERRED: 17 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,54 +4,47 @@
 
 ## Key Concepts
 
-- **useDraggablePanelInteractions.ts** (31 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **useDraggablePanelLayout.ts** (11 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **DraggablePanel()** (9 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **useDraggablePanelLayout()** (9 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **DraggablePanelCore.tsx** (9 connections) — `client/src/components/DraggablePanelCore.tsx`
-- **DraggablePanel.tsx** (8 connections) — `client/src/components/DraggablePanel.tsx`
-- **draggablePanelUtils.ts** (7 connections) — `client/src/components/draggablePanelUtils.ts`
-- **relativeSizeToAbsolute()** (6 connections) — `client/src/components/draggablePanelUtils.ts`
-- **relativeToAbsolute()** (6 connections) — `client/src/components/draggablePanelUtils.ts`
-- **useDraggablePanelInteractionCore()** (6 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **computeInitialPanelState()** (6 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **computeFallbackPanelState()** (5 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **computeSafePanelState()** (5 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **applyDragMove()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **applyKeyboardResizeDelta()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **canBeginHeaderDrag()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **handlePanelPointerMove()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **updateResizePosition()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **useDraggablePanelInteractions()** (4 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **clampPanelPosition()** (4 connections) — `client/src/components/useDraggablePanelLayout.ts`
-- **isMouseEventOnHeader()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **isPanelDragBlockedTarget()** (3 connections) — `client/src/components/draggablePanelUtils.ts`
-- **applyResizeMove()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **beginHeaderDrag()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
-- **computeKeyboardResizeDimensions()** (3 connections) — `client/src/components/useDraggablePanelInteractions.ts`
+- **test_player_occupant_processor.py** (27 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **processor()** (4 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **asyncio** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_grace_period_exception()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_invalid_name()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_process_players_for_occupants_with_uuid_ensure_player()** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **fixture** (3 connections)
+- **Test _create_player_occupant_info adds (linkdead) indicator.** (3 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_already_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_mixed_types()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_convert_player_ids_to_uuids_value_error()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_both_indicators()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_default_level()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_linkdead()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_online()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_create_player_occupant_info_warded()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
+- **test_ensure_player_included_in_list_already_present()** (2 connections) — `server/tests/unit/realtime/test_player_occupant_processor.py`
 - *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [debugLogger](debugLogger.md) (2 shared connections)
-- [DraggablePanelView.tsx](DraggablePanelView.tsx.md) (2 shared connections)
+- [.claude/hooks/record_edited_file.py](claude-hooks-record_edited_file.py.md) (3 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/DraggablePanel.tsx`
-- `client/src/components/DraggablePanelCore.tsx`
-- `client/src/components/__tests__/DraggablePanel.grid-positioning.test.tsx`
-- `client/src/components/__tests__/DraggablePanel.test.tsx`
-- `client/src/components/draggablePanelUtils.ts`
-- `client/src/components/useDraggablePanelInteractions.ts`
-- `client/src/components/useDraggablePanelLayout.ts`
+- `server/tests/unit/realtime/test_player_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

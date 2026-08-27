@@ -1,48 +1,53 @@
 # asyncio
 
-> 25 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
+- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **asyncio** (7 connections)
+- **ConnectionManager** (7 connections)
+- **.test_emit_loot_all_event_no_connection_manager()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **.test_emit_loot_all_event_no_room_id()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **_diff_items_from_emit()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **mock_connection_manager()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **sample_container_component()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **UUID** (5 connections)
+- **ContainerComponent** (4 connections)
+- **_assert_warning_once()** (3 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **fixture** (3 connections)
+- **ContainerComponent** (1 connections)
+- **Emit WebSocket event for loot_all operation. Args: connection_manager:…** (1 connections) — `server/api/container_events.py`
+- **Test emit_loot_all_event handles emission errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **Test emit_loot_all_event correctly calculates items_removed in diff.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **Test emit_loot_all_event handles case when all items are removed.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **Assert patched logger.warning was called once (typed for basedpyright).** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **Test emit_loot_all_event handles case when no items are removed.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **Extract diff['items'] from emit_container_updated await kwargs.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [ValidationError](ValidationError.md) (18 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (8 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (3 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (2 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/api/container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

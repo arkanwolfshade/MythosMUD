@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **parse_lint_findings()** (2 connections) — `scripts/parse_lint_findings.py`
-- **parse_lint_findings.py** (1 connections) — `scripts/parse_lint_findings.py`
-- **Parse C901 complexity findings from lint output.** (1 connections) — `scripts/parse_lint_findings.py`
+- **Chaosium graphify snapshot - Call of Cthulhu Starter Set** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **call-of-cthulhu-starter-set/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `scripts/parse_lint_findings.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
 
 ## Audit Trail
 

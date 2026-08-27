@@ -1,65 +1,53 @@
 # talk_command.py
 
-> 88 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **talk_command.py** (28 connections) — `server/commands/talk_command.py`
-- **DialogueService** (18 connections) — `server/game/dialogue/dialogue_service.py`
-- **dialogue_service.py** (17 connections) — `server/game/dialogue/dialogue_service.py`
-- **test_talk_command.py** (15 connections) — `server/tests/unit/commands/test_talk_command.py`
-- **test_dialogue_service.py** (14 connections) — `server/tests/unit/game/test_dialogue_service.py`
-- **handle_talk_command()** (13 connections) — `server/commands/talk_command.py`
-- **DialoguePrompt** (12 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueTree** (11 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **_emit_prompt()** (10 connections) — `server/commands/talk_command.py`
-- **._present_node()** (10 connections) — `server/game/dialogue/dialogue_service.py`
-- **.choose_option()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **get_dialogue_service()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **game/dialogue/__init__.py** (9 connections) — `server/game/dialogue/__init__.py`
-- **UUID** (8 connections)
-- **_resolve_player_id()** (7 connections) — `server/commands/talk_command.py`
-- **_talk_by_option_index()** (7 connections) — `server/commands/talk_command.py`
-- **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
-- **format_dialogue_prompt()** (7 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueNode** (6 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **.get_cursor()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **._load_tree_or_fade()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **reset_dialogue_service_for_tests()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **dialogue_tree.py** (6 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **schemas/dialogue/__init__.py** (6 connections) — `server/schemas/dialogue/__init__.py`
-- **_remainder_from_command_data()** (5 connections) — `server/commands/talk_command.py`
-- *... and 63 more nodes in this community*
+- **test_look_container_helpers.py** (46 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **_find_container_in_room()** (24 connections) — `server/commands/look_container.py`
+- **asyncio** (5 connections)
+- **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_no_get_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_via_inner_container_no_inner_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_container_id()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_get_container_data_from_component_no_get_container()** (4 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_extract_container_metadata_no_metadata()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_in_room_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_contents_with_quantity()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_locked()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_sealed()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_look_in()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_format_container_display_with_target_type_container()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_matches_item_instance_id_false()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [quest_commands.py](quest_commands.py.md) (9 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (3 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [test_go_command.py](test_go_command.py.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [ClientLogger](ClientLogger.md) (26 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (12 shared connections)
+- [Uvicorn ASGI Server Best Practices](Uvicorn_ASGI_Server_Best_Practices.md) (9 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/talk_command.py`
-- `server/game/dialogue/__init__.py`
-- `server/game/dialogue/dialogue_service.py`
-- `server/schemas/dialogue/__init__.py`
-- `server/schemas/dialogue/dialogue_tree.py`
-- `server/tests/unit/commands/test_talk_command.py`
-- `server/tests/unit/game/test_dialogue_service.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 121 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

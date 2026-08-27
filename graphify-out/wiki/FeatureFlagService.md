@@ -1,54 +1,55 @@
 # FeatureFlagService
 
-> 91 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **FeatureFlagService** (35 connections) — `server/services/feature_flag_service.py`
-- **TestFeatureFlagService** (23 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **feature_flag_service.py** (13 connections) — `server/services/feature_flag_service.py`
-- **test_feature_flag_service.py** (10 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **get_feature_flags()** (9 connections) — `server/services/feature_flag_service.py`
-- **TestGlobalFunctions** (8 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.get_combat_configuration()** (8 connections) — `server/services/feature_flag_service.py`
-- **is_combat_enabled()** (8 connections) — `server/services/feature_flag_service.py`
-- **.get_feature_status()** (7 connections) — `server/services/feature_flag_service.py`
-- **is_combat_logging_enabled()** (6 connections) — `server/services/feature_flag_service.py`
-- **is_combat_monitoring_enabled()** (6 connections) — `server/services/feature_flag_service.py`
-- **.validate_combat_requirements()** (5 connections) — `server/services/feature_flag_service.py`
-- **.__init__()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.check_combat_availability()** (4 connections) — `server/services/feature_flag_service.py`
-- **refresh_feature_flags()** (4 connections) — `server/services/feature_flag_service.py`
-- **.__init__()** (3 connections) — `server/services/feature_flag_service.py`
-- **.test_check_combat_availability_disabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_enabled()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_invalid_requirements()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_check_combat_availability_with_player_id()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_clear_cache()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_get_combat_configuration()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_get_feature_status()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- **.test_is_combat_enabled_caching()** (3 connections) — `server/tests/unit/services/test_feature_flag_service.py`
-- *... and 66 more nodes in this community*
+- **test_connection_disconnection.py** (39 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **connection_disconnection.py** (29 connections) — `server/realtime/connection_disconnection.py`
+- **_DisconnectConnectionManager** (22 connections) — `server/realtime/connection_disconnection.py`
+- **UUID** (16 connections)
+- **cleanup_websocket_disconnect()** (15 connections) — `server/realtime/connection_disconnection.py`
+- **asyncio** (14 connections)
+- **disconnect_all_websockets_impl()** (13 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_room_subscriptions()** (12 connections) — `server/realtime/connection_disconnection.py`
+- **_track_disconnect_if_needed()** (12 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_player_data()** (11 connections) — `server/realtime/connection_disconnection.py`
+- **force_disconnect_player_impl()** (10 connections) — `server/realtime/connection_disconnection.py`
+- **_apply_disconnect_side_effects()** (9 connections) — `server/realtime/connection_disconnection.py`
+- **_close_and_untrack_websockets()** (6 connections) — `server/realtime/connection_disconnection.py`
+- **_disconnect_single_websocket()** (6 connections) — `server/realtime/connection_disconnection.py`
+- **_is_non_intentional_force_disconnect()** (6 connections) — `server/realtime/connection_disconnection.py`
+- **_disconnect_websocket_by_connection_id()** (5 connections) — `server/realtime/connection_disconnection.py`
+- **_cleanup_connection_tracking()** (4 connections) — `server/realtime/connection_disconnection.py`
+- **test_cleanup_player_data_has_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_cleanup_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_cleanup_websocket_disconnect_intentional_without_sockets()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_cleanup_websocket_disconnect_when_mapping_cleared_during_close()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_disconnect_all_websockets()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_disconnect_all_websockets_none_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_disconnect_connection_by_id_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- **test_force_disconnect_player_impl_intentional_without_sockets()** (4 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (3 shared connections)
-- [CombatConfiguration](CombatConfiguration.md) (3 shared connections)
-- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (18 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (14 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (4 shared connections)
+- [QuestService](QuestService.md) (2 shared connections)
+- [Commands](Commands.md) (1 shared connections)
+- [_parse_env_list](_parse_env_list.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/services/feature_flag_service.py`
-- `server/tests/unit/services/test_feature_flag_service.py`
+- `server/realtime/connection_disconnection.py`
+- `server/tests/unit/realtime/test_connection_disconnection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 145 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 200 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

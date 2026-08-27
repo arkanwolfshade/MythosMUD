@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **temp_verify_invites.py** (0 connections) — `scripts/temp_verify_invites.py`
+- **Structured Logging Correct Patterns** (0 connections) — `docs/examples/logging/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_verify_invites.py`
+- `docs/examples/logging/README.md`
 
 ## Audit Trail
 

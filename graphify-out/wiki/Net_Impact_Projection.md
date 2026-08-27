@@ -1,21 +1,22 @@
 # Net Impact Projection
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **2026_02_18_add_player_skills_table.py** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Create player_skills table if not exists (matches db/migrations/025).** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Drop player_skills table.** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Audit Trail
 

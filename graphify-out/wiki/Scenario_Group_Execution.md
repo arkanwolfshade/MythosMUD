@@ -1,26 +1,26 @@
 # Scenario Group Execution
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
-- **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **Exception** (2 connections)
+- **Handle NATS errors. AI: Runs as fire-and-forget async task to prevent blocking…** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (2 shared connections)
 
 ## Source Files
 
-- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
-- `e2e-tests/EXECUTION_VALIDATION.md`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

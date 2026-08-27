@@ -1,55 +1,53 @@
 # CatatoniaRegistry
 
-> 63 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **CatatoniaRegistry** (42 connections) — `server/services/catatonia_registry.py`
-- **TestCatatoniaRegistry** (26 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **UUID** (6 connections)
-- **.is_catatonic()** (4 connections) — `server/services/catatonia_registry.py`
-- **.test_on_sanitarium_failover_with_async_callback()** (4 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **datetime** (4 connections)
-- **.get_snapshot()** (3 connections) — `server/services/catatonia_registry.py`
-- **.on_catatonia_cleared()** (3 connections) — `server/services/catatonia_registry.py`
-- **.on_catatonia_entered()** (3 connections) — `server/services/catatonia_registry.py`
-- **.should_trigger_sanitarium_failover()** (3 connections) — `server/services/catatonia_registry.py`
-- **.test_get_snapshot_empty()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_get_snapshot_is_copy()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_get_snapshot_with_players()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_init_with_failover_callback()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_after_cleared()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_is_catatonic_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_multiple_players_catatonic()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_not_registered()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_cleared_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_entered_with_string()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_catatonia_entered_with_uuid()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- **.test_on_sanitarium_failover_callback_exception()** (3 connections) — `server/tests/unit/services/test_catatonia_registry.py`
-- *... and 38 more nodes in this community*
+- **test_websocket_handler_validation_errors.py** (40 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **asyncio** (25 connections)
+- **test_validate_message_validation_error()** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_chat_message_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_broadcast_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_game_command_with_broadcast()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_handle_websocket_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_websocket_command_player_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_close_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_runtime_error_other()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_error_response_websocket_disconnect()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_send_system_message_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_restores_csrf_from_message_jwt_when_metadata_token_missing()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_cleanup_connection_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_cleanup_connection_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_process_exception_in_message_loop()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- **test_validate_message_passes_expected_token_from_connection_metadata()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
-- [catatonia_check.py](catatonia_check.py.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (8 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (7 shared connections)
+- [test_goto_helpers.py](test_goto_helpers.py.md) (5 shared connections)
+- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/catatonia_registry.py`
-- `server/tests/unit/services/test_catatonia_registry.py`
+- `server/tests/unit/realtime/test_websocket_handler_validation_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 103 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 99 (88%)
+- INFERRED: 13 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

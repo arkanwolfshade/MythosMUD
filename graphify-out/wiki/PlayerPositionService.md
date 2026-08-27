@@ -1,63 +1,53 @@
 # PlayerPositionService
 
-> 106 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **PlayerPositionService** (48 connections) — `server/services/player_position_service.py`
-- **test_rest_command.py** (41 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **rest_command.py** (28 connections) — `server/commands/rest_command.py`
-- **cancel_rest_countdown()** (25 connections) — `server/commands/rest_command.py`
+- **test_player_event_handlers_respawn.py** (35 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 - **asyncio** (22 connections)
-- **handle_rest_command()** (21 connections) — `server/commands/rest_command.py`
-- **is_player_resting()** (19 connections) — `server/commands/rest_command.py`
-- **_start_rest_countdown()** (12 connections) — `server/commands/rest_command.py`
-- **Any** (12 connections)
-- **_execute_rest_flow()** (11 connections) — `server/commands/rest_command.py`
-- **UUID** (10 connections)
-- **_check_player_in_combat()** (9 connections) — `server/commands/rest_command.py`
-- **_check_rest_location()** (9 connections) — `server/commands/rest_command.py`
-- **.check_and_interrupt_rest()** (8 connections) — `server/commands/combat_handler.py`
-- **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
-- **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
-- **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
-- **_stand_after_cancelled_rest()** (6 connections) — `server/commands/rest_command.py`
-- **_get_services_from_app()** (4 connections) — `server/commands/rest_command.py`
-- **test_cancel_rest_countdown_cancels_task()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_cancel_rest_countdown_not_resting()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_cancel_rest_countdown_restores_standing()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_check_player_in_combat_false()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_check_player_in_combat_no_service()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **test_check_player_in_combat_true()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- *... and 81 more nodes in this community*
+- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_respawn.py`
+- **mock_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **player_respawn_event_handler()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_send_respawn_event_with_retry_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_current_lucidity_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_delirium_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_get_player_data_for_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_delirium_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_delirium_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **test_handle_player_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [test_player_position_service.py](test_player_position_service.py.md) (24 shared connections)
-- [.change_position](change_position.md) (10 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [MockPersistence](MockPersistence.md) (6 shared connections)
-- [test_go_command.py](test_go_command.py.md) (5 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (4 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (3 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (3 shared connections)
+- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (4 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [npc_database.py](npc_database.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/rest_command.py`
-- `server/services/player_position_service.py`
-- `server/tests/unit/commands/test_rest_command.py`
-- `server/tests/unit/services/test_player_position_service.py`
+- `server/realtime/player_event_handlers_respawn.py`
+- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 277 (94%)
-- INFERRED: 17 (6%)
+- EXTRACTED: 94 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

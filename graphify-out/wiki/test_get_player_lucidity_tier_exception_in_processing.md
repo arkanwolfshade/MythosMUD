@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_get_player_lucidity_tier_exception_in_processing()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _get_player_lucidity_tier handles exceptions during processing.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_room_exits_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns empty dict when room has no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

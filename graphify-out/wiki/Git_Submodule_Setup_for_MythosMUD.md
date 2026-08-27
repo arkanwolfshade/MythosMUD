@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Git Submodule Setup for MythosMUD** (0 connections) — `docs/SUBMODULE_SETUP.md`
+- **tailwind.config.js** (0 connections) — `client/tailwind.config.js`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/SUBMODULE_SETUP.md`
+- `client/tailwind.config.js`
 
 ## Audit Trail
 

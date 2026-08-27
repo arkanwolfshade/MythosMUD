@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Troubleshooting Guide for MythosMUD** (0 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
+- **Codacy CLI via WSL on Windows** (0 connections) — `.codacy/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/TROUBLESHOOTING_GUIDE.md`
+- `.codacy/README.md`
 
 ## Audit Trail
 

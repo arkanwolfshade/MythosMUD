@@ -1,48 +1,51 @@
 # 🎯 Async Remediation - Final Report
 
-> 29 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **🎯 Async Remediation - Final Report** (11 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📁 Files Modified (16 Total)** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **💰 ROI Summary** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎭 Final Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🚀 Production Readiness** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **✅ Verification Results** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📊 What Was Accomplished** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **✅ COMPLETE - ALL 48 INSTANCES MIGRATED** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Status**: ✅**REMEDIATION 100% COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎯 Success Criteria - Final Status** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **ASYNC_REMEDIATION_FINAL_REPORT.md** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **All async anti-patterns have been exorcised from the codebase** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **All Targets Met** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **API/Commands (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Checklist** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Core Infrastructure (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📚 Documentation Delivered** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎯 Final Metrics** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Investment** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Linting** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Phase 1: Critical Fixes (4 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Phase 2: Complete Migration (5 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Recommended Next Steps** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Return** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Service Layer (12 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- *... and 4 more nodes in this community*
+- **InstanceManager** (16 connections) — `server/game/instance_manager.py`
+- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
+- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
+- **.__init__()** (5 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
+- **Room** (5 connections)
+- **Instance** (4 connections) — `server/game/instance_manager.py`
+- **._get_template_rooms()** (4 connections) — `server/game/instance_manager.py`
+- **._remap_exits()** (4 connections) — `server/game/instance_manager.py`
+- **.get_instance()** (3 connections) — `server/game/instance_manager.py`
+- **.get_room_by_id()** (3 connections) — `server/game/instance_manager.py`
+- **._stable_id_from_target()** (3 connections) — `server/game/instance_manager.py`
+- **.destroy_instance()** (2 connections) — `server/game/instance_manager.py`
+- **.get_exit_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **.get_first_room_id()** (2 connections) — `server/game/instance_manager.py`
+- **UUID** (2 connections)
+- **Return template rooms matching instance_template_id.** (1 connections) — `server/game/instance_manager.py`
+- **Clone template rooms into instance-scoped rooms with remapped exits.** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from room - use room.id if it looks like a full path.** (1 connections) — `server/game/instance_manager.py`
+- **Remap exit targets: same-instance rooms use instance IDs, outside exits use…** (1 connections) — `server/game/instance_manager.py`
+- **Extract stable_id from a room ID (may be full path or short form).** (1 connections) — `server/game/instance_manager.py`
+- **Return the instance if it exists.** (1 connections) — `server/game/instance_manager.py`
+- **Remove the instance from the store.** (1 connections) — `server/game/instance_manager.py`
+- **Return the first room ID of the instance (for spawn placement). Order is…** (1 connections) — `server/game/instance_manager.py`
+- **Return the fixed exit room ID for this instance (e.g. Main Foyer).** (1 connections) — `server/game/instance_manager.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [Decisions required](Decisions_required.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- `server/game/instance_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,53 +1,56 @@
 # NATSMessageBroadcastMixin
 
-> 42 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **NATSMessageBroadcastMixin** (25 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._broadcast_to_room_with_filtering()** (11 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._send_messages_to_players()** (7 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Any** (7 connections)
-- **._apply_dampening_and_send_message()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._get_player_lucidity_tier()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._filter_target_players()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._format_message_for_receiver()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **UserManager** (5 connections)
-- **._check_player_mute_status()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._echo_message_to_sender()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._preload_receiver_mute_data()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._compare_canonical_rooms()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._get_player_room_from_online_players()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._get_player_room_from_persistence()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._is_player_in_room()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **._should_apply_mute_check()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Determine if message should be echoed to sender. Args: channel: Channel type…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **Broadcast room-based messages with server-side filtering. This method ensures…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- *... and 17 more nodes in this community*
+- **correct_patterns.py** (21 connections) — `docs/examples/logging/correct_patterns.py`
+- **Result** (5 connections) — `scripts/run_test_ci.py`
+- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
+- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **database** (4 connections) — `docs/examples/logging/migration_examples.py`
+- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_performance_logging()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **.execute()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
+- **.create_user()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **.execute()** (3 connections) — `docs/examples/logging/migration_examples.py`
+- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_database_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **.query()** (2 connections) — `docs/examples/logging/correct_patterns.py`
+- **.__init__()** (1 connections) — `scripts/run_test_ci.py`
+- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [nats_exceptions.py](nats_exceptions.py.md) (4 shared connections)
-- [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
-- [NATSMessageHandler](NATSMessageHandler.md) (1 shared connections)
-- [MessageFilteringHelper](MessageFilteringHelper.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
+- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (3 shared connections)
+- [Profession](Profession.md) (3 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [UserManagerProtocol](UserManagerProtocol.md) (1 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_broadcast.py`
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/migration_examples.py`
+- `scripts/run_test_ci.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

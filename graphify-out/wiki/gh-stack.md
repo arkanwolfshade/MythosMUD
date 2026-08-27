@@ -1,32 +1,33 @@
 # gh-stack
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **gh-stack** (11 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Agent rules** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Exit codes and error recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Known limitations** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Output conventions** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Prerequisites** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Quick reference** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **When to use this skill** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
+- **component_hooks.py** (6 connections) — `server/game/items/component_hooks.py`
+- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_records_prototype_components()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **Any** (1 connections)
+- **Component hook coordination for freshly minted item instances.** (1 connections) — `server/game/items/component_hooks.py`
+- **Prepare component state metadata for a new item instance. This routine…** (1 connections) — `server/game/items/component_hooks.py`
+- **Unit tests for item component hooks.** (1 connections) — `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Relationships
 
-- [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (1 shared connections)
-- [Workflows](Workflows.md) (1 shared connections)
-- [Commands](Commands.md) (1 shared connections)
-- [Thinking about stack structure](Thinking_about_stack_structure.md) (1 shared connections)
+- [authenticated.ts](authenticated.ts.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `server/game/items/component_hooks.py`
+- `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

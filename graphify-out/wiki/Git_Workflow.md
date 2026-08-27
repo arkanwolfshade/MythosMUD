@@ -1,28 +1,30 @@
 # Git Workflow
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **git-workflow/SKILL.md** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **emote_schema.json** (8 connections) — `schemas/emote_schema.json`
+- **required** (2 connections) — `schemas/emote_schema.json`
+- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **$id** (1 connections) — `schemas/emote_schema.json`
+- **$schema** (1 connections) — `schemas/emote_schema.json`
+- **title** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
+- **emotes** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [VirtualizedMessageList.tsx](VirtualizedMessageList.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/git-workflow/SKILL.md`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

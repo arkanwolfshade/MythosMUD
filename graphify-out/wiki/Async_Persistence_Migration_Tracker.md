@@ -1,37 +1,38 @@
 # Async Persistence Migration Tracker
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Async Persistence Migration Tracker** (8 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Migration Strategy** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Migration Pattern** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Current Status** (2 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **ASYNC_PERSISTENCE_MIGRATION_TRACKER.md** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Decision Tree** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Files Requiring Migration** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Overview** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Phase 1: High Priority (✅ COMPLETE)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Phase 2: Service Layer Migration (Next)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Phase 3: Supporting Services** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Phase 4: Startup Services (Low Priority)** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Progress Tracking** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Success Criteria** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Template for Migration** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **Testing Requirements** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- **properties** (7 connections) — `schemas/room_schema.json`
+- **exits** (5 connections) — `schemas/room_schema.json`
+- **down** (2 connections) — `schemas/room_schema.json`
+- **east** (2 connections) — `schemas/room_schema.json`
+- **north** (2 connections) — `schemas/room_schema.json`
+- **south** (2 connections) — `schemas/room_schema.json`
+- **up** (2 connections) — `schemas/room_schema.json`
+- **west** (2 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **oneOf** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

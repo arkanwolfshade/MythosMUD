@@ -1,26 +1,28 @@
 # _resolved_npm
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **_resolved_npm()** (3 connections) — `scripts/precommit_run_npm.py`
-- **main()** (2 connections) — `scripts/precommit_run_npm.py`
-- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
-- **Return absolute path to npm (prefer npm.cmd on Windows), or None if not found.** (1 connections) — `scripts/precommit_run_npm.py`
+- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **fixture** (2 connections)
+- **Create mock combat service.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Create CombatPersistenceHandler instance.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Persistence Layer Refactoring Summary](Persistence_Layer_Refactoring_Summary.md) (2 shared connections)
+- [SessionManager](SessionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/precommit_run_npm.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

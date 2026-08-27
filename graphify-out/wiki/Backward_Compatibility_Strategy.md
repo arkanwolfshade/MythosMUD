@@ -1,27 +1,29 @@
 # Backward Compatibility Strategy
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Layer 1: New Tests (Use Container)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Layer 2: Updated Tests (Hybrid)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Layer 3: Legacy Tests (Unchanged)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Migration Flags** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Three-Layer Compatibility** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **API Endpoints (Phase 2)** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Detailed File Migration Instructions** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Services (Phase 4)** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/containers.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/rooms.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/combat_service.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/user_manager.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [ADR-012: python-statemachine for Backend Connection FSM](ADR-012-_python-statemachine_for_Backend_Connection_FSM.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

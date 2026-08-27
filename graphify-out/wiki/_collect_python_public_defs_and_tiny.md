@@ -1,34 +1,37 @@
 # _collect_python_public_defs_and_tiny
 
-> 12 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **_collect_python_public_defs_and_tiny()** (8 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_is_public_function_stmt()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_is_test_file_path()** (5 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_check_exports_and_tiny_functions()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_python_export_and_tiny()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_is_tiny_single_use()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **AST** (2 connections)
-- **AsyncFunctionDef** (2 connections)
-- **FunctionDef** (2 connections)
-- **Module** (1 connections)
-- **TypeGuard** (1 connections)
-- **stmt** (1 connections)
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Communities (12 total, 7 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **down-darker-trails/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 0 - "Call of Cthulhu (7th Edition); Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 1 - "APP; Characteristics"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 2 - "Everett Scanlon; Gustavo Romero"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 3 - "First Aid; Hit Points"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community 4 - "Formless Spawn of Tsathoggua; Rudolf Zimmer"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (8 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

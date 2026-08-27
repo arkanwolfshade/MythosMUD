@@ -4,15 +4,11 @@
 
 ## Key Concepts
 
-- **eslint.config.mjs** (0 connections) — `.codacy/tools-configs/eslint.config.mjs`
+- **ContainerComponent** (0 connections)
 
 ## Relationships
 
 - No strong cross-community connections detected
-
-## Source Files
-
-- `.codacy/tools-configs/eslint.config.mjs`
 
 ## Audit Trail
 

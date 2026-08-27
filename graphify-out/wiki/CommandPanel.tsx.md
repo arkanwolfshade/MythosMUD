@@ -1,61 +1,68 @@
 # CommandPanel.tsx
 
-> 31 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **CommandPanel.tsx** (29 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **CommandPanel()** (13 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **commandPanelSubmit.ts** (10 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **LogoutButton.tsx** (8 connections) — `client/src/components/ui/LogoutButton.tsx`
-- **prepareCommandForSubmit()** (5 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **applyChannelPrefix()** (4 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **LogoutButton()** (4 connections) — `client/src/components/ui/LogoutButton.tsx`
-- **command-panel.spec.tsx** (4 connections) — `client/src/components/panels/__tests__/command-panel.spec.tsx`
-- **panels/__tests__/command-panel.test.tsx** (4 connections) — `client/src/components/panels/__tests__/command-panel.test.tsx`
-- **components/__tests__/command-panel.test.tsx** (4 connections) — `client/src/components/__tests__/command-panel.test.tsx`
-- **CommandPanel.test.tsx** (3 connections) — `client/src/components/__tests__/CommandPanel.test.tsx`
-- **logCommandPanelConnectionDebug()** (2 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **useCommandPanelEffects()** (2 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **prependChannelShortcut()** (2 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **prependPartyPrefix()** (2 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **shouldPrependChannelShortcut()** (2 connections) — `client/src/components/panels/commandPanelSubmit.ts`
-- **CommandPanel-LogoutButton.integration.test.tsx** (2 connections) — `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
-- **LogoutButton.test.tsx** (2 connections) — `client/src/components/ui/__tests__/LogoutButton.test.tsx`
-- **CommandPanelProps** (1 connections) — `client/src/components/panels/CommandPanel.tsx`
-- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/command-panel.spec.tsx`
-- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/command-panel.spec.tsx`
-- **TerminalButtonProps** (1 connections) — `client/src/components/panels/__tests__/command-panel.test.tsx`
-- **TerminalInputProps** (1 connections) — `client/src/components/panels/__tests__/command-panel.test.tsx`
-- **TerminalButtonProps** (1 connections) — `client/src/components/__tests__/command-panel.test.tsx`
-- **TerminalInputProps** (1 connections) — `client/src/components/__tests__/command-panel.test.tsx`
-- *... and 6 more nodes in this community*
+- **GameClientV2ContainerView.tsx** (25 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **ModalContainer.tsx** (11 connections) — `client/src/components/ui/ModalContainer.tsx`
+- **TabbedInterfaceOverlay.tsx** (8 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- **TabbedInterface.tsx** (8 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- **Tab** (6 connections) — `client/src/components/ui-v2/TabbedInterface.tsx`
+- **ModalContainer()** (5 connections) — `client/src/components/ui/ModalContainer.tsx`
+- **DeathInterstitial.tsx** (5 connections) — `client/src/components/DeathInterstitial.tsx`
+- **useTabbedInterface.ts** (5 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
+- **GameClientV2()** (4 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **useTabbedInterface()** (4 connections) — `client/src/components/ui-v2/useTabbedInterface.ts`
+- **DeliriumInterstitial.tsx** (4 connections) — `client/src/components/DeliriumInterstitial.tsx`
+- **MainMenuModal.tsx** (4 connections) — `client/src/components/MainMenuModal.tsx`
+- **TabbedInterfaceOverlay.test.tsx** (4 connections) — `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
+- **GameClientV2ContainerView.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
+- **useTabbedInterface.test.ts** (4 connections) — `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
+- **constants/layout.ts** (4 connections) — `client/src/constants/layout.ts`
+- **Z_INDEX_OVERLAY_TOP** (4 connections) — `client/src/constants/layout.ts`
+- **DeathInterstitial()** (3 connections) — `client/src/components/DeathInterstitial.tsx`
+- **MainMenuModal()** (3 connections) — `client/src/components/MainMenuModal.tsx`
+- **TabbedInterfaceOverlay()** (3 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- **GameClientV2ContainerView()** (3 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **TabbedInterfaceOverlayProps** (2 connections) — `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- **GameClientV2ContainerViewProps** (2 connections) — `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- **DeliriumInterstitial()** (2 connections) — `client/src/components/DeliriumInterstitial.tsx`
+- **renderOpenModal()** (2 connections) — `client/src/components/ui/ModalContainer.tsx`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (5 shared connections)
-- [MythosPanel.tsx](MythosPanel.tsx.md) (2 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [debugLogger](debugLogger.md) (2 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
+- [LogAggregator](LogAggregator.md) (7 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (3 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/CommandPanel.test.tsx`
-- `client/src/components/__tests__/command-panel.test.tsx`
-- `client/src/components/panels/CommandPanel.tsx`
-- `client/src/components/panels/__tests__/CommandPanel-LogoutButton.integration.test.tsx`
-- `client/src/components/panels/__tests__/command-panel.spec.tsx`
-- `client/src/components/panels/__tests__/command-panel.test.tsx`
-- `client/src/components/panels/commandPanelSubmit.ts`
-- `client/src/components/ui/LogoutButton.tsx`
-- `client/src/components/ui/__tests__/LogoutButton.test.tsx`
+- `client/src/components/DeathInterstitial.tsx`
+- `client/src/components/DeliriumInterstitial.tsx`
+- `client/src/components/MainMenuModal.tsx`
+- `client/src/components/__tests__/DeathInterstitial.test.tsx`
+- `client/src/components/__tests__/MainMenuModal.test.tsx`
+- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/ui-v2/GameClientV2ContainerView.tsx`
+- `client/src/components/ui-v2/TabbedInterface.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2ContainerView.test.tsx`
+- `client/src/components/ui-v2/__tests__/TabbedInterface.test.tsx`
+- `client/src/components/ui-v2/__tests__/useTabbedInterface.test.ts`
+- `client/src/components/ui-v2/components/TabbedInterfaceOverlay.tsx`
+- `client/src/components/ui-v2/components/__tests__/TabbedInterfaceOverlay.test.tsx`
+- `client/src/components/ui-v2/useTabbedInterface.ts`
+- `client/src/components/ui/ModalContainer.tsx`
+- `client/src/constants/layout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
+- EXTRACTED: 88 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

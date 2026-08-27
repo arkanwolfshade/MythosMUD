@@ -1,31 +1,34 @@
 # Implementation Notes
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Success Criteria** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Testing Strategy** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **TestValidateUserForLootAll** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **TestValidateUserForTransfer** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_loot_all_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_loot_all_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_transfer_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **.test_validate_user_for_transfer_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test validate_user_for_transfer function.** (2 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test validate_user_for_transfer passes with valid user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test validate_user_for_transfer raises exception for None user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test validate_user_for_loot_all passes with valid user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test validate_user_for_loot_all raises exception for None user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ChatService](ChatService.md) (6 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- `server/tests/unit/api/test_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (89%)
+- INFERRED: 2 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

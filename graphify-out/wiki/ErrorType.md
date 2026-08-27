@@ -1,68 +1,54 @@
 # ErrorType
 
-> 223 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **ErrorType** (65 connections) — `server/error_types.py`
-- **legacy_error_handlers.py** (44 connections) — `server/legacy_error_handlers.py`
-- **test_legacy_error_handlers.py** (43 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **error_types.py** (38 connections) — `server/error_types.py`
-- **ErrorMessages** (35 connections) — `server/error_types.py`
-- **standardized_responses.py** (35 connections) — `server/error_handlers/standardized_responses.py`
-- **test_websocket_handler_helpers_extended.py** (34 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- **TestErrorMapping** (32 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **create_websocket_error_response()** (31 connections) — `server/error_types.py`
-- **create_standard_error_response()** (26 connections) — `server/error_types.py`
-- **pydantic_error_handler.py** (26 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_map_error_type()** (23 connections) — `server/legacy_error_handlers.py`
-- **NetworkError** (22 connections) — `server/exceptions.py`
-- **ResourceNotFoundError** (21 connections) — `server/exceptions.py`
-- **test_error_types.py** (21 connections) — `server/tests/unit/test_error_types.py`
-- **asyncio** (20 connections)
-- **ErrorSeverity** (19 connections) — `server/error_types.py`
-- **_get_status_code_for_error()** (19 connections) — `server/legacy_error_handlers.py`
-- **_get_severity_for_error()** (18 connections) — `server/legacy_error_handlers.py`
-- **ConfigurationError** (17 connections) — `server/exceptions.py`
-- **logged_http_exception_handler()** (17 connections) — `server/legacy_error_handlers.py`
-- **GameLogicError** (16 connections) — `server/exceptions.py`
-- **ErrorResponse** (16 connections) — `server/legacy_error_handlers.py`
-- **create_sse_error_response()** (16 connections) — `server/error_types.py`
-- **create_error_response()** (15 connections) — `server/legacy_error_handlers.py`
-- *... and 198 more nodes in this community*
+- **test_population_control.py** (66 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_event_bus()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
+- **population_controller()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
+- **fixture** (4 connections)
+- **mock_async_persistence()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **mock_lifecycle_manager()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_check_spawn_requirements_for_room_with_definitions()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_exact_match()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_no_slash()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_get_zone_configuration_zone_fallback()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_npc_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_entered_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_handle_player_left_room()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **Test _get_active_npcs_from_lifecycle_manager() returns active NPCs.** (3 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_check_spawn_requirements_for_room_no_config()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_empty()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_invalid_spawned_at()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_keeps_required()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_multiple_removals()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_no_spawned_at()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_cleanup_inactive_npcs_removes_old_npcs()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_despawn_npc_no_lifecycle_manager()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- **test_despawn_npc_not_found()** (2 connections) — `server/tests/unit/npc/test_population_control.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (47 shared connections)
-- [MythosMUDError](MythosMUDError.md) (47 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (41 shared connections)
-- [TestErrorHandlers](TestErrorHandlers.md) (22 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (17 shared connections)
-- [ValidationError](ValidationError.md) (17 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (12 shared connections)
-- [legacy_error_sanitization.py](legacy_error_sanitization.py.md) (12 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (9 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (7 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (14 shared connections)
+- [test_async_persistence_delegates.py](test_async_persistence_delegates.py.md) (6 shared connections)
+- [test_channel_commands.py](test_channel_commands.py.md) (6 shared connections)
+- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/error_handlers/standardized_responses.py`
-- `server/error_types.py`
-- `server/exceptions.py`
-- `server/legacy_error_handlers.py`
-- `server/tests/unit/error_handlers/test_standardized_responses_security.py`
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- `server/tests/unit/realtime/test_websocket_handler_helpers_extended.py`
-- `server/tests/unit/test_error_types.py`
-- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/tests/unit/npc/test_population_control.py`
 
 ## Audit Trail
 
-- EXTRACTED: 615 (84%)
-- INFERRED: 113 (16%)
+- EXTRACTED: 121 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- **database.ts** (2 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
+- **resetPlayerPositions()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
+- **verifyTestPlayers()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
 
 ## Relationships
 
@@ -14,14 +14,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- `client/tests/e2e/runtime/fixtures/database.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

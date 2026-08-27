@@ -4,27 +4,27 @@
 
 ## Key Concepts
 
-- **NATS Medium-Priority Remediation Summary** (9 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Completed Medium-Priority Fixes ✅** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Configuration Options** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Implementation Details** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Impact Assessment** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **1. Integrated Subject Manager into NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **2. Added Health Monitoring to NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **3. Documented Manual Acknowledgment Strategy** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **After Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Before Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Event Callback Improvements** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Health Monitoring** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Health Monitoring** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Manual Acknowledgment** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Remaining Low-Priority Items** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Subject Manager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Subject Manager Integration** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
-- **Testing Status** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Execution Steps** (14 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Scenario 17: Whisper Integration **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **scenario-17-whisper-integration.md** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 10: Test Whisper with Performance Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 11: Test Whisper with Logging Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 12: Test Whisper with Rate Limiting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 13: Verify System Integration Summary** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 1: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 2: Test Whisper with Player Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 3: Test Whisper with Location Tracking Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 4: Test Whisper with Message Broadcasting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 5: Test Whisper with Movement System Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 6: Test Whisper with Session Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 7: Test Whisper with Database Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 8: Test Whisper with Authentication Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 9: Test Whisper with Error Handling Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Relationships
 
@@ -32,7 +32,7 @@
 
 ## Source Files
 
-- `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Audit Trail
 

@@ -1,26 +1,28 @@
 # Recommendation for MythosMUD
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Recommendation for MythosMUD** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 1: Full Migration (Recommended for Long-Term)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 2: Hybrid Approach (Pragmatic)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 3: Stay with asyncio (Status Quo)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Magic and Spellcasting System** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Effects System Reference** (2 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **EffectList Pattern** (1 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **Magic Points MP** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Spell Registry** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

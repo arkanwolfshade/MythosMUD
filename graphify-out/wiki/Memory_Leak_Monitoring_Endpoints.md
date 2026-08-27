@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Memory Leak Monitoring Endpoints** (0 connections) — `server/README.md`
+- **Tailwind CSS Anti-Pattern Remediation** (0 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/README.md`
+- `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
 
 ## Audit Trail
 

@@ -1,32 +1,33 @@
 # Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **📋 REMEDIATION PLAN** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 3: Medium Priority Improvements (Week 4) - POLISH** (2 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.1: Fix Synchronous Blocking in Passive Lucidity Flux Service** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.2: Eliminate asyncio.run() from Library Code** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.3: Ensure Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.4: Add Exception Handling to Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.5: Fix Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 1.6: Audit and Fix F-String Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Tasks 3.1-3.7: Medium Priority Fixes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **._trim_samples()** (7 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_connection_establishment()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_disconnection()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_health_check()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_message_delivery()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **.record_session_switch()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Record a session switch event. Args: duration_ms: Duration in milliseconds** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Record a health check event. Args: duration_ms: Duration in milliseconds** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Trim samples to prevent unbounded memory growth. Args: metric_key: Key in…** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Record a connection establishment event. Args: connection_type: Type of…** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Record a message delivery event. Args: message_type: Type of message…** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Record a disconnection event. Args: connection_type: Type of connection…** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
-- [Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE](Phase_2-_High_Priority_Fixes_Week_2-3_-_PERFORMANCE.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/realtime/monitoring/performance_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

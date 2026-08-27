@@ -1,25 +1,25 @@
 # Convert E2E Scenarios to Playwright CLI
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Convert E2E Scenarios to Playwright CLI** (1 connections) — `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- **Fix Code Review Findings Issue 353** (1 connections) — `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_quit_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_quit_command delegates to player_state factory.** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/convert_all_e2e_scenarios_to_playwright_cli_cb6eff35.plan.md`
-- `.cursor/plans/fix_code_review_findings_issue_353_f59f87dc.plan.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

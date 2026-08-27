@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **find_priority_files.py** (0 connections) — `scripts/find_priority_files.py`
+- **Dead Code Definition and Tooling** (0 connections) — `docs/dead-code.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/find_priority_files.py`
+- `docs/dead-code.md`
 
 ## Audit Trail
 

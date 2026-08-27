@@ -1,42 +1,41 @@
 # Any
 
-> 18 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **WebSocket** (8 connections)
-- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a WebSocket message using the appropriate handler. Args: websocket: The…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **test_ascii_map_renderer_exits.py** (10 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **fixture** (1 connections)
+- **Unit tests for AsciiMapRenderer exit character and exit resolution. Guards…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _get_exit_entries_for_room.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Valid exits for a room produce one entry with correct direction and coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Exits whose targets are missing are skipped when building exit entries.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Viewport bounds: return None when next cell is outside viewport.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Returns None when the next horizontal cell lies at or beyond the viewport's…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [test_message_handler_factory.py](test_message_handler_factory.py.md) (9 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (6 shared connections)
-- [ErrorType](ErrorType.md) (1 shared connections)
+- [properties](properties.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
+- [_EventBusPublishPort](_EventBusPublishPort.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

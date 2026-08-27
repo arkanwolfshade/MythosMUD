@@ -1,58 +1,60 @@
 # game_tick_status_effects.py
 
-> 31 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **game_tick_status_effects.py** (30 connections) — `server/app/game_tick_status_effects.py`
-- **_TickContainer** (23 connections) — `server/app/game_tick_protocols.py`
-- **_process_single_effect()** (14 connections) — `server/app/game_tick_status_effects.py`
-- **_validate_app_state_for_status_effects()** (14 connections) — `server/app/game_tick_status_effects.py`
-- **_process_damage_over_time_effect()** (13 connections) — `server/app/game_tick_status_effects.py`
-- **process_status_effects()** (13 connections) — `server/app/game_tick_status_effects.py`
-- **_process_heal_over_time_effect()** (11 connections) — `server/app/game_tick_status_effects.py`
-- **_process_all_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **_update_player_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **_validate_and_get_player()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **_online_player_ids()** (8 connections) — `server/app/game_tick_protocols.py`
-- **process_player_effects_expiration()** (8 connections) — `server/app/game_tick_status_effects.py`
-- **_process_player_status_effects()** (8 connections) — `server/app/game_tick_status_effects.py`
-- **FastAPI** (8 connections)
-- **Player** (6 connections)
-- **_TickConnectionManager** (5 connections) — `server/app/game_tick_protocols.py`
-- **_handle_login_warded_expirations()** (5 connections) — `server/app/game_tick_status_effects.py`
-- **UUID** (2 connections)
-- **Return currently online player UUIDs, or empty if no connection manager.** (1 connections) — `server/app/game_tick_protocols.py`
-- **Status-effect processing for the game tick loop.** (1 connections) — `server/app/game_tick_status_effects.py`
-- **Process a single status effect. Returns: Tuple of (updated_effect_dict or None…** (1 connections) — `server/app/game_tick_status_effects.py`
-- **Update and save player status effects if changes occurred. Returns: True if…** (1 connections) — `server/app/game_tick_status_effects.py`
-- **Validate container and retrieve player by ID. Args: container: Application…** (1 connections) — `server/app/game_tick_status_effects.py`
-- **Process all status effects for a player. Args: app: FastAPI application…** (1 connections) — `server/app/game_tick_status_effects.py`
-- **Process status effects for a single player. Returns: True if player was…** (1 connections) — `server/app/game_tick_status_effects.py`
-- *... and 6 more nodes in this community*
+- **inventory_equip_command.py** (46 connections) — `server/commands/inventory_equip_command.py`
+- **test_inventory_equip_command.py** (37 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **handle_equip_command()** (15 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
+- **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
+- **normalize_inventory_slots()** (10 connections) — `server/commands/equipment_helpers.py`
+- **asyncio** (10 connections)
+- **_equip_success_payload()** (9 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_target_slot_or_error()** (9 connections) — `server/commands/inventory_equip_command.py`
+- **EquipCommandWork** (8 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_persist_or_rollback()** (8 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_try_inventory_swap()** (7 connections) — `server/commands/inventory_equip_command.py`
+- **CommandResponse** (7 connections)
+- **EquipCommandInventoryStep** (6 connections) — `server/commands/inventory_equip_command.py`
+- **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
+- **_equip_inventory_rollback_snapshot()** (6 connections) — `server/commands/inventory_equip_command.py`
+- **test_equip_run_mutation_swap_error()** (6 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_equip_run_mutation_suppressed()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_equip_success_payload()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_equip_try_inventory_swap_rejected()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_handle_equip_command_invalid_selected_stack()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_handle_equip_command_mutation_error()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_handle_equip_command_success()** (5 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- **test_equip_persist_or_rollback_failure()** (4 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [game_tick_processing.py](game_tick_processing.py.md) (17 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (16 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (13 shared connections)
-- [game_tick_death.py](game_tick_death.py.md) (12 shared connections)
-- [game_tick_protocols.py](game_tick_protocols.py.md) (8 shared connections)
-- [coerce_int](coerce_int.md) (5 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (3 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (31 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (12 shared connections)
+- [.__init__](__init__.md) (10 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (5 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (4 shared connections)
+- [command_input.py](command_input.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_protocols.py`
-- `server/app/game_tick_status_effects.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_equip_command.py`
+- `server/tests/unit/commands/test_equipment_helpers.py`
+- `server/tests/unit/commands/test_inventory_equip_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (80%)
-- INFERRED: 29 (20%)
+- EXTRACTED: 182 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

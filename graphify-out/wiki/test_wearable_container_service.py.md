@@ -1,55 +1,59 @@
 # test_wearable_container_service.py
 
-> 157 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **test_wearable_container_service.py** (63 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **asyncio** (48 connections)
-- **WearableContainerService** (28 connections) — `server/services/wearable_container_service.py`
-- **wearable_container_service.py** (20 connections) — `server/services/wearable_container_service.py`
-- **WearableContainerServiceError** (18 connections) — `server/services/wearable_container_service.py`
-- **Any** (15 connections)
-- **UUID** (14 connections)
-- **._load_player_wearable_container()** (9 connections) — `server/services/wearable_container_service.py`
-- **_filter_container_data()** (8 connections) — `server/services/wearable_container_service.py`
-- **_get_enum_value()** (8 connections) — `server/services/wearable_container_service.py`
-- **.handle_container_overflow()** (8 connections) — `server/services/wearable_container_service.py`
-- **.handle_equip_wearable_container()** (8 connections) — `server/services/wearable_container_service.py`
-- **.add_items_to_wearable_container()** (7 connections) — `server/services/wearable_container_service.py`
-- **._update_container_items_or_raise()** (7 connections) — `server/services/wearable_container_service.py`
-- **.update_wearable_container_items()** (7 connections) — `server/services/wearable_container_service.py`
-- **.handle_unequip_wearable_container()** (6 connections) — `server/services/wearable_container_service.py`
-- **._validate_inner_container_capacity()** (6 connections) — `server/services/wearable_container_service.py`
-- **._create_equipment_container_record()** (5 connections) — `server/services/wearable_container_service.py`
-- **._drop_overflow_to_ground()** (5 connections) — `server/services/wearable_container_service.py`
-- **._find_existing_equipment_container()** (5 connections) — `server/services/wearable_container_service.py`
-- **.get_wearable_containers_for_player()** (5 connections) — `server/services/wearable_container_service.py`
-- **._save_overflow_inventory()** (5 connections) — `server/services/wearable_container_service.py`
-- **._split_overflow_items()** (4 connections) — `server/services/wearable_container_service.py`
-- **test_add_items_to_wearable_container_capacity_exceeded()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **test_add_items_to_wearable_container_not_found()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- *... and 132 more nodes in this community*
+- **test_admin_commands.py** (38 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **asyncio** (30 connections)
+- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
+- **_handle_admin_status_command()** (7 connections) — `server/commands/admin_commands.py`
+- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
+- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
+- **test_handle_add_admin_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_add_admin_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_add_admin_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_admin_command_status()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_admin_command_time()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_admin_command_unknown()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_goto_command_no_app()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_goto_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_current_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_mute_failure()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_command_target_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_global_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mute_global_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mutes_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- **test_handle_mutes_command_success()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (10 shared connections)
-- [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [test_look_helpers.py](test_look_helpers.py.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [models/container.py](models-container.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (31 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [NATSMetrics](NATSMetrics.md) (1 shared connections)
+- [test_inventory_mutation_guard.py](test_inventory_mutation_guard.py.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [Stats](Stats.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/wearable_container_service.py`
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `server/commands/admin_commands.py`
+- `server/commands/communication_commands_support.py`
+- `server/tests/unit/commands/test_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 286 (94%)
-- INFERRED: 17 (6%)
+- EXTRACTED: 123 (83%)
+- INFERRED: 26 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

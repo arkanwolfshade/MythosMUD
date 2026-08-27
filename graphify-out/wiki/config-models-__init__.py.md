@@ -1,60 +1,51 @@
 # config/models/__init__.py
 
-> 22 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **config/models/__init__.py** (28 connections) — `server/config/models/__init__.py`
-- **app.py** (21 connections) — `server/config/models/app.py`
-- **server_db.py** (10 connections) — `server/config/models/server_db.py`
-- **TimeConfig** (9 connections) — `server/config/models/chat_time.py`
-- **ChatConfig** (8 connections) — `server/config/models/chat_time.py`
-- **chat_time.py** (6 connections) — `server/config/models/chat_time.py`
-- **config/models/game.py** (5 connections) — `server/config/models/game.py`
-- **player_stats.py** (5 connections) — `server/config/models/player_stats.py`
-- **.validate_rate_limits()** (3 connections) — `server/config/models/chat_time.py`
-- **.validate_compression_ratio()** (3 connections) — `server/config/models/chat_time.py`
-- **BaseSettings** (2 connections)
-- **field_validator** (2 connections)
-- **Composite application configuration model.** (1 connections) — `server/config/models/app.py`
-- **Chat and time configuration models.** (1 connections) — `server/config/models/chat_time.py`
-- **Chat system configuration.** (1 connections) — `server/config/models/chat_time.py`
-- **Validate rate limits are reasonable.** (1 connections) — `server/config/models/chat_time.py`
-- **Temporal compression configuration for the MythosChronicle.** (1 connections) — `server/config/models/chat_time.py`
-- **Ensure we never divide by zero or run the chronicle backward.** (1 connections) — `server/config/models/chat_time.py`
-- **Game-specific configuration model.** (1 connections) — `server/config/models/game.py`
-- **Pydantic-based configuration models for MythosMUD server. This package replaces…** (1 connections) — `server/config/models/__init__.py`
-- **Default player statistics configuration model.** (1 connections) — `server/config/models/player_stats.py`
-- **Server and database configuration models.** (1 connections) — `server/config/models/server_db.py`
+- **manual_dependency_analysis.py** (25 connections) — `scripts/manual_dependency_analysis.py`
+- **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
+- **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
+- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
+- **dependency_analyzer.py** (17 connections) — `scripts/dependency_analyzer.py`
+- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
+- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_dependencies()** (10 connections) — `scripts/manual_dependency_analysis.py`
+- **categorize_update()** (10 connections) — `scripts/utils/dependency_risk.py`
+- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_all_dependencies()** (9 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (9 connections) — `scripts/manual_dependency_analysis.py`
+- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
+- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
+- **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (7 connections) — `scripts/dependency_analyzer.py`
+- **assess_npm_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **assess_python_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
+- **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
+- **TypedDict** (6 connections)
+- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
+- **._assess_risks()** (5 connections) — `scripts/dependency_analyzer.py`
+- **._determine_strategy()** (5 connections) — `scripts/dependency_analyzer.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [test_config_models.py](test_config_models.py.md) (7 shared connections)
-- [AppConfig](AppConfig.md) (5 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [CORSConfig](CORSConfig.md) (4 shared connections)
-- [LoggingConfig](LoggingConfig.md) (4 shared connections)
-- [GameConfig](GameConfig.md) (3 shared connections)
-- [PlayerStatsConfig](PlayerStatsConfig.md) (3 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (2 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
-- [server/config/__init__.py](server-config-__init__.py.md) (1 shared connections)
-- [_parse_env_list](_parse_env_list.md) (1 shared connections)
+- [test_nats_service_health.py](test_nats_service_health.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/config/models/__init__.py`
-- `server/config/models/app.py`
-- `server/config/models/chat_time.py`
-- `server/config/models/game.py`
-- `server/config/models/player_stats.py`
-- `server/config/models/server_db.py`
+- `scripts/dependency_analyzer.py`
+- `scripts/manual_dependency_analysis.py`
+- `scripts/utils/dependency_analysis_types.py`
+- `scripts/utils/dependency_risk.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 175 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

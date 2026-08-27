@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **server/structured_logging/__init__.py** (1 connections) — `server/structured_logging/__init__.py`
-- **Structured logging package for MythosMUD. This package provides enhanced…** (1 connections) — `server/structured_logging/__init__.py`
+- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/structured_logging/__init__.py`
+- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Audit Trail
 

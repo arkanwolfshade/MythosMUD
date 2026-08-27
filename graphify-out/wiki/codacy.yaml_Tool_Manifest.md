@@ -1,28 +1,29 @@
 # codacy.yaml Tool Manifest
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **codacy.yaml Tool Manifest** (3 connections) — `.codacy/codacy.yaml`
-- **Lizard Complexity Tool Pin** (2 connections) — `.codacy/codacy.yaml`
-- **Trivy Codacy Tool Pin** (2 connections) — `.codacy/codacy.yaml`
-- **MythosMUD Codacy Tool Suite** (1 connections) — `.codacy/README.md`
-- **Grype Local vs Trivy Codacy SCA** (1 connections) — `.codacy/README.md`
-- **Manually Managed codacy.yaml** (1 connections) — `.codacy/README.md`
+- **Pydantic Best Practices** (8 connections) — `.claude/rules/pydantic.md`
+- **1. Model Naming and Organization** (1 connections) — `.claude/rules/pydantic.md`
+- **2. Strict Typing and Immutability** (1 connections) — `.claude/rules/pydantic.md`
+- **3. Safe Default Values** (1 connections) — `.claude/rules/pydantic.md`
+- **4. Custom Validation Logic** (1 connections) — `.claude/rules/pydantic.md`
+- **5. Settings Management** (1 connections) — `.claude/rules/pydantic.md`
+- **6. Editor Integration (VS Code / Pylance)** (1 connections) — `.claude/rules/pydantic.md`
+- **7. Common Pitfalls** (1 connections) — `.claude/rules/pydantic.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.codacy/README.md`
-- `.codacy/codacy.yaml`
+- `.claude/rules/pydantic.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

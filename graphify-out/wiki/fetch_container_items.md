@@ -1,42 +1,45 @@
 # fetch_container_items
 
-> 15 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
-- **update_container_items()** (8 connections) — `server/persistence/container_helpers.py`
-- **_coerce_row_quantity()** (7 connections) — `server/persistence/container_helpers.py`
-- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
-- **test_coerce_row_quantity()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **test_coerce_item_quantity()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
-- **UUID** (3 connections)
-- **_metadata_dict_from_cell()** (2 connections) — `server/persistence/container_helpers.py`
-- **PsycopgConnection** (2 connections)
-- **parametrize** (2 connections)
-- **PsycopgCursor** (1 connections)
-- **Fetch container items directly from normalized tables. Queries…** (1 connections) — `server/persistence/container_helpers.py`
-- **Update container items using stored procedures. Args: cursor: Database cursor…** (1 connections) — `server/persistence/container_helpers.py`
-- **Normalize quantity/position from DB row cells; bool -> 1 (not…** (1 connections) — `server/persistence/container_helpers.py`
-- **Row quantity/position coercion matches item quantity rules (PR #461 /…** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **generate_html_visualization.py** (11 connections) — `scripts/generate_html_visualization.py`
+- **generate_html_visualization()** (8 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_list_html()** (5 connections) — `scripts/generate_html_visualization.py`
+- **_format_exits()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_intersection_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_items_for_subzone()** (4 connections) — `scripts/generate_html_visualization.py`
+- **main()** (4 connections) — `scripts/generate_html_visualization.py`
+- **_generate_edge_data()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_generate_intersection_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_generate_room_nodes()** (3 connections) — `scripts/generate_html_visualization.py`
+- **_get_subzone_colors()** (3 connections) — `scripts/generate_html_visualization.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization.py`
+- **Generate edge data for JavaScript.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Format exits data for display.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate room items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate intersection items HTML for a subzone.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate room list HTML.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Get color scheme for subzones.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate node data for rooms.** (1 connections) — `scripts/generate_html_visualization.py`
+- **Generate node data for intersections.** (1 connections) — `scripts/generate_html_visualization.py`
 
 ## Relationships
 
-- [container_persistence.py](container_persistence.py.md) (8 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (2 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/container_helpers.py`
-- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `scripts/generate_html_visualization.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 33 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,53 +1,50 @@
 # _find_item_in_equipped
 
-> 25 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
-- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
-- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
-- **look_item.py** (14 connections) — `server/commands/look_item.py`
-- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
-- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
-- **Any** (8 connections)
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Item look functionality for MythosMUD. This module handles looking at items,…** (1 connections) — `server/commands/look_item.py`
-- **Find an item in equipped items by name or prototype_id. Args: equipped:…** (1 connections) — `server/commands/look_item.py`
-- **Check if item found in a location and return formatted result.** (1 connections) — `server/commands/look_item.py`
-- **Check if item is equipped and return formatted result.** (1 connections) — `server/commands/look_item.py`
-- **Handle looking at a specific item.** (1 connections) — `server/commands/look_item.py`
-- **Try to find and display an item in implicit lookup.** (1 connections) — `server/commands/look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when prototype not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped by prototype_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location uses fallback when no prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking equipped item when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_lru_cache.py** (17 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_with_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **cache_without_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_performance_impact()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **fixture** (2 connections)
+- **asyncio** (1 connections)
+- **Unit tests for LRU cache expiration and eviction. Tests the LRUCache class,…** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test cache behavior with mix of expired and valid entries.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [test_look_item.py](test_look_item.py.md) (20 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (13 shared connections)
-- [asyncio](asyncio.md) (12 shared connections)
-- [look_command.py](look_command.py.md) (5 shared connections)
-- [_find_item_in_inventory](_find_item_in_inventory.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [required](required.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/caching/test_lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 32 (91%)
+- INFERRED: 3 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

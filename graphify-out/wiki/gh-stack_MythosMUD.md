@@ -1,32 +1,32 @@
 # gh-stack (MythosMUD)
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **.agents/skills/gh-stack/SKILL.md** (3 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **.cursor/skills/gh-stack/SKILL.md** (2 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Automatic decision tree** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Forbidden (hangs non-interactive agents)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Full skill body** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Integration with other skills** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **Mythos defaults** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
-- **One-liner status check (PowerShell)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **main()** (6 connections) — `scripts/check_coverage_thresholds.py`
+- **check_coverage_thresholds.py** (5 connections) — `scripts/check_coverage_thresholds.py`
+- **_ensure_coverage_xml_or_exit()** (4 connections) — `scripts/check_coverage_thresholds.py`
+- **parse_coverage_xml()** (4 connections) — `scripts/check_coverage_thresholds.py`
+- **check_thresholds()** (3 connections) — `scripts/check_coverage_thresholds.py`
+- **_print_results_and_exit()** (3 connections) — `scripts/check_coverage_thresholds.py`
+- **Path** (3 connections)
+- **Check files against their thresholds. Returns hard-fail messages.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't…** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Print coverage results and exit with appropriate code.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **Parse coverage.xml and return file coverage percentages.** (1 connections) — `scripts/check_coverage_thresholds.py`
 
 ## Relationships
 
-- [gh-stack](gh-stack.md) (1 shared connections)
-- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
-- `.cursor/skills/gh-stack/SKILL.md`
+- `scripts/check_coverage_thresholds.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

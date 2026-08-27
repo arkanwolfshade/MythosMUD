@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **_tmp_list_chaosium.ps1** (0 connections) — `scripts/_tmp_list_chaosium.ps1`
+- **Grype SCA exclude paths** (0 connections) — `.grype.yaml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/_tmp_list_chaosium.ps1`
+- `.grype.yaml`
 
 ## Audit Trail
 

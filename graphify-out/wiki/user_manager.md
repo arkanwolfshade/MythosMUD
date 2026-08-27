@@ -1,28 +1,32 @@
 # user_manager
 
-> 5 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **user_manager()** (4 connections) — `server/tests/unit/services/test_user_manager.py`
-- **mock_data_dir()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **fixture** (2 connections)
-- **Create a temporary data directory.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Create a UserManager instance.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Implementation Phases** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Deliverables** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 0: Foundation (Week 1) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1: Fix Failing Tests (Week 1-2) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2: Unit Test Modernization (Week 3-4) - 80 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2A: Service Layer Tests (Week 3)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2B: Infrastructure Tests (Week 4)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Test Pattern Modernization (Week 5) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: Add Coverage for New Architecture (Week 6) - 40 hours** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Tasks** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (2 shared connections)
-- [UserManager](UserManager.md) (1 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

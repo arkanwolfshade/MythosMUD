@@ -4,27 +4,27 @@
 
 ## Key Concepts
 
-- **LoggingPatternLinter** (8 connections) — `scripts/lint_logging_patterns.py`
-- **lint_file()** (5 connections) — `scripts/lint_logging_patterns.py`
-- **main()** (4 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_Call()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_FormattedValue()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_Import()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **lint_logging_patterns.py** (3 connections) — `scripts/lint_logging_patterns.py`
-- **Path** (2 connections)
-- **.__init__()** (1 connections) — `scripts/lint_logging_patterns.py`
-- **FormattedValue** (1 connections)
-- **Call** (1 connections)
-- **Import** (1 connections)
-- **ImportFrom** (1 connections)
-- **Main entry point for the logging pattern linter.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **AST visitor to detect deprecated logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for deprecated logging imports.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for deprecated logging imports.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for deprecated logging patterns in function calls.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for f-string usage in logging contexts.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Lint a single Python file for logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **fix_markdown_line_length.py** (10 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_line()** (7 connections) — `scripts/fix_markdown_line_length.py`
+- **fix_markdown_file()** (6 connections) — `scripts/fix_markdown_line_length.py`
+- **main()** (5 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_plain_text()** (5 connections) — `scripts/fix_markdown_line_length.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_list_item()** (4 connections) — `scripts/fix_markdown_line_length.py`
+- **should_skip_line()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_header()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_line_with_links()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **Path** (3 connections)
+- **is_in_code_block()** (2 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a line that contains markdown links.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap plain text at word boundaries.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Fix line length issues in a markdown file. Returns: (changed, lines_modified):…** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Check if a line should be skipped (code blocks, tables, etc.).** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Parse markdownlint output file to get list of files with line length issues.…** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Main function to fix markdown line length issues.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Check if we're currently inside a code block.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a long line intelligently. Returns a list of wrapped lines.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a list item with proper indentation.** (1 connections) — `scripts/fix_markdown_line_length.py`
 
 ## Relationships
 
@@ -32,11 +32,11 @@
 
 ## Source Files
 
-- `scripts/lint_logging_patterns.py`
+- `scripts/fix_markdown_line_length.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,63 +1,58 @@
 # TargetResolutionResult
 
-> 80 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **TargetResolutionResult** (36 connections) — `server/schemas/shared/target_resolution.py`
-- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **test_follow_commands.py** (24 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **follow_commands.py** (18 connections) — `server/commands/follow_commands.py`
-- **handle_follow_command()** (17 connections) — `server/commands/follow_commands.py`
-- **asyncio** (13 connections)
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (7 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **asyncio** (7 connections)
-- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (6 connections)
-- **_load_follow_context()** (5 connections) — `server/commands/follow_commands.py`
-- **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
-- *... and 55 more nodes in this community*
+- **container_repository.py** (24 connections) — `server/persistence/repositories/container_repository.py`
+- **ContainerRepository** (23 connections) — `server/persistence/repositories/container_repository.py`
+- **test_container_repository.py** (22 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **_container_data_to_dict()** (13 connections) — `server/persistence/repositories/container_repository.py`
+- **_sample_container_data()** (11 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **ContainerCreateParams** (8 connections) — `server/persistence/container_create_params.py`
+- **asyncio** (8 connections)
+- **.create_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_containers_by_entity_id()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_decayed_containers()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.update_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **container_create_params.py** (7 connections) — `server/persistence/container_create_params.py`
+- **Any** (7 connections)
+- **.get_containers_by_room_id()** (6 connections) — `server/persistence/repositories/container_repository.py`
+- **.delete_container()** (5 connections) — `server/persistence/repositories/container_repository.py`
+- **test_create_container()** (5 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **UUID** (5 connections)
+- **test_get_container_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_containers_by_entity_id()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_containers_by_room_id()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_update_container()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/container_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_container_data_to_dict_renames_keys()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [TargetResolutionService](TargetResolutionService.md) (23 shared connections)
-- [TargetMatch](TargetMatch.md) (16 shared connections)
-- [SpellEffectType](SpellEffectType.md) (10 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [CombatService](CombatService.md) (3 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [SpellTargetingService](SpellTargetingService.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (17 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [TaskRegistry](TaskRegistry.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/tests/unit/commands/test_follow_commands.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/repositories/container_repository.py`
+- `server/tests/unit/persistence/repositories/test_container_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 218 (94%)
-- INFERRED: 13 (6%)
+- EXTRACTED: 128 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,21 +1,22 @@
 # Time Distribution Analysis
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Time Distribution Analysis** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Current Time Allocation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Highest Impact (Remove)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Optimization Targets** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
+- **2026_08_20_align_room_environment_enum.py** (2 connections) — `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
+- **Fix the two one-off room rows, then widen/add the environment CHECKs.** (1 connections) — `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
+- **Restore the narrower zones/subzones CHECKs and drop the rooms CHECK. Does not…** (1 connections) — `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `server/alembic/versions/2026_08_20_align_room_environment_enum.py`
 
 ## Audit Trail
 

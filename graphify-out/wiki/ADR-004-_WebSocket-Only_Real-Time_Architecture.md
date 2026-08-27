@@ -1,22 +1,23 @@
 # ADR-004: WebSocket-Only Real-Time Architecture
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ADR-004: WebSocket-Only Real-Time Architecture** (0 connections) — `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
+- **test_validate_attack_strength_target_too_strong()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_attack_strength when target is too strong.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-004-websocket-only-realtime.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

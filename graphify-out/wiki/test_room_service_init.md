@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_room_service_init()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test RoomService initialization.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **install_ci_dependencies.sh** (1 connections) — `scripts/install_ci_dependencies.sh`
+- **install_ci_dependencies.sh script** (1 connections) — `scripts/install_ci_dependencies.sh`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `scripts/install_ci_dependencies.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

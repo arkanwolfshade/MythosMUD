@@ -1,51 +1,51 @@
 # test_message_filtering.py
 
-> 59 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **test_message_filtering.py** (37 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **asyncio** (13 connections)
-- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_not_found()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_error_returns_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_false()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_in_room_true()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_preload_receiver_mute_data()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_preload_receiver_mute_data_excludes_sender()** (3 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_check_player_mute_status_patched_and_emote()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets_with_canonical_id()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_compare_canonical_rooms_different()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_compare_canonical_rooms_same()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_filter_target_players_room_and_mute()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_mock_player()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_player_room_from_persistence_no_layer()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_user_manager_custom()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_get_user_manager_global()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- *... and 34 more nodes in this community*
+- **test_rate_limiter.py** (36 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_player_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_different_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_record_message_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_reset_player_limits_all_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [dependencies](dependencies.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [start_server.ps1](start_server.ps1.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 75 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 63 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

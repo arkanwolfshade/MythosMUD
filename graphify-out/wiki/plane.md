@@ -1,25 +1,24 @@
 # plane
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **plane** (4 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **._render_empty_map()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **Render an empty map. Args: width: Viewport width height: Viewport height…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
+- [rate_overrides.py](rate_overrides.py.md) (1 shared connections)
 - [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

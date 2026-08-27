@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Malleus Monstrorum - Cthulhu Mythos Bestiary
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Malleus Monstrorum - Cthulhu Mythos Bestiary** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
-- **malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
+- **Real-World Impact for MythosMUD** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Current Stack Compatibility** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Migration Complexity** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Performance Considerations** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

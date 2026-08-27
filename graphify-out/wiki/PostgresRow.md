@@ -4,48 +4,46 @@
 
 ## Key Concepts
 
-- **PostgresRow** (23 connections) — `server/postgres_adapter.py`
-- **TestPostgresRow** (12 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_contains()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_getitem_int_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_getitem_int_key_out_of_range()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_getitem_string_key()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_initialization()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_iter()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_keys()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_len()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_postgres_row_repr()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.__contains__()** (1 connections) — `server/postgres_adapter.py`
-- **.__len__()** (1 connections) — `server/postgres_adapter.py`
-- **.__repr__()** (1 connections) — `server/postgres_adapter.py`
-- **Row-like object for PostgreSQL query results.** (1 connections) — `server/postgres_adapter.py`
-- **Test PostgresRow class.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow initialization.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__getitem__ with string key.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__getitem__ with integer index.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__getitem__ with out-of-range integer index.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__iter__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.keys().** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__contains__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__len__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test PostgresRow.__repr__.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **test_statistics_aggregator.py** (15 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **fixture** (6 connections)
+- **statistics_aggregator()** (4 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_memory_monitor()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_message_queue()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_performance_tracker()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_rate_limiter()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_health_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_connection_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_alerts()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_get_memory_stats()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **test_statistics_aggregator_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Unit tests for statistics aggregator. Tests the StatisticsAggregator class.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_stats() returns connection statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_connection_health_stats() returns health statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_alerts() returns memory alerts.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock memory monitor.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock rate limiter.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock message queue.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock room manager.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a mock performance tracker.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Create a StatisticsAggregator instance.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test StatisticsAggregator initialization.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- **Test get_memory_stats() returns comprehensive statistics.** (1 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Relationships
 
-- [Any](Any.md) (4 shared connections)
-- [PostgresCursor](PostgresCursor.md) (3 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [_find_dead_connections](_find_dead_connections.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 32 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

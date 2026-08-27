@@ -1,24 +1,25 @@
 # What Are They?
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **What Are They?** (3 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **`anyio` (Third-Party Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **`asyncio` (Python Standard Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **🛠️ Technical Achievements** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Code Quality** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Performance** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Test Organization** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

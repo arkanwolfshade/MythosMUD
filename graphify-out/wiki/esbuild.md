@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **esbuild** (2 connections) — `client/package.json`
-- **esbuild** (1 connections) — `client/package.json`
+- **test_process_exit_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with zone_stable_id that has only one part.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

@@ -1,26 +1,27 @@
 # 2025_11_25_remove_items_json_column.py
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
-- **2025_11_25_remove_items_json_column.py** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
-- **Remove items_json column from containers table.** (1 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
-- **Restore items_json column (data will be empty).** (1 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- **Performance Logging** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Structured Logging Patterns** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **API Request Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Basic Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Database Query Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Error Logging with Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [safe_run_static](safe_run_static.md) (2 shared connections)
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

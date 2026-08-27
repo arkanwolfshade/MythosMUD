@@ -1,32 +1,35 @@
 # optimized_validate_pose_content
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **optimized_validate_pose_content()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_pose_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_pose_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_pose_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty pose content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid pose content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating pose content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for pose content fields. Args: value: The pose to validate…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Coverage Improvement Summary - Plan 2 Execution** (13 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📊 Expected Final Results** (2 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **🏆 Achievement Highlights** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **✅ COMPLETED & VERIFIED (6 modules)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📝 CREATED & READY (6 modules)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📚 Documentation Created** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Executive Summary** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **📞 Support** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **When All Tests Run Successfully** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
-- [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
-- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
+- [🎭 Closing Remarks](🎭_Closing_Remarks.md) (1 shared connections)
+- [player_inventory_migration.py](player_inventory_migration.py.md) (1 shared connections)
+- [What Are They?](What_Are_They_.md) (1 shared connections)
+- [Chaosium Ingest Pipeline](Chaosium_Ingest_Pipeline.md) (1 shared connections)
+- [Reign of Terror (source summary)](Reign_of_Terror_source_summary.md) (1 shared connections)
+- [📈 Performance Impact Assessment](📈_Performance_Impact_Assessment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

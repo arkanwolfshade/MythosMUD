@@ -1,53 +1,54 @@
 # test_npc_service.py
 
-> 88 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_npc_service.py** (50 connections) — `server/tests/unit/services/test_npc_service.py`
-- **asyncio** (35 connections)
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_with_base_stats()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_sub_zone()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rule_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rules_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_probability()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **npc_service()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 63 more nodes in this community*
+- **test_lucidity_event_dispatcher.py** (35 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **asyncio** (24 connections)
+- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_lucidity_change_event()** (15 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_lucidity_change_payload_with_liabilities()** (11 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **LucidityChangeEventExtras** (9 connections) — `server/services/lucidity_event_dispatcher.py`
+- **UUID** (6 connections)
+- **test_send_lucidity_change_event_with_liabilities()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_max_lcd()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_metadata()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_reason_and_source()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **_format_liabilities()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_hallucination_event()** (4 connections) — `server/services/lucidity_event_dispatcher.py`
+- **test_dispatch_player_event_import_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_dispatch_player_event_uuid_conversion()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_empty_code()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_invalid_stacks()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_entries()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_multiple_stacks()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_format_liabilities_single()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_basic()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [NPCSpawnRule](NPCSpawnRule.md) (1 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (7 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (5 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [SchemaValidator](SchemaValidator.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `server/services/lucidity_event_dispatcher.py`
+- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 180 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 161 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

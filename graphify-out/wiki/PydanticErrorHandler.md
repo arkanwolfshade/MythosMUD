@@ -1,53 +1,52 @@
 # PydanticErrorHandler
 
-> 41 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.handle_validation_error()** (13 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ErrorContextInitKwargs** (8 connections) — `server/exceptions.py`
-- **convert_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **handle_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_fallback_error_response()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.convert_to_mythos_error()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **.create_handler()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **ValidationError** (7 connections)
-- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Unpack** (3 connections)
-- **StandardizedErrorResponseDict** (3 connections)
-- **TypedDict** (2 connections)
-- **TypedDict** (1 connections)
-- **Handle a Pydantic ValidationError and convert it to a standardized response.…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- **Extract structured information from a Pydantic ValidationError. Args: error:…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
-- *... and 16 more nodes in this community*
+- **test_combat_service.py** (38 connections) — `server/tests/unit/services/test_combat_service.py`
+- **_make_service()** (28 connections) — `server/tests/unit/services/test_combat_service.py`
+- **asyncio** (17 connections)
+- **_make_combat_instance()** (15 connections) — `server/tests/unit/services/test_combat_service.py`
+- **_make_participant()** (12 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_process_attack_happy_path_calls_helpers_and_returns_final_result()** (7 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_process_attack_returns_melee_validation_early_result()** (7 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_apply_damage_and_check_involuntary_flee_no_flee_for_npc()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_apply_damage_and_check_involuntary_flee_returns_early_result_on_flee()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_finalize_attack_result_awards_xp_and_completes_combat()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_register_combat_state_tracks_participants()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_validate_melee_or_end_combat_ends_combat_on_invalid()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_validate_melee_or_end_combat_returns_none_on_valid()** (6 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_get_combat_by_participant_returns_active_combat()** (5 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_start_combat_happy_path()** (5 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_sync_npc_participant_dp_after_spell_damage()** (5 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_broadcast_aggro_target_switches_delegates()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_cleanup_combat_tracking_and_connection_state()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_end_combat_if_npc_died()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_end_combat_if_npc_died_not_in_combat()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_get_combat_returns_active_instance()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_notify_player_combat_ended()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_process_game_tick_delegates()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_publish_npc_damage_event_delegates()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- **test_publish_npc_died_event_delegates()** (4 connections) — `server/tests/unit/services/test_combat_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (17 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (7 shared connections)
-- [MythosMUDError](MythosMUDError.md) (3 shared connections)
-- [test_command_service.py](test_command_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (6 shared connections)
+- [NATSService](NATSService.md) (3 shared connections)
+- [User](User.md) (2 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/error_handlers/pydantic_error_handler.py`
-- `server/exceptions.py`
+- `server/tests/unit/services/test_combat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 135 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

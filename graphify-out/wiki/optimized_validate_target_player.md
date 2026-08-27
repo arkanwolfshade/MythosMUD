@@ -1,31 +1,34 @@
 # optimized_validate_target_player
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **optimized_validate_target_player()** (6 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_target_player_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_target_player_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_target_player_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty target player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid target player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating invalid target player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for target player fields. Args: value: The target player…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **^[a-z0-9_]+$** (5 connections) — `schemas/emote_schema.json`
+- **aliases** (5 connections) — `schemas/emote_schema.json`
+- **properties** (4 connections) — `schemas/emote_schema.json`
+- **patternProperties** (2 connections) — `schemas/emote_schema.json`
+- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **items** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
+- **uniqueItems** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
-- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
+- [WebSocket and SSE Dual Connections](WebSocket_and_SSE_Dual_Connections.md) (1 shared connections)
+- [message-match.test.ts](message-match.test.ts.md) (1 shared connections)
+- [VirtualizedMessageList.tsx](VirtualizedMessageList.tsx.md) (1 shared connections)
+- [Risk Assessment](Risk_Assessment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

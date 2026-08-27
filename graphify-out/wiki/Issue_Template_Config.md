@@ -1,24 +1,28 @@
 # Issue Template Config
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Private Security Advisory Channel** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
-- **Issue Template Config** (1 connections) — `.github/ISSUE_TEMPLATE/config.yml`
+- **quest_seed_data()** (6 connections) — `server/tests/integration/test_quest_flow.py`
+- **fixture** (1 connections)
+- **Create User, Player, leave_the_tutorial QuestDefinition and QuestOffer. Quest…** (1 connections) — `server/tests/integration/test_quest_flow.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [designTokens.ts](designTokens.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `.github/ISSUE_TEMPLATE/config.yml`
+- `server/tests/integration/test_quest_flow.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

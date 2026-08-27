@@ -1,29 +1,34 @@
 # _FakeRoomManager
 
-> 8 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **_FakeRoomManager** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **_FakePerformanceTracker** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.record_connection_establishment()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.remove_player_from_all_rooms()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.subscribe_to_room()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **Any** (6 connections)
+- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
+- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
+- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
+- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
+- **Get statistics about the room data cache. Args: is_room_data_fresh_func:…** (1 connections) — `server/services/room_data_cache.py`
+- **Merge room data with proper conflict resolution. Args: old_data: Existing room…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if new data is newer than old data for a specific key. Args: old_data:…** (1 connections) — `server/services/room_data_cache.py`
+- **Check if room data is fresh enough to use. Args: room_data: Room data to check…** (1 connections) — `server/services/room_data_cache.py`
+- **Get room data from cache. Args: room_id: Room ID to retrieve Returns: Dict[str,…** (1 connections) — `server/services/room_data_cache.py`
+- **Store room data in cache. Args: room_id: Room ID to store room_data: Room data…** (1 connections) — `server/services/room_data_cache.py`
 
 ## Relationships
 
-- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
+- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (6 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/services/room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

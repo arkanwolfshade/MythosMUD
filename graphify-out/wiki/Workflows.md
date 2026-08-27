@@ -1,30 +1,32 @@
 # Workflows
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Workflows** (9 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **End-to-end: create a stack from scratch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Handle rebase conflicts (agent workflow)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Making mid-stack changes** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Modify a mid-stack branch and sync** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Parsing `--json` output** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Restructure a stack (remove a branch, reorder, or rename)** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Routine sync after merges** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Squash-merge recovery** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **main()** (6 connections) — `scripts/simple_room_graph.py`
+- **simple_room_graph.py** (5 connections) — `scripts/simple_room_graph.py`
+- **generate_simple_dot_file()** (3 connections) — `scripts/simple_room_graph.py`
+- **generate_simple_html_visualization()** (3 connections) — `scripts/simple_room_graph.py`
+- **load_room_data()** (3 connections) — `scripts/simple_room_graph.py`
+- **print_simple_statistics()** (3 connections) — `scripts/simple_room_graph.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/simple_room_graph.py`
+- **Print simplified statistics about the room data.** (1 connections) — `scripts/simple_room_graph.py`
+- **Main function to generate the simplified visualization.** (1 connections) — `scripts/simple_room_graph.py`
+- **Generate a simplified DOT file focusing only on room nodes.** (1 connections) — `scripts/simple_room_graph.py`
+- **Generate a simplified HTML visualization.** (1 connections) — `scripts/simple_room_graph.py`
 
 ## Relationships
 
-- [gh-stack](gh-stack.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `scripts/simple_room_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

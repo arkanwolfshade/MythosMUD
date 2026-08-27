@@ -1,55 +1,61 @@
 # MemoryProfiler
 
-> 34 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **MemoryProfiler** (33 connections) — `server/utils/memory_profiler.py`
-- **test_memory_profiler.py** (22 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_compare_models_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_deserialization()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_instantiation()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_instantiation_zero_iterations()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_print_comparison_results()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_print_memory_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_print_model_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_print_model_memory_usage_error()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_start_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_stop_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **.__init__()** (2 connections) — `server/utils/memory_profiler.py`
-- **Unit tests for memory profiler utilities. Tests the MemoryProfiler class…** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.measure_model_instantiation() handles zero iterations.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.get_memory_usage_summary() returns summary.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.print_memory_summary() doesn't raise.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.print_model_memory_usage() doesn't raise.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.print_model_memory_usage() handles error dict.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.measure_model_deserialization() returns stats.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler initialization.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- *... and 9 more nodes in this community*
+- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
+- **.state()** (31 connections) — `server/realtime/connection_state_machine.py`
+- **handle_ground_command()** (27 connections) — `server/commands/rescue_commands.py`
+- **test_rescue_commands.py** (24 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **asyncio** (17 connections)
+- **handle_rescue_command()** (15 connections) — `server/commands/rescue_commands.py`
+- **Any** (9 connections)
+- **_run_ground_session()** (8 connections) — `server/commands/rescue_commands.py`
+- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
+- **patch** (7 connections)
+- **_get_ground_services()** (6 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_apply_lucidity_error()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_not_catatonic()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_success()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_ground_command_target_player_key()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **UUID** (6 connections)
+- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
+- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
+- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
+- **test_handle_ground_command_lucidity_record_not_found()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **test_handle_rescue_command_target_player_key()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
+- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [.measure_model_deserialization](measure_model_deserialization.md) (7 shared connections)
-- [SampleModel](SampleModel.md) (4 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [test_memory_profiler_get_current_memory_usage](test_memory_profiler_get_current_memory_usage.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
-- [.get_memory_usage_summary](get_memory_usage_summary.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (13 shared connections)
+- [pytest.md](pytest.md.md) (7 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (5 shared connections)
+- [test_combat_integration_base.py](test_combat_integration_base.py.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [SchemaValidator](SchemaValidator.md) (3 shared connections)
+- [login_grace_period.py](login_grace_period.py.md) (3 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (2 shared connections)
+- [RateLimiter](RateLimiter.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_memory_profiler.py`
-- `server/utils/memory_profiler.py`
+- `server/commands/rescue_commands.py`
+- `server/realtime/connection_state_machine.py`
+- `server/tests/unit/commands/test_rescue_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 164 (81%)
+- INFERRED: 38 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

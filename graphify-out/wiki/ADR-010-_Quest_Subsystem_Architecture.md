@@ -1,11 +1,12 @@
 # ADR-010: Quest Subsystem Architecture
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **ADR-010: Quest Subsystem Architecture** (1 connections) — `docs/architecture/decisions/ADR-010-quest-subsystem.md`
-- **ADR-015: PostgreSQL Procedures and Functions for Data Access** (1 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
+- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
+- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-010-quest-subsystem.md`
-- `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- `.github/dependabot.yml`
+- `.github/workflows/dependency-review.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

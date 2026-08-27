@@ -1,35 +1,33 @@
 # asyncio
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **asyncio** (14 connections)
-- **test_broadcast_combat_attack_logs_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_combat_attack_with_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_broadcast_player_mortally_wounded_with_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **test_send_dp_decay_message()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded broadcasts message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded with attacker name.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack sends personal message to attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test send_dp_decay_message sends DP decay message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **broadcast_combat_attack surfaces a partial room-broadcast failure at error…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_combat_messaging_integration.py** (30 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_log_room_broadcast_result_debug_on_success()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_log_room_broadcast_result_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_connection_manager_property_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_connection_manager_setter_overrides_lazy_load()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_messaging_integration_init()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_resolve_connection_manager_from_container()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_resolve_connection_manager_from_container_error()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Unit tests for combat messaging integration. Tests the…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test connection_manager setter overrides lazy load mechanism.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **A room broadcast with failed_deliveries must log at error level, not just debug…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **A clean room broadcast (no failures) stays at debug level.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test CombatMessagingIntegration initialization.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test connection_manager property lazy loads from container.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test _resolve_connection_manager_from_container resolves manager.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test _resolve_connection_manager_from_container handles errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (7 shared connections)
-- [test_broadcast_combat_attack](test_broadcast_combat_attack.md) (1 shared connections)
-- [test_broadcast_player_death_personal_message_error](test_broadcast_player_death_personal_message_error.md) (1 shared connections)
-- [test_broadcast_player_died](test_broadcast_player_died.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
-- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
-- [test_connection_manager_lazy_load_called](test_connection_manager_lazy_load_called.md) (1 shared connections)
-- [test_send_dp_decay_message_error](test_send_dp_decay_message_error.md) (1 shared connections)
+- [](unnamed.md) (11 shared connections)
+- [.create_drop_command](create_drop_command.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ensure_e2e_database.ps1](ensure_e2e_database.ps1.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
@@ -37,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

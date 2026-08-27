@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Per-Recipient Whisper Rate Limit** (0 connections) — `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- **Semgrep Security Rules** (0 connections) — `.codacy/tools-configs/semgrep.yaml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- `.codacy/tools-configs/semgrep.yaml`
 
 ## Audit Trail
 

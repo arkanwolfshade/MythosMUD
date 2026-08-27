@@ -1,25 +1,26 @@
 # 🚨 CRITICAL ANTI-PATTERNS - DO NOT USE
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **🚨 CRITICAL ANTI-PATTERNS - DO NOT USE** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ FORBIDDEN IMPORT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **❌ FORBIDDEN LOGGING PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **✅ MANDATORY CORRECT PATTERNS** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **check_codacy_yaml()** (3 connections) — `scripts/check_codacy_yaml.py`
+- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
+- **check_codacy_yaml.py** (2 connections) — `scripts/check_codacy_yaml.py`
+- **Return (valid, list of reasons if invalid).** (1 connections) — `scripts/check_codacy_yaml.py`
+- **Warn if .codacy/codacy.yaml is missing or invalid; never fail the commit.** (1 connections) — `scripts/check_codacy_yaml.py`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `scripts/check_codacy_yaml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

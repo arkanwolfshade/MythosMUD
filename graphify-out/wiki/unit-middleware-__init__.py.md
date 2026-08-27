@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **unit/middleware/__init__.py** (1 connections) — `server/tests/unit/middleware/__init__.py`
-- **Middleware unit tests.** (1 connections) — `server/tests/unit/middleware/__init__.py`
+- **test_process_tick_regeneration_calculates_max_from_power()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test process_tick_regeneration() calculates max_mp from power if not present.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [utils/config.ts](utils-config.ts.md) (1 shared connections)
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/middleware/__init__.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

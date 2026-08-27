@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_procedures.ps1** (0 connections) — `db/procedures/README.md`
+- **Semgrep Windows UTF-8 Fix** (0 connections) — `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/procedures/README.md`
+- `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Audit Trail
 

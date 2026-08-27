@@ -1,23 +1,26 @@
 # run_extended_idle_memory_monitor.ps1
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **run_extended_idle_memory_monitor.ps1** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
-- **Write-MonitorLog()** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
+- **_ConnectionManagerUtilsModule** (3 connections) — `server/api/real_time.py`
+- **_WebSocketHandlerModule** (2 connections) — `server/api/real_time.py`
+- **.resolve_connection_manager()** (2 connections) — `server/api/real_time.py`
+- **Protocol** (2 connections)
+- **Resolve the connection manager singleton (or optional candidate).** (1 connections) — `server/api/real_time.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_combat_validator.py](test_combat_validator.py.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/run_extended_idle_memory_monitor.ps1`
+- `server/api/real_time.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

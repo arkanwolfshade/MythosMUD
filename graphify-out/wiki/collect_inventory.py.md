@@ -1,51 +1,51 @@
 # collect_inventory.py
 
-> 47 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **collect_inventory.py** (17 connections) — `server/game/quest/collect_inventory.py`
-- **Any** (14 connections)
-- **consume_prototype_from_player()** (13 connections) — `server/game/quest/collect_inventory.py`
-- **count_prototype_in_stacks()** (12 connections) — `server/game/quest/collect_inventory.py`
-- **test_collect_inventory.py** (10 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **collect_player_stacks()** (9 connections) — `server/game/quest/collect_inventory.py`
-- **_consume_from_stack_list()** (8 connections) — `server/game/quest/collect_inventory.py`
-- **_apply_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
-- **_snapshot_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
-- **_consume_from_equipped()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_nested_item_dicts()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_stack_prototype_id()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_stack_quantity()** (5 connections) — `server/game/quest/collect_inventory.py`
-- **_deepcopy_dict_stacks()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
-- **.set_equipped_items()** (3 connections) — `server/models/player.py`
-- **.set_inventory()** (3 connections) — `server/models/player.py`
-- **test_collect_player_stacks_merges_inventory_and_equipped()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **test_consume_prototype_from_player_insufficient_returns_false()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **test_consume_prototype_from_player_partial_stack()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **test_count_prototype_in_stacks_nested_container()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **test_count_prototype_in_stacks_top_level()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
-- **Inventory helpers for collect_n quest goals. Counts and consumes items by…** (1 connections) — `server/game/quest/collect_inventory.py`
-- *... and 22 more nodes in this community*
+- **test_combat_attack_handler.py** (38 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **asyncio** (7 connections)
+- **fixture** (6 connections)
+- **Test validate_and_get_combat_participants returns participants.** (6 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **attack_handler()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_npc()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_target_player()** (4 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_attacker()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_attack_damage()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_attacker_not_found()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_inactive_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_not_in_combat()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_success()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_target_dead()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_validate_and_get_combat_participants_target_not_found()** (3 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc_kills()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_npc_zero_cap()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_error()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_no_app()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- **test_apply_damage_player_grace_period_no_connection_manager()** (2 connections) — `server/tests/unit/services/test_combat_attack_handler.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (7 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [User](User.md) (4 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (3 shared connections)
+- [NATSService](NATSService.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/quest/collect_inventory.py`
-- `server/models/player.py`
-- `server/tests/unit/game/test_collect_inventory.py`
+- `server/tests/unit/services/test_combat_attack_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 82 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

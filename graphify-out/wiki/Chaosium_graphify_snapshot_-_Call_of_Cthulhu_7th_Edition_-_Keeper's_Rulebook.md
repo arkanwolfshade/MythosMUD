@@ -1,12 +1,13 @@
 # Chaosium graphify snapshot - Call of Cthulhu 7th Edition - Keeper's Rulebook
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition - Keeper's Rulebook** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
-- **call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- **Does Love Forgive_ (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Does Love Forgive_.md`
+- **Does Love Forgive_.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Does Love Forgive_.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Does Love Forgive_.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Does Love Forgive_.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Does Love Forgive_.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

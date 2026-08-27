@@ -1,26 +1,45 @@
 # factory
 
-> 3 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **factory()** (4 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **fixture** (1 connections)
-- **Create a CommandFactory instance.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
+- **handle_npc_test_occupants_command()** (13 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Any** (7 connections)
+- **_resolve_room_and_handler_for_test_occupants()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_test_occupants_context()** (6 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_event_handler_for_test_occupants()** (5 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_get_room_id_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_resolve_app_and_player_for_test_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_separate_occupants()** (4 connections) — `server/commands/npc_admin/test_occupants.py`
+- **_format_occupants_result()** (3 connections) — `server/commands/npc_admin/test_occupants.py`
+- **NPC test-occupants command for debugging occupant queries.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application, player, room_id, and event handler for NPC test occupants…** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Handle NPC test occupants command - manually trigger occupant query for…** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get room_id from args or current room. Returns (room_id, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Get event handler from app.state. Returns (event_handler, error_result).** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Separate occupants into players and NPCs.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Format occupants result as a string.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve application and player object for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
+- **Resolve room_id and event handler for NPC test occupants command.** (1 connections) — `server/commands/npc_admin/test_occupants.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [test_look_room.py](test_look_room.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [HealthStatus](HealthStatus.md) (2 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/commands/npc_admin/test_occupants.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

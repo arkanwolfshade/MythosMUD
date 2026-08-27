@@ -1,25 +1,24 @@
 # long_description
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **long_description** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **.publish()** (3 connections) — `server/events/distributed_event_bus.py`
+- **Publish event locally and to NATS when bridge is active.** (1 connections) — `server/events/distributed_event_bus.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/events/distributed_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

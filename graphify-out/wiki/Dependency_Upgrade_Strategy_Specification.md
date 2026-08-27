@@ -1,45 +1,51 @@
 # Dependency Upgrade Strategy Specification
 
-> 24 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Dependency Upgrade Strategy Specification** (12 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Critical Dependencies Requiring Special Attention** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Implementation Phases** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Safety Measures** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Monitoring and Validation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **DEPENDENCY_UPGRADE_SPEC.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **argon2-cffi (23.1.0 → 25.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Automated Testing** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Deliverables** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **During Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Manual Validation** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 1: Patch Updates (Low Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 2: Minor Updates (Medium Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Phase 3: Major Updates (High Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Post-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Pre-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **protobuf (4.25.8 → 6.32.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **pytest-asyncio (0.24.0 → 1.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Rollback Procedures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Scope** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Success Criteria** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
-- **Timeline** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **enum** (8 connections) — `schemas/items/item_prototype.schema.json`
+- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **zone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **item_type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **consumable** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **artifact** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **container** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **currency** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **equipment** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **quest** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **zone_type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (1 shared connections)
+- [CommandRateLimiter](CommandRateLimiter.md) (1 shared connections)
+- [_make_session_context](_make_session_context.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- `schemas/items/item_prototype.schema.json`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

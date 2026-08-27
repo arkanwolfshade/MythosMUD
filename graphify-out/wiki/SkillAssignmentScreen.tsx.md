@@ -4,58 +4,62 @@
 
 ## Key Concepts
 
-- **SkillAssignmentScreen.tsx** (24 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **CharacterNameScreen.tsx** (22 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **appLazyScreens.tsx** (17 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **SkillAssignmentScreen.helpers.tsx** (14 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **MotdInterstitialScreen.tsx** (8 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent.tsx** (6 connections) — `client/src/components/MotdContent.tsx`
-- **CharacterNameScreen()** (4 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **SkillAssignmentScreen()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **useSkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **MotdContent()** (3 connections) — `client/src/components/MotdContent.tsx`
-- **loadSkillsCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderErrorState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderLoadingState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderOccupationSlots()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderPersonalInterestSlots()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderSkillInstructions()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **useSkillCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **OccupationSlotPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **PersonalInterestPayload** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillCatalogEntry** (2 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **buildCreateCharacterPayload()** (2 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **MotdInterstitialScreen()** (2 connections) — `client/src/components/MotdInterstitialScreen.tsx`
+- **bind_request_context()** (17 connections) — `server/structured_logging/logging_context.py`
+- **test_logging_context.py** (13 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **clear_request_context()** (12 connections) — `server/structured_logging/logging_context.py`
+- **log_with_context()** (8 connections) — `server/structured_logging/logging_context.py`
+- **logging_context.py** (8 connections) — `server/structured_logging/logging_context.py`
+- **structlog.md** (8 connections) — `.claude/rules/structlog.md`
+- **WebSocketManager** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **get_current_context()** (7 connections) — `server/structured_logging/logging_context.py`
+- **add_request_context()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **websocket_endpoint()** (6 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.disconnect()** (5 connections) — `docs/examples/logging/websocket_integration.py`
+- **.__call__()** (5 connections) — `server/middleware/correlation_middleware.py`
+- **correct_request_context()** (4 connections) — `docs/examples/logging/correct_patterns.py`
+- **process_websocket_message()** (3 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.broadcast_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.connect()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **.send_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
+- **test_get_current_context_returns_empty_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **Any** (3 connections)
+- **test_bind_request_context_generates_correlation_id()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_bind_request_context_omits_none_values()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_clear_request_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_get_current_context_returns_contextvars()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **test_log_with_context_merges_context()** (2 connections) — `server/tests/unit/structured_logging/test_logging_context.py`
+- **Any** (2 connections)
 - *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [errorHandler.ts](errorHandler.ts.md) (7 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (6 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (4 shared connections)
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [App.tsx](App.tsx.md) (2 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [Profession](Profession.md) (7 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (5 shared connections)
+- [NATSMessageBroadcastMixin](NATSMessageBroadcastMixin.md) (3 shared connections)
+- [test_websocket_messages.py](test_websocket_messages.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
+- [UserManagerProtocol](UserManagerProtocol.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [Domain Model Anemic Anti-Pattern Audit](Domain_Model_Anemic_Anti-Pattern_Audit.md) (1 shared connections)
+- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (1 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (1 shared connections)
+- [FeedbackManager](FeedbackManager.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/MotdContent.tsx`
-- `client/src/components/MotdInterstitialScreen.tsx`
-- `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- `client/src/components/SkillAssignmentScreen.tsx`
-- `client/src/components/__tests__/MotdContent.test.tsx`
-- `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
-- `client/src/mythosApp/appLazyScreens.tsx`
+- `.claude/rules/structlog.md`
+- `docs/examples/logging/correct_patterns.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `docs/examples/logging/websocket_integration.py`
+- `server/middleware/correlation_middleware.py`
+- `server/structured_logging/logging_context.py`
+- `server/tests/unit/structured_logging/test_logging_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 70 (77%)
+- INFERRED: 21 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

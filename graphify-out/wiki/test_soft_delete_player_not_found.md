@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_soft_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_exit_exists_invalid()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_exit_exists() returns False for invalid exit.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

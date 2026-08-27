@@ -1,72 +1,60 @@
 # GameTerminal.tsx
 
-> 54 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **GameTerminal.tsx** (47 connections) — `client/src/components/GameTerminal.tsx`
-- **lucidityEventUtils.ts** (20 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **HallucinationMessage** (10 connections) — `client/src/types/lucidity.ts`
-- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **HallucinationTicker.tsx** (9 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
-- **RescueStatusBanner.tsx** (9 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
-- **GameTerminal()** (8 connections) — `client/src/components/GameTerminal.tsx`
-- **game-terminal-integration.spec.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- **game-terminal-integration.test.tsx** (7 connections) — `client/src/components/__tests__/game-terminal-integration.test.tsx`
-- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **IncapacitatedBanner.tsx** (5 connections) — `client/src/components/health/IncapacitatedBanner.tsx`
-- **HallucinationTicker.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
-- **RescueStatusBanner.test.tsx** (5 connections) — `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
-- **DismissButton.tsx** (5 connections) — `client/src/components/ui/DismissButton.tsx`
-- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- **DismissButton()** (4 connections) — `client/src/components/ui/DismissButton.tsx`
-- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **__tests__/GameTerminal.test.tsx** (4 connections) — `client/src/components/__tests__/GameTerminal.test.tsx`
-- **buildHealthStatus()** (3 connections) — `client/src/components/GameTerminal.tsx`
-- **createHallucinationEntry()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **createRescueState()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **resolveMaxLucidity()** (3 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **HallucinationTicker** (3 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
-- **RescueStatusBanner** (3 connections) — `client/src/components/lucidity/RescueStatusBanner.tsx`
-- **HallucinationTickerProps** (2 connections) — `client/src/components/lucidity/HallucinationTicker.tsx`
-- *... and 29 more nodes in this community*
+- **quest_commands.py** (40 connections) — `server/commands/quest_commands.py`
+- **test_quest_commands.py** (21 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **handle_quest_command()** (20 connections) — `server/commands/quest_commands.py`
+- **Any** (18 connections)
+- **handle_journal_command()** (14 connections) — `server/commands/quest_commands.py`
+- **asyncio** (13 connections)
+- **_handle_quest_npc_sub()** (11 connections) — `server/commands/quest_commands.py`
+- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
+- **resolve_npc_in_player_room()** (9 connections) — `server/commands/quest_commands.py`
+- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
+- **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
+- **emit_quest_npc_say()** (7 connections) — `server/game/quest/quest_chat_notify.py`
+- **_enter_quest_command_patches()** (7 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
+- **_emit_npc_lines_for_results()** (6 connections) — `server/commands/quest_commands.py`
+- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
+- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
+- **quest_ask_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **quest_turnin_npc_line()** (6 connections) — `server/game/quest/quest_chat_notify.py`
+- **test_quest_ask_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_ask_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_npc_not_in_room()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **test_quest_turnin_success()** (6 connections) — `server/tests/unit/commands/test_quest_commands.py`
+- **UUID** (6 connections)
+- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (25 shared connections)
-- [logger.ts](logger.ts.md) (9 shared connections)
-- [debugLogger](debugLogger.md) (3 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
-- [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
-- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (2 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (2 shared connections)
-- [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (2 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (1 shared connections)
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (11 shared connections)
+- [Stats](Stats.md) (9 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [Room](Room.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [apply_communication_dampening](apply_communication_dampening.md) (2 shared connections)
+- [Reporter](Reporter.md) (1 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminal.test.tsx`
-- `client/src/components/GameTerminal.tsx`
-- `client/src/components/__tests__/GameTerminal.test.tsx`
-- `client/src/components/__tests__/game-terminal-integration.spec.tsx`
-- `client/src/components/__tests__/game-terminal-integration.test.tsx`
-- `client/src/components/health/IncapacitatedBanner.tsx`
-- `client/src/components/lucidity/HallucinationTicker.tsx`
-- `client/src/components/lucidity/RescueStatusBanner.tsx`
-- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
-- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
-- `client/src/components/ui/DismissButton.tsx`
-- `client/src/types/lucidity.ts`
-- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- `client/src/utils/lucidityEventUtils.ts`
+- `server/commands/quest_commands.py`
+- `server/game/quest/quest_chat_notify.py`
+- `server/tests/unit/commands/test_quest_commands.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 202 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

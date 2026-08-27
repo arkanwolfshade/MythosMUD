@@ -1,68 +1,60 @@
 # chatPanelRuntimeUtils.ts
 
-> 75 nodes
+> 92 nodes
 
 ## Key Concepts
 
-- **chatPanelRuntimeUtils.ts** (31 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **messageTypeUtils.ts** (24 connections) — `client/src/utils/messageTypeUtils.ts`
-- **ChatPanelMessagesLog.tsx** (21 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **useChatPanelRuntime.ts** (18 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
-- **chatPanelRuntimeUtils.test.ts** (17 connections) — `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
-- **extractChannelFromMessage()** (13 connections) — `client/src/utils/messageTypeUtils.ts`
-- **chatPanelExportFormat.ts** (13 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
-- **ChatPanelMessage** (11 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **chatPanelChannelVisibility.ts** (11 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **useChatPanelRuntime()** (10 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
-- **isChatContent()** (10 connections) — `client/src/utils/messageTypeUtils.ts`
-- **chatPanelUnreadBump.ts** (10 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **ChatPanelRuntime.tsx** (9 connections) — `client/src/components/panels/ChatPanelRuntime.tsx`
-- **resolveChatExportPayload()** (8 connections) — `client/src/components/panels/chatPanelExportFormat.ts`
-- **formatChatTimestampUtc()** (8 connections) — `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- **determineMessageType()** (8 connections) — `client/src/utils/messageTypeUtils.ts`
-- **isVisibleInChannelView()** (7 connections) — `client/src/components/panels/chatPanelChannelVisibility.ts`
-- **getChatPanelMessageClass()** (7 connections) — `client/src/components/panels/chatPanelMessageClass.ts`
-- **filterMessagesForChannelView()** (6 connections) — `client/src/components/panels/chatPanelChannelFilter.ts`
-- **bumpUnreadCountForMessage()** (6 connections) — `client/src/components/panels/chatPanelUnreadBump.ts`
-- **computeUnreadChatCounts()** (6 connections) — `client/src/components/panels/chatPanelUnreadCounts.ts`
-- **ChatPanelMessageRow** (6 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **ChatPanelRuntimeView.tsx** (6 connections) — `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- **chatPanelRuntimeViewTypes.ts** (6 connections) — `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- **ChatPanelProps** (5 connections) — `client/src/components/panels/useChatPanelRuntime.ts`
-- *... and 50 more nodes in this community*
+- **test_player_presence_tracker.py** (39 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **player_presence_tracker.py** (35 connections) — `server/realtime/player_presence_tracker.py`
+- **track_player_disconnected_impl()** (28 connections) — `server/realtime/player_presence_tracker.py`
+- **asyncio** (17 connections)
+- **track_player_connected_impl()** (13 connections) — `server/realtime/player_presence_tracker.py`
+- **Any** (11 connections)
+- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
+- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
+- **test_player_presence_tracker_grace_period.py** (8 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **broadcast_connection_message_impl()** (7 connections) — `server/realtime/player_presence_tracker.py`
+- **_disconnect_during_rest_is_intentional()** (7 connections) — `server/realtime/player_presence_tracker.py`
+- **_get_instance_manager_from_manager()** (7 connections) — `server/realtime/player_presence_tracker.py`
+- **_resolve_intentional_disconnect()** (6 connections) — `server/realtime/player_presence_tracker.py`
+- **UUID** (6 connections)
+- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
+- **test_broadcast_connection_message_impl_error()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_error()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_impl_finally_cleanup()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- **test_track_player_disconnected_intentional_no_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **test_track_player_disconnected_mid_rest_skips_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **test_track_player_disconnected_removes_from_intentional_set()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **test_track_player_disconnected_unintentional_starts_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- **test_acquire_disconnect_lock_already_disconnecting()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (16 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (11 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (5 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (4 shared connections)
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (3 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (9 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (5 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (4 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (3 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (3 shared connections)
+- [character-cleanup.ts](character-cleanup.ts.md) (3 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- `client/src/components/panels/ChatPanelRuntime.tsx`
-- `client/src/components/panels/ChatPanelRuntimeView.tsx`
-- `client/src/components/panels/__tests__/chatPanelRuntimeUtils.test.ts`
-- `client/src/components/panels/chatPanelChannelFilter.ts`
-- `client/src/components/panels/chatPanelChannelVisibility.ts`
-- `client/src/components/panels/chatPanelExportFormat.ts`
-- `client/src/components/panels/chatPanelMessageClass.ts`
-- `client/src/components/panels/chatPanelRuntimeUtils.ts`
-- `client/src/components/panels/chatPanelRuntimeViewTypes.ts`
-- `client/src/components/panels/chatPanelUnreadBump.ts`
-- `client/src/components/panels/chatPanelUnreadCounts.ts`
-- `client/src/components/panels/useChatPanelRuntime.ts`
-- `client/src/utils/__tests__/messageTypeUtils.test.ts`
-- `client/src/utils/messageTypeUtils.ts`
+- `server/realtime/player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker.py`
+- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (98%)
-- INFERRED: 4 (2%)
+- EXTRACTED: 212 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

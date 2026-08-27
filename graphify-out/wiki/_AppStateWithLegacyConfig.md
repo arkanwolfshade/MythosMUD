@@ -1,26 +1,22 @@
 # _AppStateWithLegacyConfig
 
-> 5 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **_AppStateWithLegacyConfig** (3 connections) — `server/legacy_error_handlers.py`
-- **_AppWithLegacyConfigState** (3 connections) — `server/legacy_error_handlers.py`
-- **Protocol** (2 connections)
-- **Minimal app.state shape for legacy error-handler debug config.** (1 connections) — `server/legacy_error_handlers.py`
-- **Minimal FastAPI app shape for reading legacy config from state.** (1 connections) — `server/legacy_error_handlers.py`
+- **AI Development Workflow** (0 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/legacy_error_handlers.py`
+- `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

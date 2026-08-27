@@ -1,31 +1,34 @@
 # Appendices
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Appendices** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Appendix A: Test File Inventory** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Appendix B: Direct app.state Access Locations** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Appendix C: Fixture Audit** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Consolidation Opportunities** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Current Fixture Categories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **High Priority (Integration Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Low Priority (Other)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Medium Priority (Unit Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Unit Tests by Category** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_own_language_not_allocated_equals_edu()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_cthulhu_mythos_in_personal_rejected()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_duplicate_personal_skill_ids_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_overlap_occupation_and_personal_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **test_set_player_skills_personal_interest_not_four_raises()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Valid 9 slots: one 70, two 60, three 50, three 40; 9 distinct skill_ids (no…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **When Own Language is not in occupation or personal, its value is stats_for_edu.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Personal interest with Cthulhu Mythos raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest must have exactly 4 entries.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **personal_interest with duplicate skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **Occupation and personal interest sharing a skill_id raises ValueError.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (11 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (5 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `server/tests/unit/game/test_skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

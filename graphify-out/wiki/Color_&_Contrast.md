@@ -1,37 +1,41 @@
 # Color & Contrast
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Color & Contrast** (6 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Contrast & Accessibility** (5 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Building Functional Palettes** (4 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Theming: Light & Dark Mode** (3 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **color-and-contrast.md** (2 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Alpha Is A Design Smell** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Color Spaces: Use OKLCH** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Dangerous Color Combinations** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Dark Mode Is Not Inverted Light Mode** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Never Use Pure Gray or Pure Black** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Palette Structure** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Testing** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **The 60-30-10 Rule (Applied Correctly)** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **The Tinted Neutral Trap** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **Token Hierarchy** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
-- **WCAG Requirements** (1 connections) — `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- **usePanelContext.ts** (12 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **PanelContext.tsx** (12 connections) — `client/src/contexts/PanelContext.tsx`
+- **usePanelContext.test.tsx** (6 connections) — `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
+- **PanelContext.test.tsx** (6 connections) — `client/src/contexts/__tests__/PanelContext.test.tsx`
+- **usePanelContext()** (5 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **PanelPosition** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelSize** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **usePanel()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **usePanelActions()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **usePanelLayout()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
+- **PanelProvider()** (3 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelContextType** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelState** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelContext** (2 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelLayout** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **defaultPanels** (1 connections) — `client/src/contexts/PanelContext.tsx`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/color-and-contrast.md`
+- `client/src/contexts/PanelContext.tsx`
+- `client/src/contexts/__tests__/PanelContext.test.tsx`
+- `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
+- `client/src/contexts/hooks/usePanelContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

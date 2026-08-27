@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Gateways to Terror
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Gateways to Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
-- **gateways-to-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- **Core Architectural Differences** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **1. **Structured Concurrency**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **2. **Backend Abstraction**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **3. **API Design Philosophy**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,32 +1,31 @@
 # admin_auth_service
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **admin_auth_service()** (5 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **mock_user()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **fixture** (3 connections)
-- **Create an AdminAuthService instance.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Create a mock user object.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
-- **Create a superuser object.** (1 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **15. Hardcoded Connection Pool Sizes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **16. Deprecated asyncio.get_event_loop() Usage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **17. Inconsistent Error Handling Patterns** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **18. Memory Leak Risk in Metrics Collection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **19. Missing Message Acknowledgment in NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **20. Subject Naming Inconsistency** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **21. No Connection Health Monitoring** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (3 shared connections)
-- [User](User.md) (2 shared connections)
-- [AdminAuthService](AdminAuthService.md) (1 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (1 shared connections)
+- [.get_professions](get_professions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_admin_auth_service.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (69%)
-- INFERRED: 4 (31%)
+- EXTRACTED: 9 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

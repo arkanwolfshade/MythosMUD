@@ -1,67 +1,62 @@
 # chat_service.py
 
-> 85 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **chat_service.py** (60 connections) — `server/game/chat_service.py`
-- **chat_message_senders.py** (30 connections) — `server/game/chat_message_senders.py`
-- **send_local_message()** (18 connections) — `server/game/chat_message_senders.py`
-- **send_predefined_emote()** (17 connections) — `server/game/chat_message_senders.py`
-- **chat_logger.py** (17 connections) — `server/services/chat_logger.py`
-- **create_and_log_chat_message()** (14 connections) — `server/game/chat_message_helpers.py`
-- **send_party_message()** (14 connections) — `server/game/chat_message_senders.py`
-- **ChatLogger** (13 connections) — `server/game/chat_channel_message_senders.py`
-- **ChatUserManager** (13 connections) — `server/game/chat_channel_message_senders.py`
-- **chat_message_helpers.py** (13 connections) — `server/game/chat_message_helpers.py`
-- **ChatRateLimiter** (12 connections) — `server/game/chat_channel_message_senders.py`
-- **chat_validation_helpers.py** (12 connections) — `server/game/chat_validation_helpers.py`
-- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
-- **ChatPlayerService** (11 connections) — `server/game/chat_channel_message_senders.py`
-- **store_message_in_room_history()** (11 connections) — `server/game/chat_message_helpers.py`
-- **check_channel_permissions()** (10 connections) — `server/game/chat_validation_helpers.py`
-- **services/rate_limiter.py** (10 connections) — `server/services/rate_limiter.py`
-- **ChatEmoteService** (9 connections) — `server/game/chat_channel_message_senders.py`
-- **normalize_player_id()** (8 connections) — `server/game/chat_message_senders.py`
-- **create_and_log_say_message()** (7 connections) — `server/game/chat_message_helpers.py`
-- **validate_say_message()** (7 connections) — `server/game/chat_validation_helpers.py`
-- **Protocol** (7 connections)
-- **store_global_message_in_history()** (6 connections) — `server/game/chat_message_helpers.py`
-- **check_say_permissions()** (6 connections) — `server/game/chat_validation_helpers.py`
-- **Any** (6 connections)
-- *... and 60 more nodes in this community*
+- **MessageQueue** (53 connections) — `server/realtime/message_queue.py`
+- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **deque** (22 connections)
+- **.add_message()** (4 connections) — `server/realtime/message_queue.py`
+- **.cleanup_old_messages()** (4 connections) — `server/realtime/message_queue.py`
+- **._is_message_recent()** (4 connections) — `server/realtime/message_queue.py`
+- **test_message_queue_cleanup_large_structures()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_invalid_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_removes_empty()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_string_timestamp()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_get_messages_error()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_has_messages_empty_list()** (4 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **Any** (4 connections)
+- **.cleanup_large_structures()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_messages()** (3 connections) — `server/realtime/message_queue.py`
+- **.get_stats()** (3 connections) — `server/realtime/message_queue.py`
+- **.__init__()** (3 connections) — `server/services/nats_subject_manager/metrics.py`
+- **test_message_queue_add_message()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_limit_reached()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_multiple()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_add_message_with_timestamp()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- **test_message_queue_cleanup_old_messages_error()** (3 connections) — `server/tests/unit/realtime/test_message_queue.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (31 shared connections)
-- [ChatMessage](ChatMessage.md) (22 shared connections)
-- [ChatService](ChatService.md) (19 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (8 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (7 shared connections)
-- [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (5 shared connections)
-- [test_chat_validator.py](test_chat_validator.py.md) (4 shared connections)
-- [ChatModeration](ChatModeration.md) (3 shared connections)
-- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
-- [UserManager](UserManager.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [utils.py](utils.py.md) (5 shared connections)
+- [test_go_command.py](test_go_command.py.md) (2 shared connections)
+- [population_control.py](population_control.py.md) (2 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [edgeModalLogic.ts](edgeModalLogic.ts.md) (2 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (1 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (1 shared connections)
+- [compare_linting_results.py](compare_linting_results.py.md) (1 shared connections)
+- [include](include.md) (1 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_channel_message_senders.py`
-- `server/game/chat_message_helpers.py`
-- `server/game/chat_message_senders.py`
-- `server/game/chat_service.py`
-- `server/game/chat_validation_helpers.py`
-- `server/services/chat_logger.py`
-- `server/services/rate_limiter.py`
-- `server/tests/unit/game/test_chat_message_helpers.py`
-- `vulture_allowlist.py`
+- `server/realtime/message_queue.py`
+- `server/services/nats_metrics.py`
+- `server/services/nats_subject_manager/metrics.py`
+- `server/tests/unit/realtime/test_message_queue.py`
 
 ## Audit Trail
 
-- EXTRACTED: 268 (94%)
-- INFERRED: 18 (6%)
+- EXTRACTED: 131 (86%)
+- INFERRED: 21 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

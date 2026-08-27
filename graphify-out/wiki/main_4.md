@@ -1,17 +1,14 @@
 # main
 
-> 8 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **cursor** (2 connections)
-- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
-- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **test_grype.py** (4 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_config_excludes_e2e_harness_paths()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_script_defines_repo_root_next_to_makefile()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_makefile_codacy_tools_does_not_invoke_grype()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **Regression tests for scripts/grype.py project-root anchoring and scan config.** (1 connections) — `server/tests/unit/scripts/test_grype.py`
 
 ## Relationships
 
@@ -19,11 +16,11 @@
 
 ## Source Files
 
-- `scripts/apply_quest_migrations_to_dev.py`
+- `server/tests/unit/scripts/test_grype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

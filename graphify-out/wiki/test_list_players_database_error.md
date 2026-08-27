@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **test_list_players_database_error()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test list_players handles database errors.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_validate_room_exists_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_room_exists() returns False when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

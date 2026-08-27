@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields validates fields.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **main()** (1 connections) — `scripts/analyze_markdownlint.py`
+- **analyze_markdownlint.py** (1 connections) — `scripts/analyze_markdownlint.py`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `scripts/analyze_markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

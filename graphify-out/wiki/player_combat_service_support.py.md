@@ -1,54 +1,58 @@
 # player_combat_service_support.py
 
-> 39 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **player_combat_service_support.py** (20 connections) — `server/services/player_combat_service_support.py`
-- **NPCCombatIntegrationReadApi** (7 connections) — `server/services/player_combat_service_support.py`
-- **EventBusPublish** (6 connections) — `server/services/player_combat_service_support.py`
-- **PlayerXpLike** (6 connections) — `server/services/player_combat_service_support.py`
-- **Protocol** (6 connections)
-- **NPCCombatRewardsLike** (5 connections) — `server/services/player_combat_service_support.py`
-- **UUIDMappingXP** (5 connections) — `server/services/player_combat_service_support.py`
-- **lifecycle_lookup_id()** (5 connections) — `server/services/player_combat_service_support.py`
-- **log_missing_lifecycle_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **original_string_id_for_npc()** (5 connections) — `server/services/player_combat_service_support.py`
-- **PersistenceWithNpcLifecycleManager** (4 connections) — `server/services/player_combat_service_support.py`
-- **async_load_lifecycle_manager()** (4 connections) — `server/services/player_combat_service_support.py`
-- **available_lifecycle_npc_ids()** (4 connections) — `server/services/player_combat_service_support.py`
-- **UUID** (4 connections)
-- **.get_rewards_service()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_uuid_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.get_xp_value()** (3 connections) — `server/services/player_combat_service_support.py`
-- **xp_int_from_base_stats_mapping()** (3 connections) — `server/services/player_combat_service_support.py`
-- **.publish()** (2 connections) — `server/services/player_combat_service_support.py`
-- **.award_xp_to_killer()** (2 connections) — `server/services/player_combat_service_support.py`
-- **.add_experience()** (1 connections) — `server/services/player_combat_service_support.py`
-- **Protocols and module-level helpers for player combat XP and lifecycle lookup.…** (1 connections) — `server/services/player_combat_service_support.py`
-- **Keys present in lifecycle_records for debug logging.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Return xp_value from get_base_stats() result, or None if missing/invalid.** (1 connections) — `server/services/player_combat_service_support.py`
-- **Debug when a lookup id is missing from lifecycle records.** (1 connections) — `server/services/player_combat_service_support.py`
-- *... and 14 more nodes in this community*
+- **message_handler_factory.py** (24 connections) — `server/realtime/message_handler_factory.py`
+- **test_message_handler_factory.py** (22 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **MessageHandlerFactory** (18 connections) — `server/realtime/message_handler_factory.py`
+- **MessageHandler** (14 connections) — `server/realtime/message_handler_factory.py`
+- **CommandMessageHandler** (9 connections) — `server/realtime/message_handler_factory.py`
+- **.__init__()** (8 connections) — `server/realtime/message_handler_factory.py`
+- **ChatMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **ClientErrorReportMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **PingMessageHandler** (7 connections) — `server/realtime/message_handler_factory.py`
+- **asyncio** (7 connections)
+- **.handle_message()** (6 connections) — `server/realtime/message_handler_factory.py`
+- **FollowResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **PartyInviteResponseMessageHandler** (5 connections) — `server/realtime/message_handler_factory.py`
+- **.get_handler()** (5 connections) — `server/realtime/message_handler_factory.py`
+- **test_chat_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_client_error_report_handler_logs()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_command_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_game_command_alias()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_get_handler_found()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_no_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_success()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_message_handler_factory_handle_message_unknown_type()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **test_ping_message_handler_handle()** (4 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- **.register_handler()** (3 connections) — `server/realtime/message_handler_factory.py`
+- **test_global_message_handler_factory()** (3 connections) — `server/tests/unit/realtime/test_message_handler_factory.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (9 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [._despawn_npc](_despawn_npc.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [lifecycle_manager.py](lifecycle_manager.py.md) (1 shared connections)
+- [ItemInstance](ItemInstance.md) (9 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (5 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [Protocol](Protocol.md) (1 shared connections)
+- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (1 shared connections)
+- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_combat_service_support.py`
+- `server/realtime/message_handler_factory.py`
+- `server/tests/unit/realtime/test_message_handler_factory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 65 (92%)
-- INFERRED: 6 (8%)
+- EXTRACTED: 118 (91%)
+- INFERRED: 11 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

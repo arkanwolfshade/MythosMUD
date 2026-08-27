@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **eslint-plugin-jsx-a11y** (2 connections) — `client/package.json`
-- **eslint-plugin-jsx-a11y** (1 connections) — `client/package.json`
+- **test_build_room_objects_without_environment_in_attributes()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects defaults to outdoors when environment not in…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

@@ -1,38 +1,41 @@
 # Introduce Color Strategically
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **Introduce Color Strategically** (8 connections) — `.claude/skills/colorize/SKILL.md`
-- **Colorize Skill** (7 connections) — `.claude/skills/colorize/SKILL.md`
-- **Balance & Refinement** (4 connections) — `.claude/skills/colorize/SKILL.md`
-- **Accent Color Application** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Accessibility** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Assess Color Opportunity** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Background & Surfaces** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Borders & Accents** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Cohesion** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Data Visualization** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Decorative Elements** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Maintain Hierarchy** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Plan Color Strategy** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Semantic Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Typography Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
-- **Verify Color Addition** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **test_message_builders.py** (15 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **_builder()** (8 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_entered_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_player_left_message()** (4 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_occupants_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_state_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_build_room_update_message()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_create_npc_movement_message_variants()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_non_callable_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **test_get_next_sequence_uses_callable()** (3 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Unit tests for MessageBuilder.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Sequence counter callable is invoked.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Non-callable sequence counter returns 0.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player entered message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Player left message includes ids and player name.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **NPC movement messages cover direction and movement type branches.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Occupants update includes structured and legacy fields.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room update wraps room data without occupants.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
+- **Room state includes occupants from room_data.** (1 connections) — `server/tests/unit/realtime/test_message_builders.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [InventoryCommandFactory](InventoryCommandFactory.md) (4 shared connections)
 
 ## Source Files
 
-- `.claude/skills/colorize/SKILL.md`
+- `server/tests/unit/realtime/test_message_builders.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

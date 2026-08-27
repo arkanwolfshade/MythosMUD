@@ -1,22 +1,23 @@
 # mythos_dev mythos_unit mythos_e2e Databases
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **mythos_dev mythos_unit mythos_e2e Databases** (0 connections) — `db/databases/README.md`
+- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_learn_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `db/databases/README.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

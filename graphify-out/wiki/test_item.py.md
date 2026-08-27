@@ -1,51 +1,66 @@
 # test_item.py
 
-> 43 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_item.py** (19 connections) — `server/tests/unit/models/test_item.py`
-- **ItemComponentState** (13 connections) — `server/models/item.py`
-- **ItemPrototype** (13 connections) — `server/models/item.py`
-- **ItemInstance** (11 connections) — `server/models/item.py`
-- **.unique_key()** (8 connections) — `server/models/item.py`
-- **test_item_component_state_unique_key()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_instance_same_component()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_different_values()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_empty_strings()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_same_instance_different_component()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_component_state_unique_key_static_method()** (4 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_existing_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_multiple_flags()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_new_flag()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_instance_apply_flag_preserves_order()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_empty()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_none()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_single_slot()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **test_item_prototype_primary_slot_with_slots()** (3 connections) — `server/tests/unit/models/test_item.py`
-- **Base** (3 connections)
-- **.apply_flag()** (2 connections) — `server/models/item.py`
-- **.primary_slot()** (2 connections) — `server/models/item.py`
-- **Idempotently apply a runtime-only flag override.** (1 connections) — `server/models/item.py`
-- **Per-instance persisted state for modular item components.** (1 connections) — `server/models/item.py`
-- **Convenience helper for composing uniqueness checks in higher layers.** (1 connections) — `server/models/item.py`
-- *... and 18 more nodes in this community*
+- **useMythosAppState.ts** (32 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **1774539086359-useMythosAppState.ts** (27 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **submitAuth.ts** (18 connections) — `client/src/mythosApp/submitAuth.ts`
+- **applyAuthenticatedSession.ts** (16 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **useAuthSessionRestore.ts** (15 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **CreationStep** (13 connections) — `client/src/mythosApp/creationTypes.ts`
+- **mythosAppViewModelFactory.ts** (12 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **useMythosAuthForm.ts** (11 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAuthForm()** (10 connections) — `client/src/mythosApp/useMythosAuthForm.ts`
+- **useMythosAppState()** (9 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **useMythosApp.tsx** (9 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- **creationTypes.ts** (8 connections) — `client/src/mythosApp/creationTypes.ts`
+- **useAuthSessionRestore()** (7 connections) — `client/src/mythosApp/useAuthSessionRestore.ts`
+- **useReducerStateSlices()** (6 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **useReducerStateSlices()** (6 connections) — `client/src/mythosApp/useMythosAppState.ts`
+- **assertLoginResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **restoreCharactersOnMount()** (5 connections) — `client/src/mythosApp/characterSessionApi.ts`
+- **buildMythosAppViewModel()** (5 connections) — `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- **submitLoginRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **submitRegisterRequest()** (5 connections) — `client/src/mythosApp/submitAuth.ts`
+- **CreationSlice** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **useMythosAppState()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **usePatchedSetter()** (4 connections) — `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- **persistTokensAndApplySession()** (4 connections) — `client/src/mythosApp/applyAuthenticatedSession.ts`
+- **useMythosApp()** (4 connections) — `client/src/mythosApp/useMythosApp.tsx`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (34 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (12 shared connections)
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (11 shared connections)
+- [test_delete_container_success](test_delete_container_success.md) (5 shared connections)
+- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (5 shared connections)
+- [_str_id](_str_id.md) (4 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/item.py`
-- `server/tests/unit/models/test_item.py`
+- `client/src/mythosApp/1774539086359-useMythosAppState.ts`
+- `client/src/mythosApp/__tests__/useMythosAppState.test.ts`
+- `client/src/mythosApp/applyAuthenticatedSession.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/creationTypes.ts`
+- `client/src/mythosApp/mapServerCharacters.ts`
+- `client/src/mythosApp/mythosAppViewModelFactory.ts`
+- `client/src/mythosApp/submitAuth.ts`
+- `client/src/mythosApp/useAuthSessionRestore.ts`
+- `client/src/mythosApp/useMythosApp.tsx`
+- `client/src/mythosApp/useMythosAppState.ts`
+- `client/src/mythosApp/useMythosAuthForm.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 66 (87%)
-- INFERRED: 10 (13%)
+- EXTRACTED: 188 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

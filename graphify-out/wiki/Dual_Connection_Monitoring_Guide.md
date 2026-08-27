@@ -1,22 +1,23 @@
 # Dual Connection Monitoring Guide
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Dual Connection Monitoring Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
+- **test_validate_combat_command_invalid_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with invalid target name format.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

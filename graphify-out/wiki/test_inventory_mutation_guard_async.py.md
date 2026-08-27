@@ -1,40 +1,42 @@
 # test_inventory_mutation_guard_async.py
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_inventory_mutation_guard_async.py** (11 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **asyncio** (6 connections)
-- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_cleanup_empty_state()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_concurrent_same_player()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_enforces_max_tokens()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_token_expiry()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **test_acquire_async_token_ttl_zero()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **test_player_spell_repository.py** (20 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **_mock_session_with_rows()** (9 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **asyncio** (9 connections)
+- **_spell_row()** (6 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_found()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_learn_spell_no_row_raises()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_record_spell_cast()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spell_missing()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_get_player_spells_db_error()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_update_mastery_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **fixture** (1 connections)
-- **Unit tests for inventory mutation guard - asynchronous acquire operations.…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async serializes concurrent mutations for same player.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async enforces max_tokens limit.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async allows token reuse after expiry.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async with token_ttl=0 (no expiry).** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
-- **Test acquire_async cleans up state when tokens are empty.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Relationships
 
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [Any](Any.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_inventory_mutation_guard_async.py`
+- `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

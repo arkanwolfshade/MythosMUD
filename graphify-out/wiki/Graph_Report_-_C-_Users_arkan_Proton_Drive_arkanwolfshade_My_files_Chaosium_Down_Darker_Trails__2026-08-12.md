@@ -1,25 +1,26 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Down Darker Trails  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Communities (12 total, 7 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **down-darker-trails/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 0 - "Call of Cthulhu (7th Edition); Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 1 - "APP; Characteristics"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 2 - "Everett Scanlon; Gustavo Romero"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 3 - "First Aid; Hit Points"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community 4 - "Formless Spawn of Tsathoggua; Rudolf Zimmer"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **scenario-06-admin-teleportation.md** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Relationships
 
@@ -27,11 +28,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/GRAPH_REPORT.md`
+- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

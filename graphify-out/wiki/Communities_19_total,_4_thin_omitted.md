@@ -1,47 +1,53 @@
 # Communities (19 total, 4 thin omitted)
 
-> 27 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **Communities (19 total, 4 thin omitted)** (16 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Malleus Monstrorum Keeper Deck  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 0 - "Yog-Sothoth Keeper Decks"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 10 - "Tsathoggua Formless Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 11 - "Ygolonac and Xiclotl"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 12 - "Nyogtha Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 13 - "Hastur Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 14 - "Fthagghua Fire Vampires"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 1 - "Abhoth Shub-Niggurath"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 2 - "Independent Races"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 3 - "Mind Control Spells"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 4 - "Cthulhu Dagon Hydra"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 5 - "Cult Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 6 - "Deep One Family"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 7 - "Hastur and Ithaqua"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 8 - "Abhoth Atlach-Nacha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 9 - "Shoggoth Mind Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- *... and 2 more nodes in this community*
+- **migrate_combat_data.py** (29 connections) — `server/scripts/migrate_combat_data.py`
+- **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
+- **migrate_npc_combat_data()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **_rollback_one_npc()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **validate_migration_results()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **MigrationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **RollbackResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **ValidationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_record_npc_error()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_strip_combat_data_from_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **AsyncSession** (5 connections)
+- **TypedDict** (3 connections)
+- **_npc_has_combat_data()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_npc_has_full_combat_data()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_omit_keys()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_present_keys()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **Exception** (1 connections)
+- **Combat data migration script. This script adds default combat data to existing…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields. Args: session:…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
+- [HealthService](HealthService.md) (6 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (3 shared connections)
+- [Alone Against the Frost (source summary)](Alone_Against_the_Frost_source_summary.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Bug Report Issue Template](Bug_Report_Issue_Template.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
+- `server/scripts/migrate_combat_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

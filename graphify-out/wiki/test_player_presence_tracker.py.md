@@ -1,61 +1,54 @@
 # test_player_presence_tracker.py
 
-> 94 nodes
+> 96 nodes
 
 ## Key Concepts
 
-- **test_player_presence_tracker.py** (39 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **player_presence_tracker.py** (35 connections) — `server/realtime/player_presence_tracker.py`
-- **track_player_disconnected_impl()** (30 connections) — `server/realtime/player_presence_tracker.py`
-- **asyncio** (17 connections)
-- **track_player_connected_impl()** (15 connections) — `server/realtime/player_presence_tracker.py`
-- **Any** (11 connections)
-- **_build_player_info()** (10 connections) — `server/realtime/player_presence_tracker.py`
-- **_acquire_disconnect_lock()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **broadcast_connection_message_impl()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_resolve_room_id()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **_should_skip_disconnect()** (9 connections) — `server/realtime/player_presence_tracker.py`
-- **test_player_presence_tracker_grace_period.py** (8 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- **_disconnect_during_rest_is_intentional()** (7 connections) — `server/realtime/player_presence_tracker.py`
-- **_get_instance_manager_from_manager()** (7 connections) — `server/realtime/player_presence_tracker.py`
-- **_resolve_intentional_disconnect()** (6 connections) — `server/realtime/player_presence_tracker.py`
-- **UUID** (6 connections)
-- **_resolve_room_id_for_tutorial_reconnect()** (5 connections) — `server/realtime/player_presence_tracker.py`
-- **test_broadcast_connection_message_impl_error()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_disconnected_impl_error()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_disconnected_impl_finally_cleanup()** (5 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- **test_track_player_disconnected_intentional_no_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- **test_track_player_disconnected_mid_rest_skips_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- **test_track_player_disconnected_removes_from_intentional_set()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- **test_track_player_disconnected_unintentional_starts_grace_period()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
-- **test_acquire_disconnect_lock_already_disconnecting()** (4 connections) — `server/tests/unit/realtime/test_player_presence_tracker.py`
-- *... and 69 more nodes in this community*
+- **test_combat_monitoring_service.py** (53 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **combat_monitoring_service.py** (21 connections) — `server/services/combat_monitoring_service.py`
+- **AlertType** (15 connections) — `server/services/combat_monitoring_service.py`
+- **AlertSeverity** (12 connections) — `server/services/combat_monitoring_service.py`
+- **CombatMetrics** (11 connections) — `server/services/combat_monitoring_service.py`
+- **._generate_alert()** (9 connections) — `server/services/combat_monitoring_service.py`
+- **Alert** (5 connections) — `server/services/combat_monitoring_service.py`
+- **get_combat_metrics()** (5 connections) — `server/services/combat_monitoring_service.py`
+- **get_combat_monitoring()** (5 connections) — `server/services/combat_monitoring_service.py`
+- **test_alert_to_dict()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_clear_resolved_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_generate_alert()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_generate_alert_callback_error()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_active_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_all_alerts()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_combat_metrics()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_combat_monitoring()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_resolve_alert()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_check_error_threshold()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_check_resource_thresholds_cpu()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_check_resource_thresholds_memory()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_combat_monitoring_service_init()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **test_get_current_metrics()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Enum** (3 connections)
+- **end_combat_monitoring()** (2 connections) — `server/services/combat_monitoring_service.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (6 shared connections)
-- [connection_manager.py](connection_manager.py.md) (5 shared connections)
-- [extract_player_name](extract_player_name.md) (5 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
-- [ConnectionManager](ConnectionManager.md) (3 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [test_instance_manager.py](test_instance_manager.py.md) (1 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (19 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [container](container.md) (4 shared connections)
+- [test_level_service.py](test_level_service.py.md) (2 shared connections)
+- [request_with_app_container](request_with_app_container.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_presence_tracker.py`
-- `server/tests/unit/realtime/test_player_presence_tracker.py`
-- `server/tests/unit/realtime/test_player_presence_tracker_grace_period.py`
+- `server/services/combat_monitoring_service.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 218 (97%)
-- INFERRED: 6 (3%)
+- EXTRACTED: 139 (87%)
+- INFERRED: 21 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,15 +1,17 @@
 # Azotottal.md
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Azotottal.md** (3 connections) — `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
-- **The Old Gods (nameless patrons).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
-- **Comte Fenalik.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
-- **Azotottal** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
-- **Comte Fenalik** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
-- **The Old Gods (nameless patrons)** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- **Step 2: Ask UX-Focused Questions** (5 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Teach Impeccable Skill** (3 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Accessibility & Inclusion** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Aesthetic Preferences** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Brand & Personality** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Step 1: Explore the Codebase** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Step 3: Write Design Context** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **Users & Purpose** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
 
 ## Relationships
 
@@ -17,13 +19,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
-- `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
-- `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- `.claude/skills/teach-impeccable/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,26 +1,25 @@
 # month
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **month** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

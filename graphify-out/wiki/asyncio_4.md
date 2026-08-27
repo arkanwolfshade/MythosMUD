@@ -1,35 +1,41 @@
 # asyncio
 
-> 11 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
-- **asyncio** (5 connections)
-- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
-- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
-- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
+- **players/player_respawn.py** (7 connections) — `server/schemas/players/player_respawn.py`
+- **RoomData** (6 connections) — `server/schemas/rooms/room_data.py`
+- **RoomListResponse** (5 connections) — `server/schemas/rooms/room.py`
+- **room_data.py** (5 connections) — `server/schemas/rooms/room_data.py`
+- **RespawnPlayerData** (4 connections) — `server/schemas/players/player_respawn.py`
+- **BaseModel** (2 connections)
+- **BaseModel** (1 connections)
+- **Player respawn API response schemas for MythosMUD server. This module provides…** (1 connections) — `server/schemas/players/player_respawn.py`
+- **Simplified player data returned in respawn responses.** (1 connections) — `server/schemas/players/player_respawn.py`
+- **Room data schema for MythosMUD. This module defines Pydantic models for room…** (1 connections) — `server/schemas/rooms/room_data.py`
+- **Room data structure for API responses. This model represents room information…** (1 connections) — `server/schemas/rooms/room_data.py`
+- **Room API response schemas for MythosMUD server. This module provides Pydantic…** (1 connections) — `server/schemas/rooms/room.py`
+- **Response model for listing rooms.** (1 connections) — `server/schemas/rooms/room.py`
 
 ## Relationships
 
-- [test_party_service.py](test_party_service.py.md) (5 shared connections)
-- [.__post_init__](__post_init__.md) (1 shared connections)
-- [PartyService](PartyService.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [maps.py](maps.py.md) (4 shared connections)
+- [NPCCombatRewards](NPCCombatRewards.md) (2 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `server/schemas/players/player_respawn.py`
+- `server/schemas/rooms/room.py`
+- `server/schemas/rooms/room_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 27 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

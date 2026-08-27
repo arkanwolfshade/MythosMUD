@@ -1,51 +1,78 @@
 # test_active_lucidity_service.py
 
-> 60 nodes
+> 94 nodes
 
 ## Key Concepts
 
-- **test_active_lucidity_service.py** (35 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **asyncio** (25 connections)
-- **active_lucidity_service()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_active_lucidity_service_init_with_now_provider()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_unknown_category()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_naive_datetime_cooldown()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_on_cooldown()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_unknown_action()** (4 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_acclimated()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_cosmic_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_first_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_horrific_category()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_repeat_encounter()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_apply_encounter_lucidity_loss_with_location()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_invalid_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_lowercases_action_code()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_string_player_id()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_get_action_cooldown_success()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_all_actions()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- **test_perform_recovery_action_cooldown_expired()** (3 connections) — `server/tests/unit/services/test_active_lucidity_service.py`
-- *... and 35 more nodes in this community*
+- **eventHandlers/types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **stateUpdateUtils.ts** (43 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **ChatMessage** (31 connections) — `client/src/components/ui-v2/types.ts`
+- **useRespawnHandlers.ts** (29 connections) — `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- **sanitizeChatMessageForState()** (26 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **GameEvent** (21 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **projector.ts** (21 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **messageUtils.ts** (18 connections) — `client/src/components/ui-v2/utils/messageUtils.ts`
+- **eventHandlers/index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
+- **combatHandlers.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
+- **useEventProcessing.ts** (13 connections) — `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- **combatHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
+- **eventLog/index.ts** (12 connections) — `client/src/components/ui-v2/eventLog/index.ts`
+- **projector.projectEvent.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
+- **projector.test.ts** (12 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
+- **eventLog/types.ts** (11 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **GameStateUpdates** (10 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **projector.projectState.test.ts** (10 connections) — `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **EventStore** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **EventLog** (9 connections) — `client/src/components/ui-v2/eventLog/types.ts`
+- **projectState()** (9 connections) — `client/src/components/ui-v2/eventLog/projector.ts`
+- **eventStore.ts** (9 connections) — `client/src/components/ui-v2/eventLog/eventStore.ts`
+- **index.test.ts** (8 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- *... and 69 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatLucidity](NPCCombatLucidity.md) (5 shared connections)
-- [active_lucidity_service.py](active_lucidity_service.py.md) (5 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (47 shared connections)
+- [LogAggregator](LogAggregator.md) (18 shared connections)
+- [send_game_event](send_game_event.md) (18 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (16 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (15 shared connections)
+- [NPCCombatMemory](NPCCombatMemory.md) (8 shared connections)
+- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (7 shared connections)
+- [NPCBase](NPCBase.md) (6 shared connections)
+- [AdminAuthService](AdminAuthService.md) (4 shared connections)
+- [test_delete_container_success](test_delete_container_success.md) (3 shared connections)
+- [.state](state.md) (3 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_active_lucidity_service.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/combatHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- `client/src/components/ui-v2/eventHandlers/combatHandlers.ts`
+- `client/src/components/ui-v2/eventHandlers/index.ts`
+- `client/src/components/ui-v2/eventHandlers/types.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/eventStore.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.projectEvent.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.projectState.test.ts`
+- `client/src/components/ui-v2/eventLog/__tests__/projector.test.ts`
+- `client/src/components/ui-v2/eventLog/eventStore.ts`
+- `client/src/components/ui-v2/eventLog/index.ts`
+- `client/src/components/ui-v2/eventLog/projector.ts`
+- `client/src/components/ui-v2/eventLog/projectorConstants.ts`
+- `client/src/components/ui-v2/eventLog/types.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useRespawnHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/useEventProcessing.ts`
+- `client/src/components/ui-v2/hooks/useRespawnHandlers.ts`
+- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
+- `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
+- `client/src/components/ui-v2/types.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (93%)
-- INFERRED: 7 (7%)
+- EXTRACTED: 392 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **migrate_npc_db.ps1** (0 connections) — `scripts/migrate_npc_db.ps1`
+- **Quest Design Guidelines** (0 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/migrate_npc_db.ps1`
+- `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Audit Trail
 

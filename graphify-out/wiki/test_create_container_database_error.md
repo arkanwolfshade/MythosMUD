@@ -1,26 +1,25 @@
 # test_create_container_database_error
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test create_container handles database errors.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **Chaosium graphify snapshot - Doors to Darkness** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- **doors-to-darkness/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
 
 ## Relationships
 
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

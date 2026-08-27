@@ -1,29 +1,33 @@
 # generate_invites.py
 
-> 7 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invites.py** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **occupant_display.py** (11 connections) — `server/realtime/occupant_display.py`
+- **_apply_grace_badges()** (6 connections) — `server/realtime/occupant_display.py`
+- **format_occupant_display_name()** (6 connections) — `server/realtime/occupant_display.py`
+- **UUID** (4 connections)
+- **_parse_occupant_player_id()** (3 connections) — `server/realtime/occupant_display.py`
+- **Any** (2 connections)
+- **Shared occupant display names for look text and Occupants panel events.** (1 connections) — `server/realtime/occupant_display.py`
+- **Format an in-room player's Occupants/look name. Always list; grace badges only.** (1 connections) — `server/realtime/occupant_display.py`
 
 ## Relationships
 
-- [CombatService](CombatService.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (3 shared connections)
+- [character-cleanup.ts](character-cleanup.ts.md) (2 shared connections)
+- [test_manager.py](test_manager.py.md) (1 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites.py`
+- `server/realtime/occupant_display.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

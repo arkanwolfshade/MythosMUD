@@ -1,11 +1,12 @@
 # httpOnly Cookie Token Storage
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **httpOnly Cookie Token Storage** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
-- **Zustand State Management** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
+- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
 
 ## Relationships
 
@@ -13,12 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/client_architecture_improvements_tasks.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,57 +1,54 @@
 # test_room_service.py
 
-> 24 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_room_service.py** (57 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_describe_lighting_day()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_describe_lighting_night()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_describe_lighting_unknown_daypart()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_environment_state()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_by_name()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_list_rooms_in_zone()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_search_rooms_by_name_empty_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_search_rooms_by_name_not_implemented()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_search_rooms_by_name_short_term()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_update_environment_state()** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Unit tests for room service. Tests the RoomService class for room-related…** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_by_name() returns None (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test list_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test update_environment_state() updates environment state.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_environment_state() returns current environment state.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test describe_lighting() returns description for day.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test describe_lighting() returns description for night.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test describe_lighting() returns default for unknown daypart.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list for short search term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list for empty term.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test search_rooms_by_name() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_rooms_in_zone() returns empty list (not implemented).** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **CommandValidator** (38 connections) — `server/validators/command_validator.py`
+- **.validate_command_content()** (10 connections) — `server/validators/command_validator.py`
+- **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
+- **test_command_validator_is_valid_command_name()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_valid_command_name_invalid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_length_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_alias_definition_within_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_allows_newline_tab_space()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_dangerous_pattern()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_non_printable()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_null_byte()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_too_long()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_command_content_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **.is_valid_command_name()** (4 connections) — `server/validators/command_validator.py`
+- **Test CommandValidator.validate_command_content returns True for valid command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content detects null bytes.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content detects dangerous patterns.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content detects excessive length.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content detects non-printable characters.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_command_content allows newline, tab, and space.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition returns True for valid alias.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_alias_definition enforces alias length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [asyncio](asyncio.md) (13 shared connections)
-- [fixture](fixture.md) (4 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_get_room_persistence_not_found](test_get_room_persistence_not_found.md) (1 shared connections)
-- [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
-- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
-- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
-- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
-- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
-- [test_get_local_chat_scope_source_not_found](test_get_local_chat_scope_source_not_found.md) (1 shared connections)
+- [subject_controller.py](subject_controller.py.md) (13 shared connections)
+- [apply_migration](apply_migration.md) (6 shared connections)
+- [generate_sql.mjs](generate_sql.mjs.md) (5 shared connections)
+- [holidays](holidays.md) (4 shared connections)
+- [schedules](schedules.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (67%)
+- INFERRED: 26 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

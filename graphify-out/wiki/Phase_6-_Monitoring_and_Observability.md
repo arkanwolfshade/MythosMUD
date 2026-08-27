@@ -1,26 +1,28 @@
 # Phase 6: Monitoring and Observability
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Phase 6: Monitoring and Observability** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.1 Metrics Collection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.2 Health Check Endpoints** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.3 Logging Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Container Contents Synchronization Bug** (3 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **slot_type backpack Assignment** (2 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **Dual Inventory Storage Architecture** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Inventory Slot Calculation Bug** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Fail-Fast Container Error Philosophy** (1 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
 
 ## Relationships
 
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

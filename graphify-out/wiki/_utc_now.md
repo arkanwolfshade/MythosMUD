@@ -1,36 +1,40 @@
 # _utc_now
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **datetime** (2 connections)
-- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE…** (1 connections) — `server/models/lucidity.py`
-- **Unit tests for lucidity model utility functions. Tests the _utc_now utility…** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **validate_alias_name()** (10 connections) — `server/validators/security_validator.py`
+- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
+- **.validate_alias_name_field()** (4 connections) — `server/models/command_alias.py`
+- **test_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_hyphens()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **field_validator** (3 connections)
+- **Validate alias name format using centralized validation.** (2 connections) — `server/models/command_alias.py`
+- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_alias_name rejects invalid format.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test that validate_alias_name rejects hyphens.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Centralized validation for alias name fields. This function provides consistent…** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (3 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [WebSocketRequestContext](WebSocketRequestContext.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/models/command_alias.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

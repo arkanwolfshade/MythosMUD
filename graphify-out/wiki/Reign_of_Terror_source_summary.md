@@ -1,24 +1,25 @@
 # Reign of Terror (source summary)
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Reign of Terror (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
-- **Reign of Terror.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- **🔬 Lessons Learned** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Challenges Encountered** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Solutions Applied** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **What Worked Well** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

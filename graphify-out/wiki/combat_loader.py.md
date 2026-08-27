@@ -1,64 +1,54 @@
 # combat_loader.py
 
-> 53 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **combat_loader.py** (26 connections) — `server/commands/combat_loader.py`
-- **test_combat_loader.py** (23 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **get_combat_command_handler()** (22 connections) — `server/commands/combat_loader.py`
-- **commands/combat.py** (19 connections) — `server/commands/combat.py`
-- **_app_from_request()** (12 connections) — `server/commands/combat_loader.py`
-- **CombatCommandHandlerExtras** (9 connections) — `server/commands/combat_handler.py`
-- **handle_kick_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_punch_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_strike_command()** (9 connections) — `server/commands/combat_loader.py`
-- **handle_attack_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_flee_command()** (8 connections) — `server/commands/combat_loader.py`
-- **handle_taunt_command()** (8 connections) — `server/commands/combat_loader.py`
-- **_mock_app_with_container()** (8 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **asyncio** (6 connections)
-- **test_handle_attack_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_kick_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_punch_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_strike_command_sets_type()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_loader.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- *... and 28 more nodes in this community*
+- **SchemaValidator** (52 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_schema_validator.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.get_exit_flags()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **Path** (4 connections)
+- **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **._load_schema()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.test_get_exit_flags_missing_flags()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_invalid_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_invalid_schema_file()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [CombatCommandHandler](CombatCommandHandler.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
-- [test_flee_command.py](test_flee_command.py.md) (3 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [CombatValidator](CombatValidator.md) (1 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
+- [SpellEffectType](SpellEffectType.md) (12 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat.py`
-- `server/commands/combat_handler.py`
-- `server/commands/combat_helpers.py`
-- `server/commands/combat_loader.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
-- `server/tests/unit/commands/test_combat_loader.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (85%)
-- INFERRED: 23 (15%)
+- EXTRACTED: 128 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

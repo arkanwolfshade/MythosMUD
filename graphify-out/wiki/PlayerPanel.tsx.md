@@ -1,12 +1,13 @@
 # PlayerPanel.tsx
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **PlayerPanel.tsx** (2 connections) — `client/src/components/panels/PlayerPanel.tsx`
-- **PlayerPanelProps** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
-- **PlayerPanel()** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
+- **Graphify Code Graph** (3 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Graphify Code Graph.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Chaosium pack graphs (external)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
+- **Relationship to this vault** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `client/src/components/panels/PlayerPanel.tsx`
+- `data/MythosMUD-Obsidian/wiki/concepts/Graphify Code Graph.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

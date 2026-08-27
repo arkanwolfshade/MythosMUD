@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Item System Observability Runbook** (0 connections) — `docs/runbooks/item_system_observability.md`
+- **apply-patches.js** (0 connections) — `client/scripts/apply-patches.js`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/runbooks/item_system_observability.md`
+- `client/scripts/apply-patches.js`
 
 ## Audit Trail
 

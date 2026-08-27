@@ -1,25 +1,29 @@
 # Success Criteria
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Success Criteria** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Qualitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Quantitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

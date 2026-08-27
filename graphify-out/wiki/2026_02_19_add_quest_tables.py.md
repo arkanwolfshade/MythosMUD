@@ -1,14 +1,15 @@
 # 2026_02_19_add_quest_tables.py
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
-- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
-- **2026_02_19_add_quest_tables.py** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
-- **Create quest_definitions, quest_instances, quest_offers tables.** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
-- **Drop quest tables (order matters for FKs).** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **Enhanced Logging Migration Report** (5 connections) — `docs/archive/migration_report.md`
+- **migration_report.md** (1 connections) — `docs/archive/migration_report.md`
+- **Enhanced Logging Features** (1 connections) — `docs/archive/migration_report.md`
+- **Next Steps** (1 connections) — `docs/archive/migration_report.md`
+- **Successfully Updated Files** (1 connections) — `docs/archive/migration_report.md`
+- **Summary** (1 connections) — `docs/archive/migration_report.md`
 
 ## Relationships
 
@@ -16,11 +17,11 @@
 
 ## Source Files
 
-- `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- `docs/archive/migration_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

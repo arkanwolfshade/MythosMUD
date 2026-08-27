@@ -1,50 +1,49 @@
 # test_instance_manager.py
 
-> 23 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_instance_manager.py** (16 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager()** (5 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **tutorial_room()** (4 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **room_cache()** (3 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **fixture** (3 connections)
-- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Unit tests for InstanceManager. Tests instance creation, destruction, room…** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create tutorial bedroom template room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Room cache with tutorial template.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Create InstanceManager with tutorial template in cache.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **debugLogger** (21 connections) — `client/src/utils/debugLogger.ts`
+- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
+- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
+- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
+- **debugLogger.ts** (5 connections) — `client/src/utils/debugLogger.ts`
+- **.error()** (4 connections) — `client/src/utils/debugLogger.ts`
+- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
+- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
+- **.debug()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.info()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.initializeConfig()** (3 connections) — `client/src/utils/debugLogger.ts`
+- **.addToBuffer()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.constructor()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.createLogEntry()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.formatMessage()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.getDefaultLogLevel()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogsAsString()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **.shouldLog()** (2 connections) — `client/src/utils/debugLogger.ts`
+- **LogConfig** (1 connections) — `client/src/utils/debugLogger.ts`
+- **LogEntry** (1 connections) — `client/src/utils/debugLogger.ts`
+- **LogLevel** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.clearLogs()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogBuffer()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.getLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
+- **.setLogLevel()** (1 connections) — `client/src/utils/debugLogger.ts`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [InstanceManager](InstanceManager.md) (2 shared connections)
-- [Room](Room.md) (2 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_instance_manager.py`
+- `client/src/utils/__tests__/debugLogger.test.ts`
+- `client/src/utils/debugLogger.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

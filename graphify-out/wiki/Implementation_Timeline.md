@@ -1,25 +1,26 @@
 # Implementation Timeline
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **2026_02_18_add_profession_modifiers_columns.py** (3 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **Add stat_modifiers and skill_modifiers columns to professions table.** (1 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **Remove stat_modifiers and skill_modifiers columns from professions table.** (1 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

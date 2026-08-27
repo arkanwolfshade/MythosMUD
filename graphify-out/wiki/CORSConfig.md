@@ -1,53 +1,44 @@
 # CORSConfig
 
-> 44 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **CORSConfig** (31 connections) — `server/config/models/cors.py`
-- **test_cors_config.py** (14 connections) — `server/tests/unit/config/test_cors_config.py`
-- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
-- **cors.py** (9 connections) — `server/config/models/cors.py`
-- **field_validator** (6 connections)
-- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
-- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
-- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
-- **.parse_allow_headers()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_methods()** (4 connections) — `server/config/models/cors.py`
-- **.parse_allow_origins()** (4 connections) — `server/config/models/cors.py`
-- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
-- **.parse_expose_headers()** (4 connections) — `server/config/models/cors.py`
-- **.parse_max_age()** (3 connections) — `server/config/models/cors.py`
-- **._validate_and_warn_wildcards()** (3 connections) — `server/config/models/cors.py`
-- **.validate_max_age()** (3 connections) — `server/config/models/cors.py`
-- **test_cors_defaults_include_local_dev_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_methods_uppercases()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_comma_separated_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_allow_origins_from_json_array()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_expose_headers_allows_empty()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_from_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
-- *... and 19 more nodes in this community*
+- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
+- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
+- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
+- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
+- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
+- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
+- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
+- **.get_valid_exits()** (3 connections) — `server/npc/idle_movement.py`
+- **._log_idle_move_outcome()** (3 connections) — `server/npc/idle_movement.py`
+- **._select_weighted_exit()** (3 connections) — `server/npc/idle_movement.py`
+- **_cfg_float()** (2 connections) — `server/npc/idle_movement.py`
+- **_resolve_spawn_room()** (2 connections) — `server/npc/idle_movement.py`
+- **Get exits from current room that stay within subzone boundaries. Args:…** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weight for an exit based on distance from spawn. Args:…** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate weights for all exits. Args: valid_exits: Dictionary of direction ->…** (1 connections) — `server/npc/idle_movement.py`
+- **Select exit based on weighted probabilities. Args: exit_weights: List of…** (1 connections) — `server/npc/idle_movement.py`
+- **Select an exit using weighted random selection favoring exits closer to spawn…** (1 connections) — `server/npc/idle_movement.py`
+- **Calculate approximate distance between two rooms. This is a simplified distance…** (1 connections) — `server/npc/idle_movement.py`
+- **Execute idle movement for an NPC. This method orchestrates the full idle…** (1 connections) — `server/npc/idle_movement.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (4 shared connections)
-- [AppConfig](AppConfig.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [login_user](login_user.md) (14 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
 
 ## Source Files
 
-- `server/config/models/cors.py`
-- `server/tests/unit/config/test_cors_config.py`
+- `server/npc/idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 41 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

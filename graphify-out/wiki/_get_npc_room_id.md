@@ -1,44 +1,49 @@
 # _get_npc_room_id
 
-> 16 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
-- **_get_npcs_in_room()** (7 connections) — `server/commands/look_npc.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_get_npc_room_id_from_current_room()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_from_current_room_id()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_get_npc_room_id_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Get the room ID from an NPC instance, checking both current_room and…** (1 connections) — `server/commands/look_npc.py`
-- **Get list of NPC names in a room from lifecycle manager.** (1 connections) — `server/commands/look_npc.py`
-- **Test _get_npc_room_id() returns current_room_id when available.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _get_npc_room_id() returns None when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test getting NPC room ID from current_room_id.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID from current_room when current_room_id is None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test getting NPC room ID when both are None.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **handle_emote_command()** (16 connections) — `server/commands/emote_commands.py`
+- **Any** (6 connections)
+- **_extract_emote_action()** (4 connections) — `server/commands/emote_commands.py`
+- **_format_emote_messages()** (4 connections) — `server/commands/emote_commands.py`
+- **_get_emote_services()** (4 connections) — `server/commands/emote_commands.py`
+- **_handle_emote_result()** (4 connections) — `server/commands/emote_commands.py`
+- **_validate_player_for_emote()** (4 connections) — `server/commands/emote_commands.py`
+- **test_handle_emote_command()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_chat_service()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_no_message()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **test_handle_emote_command_predefined_emote()** (4 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **asyncio** (4 connections)
+- **AliasStorage** (1 connections)
+- **Handle the result from chat service after sending emote. Args: result: Result…** (1 connections) — `server/commands/emote_commands.py`
+- **Handle the emote command for performing emotes. Args: command_data: Command…** (1 connections) — `server/commands/emote_commands.py`
+- **Extract action from command_data. Args: command_data: Command data dictionary…** (1 connections) — `server/commands/emote_commands.py`
+- **Get chat service, player service, and emote service from app state. Args:…** (1 connections) — `server/commands/emote_commands.py`
+- **Validate player and extract required information for emote. Args:…** (1 connections) — `server/commands/emote_commands.py`
+- **Format emote messages for predefined or custom emotes. Args: action: Emote…** (1 connections) — `server/commands/emote_commands.py`
+- **Test handle_emote_command() processes emote.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() formats a predefined emote via the injected…** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing message.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
+- **Test handle_emote_command() handles missing chat service.** (1 connections) — `server/tests/unit/commands/test_emote_commands.py`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (8 shared connections)
-- [test_look_npc_helpers.py](test_look_npc_helpers.py.md) (4 shared connections)
-- [quest_commands.py](quest_commands.py.md) (2 shared connections)
-- [test_look_room.py](test_look_room.py.md) (2 shared connections)
-- [_should_include_npc](_should_include_npc.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (5 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/commands/emote_commands.py`
+- `server/tests/unit/commands/test_emote_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

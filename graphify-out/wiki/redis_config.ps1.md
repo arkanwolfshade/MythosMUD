@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **redis_config.ps1** (1 connections) — `scripts/redis_config.ps1`
-- **Get-WSLIP()** (1 connections) — `scripts/redis_config.ps1`
+- **Hierarchical Test Structure** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- **Phased Test Migration** (1 connections) — `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `scripts/redis_config.ps1`
+- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

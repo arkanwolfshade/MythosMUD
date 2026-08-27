@@ -1,24 +1,27 @@
 # test_get_npc_stats_defaults
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_get_npc_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Empty npc_stats yields default strength/constitution.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **4. Common Fix Patterns** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **Authentication Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Database Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Game Logic Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **WebSocket Test Patterns** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,28 @@
 # Phase 1: Quick Wins (Week 1)
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.1: Remove Placeholder Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.2: Remove Trivial Type Assertions (1 hour)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.3: Remove Duplicate Tests (30 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 1.4: Delete Empty Test File (5 minutes)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Migration Workflow (Per File)** (7 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 1: Pre-Migration Assessment** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 2: Create Async Repository Instances** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 3: Convert Methods to Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 4: Update All Callers** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 5: Test Migration** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Step 6: Validate Performance** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- [ADR-012: python-statemachine for Backend Connection FSM](ADR-012-_python-statemachine_for_Backend_Connection_FSM.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

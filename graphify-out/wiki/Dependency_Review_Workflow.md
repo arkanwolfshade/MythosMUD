@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
-- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
-- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
+- **MythosMUD UI Component Library** (2 connections) — `client/src/components/ui/README.md`
+- **Mythos Terminal Theme Tokens** (1 connections) — `client/src/components/ui/README.md`
+- **StatusPanel** (1 connections) — `client/src/components/ui/README.md`
 
 ## Relationships
 
@@ -14,13 +14,12 @@
 
 ## Source Files
 
-- `.github/dependabot.yml`
-- `.github/workflows/dependency-review.yml`
+- `client/src/components/ui/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

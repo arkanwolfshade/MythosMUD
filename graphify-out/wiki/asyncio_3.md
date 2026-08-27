@@ -1,34 +1,47 @@
 # asyncio
 
-> 11 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **asyncio** (6 connections)
-- **test_ensure_room_cache_loaded_database_error()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_already_loaded()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_concurrent_load()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_os_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **test_ensure_room_cache_loaded_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded returns early when cache is already loaded.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles concurrent load scenario (double-check…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles DatabaseError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles OSError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _ensure_room_cache_loaded handles RuntimeError gracefully.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **EdgeDetailsPanel.tsx** (25 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **buildEdgeFieldModel()** (4 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsPanel.test.tsx** (4 connections) — `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
+- **EdgeDetailsPanel()** (3 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsFieldsProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsPanelProps** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailRow()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailsFields()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **edgeDetailValueClass()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **flagsFromData()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **roomLabel()** (2 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminActionsProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDeleteConfirmProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDetailRowProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFieldModel** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **OptionalEdgeDetailRowProps** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminActions()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeAdminReadyActions()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeDeleteConfirm()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsIfAny()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **EdgeFlagsSection()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
+- **OptionalEdgeDetailRow()** (1 connections) — `client/src/components/map/EdgeDetailsPanel.tsx`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (6 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `client/src/components/map/EdgeDetailsPanel.tsx`
+- `client/src/components/map/__tests__/EdgeDetailsPanel.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 35 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

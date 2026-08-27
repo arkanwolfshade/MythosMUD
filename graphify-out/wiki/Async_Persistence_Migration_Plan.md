@@ -4,45 +4,51 @@
 
 ## Key Concepts
 
-- **Async Persistence Migration Plan** (11 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 2: Migrate Callers to Async** (8 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 3: Remove PersistenceLayer** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 5: Create Greenfield Async Tests** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 6: Verification and Cleanup** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 4: Delete Persistence Unit Tests** (4 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Implementation Notes** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 1: Identify All Sync Callers** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **ASYNC_PERSISTENCE_MIGRATION_PLAN.md** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **1.1 Find all PersistenceLayer usage** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **1.2 Document call sites** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.1 Update ApplicationContainer** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.2 Update lifespan.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.3 Migrate API endpoints** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.4 Migrate services** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.5 Migrate commands** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.6 Update test fixtures** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.7 Update integration tests** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.1 Delete persistence.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.2 Update persistence package** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.3 Remove hook decorator** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.4 Update imports** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.1 Identify test files to delete** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.2 Delete test files** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.3 Update integration tests** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- **useRoomEditModal.ts** (18 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModal.tsx** (16 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalForm.tsx** (16 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModal()** (4 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- **fieldBorderClass()** (3 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **buildInitialFormData()** (3 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditFormData** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalProps** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditDescriptionField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalForm()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditNameField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalTabs()** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
+- **toFormValue()** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModalTabs.tsx** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **RoomEditModalFormProps** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
+- **EditableRoomField** (1 connections) — `client/src/components/map/useRoomEditModal.ts`
+- **RoomEditModalContent()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalFooter()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **FieldError()** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
 - *... and 13 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (4 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- `client/src/components/map/RoomEditModal.tsx`
+- `client/src/components/map/RoomEditModalForm.tsx`
+- `client/src/components/map/RoomEditModalTabs.tsx`
+- `client/src/components/map/__tests__/RoomEditModal.test.tsx`
+- `client/src/components/map/useRoomEditModal.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (91%)
+- INFERRED: 5 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

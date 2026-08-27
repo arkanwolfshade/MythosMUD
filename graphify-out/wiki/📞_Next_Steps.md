@@ -1,25 +1,31 @@
 # 📞 Next Steps
 
-> 4 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **📞 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Immediate (Today)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Medium-Term (Next Sprint)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Short-Term (This Week)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **.connect_websocket()** (4 connections) — `server/realtime/connection_manager.py`
+- **WebSocket** (4 connections)
+- **.get_connection_id_from_websocket()** (3 connections) — `server/realtime/connection_manager.py`
+- **._is_websocket_open()** (3 connections) — `server/realtime/connection_manager.py`
+- **._safe_close_websocket()** (3 connections) — `server/realtime/connection_manager.py`
+- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_manager.py`
+- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_manager.py`
+- **Connect a WebSocket for a player.** (1 connections) — `server/realtime/connection_manager.py`
+- **Get connection ID from a WebSocket instance.** (1 connections) — `server/realtime/connection_manager.py`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (4 shared connections)
+- [QuestService](QuestService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `server/realtime/connection_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

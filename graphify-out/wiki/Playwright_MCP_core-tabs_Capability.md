@@ -1,23 +1,24 @@
 # Playwright MCP core-tabs Capability
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
-- **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **.__init__()** (3 connections) — `server/game/player_search_service.py`
+- **Any** (1 connections)
+- **Initialize with a reference to the player service for data access.** (1 connections) — `server/game/player_search_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- `server/game/player_search_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

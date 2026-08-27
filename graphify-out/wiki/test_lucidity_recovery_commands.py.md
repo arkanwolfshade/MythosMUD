@@ -1,61 +1,57 @@
 # test_lucidity_recovery_commands.py
 
-> 72 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_lucidity_recovery_commands.py** (35 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
-- **asyncio** (21 connections)
-- **LucidityActionOnCooldownError** (17 connections) — `server/services/active_lucidity_service.py`
-- **_perform_recovery_action()** (12 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_group_solace_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
-- **Any** (9 connections)
-- **handle_folk_tonic_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **handle_therapy_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_run_recovery_session()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_validate_recovery_context()** (6 connections) — `server/commands/lucidity_recovery_commands.py`
-- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
-- **test_handle_group_solace_command_unknown_action()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_meditate_command_cooldown()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_naive_datetime()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_no_cooldown_object()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_cooldown_no_expiry()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_pray_command_unknown_action()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
-- **test_handle_folk_tonic_command_delegates()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_group_solace_command_delegates()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- **test_handle_meditate_command_delegates()** (4 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- *... and 47 more nodes in this community*
+- **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
+- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **npc_combat_lucidity.py** (13 connections) — `server/services/npc_combat_lucidity.py`
+- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
+- **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
+- **Any** (6 connections)
+- **test_npc_combat_lucidity.py** (5 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_with_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_apply_encounter_lucidity_effect_without_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [active_lucidity_service.py](active_lucidity_service.py.md) (9 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [command_service.py](command_service.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [debrief_command.py](debrief_command.py.md) (3 shared connections)
-- [mock_persistence](mock_persistence.md) (3 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (2 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (9 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (4 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/lucidity_recovery_commands.py`
-- `server/services/active_lucidity_service.py`
-- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_lucidity.py`
+- `server/tests/unit/services/test_npc_combat_lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (90%)
-- INFERRED: 18 (10%)
+- EXTRACTED: 106 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

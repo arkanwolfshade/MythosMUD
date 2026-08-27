@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **_scan_dml_blank_before_terminator.py** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
-- **One-off scan: blank line immediately before \\. in data/db DML (invalid COPY…** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
+- **Chat Messages Not Displayed to Sender (Bug #2)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Player ID Format Mismatch** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `scripts/_scan_dml_blank_before_terminator.py`
+- `e2e-tests/BUGS_FOUND.md`
 
 ## Audit Trail
 

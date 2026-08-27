@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **.pre-commit-config.yaml** (0 connections) — `.pre-commit-config.yaml`
+- **Named Schema Per Database** (0 connections) — `db/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.pre-commit-config.yaml`
+- `db/README.md`
 
 ## Audit Trail
 

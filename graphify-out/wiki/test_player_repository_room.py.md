@@ -1,46 +1,47 @@
 # test_player_repository_room.py
 
-> 22 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_player_repository_room.py** (15 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
-- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
-- **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **player_repository_room.py** (9 connections) — `server/persistence/repositories/player_repository_room.py`
-- **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_should_skip_room_validation_tutorial_bedroom()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_already_at_fallback()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_fallback_missing_in_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_moves_to_foyer()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **test_validate_and_fix_player_room_valid()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
-- **Any** (3 connections)
-- **Player** (3 connections)
-- **asyncio** (1 connections)
-- **Player room validation helpers for PlayerRepository. Validates and fixes…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Return True if room validation should be skipped (cache empty, instanced, or…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate player's current room and fix if invalid. Args: room_cache: Shared…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Validate and fix player room, persisting the fix if needed. Args: room_cache:…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
-- **Unit tests for player_repository_room helpers.** (1 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **UserManagerProtocol** (19 connections) — `server/game/chat_moderation.py`
+- **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.is_player_muted()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.mute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_channel()** (2 connections) — `server/game/chat_moderation.py`
+- **.unmute_player()** (2 connections) — `server/game/chat_moderation.py`
+- **.add_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **.load_player_mutes()** (1 connections) — `server/game/chat_moderation.py`
+- **.mute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **.remove_admin()** (1 connections) — `server/game/chat_moderation.py`
+- **.unmute_global()** (1 connections) — `server/game/chat_moderation.py`
+- **Protocol for user manager.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a channel for a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if channel is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Mute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [test_spell_repository.py](test_spell_repository.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/player_repository_room.py`
-- `server/tests/unit/persistence/test_player_repository_room.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 27 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

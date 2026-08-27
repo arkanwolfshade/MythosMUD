@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players handles missing original_content.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,10 +1,11 @@
 # Dual Connection Troubleshooting Guide
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Dual Connection Troubleshooting Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- **ADR Structure (Status/Context/Decision)** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **MythosMUD ADR Authoring Skill** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

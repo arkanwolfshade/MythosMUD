@@ -1,24 +1,25 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Communities (8 total, 5 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **berlin-the-wicked-city/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 0 - "Baron Arthur von Kleist; Pyotr Shabelsky-Bork"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 1 - "The Demon-Großmann; Demonic Mutation Table"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community 2 - "Erwin Kern; Manfred Freiherr von Killinger"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Mansions of Madness_ Vol 1 - Behind Closed Doors  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Communities (5 total, 1 thin omitted)** (5 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 1 - "Bernard Corbitt; Randolph Tomaszewski"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 2 - "Ramasekva; Yog-Sothoth"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community 3 - "Arthur Cornthwaite; Fitzgerald Manse"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -26,11 +27,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

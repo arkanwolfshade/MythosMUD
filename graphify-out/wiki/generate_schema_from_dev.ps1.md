@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **generate_schema_from_dev.ps1** (1 connections) — `scripts/generate_schema_from_dev.ps1`
-- **Write-ColorOutput()** (1 connections) — `scripts/generate_schema_from_dev.ps1`
+- **test_create_local_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_local_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/generate_schema_from_dev.ps1`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

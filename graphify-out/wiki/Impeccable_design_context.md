@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Impeccable design context** (2 connections) — `.impeccable.md`
-- **Legibility under pressure** (1 connections) — `.impeccable.md`
-- **Dark terminal-first aesthetic** (1 connections) — `.impeccable.md`
+- **LoginGracePeriodBanner.tsx** (2 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- **LoginGracePeriodBannerProps** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- **LoginGracePeriodBanner** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `.impeccable.md`
+- `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
 
 ## Audit Trail
 

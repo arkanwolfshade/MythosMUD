@@ -1,11 +1,12 @@
 # Environment Configuration Refactoring
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Environment Configuration Refactoring** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- **Explicit Configuration Migration** (1 connections) — `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
+- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
-- `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
+- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

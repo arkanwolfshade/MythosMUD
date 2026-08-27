@@ -1,53 +1,52 @@
 # test_look_npc_helpers.py
 
-> 44 nodes
+> 60 nodes
 
 ## Key Concepts
 
-- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
-- **test_format_core_attributes()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_core_attributes_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_lifecycle_info_no_lifecycle_state()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_format_other_stats_empty()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_npc_stats_dict_from_dict()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_npc_stats_dict_from_json_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_npc_stats_dict_invalid_json()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_npc_stats_dict_other_type()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **test_parse_stat_datetime_from_datetime()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_iso_string()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_from_timestamp()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_invalid()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_parse_stat_datetime_none()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Parse datetime value from various formats and return formatted string.** (1 connections) — `server/commands/look_npc.py`
-- **Unit tests for look_npc helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **Test _format_other_stats() returns empty list when no other stats.** (1 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- *... and 19 more nodes in this community*
+- **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
+- **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_not_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_empty()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_get_cache_stats_with_fresh_and_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_init_default_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_both_have_timestamps()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_new_has_timestamp_old_doesnt()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_newer_data_old_newer_than_new()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_no_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_new_field()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_newer_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_older_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (24 shared connections)
-- [_format_npc_description](_format_npc_description.md) (4 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (4 shared connections)
-- [_should_include_npc](_should_include_npc.md) (4 shared connections)
+- [_FakeRoomManager](_FakeRoomManager.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/services/room_data_cache.py`
+- `server/tests/unit/services/test_room_data_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 94 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

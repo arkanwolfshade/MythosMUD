@@ -1,25 +1,26 @@
 # Real-World Impact for MythosMUD
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Real-World Impact for MythosMUD** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Current Stack Compatibility** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Migration Complexity** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Performance Considerations** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **3. Simplified CommandPanel** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **CommandPanel Layout Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Features to Keep** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Features to Remove** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Simplified CommandPanel Interface** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Relationships
 
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
+- [Enhanced Logging Migration Report](Enhanced_Logging_Migration_Report.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

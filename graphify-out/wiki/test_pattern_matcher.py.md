@@ -1,54 +1,52 @@
 # test_pattern_matcher.py
 
-> 50 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **test_pattern_matcher.py** (21 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **PatternMatcher** (13 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **.__init__()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.matches_any_pattern()** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **strict_pattern_matcher()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **pattern_matcher.py** (4 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **._components_match_pattern()** (3 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **test_pattern_matcher_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_pattern_matcher_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/pattern_matcher.py`
-- **test_components_match_pattern_exact()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_invalid_placeholder_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_mismatch()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_multiple_placeholders()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_placeholder()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_components_match_pattern_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_different_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_exact_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_multiple_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_no_match()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **test_matches_any_pattern_strict_validation()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
-- **fixture** (2 connections)
-- *... and 25 more nodes in this community*
+- **AdminActionsLogger** (31 connections) — `server/structured_logging/admin_actions_logger.py`
+- **test_admin_actions_logger.py** (22 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **._log_entry()** (8 connections) — `server/structured_logging/admin_actions_logger.py`
+- **Any** (8 connections)
+- **_read_log_entries()** (7 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **._read_actions_from_file()** (6 connections) — `server/structured_logging/admin_actions_logger.py`
+- **Path** (6 connections)
+- **._get_log_file_path()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.get_recent_actions()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.__init__()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.log_teleport_action()** (5 connections) — `server/structured_logging/admin_actions_logger.py`
+- **TeleportActionInput** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **._action_entry_matches_filters()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.get_teleport_statistics()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.log_admin_command()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **.log_permission_check()** (4 connections) — `server/structured_logging/admin_actions_logger.py`
+- **admin_logger()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_get_admin_actions_logger_singleton()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_teleport_action_success()** (4 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **._ensure_log_file_exists()** (3 connections) — `server/structured_logging/admin_actions_logger.py`
+- **log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_admin_logger_init_from_config()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_admin_command()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_admin_command_failure()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- **test_log_permission_check_denied()** (3 connections) — `server/tests/unit/structured_logging/test_admin_actions_logger.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [manager.py](manager.py.md) (2 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (2 shared connections)
-- [test_validation.py](test_validation.py.md) (1 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (7 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/manager.py`
-- `server/services/nats_subject_manager/pattern_matcher.py`
-- `server/tests/unit/services/nats_subject_manager/test_pattern_matcher.py`
+- `server/structured_logging/admin_actions_logger.py`
+- `server/tests/unit/structured_logging/test_admin_actions_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 91 (88%)
+- INFERRED: 12 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

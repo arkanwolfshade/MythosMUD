@@ -1,27 +1,28 @@
 # Dead Code Cleanup Completion
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Dead Code Cleanup Completion** (2 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **Legacy Files Cleanup Summary** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Dead Code Cleanup Planning** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- **_is_npc_follow_value()** (6 connections) — `server/game/follow_service.py`
+- **_FollowTargetValue** (1 connections)
+- **TypeGuard** (1 connections)
+- **True when v is the 3-tuple (target_id, 'npc', display_name).** (1 connections) — `server/game/follow_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CLEANUP_SUMMARY.md`
-- `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- `server/game/follow_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

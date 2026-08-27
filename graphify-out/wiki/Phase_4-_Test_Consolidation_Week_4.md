@@ -1,26 +1,30 @@
 # Phase 4: Test Consolidation (Week 4)
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.1: Parametrize Command Validation Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.2: Parametrize Error Response Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.3: Parametrize Permission Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 4.4: Consolidate Similar Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Security Implementation** (4 connections) — `docs/archive/SECURITY.md`
+- **Argon2 Password Hashing** (2 connections) — `docs/archive/PLANNING_users_db.md`
+- **FastAPI Users Migration** (2 connections) — `docs/archive/PLANNING_users_db.md`
+- **Invite System** (1 connections) — `docs/archive/PLANNING_users_db.md`
+- **Secure Path Validation** (1 connections) — `docs/archive/SECURITY.md`
+- **Client XSS Protection** (1 connections) — `docs/archive/SECURITY.md`
+- **SSE Authentication System** (1 connections) — `docs/archive/SSE_AUTHENTICATION.md`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `docs/archive/PLANNING_users_db.md`
+- `docs/archive/SECURITY.md`
+- `docs/archive/SSE_AUTHENTICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

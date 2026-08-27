@@ -1,49 +1,51 @@
 # ._build_player_attacked_event
 
-> 21 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
-- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
-- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
-- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
-- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
-- **UUID** (5 connections)
-- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
-- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
-- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish NPC-on-player attack as player_attacked to NATS so the client receives…** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
-- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
-- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
-- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
-- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
-- **Get current NPC stats.** (1 connections) — `server/npc/npc_base.py`
+- **test_player_effect_repository.py** (18 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **PlayerEffect** (13 connections) — `server/models/player_effect.py`
+- **player_effect.py** (10 connections) — `server/models/player_effect.py`
+- **asyncio** (8 connections)
+- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_active_effects_for_player_filters_by_remaining()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_true()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **repo()** (4 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_add_effect_returns_id()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_delete_effect()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_expire_effects_for_tick_returns_expired_and_deletes()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_get_effect_remaining_ticks_none()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **test_has_effect_false()** (3 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **player_id()** (2 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **fixture** (2 connections)
+- **Base** (1 connections)
+- **Player effect model for the effects system (ADR-009). Persistent, tick-based…** (1 connections) — `server/models/player_effect.py`
+- **Persistent player effect (status effect) with tick-based duration. Table:…** (1 connections) — `server/models/player_effect.py`
+- **Unit tests for PlayerEffectRepository (ADR-009 effects system). Tests…** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_active_effects_for_player returns only effects with remaining_ticks > 0…** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns True when player has active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **has_effect returns False when no active effect of type.** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- **get_effect_remaining_ticks returns duration - (current_tick - applied_at_tick).** (1 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (9 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [._get_npc_display_name](_get_npc_display_name.md) (1 shared connections)
-- [.get_combat_stats](get_combat_stats.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (8 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
-- `server/npc/npc_base.py`
+- `server/models/player_effect.py`
+- `server/tests/unit/persistence/test_player_effect_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 61 (92%)
+- INFERRED: 5 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

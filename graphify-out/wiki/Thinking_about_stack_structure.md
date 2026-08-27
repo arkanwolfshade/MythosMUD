@@ -1,28 +1,35 @@
 # Thinking about stack structure
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Thinking about stack structure** (6 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Branch naming** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Dependency chain** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **One stack, one story** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Staging changes deliberately** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **When to create a new branch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **AGENTS.md** (6 connections) — `AGENTS.md`
+- **basedpyright.md** (2 connections) — `.claude/rules/basedpyright.md`
+- **basedpyright: no Any** (2 connections) — `.claude/rules/basedpyright.md`
+- **One Server Only** (2 connections) — `.claude/rules/server-management.md`
+- **Bug Investigator Agent** (1 connections) — `.claude/agents/bug-investigator.md`
+- **Server Authority** (1 connections) — `.claude/rules/server-management.md`
+- **CLAUDE.md** (1 connections) — `CLAUDE.md`
+- **USER_RULES.md** (1 connections) — `USER_RULES.md`
 
 ## Relationships
 
-- [gh-stack](gh-stack.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `.claude/agents/bug-investigator.md`
+- `.claude/rules/basedpyright.md`
+- `.claude/rules/server-management.md`
+- `AGENTS.md`
+- `CLAUDE.md`
+- `USER_RULES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

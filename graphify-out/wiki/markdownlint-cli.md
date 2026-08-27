@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **markdownlint-cli** (2 connections) — `client/package.json`
-- **markdownlint-cli** (1 connections) — `client/package.json`
+- **test_profession_get_mechanical_effects_empty_string()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for empty string.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

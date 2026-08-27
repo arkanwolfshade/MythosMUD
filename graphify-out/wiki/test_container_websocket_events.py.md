@@ -1,54 +1,59 @@
 # test_container_websocket_events.py
 
-> 46 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **test_container_websocket_events.py** (24 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **container_websocket_events.py** (16 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
-- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
-- **asyncio** (12 connections)
-- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
-- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
-- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
-- **UUID** (6 connections)
-- **Any** (5 connections)
-- **test_emit_container_closed()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_closed_returns_stats()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_decayed()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_returns_delivery_status()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_returns_stats()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_to_room_with_owner()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_opened_with_owner_id()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **test_emit_container_updated_empty_diff()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
-- **datetime** (3 connections)
-- **ContainerComponent** (2 connections)
-- *... and 21 more nodes in this community*
+- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (7 connections) — `schemas/room_schema.json`
+- **underwater** (7 connections) — `schemas/room_schema.json`
+- **enum** (6 connections) — `schemas/unified_room_schema.json`
+- **environment** (5 connections) — `schemas/intersection_schema.json`
+- **environment** (5 connections) — `schemas/room_schema.json`
+- **environment** (5 connections) — `schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **enum** (4 connections) — `schemas/intersection_schema.json`
+- **enum** (4 connections) — `schemas/room_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **intersection** (3 connections) — `schemas/unified_room_schema.json`
+- **street_paved** (3 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
+- **default** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [models/container.py](models-container.py.md) (12 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCStartupService](NPCStartupService.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [coerce_int](coerce_int.md) (1 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
+- [command_result_text](command_result_text.md) (1 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
+- [CommandRateLimiter](CommandRateLimiter.md) (1 shared connections)
+- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
+- [_make_session_context](_make_session_context.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/container_websocket_events.py`
-- `server/tests/unit/services/test_container_websocket_events.py`
+- `schemas/intersection_schema.json`
+- `schemas/room_schema.json`
+- `schemas/unified_room_schema.json`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

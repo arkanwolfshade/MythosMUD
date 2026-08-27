@@ -1,29 +1,32 @@
 # Step 2: Ask UX-Focused Questions
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Step 2: Ask UX-Focused Questions** (5 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Teach Impeccable Skill** (3 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Accessibility & Inclusion** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Aesthetic Preferences** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Brand & Personality** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Step 1: Explore the Codebase** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Step 3: Write Design Context** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
-- **Users & Purpose** (1 connections) — `.claude/skills/teach-impeccable/SKILL.md`
+- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Count how many sessions have each connection-count size.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Return (avg, max, min) connection ages; zeros when the list is empty.** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Compose connection statistics payload (extracted to keep get_connection_stats…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get comprehensive connection statistics. Args: player_websockets: Player to…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze connection health distribution. Args: connection_metadata: Connection…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [_find_dead_connections](_find_dead_connections.md) (8 shared connections)
+- [Security Implementation](Security_Implementation.md) (3 shared connections)
 
 ## Source Files
 
-- `.claude/skills/teach-impeccable/SKILL.md`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

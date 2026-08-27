@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_get_adjacent_rooms_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_adjacent_rooms() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

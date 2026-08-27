@@ -1,24 +1,26 @@
 # 🎯 Async Compliance Score
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🎯 Async Compliance Score** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Final Score: 100%** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Overall Compliance**: 🟢**A+ (100%)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **.__init__()** (4 connections) — `server/npc/event_reaction_system.py`
+- **._subscribe_to_events()** (3 connections) — `server/npc/event_reaction_system.py`
+- **Initialize the NPC event reaction system. Args: event_bus: The event bus to…** (1 connections) — `server/npc/event_reaction_system.py`
+- **Subscribe to all event types that NPCs might react to.** (1 connections) — `server/npc/event_reaction_system.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/npc/event_reaction_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

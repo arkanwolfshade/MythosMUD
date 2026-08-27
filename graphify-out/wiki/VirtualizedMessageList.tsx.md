@@ -1,25 +1,28 @@
 # VirtualizedMessageList.tsx
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **VirtualizedMessageList.tsx** (3 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **Message** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **VirtualizedMessageListProps** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
-- **VirtualizedMessageList()** (1 connections) — `client/src/components/ui/VirtualizedMessageList.tsx`
+- **emotes** (6 connections) — `schemas/emote_schema.json`
+- **properties** (2 connections) — `schemas/emote_schema.json`
+- **additionalProperties** (1 connections) — `schemas/emote_schema.json`
+- **description** (1 connections) — `schemas/emote_schema.json`
+- **minProperties** (1 connections) — `schemas/emote_schema.json`
+- **type** (1 connections) — `schemas/emote_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Git Workflow](Git_Workflow.md) (1 shared connections)
+- [optimized_validate_target_player](optimized_validate_target_player.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui/VirtualizedMessageList.tsx`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

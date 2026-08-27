@@ -1,63 +1,49 @@
 # useAsciiMapState.ts
 
-> 59 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **useAsciiMapState.ts** (18 connections) — `client/src/components/map/useAsciiMapState.ts`
-- **maps.ts** (17 connections) — `client/src/api/maps.ts`
-- **AsciiMapViewer.tsx** (16 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **AsciiMinimap.tsx** (13 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **AsciiMapViewerViews.tsx** (12 connections) — `client/src/components/map/AsciiMapViewerViews.tsx`
-- **fetchAsciiMap()** (9 connections) — `client/src/api/maps.ts`
-- **useAsciiMapState()** (9 connections) — `client/src/components/map/useAsciiMapState.ts`
-- **fetchAsciiMinimap()** (8 connections) — `client/src/api/maps.ts`
-- **isAsciiMapApiResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
-- **useAsciiMap.ts** (6 connections) — `client/src/components/map/useAsciiMap.ts`
-- **AsciiMapViewer()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **useAsciiMapViewerBindings()** (5 connections) — `client/src/components/map/AsciiMapViewer.tsx`
-- **runFetchMap()** (5 connections) — `client/src/components/map/useAsciiMapState.ts`
-- **asciiMapViewerUtils.ts** (5 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
-- **buildMapUrl()** (4 connections) — `client/src/api/maps.ts`
-- **formatMapErrorResponse()** (4 connections) — `client/src/api/maps.ts`
-- **createViewportKeyHandler()** (4 connections) — `client/src/components/map/asciiMapViewerUtils.ts`
-- **AsciiMinimap()** (4 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **useAsciiMapPropEffects()** (4 connections) — `client/src/components/map/useAsciiMapState.ts`
-- **AsciiMapEditor.tsx** (4 connections) — `client/src/components/map/AsciiMapEditor.tsx`
-- **useAsciiMap.test.ts** (4 connections) — `client/src/components/map/__tests__/useAsciiMap.test.ts`
-- **UseAsciiMapResult** (3 connections) — `client/src/components/map/useAsciiMap.ts`
-- **buildHeaders()** (3 connections) — `client/src/api/maps.ts`
-- **useAsciiMinimapData()** (3 connections) — `client/src/components/map/AsciiMinimap.tsx`
-- **useAsciiMapFetchCb()** (3 connections) — `client/src/components/map/useAsciiMapState.ts`
-- *... and 34 more nodes in this community*
+- **test_player_service_mutations.py** (32 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **asyncio** (27 connections)
+- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_user_characters()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_persistence_fails()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_wrong_user()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_player_not_found()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (4 shared connections)
-- [utils/config.ts](utils-config.ts.md) (3 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (2 shared connections)
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/api/__tests__/maps.test.ts`
-- `client/src/api/maps.ts`
-- `client/src/components/map/AsciiMapEditor.tsx`
-- `client/src/components/map/AsciiMapViewer.tsx`
-- `client/src/components/map/AsciiMapViewerViews.tsx`
-- `client/src/components/map/AsciiMinimap.tsx`
-- `client/src/components/map/__tests__/asciiMapViewerUtils.test.ts`
-- `client/src/components/map/__tests__/useAsciiMap.test.ts`
-- `client/src/components/map/asciiMapViewerUtils.ts`
-- `client/src/components/map/useAsciiMap.ts`
-- `client/src/components/map/useAsciiMapState.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (100%)
+- EXTRACTED: 86 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,27 +1,30 @@
 # P8 · Action plan
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **P8 · Action plan** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Documentation edits** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Issues to reopen — **C7**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **New ADRs (next free numbers, index updated in `decisions/README.md`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Remediation plans to draft (not execute)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Verification before closing P8** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **main()** (5 connections) — `scripts/run_make_stages.py`
+- **run_make_stages.py** (5 connections) — `scripts/run_make_stages.py`
+- **keep_going_requested()** (3 connections) — `scripts/run_make_stages.py`
+- **run_stage()** (3 connections) — `scripts/run_make_stages.py`
+- **stage_failed_from_output()** (3 connections) — `scripts/run_make_stages.py`
+- **_print_fail()** (2 connections) — `scripts/run_make_stages.py`
+- **Return True when Make was invoked with -k / --keep-going.** (1 connections) — `scripts/run_make_stages.py`
+- **Return a short failure reason, or None if the stage is OK.** (1 connections) — `scripts/run_make_stages.py`
+- **Run `make <stage>`, stream output, return (exit_code, captured_output).** (1 connections) — `scripts/run_make_stages.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- `scripts/run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **migrate_logging_imports.py** (0 connections) — `scripts/migrate_logging_imports.py`
+- **Pre-commit Logging Validation** (0 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/migrate_logging_imports.py`
+- `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 
 ## Audit Trail
 

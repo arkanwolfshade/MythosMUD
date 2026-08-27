@@ -4,22 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_players_batch_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_players_batch successfully retrieves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_room_exits_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_room_exits() returns empty dict when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [_make_mock_row](_make_mock_row.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

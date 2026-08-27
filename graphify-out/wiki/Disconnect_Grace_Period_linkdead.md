@@ -1,25 +1,27 @@
 # Disconnect Grace Period (linkdead)
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Disconnect Grace Period (linkdead)** (2 connections) — `docs/realtime.md`
-- **Login Grace Period (warded)** (1 connections) — `docs/realtime.md`
-- **WebSocket JWT in URL Query String** (1 connections) — `docs/realtime.md`
+- **.get_memory_usage_summary()** (4 connections) — `server/utils/memory_profiler.py`
+- **.print_memory_summary()** (3 connections) — `server/utils/memory_profiler.py`
+- **Get a summary of current memory usage.** (1 connections) — `server/utils/memory_profiler.py`
+- **Print a formatted memory usage summary.** (1 connections) — `server/utils/memory_profiler.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TrackedTaskManager](TrackedTaskManager.md) (2 shared connections)
+- [bench_cache.py](bench_cache.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/realtime.md`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,51 +1,54 @@
 # player_effect_repository.py
 
-> 65 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **player_effect_repository.py** (22 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **PlayerEffectRepository** (18 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **test_player_effect_repository.py** (18 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **PlayerEffect** (13 connections) — `server/models/player_effect.py`
-- **player_effect.py** (10 connections) — `server/models/player_effect.py`
-- **.get_active_effects_for_player()** (9 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_to_player_effect()** (8 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **asyncio** (8 connections)
-- **.add_effect()** (7 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **UUID** (7 connections)
-- **_add_effect_params()** (6 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_make_effect()** (6 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **Any** (6 connections)
-- **AddEffectInput** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.delete_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **._execute_add_effect()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.get_effect_remaining_ticks()** (5 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_row_from_effect()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_active_effects_for_player_filters_by_remaining()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_get_effect_remaining_ticks()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **test_has_effect_true()** (5 connections) — `server/tests/unit/persistence/test_player_effect_repository.py`
-- **_int_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_opt_str()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **.has_effect()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- **_str_opt()** (4 connections) — `server/persistence/repositories/player_effect_repository.py`
-- *... and 40 more nodes in this community*
+- **test_admin_teleport_commands.py** (37 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **handle_teleport_command()** (30 connections) — `server/commands/admin_teleport_commands.py`
+- **patch** (29 connections)
+- **asyncio** (28 connections)
+- **handle_goto_command()** (20 connections) — `server/commands/admin_teleport_commands.py`
+- **_request_with_services()** (17 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **handle_confirm_goto_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
+- **handle_confirm_teleport_command()** (15 connections) — `server/commands/admin_teleport_commands.py`
+- **test_handle_confirm_goto_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_exception()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_exception()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_context_error()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_exception_logs_failure()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_missing_target()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_same_room()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_goto_success()** (5 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_goto_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- **test_handle_confirm_teleport_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_commands.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (28 shared connections)
-- [pytest.md](pytest.md.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (22 shared connections)
+- [ConnectionCleaner](ConnectionCleaner.md) (7 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (6 shared connections)
+- [CombatParticipant](CombatParticipant.md) (4 shared connections)
+- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player_effect.py`
-- `server/persistence/repositories/player_effect_repository.py`
-- `server/tests/unit/persistence/test_player_effect_repository.py`
+- `server/commands/admin_teleport_commands.py`
+- `server/tests/unit/commands/test_admin_teleport_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 136 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 184 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

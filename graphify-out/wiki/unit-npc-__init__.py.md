@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/npc/__init__.py** (0 connections) — `server/tests/unit/npc/__init__.py`
+- **cursor-cli-review.ps1** (0 connections) — `scripts/cursor-cli-review.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/npc/__init__.py`
+- `scripts/cursor-cli-review.ps1`
 
 ## Audit Trail
 

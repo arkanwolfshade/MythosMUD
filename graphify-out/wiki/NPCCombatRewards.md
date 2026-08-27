@@ -1,48 +1,54 @@
 # NPCCombatRewards
 
-> 17 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **NPCCombatRewards** (18 connections) — `server/services/npc_combat_rewards.py`
-- **.check_player_connection_state()** (6 connections) — `server/services/npc_combat_rewards.py`
-- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
-- **.get_rewards_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.award_xp_to_killer()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **.calculate_xp_reward()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **._is_valid_uuid()** (3 connections) — `server/services/npc_combat_rewards.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
-- **Any** (2 connections)
-- **Return rewards dependency for integration collaborators.** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Check if a string is a valid UUID.** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Manages XP rewards for NPC combat.** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Initialize the rewards manager. Args: async_persistence: Async persistence…** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Calculate XP reward from NPC definition. Args: npc_definition: NPC definition…** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Check and log player connection state before operations. Args: player_id: ID of…** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Award XP to the killer with defensive error handling. Args: killer_id: ID of…** (1 connections) — `server/services/npc_combat_rewards.py`
-- **Test NPCCombatRewards initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_rewards.py`
+- **test_player_respawn_api.py** (18 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **respawn_player()** (15 connections) — `server/api/player_respawn.py`
+- **respawn_player_from_delirium()** (13 connections) — `server/api/player_respawn.py`
+- **_run_player_respawn()** (10 connections) — `server/api/player_respawn.py`
+- **RespawnResponse** (9 connections) — `server/schemas/players/player_respawn.py`
+- **_user()** (9 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **asyncio** (8 connections)
+- **test_respawn_player_from_delirium_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_not_found()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_validation_error()** (6 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_delirium_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_from_delirium_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_no_session()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_success()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **test_respawn_player_unexpected_error()** (5 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **Request** (5 connections)
+- **_respawn_payload()** (3 connections) — `server/tests/unit/api/test_player_respawn_api.py`
+- **post** (2 connections)
+- **Any** (1 connections)
+- **Respawn a delirious player at the Sanitarium with restored lucidity. This…** (1 connections) — `server/api/player_respawn.py`
+- **Respawn a dead player at their respawn location with full DP. This endpoint…** (1 connections) — `server/api/player_respawn.py`
+- **Execute a respawn service call inside a DB session with shared error handling.** (1 connections) — `server/api/player_respawn.py`
+- **Response model for player respawn endpoints.** (1 connections) — `server/schemas/players/player_respawn.py`
+- **Unit tests for player_respawn API endpoints.** (1 connections) — `server/tests/unit/api/test_player_respawn_api.py`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [TestNPCCombatRewards](TestNPCCombatRewards.md) (3 shared connections)
-- [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (3 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [GameMechanicsService](GameMechanicsService.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (17 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (8 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (3 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
+- [maps.py](maps.py.md) (1 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_rewards.py`
-- `server/tests/unit/services/test_npc_combat_rewards.py`
+- `server/api/player_respawn.py`
+- `server/schemas/players/player_respawn.py`
+- `server/tests/unit/api/test_player_respawn_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (88%)
-- INFERRED: 4 (12%)
+- EXTRACTED: 76 (87%)
+- INFERRED: 11 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

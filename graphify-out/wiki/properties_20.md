@@ -1,33 +1,39 @@
 # properties
 
-> 11 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **Critical Coverage Gaps** (15 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Test Scenarios** (4 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Database Connection Loss** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 10: Configuration Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 1: Domain Layer (NEW ARCHITECTURE)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 2: Message Broker Abstraction** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 3: ApplicationContainer Lifecycle** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 4: Error Recovery Paths** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 5: Async/Await Pattern Verification** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 6: Rate Limiting and Throttling** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 7: WebSocket Connection Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 8: Combat System Integration** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap 9: Database Migration and Schema Evolution** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **NATS Unavailability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Room Data Corruption** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **Specific Test Cases Needed** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Relationships
 
-- [special_rules](special_rules.md) (1 shared connections)
-- [npc_spawn_modifier](npc_spawn_modifier.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `docs/archive/TEST_COVERAGE_GAPS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

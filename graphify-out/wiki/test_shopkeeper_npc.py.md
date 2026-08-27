@@ -1,55 +1,50 @@
 # test_shopkeeper_npc.py
 
-> 49 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **test_shopkeeper_npc.py** (25 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **_shopkeeper()** (20 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **ShopkeeperNPC** (19 connections) — `server/npc/shopkeeper_npc.py`
-- **shopkeeper_npc.py** (13 connections) — `server/npc/shopkeeper_npc.py`
-- **_shop_quantity()** (5 connections) — `server/npc/shopkeeper_npc.py`
-- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
-- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
-- **test_add_buyable_item_invalid()** (3 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **.sell_to_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
-- **test_add_buyable_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_add_shop_item_and_inventory()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_add_shop_item_invalid_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_behavior_handlers()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_buy_from_player_exception()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_buy_from_player_inventory_failure()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_buy_from_player_not_buyable()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_buy_from_player_success()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- **test_calculate_price_default_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
-- *... and 24 more nodes in this community*
+- **test_memory_leak_metrics.py** (26 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **collector()** (4 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_event_metrics_uses_injected_event_bus()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_nats_metrics_uses_injected_nats_service()** (3 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_cache_capacity()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_closed_websockets_threshold()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_no_alerts()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_subscriber_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_check_alerts_task_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_all_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_all_metrics_error_handling()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_cache_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_connection_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_connection_metrics_no_manager()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_event_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_event_metrics_no_bus()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_nats_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collect_task_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_collector_initialization()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_metrics_collection_performance()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **test_metrics_history_bounded()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- **fixture** (1 connections)
+- **Unit tests for memory leak metrics collector. Tests the…** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (4 shared connections)
-- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/shopkeeper_npc.py`
-- `server/tests/unit/npc/test_shopkeeper_npc.py`
+- `server/tests/unit/monitoring/test_memory_leak_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 51 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

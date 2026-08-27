@@ -1,27 +1,28 @@
 # Rooms List SQL ::uuid[] Parameter Conflict
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **add_used_by_user_id_column.py** (5 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **apply_migration()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **main()** (3 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
+- **Apply the migration to add used_by_user_id column. Args: database_url:…** (1 connections) — `server/scripts/add_used_by_user_id_column.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `server/scripts/add_used_by_user_id_column.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

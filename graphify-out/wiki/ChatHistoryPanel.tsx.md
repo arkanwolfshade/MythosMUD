@@ -1,63 +1,56 @@
 # ChatHistoryPanel.tsx
 
-> 43 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **ChatHistoryPanel.tsx** (40 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **ansiToHtml.ts** (21 connections) — `client/src/utils/ansiToHtml.ts`
-- **ansiToHtmlWithBreaks()** (16 connections) — `client/src/utils/ansiToHtml.ts`
-- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ChatMessagesList.tsx** (9 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **ChatMessage()** (7 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ansiToHtml()** (6 connections) — `client/src/utils/ansiToHtml.ts`
-- **matchesSelectedChannel()** (5 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **filterChatHistoryMessages()** (4 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **applyStyleCode()** (4 connections) — `client/src/utils/ansiToHtml.ts`
-- **ChatMessagesList()** (3 connections) — `client/src/components/panels/chat/ChatMessagesList.tsx`
-- **ChatHistoryMessageRow()** (3 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **getMessageClass()** (3 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **updateState()** (3 connections) — `client/src/utils/ansiToHtml.ts`
-- **wrapText()** (3 connections) — `client/src/utils/ansiToHtml.ts`
-- **ansiToHtml.test.ts** (3 connections) — `client/src/utils/ansiToHtml.test.ts`
-- **testAnsi.ts** (3 connections) — `client/src/utils/testAnsi.ts`
-- **ChatHistoryPanelProps** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **formatTimestamp()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **getFontSizeClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **getMessageClass()** (2 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ChatHistoryMessageBody()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **classFromTags()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **formatTimestamp()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **isExcludedFromChatPanel()** (2 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- *... and 18 more nodes in this community*
+- **test_inventory_helpers_extended.py** (27 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **broadcast_room_event()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **asyncio** (15 connections)
+- **test_resolve_player_username_error()** (6 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_persist_player_validation_error()** (5 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **_RoomBroadcaster** (4 connections) — `server/commands/position_commands.py`
+- **test_broadcast_room_event_async()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_broadcast_room_event_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_broadcast_room_event_no_broadcast_method()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_broadcast_room_event_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_broadcast_room_event_success()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_broadcast_room_event_with_exclude()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_persist_player_general_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_persist_player_success()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_resolve_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_resolve_player_not_found()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_resolve_player_persistence_error()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_resolve_player_success()** (4 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **_EventSequence** (3 connections) — `server/commands/position_commands.py`
+- **.broadcast_to_room()** (3 connections) — `server/commands/position_commands.py`
+- **test_clone_inventory()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_ensure_item_instance_for_pickup_awaits_async_ensure()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **Protocol** (2 connections)
+- **Test _broadcast_room_event when connection_manager is None.** (2 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **Broadcast event to room, excluding optional player.** (1 connections) — `server/commands/inventory_command_helpers.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (14 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (11 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (6 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (6 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (4 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
-- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (2 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (19 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (5 shared connections)
+- [Pre-commit Hooks Best Practices](Pre-commit_Hooks_Best_Practices.md) (2 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/chat/ChatMessage.tsx`
-- `client/src/components/panels/chat/ChatMessagesList.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessage.test.tsx`
-- `client/src/components/panels/chat/__tests__/ChatMessagesList.test.tsx`
-- `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- `client/src/utils/ansiToHtml.test.ts`
-- `client/src/utils/ansiToHtml.ts`
-- `client/src/utils/testAnsi.ts`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/position_commands.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 93 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

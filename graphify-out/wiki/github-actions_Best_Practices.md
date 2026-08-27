@@ -1,44 +1,47 @@
 # github-actions Best Practices
 
-> 22 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **github-actions Best Practices** (7 connections) — `.claude/rules/github-actions.md`
-- **1. Workflow Design & Code Organization** (5 connections) — `.claude/rules/github-actions.md`
-- **4. Security Hardening & Configuration Management** (5 connections) — `.claude/rules/github-actions.md`
-- **3. Code Quality & Maintainability** (3 connections) — `.claude/rules/github-actions.md`
-- **5. Common Pitfalls & Gotchas** (3 connections) — `.claude/rules/github-actions.md`
-- **2. Performance Considerations** (2 connections) — `.claude/rules/github-actions.md`
-- **6. Testing Approaches** (2 connections) — `.claude/rules/github-actions.md`
-- **github-actions.md** (1 connections) — `.claude/rules/github-actions.md`
-- **1.1 Use Reusable Workflows and Composite Actions** (1 connections) — `.claude/rules/github-actions.md`
-- **1.2 Name Jobs and Steps Consistently** (1 connections) — `.claude/rules/github-actions.md`
-- **1.3 Employ Matrix Strategies for Broad Testing** (1 connections) — `.claude/rules/github-actions.md`
-- **1.4 Set Explicit Concurrency Groups** (1 connections) — `.claude/rules/github-actions.md`
-- **2.1 Cache Dependencies** (1 connections) — `.claude/rules/github-actions.md`
-- **3.1 Run Linters, Formatters, and Static Analysis Early** (1 connections) — `.claude/rules/github-actions.md`
-- **3.2 Pin Third-Party Actions to a Specific SHA or Version Tag** (1 connections) — `.claude/rules/github-actions.md`
-- **4.1 Store All Secrets in GitHub Secrets** (1 connections) — `.claude/rules/github-actions.md`
-- **4.2 Apply Principle of Least Privilege to `GITHUB_TOKEN`** (1 connections) — `.claude/rules/github-actions.md`
-- **4.3 Mask Sensitive Data in Logs** (1 connections) — `.claude/rules/github-actions.md`
-- **4.4 Mitigate Script Injection Attacks** (1 connections) — `.claude/rules/github-actions.md`
-- **5.1 Debugging with `ACTIONS_STEP_DEBUG`** (1 connections) — `.claude/rules/github-actions.md`
-- **5.2 Correct Use of Conditional Logic** (1 connections) — `.claude/rules/github-actions.md`
-- **6.1 Implement Code Scanning** (1 connections) — `.claude/rules/github-actions.md`
+- **test_inventory_mutation_guard_internal.py** (16 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **asyncio** (6 connections)
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_empty()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_cleanup_async_state_locked()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_state_creates_lazily()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_async_ttl_zero()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_enforce_limit()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_get_async_global_lock()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **test_prune_tokens_ttl_zero()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens with token_ttl=0 doesn't prune.** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _enforce_limit removes oldest tokens when limit exceeded.** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **fixture** (1 connections)
+- **Unit tests for inventory mutation guard - internal helper methods. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state removes empty state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens_async removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _prune_tokens removes expired tokens.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_global_lock creates lock lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _get_async_state creates state lazily.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
+- **Test _cleanup_async_state handles locked state.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/github-actions.md`
+- `server/tests/unit/services/test_inventory_mutation_guard_internal.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

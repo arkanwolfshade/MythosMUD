@@ -4,30 +4,30 @@
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **Graph** (2 connections)
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Configuration** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **What It Measures** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **Why It's Useful** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [main](main.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms.py`
+- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

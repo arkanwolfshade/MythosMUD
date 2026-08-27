@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Documentation Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/documentation.yml`
+- **Authoritative DML Seed Data** (0 connections) — `data/db/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.github/ISSUE_TEMPLATE/documentation.yml`
+- `data/db/README.md`
 
 ## Audit Trail
 

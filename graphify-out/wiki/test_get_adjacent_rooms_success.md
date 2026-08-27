@@ -1,25 +1,27 @@
 # test_get_adjacent_rooms_success
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_adjacent_rooms_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() returns adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Structured Error Logging** (2 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
+- **log_and_raise Utilities** (1 connections) — `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
+- **Test/Production Environment Separation** (1 connections) — `docs/archive/TEST_PROD_SEPARATION.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/STRUCTURED_ERROR_LOGGING_SPEC.md`
+- `docs/archive/STRUCTURED_ERROR_LOGGING_TASKS.md`
+- `docs/archive/TEST_PROD_SEPARATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

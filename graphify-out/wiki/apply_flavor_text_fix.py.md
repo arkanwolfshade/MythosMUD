@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_flavor_text_fix.py** (0 connections) — `scripts/apply_flavor_text_fix.py`
+- **player_lucidity Index Name Fix** (0 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_flavor_text_fix.py`
+- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
 
 ## Audit Trail
 

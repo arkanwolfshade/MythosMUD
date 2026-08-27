@@ -1,30 +1,48 @@
 # npc_schedules.schema.json
 
-> 8 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **npc_schedules.schema.json** (7 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **required** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **title** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **schedules** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **PlayerService** (6 connections)
+- **.__init__()** (5 connections) — `server/game/chat_service.py`
+- **rate_limiter()** (5 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **fixture** (2 connections)
+- **fixture** (2 connections)
+- **fixture** (1 connections)
+- **Initialize chat service. Args: persistence: Database persistence layer…** (1 connections) — `server/game/chat_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Create a PlayerService instance.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Create a RateLimiter instance for testing.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
 
 ## Relationships
 
-- [items](items.md) (1 shared connections)
+- [._create_tracked_task](_create_tracked_task.md) (3 shared connections)
+- [useAsciiMapState.ts](useAsciiMapState.ts.md) (2 shared connections)
+- [container_persistence.py](container_persistence.py.md) (1 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (1 shared connections)
+- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
+- [Commands](Commands.md) (1 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `server/game/chat_service.py`
+- `server/tests/unit/game/test_player_service.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (73%)
+- INFERRED: 7 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

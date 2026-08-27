@@ -1,53 +1,52 @@
 # RoomDataValidator
 
-> 51 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **RoomDataValidator** (30 connections) — `server/services/room_data_validator.py`
-- **test_room_data_validator.py** (16 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **.validate_room_data()** (10 connections) — `server/services/room_data_validator.py`
-- **Any** (8 connections)
-- **.validate_room_consistency()** (7 connections) — `server/services/room_data_validator.py`
-- **room_data_validator.py** (7 connections) — `server/services/room_data_validator.py`
-- **.check_duplicate_occupants()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_field_types()** (6 connections) — `server/services/room_data_validator.py`
-- **.validate_required_fields()** (6 connections) — `server/services/room_data_validator.py`
-- **.check_empty_room_with_occupants()** (5 connections) — `server/services/room_data_validator.py`
-- **.check_occupant_count_consistency()** (5 connections) — `server/services/room_data_validator.py`
-- **.is_valid_room_id()** (5 connections) — `server/services/room_data_validator.py`
-- **.validate_occupant_consistency()** (4 connections) — `server/services/room_data_validator.py`
-- **test_check_duplicate_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_duplicate_occupants_no_duplicates()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_empty_room_with_occupants()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_check_occupant_count_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_is_valid_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_field_types_valid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_required_fields_all_present()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_consistency()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_invalid()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- **test_validate_room_data_room_id()** (4 connections) — `server/tests/unit/services/test_room_data_validator.py`
-- *... and 26 more nodes in this community*
+- **test_communication_commands_flows.py** (42 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **asyncio** (18 connections)
+- **_chat_send_with_room_bundle()** (14 connections) — `server/commands/communication_commands_flows.py`
+- **flow_say_command()** (11 connections) — `server/commands/communication_commands_flows.py`
+- **_message_from_command()** (11 connections) — `server/commands/communication_commands_flows.py`
+- **flow_local_command()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_room_player_bundle()** (9 connections) — `server/commands/communication_commands_flows.py`
+- **_RoomChannelOutcomeConfig** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_global_player_bundle()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **_whisper_id_pair_or_error()** (8 connections) — `server/commands/communication_commands_flows.py`
+- **test_chat_send_with_room_bundle_exception_returns_generic_message()** (5 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_chat_send_with_room_bundle_chat_failure()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_chat_send_with_room_bundle_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_global_command_blocks_low_level_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_reply_command_no_last_sender_returns_user_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_reply_command_success_uses_container_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_say_command_success_broadcasts_room_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_system_command_blocks_non_admin_user()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_whisper_command_exception_returns_generic_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_flow_whisper_command_success_sends_private_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_global_player_bundle_level_too_low()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_global_player_bundle_non_int_level_coerced()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_global_player_bundle_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_player_id_bundle_success()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- **test_room_player_bundle_no_primary_id()** (3 connections) — `server/tests/unit/commands/test_communication_commands_flows.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (3 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (45 shared connections)
+- [validate_room_data](validate_room_data.md) (1 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_validator.py`
-- `server/tests/unit/services/test_room_data_validator.py`
+- `server/commands/communication_commands_flows.py`
+- `server/tests/unit/commands/test_communication_commands_flows.py`
 
 ## Audit Trail
 
-- EXTRACTED: 86 (85%)
-- INFERRED: 15 (15%)
+- EXTRACTED: 134 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

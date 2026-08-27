@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_connection_manager_setter()** (2 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager setter updates value.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_profession_meets_stat_requirements_missing_stat()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test meets_stat_requirements returns False when required stat is missing.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,64 +1,51 @@
 # executeCommand
 
-> 68 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **executeCommand()** (85 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **player.ts** (47 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **whisper-movement.spec.ts** (35 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensureStanding()** (26 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **despawnSanitariumCultists()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **assertPlayerAlive()** (7 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **executeUnmuteAndWaitForAck()** (6 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- **lookAndStand()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **prepAwForAdminSet()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **attemptEastHop()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **lookAndWaitForUi()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **moveAwToEasternHallway()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **sendCrossRoomWhisper()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **whisperUntilSenderAck()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- *... and 43 more nodes in this community*
+- **CorpseLifecycleService** (21 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerComponent** (9 connections)
+- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpse()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
+- **UUID** (7 connections)
+- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **._persist_corpse()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
+- **._build_corpse_component()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.can_access_corpse()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
+- **Any** (5 connections)
+- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
+- **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **._grace_period_allows_others()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **fixture** (2 connections)
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (105 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (31 shared connections)
-- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (20 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (20 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (6 shared connections)
+- [ValidationError](ValidationError.md) (11 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/deathVoidLocation.test.ts`
-- `client/src/utils/deathVoidLocation.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
-- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- `server/services/corpse_lifecycle_service.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 343 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 87 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

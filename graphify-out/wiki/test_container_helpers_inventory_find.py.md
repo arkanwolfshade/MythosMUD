@@ -1,60 +1,62 @@
 # test_container_helpers_inventory_find.py
 
-> 92 nodes
+> 86 nodes
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_find.py** (56 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
-- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
-- **asyncio** (19 connections)
-- **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
-- **UUID** (16 connections)
-- **try_wearable_container_service()** (14 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_container_in_room()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_wearable_container_service_by_instance_id()** (13 connections) — `server/commands/container_helpers_inventory_find.py`
-- **create_wearable_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_item_in_inventory()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_inner_container()** (12 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_player_for_wearable()** (12 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **try_inner_container_by_id()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
-- **try_wearable_container_service_by_name()** (11 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_wearable_container_for_put()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_get_container_pair()** (10 connections) — `server/commands/container_helpers_inventory_find.py`
-- **find_matching_equipped_containers()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
-- **_try_put_container_for_equipped_item()** (9 connections) — `server/commands/container_helpers_inventory_find.py`
-- **patch** (8 connections)
-- **check_item_matches_target()** (7 connections) — `server/commands/container_helpers_inventory_find.py`
-- **container_id()** (6 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
-- **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_create_wearable_container_uses_equip_dict_branch()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 67 more nodes in this community*
+- **test_lucidity_recovery_commands.py** (35 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **lucidity_recovery_commands.py** (26 connections) — `server/commands/lucidity_recovery_commands.py`
+- **.app()** (24 connections) — `server/commands/look_helpers.py`
+- **handle_pray_command()** (21 connections) — `server/commands/lucidity_recovery_commands.py`
+- **asyncio** (21 connections)
+- **LucidityActionOnCooldownError** (17 connections) — `server/services/active_lucidity_service.py`
+- **_perform_recovery_action()** (12 connections) — `server/commands/lucidity_recovery_commands.py`
+- **UnknownLucidityActionError** (11 connections) — `server/services/active_lucidity_service.py`
+- **handle_meditate_command()** (10 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_group_solace_command()** (9 connections) — `server/commands/lucidity_recovery_commands.py`
+- **Any** (9 connections)
+- **handle_folk_tonic_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **handle_therapy_command()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_run_recovery_session()** (8 connections) — `server/commands/lucidity_recovery_commands.py`
+- **LucidityActionError** (6 connections) — `server/services/active_lucidity_service.py`
+- **_validate_recovery_context()** (6 connections) — `server/commands/lucidity_recovery_commands.py`
+- **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
+- **test_handle_group_solace_command_unknown_action()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_meditate_command_cooldown()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_naive_datetime()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_cooldown_object()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_cooldown_no_expiry()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **test_handle_pray_command_unknown_action()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- **_format_cooldown_message()** (4 connections) — `server/commands/lucidity_recovery_commands.py`
+- *... and 61 more nodes in this community*
 
 ## Relationships
 
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (15 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (5 shared connections)
-- [command_result_text](command_result_text.md) (4 shared connections)
-- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (4 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [Protocol](Protocol.md) (2 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (14 shared connections)
+- [pytest.md](pytest.md.md) (9 shared connections)
+- [CombatParticipant](CombatParticipant.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (6 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
+- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (1 shared connections)
+- [Chat Panel](Chat_Panel.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory.py`
-- `server/commands/container_helpers_inventory_find.py`
-- `server/commands/look_container.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_find.py`
+- `server/commands/look_helpers.py`
+- `server/commands/lucidity_recovery_commands.py`
+- `server/services/active_lucidity_service.py`
+- `server/tests/unit/commands/test_lucidity_recovery_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 267 (96%)
-- INFERRED: 10 (4%)
+- EXTRACTED: 188 (83%)
+- INFERRED: 39 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **server/__init__.py** (0 connections) — `server/__init__.py`
+- **Click Best-Practices Remediation** (0 connections) — `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/__init__.py`
+- `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Audit Trail
 

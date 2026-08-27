@@ -4,32 +4,37 @@
 
 ## Key Concepts
 
-- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
-- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **PERSISTENCE_REFACTORING_COMPLETE.md** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Sync-to-Async Delegation** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PersistenceLayer Sync Facade** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PlayerRepository** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Persistence Async Migration Plan** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gradual File-by-File Async Migration** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **PERSISTENCE_EXTRACTION_COMPLETE.md** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Implementation Pattern** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **PERSISTENCE_REFACTORING_SUMMARY.md** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **Opt-In Async Persistence** (2 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **HealthRepository** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Seven Async Repositories** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Relationships
 
-- [schedule.schema.json](schedule.schema.json.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (2 shared connections)
+- [SpellTargetingService](SpellTargetingService.md) (1 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [ADR-012: python-statemachine for Backend Connection FSM](ADR-012-_python-statemachine_for_Backend_Connection_FSM.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

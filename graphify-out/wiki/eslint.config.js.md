@@ -1,12 +1,13 @@
 # eslint.config.js
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **eslint.config.js** (2 connections) — `client/eslint.config.js`
-- **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
-- **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
+- **Code Graph Entry** (3 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Code Graph Entry.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Live exploration (preferred for "how does X work?")** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
+- **Synced community wiki (read-only dump)** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `client/eslint.config.js`
+- `data/MythosMUD-Obsidian/wiki/code/Code Graph Entry.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,23 +1,24 @@
 # Python Coverage Targets
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Python Coverage Targets** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
-- **Python Coverage Status** (1 connections) — `docs/PYTHON_COVERAGE_STATUS.md`
+- **decode_json_column()** (3 connections) — `server/container/utils.py`
+- **Any** (1 connections)
+- **Decode a JSON column value, returning the type's default on failure. Used by…** (1 connections) — `server/container/utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/PYTHON_COVERAGE_STATUS.md`
+- `server/container/utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,27 @@
 # item_prototype.schema.json
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **item_prototype.schema.json** (6 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$schema** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **title** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **Tiered Test Coverage Strategy** (3 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Critical Code 90% Coverage** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Global 70% Coverage Threshold** (1 connections) — `client/docs/TEST_COVERAGE_STRATEGY.md`
+- **Vitest Unit Tests** (1 connections) — `client/README.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
-- [required](required.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `client/README.md`
+- `client/docs/TEST_COVERAGE_STRATEGY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,37 @@
 # Lint Remediation
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Lint Remediation** (5 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Fix patterns by tier** (4 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Lint Remediation — Reference** (4 connections) — `.claude/skills/lint-remediation/reference.md`
-- **lint-remediation/SKILL.md** (2 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **lint-remediation/reference.md** (2 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🔴 Critical — compilation errors** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Error code table** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🟡 High — code quality** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **🟢 Medium — style** (1 connections) — `.claude/skills/lint-remediation/reference.md`
-- **Entry point** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Fix-verify loop** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
-- **Priority** (1 connections) — `.claude/skills/lint-remediation/SKILL.md`
+- **_apply_path_based_markers()** (6 connections) — `server/tests/conftest.py`
+- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
+- **pytest_collection_modifyitems()** (5 connections) — `server/tests/conftest.py`
+- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
+- **_set_xdist_loadgroup_nodeid()** (4 connections) — `server/tests/conftest.py`
+- **Item** (4 connections)
+- **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
+- **Config** (2 connections)
+- **AbstractEventLoop** (2 connections)
+- **Create an event loop suitable for MythosMUD tests. CRITICAL: On Windows,…** (1 connections) — `server/tests/conftest.py`
+- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+…** (1 connections) — `server/tests/conftest.py`
+- **True when the collected test file lives under a unit/integration/e2e directory.** (1 connections) — `server/tests/conftest.py`
+- **Append @group to pytest Item nodeid for xdist --dist loadgroup scheduling.…** (1 connections) — `server/tests/conftest.py`
+- **Apply unit/integration/e2e markers (and xdist grouping) from the test file path.** (1 connections) — `server/tests/conftest.py`
+- **Auto-mark tests based on their file path. Tests in unit/ get @pytest.mark.unit…** (1 connections) — `server/tests/conftest.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Database Placement](MythosMUD_Database_Placement.md) (6 shared connections)
 
 ## Source Files
 
-- `.claude/skills/lint-remediation/SKILL.md`
-- `.claude/skills/lint-remediation/reference.md`
+- `server/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 23 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

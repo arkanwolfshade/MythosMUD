@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Codacy 8100+ Remediation** (1 connections) — `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- **Python Best Practices Remediation** (1 connections) — `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
+- **deps/package.json** (1 connections) — `client/.vite/deps/package.json`
+- **type** (1 connections) — `client/.vite/deps/package.json`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `.cursor/plans/mythosmud-codacy-8100-remediation_0edb4b92.plan.md`
-- `.cursor/plans/python_best_practices_remediation_a91aade4.plan.md`
+- `client/.vite/deps/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

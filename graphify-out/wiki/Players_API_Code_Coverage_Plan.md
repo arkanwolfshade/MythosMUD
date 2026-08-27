@@ -1,10 +1,11 @@
 # Players API Code Coverage Plan
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Players API Code Coverage Plan** (0 connections) — `docs/archive/PLANNING_code_coverage.md`
+- **OKLCH Color Space** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **Color and Contrast Reference** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_code_coverage.md`
+- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

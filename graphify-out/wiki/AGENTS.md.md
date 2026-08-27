@@ -1,35 +1,37 @@
 # AGENTS.md
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **AGENTS.md** (6 connections) — `AGENTS.md`
-- **basedpyright.md** (2 connections) — `.claude/rules/basedpyright.md`
-- **basedpyright: no Any** (2 connections) — `.claude/rules/basedpyright.md`
-- **One Server Only** (2 connections) — `.claude/rules/server-management.md`
-- **Bug Investigator Agent** (1 connections) — `.claude/agents/bug-investigator.md`
-- **Server Authority** (1 connections) — `.claude/rules/server-management.md`
-- **CLAUDE.md** (1 connections) — `CLAUDE.md`
-- **USER_RULES.md** (1 connections) — `USER_RULES.md`
+- **cached()** (11 connections) — `server/caching/cache_service.py`
+- **TestCachedDecorator** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_seed_players_cache()** (6 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cache_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_custom_key_func()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_async_cached_missing_cache_calls_function()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_sync_cache_hit_and_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_cached_missing_cache_calls_function()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Decorator to cache function results. Args: cache_name: Name of the cache to use…** (1 connections) — `server/caching/cache_service.py`
+- **Keep players cache truthy; empty LRUCache is bool-false via __len__.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (5 shared connections)
+- [.create_get_command](create_get_command.md) (2 shared connections)
+- [required](required.md) (2 shared connections)
+- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/agents/bug-investigator.md`
-- `.claude/rules/basedpyright.md`
-- `.claude/rules/server-management.md`
-- `AGENTS.md`
-- `CLAUDE.md`
-- `USER_RULES.md`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

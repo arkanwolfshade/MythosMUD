@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Structured Concurrency Patterns** (0 connections) — `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- **vite-env.d.ts** (0 connections) — `client/src/vite-env.d.ts`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- `client/src/vite-env.d.ts`
 
 ## Audit Trail
 

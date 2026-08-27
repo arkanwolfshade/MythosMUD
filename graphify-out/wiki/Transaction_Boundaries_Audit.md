@@ -1,15 +1,14 @@
 # Transaction Boundaries Audit
 
-> 19 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Transaction Boundaries Audit** (10 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **Transaction Boundaries Audit** (12 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Transaction Management Patterns** (4 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Audited Operations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Recommendations** (3 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Multi-Step Operations** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
-- **TRANSACTION_BOUNDARIES_AUDIT.md** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **✅ AsyncPersistenceLayer (Async)** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Audit Date** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Current State: ✅ GOOD** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
@@ -23,10 +22,12 @@
 - **References** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Summary** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **Verification Checklist** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **PostgresConnection Context Manager** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
+- **SQLAlchemy Session Transactions** (1 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 
 ## Source Files
 
@@ -34,7 +35,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

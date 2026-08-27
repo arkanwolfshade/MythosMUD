@@ -1,13 +1,15 @@
 # Claude Pointer (.claude/CLAUDE.md)
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Claude Pointer (.claude/CLAUDE.md)** (3 connections) — `.claude/CLAUDE.md`
-- **AGENTS.md Authoritative Reference** (2 connections) — `.claude/CLAUDE.md`
-- **Root CLAUDE.md Router Stub** (2 connections) — `.claude/CLAUDE.md`
-- **Cursor Rules (.cursor/rules/)** (1 connections) — `.claude/CLAUDE.md`
+- **Round-Based Combat** (3 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Bugs Investigation and Fixes** (2 connections) — `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- **Combat Round System Refactor** (2 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **Combat Action Queue** (1 connections) — `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- **First Weapon Switchblade** (1 connections) — `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- **Flee Command and Effect** (1 connections) — `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Relationships
 
@@ -15,12 +17,15 @@
 
 ## Source Files
 
-- `.claude/CLAUDE.md`
+- `.cursor/plans/combat-bugs-investigation-and-fixes_47c9cae4.plan.md`
+- `.cursor/plans/combat_round_system_refactor_83b6ba42.plan.md`
+- `.cursor/plans/first_weapon_switchblade_85972031.plan.md`
+- `.cursor/plans/flee_command_and_effect_85736dc2.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (40%)
+- INFERRED: 3 (60%)
 - AMBIGUOUS: 0 (0%)
 
 ---

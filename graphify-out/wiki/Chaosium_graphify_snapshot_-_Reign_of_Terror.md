@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Reign of Terror
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Reign of Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
-- **reign-of-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- **🚀 DEPLOYMENT STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Monitoring Post-Deployment** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Pre-Deployment Checklist** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Rollback Plan** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.get_professions](get_professions.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/MANIFEST.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

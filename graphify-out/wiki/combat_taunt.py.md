@@ -1,62 +1,57 @@
 # combat_taunt.py
 
-> 65 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **combat_taunt.py** (34 connections) — `server/commands/combat_taunt.py`
-- **TauntCommandHandler** (27 connections) — `server/commands/combat_taunt.py`
-- **test_combat_taunt.py** (22 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **AppWithState** (15 connections) — `server/commands/combat_app_protocols.py`
-- **run_handle_taunt_command()** (14 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_context()** (12 connections) — `server/commands/combat_taunt.py`
-- **_apply_taunt_and_maybe_broadcast()** (11 connections) — `server/commands/combat_taunt.py`
-- **_resolve_taunt_combat_and_participant()** (9 connections) — `server/commands/combat_taunt.py`
-- **_validate_taunt_target()** (8 connections) — `server/commands/combat_taunt.py`
-- **test_run_handle_taunt_success()** (8 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **_resolve_taunt_room_and_player()** (6 connections) — `server/commands/combat_taunt.py`
-- **test_apply_taunt_and_maybe_broadcast_publishes_target_switch_to_nats()** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_no_combat_service()** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_run_handle_taunt_not_in_combat()** (6 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **combat_app_protocols.py** (6 connections) — `server/commands/combat_app_protocols.py`
-- **_validate_taunt_target_name()** (5 connections) — `server/commands/combat_taunt.py`
-- **test_validate_taunt_target_dead()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_not_npc()** (5 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **UUID** (5 connections)
-- **_RoomWithIdOnly** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **.is_alive()** (4 connections) — `server/models/combat.py`
-- **mock_handler()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_resolve_taunt_room_and_player_falls_back_to_id()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **test_validate_taunt_target_name_from_target_key()** (4 connections) — `server/tests/unit/commands/test_combat_taunt.py`
-- **asyncio** (4 connections)
-- *... and 40 more nodes in this community*
+- **LogAggregator** (37 connections) — `server/structured_logging/log_aggregator.py`
+- **log_aggregator.py** (21 connections) — `server/structured_logging/log_aggregator.py`
+- **test_log_aggregator.py** (18 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **LogEntry** (17 connections) — `server/structured_logging/log_aggregator.py`
+- **LogQueryFilter** (11 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_logs()** (10 connections) — `server/structured_logging/log_aggregator.py`
+- **_entry()** (9 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **get_log_aggregator()** (8 connections) — `server/structured_logging/log_aggregator.py`
+- **aggregate_log_entry()** (7 connections) — `server/structured_logging/log_aggregator.py`
+- **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
+- **_query_filter_from_mapping()** (6 connections) — `server/structured_logging/log_aggregator.py`
+- **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_error_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_user_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.get_warning_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **.__init__()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **._log_matches_filter()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **test_export_logs_json()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **test_get_logs_after_flush()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- **.add_log_entry()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **._update_stats()** (4 connections) — `server/structured_logging/log_aggregator.py`
+- **test_aggregate_log_entry_helper()** (4 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (11 shared connections)
-- [CombatService](CombatService.md) (9 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (8 shared connections)
-- [CombatParticipant](CombatParticipant.md) (8 shared connections)
-- [CombatInstance](CombatInstance.md) (7 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (5 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (5 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (3 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
-- [combat_service_npc.py](combat_service_npc.py.md) (3 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (6 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (2 shared connections)
+- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_app_protocols.py`
-- `server/commands/combat_taunt.py`
-- `server/models/combat.py`
-- `server/tests/unit/commands/test_combat_taunt.py`
+- `server/structured_logging/log_aggregator.py`
+- `server/tests/unit/structured_logging/test_log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (85%)
-- INFERRED: 27 (15%)
+- EXTRACTED: 155 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **get_project_root.py** (0 connections) — `scripts/get_project_root.py`
+- **Fresh Session Test Execution Guide** (0 connections) — `docs/FRESH_SESSION_TESTS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/get_project_root.py`
+- `docs/FRESH_SESSION_TESTS.md`
 
 ## Audit Trail
 

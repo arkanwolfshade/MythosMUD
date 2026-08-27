@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **@playwright/test** (2 connections) — `client/package.json`
-- **@playwright/test** (1 connections) — `client/package.json`
+- **test_profession_is_available_for_selection_false()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test is_available_for_selection returns False when is_available is False.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **entities/__init__.py** (1 connections) — `server/domain/entities/__init__.py`
-- **Domain entities for MythosMUD. Entities are objects with identity and…** (1 connections) — `server/domain/entities/__init__.py`
+- **Mandatory AI Execution Contract** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
+- **E2E Scenario Template** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/domain/entities/__init__.py`
+- `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Audit Trail
 

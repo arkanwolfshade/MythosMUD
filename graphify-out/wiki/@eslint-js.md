@@ -1,23 +1,28 @@
 # @eslint/js
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **@eslint/js** (2 connections) — `client/package.json`
-- **@eslint/js** (1 connections) — `client/package.json`
+- **CRITICAL SERVER MANAGEMENT RULES** (4 connections) — `.claude/rules/server-management.md`
+- **Server Authority (Critical)** (2 connections) — `.claude/rules/server-management.md`
+- **Server Management** (2 connections) — `.claude/rules/server-management.md`
+- **Implications** (1 connections) — `.claude/rules/server-management.md`
+- **MANDATORY SERVER STARTUP PROCEDURE** (1 connections) — `.claude/rules/server-management.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/rules/server-management.md`
+- **PRE-COMMAND CHECKLIST** (1 connections) — `.claude/rules/server-management.md`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `.claude/rules/server-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

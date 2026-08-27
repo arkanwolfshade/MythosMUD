@@ -4,41 +4,43 @@
 
 ## Key Concepts
 
-- **TestPathValidator** (11 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.validator()** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **test_path_validator.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.zone_transition_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_broken_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_get_room_zone()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_mismatched_return_path()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_missing_zone_info()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_one_way_zone_transition()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **.test_zone_transition_detection()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **fixture** (2 connections)
-- **Tests for path validator functionality. Validates room connectivity analysis…** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of mismatched return paths across zones.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test suite for path validation functionality.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Create a path validator instance.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Sample rooms with zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of zone transitions in room connections.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test detection of broken zone transitions.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test extraction of zone information from room data.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test handling of rooms with missing zone information.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
-- **Test one-way exits across zone boundaries.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- **ignoreDependencies** (5 connections) — `client/knip.json`
+- **overrides** (5 connections) — `package.json`
+- **package.json** (3 connections) — `package.json`
+- **markdownlint-cli** (3 connections) — `client/package.json`
+- **cross-env** (2 connections) — `client/package.json`
+- **eslint** (2 connections) — `client/package.json`
+- **markdownlint-cli** (2 connections) — `client/package.json`
+- **@stoplight/spectral-cli** (2 connections) — `client/package.json`
+- **stylelint** (2 connections) — `client/package.json`
+- **dependencies** (2 connections) — `package.json`
+- **eslint** (2 connections) — `package.json`
+- **devDependencies** (2 connections) — `package.json`
+- **markdownlint-cli** (2 connections) — `package.json`
+- **cross-env** (2 connections) — `client/package.json`
+- **eslint** (2 connections) — `client/package.json`
+- **@stoplight/spectral-cli** (2 connections) — `client/package.json`
+- **stylelint** (2 connections) — `client/package.json`
+- **flatted** (1 connections) — `package.json`
+- **js-yaml** (1 connections) — `package.json`
+- **linkify-it** (1 connections) — `package.json`
+- **markdown-it** (1 connections) — `package.json`
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [lifespan.py](lifespan.py.md) (5 shared connections)
+- [Improve Copy Systematically](Improve_Copy_Systematically.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_path_validator.py`
+- `client/knip.json`
+- `client/package.json`
+- `package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

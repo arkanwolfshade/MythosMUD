@@ -1,54 +1,51 @@
 # ComprehensiveLoggingMiddleware
 
-> 32 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **ComprehensiveLoggingMiddleware** (16 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging.py** (11 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **comprehensive_logging.py** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **asyncio** (5 connections)
-- **test_comprehensive_logging_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_reraises_exception()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_successful_request()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **Request** (4 connections)
-- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging_dispatch_error()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_dispatch_success()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_log_request_start_long_auth_header()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.default()** (2 connections) — `server/realtime/envelope.py`
-- **Any** (1 connections)
-- **ASGIApp** (1 connections)
-- **Exception** (1 connections)
-- **Receive** (1 connections)
-- **Scope** (1 connections)
-- **Send** (1 connections)
-- **Comprehensive logging middleware for MythosMUD server. This module provides a…** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 7 more nodes in this community*
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
+- **test_find_item_in_equipped_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_equipped_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with no matching items.** (2 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Find an item in equipped items by name or prototype_id. Args: equipped:…** (1 connections) — `server/commands/look_item.py`
+- **Unit tests for look item helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **Test _find_item_in_equipped() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [middleware](middleware.md) (3 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (13 shared connections)
+- [Migration Strategy](Migration_Strategy.md) (10 shared connections)
+- [NATS Anti-Patterns and Best Practices Review](NATS_Anti-Patterns_and_Best_Practices_Review.md) (4 shared connections)
 
 ## Source Files
 
-- `server/middleware/comprehensive_logging.py`
-- `server/realtime/envelope.py`
-- `server/tests/unit/middleware/test_comprehensive_logging.py`
+- `server/commands/look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (85%)
-- INFERRED: 9 (15%)
+- EXTRACTED: 65 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

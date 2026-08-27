@@ -1,59 +1,57 @@
 # test_inventory_helpers.py
 
-> 97 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
-- **equipment_helpers.py** (29 connections) — `server/commands/equipment_helpers.py`
-- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
-- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
-- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
-- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
-- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
-- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
-- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
-- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
-- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
-- **test_match_equipped_item_by_name()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_equipped_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- **test_match_inventory_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- *... and 72 more nodes in this community*
+- **test_container_websocket_events.py** (24 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
+- **container_websocket_events.py** (16 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened()** (14 connections) — `server/services/container_websocket_events.py`
+- **emit_container_opened_to_room()** (12 connections) — `server/services/container_websocket_events.py`
+- **asyncio** (12 connections)
+- **emit_container_updated()** (10 connections) — `server/services/container_websocket_events.py`
+- **emit_container_closed()** (9 connections) — `server/services/container_websocket_events.py`
+- **emit_container_decayed()** (8 connections) — `server/services/container_websocket_events.py`
+- **UUID** (6 connections)
+- **Any** (5 connections)
+- **mock_container()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_closed_returns_stats()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_decayed()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_returns_delivery_status()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_returns_stats()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_to_room_with_owner()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_opened_with_owner_id()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **test_emit_container_updated_empty_diff()** (4 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_container_websocket_events.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [inventory_equip_command.py](inventory_equip_command.py.md) (20 shared connections)
-- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (6 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (5 shared connections)
-- [resolve_state](resolve_state.md) (4 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (11 shared connections)
+- [ValidationError](ValidationError.md) (11 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
+- [ChatService](ChatService.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_item_matching.py`
-- `server/tests/unit/commands/test_inventory_commands_helpers.py`
-- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/api/container_events.py`
+- `server/services/container_websocket_events.py`
+- `server/tests/unit/services/test_container_websocket_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 201 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 124 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,22 +1,23 @@
 # Distributed EventBus via NATS
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Distributed EventBus via NATS** (0 connections) — `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
+- **test_get_combat_result_message_failure()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_result_message with failed attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

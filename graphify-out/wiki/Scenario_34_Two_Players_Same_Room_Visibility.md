@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Scenario 34 Two Players Same Room Visibility** (2 connections) — `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
-- **Scenario 36 Movement Visibility** (1 connections) — `e2e-tests/scenarios/scenario-36-movement-visibility.md`
-- **Scenario 37 Chat Message Ordering** (1 connections) — `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
+- **eslint.config.js** (2 connections) — `client/eslint.config.js`
+- **jsxA11yRecommendedWarnRules** (1 connections) — `client/eslint.config.js`
+- **jsxA11yRulesOff** (1 connections) — `client/eslint.config.js`
 
 ## Relationships
 
@@ -14,14 +14,12 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-34-two-players-same-room.md`
-- `e2e-tests/scenarios/scenario-36-movement-visibility.md`
-- `e2e-tests/scenarios/scenario-37-chat-message-ordering.md`
+- `client/eslint.config.js`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

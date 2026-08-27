@@ -1,72 +1,58 @@
 # ChatPanelRuntimeViewParts.tsx
 
-> 64 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **ChatPanelRuntimeViewParts.tsx** (29 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **channels.ts** (27 connections) — `client/src/config/channels.ts`
-- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **chatPanelRefactoredDerived.ts** (13 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **useChatPanelRefactored.ts** (13 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChatPanelRefactored.tsx** (11 connections) — `client/src/components/panels/ChatPanelRefactored.tsx`
-- **chatPanelHistorySearch.tsx** (10 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **chatPanelRefactoredDerived.test.ts** (10 connections) — `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- **DEFAULT_CHANNEL** (10 connections) — `client/src/config/channels.ts`
-- **ChatPanelRefactoredToolbar.tsx** (9 connections) — `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- **channels.test.ts** (9 connections) — `client/src/config/__tests__/channels.test.ts`
-- **useChatPanelRefactored()** (7 connections) — `client/src/components/panels/useChatPanelRefactored.ts`
-- **ChannelActivityIndicators.tsx** (7 connections) — `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- **ChannelSelectorSection.tsx** (7 connections) — `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- **ChatPanelRefactoredMessage** (6 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- **computeFilteredMessages()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **computeUnreadCounts()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **resolveMessageChannel()** (6 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **ChatPanelRefactored.test.tsx** (6 connections) — `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- **AVAILABLE_CHANNELS** (6 connections) — `client/src/config/channels.ts`
-- **computeChannelMessages()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **isDisplayableChatMessage()** (5 connections) — `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- **getChannelById()** (5 connections) — `client/src/config/channels.ts`
-- **ChatExportDialog.tsx** (5 connections) — `client/src/components/panels/ChatExportDialog.tsx`
-- **chatPanelRefactoredTypes.ts** (5 connections) — `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- *... and 39 more nodes in this community*
+- **test_go_command.py** (33 connections) — `server/tests/unit/commands/test_go_command.py`
+- **go_command.py** (30 connections) — `server/commands/go_command.py`
+- **handle_go_command()** (20 connections) — `server/commands/go_command.py`
+- **asyncio** (15 connections)
+- **_setup_go_command()** (13 connections) — `server/commands/go_command.py`
+- **Any** (12 connections)
+- **_execute_movement()** (10 connections) — `server/commands/go_command.py`
+- **_validate_exit()** (10 connections) — `server/commands/go_command.py`
+- **_validate_player_posture()** (10 connections) — `server/commands/go_command.py`
+- **_cancel_rest_if_moving()** (7 connections) — `server/commands/go_command.py`
+- **_movement_combat_and_event_bus_from_go_app()** (6 connections) — `server/commands/go_command.py`
+- **_movement_service_for_go_command()** (6 connections) — `server/commands/go_command.py`
+- **_canonical_room_id_for_go()** (4 connections) — `server/commands/go_command.py`
+- **_connection_manager_from_go_app()** (4 connections) — `server/commands/go_command.py`
+- **_resolve_async_persistence_from_go_app()** (4 connections) — `server/commands/go_command.py`
+- **_resolved_direction_for_go_command()** (4 connections) — `server/commands/go_command.py`
+- **test_execute_movement_error_handling()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_execute_movement_failure()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_execute_movement_fallback_service()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_execute_movement_success()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_handle_go_command_invalid_posture()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_handle_go_command_no_direction()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_handle_go_command_no_exit()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_handle_go_command_rest_interrupt_still_moves()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- **test_handle_go_command_setup_failure()** (4 connections) — `server/tests/unit/commands/test_go_command.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (18 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (16 shared connections)
-- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (6 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (6 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (5 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (2 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (1 shared connections)
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [testing_examples.py](testing_examples.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ChatExportDialog.tsx`
-- `client/src/components/panels/ChatPanelRefactored.tsx`
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- `client/src/components/panels/__tests__/ChatPanelRefactored.test.tsx`
-- `client/src/components/panels/__tests__/chatPanelRefactoredDerived.test.ts`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chat/ChatStatistics.tsx`
-- `client/src/components/panels/chatPanelHistorySearch.tsx`
-- `client/src/components/panels/chatPanelRefactoredDerived.ts`
-- `client/src/components/panels/chatPanelRefactoredTypes.ts`
-- `client/src/components/panels/useChatPanelRefactored.ts`
-- `client/src/config/__tests__/channels.test.ts`
-- `client/src/config/channels.ts`
+- `server/commands/go_command.py`
+- `server/tests/unit/commands/test_go_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 168 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

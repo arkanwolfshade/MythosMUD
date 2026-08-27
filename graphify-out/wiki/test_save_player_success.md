@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_save_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player successfully saves player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **unit/game/magic/__init__.py** (1 connections) — `server/tests/unit/game/magic/__init__.py`
+- **Game magic unit tests.** (1 connections) — `server/tests/unit/game/magic/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/magic/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

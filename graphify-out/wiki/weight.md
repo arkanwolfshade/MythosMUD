@@ -1,24 +1,23 @@
 # weight
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **weight** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **test_process_exits_for_room_with_direction()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _process_exits_for_room processes exits with direction.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

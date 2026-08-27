@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_subscribe_to_subzone_subscribe_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone returns False when subscription fails.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_query_rooms_with_exits_async_other_error_raises()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _query_rooms_with_exits_async raises other errors.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
+- [Codacy Rules](Codacy_Rules.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 

@@ -1,28 +1,55 @@
 # TestGracefulDegradation
 
-> 6 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **TestGracefulDegradation** (4 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_graceful_degradation_failure()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **.test_graceful_degradation_success()** (3 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Test graceful_degradation context manager.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Test graceful_degradation with successful operation.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
-- **Test graceful_degradation catches exceptions.** (1 connections) — `server/tests/unit/test_legacy_error_handlers.py`
+- **._build_player_attacked_event()** (8 connections) — `server/npc/combat_integration.py`
+- **._calculate_max_dp()** (6 connections) — `server/npc/combat_integration.py`
+- **._compute_dp_update_fields()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_combat_event_publisher()** (6 connections) — `server/npc/combat_integration.py`
+- **._get_int_stat()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_npc_attack_to_nats()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
+- **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
+- **UUID** (5 connections)
+- **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
+- **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
+- **.get_stats()** (3 connections) — `server/npc/npc_base.py`
+- **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
+- **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish the PlayerDPUpdated event to the event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish NPC-on-player attack as player_attacked to NATS so the client receives…** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve the combat event publisher used to send PlayerAttacked events to NATS.** (1 connections) — `server/npc/combat_integration.py`
+- **Resolve target UUID, player object, and stats needed for NATS attack event.** (1 connections) — `server/npc/combat_integration.py`
+- **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
+- **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
+- **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
+- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
+- **Get current NPC stats.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (3 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (10 shared connections)
+- [Combat Client Crash](Combat_Client_Crash.md) (1 shared connections)
+- [.get_instance](get_instance.md) (1 shared connections)
+- [A Cold Fire Within (source summary)](A_Cold_Fire_Within_source_summary.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (1 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
+- [npc_database.py](npc_database.py.md) (1 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_legacy_error_handlers.py`
+- `server/npc/combat_integration.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 44 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

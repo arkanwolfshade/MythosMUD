@@ -1,24 +1,28 @@
 # mock_websocket
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
-- **fixture** (1 connections)
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- **Corrections · `docs/subsystems/` was missing from the corpus** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **`docs/subsystems/` — 15 documents, 2,497 lines** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDING SHARPENED — the ADR-009 collision is real and now better characterised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDINGS WITHDRAWN** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **Open decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **The headline finding is REINFORCED, not weakened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **What happened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (1 shared connections)
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_error_handling.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

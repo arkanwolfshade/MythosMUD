@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **run_invite_tools.ps1** (0 connections) — `tools/invite_tools/run_invite_tools.ps1`
+- **load_seed_data.ps1** (0 connections) — `scripts/load_seed_data.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `tools/invite_tools/run_invite_tools.ps1`
+- `scripts/load_seed_data.ps1`
 
 ## Audit Trail
 

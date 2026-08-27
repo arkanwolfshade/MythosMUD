@@ -1,36 +1,36 @@
 # Critical Insights
 
-> 15 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Critical Insights** (15 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **1. Infrastructure Tests are the Main Optimization Target** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **2. Regression Tests are 100% High-Value** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **3. Coverage Tests Written for Metrics, Not Quality** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **4. No Parametrized Tests (Major Opportunity)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **5. Critical Gaps in New Architecture** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Example Low-Value Test** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Examples** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Finding** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Opportunity** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Problem** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **required** (9 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **effects** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Alone_Against_the_Dark__2026-08-11.md) (1 shared connections)
+- [process_room_files](process_room_files.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `db/static/schemas/npc_schedules.schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

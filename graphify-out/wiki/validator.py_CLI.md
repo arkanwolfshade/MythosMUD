@@ -1,18 +1,19 @@
 # validator.py CLI
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **validator.py CLI** (5 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Path Validator Test Failures** (3 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- **core/path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/reporter.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/room_loader.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **core/schema_validator.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **click CLI dependency** (1 connections) — `tools/room_toolkit/room_validator/requirements.txt`
-- **Graph Building Issues** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- **Room Validator Test Suite** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **check_file()** (6 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **check_asyncio_run_guardrails.py** (4 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Path** (1 connections)
+- **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Return list of (line_no, line) where asyncio.run( appears in code.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Return 0 if no asyncio.run( in server/, else 1.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
 
 ## Relationships
 
@@ -20,14 +21,12 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
-- `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
-- `tools/room_toolkit/room_validator/requirements.txt`
+- `scripts/check_asyncio_run_guardrails.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

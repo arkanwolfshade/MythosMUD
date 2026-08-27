@@ -4,45 +4,44 @@
 
 ## Key Concepts
 
-- **attach_compatibility_properties()** (14 connections) — `server/realtime/connection_compatibility.py`
-- **test_connection_compatibility.py** (9 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **connection_compatibility.py** (8 connections) — `server/realtime/connection_compatibility.py`
-- **_create_property_with_accessors()** (6 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_connection_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_message_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_room_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **Any** (5 connections)
-- **test_attach_compatibility_properties_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_connection_window()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_max_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_pending_messages()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Compatibility helpers for connection manager. This module provides…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Create getter, setter, and deleter functions for a property. Args: getter_attr:…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach room-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach connection-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach message-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach compatibility properties to the ConnectionManager class.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Unit tests for connection compatibility. Tests the connection_compatibility…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches pending_messages property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches room_subscriptions property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches max_connection_attempts…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches connection_window property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
+- **Pre-commit Hooks Best Practices** (8 connections) — `.claude/rules/pre-commit.md`
+- **7. Tooling and Environment** (5 connections) — `.claude/rules/pre-commit.md`
+- **1. Code Organization and Structure** (4 connections) — `.claude/rules/pre-commit.md`
+- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/pre-commit.md`
+- **3. Performance Considerations** (3 connections) — `.claude/rules/pre-commit.md`
+- **4. Security Best Practices** (3 connections) — `.claude/rules/pre-commit.md`
+- **5. Testing Approaches** (3 connections) — `.claude/rules/pre-commit.md`
+- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/pre-commit.md`
+- **pre-commit.md** (1 connections) — `.claude/rules/pre-commit.md`
+- **1.1. Configuration Structure** (1 connections) — `.claude/rules/pre-commit.md`
+- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/pre-commit.md`
+- **1.3. Module Organization** (1 connections) — `.claude/rules/pre-commit.md`
+- **2.1. Design Patterns** (1 connections) — `.claude/rules/pre-commit.md`
+- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/pre-commit.md`
+- **2.3. Anti-patterns** (1 connections) — `.claude/rules/pre-commit.md`
+- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/pre-commit.md`
+- **3.2. Memory Management** (1 connections) — `.claude/rules/pre-commit.md`
+- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/pre-commit.md`
+- **4.2. Security Implementation** (1 connections) — `.claude/rules/pre-commit.md`
+- **5.1. Unit Testing** (1 connections) — `.claude/rules/pre-commit.md`
+- **5.2. Integration Testing** (1 connections) — `.claude/rules/pre-commit.md`
+- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/pre-commit.md`
+- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/pre-commit.md`
+- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/pre-commit.md`
+- **7.2. Build Configuration** (1 connections) — `.claude/rules/pre-commit.md`
 - *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/connection_compatibility.py`
-- `server/tests/unit/realtime/test_connection_compatibility.py`
+- `.claude/rules/pre-commit.md`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

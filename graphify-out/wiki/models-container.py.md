@@ -1,62 +1,64 @@
 # models/container.py
 
-> 117 nodes
+> 146 nodes
 
 ## Key Concepts
 
-- **models/container.py** (34 connections) — `server/models/container.py`
-- **container_events.py** (26 connections) — `server/api/container_events.py`
-- **test_container_events.py** (26 connections) — `server/tests/unit/api/test_container_events.py`
-- **asyncio** (21 connections)
-- **ConnectionManager** (19 connections)
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **emit_transfer_event()** (17 connections) — `server/api/container_events.py`
-- **test_container_events_loot.py** (17 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **emit_container_opened_events()** (16 connections) — `server/api/container_events.py`
-- **emit_close_container_event()** (15 connections) — `server/api/container_events.py`
-- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **TestEmitTransferEvent** (12 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitCloseContainerEvent** (11 connections) — `server/tests/unit/api/test_container_events.py`
-- **_assert_warning_once()** (10 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitContainerOpenedEvents** (9 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_transfer_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_to_container_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_transfer_event_to_player_direction()** (8 connections) — `server/tests/unit/api/test_container_events.py`
-- **TestEmitTransferEventDirections** (7 connections) — `server/tests/unit/api/test_container_events.py`
-- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_transfer_event_success()** (7 connections) — `server/tests/unit/api/test_container_events.py`
-- *... and 92 more nodes in this community*
+- **test_users.py** (55 connections) — `server/tests/unit/auth/test_users.py`
+- **users.py** (48 connections) — `server/auth/users.py`
+- **UserManager** (38 connections) — `server/auth/users.py`
+- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
+- **get_auth_backend()** (12 connections) — `server/auth/users.py`
+- **get_user_db()** (11 connections) — `server/auth/users.py`
+- **get_user_manager()** (11 connections) — `server/auth/users.py`
+- **asyncio** (11 connections)
+- **test_jwt_strategy.py** (10 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
+- **UsernameAuthenticationBackend** (8 connections) — `server/auth/users.py`
+- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
+- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
+- **server/auth/__init__.py** (7 connections) — `server/auth/__init__.py`
+- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
+- **UUID** (7 connections)
+- **get_auth_epoch()** (6 connections) — `server/auth/token_epoch.py`
+- **set_auth_epoch()** (6 connections) — `server/auth/token_epoch.py`
+- **.login()** (6 connections) — `server/auth/users.py`
+- **test_read_token_accepts_matching_epoch()** (6 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_username_authentication_backend_login()** (6 connections) — `server/tests/unit/auth/test_users.py`
+- **.__init__()** (5 connections) — `server/auth/users.py`
+- **.on_after_register()** (5 connections) — `server/auth/users.py`
+- **test_read_token_rejects_missing_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- **test_read_token_rejects_wrong_epoch()** (5 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
+- *... and 121 more nodes in this community*
 
 ## Relationships
 
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (41 shared connections)
-- [ContainerComponent](ContainerComponent.md) (24 shared connections)
-- [test_container_websocket_events.py](test_container_websocket_events.py.md) (12 shared connections)
-- [ConnectionManager](ConnectionManager.md) (11 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (6 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
-- [ContainerFactoryOptions](ContainerFactoryOptions.md) (3 shared connections)
-- [test_corpse_lifecycle_service.py](test_corpse_lifecycle_service.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (21 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [maps.py](maps.py.md) (6 shared connections)
+- [UserManager](UserManager.md) (4 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (3 shared connections)
+- [NPC Combat Start Race Condition](NPC_Combat_Start_Race_Condition.md) (2 shared connections)
+- [test_player_position_service.py](test_player_position_service.py.md) (2 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [Gladiator Ring (Arena) Implementation Plan](Gladiator_Ring_Arena_Implementation_Plan.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/models/container.py`
-- `server/tests/unit/api/test_container_events.py`
-- `server/tests/unit/api/test_container_events_loot.py`
+- `server/auth/__init__.py`
+- `server/auth/jwt_strategy.py`
+- `server/auth/token_epoch.py`
+- `server/auth/users.py`
+- `server/tests/unit/auth/test_jwt_strategy.py`
+- `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 326 (93%)
-- INFERRED: 25 (7%)
+- EXTRACTED: 285 (91%)
+- INFERRED: 28 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

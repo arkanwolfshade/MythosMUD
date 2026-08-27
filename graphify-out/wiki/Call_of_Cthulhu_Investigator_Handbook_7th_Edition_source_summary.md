@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **Call of Cthulhu Investigator Handbook 7th Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **Call of Cthulhu Investigator Handbook 7th Edition.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **Future Enhancements** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Advanced Features** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Document metadata** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Opportunities** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

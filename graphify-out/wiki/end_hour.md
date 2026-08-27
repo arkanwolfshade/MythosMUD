@@ -1,26 +1,25 @@
 # end_hour
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **end_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **Environment Configuration Refactoring** (1 connections) — `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
+- **Explicit Configuration Migration** (1 connections) — `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `docs/archive/ENVIRONMENT_CONFIGURATION_REFACTORING.md`
+- `docs/archive/EXPLICIT_CONFIGURATION_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

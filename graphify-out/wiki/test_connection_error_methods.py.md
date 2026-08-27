@@ -1,53 +1,59 @@
 # test_connection_error_methods.py
 
-> 35 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_connection_error_methods.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
-- **detect_and_handle_error_state_impl()** (10 connections) — `server/realtime/connection_error_methods.py`
-- **handle_authentication_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_security_violation_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **handle_websocket_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **recover_from_error_impl()** (9 connections) — `server/realtime/connection_error_methods.py`
-- **UUID** (6 connections)
-- **asyncio** (6 connections)
-- **Any** (5 connections)
-- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_authentication_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_security_violation()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **.recover_from_error()** (4 connections) — `server/realtime/connection_manager.py`
-- **test_detect_and_handle_error_state_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_error_impl_returns_default_when_handler_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_authentication_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_security_violation_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_websocket_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_recover_from_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **manager()** (2 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **fixture** (1 connections)
-- **Error-handling method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
-- *... and 10 more nodes in this community*
+- **InventoryCommandFactory** (76 connections) — `server/utils/command_factories_inventory.py`
+- **test_command_factories_inventory.py** (49 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **.create_put_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
+- **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_drop_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_quantity_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_quantity_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_pickup_command_quantity_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_only_item()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_quantity_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_quantity_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_empty()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_unequip_command_whitespace()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_put_command_with_in()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_put_command_with_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_get_command_multi_word_container()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_multi_word_container_no_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_only_item_get_from_room()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_get_command_with_from_keyword()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_put_command_multi_word_container()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (10 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (7 shared connections)
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (23 shared connections)
+- [_should_include_npc](_should_include_npc.md) (20 shared connections)
+- [TestVerificationSqlUsersPlayers](TestVerificationSqlUsersPlayers.md) (18 shared connections)
+- [logging_file_categories.py](logging_file_categories.py.md) (18 shared connections)
+- [.get_original_string_id](get_original_string_id.md) (10 shared connections)
+- [test_look_player.py](test_look_player.py.md) (1 shared connections)
+- [FAILURE PATTERN RECOGNITION](FAILURE_PATTERN_RECOGNITION.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Call_of_Cthulhu_Investigator_Handbook_7th_Edition__2026-08-12.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_error_methods.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_error_methods.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 133 (65%)
+- INFERRED: 73 (35%)
 - AMBIGUOUS: 0 (0%)
 
 ---

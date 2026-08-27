@@ -1,32 +1,34 @@
 # Typeset Skill
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Improve Typography Systematically** (6 connections) — `.claude/skills/typeset/SKILL.md`
-- **Typeset Skill** (6 connections) — `.claude/skills/typeset/SKILL.md`
-- **Assess Current Typography** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Establish Hierarchy** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Fix Readability** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Font Selection** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Plan Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Refine Details** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Verify Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
-- **Weight Consistency** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **test_run_test_ci.py** (7 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **_script_source()** (4 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_combine_call_never_targets_the_bare_coverage_file()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run1_coverage_file_is_not_the_bare_coverage_filename()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_run1_subprocess_uses_the_dedicated_env()** (3 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_coverage_step_has_pipefail()** (2 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **test_excessive_warnings_step_deselects_the_flaky_xdist_module()** (2 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Regression tests for scripts/run_test_ci.py's coverage-combine sequence and the…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Run 1 (the main suite) must write to a COVERAGE_FILE distinct from the bare…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **Run 1's safe_run_static call must pass env=env_unit, not the base env (which…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **The `coverage combine` call's two data-file arguments must be coverage_unit and…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **ci.yml's 'Check for excessive warnings' step re-runs the suite under -n auto;…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
+- **ci.yml's 'Run tests with coverage' step pipes through `tee`; without pipefail…** (1 connections) — `server/tests/unit/scripts/test_run_test_ci.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/typeset/SKILL.md`
+- `server/tests/unit/scripts/test_run_test_ci.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

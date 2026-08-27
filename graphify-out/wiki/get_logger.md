@@ -1,78 +1,78 @@
 # get_logger
 
-> 1053 nodes
+> 342 nodes
 
 ## Key Concepts
 
-- **get_logger()** (534 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **enhanced_logging_config.py** (509 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **DatabaseError** (260 connections) — `server/exceptions.py`
-- **server/exceptions.py** (247 connections) — `server/exceptions.py`
-- **log_and_raise()** (189 connections) — `server/utils/error_logging.py`
-- **fastapi.md** (118 connections) — `.claude/rules/fastapi.md`
-- **get_session_maker()** (100 connections) — `server/database.py`
-- **sqlalchemy.md** (90 connections) — `.claude/rules/sqlalchemy.md`
-- **server/models/__init__.py** (86 connections) — `server/models/__init__.py`
-- **async_persistence.py** (85 connections) — `server/async_persistence.py`
-- **database.py** (83 connections) — `server/database.py`
-- **alias_storage.py** (75 connections) — `server/alias_storage.py`
-- **endpoints.py** (66 connections) — `server/auth/endpoints.py`
-- **models/user.py** (63 connections) — `server/models/user.py`
-- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
-- **Base** (60 connections) — `server/models/base.py`
-- **get_async_session()** (53 connections) — `server/database.py`
-- **factory.py** (53 connections) — `server/app/factory.py`
-- **test_auth_utils.py** (53 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **users.py** (49 connections) — `server/auth/users.py`
-- **player_service.py** (49 connections) — `server/game/player_service.py`
-- **AuthenticationError** (46 connections) — `server/exceptions.py`
-- **test_argon2_utils.py** (43 connections) — `server/tests/unit/auth/test_argon2_utils.py`
-- **rooms.py** (40 connections) — `server/api/rooms.py`
-- **enhanced_error_logging.py** (39 connections) — `server/utils/enhanced_error_logging.py`
-- *... and 1028 more nodes in this community*
+- **log_and_raise()** (157 connections) — `server/utils/error_logging.py`
+- **get_session_maker()** (93 connections) — `server/database.py`
+- **test_quest_instance_repository.py** (23 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **player_effect_repository.py** (22 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **player_spell_repository.py** (22 connections) — `server/persistence/repositories/player_spell_repository.py`
+- **QuestInstance** (21 connections) — `server/models/quest.py`
+- **test_quest_definition_repository.py** (21 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **ContainerTransferToMixin** (20 connections) — `server/services/container_service_transfer_to.py`
+- **quest_instance_repository.py** (20 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **PlayerSpell** (19 connections) — `server/models/player_spells.py`
+- **profession_repository.py** (19 connections) — `server/persistence/repositories/profession_repository.py`
+- **test_profession_repository.py** (19 connections) — `server/tests/unit/persistence/repositories/test_profession_repository.py`
+- **ContainerSessionMixin** (18 connections) — `server/services/container_service_session.py`
+- **QuestInstanceRepository** (17 connections) — `server/persistence/repositories/quest_instance_repository.py`
+- **quest_definition_repository.py** (17 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **test_quest_flow.py** (17 connections) — `server/tests/integration/test_quest_flow.py`
+- **PlayerEffectRepository** (16 connections) — `server/persistence/repositories/player_effect_repository.py`
+- **QuestDefinitionRepository** (14 connections) — `server/persistence/repositories/quest_definition_repository.py`
+- **ContainerLockMixin** (14 connections) — `server/services/container_service_lock.py`
+- **models/quest.py** (14 connections) — `server/models/quest.py`
+- **QuestDefinition** (13 connections) — `server/models/quest.py`
+- **_make_session_context()** (13 connections) — `server/tests/unit/persistence/test_quest_instance_repository.py`
+- **._execute_transfer_to_container()** (12 connections) — `server/services/container_service_transfer_to.py`
+- **ProfessionRepository** (11 connections) — `server/persistence/repositories/profession_repository.py`
+- **_row_to_player_spell()** (11 connections) — `server/persistence/repositories/player_spell_repository.py`
+- *... and 317 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (121 shared connections)
-- [ValidationError](ValidationError.md) (83 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (64 shared connections)
-- [DatabaseManager](DatabaseManager.md) (56 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (54 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (53 shared connections)
-- [User](User.md) (52 shared connections)
-- [ErrorType](ErrorType.md) (47 shared connections)
-- [CombatService](CombatService.md) (41 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (39 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (37 shared connections)
-- [magic_service.py](magic_service.py.md) (35 shared connections)
+- [ContainerComponent](ContainerComponent.md) (144 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (38 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (23 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (17 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (11 shared connections)
+- [Any](Any.md) (10 shared connections)
+- [useGameTerminal.ts](useGameTerminal.ts.md) (10 shared connections)
+- [Room](Room.md) (9 shared connections)
+- [testing_examples.py](testing_examples.py.md) (9 shared connections)
+- [._build_player_attacked_event](_build_player_attacked_event.md) (8 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (8 shared connections)
+- [Dependency Upgrade](Dependency_Upgrade.md) (7 shared connections)
 
 ## Source Files
 
-- `.claude/rules/fastapi.md`
-- `.claude/rules/sqlalchemy.md`
 - `e2e-tests/load-tests/get_invite_codes.py`
-- `monitoring/webhook-receiver.py`
-- `schemas/validator.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/alias_storage.py`
-- `server/api/__init__.py`
-- `server/api/admin/__init__.py`
-- `server/api/admin/npc.py`
-- `server/api/admin/npc_admin_mgmt_api.py`
-- `server/api/admin/npc_instances_api.py`
-- `server/api/admin/npc_population_api.py`
-- `server/api/admin/npc_router_core.py`
-- `server/api/admin/npc_spawn_rules_api.py`
-- `server/api/base.py`
-- `server/api/containers.py`
-- `server/api/player_helpers.py`
+- `server/async_persistence_direct_queries.py`
+- `server/database.py`
+- `server/models/player_spells.py`
+- `server/models/quest.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/persistence/repositories/player_effect_repository.py`
+- `server/persistence/repositories/player_repository.py`
+- `server/persistence/repositories/player_skill_repository.py`
+- `server/persistence/repositories/player_spell_repository.py`
+- `server/persistence/repositories/profession_repository.py`
+- `server/persistence/repositories/quest_definition_repository.py`
+- `server/persistence/repositories/quest_instance_repository.py`
+- `server/persistence/repositories/skill_repository.py`
+- `server/persistence/repositories/skill_use_log_repository.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/scripts/check_invite_status.py`
+- `server/scripts/list_active_invites.py`
+- `server/services/container_service_access.py`
+- `server/services/container_service_lock.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5221 (95%)
-- INFERRED: 273 (5%)
+- EXTRACTED: 969 (95%)
+- INFERRED: 50 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **unit/caching/__init__.py** (0 connections) — `server/tests/unit/caching/__init__.py`
+- **apply_players_migration.ps1** (0 connections) — `scripts/apply_players_migration.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/tests/unit/caching/__init__.py`
+- `scripts/apply_players_migration.ps1`
 
 ## Audit Trail
 

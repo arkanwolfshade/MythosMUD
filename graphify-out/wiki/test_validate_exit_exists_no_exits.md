@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_exit_exists_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False when room has no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- **Login Grace Period Implementation** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

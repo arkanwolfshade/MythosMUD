@@ -1,46 +1,47 @@
 # rate_overrides.py
 
-> 22 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **rate_overrides.py** (19 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_process_override_row()** (11 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_async_load_lucidity_rate_overrides()** (6 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **build_override_key()** (5 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_LucidityRateLoadResult** (4 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **extract_lucidity_rate()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_normalize_database_url()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_parse_special_rules_from_raw()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_parse_zone_stable_id()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **rate_to_flux()** (3 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **_warn_if_rate_exceeds_threshold()** (2 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Record** (1 connections)
-- **TypedDict** (1 connections)
-- **Load lucidity rate overrides from PostgreSQL zones/subzones.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Process a single zone/subzone row and add override to result_container if valid.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Async helper to load lucidity rate overrides from PostgreSQL.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Build override key from plane/zone/subzone hierarchy.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Convert lucidity_drain_rate to flux value. Args: rate: Lucidity drain rate…** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Extract lucidity_drain_rate from special_rules config.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Convert SQLAlchemy-style URL to asyncpg-compatible format.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Parse plane and zone from zone_stable_id (format: 'plane/zone').** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
-- **Parse special_rules column value into a dict.** (1 connections) — `server/services/passive_lucidity_flux/rate_overrides.py`
+- **Any** (13 connections)
+- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
+- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
+- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return list of (direction, (target_x, target_y), is_bidirectional) for exits…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build exit lookup map from room data.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Center viewport on the character's current room so the player is in the middle…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render a single row of rooms with horizontal exits.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render an ASCII map as HTML. Args: rooms: List of room dictionaries with…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return the horizontal exit character (—, >, or <) given east/west exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get exit character to display after a room for horizontal (east/west) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Determine map style from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build a coordinate grid from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get ASCII symbol for a room. Args: room: Room dictionary map_style: Current map…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [service.py](service.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (1 shared connections)
+- [properties](properties.md) (11 shared connections)
+- [Projected Optimization Impact](Projected_Optimization_Impact.md) (4 shared connections)
+- [🔧 Changes Summary](🔧_Changes_Summary.md) (2 shared connections)
+- [plane](plane.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/passive_lucidity_flux/rate_overrides.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

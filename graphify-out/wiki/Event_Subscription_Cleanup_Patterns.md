@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Event Subscription Cleanup Patterns** (0 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- **PostgreSQL SQL Best Practices** (0 connections) — `.claude/rules/postgresql.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
+- `.claude/rules/postgresql.md`
 
 ## Audit Trail
 

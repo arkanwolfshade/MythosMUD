@@ -1,36 +1,37 @@
 # P4 · Intent Sweep — Core Feature Issues
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **P4 · Intent Sweep — Core Feature Issues** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CLOSED BUT NOT BUILT** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **P4-Intent-Core-Issues.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#17 · Party — one of three bullets built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#21 · Admin commands — "ban" was in the issue title and never built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#29 · Cultist faction and PvP — zero implementation** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#30 · Branching quests and morality — two of three bullets absent** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#62 · Tick-rate validation — not built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#9 · The xterm.js substitution — real, user-facing, unrecorded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Conforming, worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CRITICAL · Authentication has no brute-force protection** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Out-of-corpus (design exists, outside the audited 29)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Partial deliveries** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Silent renames — features built under different names than requested** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Undocumented systems (no design doc anywhere in `docs/`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **pylint.py** (9 connections) — `scripts/pylint.py`
+- **_CompletedProcessLike** (8 connections) — `scripts/pylint.py`
+- **main()** (7 connections) — `scripts/pylint.py`
+- **is_pylint_startup_failure()** (5 connections) — `scripts/pylint.py`
+- **_report_pylint_failure()** (4 connections) — `scripts/pylint.py`
+- **_write_pylint_output()** (4 connections) — `scripts/pylint.py`
+- **_combined_output()** (3 connections) — `scripts/pylint.py`
+- **_require_pylint_runnable()** (3 connections) — `scripts/pylint.py`
+- **_resolve_pylint_cmd()** (3 connections) — `scripts/pylint.py`
+- **Path** (3 connections)
+- **.stderr()** (1 connections) — `scripts/pylint.py`
+- **.stdout()** (1 connections) — `scripts/pylint.py`
+- **Protocol** (1 connections)
+- **Prefer current interpreter -m pylint (works under uv run --no-sync).** (1 connections) — `scripts/pylint.py`
+- **Fail fast before scanning if pylint cannot start (missing package, broken venv).** (1 connections) — `scripts/pylint.py`
+- **True when pylint never ran as a linter (missing module, usage/invocation…** (1 connections) — `scripts/pylint.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [test_nats_service_health.py](test_nats_service_health.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- `scripts/pylint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

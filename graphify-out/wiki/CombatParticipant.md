@@ -1,63 +1,60 @@
 # CombatParticipant
 
-> 226 nodes
+> 173 nodes
 
 ## Key Concepts
 
-- **CombatParticipant** (195 connections) — `server/models/combat.py`
-- **CombatTurnProcessor** (61 connections) — `server/services/combat_turn_processor.py`
-- **test_combat.py** (60 connections) — `server/tests/unit/models/test_combat.py`
-- **test_combat_turn_processor.py** (50 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **CombatAction** (29 connections) — `server/models/combat.py`
-- **asyncio** (27 connections)
-- **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **._execute_spell_action()** (12 connections) — `server/services/combat_turn_processor.py`
-- **._execute_queued_action()** (10 connections) — `server/services/combat_turn_processor.py`
-- **._build_spell_target()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_default_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_participant_action()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._execute_round()** (7 connections) — `server/services/combat_turn_processor.py`
-- **._get_player_and_room_for_spell()** (7 connections) — `server/services/combat_turn_processor.py`
-- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_player_from_persistence()** (7 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **._execute_attack_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._finalize_spell_execution()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._get_spell_for_action()** (6 connections) — `server/services/combat_turn_processor.py`
-- **._is_npc_still_in_world()** (6 connections) — `server/services/combat_turn_processor.py`
-- **_stale_queued_attack_rows()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_participant_action_valid_queued_attack()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_queued_attack_action()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_execute_queued_spell_without_magic_service()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **test_process_player_turn_fallback_to_basic_unarmed_damage_when_no_app()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- **_unarmed_fallback_player_target_pair()** (6 connections) — `server/tests/unit/services/test_combat_turn_processor.py`
-- *... and 201 more nodes in this community*
+- **AliasStorage** (244 connections) — `server/alias_storage.py`
+- **test_alias_storage.py** (68 connections) — `server/tests/unit/test_alias_storage.py`
+- **Path** (11 connections)
+- **.get_player_aliases()** (10 connections) — `server/alias_storage.py`
+- **.get_alias_file_path()** (9 connections) — `server/alias_storage.py`
+- **._load_alias_data()** (9 connections) — `server/alias_storage.py`
+- **.create_alias()** (7 connections) — `server/alias_storage.py`
+- **._save_alias_data()** (7 connections) — `server/alias_storage.py`
+- **.save_player_aliases()** (7 connections) — `server/alias_storage.py`
+- **._validate_alias_payload()** (7 connections) — `server/alias_storage.py`
+- **.add_alias()** (6 connections) — `server/alias_storage.py`
+- **alias_storage()** (6 connections) — `server/tests/unit/test_alias_storage.py`
+- **Path** (6 connections)
+- **test_alias_storage_init_with_env_var()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_custom_dir()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_backup_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **test_delete_player_aliases_io_error()** (5 connections) — `server/tests/unit/test_alias_storage.py`
+- **AliasPayload** (5 connections)
+- **MonkeyPatch** (5 connections)
+- **.backup_aliases()** (4 connections) — `server/alias_storage.py`
+- **.get_alias()** (4 connections) — `server/alias_storage.py`
+- **.get_alias_count()** (4 connections) — `server/alias_storage.py`
+- **.remove_alias()** (4 connections) — `server/alias_storage.py`
+- **_as_alias_payload()** (4 connections) — `server/alias_storage.py`
+- **sample_alias()** (4 connections) — `server/tests/unit/test_alias_storage.py`
+- *... and 148 more nodes in this community*
 
 ## Relationships
 
-- [CombatInstance](CombatInstance.md) (49 shared connections)
-- [CombatService](CombatService.md) (40 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (19 shared connections)
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (12 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (10 shared connections)
-- [NATSError](NATSError.md) (9 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (8 shared connections)
-- [combat_service_npc.py](combat_service_npc.py.md) (8 shared connections)
-- [CombatEventHandler](CombatEventHandler.md) (5 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (3 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (3 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
+- [NATSMessageHandler](NATSMessageHandler.md) (28 shared connections)
+- [test_look_room.py](test_look_room.py.md) (21 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (18 shared connections)
+- [pytest.md](pytest.md.md) (17 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (12 shared connections)
+- [test_dependency_analysis.py](test_dependency_analysis.py.md) (7 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (7 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (6 shared connections)
+- [test_combat_integration_base.py](test_combat_integration_base.py.md) (5 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_service.py`
-- `server/services/combat_turn_processor.py`
-- `server/tests/unit/models/test_combat.py`
-- `server/tests/unit/services/test_combat_turn_processor.py`
+- `server/alias_storage.py`
+- `server/tests/unit/test_alias_storage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 563 (94%)
-- INFERRED: 35 (6%)
+- EXTRACTED: 394 (82%)
+- INFERRED: 85 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

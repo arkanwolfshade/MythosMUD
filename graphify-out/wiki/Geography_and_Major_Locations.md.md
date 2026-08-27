@@ -1,11 +1,12 @@
 # Geography and Major Locations.md
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Geography and Major Locations.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
-- **Geography and Major Locations (source summary)** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
+- **E2E Session Report 2025-12-02** (2 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **Admin Teleportation Display Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **Whisper Messages Not Received Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Geography and Major Locations.md`
+- `e2e-tests/SESSION_REPORT_2025-12-02.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

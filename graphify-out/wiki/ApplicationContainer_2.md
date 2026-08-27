@@ -1,23 +1,24 @@
 # ApplicationContainer
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
-- **DI Migration Test Results** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
+- **Security Considerations** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Data Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Sensitive Data Protection** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [safe_run_static](safe_run_static.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

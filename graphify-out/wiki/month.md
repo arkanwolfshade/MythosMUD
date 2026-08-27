@@ -1,25 +1,23 @@
 # month
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **month** (4 connections) — `db/static/schemas/holidays.schema.json`
-- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **apply_migrations_to_e2e.ps1** (1 connections) — `scripts/apply_migrations_to_e2e.ps1`
+- **Invoke-Psql()** (1 connections) — `scripts/apply_migrations_to_e2e.ps1`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `scripts/apply_migrations_to_e2e.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

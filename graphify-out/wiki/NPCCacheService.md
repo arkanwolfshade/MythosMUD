@@ -1,46 +1,50 @@
 # NPCCacheService
 
-> 17 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **NPCCacheService** (21 connections) — `server/caching/cache_service.py`
+- **ExperienceRepository** (23 connections) — `server/persistence/repositories/experience_repository.py`
+- **test_experience_repository.py** (17 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 - **asyncio** (10 connections)
-- **TestNPCCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_NpcDef** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_SpawnRule** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.npc_service()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_definitions_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_npc_definition_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_definitions_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
-- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
-- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
+- **.gain_experience()** (5 connections) — `server/persistence/repositories/experience_repository.py`
+- **.__init__()** (4 connections) — `server/persistence/repositories/experience_repository.py`
+- **test_update_player_stat_field_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_player_not_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_negative_amount()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_publishes_event()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_invalid_delta_type()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_invalid_name()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_negative_delta()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **Any** (1 connections)
+- **Player** (1 connections)
+- **fixture** (1 connections)
+- **Repository for player experience and stats persistence operations. Handles XP…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Initialize the experience repository. Args: event_bus: Optional EventBus for…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Award experience points to a player atomically. Args: player: Player to award…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Unit tests for ExperienceRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 
 ## Relationships
 
-- [test_cache_service.py](test_cache_service.py.md) (8 shared connections)
-- [Any](Any.md) (4 shared connections)
-- [RoomCacheService](RoomCacheService.md) (3 shared connections)
-- [bench_cache_npc.py](bench_cache_npc.py.md) (2 shared connections)
-- [CacheService](CacheService.md) (1 shared connections)
-- [LRUCache](LRUCache.md) (1 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (9 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [npc_database.py](npc_database.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/tests/unit/persistence/repositories/test_experience_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 45 (76%)
+- INFERRED: 14 (24%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,38 +1,44 @@
 # test_realtime_bundle_nats.py
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_realtime_bundle_nats.py** (11 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **_config()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **test_connect_nats_e2e_raises_on_timeout()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **test_connect_nats_e2e_raises_when_connect_returns_false()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **test_connect_nats_local_continues_without_nats_on_timeout()** (5 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **test_handle_nats_unavailable_unit_test_soft()** (4 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **asyncio** (4 connections)
-- **test_handle_nats_unavailable_e2e_raises()** (3 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **Any** (1 connections)
-- **RealtimeBundle NATS connect policy: e2e hard-fails; soft fail only for non-e2e.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **e2e_test must not soft-mock missing NATS (avoids silent chat failures in…** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **e2e_test hard-fails when NATS connect times out (e.g. TLS mismatch).** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **Non-e2e local may soft-continue without NATS when connect fails.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **unit_test combat path still soft-mocks unavailable NATS.** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
-- **e2e_test combat path raises when NATS is unavailable (is_testing=False).** (1 connections) — `server/tests/unit/container/test_realtime_bundle_nats.py`
+- **test_protocols.py** (11 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **RoomRepositoryProtocol** (10 connections) — `server/persistence/protocols.py`
+- **test_player_repository_protocol_stub()** (5 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **_StubRoomRepo** (4 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
+- **test_room_repository_protocol_stub()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **Protocol** (2 connections)
+- **Room** (2 connections)
+- **asyncio** (2 connections)
+- **.get_room_by_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **.list_rooms()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **List all cached rooms.** (1 connections) — `server/persistence/protocols.py`
+- **Protocol for room persistence operations. Defines the contract used by…** (1 connections) — `server/persistence/protocols.py`
+- **Get a room by ID from cache.** (1 connections) — `server/persistence/protocols.py`
+- **Runtime checks for persistence repository protocols.** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (8 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/container/test_realtime_bundle_nats.py`
+- `server/persistence/protocols.py`
+- `server/tests/unit/persistence/test_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (86%)
-- INFERRED: 4 (14%)
+- EXTRACTED: 30 (86%)
+- INFERRED: 5 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

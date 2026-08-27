@@ -1,8 +1,8 @@
 # DatabaseError
 
-> God node · 260 connections · `server/exceptions.py`
+> God node · 203 connections · `server/exceptions.py`
 
-**Community:** [get_logger](get_logger.md)
+**Community:** [ContainerComponent](ContainerComponent.md)
 
 ## Connections by Relation
 
@@ -10,48 +10,42 @@
 - ._execute_create_npc_definition() `EXTRACTED`
 - ._execute_npc_update() `EXTRACTED`
 - ._execute_create_spawn_rule() `EXTRACTED`
-- ._get_room_uuid_by_stable_id() `EXTRACTED`
-- .mark_room_as_explored() `EXTRACTED`
 - .get_npc_definitions() `EXTRACTED`
-- .is_room_explored() `EXTRACTED`
 - .get_spawn_rules() `EXTRACTED`
-- .get_explored_rooms() `EXTRACTED`
 - .get_system_statistics() `EXTRACTED`
 - test_determine_error_type_from_exception_uses_attr() `EXTRACTED`
 - test_canonical_room_id_impl_database_error() `EXTRACTED`
-- test_mark_room_as_explored_sync_with_error_handler() `EXTRACTED`
-- .test_get_severity_for_error_database() `EXTRACTED`
-- .test_get_status_code_for_error_database() `EXTRACTED`
-- .test_map_error_type_database() `EXTRACTED`
 - test_is_transient_error_cause_chain_connection_closed() `INFERRED`
 - test_is_transient_error_wrapped_connection_closed() `INFERRED`
-- test_seed_new_container_items_skips_bad_rows_and_handles_ensure_error() `EXTRACTED`
 - test_extract_player_name_user_access_error() `EXTRACTED`
+- test_database_error() `EXTRACTED`
+- test_database_error_initialization() `EXTRACTED`
+- test_database_error_without_table() `EXTRACTED`
 
 ### contains
 - server/exceptions.py `EXTRACTED`
 
 ### imports
 - [connection_manager_methods.py](connection_manager_methods.py.md) `EXTRACTED`
-- async_persistence.py `EXTRACTED`
 - database.py `EXTRACTED`
 - players.py `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - test_player_respawn_service.py `EXTRACTED`
-- [container_persistence.py](container_persistence.py.md) `EXTRACTED`
-- test_container_persistence_extended_row_helpers.py `EXTRACTED`
 - test_connection_delegates.py `EXTRACTED`
 - test_connection_session_management.py `EXTRACTED`
 - [test_npc_service.py](test_npc_service.py.md) `EXTRACTED`
 - player_service.py `EXTRACTED`
-- test_exploration_service.py `EXTRACTED`
 - [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) `EXTRACTED`
-- legacy_error_handlers.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - test_database_error_handling.py `EXTRACTED`
-- test_legacy_error_handlers.py `EXTRACTED`
+- [connection_establishment.py](connection_establishment.py.md) `EXTRACTED`
+- test_async_persistence_core.py `EXTRACTED`
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) `EXTRACTED`
+- [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
+- connection_delegates.py `EXTRACTED`
+- player_respawn_service.py `EXTRACTED`
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) `EXTRACTED`
 
 ### inherits
 - [MythosMUDError](MythosMUDError.md) `EXTRACTED`
@@ -63,26 +57,26 @@
 - Database operation errors. `EXTRACTED`
 
 ### uses
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) `INFERRED`
 - PlayerSpellRepository `INFERRED`
-- TestErrorMapping `INFERRED`
-- HealthRepository `INFERRED`
 - [DialogueDefinitionRepository](DialogueDefinitionRepository.md) `INFERRED`
+- HealthRepository `INFERRED`
 - PlayerRepository `INFERRED`
-- SkillRepository `INFERRED`
 - [ConnectionCleaner](ConnectionCleaner.md) `INFERRED`
+- SkillRepository `INFERRED`
 - [ExperienceRepository](ExperienceRepository.md) `INFERRED`
-- MythosTimeEventConsumer `INFERRED`
 - [RoomCacheLoader](RoomCacheLoader.md) `INFERRED`
 - PlayerSkillRepository `INFERRED`
-- _map_error_type() `INFERRED`
+- MythosTimeEventConsumer `INFERRED`
 - QuestInstanceRepository `INFERRED`
-- _get_status_code_for_error() `INFERRED`
-- _get_severity_for_error() `INFERRED`
 - PlayerEffectRepository `INFERRED`
+- SpellRepository `INFERRED`
 - QuestDefinitionRepository `INFERRED`
 - SkillUseLogRepository `INFERRED`
-- SpellRepository `INFERRED`
+- ProfessionRepository `INFERRED`
+- test_establish_websocket_connection_error() `INFERRED`
+- test_disconnect_connection_for_session_close_error() `INFERRED`
+- _create_engine_or_raise() `INFERRED`
+- fetch_user_by_username_case_insensitive() `INFERRED`
 
 ---
 

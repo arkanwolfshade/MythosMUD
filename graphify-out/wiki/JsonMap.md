@@ -1,51 +1,53 @@
 # JsonMap
 
-> 32 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **JsonMap** (9 connections)
-- **_NatsListenerClient** (5 connections) — `server/services/nats_service.py`
-- **NatsMessageCallback** (5 connections) — `server/services/nats_service.py`
-- **_NatsSubscription** (4 connections) — `server/services/nats_service.py`
-- **._acknowledge_message()** (4 connections) — `server/services/nats_service.py`
-- **._call_callback()** (4 connections) — `server/services/nats_service.py`
-- **._decode_message_data()** (4 connections) — `server/services/nats_service.py`
-- **.get_connection_stats()** (4 connections) — `server/services/nats_service.py`
-- **.publish()** (4 connections) — `server/services/nats_service.py`
-- **.request()** (4 connections) — `server/services/nats_service.py`
-- **.subscribe()** (4 connections) — `server/services/nats_service.py`
-- **Msg** (4 connections)
-- **Protocol** (4 connections)
-- **_NatsSubscribeFn** (3 connections) — `server/services/nats_service.py`
-- **_as_json_map()** (3 connections) — `server/services/nats_service.py`
-- **._negatively_acknowledge_message()** (3 connections) — `server/services/nats_service.py`
-- **.__call__()** (3 connections) — `server/services/nats_service.py`
-- **.__call__()** (2 connections) — `server/services/nats_service.py`
-- **.add_disconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_error_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_reconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **.drain()** (1 connections) — `server/services/nats_service.py`
-- **.unsubscribe()** (1 connections) — `server/services/nats_service.py`
-- **Subscription** (1 connections)
-- **Get connection statistics from state machine. Returns: Dictionary with…** (1 connections) — `server/services/nats_service.py`
-- *... and 7 more nodes in this community*
+- **test_npc_combat_integration_service_player_attacks.py** (23 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_npc_combat_integration_service_npc_aggro.py** (20 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **asyncio** (14 connections)
+- **asyncio** (9 connections)
+- **integration_service()** (7 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_async_persistence()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_combat_service()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **mock_connection_manager()** (5 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **fixture** (5 connections)
+- **test_handle_player_attack_on_npc_grace_period_check_fails()** (4 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **mock_messaging_integration()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_other_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_existing_combat_with_same_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_happy_path()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_invalid_location()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_no_combat_service()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_dead()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_npc_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_npc_attack_on_player_skips_already_dead_target()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- **test_handle_player_attack_on_npc_error_handling()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_login_grace_period_blocked()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_npc_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_handle_player_attack_on_npc_with_existing_combat()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- **test_process_combat_attack_queue_failure()** (3 connections) — `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (8 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (7 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
-- [.disconnect](disconnect.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (11 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_service.py`
+- `server/tests/unit/services/test_npc_combat_integration_service.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_npc_aggro.py`
+- `server/tests/unit/services/test_npc_combat_integration_service_player_attacks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 100 (92%)
+- INFERRED: 9 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

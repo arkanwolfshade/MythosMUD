@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **apply_migrations_to_e2e.ps1** (1 connections) — `scripts/apply_migrations_to_e2e.ps1`
-- **Invoke-Psql()** (1 connections) — `scripts/apply_migrations_to_e2e.ps1`
+- **The Festival** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **Kingsport Yule Procession** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `scripts/apply_migrations_to_e2e.ps1`
+- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
 
 ## Audit Trail
 

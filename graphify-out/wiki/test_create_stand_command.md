@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_create_stand_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_stand_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **main()** (1 connections) — `scripts/check_openapi_drift.py`
+- **check_openapi_drift.py** (1 connections) — `scripts/check_openapi_drift.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `scripts/check_openapi_drift.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

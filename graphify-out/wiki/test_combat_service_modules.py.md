@@ -1,63 +1,60 @@
 # test_combat_service_modules.py
 
-> 95 nodes
+> 90 nodes
 
 ## Key Concepts
 
-- **test_combat_service_modules.py** (64 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **asyncio** (36 connections)
-- **_combat_instance()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **_dp_sync()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **CombatDPSync** (12 connections) — `server/services/combat_hp_sync.py`
-- **combat_service_end.py** (12 connections) — `server/services/combat_service_end.py`
-- **_attack_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **broadcast_aggro_target_switches()** (8 connections) — `server/services/combat_service_events.py`
-- **UUID** (8 connections)
-- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_hp_sync.py`
-- **end_combat()** (7 connections) — `server/services/combat_service_end.py`
-- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
-- **test_apply_damage_and_check_involuntary_flee_suppresses_non_damaging_phantom()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_finalize_attack_result_and_process_attack()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_finalize_attack_result_phantom_dissipation()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_register_combat_delegates_to_service()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
-- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
-- **test_apply_damage_and_check_involuntary_flee()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_apply_target_rest_cancels_rest()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_apply_target_rest_grace_raises_on_grace_period()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_check_attacker_grace_period_raises()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- **test_check_target_rest_skips_non_player()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
-- *... and 70 more nodes in this community*
+- **endpoints.py** (48 connections) — `server/auth/endpoints.py`
+- **register_user()** (32 connections) — `server/auth/endpoints.py`
+- **UserCreate** (24 connections) — `server/auth/endpoints.py`
+- **test_endpoints_register.py** (21 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **list_invites()** (14 connections) — `server/auth/endpoints.py`
+- **asyncio** (14 connections)
+- **create_invite()** (12 connections) — `server/auth/endpoints.py`
+- **get_current_user_info()** (9 connections) — `server/auth/endpoints.py`
+- **User** (9 connections)
+- **Request** (8 connections)
+- **_authenticate_user_credentials()** (7 connections) — `server/auth/endpoints.py`
+- **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
+- **_handle_integrity_error()** (7 connections) — `server/auth/endpoints.py`
+- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
+- **IntegrityError** (7 connections)
+- **_check_shutdown_status()** (6 connections) — `server/auth/endpoints.py`
+- **_check_username_exists()** (6 connections) — `server/auth/endpoints.py`
+- **_create_user_object()** (6 connections) — `server/auth/endpoints.py`
+- **_generate_jwt_token()** (6 connections) — `server/auth/endpoints.py`
+- **_mark_invite_as_used()** (6 connections) — `server/auth/endpoints.py`
+- **test_register_user_email_constraint_violation()** (6 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **test_register_user_generic_constraint_violation()** (6 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **test_register_user_integrity_error()** (6 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **test_register_user_username_constraint_violation()** (6 connections) — `server/tests/unit/auth/test_endpoints_register.py`
+- **LoginResponse** (5 connections) — `server/auth/endpoints.py`
+- *... and 65 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (37 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [NATSError](NATSError.md) (9 shared connections)
-- [CombatInstance](CombatInstance.md) (6 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (3 shared connections)
-- [CombatParticipant](CombatParticipant.md) (3 shared connections)
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (17 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (10 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [maps.py](maps.py.md) (2 shared connections)
+- [models/container.py](models-container.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [Hierarchical Test Structure](Hierarchical_Test_Structure.md) (1 shared connections)
+- [container_persistence.py](container_persistence.py.md) (1 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (1 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/aggro_threat.py`
-- `server/services/combat_hp_sync.py`
-- `server/services/combat_service_end.py`
-- `server/services/combat_service_events.py`
-- `server/tests/unit/services/test_combat_service_modules.py`
+- `server/auth/endpoints.py`
+- `server/tests/unit/auth/test_endpoints_register.py`
 
 ## Audit Trail
 
-- EXTRACTED: 253 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 223 (92%)
+- INFERRED: 20 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

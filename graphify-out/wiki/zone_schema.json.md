@@ -1,31 +1,38 @@
 # zone_schema.json
 
-> 9 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **zone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **required** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **$schema** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **title** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **zone_type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
-- **environment** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **test_profession_service.py** (16 connections) — `server/tests/unit/game/test_profession_service.py`
+- **asyncio** (6 connections)
+- **_profession()** (5 connections) — `server/tests/unit/game/test_profession_service.py`
+- **service()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_all_professions_dict()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_profession_by_id_dict_found()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_none_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_not_found_raises()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_validate_and_get_profession_success()** (3 connections) — `server/tests/unit/game/test_profession_service.py`
+- **persistence()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_get_profession_by_id_dict_missing()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **test_profession_to_dict_list_formats()** (2 connections) — `server/tests/unit/game/test_profession_service.py`
+- **fixture** (2 connections)
+- **Unit tests for ProfessionService.** (1 connections) — `server/tests/unit/game/test_profession_service.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- `server/tests/unit/game/test_profession_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 28 (90%)
+- INFERRED: 3 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

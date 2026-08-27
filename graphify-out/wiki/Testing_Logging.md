@@ -1,24 +1,23 @@
 # Testing Logging
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Testing Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Integration Tests** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Unit Tests for Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **test_parse_exits_json_string_valid()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test _parse_exits_json with valid JSON string.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

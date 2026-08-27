@@ -1,60 +1,57 @@
 # api/player_effects.py
 
-> 94 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **api/player_effects.py** (33 connections) — `server/api/player_effects.py`
-- **test_player_requests.py** (31 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **test_player_effects_endpoints.py** (30 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **player_requests.py** (16 connections) — `server/schemas/players/player_requests.py`
-- **apply_lucidity_loss()** (13 connections) — `server/api/player_effects.py`
-- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
-- **DamageRequest** (12 connections) — `server/schemas/players/player_requests.py`
-- **LucidityLossRequest** (12 connections) — `server/schemas/players/player_requests.py`
-- **apply_corruption()** (12 connections) — `server/api/player_effects.py`
-- **apply_fear()** (12 connections) — `server/api/player_effects.py`
-- **damage_player()** (12 connections) — `server/api/player_effects.py`
-- **gain_occult_knowledge()** (12 connections) — `server/api/player_effects.py`
-- **heal_player()** (12 connections) — `server/api/player_effects.py`
-- **CorruptionRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **FearRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **HealRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **OccultKnowledgeRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **BaseModel** (11 connections)
-- **SelectCharacterRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **test_apply_lucidity_loss_validation_maps_to_404()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **UUID** (7 connections)
-- **asyncio** (7 connections)
-- **FastAPIRequest** (6 connections)
-- **post** (6 connections)
-- *... and 69 more nodes in this community*
+- **inventory_get_command.py** (30 connections) — `server/commands/inventory_get_command.py`
+- **test_inventory_get_command.py** (26 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
+- **_handle_get_from_room()** (16 connections) — `server/commands/inventory_get_command.py`
+- **_get_from_container_path()** (15 connections) — `server/commands/inventory_get_command.py`
+- **_get_transfer_out_of_container()** (11 connections) — `server/commands/inventory_get_command.py`
+- **asyncio** (10 connections)
+- **GetCommandRuntime** (8 connections) — `server/commands/inventory_get_command.py`
+- **GetItemSpec** (8 connections) — `server/commands/inventory_get_command.py`
+- **_get_route_after_validation()** (7 connections) — `server/commands/inventory_get_command.py`
+- **test_get_from_container_path_item_not_in_container()** (6 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_get_from_container_path_missing_container()** (6 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_handle_get_command_uses_pickup_wiring()** (5 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **CommandResponse** (5 connections)
+- **_container_transfer_messages()** (4 connections) — `server/commands/inventory_get_command.py`
+- **test_get_transfer_out_of_container_error()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_get_transfer_out_of_container_not_success()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_get_transfer_out_of_container_success()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_handle_get_from_room_index_error()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_handle_get_from_room_invalid_quantity()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_handle_get_from_room_unresolved_index()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_handle_get_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **test_container_transfer_messages()** (2 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
+- **Player** (2 connections)
+- **UUID** (2 connections)
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [api/character_creation.py](api-character_creation.py.md) (22 shared connections)
-- [User](User.md) (20 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (9 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [ErrorType](ErrorType.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (18 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (14 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (5 shared connections)
+- [GameLogPanel.tsx](GameLogPanel.tsx.md) (5 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/commands/inventory_get_command.py`
+- `server/tests/unit/commands/test_inventory_get_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 259 (96%)
-- INFERRED: 11 (4%)
+- EXTRACTED: 109 (81%)
+- INFERRED: 25 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

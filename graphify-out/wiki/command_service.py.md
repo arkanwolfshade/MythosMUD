@@ -1,63 +1,66 @@
 # command_service.py
 
-> 104 nodes
+> 127 nodes
 
 ## Key Concepts
 
-- **command_service.py** (108 connections) — `server/commands/command_service.py`
-- **asyncio** (30 connections)
-- **admin_mute_commands.py** (29 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_command()** (18 connections) — `server/commands/admin_mute_commands.py`
-- **Any** (16 connections)
-- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
-- **handle_mutes_command()** (11 connections) — `server/commands/admin_mute_commands.py`
-- **handle_unmute_command()** (11 connections) — `server/commands/admin_mute_commands.py`
-- **handle_mute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
-- **handle_unmute_global_command()** (9 connections) — `server/commands/admin_mute_commands.py`
-- **_handle_admin_status_command()** (7 connections) — `server/commands/admin_commands.py`
-- **_perform_mutes_list()** (7 connections) — `server/commands/admin_mute_commands.py`
-- **_handle_admin_time_command()** (6 connections) — `server/commands/admin_commands.py`
-- **_perform_mute()** (6 connections) — `server/commands/admin_mute_commands.py`
-- **_collect_mute_display_lines()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_format_mute_line()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_command_app()** (5 connections) — `server/commands/admin_mute_commands.py`
-- **_extract_mute_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_display_target()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_mute_success_result()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_parse_mute_duration_minutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_current_player_id_for_mutes()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **_resolve_muter_and_target_players()** (4 connections) — `server/commands/admin_mute_commands.py`
-- **.is_admin()** (4 connections) — `server/commands/communication_commands_support.py`
-- **test_handle_add_admin_command_no_target()** (4 connections) — `server/tests/unit/commands/test_admin_commands.py`
-- *... and 79 more nodes in this community*
+- **npc_combat_integration_service.py** (53 connections) — `server/services/npc_combat_integration_service.py`
+- **NPCCombatMemory** (28 connections) — `server/services/npc_combat_memory.py`
+- **test_npc_combat_handlers.py** (23 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **NPCCombatHandlers** (18 connections) — `server/services/npc_combat_handlers.py`
+- **NPCCombatRewards** (18 connections) — `server/services/npc_combat_rewards.py`
+- **TestNPCCombatMemory** (16 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
+- **npc_combat_handlers.py** (16 connections) — `server/services/npc_combat_handlers.py`
+- **NPCCombatLifecycle** (15 connections) — `server/services/npc_combat_lifecycle.py`
+- **CombatResultCtx** (12 connections) — `server/services/npc_combat_handlers.py`
+- **asyncio** (9 connections)
+- **fixture** (8 connections)
+- **._handle_npc_death_on_combat_end()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **.__init__()** (7 connections) — `server/services/npc_combat_handlers.py`
+- **.check_player_connection_state()** (6 connections) — `server/services/npc_combat_rewards.py`
+- **.handle_combat_result()** (5 connections) — `server/services/npc_combat_handlers.py`
+- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
+- **.__init__()** (4 connections) — `server/services/npc_combat_rewards.py`
+- **npc_combat_handlers()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_broadcast_error()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_combat_ended()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_handle_combat_result_unsuccessful()** (4 connections) — `server/tests/unit/services/test_npc_combat_handlers.py`
+- **test_npc_combat_memory.py** (4 connections) — `server/tests/unit/services/test_npc_combat_memory.py`
+- **._broadcast_combat_success()** (3 connections) — `server/services/npc_combat_handlers.py`
+- **.handle_npc_death()** (3 connections) — `server/services/npc_combat_handlers.py`
+- *... and 102 more nodes in this community*
 
 ## Relationships
 
-- [get_username_from_user](get_username_from_user.md) (38 shared connections)
-- [get_logger](get_logger.md) (23 shared connections)
-- [AliasStorage](AliasStorage.md) (10 shared connections)
-- [request_with_app_container](request_with_app_container.md) (8 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (6 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (6 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (6 shared connections)
-- [test_alias_commands.py](test_alias_commands.py.md) (4 shared connections)
-- [combat_loader.py](combat_loader.py.md) (4 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (20 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (16 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (11 shared connections)
+- [ChatMessage](ChatMessage.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [PlayerSavePreparer](PlayerSavePreparer.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [TestNPCCombatRewards](TestNPCCombatRewards.md) (3 shared connections)
+- [MythosMUDError](MythosMUDError.md) (3 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (2 shared connections)
+- [.get_instance](get_instance.md) (2 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_commands.py`
-- `server/commands/admin_mute_commands.py`
-- `server/commands/command_service.py`
-- `server/commands/communication_commands_support.py`
-- `server/tests/unit/commands/test_admin_commands.py`
+- `server/services/npc_combat_handlers.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_lifecycle.py`
+- `server/services/npc_combat_memory.py`
+- `server/services/npc_combat_rewards.py`
+- `server/services/player_combat_service_support.py`
+- `server/tests/unit/services/test_npc_combat_handlers.py`
+- `server/tests/unit/services/test_npc_combat_memory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 245 (74%)
-- INFERRED: 86 (26%)
+- EXTRACTED: 250 (93%)
+- INFERRED: 20 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

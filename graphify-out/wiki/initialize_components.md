@@ -1,34 +1,33 @@
 # initialize_components
 
-> 10 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
-- **component_hooks.py** (6 connections) — `server/game/items/component_hooks.py`
-- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **test_initialize_components_records_prototype_components()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
-- **Any** (1 connections)
-- **Component hook coordination for freshly minted item instances.** (1 connections) — `server/game/items/component_hooks.py`
-- **Prepare component state metadata for a new item instance. This routine…** (1 connections) — `server/game/items/component_hooks.py`
-- **Unit tests for item component hooks.** (1 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **Dependency Upgrade** (6 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Dependency Upgrade Skill** (2 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **.pre-commit-config.yaml** (2 connections) — `.pre-commit-config.yaml`
+- **Before starting** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Never** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Rollback** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Upgrade procedure** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Verify** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
+- **Pre-commit Best Practices** (1 connections) — `.claude/rules/pre-commit.md`
 
 ## Relationships
 
-- [PrototypeRegistryError](PrototypeRegistryError.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/items/component_hooks.py`
-- `server/tests/unit/game/items/test_component_hooks.py`
+- `.claude/rules/pre-commit.md`
+- `.claude/skills/deps-upgrade/SKILL.md`
+- `.pre-commit-config.yaml`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

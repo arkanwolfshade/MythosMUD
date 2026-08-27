@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded_no_attacker()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded without attacker.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **unit/middleware/__init__.py** (1 connections) — `server/tests/unit/middleware/__init__.py`
+- **Middleware unit tests.** (1 connections) — `server/tests/unit/middleware/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/middleware/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

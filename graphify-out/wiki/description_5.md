@@ -4,22 +4,23 @@
 
 ## Key Concepts
 
-- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **Scenario Group Execution** (3 connections) — `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- **Local Channel Scenario Group (8-12)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Logout Scenario Group (19-21)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
+- **Whisper Channel Scenario Group (13-18)** (1 connections) — `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `e2e-tests/EXECUTION_PROTOCOL_CHANGES.md`
+- `e2e-tests/EXECUTION_VALIDATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

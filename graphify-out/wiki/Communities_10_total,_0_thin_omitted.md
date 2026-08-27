@@ -1,29 +1,30 @@
 # Communities (10 total, 0 thin omitted)
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **Communities (10 total, 0 thin omitted)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Petersen's Abominations  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **petersen-s-abominations/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 0 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 1 - "Petersen's Abominations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 2 - "Hotel Hell"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 3 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 4 - "Mohole"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 5 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 6 - "Panacea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 7 - "Petersen's Abominations Pre-Generated Investigators v2"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 8 - "Voice on the Phone"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community 9 - "The Derelict"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- **Environment Contamination Audit Report** (9 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **2. **ACCEPTABLE PATTERNS: Environment Variable Usage**** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Remediation Plan** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Analysis** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Critical Violations Found** (3 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **ENVIRONMENT_CONTAMINATION_AUDIT.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **1. **CRITICAL VIOLATION: `server/logging_config.py`**** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Compliance Status** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Conclusion** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Executive Summary** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 1: Critical Fix (Immediate)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 2: Configuration Standardization** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Phase 3: Testing Strategy Update** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Recommendations** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **Security Implications** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/alias_storage.py` (Line 29)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/auth/users.py` (Line 42)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/config_loader.py` (Lines 236, 242)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **`server/persistence.py` (Line 68)** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **What Constitutes Environment Contamination** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
+- **What Is Acceptable** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
 
 ## Relationships
 
@@ -31,11 +32,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/GRAPH_REPORT.md`
+- `docs/archive/ENVIRONMENT_CONTAMINATION_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

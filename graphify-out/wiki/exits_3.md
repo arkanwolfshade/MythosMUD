@@ -1,26 +1,25 @@
 # exits
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **Graceful Degradation Planning** (1 connections) — `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
+- **Health Endpoint Specification** (1 connections) — `docs/archive/HEALTH_ENDPOINT_SPEC.md`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
+- `docs/archive/HEALTH_ENDPOINT_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

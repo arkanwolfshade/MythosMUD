@@ -4,54 +4,47 @@
 
 ## Key Concepts
 
-- **correct_patterns.py** (21 connections) — `docs/examples/logging/correct_patterns.py`
-- **Result** (5 connections) — `scripts/run_test_ci.py`
-- **correct_async_logging()** (5 connections) — `docs/examples/logging/correct_patterns.py`
-- **database** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **database** (4 connections) — `docs/examples/logging/migration_examples.py`
-- **correct_exception_tracking()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_performance_logging()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_error_handling()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **.execute()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **process_data()** (3 connections) — `docs/examples/logging/correct_patterns.py`
-- **.create_user()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **.execute()** (3 connections) — `docs/examples/logging/migration_examples.py`
-- **async_work()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_api_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_basic_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_batch_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_database_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_security_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **correct_websocket_logging()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **.query()** (2 connections) — `docs/examples/logging/correct_patterns.py`
-- **.__init__()** (1 connections) — `scripts/run_test_ci.py`
-- **Demonstrate correct exception tracking.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct database operation logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
-- **Demonstrate correct API request/response logging.** (1 connections) — `docs/examples/logging/correct_patterns.py`
+- **test_message_broadcaster.py** (23 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **asyncio** (15 connections)
+- **message_broadcaster()** (4 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **fixture** (3 connections)
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() falls back when batch gather fails.** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster. Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 - *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [fastapi_integration.py](fastapi_integration.py.md) (3 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
-- [migration_examples.py](migration_examples.py.md) (1 shared connections)
-- [safe_run_static](safe_run_static.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/correct_patterns.py`
-- `docs/examples/logging/migration_examples.py`
-- `scripts/run_test_ci.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (91%)
-- INFERRED: 5 (9%)
+- EXTRACTED: 60 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

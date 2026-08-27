@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **load_seed_direct.py** (0 connections) — `scripts/load_seed_direct.py`
+- **PostgreSQL Standards for Contributors** (0 connections) — `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_seed_direct.py`
+- `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
 
 ## Audit Trail
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **temp_init_e2e_npc.py** (0 connections) — `scripts/temp_init_e2e_npc.py`
+- **Scenario 42 Quest Log Visible After Login** (0 connections) — `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_init_e2e_npc.py`
+- `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
 
 ## Audit Trail
 

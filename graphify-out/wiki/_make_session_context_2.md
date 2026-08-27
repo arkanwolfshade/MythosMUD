@@ -1,45 +1,49 @@
 # _make_session_context
 
-> 23 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **_make_session_context()** (11 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **asyncio** (9 connections)
-- **test_get_by_id_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_success()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_success()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_database_error()** (5 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **_row_for_quest_definition()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_id_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_get_by_name_not_found()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_empty()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **test_list_quest_ids_offered_by_success()** (4 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns definition when found by common name.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_name raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns quest IDs for entity (procedure returns…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by returns empty list when no offers.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test list_quest_ids_offered_by raises DatabaseError on DB failure.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Return context manager that yields mock_session for async with.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Build a procedure result row (mappings().first() return value) for…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns definition when found (procedure returns row, repo maps…** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
-- **Test get_by_id returns None when not found.** (1 connections) — `server/tests/unit/persistence/test_quest_definition_repository.py`
+- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **weather_patterns** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
+- [Dependency Upgrade Strategy Specification](Dependency_Upgrade_Strategy_Specification.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_quest_definition_repository.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

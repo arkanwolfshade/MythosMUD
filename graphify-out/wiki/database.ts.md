@@ -1,12 +1,13 @@
 # database.ts
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **database.ts** (2 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
-- **resetPlayerPositions()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
-- **verifyTestPlayers()** (1 connections) — `client/tests/e2e/runtime/fixtures/database.ts`
+- **Alone Against the Frost (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Alone Against the Frost.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/database.ts`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

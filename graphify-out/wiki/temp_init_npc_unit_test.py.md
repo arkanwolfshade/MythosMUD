@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **temp_init_npc_unit_test.py** (0 connections) — `scripts/temp_init_npc_unit_test.py`
+- **Whisper System Investigation Report** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_init_npc_unit_test.py`
+- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Audit Trail
 

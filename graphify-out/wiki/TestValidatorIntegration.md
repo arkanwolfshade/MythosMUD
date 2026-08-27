@@ -4,33 +4,33 @@
 
 ## Key Concepts
 
-- **TestValidatorIntegration** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_help_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_schema_only_flag()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_with_invalid_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_with_valid_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **.test_validator_zone_filtering()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Integration tests for the main validator.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with valid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator with invalid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator JSON output format.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test validator zone filtering.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test that help text is properly displayed.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **Test schema-only validation flag.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Optimization Strategy** (6 connections) — `.claude/skills/optimize/SKILL.md`
+- **Optimize Skill** (6 connections) — `.claude/skills/optimize/SKILL.md`
+- **Core Web Vitals Optimization** (4 connections) — `.claude/skills/optimize/SKILL.md`
+- **Animation Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Assess Performance Issues** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Cumulative Layout Shift (CLS < 0.1)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **First Input Delay (FID < 100ms) / INP (< 200ms)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Largest Contentful Paint (LCP < 2.5s)** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Loading Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Network Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Performance Monitoring** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **React/Framework Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Rendering Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Verify Improvements** (1 connections) — `.claude/skills/optimize/SKILL.md`
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (7 shared connections)
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `.claude/skills/optimize/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (70%)
-- INFERRED: 6 (30%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

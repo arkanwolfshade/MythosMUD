@@ -1,65 +1,63 @@
 # .get_instance
 
-> 66 nodes
+> 135 nodes
 
 ## Key Concepts
 
-- **.get_instance()** (35 connections) — `server/container/main.py`
-- **test_application_container.py** (29 connections) — `server/tests/unit/test_application_container.py`
-- **get_container()** (19 connections) — `server/container/main.py`
-- **container/__init__.py** (18 connections) — `server/container/__init__.py`
-- **.event_bus()** (12 connections) — `server/realtime/connection_manager.py`
-- **reset_container()** (10 connections) — `server/container/main.py`
-- **._init_quest_service()** (7 connections) — `server/container/bundles/game.py`
-- **.reset_instance()** (7 connections) — `server/container/main.py`
-- **test_application_container_set_instance()** (6 connections) — `server/tests/unit/test_application_container.py`
-- **._get_integration_dependencies()** (5 connections) — `server/npc/npc_base.py`
-- **test_get_and_reset_container_helpers()** (5 connections) — `server/tests/unit/container/test_application_container_main.py`
-- **.set_instance()** (4 connections) — `server/container/main.py`
-- **test_application_container_get_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_reset_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
-- **test_get_container_singleton()** (4 connections) — `server/tests/unit/test_application_container.py`
-- **test_reset_container()** (4 connections) — `server/tests/unit/test_application_container.py`
-- **test_reset_container_creates_new_instance()** (4 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column_dict()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column_empty_string()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column_invalid()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column_list()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_decode_json_column_none()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_get_project_root()** (3 connections) — `server/tests/unit/test_application_container.py`
-- **test_application_container_get_service()** (3 connections) — `server/tests/unit/test_application_container.py`
-- *... and 41 more nodes in this community*
+- **test_combat_event_publisher.py** (51 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **CombatEventPublisher** (33 connections) — `server/services/combat_event_publisher.py`
+- **combat_event_publisher.py** (20 connections) — `server/services/combat_event_publisher.py`
+- **asyncio** (20 connections)
+- **combat_events.py** (19 connections) — `server/events/combat_events.py`
+- **._publish_combat_payload()** (17 connections) — `server/services/combat_event_publisher.py`
+- **combat_event_handler.py** (17 connections) — `server/services/combat_event_handler.py`
+- **CombatStartedEvent** (16 connections) — `server/events/combat_events.py`
+- **NPCDiedEvent** (16 connections) — `server/events/combat_events.py`
+- **NPCTookDamageEvent** (16 connections) — `server/events/combat_events.py`
+- **PlayerAttackedEvent** (16 connections) — `server/events/combat_events.py`
+- **CombatTargetSwitchEvent** (15 connections) — `server/events/combat_events.py`
+- **CombatEndedEvent** (13 connections) — `server/events/combat_events.py`
+- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
+- **test_publish_paths_nats_publish_error()** (12 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **NPCAttackedEvent** (11 connections) — `server/events/combat_events.py`
+- **test_publish_paths_no_nats_service()** (11 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **test_publish_paths_not_connected()** (11 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
+- **BaseEvent** (7 connections)
+- **combat_integration_protocols.py** (7 connections) — `server/npc/combat_integration_protocols.py`
+- **.publish_combat_ended()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_started()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_combat_target_switch()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_attacked()** (5 connections) — `server/services/combat_event_publisher.py`
+- **.publish_npc_died()** (5 connections) — `server/services/combat_event_publisher.py`
+- *... and 110 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (33 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
-- [NPCStartupService](NPCStartupService.md) (3 shared connections)
-- [UserManager](UserManager.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (2 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [HealthService](HealthService.md) (2 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
+- [MythosMUDError](MythosMUDError.md) (19 shared connections)
+- [properties](properties.md) (11 shared connections)
+- [NATSService](NATSService.md) (9 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (3 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (3 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [command_service.py](command_service.py.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [TestGracefulDegradation](TestGracefulDegradation.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/__init__.py`
-- `server/container/bundles/game.py`
-- `server/container/main.py`
-- `server/npc/npc_base.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/container/test_application_container_main.py`
-- `server/tests/unit/test_application_container.py`
+- `server/events/combat_events.py`
+- `server/npc/combat_integration_protocols.py`
+- `server/services/combat_event_handler.py`
+- `server/services/combat_event_publisher.py`
+- `server/tests/unit/services/test_combat_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (94%)
-- INFERRED: 10 (6%)
+- EXTRACTED: 310 (91%)
+- INFERRED: 31 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,48 +1,51 @@
 # Uvicorn ASGI Server Best Practices
 
-> 26 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **Uvicorn ASGI Server Best Practices** (8 connections) — `.claude/rules/uvicorn.md`
-- **1. Code Organization and Structure** (4 connections) — `.claude/rules/uvicorn.md`
-- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/uvicorn.md`
-- **7. Tooling and Environment** (4 connections) — `.claude/rules/uvicorn.md`
-- **uvicorn.md** (3 connections) — `.claude/rules/uvicorn.md`
-- **3. Performance Considerations** (3 connections) — `.claude/rules/uvicorn.md`
-- **4. Security Best Practices** (3 connections) — `.claude/rules/uvicorn.md`
-- **5. Testing Approaches** (3 connections) — `.claude/rules/uvicorn.md`
-- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/uvicorn.md`
-- **1.1. Directory Structure** (1 connections) — `.claude/rules/uvicorn.md`
-- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/uvicorn.md`
-- **1.3. Module Organization** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.1. Design Patterns** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.3. Anti-patterns** (1 connections) — `.claude/rules/uvicorn.md`
-- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/uvicorn.md`
-- **3.2. Memory Management** (1 connections) — `.claude/rules/uvicorn.md`
-- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/uvicorn.md`
-- **4.2. Security Implementation** (1 connections) — `.claude/rules/uvicorn.md`
-- **5.1. Unit Testing** (1 connections) — `.claude/rules/uvicorn.md`
-- **5.2. Integration Testing** (1 connections) — `.claude/rules/uvicorn.md`
-- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/uvicorn.md`
-- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/uvicorn.md`
-- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/uvicorn.md`
-- **7.2. Deployment Best Practices** (1 connections) — `.claude/rules/uvicorn.md`
-- *... and 1 more nodes in this community*
+- **_find_container_wearable()** (23 connections) — `server/commands/look_container.py`
+- **_select_match()** (5 connections) — `server/commands/look_container.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_empty()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_no_match()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **test_find_container_wearable_not_found()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_wearable_with_inner_container()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
+- **_wearable_matches_target()** (2 connections) — `server/commands/look_container.py`
+- **Test finding wearable container with instance number.** (2 connections) — `server/tests/unit/commands/test_look_container.py`
+- **_T** (1 connections)
+- **Find a wearable container in equipped items by name or prototype_id. Args:…** (1 connections) — `server/commands/look_container.py`
+- **Pick a single match by instance number, or the sole match when unambiguous.** (1 connections) — `server/commands/look_container.py`
+- **Test _find_container_wearable() with empty dict.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with no matching containers.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() finds wearable container.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- **Test _find_container_wearable() returns None when container not found.** (1 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
-- [server/main.py](server-main.py.md) (1 shared connections)
+- [errorHandler.ts](errorHandler.ts.md) (10 shared connections)
+- [talk_command.py](talk_command.py.md) (9 shared connections)
+- [ClientLogger](ClientLogger.md) (6 shared connections)
 
 ## Source Files
 
-- `.claude/rules/uvicorn.md`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
+- `server/tests/unit/commands/test_look_container_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 52 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

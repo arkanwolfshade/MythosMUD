@@ -1,13 +1,14 @@
 # Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **Malleus Monstrorum - Cthulhu Mythos Bestiary.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **MythosLoginForm.tsx** (4 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **MythosLoginFormProps** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **LoginActions()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **LoginInputs()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **MythosLoginForm()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- `client/src/mythosApp/MythosLoginForm.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

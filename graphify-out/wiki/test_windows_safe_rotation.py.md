@@ -1,52 +1,48 @@
 # test_windows_safe_rotation.py
 
-> 56 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **test_windows_safe_rotation.py** (24 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **WindowsSafeRotatingFileHandler** (17 connections) — `server/structured_logging/windows_safe_rotation.py`
-- **Path** (12 connections)
-- **WindowsSafeTimedRotatingFileHandler** (11 connections) — `server/structured_logging/windows_safe_rotation.py`
-- **windows_safe_rotation.py** (7 connections) — `server/structured_logging/windows_safe_rotation.py`
-- **temp_log_dir()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **temp_log_file()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_no_backup()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_rotates_existing_backups()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_with_backup()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_timed_rotating_file_handler_rotate_fallback_on_error()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_timed_rotating_file_handler_rotate_non_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_timed_rotating_file_handler_rotate_windows_platform()** (4 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **_copy_then_truncate()** (3 connections) — `server/structured_logging/windows_safe_rotation.py`
-- **test_copy_then_truncate_creates_directory()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_copy_then_truncate_raises_after_retries()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_copy_then_truncate_retries_on_failure()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_copy_then_truncate_success()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_handles_os_error()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_no_stream()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_do_rollover_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_timed_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- **test_windows_safe_timed_rotating_file_handler_rotation_filename()** (3 connections) — `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
-- *... and 31 more nodes in this community*
+- **Test Suite Refactoring Plan** (14 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration Strategy** (7 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Testing Standards and Best Practices** (6 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Test Organization Principles** (5 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Appendix B: Test Categories Reference** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current State Analysis** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Success Criteria** (4 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Tooling Updates** (3 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Migration File Mapping** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Proposed Structure** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Timeline and Milestones** (2 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **TEST_SUITE_REFACTORING_PLAN.md** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **1. Test Independence** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **2. Mock Usage** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **3. Assertion Quality** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **4. Test Data Management** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **5. Performance** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **6-Week Timeline** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Appendix A: Full File Mapping** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Coverage Strategy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Current Issues** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Detailed Mapping (Sample)** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Directory Hierarchy** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- **Documentation Deliverables** (1 connections) — `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_handlers.py](test_logging_handlers.py.md) (3 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/structured_logging/windows_safe_rotation.py`
-- `server/tests/unit/structured_logging/test_windows_safe_rotation.py`
+- `docs/archive/TEST_SUITE_REFACTORING_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

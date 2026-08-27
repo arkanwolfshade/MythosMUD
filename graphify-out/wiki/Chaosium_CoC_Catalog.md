@@ -1,59 +1,49 @@
 # Chaosium CoC Catalog
 
-> 32 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **Chaosium CoC Catalog** (14 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **Geography Overview.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
-- **MythosMUD** (4 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
-- **Petersen's Abominations** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Dreamlands.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
-- **Bleak Prospect.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
-- **Paris (Reign of Terror).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
-- **MythosMUD.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
-- **Bleak Prospect** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
-- **Dreamlands** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
-- **Hotel Hell** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- **Mohole** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
-- **Paris (Reign of Terror)** (2 connections) — `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
-- **Nameless Horrors - 2nd Edition** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **Reign of Terror** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
-- **S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- **Chaosium CoC Catalog.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **Hotel Hell.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- **Mohole.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
-- **Creature / motif families (adaptation stubs)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **How to use** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **MythosMUD adaptation notes** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **Ongoing ops** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **Tier A (full or batch-promoted)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- **Tier B (source-only)** (1 connections) — `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- *... and 7 more nodes in this community*
+- **ChatChannelLoggerMixin** (19 connections) — `server/services/chat_channel_logger.py`
+- **Path** (8 connections)
+- **._queue_log_entry()** (7 connections) — `server/services/chat_channel_logger.py`
+- **.log_local_channel_message()** (6 connections) — `server/services/chat_channel_logger.py`
+- **Any** (6 connections)
+- **.get_global_channel_log_stats()** (5 connections) — `server/services/chat_channel_logger.py`
+- **.get_local_channel_log_stats()** (5 connections) — `server/services/chat_channel_logger.py`
+- **.log_global_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
+- **.log_system_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
+- **.log_whisper_channel_message()** (5 connections) — `server/services/chat_channel_logger.py`
+- **.cleanup_old_global_channel_logs()** (4 connections) — `server/services/chat_channel_logger.py`
+- **._get_global_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
+- **.get_global_channel_log_files()** (4 connections) — `server/services/chat_channel_logger.py`
+- **._get_local_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
+- **._get_system_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
+- **._get_whisper_channel_log_file()** (4 connections) — `server/services/chat_channel_logger.py`
+- **.get_local_channel_log_files()** (3 connections) — `server/services/chat_channel_logger.py`
+- **.cleanup_old_local_channel_logs()** (2 connections) — `server/services/chat_channel_logger.py`
+- **Log a global channel message to global.log file. Args: message_data: Global…** (1 connections) — `server/services/chat_channel_logger.py`
+- **Get the global channel log file path. Returns: Path to the global channel log…** (1 connections) — `server/services/chat_channel_logger.py`
+- **Log a system channel message to system.log file. Args: message_data: System…** (1 connections) — `server/services/chat_channel_logger.py`
+- **Log a whisper channel message to whisper.log file. Args: message_data: Whisper…** (1 connections) — `server/services/chat_channel_logger.py`
+- **Channel log paths, writers, stats, and cleanup. Requires ChatLogger attrs.** (1 connections) — `server/services/chat_channel_logger.py`
+- **Get the whisper channel log file path. Returns: Path to the whisper channel log…** (1 connections) — `server/services/chat_channel_logger.py`
+- **Get the system channel log file path. Returns: Path to the system channel log…** (1 connections) — `server/services/chat_channel_logger.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [vim Best Practices and Coding Standards](vim_Best_Practices_and_Coding_Standards.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [HallucinationFrequencyService](HallucinationFrequencyService.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
-- `data/MythosMUD-Obsidian/wiki/sources/Reign of Terror.md`
-- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
-- `data/MythosMUD-Obsidian/wiki/syntheses/Chaosium CoC Catalog.md`
-- `data/MythosMUD-Obsidian/wiki/world/Bleak Prospect.md`
-- `data/MythosMUD-Obsidian/wiki/world/Dreamlands.md`
-- `data/MythosMUD-Obsidian/wiki/world/Geography Overview.md`
-- `data/MythosMUD-Obsidian/wiki/world/Hotel Hell.md`
-- `data/MythosMUD-Obsidian/wiki/world/Mohole.md`
-- `data/MythosMUD-Obsidian/wiki/world/MythosMUD.md`
-- `data/MythosMUD-Obsidian/wiki/world/Paris (Reign of Terror).md`
+- `server/services/chat_channel_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 60 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

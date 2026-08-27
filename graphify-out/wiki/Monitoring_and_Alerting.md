@@ -1,25 +1,26 @@
 # Monitoring and Alerting
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Monitoring and Alerting** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Alerting Rules** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Health Checks** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Metrics to Monitor** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **get_alerts()** (3 connections) — `monitoring/webhook-receiver.py`
+- **health()** (3 connections) — `monitoring/webhook-receiver.py`
+- **get** (2 connections)
+- **Health check endpoint** (1 connections) — `monitoring/webhook-receiver.py`
+- **Get recent alerts (for testing)** (1 connections) — `monitoring/webhook-receiver.py`
 
 ## Relationships
 
-- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `monitoring/webhook-receiver.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

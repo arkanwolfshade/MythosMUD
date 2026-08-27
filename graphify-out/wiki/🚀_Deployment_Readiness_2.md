@@ -1,21 +1,22 @@
 # 🚀 Deployment Readiness
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **🚀 Deployment Readiness** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Async Compliance** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Code Quality** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Remaining Work** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **worktree-manager.ps1** (4 connections) — `scripts/worktree-manager.ps1`
+- **Remove-LegacyBranch()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeInfo()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Show-WorktreeStatus()** (1 connections) — `scripts/worktree-manager.ps1`
+- **Switch-ToWorktree()** (1 connections) — `scripts/worktree-manager.ps1`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `scripts/worktree-manager.ps1`
 
 ## Audit Trail
 

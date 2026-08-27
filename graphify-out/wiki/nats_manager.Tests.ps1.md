@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **nats_manager.Tests.ps1** (0 connections) — `scripts/tests/nats_manager.Tests.ps1`
+- **Documentation Issue Template** (0 connections) — `.github/ISSUE_TEMPLATE/documentation.yml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/tests/nats_manager.Tests.ps1`
+- `.github/ISSUE_TEMPLATE/documentation.yml`
 
 ## Audit Trail
 

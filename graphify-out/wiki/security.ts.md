@@ -1,71 +1,59 @@
 # security.ts
 
-> 50 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **security.ts** (41 connections) — `client/src/utils/security.ts`
-- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
-- **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
-- **logoutHandler()** (11 connections) — `client/src/utils/logoutHandler.ts`
-- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
-- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
-- **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
-- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
-- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
-- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
-- **AppSessionOutroViews.tsx** (5 connections) — `client/src/mythosApp/AppSessionOutroViews.tsx`
-- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
-- **secureTokenStorage.test.ts** (5 connections) — `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- **processLogoutHttpResponse()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **runLogoutServerPipeline()** (4 connections) — `client/src/utils/logoutHandler.ts`
-- **.generateToken()** (4 connections) — `client/src/utils/security.ts`
-- **csrfProtection.test.ts** (4 connections) — `client/src/utils/__tests__/csrfProtection.test.ts`
-- **security.test-utils.ts** (4 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- **asRecordUnknown()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **createLogoutHandler()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **logSuccessfulLogoutResponse()** (3 connections) — `client/src/utils/logoutHandler.ts`
-- **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
-- *... and 25 more nodes in this community*
+- **connection_delegates.py** (40 connections) — `server/realtime/connection_delegates.py`
+- **delegate_game_state_provider()** (12 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_personal_message_sender()** (11 connections) — `server/realtime/connection_delegates.py`
+- **delegate_health_monitor_sync()** (10 connections) — `server/realtime/connection_delegates.py`
+- **UUID** (10 connections)
+- **delegate_personal_message_sender_sync()** (9 connections) — `server/realtime/connection_delegates.py`
+- **delegate_room_event_handler()** (9 connections) — `server/realtime/connection_delegates.py`
+- **_async_callable()** (8 connections) — `server/realtime/connection_delegates.py`
+- **delegate_game_state_provider_sync()** (8 connections) — `server/realtime/connection_delegates.py`
+- **_WebsocketCleanupManager** (7 connections) — `server/realtime/connection_delegates.py`
+- **_close_dead_websocket_if_open()** (7 connections) — `server/realtime/connection_delegates.py`
+- **_remove_connection_from_player_list()** (5 connections) — `server/realtime/connection_delegates.py`
+- **_sync_callable()** (5 connections) — `server/realtime/connection_delegates.py`
+- **WebSocket** (5 connections)
+- **_websocket_client_connected()** (4 connections) — `server/realtime/connection_delegates.py`
+- **convert_room_players_uuids_to_names_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
+- **handle_player_left_room_impl()** (4 connections) — `server/realtime/connection_manager_methods.py`
+- **_is_benign_websocket_close_error()** (3 connections) — `server/realtime/connection_delegates.py`
+- **Delegation helpers for connection manager. This module provides helper…** (1 connections) — `server/realtime/connection_delegates.py`
+- **Drop connection_id from player_websockets; delete empty player entries.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Generic delegate for health monitor methods.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Generic delegate for synchronous health monitor methods.** (1 connections) — `server/realtime/connection_delegates.py`
+- **Generic delegate for game state provider methods. Args: game_state_provider:…** (1 connections) — `server/realtime/connection_delegates.py`
+- **Generic delegate for synchronous game state provider methods. Args:…** (1 connections) — `server/realtime/connection_delegates.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (14 shared connections)
-- [App.tsx](App.tsx.md) (7 shared connections)
-- [logger.ts](logger.ts.md) (5 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (5 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (4 shared connections)
-- [utils/config.ts](utils-config.ts.md) (4 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (4 shared connections)
-- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (4 shared connections)
-- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (3 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (2 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (33 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (16 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (9 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (5 shared connections)
+- [🚫 Anti-Patterns NOT Found (Good!)](🚫_Anti-Patterns_NOT_Found_Good!.md) (4 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (4 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (3 shared connections)
+- [P3 · realtime-connection + events-nats](P3_·_realtime-connection_+_events-nats.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/__tests__/App.logout.test.tsx`
-- `client/src/__tests__/LogoutFlow.integration.test.tsx`
-- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
-- `client/src/mythosApp/AppSessionOutroViews.tsx`
-- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
-- `client/src/mythosApp/motdContinueFlow.ts`
-- `client/src/mythosApp/useMythosSessionChrome.ts`
-- `client/src/utils/__tests__/csrfProtection.test.ts`
-- `client/src/utils/__tests__/inputSanitizer.test.ts`
-- `client/src/utils/__tests__/logoutHandler.test.ts`
-- `client/src/utils/__tests__/secureTokenStorage.test.ts`
-- `client/src/utils/__tests__/security.test-utils.ts`
-- `client/src/utils/logoutHandler.ts`
-- `client/src/utils/security.ts`
+- `server/realtime/connection_delegates.py`
+- `server/realtime/connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (99%)
+- EXTRACTED: 132 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,24 @@
 # test_delete_container_not_found
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test delete_container returns False when container not found.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **Chaosium graphify snapshot - Dead Light and Other Dark Turns** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- **dead-light-and-other-dark-turns/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
 
 ## Relationships
 
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

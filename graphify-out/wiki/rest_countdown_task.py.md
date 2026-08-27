@@ -1,40 +1,38 @@
 # rest_countdown_task.py
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **rest_countdown_task.py** (13 connections) — `server/commands/rest_countdown_task.py`
-- **create_rest_countdown_task()** (7 connections) — `server/commands/rest_countdown_task.py`
-- **_handle_countdown_loop()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **_send_countdown_message()** (6 connections) — `server/commands/rest_countdown_task.py`
-- **UUID** (6 connections)
-- **_disconnect_player_after_rest()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **_is_rest_interrupted()** (5 connections) — `server/commands/rest_countdown_task.py`
-- **Any** (5 connections)
-- **Task** (1 connections)
-- **Rest countdown task implementation. This module contains the async task that…** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Create and return a rest countdown task. Args: player_id: The player's ID…** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Check if rest countdown was interrupted. Args: player_id: Player UUID…** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Send countdown message to player. Args: player_id: Player UUID remaining:…** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Execute countdown loop, sending messages every second. Args: player_id: Player…** (1 connections) — `server/commands/rest_countdown_task.py`
-- **Disconnect player after rest countdown completes. Args: player_id: Player UUID…** (1 connections) — `server/commands/rest_countdown_task.py`
+- **generate_sql.mjs** (15 connections) — `scripts/static_data/generate_sql.mjs`
+- **main()** (7 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateRooms()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **v5()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateEmotes()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateHolidays()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateNpcSchedules()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **ql()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **readJson()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateZoneConfigs()** (4 connections) — `scripts/static_data/generate_sql.mjs`
+- **walk()** (3 connections) — `scripts/static_data/generate_sql.mjs`
+- **ensureDir()** (2 connections) — `scripts/static_data/generate_sql.mjs`
+- **ajv** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__dirname** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__filename** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **root** (1 connections) — `scripts/static_data/generate_sql.mjs`
 
 ## Relationships
 
-- [build_event](build_event.md) (4 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/rest_countdown_task.py`
+- `scripts/static_data/generate_sql.mjs`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,10 +1,11 @@
 # PLANNING.md Single Source of Truth
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **PLANNING.md Single Source of Truth** (0 connections) — `docs/archive/README.md`
+- **Vertical Rhythm Typography** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
+- **Typography Reference** (1 connections) — `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/README.md`
+- `.cursor/skills/frontend-design/reference/typography.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

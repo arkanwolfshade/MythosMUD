@@ -1,48 +1,60 @@
 # Complexity Checking Alignment: Ruff C901 vs Pylint
 
-> 31 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **Complexity Checking Alignment: Ruff C901 vs Pylint** (9 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Implementation Plan** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Recommended Strategy** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Current State Analysis** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Key Differences** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **LINTING_COMPLEXITY_ALIGNMENT.md** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **1. Use Ruff for Cyclomatic Complexity ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **2. Suppress Pylint Complexity Metrics ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **3. Align Inline Suppressions** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Conclusion** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Configuration** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Configuration** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example Comparison** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Executive Summary** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint R0911-R0915 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- *... and 6 more nodes in this community*
+- **map/config.ts** (14 connections) — `client/src/components/map/config.ts`
+- **ExitEdge.tsx** (14 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **RoomNode.tsx** (9 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **ReactFlowConfig.test.tsx** (9 connections) — `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- **IntersectionNode.tsx** (7 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **ExitEdge** (6 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdge.rendering.test.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- **ExitEdge.test-fixtures.tsx** (6 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **RoomNode** (5 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **RoomNode.test.tsx** (5 connections) — `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
+- **ExitEdge.edge-creation.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- **ExitEdge.interactions.test.tsx** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- **defaultExitEdgeProps** (4 connections) — `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- **IntersectionNode** (4 connections) — `client/src/components/map/nodes/IntersectionNode.tsx`
+- **IntersectionNode.test.tsx** (4 connections) — `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- **getEdgeStrokeStyle()** (3 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **getNodeClasses()** (3 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **edgeTypes** (3 connections) — `client/src/components/map/config.ts`
+- **nodeTypes** (3 connections) — `client/src/components/map/config.ts`
+- **RoomNodeProps** (2 connections) — `client/src/components/map/nodes/RoomNode.tsx`
+- **getEdgeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **getNodeTypes()** (2 connections) — `client/src/components/map/config.ts`
+- **ExitEdgeBody()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **ExitEdgeLabels()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- **exitFlags()** (2 connections) — `client/src/components/map/edges/ExitEdge.tsx`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_rescue_service.py](test_rescue_service.py.md) (14 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (3 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `client/src/components/map/__tests__/ReactFlowConfig.test.tsx`
+- `client/src/components/map/config.ts`
+- `client/src/components/map/edges/ExitEdge.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.edge-creation.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.interactions.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.rendering.test.tsx`
+- `client/src/components/map/edges/__tests__/ExitEdge.test-fixtures.tsx`
+- `client/src/components/map/nodes/IntersectionNode.tsx`
+- `client/src/components/map/nodes/RoomNode.tsx`
+- `client/src/components/map/nodes/__tests__/IntersectionNode.test.tsx`
+- `client/src/components/map/nodes/__tests__/RoomNode.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 75 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

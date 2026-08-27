@@ -1,11 +1,12 @@
 # Pulp Cthulhu (7th edition Call of Cthulhu).md
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Pulp Cthulhu (7th edition Call of Cthulhu).md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
+- **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
+- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
 
 ## Relationships
 
@@ -13,12 +14,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Pulp Cthulhu (7th edition Call of Cthulhu).md`
+- `e2e-tests/TESTING_APPROACH.md`
+- `e2e-tests/TROUBLESHOOTING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

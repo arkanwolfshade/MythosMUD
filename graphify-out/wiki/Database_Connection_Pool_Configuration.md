@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Database Connection Pool Configuration** (0 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **Agent Routing** (0 connections) — `.claude/rules/agent-routing.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/DATABASE_POOL_CONFIGURATION.md`
+- `.claude/rules/agent-routing.md`
 
 ## Audit Trail
 

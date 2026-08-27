@@ -1,24 +1,29 @@
 # test_derive_npc_name_from_id
 
-> 2 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **test_derive_npc_name_from_id()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **First underscore segment title-cased.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `scripts/generate_html_visualization_fixed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

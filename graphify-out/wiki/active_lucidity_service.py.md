@@ -1,53 +1,48 @@
 # active_lucidity_service.py
 
-> 24 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
-- **UnknownLucidityActionError** (11 connections) — `server/services/active_lucidity_service.py`
-- **UnknownEncounterCategoryError** (9 connections) — `server/services/active_lucidity_service.py`
-- **LucidityActionError** (6 connections) — `server/services/active_lucidity_service.py`
-- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
-- **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.get_action_cooldown()** (4 connections) — `server/services/active_lucidity_service.py`
-- **UUID** (4 connections)
-- **Any** (3 connections)
-- **EncounterProfile** (2 connections) — `server/services/active_lucidity_service.py`
-- **RecoveryActionProfile** (2 connections) — `server/services/active_lucidity_service.py`
-- **datetime** (2 connections)
-- **RuntimeError** (2 connections)
-- **AsyncSession** (1 connections)
-- **Active LCD adjustment helpers for encounters and recovery rituals.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Perform a recovery action and enforce cooldowns.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Fetch the cooldown record for a recovery action.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Base error for lucidity action operations.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Raised when an unrecognised recovery action is requested.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Raised when an encounter category is not recognised.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Damage profile for a Mythos encounter category.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Recovery action configuration.** (1 connections) — `server/services/active_lucidity_service.py`
-- **Apply LCD loss for a Mythos encounter.** (1 connections) — `server/services/active_lucidity_service.py`
+- **test_dependency_analysis.py** (22 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **DependencyAnalyzerTestApi** (10 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **DependencyRiskTestApi** (6 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **analyzer_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **risk_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_load_dependency_analyzer_script()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_analyze_npm_dependencies_parses_stdout_from_expected_outdated_exit_code()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_analyze_python_dependencies_parses_outdated_table_output()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_categorize_update_handles_semver_and_invalid_input()** (4 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_load_dependency_risk_script()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_npm_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_python_risk_uses_update_type_and_package_tiers()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_assess_risks_maps_breaking_change_counts_to_overall_risk()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_dep_info_from_npm_row_coerces_types_and_applies_defaults()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_determine_strategy_covers_incremental_batched_and_immediate_paths()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_parse_npm_outdated_json_handles_non_object_and_valid_payload()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **test_prioritize_updates_scores_and_sorts_descending()** (3 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_DependencyAnalyzerScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_DependencyRiskScriptInternals** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **_scripts_path_on_syspath()** (2 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **fixture** (2 connections)
+- **MonkeyPatch** (2 connections)
+- **Protocol** (2 connections)
+- **_FakeCompletedProcess** (1 connections) — `server/tests/unit/scripts/test_dependency_analysis.py`
+- **parametrize** (1 connections)
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (9 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (6 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (5 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [LucidityService](LucidityService.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [debrief_command.py](debrief_command.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/active_lucidity_service.py`
+- `server/tests/unit/scripts/test_dependency_analysis.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

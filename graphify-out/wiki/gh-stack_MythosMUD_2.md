@@ -1,28 +1,31 @@
 # gh-stack (MythosMUD)
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
-- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **applies_to** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
+- [2. Mythos Time Model Draft](2._Mythos_Time_Model_Draft.md) (2 shared connections)
+- [.auto_progression_enabled](auto_progression_enabled.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/gh-stack/SKILL.md`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

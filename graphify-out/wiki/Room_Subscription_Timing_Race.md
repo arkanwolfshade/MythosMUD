@@ -1,25 +1,25 @@
 # Room Subscription Timing Race
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Room Subscription Timing Race** (1 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- **Connection Message Not Broadcast** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- **.get_stats()** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Any** (1 connections)
+- **Get comprehensive performance statistics with calculated averages. Returns:…** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- `server/realtime/monitoring/performance_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

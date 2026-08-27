@@ -1,24 +1,26 @@
 # idle_movement_handler
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **fixture** (3 connections)
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create a mock event bus.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **Create an IdleMovementHandler instance.** (1 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **P4 · Intent Sweep — Plan Documents** (11 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Conforming — substantial features that check out** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Correction to a prior audit finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **CRITICAL · The guard that was supposed to prevent raw SQL was never connected** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **HIGH · ADR-009 number collision — code cites a decision that does not exist** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Meta-finding · plan status is unreliable in *both* directions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **PLAN CLAIMED COMPLETE, CODE ABSENT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **PLANNED BUT NOT BUILT** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
+- **Unverifiable — do not read as passing** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
 
 ## Relationships
 
-- [IdleMovementHandler](IdleMovementHandler.md) (4 shared connections)
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_idle_movement.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Plan-Docs.md`
 
 ## Audit Trail
 

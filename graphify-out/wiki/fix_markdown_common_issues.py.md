@@ -1,36 +1,39 @@
 # fix_markdown_common_issues.py
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **fix_markdown_file()** (7 connections) — `scripts/fix_markdown_common_issues.py`
-- **fix_markdown_common_issues.py** (7 connections) — `scripts/fix_markdown_common_issues.py`
-- **fix_first_line_heading()** (4 connections) — `scripts/fix_markdown_common_issues.py`
-- **fix_link_fragments()** (4 connections) — `scripts/fix_markdown_common_issues.py`
-- **main()** (4 connections) — `scripts/fix_markdown_common_issues.py`
-- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_common_issues.py`
-- **Path** (4 connections)
-- **fix_emphasis_as_heading()** (3 connections) — `scripts/fix_markdown_common_issues.py`
-- **generate_anchor()** (3 connections) — `scripts/fix_markdown_common_issues.py`
-- **Fix MD051: Fix invalid link fragments by generating proper anchors. Scans for…** (1 connections) — `scripts/fix_markdown_common_issues.py`
-- **Generate a markdown anchor from text.** (1 connections) — `scripts/fix_markdown_common_issues.py`
-- **Fix common markdown issues in a file. Returns: (changed, list of fixes applied)** (1 connections) — `scripts/fix_markdown_common_issues.py`
-- **Parse markdownlint output to get files with fixable issues.** (1 connections) — `scripts/fix_markdown_common_issues.py`
-- **Fix MD041: Add top-level heading if file doesn't start with one. Returns:…** (1 connections) — `scripts/fix_markdown_common_issues.py`
-- **Fix MD036: Convert bold/italic used as headings to proper headings. This is…** (1 connections) — `scripts/fix_markdown_common_issues.py`
+- **holiday.schema.json** (8 connections) — `schemas/calendar/holiday.schema.json`
+- **holiday** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **holidays** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **items** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **properties** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$id** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$ref** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **$schema** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **title** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_run_make_stages.py](test_run_make_stages.py.md) (1 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\A Cold Fire Within  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_A_Cold_Fire_Within__2026-08-11.md) (1 shared connections)
+- [jackson_linter.py](jackson_linter.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_markdown_common_issues.py`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

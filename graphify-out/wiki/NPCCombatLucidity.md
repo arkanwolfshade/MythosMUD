@@ -1,62 +1,54 @@
 # NPCCombatLucidity
 
-> 53 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **NPCCombatLucidity** (33 connections) — `server/services/npc_combat_lucidity.py`
-- **ActiveLucidityService** (23 connections) — `server/services/active_lucidity_service.py`
-- **TestNPCCombatLucidity** (17 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.apply_encounter_lucidity_effect()** (9 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_loss_with_fallback()** (8 connections) — `server/services/npc_combat_lucidity.py`
-- **_EncounterCtx** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._apply_disturbing_fallback()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **._commit_loss()** (7 connections) — `server/services/npc_combat_lucidity.py`
-- **Any** (6 connections)
-- **._archetype_from_definition()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **._resolve_lucidity_category()** (4 connections) — `server/services/npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_success()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_with_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_apply_encounter_lucidity_effect_without_npc_name()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_behavior_config_exception()** (4 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.get_lucidity_service()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_aggressive_mob()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_default()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_base_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_behavior_config()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_from_mythos_tier()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_get_base_stats_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_non_dict_stats()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- **.test_resolve_lucidity_category_none_npc()** (3 connections) — `server/tests/unit/services/test_npc_combat_lucidity.py`
-- *... and 28 more nodes in this community*
+- **test_inventory_display_helpers.py** (25 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **format_metadata()** (20 connections) — `server/commands/inventory_display_helpers.py`
+- **inventory_display_helpers.py** (13 connections) — `server/commands/inventory_display_helpers.py`
+- **render_inventory()** (12 connections) — `server/commands/inventory_display_helpers.py`
+- **build_container_metadata()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_equipped_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **build_inventory_lines()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **filter_non_equipped_inventory()** (8 connections) — `server/commands/inventory_display_helpers.py`
+- **Any** (7 connections)
+- **get_equipped_item_identifiers()** (6 connections) — `server/commands/inventory_display_helpers.py`
+- **test_inventory_commands_format_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_nested_dict()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- **test_format_metadata_complex()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_empty()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_none()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_format_metadata_simple()** (3 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **test_build_container_metadata_with_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_container_metadata_without_contents()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_equipped_lines_with_container_items()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_inventory_lines_empty()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_build_inventory_lines_with_item()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- **test_filter_equipped_by_item_id()** (2 connections) — `server/tests/unit/commands/test_inventory_display_helpers.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [active_lucidity_service.py](active_lucidity_service.py.md) (6 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [debrief_command.py](debrief_command.py.md) (2 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [LucidityService](LucidityService.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/active_lucidity_service.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lucidity.py`
-- `server/tests/unit/services/test_npc_combat_lucidity.py`
+- `server/commands/inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_format_helpers.py`
+- `server/tests/unit/commands/test_inventory_display_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 101 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,64 +1,51 @@
 # HealthStatus
 
-> 127 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **HealthStatus** (48 connections) — `server/models/health.py`
-- **test_health_service.py** (44 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_health.py** (29 connections) — `server/tests/unit/models/test_health.py`
-- **DatabaseComponent** (24 connections) — `server/models/health.py`
-- **ServerComponent** (23 connections) — `server/models/health.py`
-- **ConnectionsComponent** (22 connections) — `server/models/health.py`
-- **HealthComponents** (21 connections) — `server/models/health.py`
-- **health_service.py** (21 connections) — `server/services/health_service.py`
-- **HealthResponse** (17 connections) — `server/models/health.py`
-- **health.py** (15 connections) — `server/models/health.py`
-- **patch** (15 connections)
-- **get_health_status()** (13 connections) — `server/api/monitoring.py`
-- **HealthErrorResponse** (10 connections) — `server/models/health.py`
-- **get_health_service()** (9 connections) — `server/services/health_service.py`
-- **test_get_health_status_healthy_returns_model()** (9 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **test_health_response_creation()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_default_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_with_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_components_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_determine_overall_status_degraded()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_healthy()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_unhealthy()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_no_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_with_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- *... and 102 more nodes in this community*
+- **test_npc_admin_commands.py** (55 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **asyncio** (41 connections)
+- **validate_npc_admin_permission()** (9 connections) — `server/commands/npc_admin/router.py`
+- **test_handle_npc_behavior_command_exception()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_behavior_command_invalid_type()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_behavior_command_not_implemented()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_behavior_command_usage()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_no_args()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_no_permission()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_command_unknown_subcommand()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_invalid_type()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_no_args()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_no_database()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_create_command_success()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_delete_command_no_args()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_delete_command_success()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_despawn_command_no_args()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_despawn_command_success()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_edit_command_invalid_id()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_edit_command_success()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_list_command()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_list_command_with_definitions()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- **test_handle_npc_move_command_no_args()** (4 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [api/monitoring.py](api-monitoring.py.md) (23 shared connections)
-- [HealthService](HealthService.md) (12 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (2 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [health_service](health_service.md) (2 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_look_room.py](test_look_room.py.md) (51 shared connections)
+- [factory](factory.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring.py`
-- `server/models/health.py`
-- `server/services/health_service.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
-- `server/tests/unit/models/test_health.py`
-- `server/tests/unit/services/test_health_service.py`
+- `server/commands/npc_admin/router.py`
+- `server/tests/unit/commands/test_npc_admin_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 284 (86%)
-- INFERRED: 47 (14%)
+- EXTRACTED: 164 (90%)
+- INFERRED: 19 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

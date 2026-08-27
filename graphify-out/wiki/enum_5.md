@@ -1,27 +1,33 @@
 # enum
 
-> 5 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **enum** (5 connections) — `db/static/schemas/holidays.schema.json`
-- **autumn** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **spring** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **summer** (1 connections) — `db/static/schemas/holidays.schema.json`
-- **winter** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **test_utility_commands_whoami.py** (6 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **test_handle_whoami_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **asyncio** (3 connections)
+- **Unit tests for utility command handlers. Tests the whoami command functionality.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() returns player information.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **Test handle_whoami_command() handles player not found.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/holidays.schema.json`
+- `server/tests/unit/commands/test_utility_commands_whoami.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (80%)
+- INFERRED: 3 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

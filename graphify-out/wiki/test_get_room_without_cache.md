@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_room_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() falls back to persistence when cache unavailable.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **run_extended_idle_memory_monitor.ps1** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
+- **Write-MonitorLog()** (1 connections) — `scripts/run_extended_idle_memory_monitor.ps1`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `scripts/run_extended_idle_memory_monitor.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

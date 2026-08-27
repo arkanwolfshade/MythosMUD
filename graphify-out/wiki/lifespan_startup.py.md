@@ -1,62 +1,59 @@
 # lifespan_startup.py
 
-> 102 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **lifespan_startup.py** (68 connections) — `server/app/lifespan_startup.py`
-- **test_lifespan_startup.py** (43 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **asyncio** (18 connections)
-- **FastAPI** (16 connections)
-- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
-- **FastAPI** (15 connections)
-- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
-- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_npc_startup_spawning()** (10 connections) — `server/app/lifespan_startup.py`
-- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_mythos_time_consumer()** (9 connections) — `server/app/lifespan_startup.py`
-- **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
-- **_attach_combat_service()** (8 connections) — `server/app/lifespan_startup.py`
-- **_get_item_prototype_entries()** (7 connections) — `server/app/lifespan_startup.py`
-- **_validate_npc_services_prerequisites()** (7 connections) — `server/app/lifespan_startup.py`
-- **_get_item_prototype_count()** (6 connections) — `server/app/lifespan_startup.py`
-- **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
-- **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
-- **test_setup_connection_manager()** (6 connections) — `server/tests/unit/app/test_lifespan_startup.py`
-- **nats_is_connected()** (5 connections) — `server/app/lifespan_protocols.py`
-- **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
-- **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
-- *... and 77 more nodes in this community*
+- **test_container_persistence_extended_parse.py** (26 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **container_query_helpers_async.py** (25 connections) — `server/persistence/container_query_helpers_async.py`
+- **ContainerData** (24 connections) — `server/persistence/container_data.py`
+- **test_container_query_helpers_async.py** (18 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **ContainerDataCore** (14 connections) — `server/persistence/container_data.py`
+- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
+- **get_decayed_containers_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
+- **ContainerDataExtras** (13 connections) — `server/persistence/container_data.py`
+- **get_containers_by_entity_id_async()** (13 connections) — `server/persistence/container_query_helpers_async.py`
+- **persistence/container_data.py** (13 connections) — `server/persistence/container_data.py`
+- **get_containers_by_room_id_async()** (12 connections) — `server/persistence/container_query_helpers_async.py`
+- **asyncio** (7 connections)
+- **_parse_jsonb()** (6 connections) — `server/persistence/container_query_helpers_async.py`
+- **test_container_data_to_dict()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_to_dict_none_values()** (5 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_container_data_init()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- **test_get_containers_by_entity_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **test_get_containers_by_room_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **test_get_decayed_containers_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **AsyncSession** (4 connections)
+- **ContainerData** (4 connections)
+- **.__init__()** (3 connections) — `server/persistence/container_data.py`
+- **_sample_row()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (16 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (8 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (7 shared connections)
-- [lifespan.py](lifespan.py.md) (7 shared connections)
-- [CombatService](CombatService.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (4 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (4 shared connections)
-- [.__post_init__](__post_init__.md) (4 shared connections)
-- [test_npc_service.py](test_npc_service.py.md) (3 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (3 shared connections)
-- [.get_instance](get_instance.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (17 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (16 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (2 shared connections)
+- [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (2 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_protocols.py`
-- `server/app/lifespan_startup.py`
-- `server/services/npc_service/__init__.py`
-- `server/tests/unit/app/test_lifespan_startup.py`
+- `server/persistence/container_data.py`
+- `server/persistence/container_query_helpers_async.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_parse.py`
+- `server/tests/unit/persistence/test_container_query_helpers_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 296 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 184 (95%)
+- INFERRED: 10 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

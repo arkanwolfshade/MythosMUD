@@ -1,44 +1,44 @@
 # useRoomMapData.ts
 
-> 14 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **useRoomMapData.ts** (22 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- **isApiErrorWithDetail()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
-- **useRoomMapData.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- **fetchRoomListData()** (4 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **parseRoomListResponse()** (4 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **isRoomsListApiResponse()** (3 connections) — `client/src/utils/apiTypeGuards.ts`
-- **UseRoomMapDataOptions** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **buildRoomListRequest()** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **roomMapEditorTestSetup.tsx** (2 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
-- **FetchRoomListConfig** (1 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **buildUseMapEditingMockReturn()** (1 connections) — `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
-- **fetchSpy** (1 connections) — `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- **useRoomMapDataMock** (1 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
+- **get_room_environment()** (13 connections) — `server/world_loader.py`
+- **TestGetRoomEnvironment** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_default()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_empty_string_in_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_room_data()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_subzone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_from_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_room_takes_priority()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_subzone_takes_priority_over_zone()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_get_room_environment_zone_none()** (3 connections) — `server/tests/unit/test_world_loader.py`
+- **Any** (2 connections)
+- **Test get_room_environment() returns subzone environment when room doesn't have…** (2 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() treats empty string as no environment.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() returns room-specific environment.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() returns default 'outdoors' when no environment…** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() prioritizes room environment over subzone and zone.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() prioritizes subzone environment over zone.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() handles None subzone_config.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test get_room_environment() handles None zone_config.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Determine room environment using inheritance chain. Priority order: 1. Room-…** (1 connections) — `server/world_loader.py`
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (11 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (3 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
-- `client/src/components/map/hooks/__tests__/useRoomMapData.test.ts`
-- `client/src/components/map/hooks/useRoomMapData.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 34 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

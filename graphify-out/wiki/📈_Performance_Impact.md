@@ -1,24 +1,25 @@
 # 📈 Performance Impact
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **📈 Performance Impact** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **After Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Before Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Initialize aggressive mob NPC.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Setup aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [handle_command](handle_command.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

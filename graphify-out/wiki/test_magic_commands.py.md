@@ -1,61 +1,61 @@
 # test_magic_commands.py
 
-> 132 nodes
+> 65 nodes
 
 ## Key Concepts
 
-- **test_magic_commands.py** (50 connections) — `server/tests/unit/commands/test_magic_commands.py`
-- **MagicCommandHandler** (30 connections) — `server/commands/magic_commands.py`
-- **asyncio** (29 connections)
-- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
-- **Any** (19 connections)
-- **magic_service()** (14 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
-- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
-- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
-- **fixture** (7 connections)
-- **SpellCommandError** (6 connections) — `server/commands/magic_commands.py`
-- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
-- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
-- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
-- **._resolve_learn_context()** (5 connections) — `server/commands/magic_commands.py`
-- **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
-- **Enum** (5 connections)
-- **._announce_spell_cast()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_cast_success_message()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
-- **._build_spell_detail_lines()** (4 connections) — `server/commands/magic_commands.py`
-- *... and 107 more nodes in this community*
+- **test_lifespan_shutdown.py** (27 connections) — `server/tests/unit/app/test_lifespan_shutdown.py`
+- **lifespan_protocols.py** (26 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_shutdown.py** (22 connections) — `server/app/lifespan_shutdown.py`
+- **shutdown_services()** (14 connections) — `server/app/lifespan_shutdown.py`
+- **asyncio** (14 connections)
+- **_resolve_service()** (10 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_connection_manager()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (9 connections)
+- **lifespan_connection_manager()** (8 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_event_bus()** (8 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (8 connections)
+- **lifespan_event_bus()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_memory_monitor()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_nats_handler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_task_registry()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_tick_scheduler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_mythos_tick_scheduler()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_resolve_container_field()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_mythos_chronicle()** (6 connections) — `server/app/lifespan_shutdown.py`
+- **_container_attr()** (5 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_container()** (5 connections) — `server/app/lifespan_protocols.py`
+- **FastAPI** (5 connections)
+- **_legacy_container_attr()** (4 connections) — `server/app/lifespan_protocols.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (12 shared connections)
-- [magic_service.py](magic_service.py.md) (9 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (7 shared connections)
-- [command_service.py](command_service.py.md) (6 shared connections)
-- [PlayerPositionService](PlayerPositionService.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [SpellLearningService](SpellLearningService.md) (2 shared connections)
-- [ChatService](ChatService.md) (2 shared connections)
-- [TargetMatch](TargetMatch.md) (2 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [TestHelperFunctions](TestHelperFunctions.md) (3 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [PopulationStats](PopulationStats.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/magic_commands.py`
-- `server/tests/unit/commands/test_magic_commands.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_shutdown.py`
+- `server/tests/unit/app/test_lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 245 (90%)
-- INFERRED: 27 (10%)
+- EXTRACTED: 179 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

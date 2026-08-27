@@ -1,24 +1,27 @@
 # 2025_11_12_add_item_tables.py
 
-> 3 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **2025_11_12_add_item_tables.py** (3 connections) — `server/alembic/versions/2025_11_12_add_item_tables.py`
-- **downgrade()** (1 connections) — `server/alembic/versions/2025_11_12_add_item_tables.py`
-- **upgrade()** (1 connections) — `server/alembic/versions/2025_11_12_add_item_tables.py`
+- **Thinking about stack structure** (6 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Branch naming** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Dependency chain** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **One stack, one story** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **Staging changes deliberately** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **When to create a new branch** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [Extract Skill](Extract_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/alembic/versions/2025_11_12_add_item_tables.py`
+- `.agents/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,68 +1,51 @@
 # command_result_text
 
-> 124 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
-- **inventory_drop_command.py** (25 connections) — `server/commands/inventory_drop_command.py`
-- **test_inventory_put_command.py** (25 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
-- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
-- **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
-- **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
-- **test_inventory_commands_pickup.py** (18 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **handle_pickup_command()** (17 connections) — `server/commands/inventory_pickup_command.py`
-- **RoomDropManager** (16 connections) — `server/commands/inventory_command_contracts.py`
-- **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
-- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
-- **asyncio** (14 connections)
-- **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
-- **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
-- **_drop_resolve_stack_or_error()** (12 connections) — `server/commands/inventory_drop_command.py`
-- **asyncio** (12 connections)
-- **inventory_command_contracts.py** (11 connections) — `server/commands/inventory_command_contracts.py`
-- **_put_run_validated()** (10 connections) — `server/commands/inventory_put_command.py`
-- **inventory_commands_test_support.py** (10 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **test_handle_pickup_command()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_inventory_capacity_error()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **PutCommandRuntime** (7 connections) — `server/commands/inventory_put_command.py`
-- **PutValidatedWork** (7 connections) — `server/commands/inventory_put_command.py`
-- *... and 99 more nodes in this community*
+- **properties** (14 connections) — `schemas/unified_room_schema.json`
+- **schemas/unified_room_schema.json** (8 connections) — `schemas/unified_room_schema.json`
+- **description** (5 connections) — `schemas/unified_room_schema.json`
+- **name** (5 connections) — `schemas/unified_room_schema.json`
+- **plane** (4 connections) — `schemas/unified_room_schema.json`
+- **rest_location** (4 connections) — `schemas/unified_room_schema.json`
+- **sub_zone** (4 connections) — `schemas/unified_room_schema.json`
+- **zone** (4 connections) — `schemas/unified_room_schema.json`
+- **id** (3 connections) — `schemas/unified_room_schema.json`
+- **field1** (2 connections) — `schemas/unified_room_schema.json`
+- **field2** (2 connections) — `schemas/unified_room_schema.json`
+- **field3** (2 connections) — `schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `schemas/unified_room_schema.json`
+- **allOf** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (31 shared connections)
-- [pytest.md](pytest.md.md) (20 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (19 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (18 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (9 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [coerce_int](coerce_int.md) (4 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (4 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (2 shared connections)
+- [retry.py](retry.py.md) (1 shared connections)
+- [PostgreSQL & SQL Audit Report](PostgreSQL_&_SQL_Audit_Report.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
+- [Migration 019: Ready for Deployment](Migration_019-_Ready_for_Deployment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_contracts.py`
-- `server/commands/inventory_command_helpers.py`
-- `server/commands/inventory_commands.py`
-- `server/commands/inventory_drop_command.py`
-- `server/commands/inventory_pickup_command.py`
-- `server/commands/inventory_put_command.py`
-- `server/tests/unit/commands/inventory_commands_test_support.py`
-- `server/tests/unit/commands/test_inventory_commands.py`
-- `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- `server/tests/unit/commands/test_inventory_put_command.py`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 358 (87%)
-- INFERRED: 54 (13%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

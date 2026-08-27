@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **cursor-cli-agent.ps1** (0 connections) — `scripts/cursor-cli-agent.ps1`
+- **Client Layout Baseline** (0 connections) — `docs/CLIENT_LAYOUT_BASELINE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/cursor-cli-agent.ps1`
+- `docs/CLIENT_LAYOUT_BASELINE.md`
 
 ## Audit Trail
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_018_fix_players_name_constraint.ps1** (0 connections) — `scripts/apply_018_fix_players_name_constraint.ps1`
+- **Configuration Refactoring Complete** (0 connections) — `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_018_fix_players_name_constraint.ps1`
+- `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 

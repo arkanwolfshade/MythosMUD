@@ -1,26 +1,25 @@
 # test_publish_player_left_resolves_names_from_persistence
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_publish_player_left_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Same persistence name resolution path for player_left.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Chaosium graphify snapshot - Gateways to Terror** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- **gateways-to-terror/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_event_publisher.py](test_event_publisher.py.md) (1 shared connections)
-- [EventPublisher](EventPublisher.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

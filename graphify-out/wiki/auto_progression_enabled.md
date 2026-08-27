@@ -1,28 +1,34 @@
 # .auto_progression_enabled
 
-> 7 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **.auto_progression_enabled()** (4 connections) — `server/services/combat_service.py`
-- **.turn_interval_seconds()** (4 connections) — `server/services/combat_service.py`
-- **setter** (2 connections)
-- **Return whether auto-progression is enabled.** (1 connections) — `server/services/combat_service.py`
-- **Enable or disable combat auto-progression.** (1 connections) — `server/services/combat_service.py`
-- **Return the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
-- **Set the turn interval in seconds.** (1 connections) — `server/services/combat_service.py`
+- **enum** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Friday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Monday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Saturday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Sunday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Thursday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Tuesday** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **Wednesday** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [CombatService](CombatService.md) (2 shared connections)
+- [gh-stack (MythosMUD)](gh-stack_MythosMUD.md) (1 shared connections)
+- [2. Mythos Time Model Draft](2._Mythos_Time_Model_Draft.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

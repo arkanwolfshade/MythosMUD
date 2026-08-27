@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Code Practice Rules Reference Doc** (0 connections) — `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- **Wiki Page Template** (0 connections) — `data/MythosMUD-Obsidian/_templates/wiki-page.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/code_practice_rules_reference_doc.plan.md`
+- `data/MythosMUD-Obsidian/_templates/wiki-page.md`
 
 ## Audit Trail
 

@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_room_service_init_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test RoomService initialization with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `scripts/psscriptanalyzer.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

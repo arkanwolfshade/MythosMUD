@@ -1,35 +1,35 @@
 # Critical Issues
 
-> 13 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Critical Issues** (6 connections) — `docs/archive/anyio_code_review.md`
-- **5. Special Cases Requiring Attention** (5 connections) — `docs/archive/anyio_code_review.md`
-- **1. Entry Point Anti-Pattern: `asyncio.run()` Usage** (3 connections) — `docs/archive/anyio_code_review.md`
-- **3. Task Management Anti-Patterns** (3 connections) — `docs/archive/anyio_code_review.md`
-- **3.1 `asyncio.create_task()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
-- **3.2 `asyncio.gather()` Usage** (1 connections) — `docs/archive/anyio_code_review.md`
-- **4. Missing Explicit Dependency** (1 connections) — `docs/archive/anyio_code_review.md`
-- **5.1 Uvicorn Integration** (1 connections) — `docs/archive/anyio_code_review.md`
-- **5.2 Test Files** (1 connections) — `docs/archive/anyio_code_review.md`
-- **5.3 Event Bus Queue Migration** (1 connections) — `docs/archive/anyio_code_review.md`
-- **5.4 Tracked Task Manager** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Root Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Server Scripts** (1 connections) — `docs/archive/anyio_code_review.md`
+- **analyze_log_file()** (8 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **analyze_logs.py** (6 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **generate_report()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **main()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **parse_log_line()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **categorize_error()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **categorize_warning()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Any** (3 connections)
+- **Path** (2 connections)
+- **Generate a formatted report from log analysis.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Parse a log line into structured data. Expected format: YYYY-MM-DD HH:MM:SS -…** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Categorize an error message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Categorize a warning message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Analyze a log file and return statistics.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
 
 ## Relationships
 
-- [AnyIO Code Review - Anti-Patterns and Issues](AnyIO_Code_Review_-_Anti-Patterns_and_Issues.md) (1 shared connections)
-- [2. Primitive Anti-Patterns: Direct `asyncio` Primitive Usage](2._Primitive_Anti-Patterns-_Direct_`asyncio`_Primitive_Usage.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_code_review.md`
+- `e2e-tests/load-tests/analyze_logs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,31 @@
 # ADR-020: WebSocket Authentication and CSRF
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **ADR-020: WebSocket Authentication and CSRF** (7 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **ADR-020-websocket-authentication-and-csrf.md** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
+- **Design ↔ Implementation Drift Audit — Final Summary** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Working the backlog** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Decisions made — do not re-litigate** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Do first — small, high value** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Loose ends outside the tracker** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Sequencing that matters** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **User-visible defects** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **Weight the evidence correctly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **What the audit concluded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
+- **What was not examined — see #639** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

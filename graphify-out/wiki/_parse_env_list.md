@@ -1,40 +1,42 @@
 # _parse_env_list
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **_parse_env_list()** (12 connections) — `server/config/models/_helpers.py`
-- **_parse_list_from_string()** (4 connections) — `server/config/models/_helpers.py`
-- **test_parse_env_list_csv()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_empty_string()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_json()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_none()** (3 connections) — `server/tests/unit/config/test_config_models.py`
-- **test_parse_env_list_empty_and_none()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_parse_list_from_string_json_and_csv()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **Parse non-empty string as JSON list or CSV. Used by _parse_env_list.** (1 connections) — `server/config/models/_helpers.py`
-- **Parse a string from the environment as JSON list or CSV.** (1 connections) — `server/config/models/_helpers.py`
-- **Test parsing None as env list.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test parsing empty string as env list.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test parsing JSON list.** (1 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test parsing CSV list.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **connection_websocket_close.py** (9 connections) — `server/realtime/connection_websocket_close.py`
+- **safe_close_websocket_impl()** (8 connections) — `server/realtime/connection_websocket_close.py`
+- **_CloseableWebSocketManager** (5 connections) — `server/realtime/connection_websocket_close.py`
+- **is_websocket_open_impl()** (5 connections) — `server/realtime/connection_websocket_close.py`
+- **test_safe_close_websocket_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **.is_websocket_closed()** (2 connections) — `server/realtime/connection_websocket_close.py`
+- **.mark_websocket_closed()** (2 connections) — `server/realtime/connection_websocket_close.py`
+- **test_is_websocket_open_impl()** (2 connections) — `server/tests/unit/realtime/test_connection_manager_methods.py`
+- **WebSocket** (2 connections)
+- **Protocol** (1 connections)
+- **Safe WebSocket close helpers for connection management. Leaf module: no imports…** (1 connections) — `server/realtime/connection_websocket_close.py`
+- **Return True if this WebSocket id was already marked closed.** (1 connections) — `server/realtime/connection_websocket_close.py`
+- **Record that this WebSocket id has been closed.** (1 connections) — `server/realtime/connection_websocket_close.py`
+- **Check if a WebSocket is open.** (1 connections) — `server/realtime/connection_websocket_close.py`
+- **Safely close a WebSocket connection.** (1 connections) — `server/realtime/connection_websocket_close.py`
 
 ## Relationships
 
-- [test_config_models.py](test_config_models.py.md) (6 shared connections)
-- [test_config_model_helpers.py](test_config_model_helpers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (1 shared connections)
+- [test_message_handler_factory.py](test_message_handler_factory.py.md) (3 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [FeatureFlagService](FeatureFlagService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/tests/unit/config/test_config_model_helpers.py`
-- `server/tests/unit/config/test_config_models.py`
+- `server/realtime/connection_websocket_close.py`
+- `server/tests/unit/realtime/test_connection_manager_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

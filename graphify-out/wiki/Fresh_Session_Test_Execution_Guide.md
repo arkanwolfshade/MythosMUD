@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Fresh Session Test Execution Guide** (0 connections) — `docs/FRESH_SESSION_TESTS.md`
+- **SQLAlchemy 2.x Best Practices** (0 connections) — `.claude/rules/sqlalchemy.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/FRESH_SESSION_TESTS.md`
+- `.claude/rules/sqlalchemy.md`
 
 ## Audit Trail
 

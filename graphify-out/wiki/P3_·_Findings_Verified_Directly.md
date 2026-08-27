@@ -1,27 +1,30 @@
 # P3 · Findings Verified Directly
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **P3 · Findings Verified Directly** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
-- **F-D3 · Inbound links to archived documents — DEVIATED (7 instances, one root cause)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
-- **F-D5 · The DI system's architecture doc is archived, not live — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
-- **F-D6 · `docs/DEVELOPMENT_AI.md` is not valid text — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
-- **F-V1 · Sync PersistenceLayer removal — CONFORMS (reverses a P0 row)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
-- **F-V2 · sqlite3 imports survive in migration scripts — STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **fix_room_references()** (6 connections) — `scripts/fix_room_references.py`
+- **load_room_file()** (4 connections) — `scripts/fix_room_references.py`
+- **save_room_file()** (4 connections) — `scripts/fix_room_references.py`
+- **fix_room_references.py** (4 connections) — `scripts/fix_room_references.py`
+- **Path** (3 connections)
+- **main()** (2 connections) — `scripts/fix_room_references.py`
+- **Load a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Save a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Fix room ID references in the northside area. Args: base_path: Path to the…** (1 connections) — `scripts/fix_room_references.py`
 
 ## Relationships
 
-- [INDEX.md](INDEX.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- `scripts/fix_room_references.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,27 +1,32 @@
 # Risk Assessment and Mitigation
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Risk Assessment and Mitigation** (5 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Automatic Rollback If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Review and Reconsider If** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Risks by Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Rollback Triggers** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Multi-Word Spell Name Parsing Failure** (3 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- **Spell Slash Commands Missing From Validation** (2 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- **Missing async_heal_player Method** (2 connections) — `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
+- **Heal Spell SQLAlchemy Session Boundary Error** (2 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
+- **Missing cast spell spells Pydantic Models** (1 connections) — `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- **create_cast_command First-Word-Only Parse** (1 connections) — `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- **record_spell_cast Cross-Session Object Use** (1 connections) — `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `investigations/sessions/2025-12-14_session-001_spell-commands-failure.md`
+- `investigations/sessions/2025-12-14_session-002_spell-cast-failure.md`
+- `investigations/sessions/2025-12-14_session-003_minor-heal-casting-delay.md`
+- `investigations/sessions/2025-12-14_session-004_heal-spell-casting-failure.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (50%)
+- INFERRED: 3 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

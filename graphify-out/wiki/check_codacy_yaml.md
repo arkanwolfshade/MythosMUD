@@ -1,26 +1,27 @@
 # check_codacy_yaml
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **check_codacy_yaml()** (3 connections) — `scripts/check_codacy_yaml.py`
-- **_content_is_valid()** (3 connections) — `scripts/check_codacy_yaml.py`
-- **check_codacy_yaml.py** (2 connections) — `scripts/check_codacy_yaml.py`
-- **Return (valid, list of reasons if invalid).** (1 connections) — `scripts/check_codacy_yaml.py`
-- **Warn if .codacy/codacy.yaml is missing or invalid; never fail the commit.** (1 connections) — `scripts/check_codacy_yaml.py`
+- **P3 · Findings Verified Directly** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D3 · Inbound links to archived documents — DEVIATED (7 instances, one root cause)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D5 · The DI system's architecture doc is archived, not live — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D6 · `docs/DEVELOPMENT_AI.md` is not valid text — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V1 · Sync PersistenceLayer removal — CONFORMS (reverses a P0 row)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V2 · sqlite3 imports survive in migration scripts — STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_codacy_yaml.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,78 +1,65 @@
 # EldritchIcon.tsx
 
-> 101 nodes
+> 175 nodes
 
 ## Key Concepts
 
-- **EldritchIcon.tsx** (41 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **MythosIcons** (37 connections) — `client/src/components/ui/MythosIcons.ts`
-- **EldritchIcon()** (34 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **TerminalButton.tsx** (25 connections) — `client/src/components/ui/TerminalButton.tsx`
-- **TerminalButton** (24 connections) — `client/src/components/ui/TerminalButton.tsx`
-- **DraggablePanelTest.tsx** (21 connections) — `client/src/components/DraggablePanelTest.tsx`
-- **EldritchEffectsDemo.tsx** (19 connections) — `client/src/components/EldritchEffectsDemo.tsx`
-- **FeedbackForm.tsx** (19 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **GameInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **ChatPanelTest.tsx** (15 connections) — `client/src/components/ChatPanelTest.tsx`
-- **TailwindTest.tsx** (14 connections) — `client/src/components/TailwindTest.tsx`
-- **CommandInputPanel.tsx** (13 connections) — `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
-- **PanelLayoutHandlers** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
-- **TerminalInput.tsx** (11 connections) — `client/src/components/ui/TerminalInput.tsx`
-- **MinimizedPanelRnd.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
-- **TerminalInput** (10 connections) — `client/src/components/ui/TerminalInput.tsx`
-- **ExpandedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
-- **MinimizedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
-- **eldritchEffectsDemoData.ts** (9 connections) — `client/src/components/eldritchEffectsDemoData.ts`
-- **ChatHeader.tsx** (9 connections) — `client/src/components/panels/chat/ChatHeader.tsx`
-- **CommandHistoryPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
-- **ExpandedPanelBody.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
-- **ChatHistoryToggle.tsx** (8 connections) — `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- **ChatStatistics.tsx** (8 connections) — `client/src/components/panels/chat/ChatStatistics.tsx`
-- **GameInfoPanel()** (5 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- *... and 76 more nodes in this community*
+- **RoomService** (96 connections) — `server/game/room_service.py`
+- **rooms.py** (54 connections) — `server/api/rooms.py`
+- **test_rooms_write_api.py** (42 connections) — `server/tests/unit/api/test_rooms_write_api.py`
+- **test_rooms_api.py** (23 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **create_room_exit()** (19 connections) — `server/api/rooms.py`
+- **update_room()** (18 connections) — `server/api/rooms.py`
+- **update_room_exit()** (18 connections) — `server/api/rooms.py`
+- **asyncio** (17 connections)
+- **delete_room_exit()** (16 connections) — `server/api/rooms.py`
+- **update_room_position()** (15 connections) — `server/api/rooms.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
+- **_admin_user()** (13 connections) — `server/tests/unit/api/test_rooms_write_api.py`
+- **_bypass_admin_auth()** (13 connections) — `server/tests/unit/api/test_rooms_write_api.py`
+- **Any** (13 connections)
+- **test_rooms_exploration_filter.py** (13 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **list_rooms()** (12 connections) — `server/api/rooms.py`
+- **AsyncSession** (12 connections)
+- **RoomUpdateRequest** (11 connections) — `server/schemas/rooms/room_write.py`
+- **_validate_admin_room_action()** (11 connections) — `server/api/rooms.py`
+- **ExitCreateRequest** (10 connections) — `server/schemas/rooms/room_write.py`
+- **_invalidate_room_cache()** (10 connections) — `server/api/rooms.py`
+- **Request** (10 connections)
+- **rooms/__init__.py** (10 connections) — `server/schemas/rooms/__init__.py`
+- **_apply_room_exit_to_memory()** (9 connections) — `server/api/rooms.py`
+- **get_room()** (9 connections) — `server/api/rooms.py`
+- *... and 150 more nodes in this community*
 
 ## Relationships
 
-- [ui-v2/types.ts](ui-v2-types.ts.md) (22 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (18 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (14 shared connections)
-- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (14 shared connections)
-- [MythosPanel.tsx](MythosPanel.tsx.md) (12 shared connections)
-- [gameStore.ts](gameStore.ts.md) (10 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (10 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (9 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (8 shared connections)
-- [DraggablePanelView.tsx](DraggablePanelView.tsx.md) (5 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (3 shared connections)
-- [logger.ts](logger.ts.md) (3 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (23 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (22 shared connections)
+- [maps.py](maps.py.md) (8 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (5 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (5 shared connections)
+- [ContainerComponent](ContainerComponent.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [**~25-30% provide CRITICAL coverage**](__~25-30__provide_CRITICAL_coverage__.md) (2 shared connections)
+- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ChatPanelTest.test.tsx`
-- `client/src/components/ChatPanelTest.tsx`
-- `client/src/components/DraggablePanelTest.test.tsx`
-- `client/src/components/DraggablePanelTest.tsx`
-- `client/src/components/EldritchEffectsDemo.test.tsx`
-- `client/src/components/EldritchEffectsDemo.tsx`
-- `client/src/components/TailwindTest.test.tsx`
-- `client/src/components/TailwindTest.tsx`
-- `client/src/components/eldritchEffectsDemoData.ts`
-- `client/src/components/panels/chat/ChatHeader.tsx`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chat/ChatStatistics.tsx`
-- `client/src/components/panels/chat/__tests__/ChatHeader.test.tsx`
-- `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
-- `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
-- `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
-- `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
-- `client/src/components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx`
-- `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
-- `client/src/components/ui-v2/panels/CommandHistoryPanel.tsx`
+- `server/api/rooms.py`
+- `server/game/room_service.py`
+- `server/schemas/rooms/__init__.py`
+- `server/schemas/rooms/room_write.py`
+- `server/tests/unit/api/test_rooms_api.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
+- `server/tests/unit/api/test_rooms_write_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 337 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 463 (89%)
+- INFERRED: 56 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

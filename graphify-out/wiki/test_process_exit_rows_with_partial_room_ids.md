@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_with_partial_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with stable_ids that need room ID generation.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_database_config_validate_pool_config_invalid()** (2 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig pool config validation with invalid value.** (1 connections) — `server/tests/unit/config/test_config_models.py`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- [click Best Practices](click_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 

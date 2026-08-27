@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **README.md** (1 connections) — `README.md`
-- **TESTING.md** (1 connections) — `TESTING.md`
+- **Item Prototype and Instance Split** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
+- **Item System Blueprint** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `README.md`
-- `TESTING.md`
+- `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,32 @@
 # main
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/simple_room_graph.py`
-- **simple_room_graph.py** (5 connections) — `scripts/simple_room_graph.py`
-- **generate_simple_dot_file()** (3 connections) — `scripts/simple_room_graph.py`
-- **generate_simple_html_visualization()** (3 connections) — `scripts/simple_room_graph.py`
-- **load_room_data()** (3 connections) — `scripts/simple_room_graph.py`
-- **print_simple_statistics()** (3 connections) — `scripts/simple_room_graph.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/simple_room_graph.py`
-- **Print simplified statistics about the room data.** (1 connections) — `scripts/simple_room_graph.py`
-- **Main function to generate the simplified visualization.** (1 connections) — `scripts/simple_room_graph.py`
-- **Generate a simplified DOT file focusing only on room nodes.** (1 connections) — `scripts/simple_room_graph.py`
-- **Generate a simplified HTML visualization.** (1 connections) — `scripts/simple_room_graph.py`
+- **player_event_handler_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Create a PlayerEventHandlerUtils instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Responsive Design](Responsive_Design.md) (4 shared connections)
+- [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/simple_room_graph.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

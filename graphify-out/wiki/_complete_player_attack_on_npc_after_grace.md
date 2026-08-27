@@ -1,28 +1,33 @@
 # ._complete_player_attack_on_npc_after_grace
 
-> 4 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **._complete_player_attack_on_npc_after_grace()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **.handle_player_attack_on_npc()** (4 connections) — `server/services/npc_combat_integration_service.py`
-- **Player attack path after login grace check passes.** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Handle a player attacking an NPC using auto-progression combat system. Args:…** (1 connections) — `server/services/npc_combat_integration_service.py`
+- **validator.py CLI** (5 connections) — `tools/room_toolkit/room_validator/README.md`
+- **Path Validator Test Failures** (3 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **core/path_validator.py** (2 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/reporter.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/room_loader.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **core/schema_validator.py** (1 connections) — `tools/room_toolkit/room_validator/README.md`
+- **click CLI dependency** (1 connections) — `tools/room_toolkit/room_validator/requirements.txt`
+- **Graph Building Issues** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- **Room Validator Test Suite** (1 connections) — `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (1 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
+- `tools/room_toolkit/room_validator/README.md`
+- `tools/room_toolkit/room_validator/TEST_SUMMARY.md`
+- `tools/room_toolkit/room_validator/requirements.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

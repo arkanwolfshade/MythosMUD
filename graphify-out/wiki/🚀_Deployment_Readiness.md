@@ -1,25 +1,26 @@
 # 🚀 Deployment Readiness
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **🚀 Deployment Readiness** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Critical Blockers - RESOLVED** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Phase 2 Recommendation** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Production Ready Status** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
+- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
+- **.__init__()** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **WebSocket rate limiter with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
+- **Check if client is within rate limit with enhanced logging.** (1 connections) — `docs/examples/logging/websocket_integration.py`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/examples/logging/websocket_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,50 +1,41 @@
 # test_player_event_handlers_room.py
 
-> 71 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_room.py** (38 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **asyncio** (33 connections)
-- **test_handle_player_entered_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_handle_player_entered_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_no_player_info()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_no_room_id()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_process_player_entered_event_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_broadcast_player_entered_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_broadcast_player_entered_message_no_room_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_build_room_occupants_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_joined()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_left()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_log_player_movement_no_room()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_prepare_room_data_with_to_dict()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_prepare_room_data_without_to_dict()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_query_room_occupants_snapshot()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_occupants_snapshot_to_player_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_occupants_snapshot_to_player_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_occupants_snapshot_to_player_string_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_occupants_snapshot_to_player_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- **test_send_room_name_message()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_room.py`
-- *... and 46 more nodes in this community*
+- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **ABC** (2 connections)
+- **Channel Broadcasting Strategies for NATS Message Handler. This module…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Register a new strategy for a channel type. Args: channel_type: Channel type to…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (8 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (6 shared connections)
+- [required](required.md) (6 shared connections)
+- [_make_mock_row](_make_mock_row.md) (4 shared connections)
+- [NPC Combat Start Race Condition](NPC_Combat_Start_Race_Condition.md) (3 shared connections)
+- [WebSocket-Only Migration](WebSocket-Only_Migration.md) (3 shared connections)
+- [Round-Based Combat](Round-Based_Combat.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_room.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (94%)
-- INFERRED: 7 (6%)
+- EXTRACTED: 40 (93%)
+- INFERRED: 3 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

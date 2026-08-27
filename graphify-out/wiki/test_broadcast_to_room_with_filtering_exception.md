@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_broadcast_to_room_with_filtering_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _broadcast_to_room_with_filtering handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **domain/events/__init__.py** (1 connections) — `server/domain/events/__init__.py`
+- **Domain events for MythosMUD. Domain events represent significant state changes…** (1 connections) — `server/domain/events/__init__.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/domain/events/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

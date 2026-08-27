@@ -1,55 +1,58 @@
 # test_message_handlers.py
 
-> 49 nodes
+> 79 nodes
 
 ## Key Concepts
 
-- **test_message_handlers.py** (26 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **asyncio** (16 connections)
-- **handle_follow_response_message()** (14 connections) — `server/realtime/message_handlers.py`
-- **handle_party_invite_response_message()** (13 connections) — `server/realtime/message_handlers.py`
-- **handle_command_message()** (11 connections) — `server/realtime/message_handlers.py`
-- **handle_chat_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_ping_message()** (10 connections) — `server/realtime/message_handlers.py`
-- **handle_client_error_report_message()** (8 connections) — `server/realtime/message_handlers.py`
-- **Any** (6 connections)
-- **WebSocket** (6 connections)
-- **test_handle_chat_message()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_chat_message_no_message()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_client_error_report_message()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_args()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_command_message_no_command()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_accept_success()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_decline()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_invalid_request_id()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_follow_response_no_container()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_accept()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_decline()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_invalid()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_party_invite_response_no_container()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- **test_handle_ping_message()** (4 connections) — `server/tests/unit/realtime/test_message_handlers.py`
-- *... and 24 more nodes in this community*
+- **catatonia_check.py** (25 connections) — `server/command_handler/catatonia_check.py`
+- **test_command_validation.py** (24 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **asyncio** (24 connections)
+- **TestCatatoniaChecks** (21 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **check_catatonia_block()** (14 connections) — `server/command_handler/catatonia_check.py`
+- **_is_catatonic()** (10 connections) — `server/command_handler/catatonia_check.py`
+- **_load_player_for_catatonia_check()** (10 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_database()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_check_catatonia_registry()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_query_lucidity_record()** (9 connections) — `server/command_handler/catatonia_check.py`
+- **_fetch_lucidity_record()** (8 connections) — `server/command_handler/catatonia_check.py`
+- **_registry_player_id_value()** (7 connections) — `server/command_handler/catatonia_check.py`
+- **UUID** (7 connections)
+- **TestCheckCastingState** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_PersistenceGetPlayerByName** (5 connections) — `server/command_handler/catatonia_check.py`
+- **_convert_player_id_to_uuid()** (4 connections) — `server/command_handler/catatonia_check.py`
+- **.test_check_catatonia_block_allowed_command()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_no_app_state()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_block_uses_string_registry_key_when_player_id_not_uuid_or_str()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_database_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_catatonia_registry_not_catatonic()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_fetch_lucidity_record()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_load_player_for_catatonia_check_from_cache()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- *... and 54 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [.get_instance](get_instance.md) (2 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (1 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
-- [send_game_event](send_game_event.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_connection_statistics.py](test_connection_statistics.py.md) (8 shared connections)
+- [run_flee_effect](run_flee_effect.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (6 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (5 shared connections)
+- [Second NPC Combat And Linkdead Findings](Second_NPC_Combat_And_Linkdead_Findings.md) (5 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
+- [Chat Panel](Chat_Panel.md) (2 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (2 shared connections)
+- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
+- [Call of Cthulhu Starter Set (source summary)](Call_of_Cthulhu_Starter_Set_source_summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handlers.py`
-- `server/tests/unit/realtime/test_message_handlers.py`
+- `server/command_handler/catatonia_check.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 117 (99%)
+- EXTRACTED: 181 (99%)
 - INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 

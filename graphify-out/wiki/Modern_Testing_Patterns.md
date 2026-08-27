@@ -1,27 +1,29 @@
 # Modern Testing Patterns
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Modern Testing Patterns** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 1: Container-Based Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 2: Mock Container for Unit Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 3: Parametrized Integration Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 4: Fixture Factories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Pattern 5: Async Test Context Managers** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Top Time Consumers (>10 seconds)** (8 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Argon2 Password Tests (1.4+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Auth & Security Tests (21+ seconds setup each)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Infrastructure Tests (3.5+ seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **NATS Message Handler Tests (2-3 seconds)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Performance Tests (still running despite slow marker)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **Rate Limiter Timing Tests (still running)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
+- **SSE Handler Tests (60 seconds total)** (1 connections) — `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [CRITICAL · WebSocket authentication bypass on `/ws`](CRITICAL_·_WebSocket_authentication_bypass_on_`-ws`.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `docs/archive/TEST_TIMING_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

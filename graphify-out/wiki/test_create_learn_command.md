@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_learn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_learn_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_list_room_drops()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test list_room_drops() returns defensive copy.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [server/main.py](server-main.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

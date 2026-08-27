@@ -1,70 +1,61 @@
 # NATSError
 
-> 254 nodes
+> 132 nodes
 
 ## Key Concepts
 
-- **NATSError** (70 connections) — `server/services/nats_exceptions.py`
-- **test_combat_event_publisher.py** (55 connections) — `server/tests/unit/services/test_combat_event_publisher.py`
-- **CombatEventPublisher** (34 connections) — `server/services/combat_event_publisher.py`
-- **NATSPublishError** (34 connections) — `server/services/nats_exceptions.py`
-- **PlayerDiedEvent** (31 connections) — `server/events/event_types.py`
-- **PlayerDPDecayEvent** (29 connections) — `server/events/event_types.py`
-- **combat_integration.py** (27 connections) — `server/npc/combat_integration.py`
-- **combat_event_publisher.py** (26 connections) — `server/services/combat_event_publisher.py`
-- **combat_death_handler.py** (25 connections) — `server/services/combat_death_handler.py`
-- **CombatDeathHandler** (22 connections) — `server/services/combat_death_handler.py`
-- **combat_events.py** (20 connections) — `server/events/combat_events.py`
-- **asyncio** (20 connections)
-- **combat_event_handler.py** (18 connections) — `server/services/combat_event_handler.py`
-- **._publish_combat_payload()** (17 connections) — `server/services/combat_event_publisher.py`
-- **CombatStartedEvent** (16 connections) — `server/events/combat_events.py`
-- **NPCDiedEvent** (16 connections) — `server/events/combat_events.py`
-- **NPCTookDamageEvent** (16 connections) — `server/events/combat_events.py`
-- **PlayerAttackedEvent** (16 connections) — `server/events/combat_events.py`
-- **combat_service_events.py** (16 connections) — `server/services/combat_service_events.py`
-- **CombatTargetSwitchEvent** (15 connections) — `server/events/combat_events.py`
-- **PlayerMortallyWoundedEvent** (15 connections) — `server/events/event_types.py`
-- **NATSConnectionError** (14 connections) — `server/services/nats_exceptions.py`
-- **test_nats_exceptions.py** (14 connections) — `server/tests/unit/services/test_nats_exceptions.py`
-- **CombatEndedEvent** (13 connections) — `server/events/combat_events.py`
-- **_CombatPublishJob** (13 connections) — `server/services/combat_event_publisher.py`
-- *... and 229 more nodes in this community*
+- **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
+- **test_target_resolution_service.py** (41 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetType** (39 connections) — `server/schemas/shared/target_resolution.py`
+- **asyncio** (21 connections)
+- **.resolve_target()** (9 connections) — `server/services/target_resolution_service.py`
+- **._gather_room_target_matches()** (8 connections) — `server/services/target_resolution_service.py`
+- **._search_npcs_in_room()** (8 connections) — `server/services/target_resolution_service.py`
+- **PersistenceProtocol** (7 connections) — `server/services/target_resolution_service.py`
+- **UUID** (7 connections)
+- **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
+- **._match_npcs_by_name()** (6 connections) — `server/services/target_resolution_service.py`
+- **._search_phantoms_in_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **._search_players_in_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
+- **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
+- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **.get_room_by_id()** (5 connections) — `server/services/target_resolution_service.py`
+- **._add_disambiguation_suffixes()** (5 connections) — `server/services/target_resolution_service.py`
+- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
+- **._fetch_players_in_room()** (5 connections) — `server/services/target_resolution_service.py`
+- **._load_npc_ids_with_room_fallback()** (5 connections) — `server/services/target_resolution_service.py`
+- **Player** (5 connections)
+- **.get_players_in_room()** (4 connections) — `server/services/target_resolution_service.py`
+- **._get_npc_instance()** (4 connections) — `server/services/target_resolution_service.py`
+- **._get_npcs_from_lifecycle_manager()** (4 connections) — `server/services/target_resolution_service.py`
+- *... and 107 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (56 shared connections)
-- [EventBus](EventBus.md) (22 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (18 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (14 shared connections)
-- [CombatEventHandler](CombatEventHandler.md) (12 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (10 shared connections)
-- [CombatInstance](CombatInstance.md) (10 shared connections)
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (9 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (9 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (9 shared connections)
-- [CombatParticipant](CombatParticipant.md) (9 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (14 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [TestErrorHandlers](TestErrorHandlers.md) (5 shared connections)
+- [Any](Any.md) (5 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (4 shared connections)
+- [migrate_rooms.py](migrate_rooms.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [SkillService](SkillService.md) (2 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/events/combat_events.py`
-- `server/events/event_types.py`
-- `server/npc/combat_integration.py`
-- `server/npc/combat_integration_protocols.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_event_handler.py`
-- `server/services/combat_event_publisher.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_events.py`
-- `server/services/nats_exceptions.py`
-- `server/tests/unit/services/test_combat_event_publisher.py`
-- `server/tests/unit/services/test_nats_exceptions.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 651 (86%)
-- INFERRED: 107 (14%)
+- EXTRACTED: 251 (91%)
+- INFERRED: 25 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

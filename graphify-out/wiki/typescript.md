@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **typescript** (2 connections) — `client/package.json`
-- **typescript** (1 connections) — `client/package.json`
+- **unit/monitoring/__init__.py** (1 connections) — `server/tests/unit/monitoring/__init__.py`
+- **Monitoring unit tests.** (1 connections) — `server/tests/unit/monitoring/__init__.py`
 
 ## Relationships
 
-- [devDependencies](devDependencies.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/package.json`
+- `server/tests/unit/monitoring/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

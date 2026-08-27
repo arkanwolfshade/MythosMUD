@@ -1,30 +1,33 @@
 # 🟡 HIGH PRIORITY ISSUES
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **🟡 HIGH PRIORITY ISSUES** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **10. Loading All Players Instead of Active Only** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **11. NATS Connection Pool Not Used by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **12. No TLS Configuration for NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **13. Event Loop Change Detection Edge Cases** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **14. Missing Transaction Rollback on Critical Failures** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **7. Missing Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **8. Incomplete Migration to Async Persistence** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **9. Multiple Database Flushes Before Commit** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **UUID** (6 connections)
+- **.player_entered()** (4 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.has_player()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **Add a player to the room without triggering an event. This method is used for…** (1 connections) — `server/models/room.py`
+- **Remove a player from the room without triggering an event. This method is used…** (1 connections) — `server/models/room.py`
+- **Remove a player from the room and trigger event. Args: player_id: The ID of the…** (1 connections) — `server/models/room.py`
+- **Check if a player is in the room. Args: player_id: The ID of the player to…** (1 connections) — `server/models/room.py`
+- **Add a player to the room and trigger event. Args: player_id: The ID of the…** (1 connections) — `server/models/room.py`
 
 ## Relationships
 
-- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
+- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/models/room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

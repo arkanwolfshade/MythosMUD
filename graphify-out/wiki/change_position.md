@@ -1,51 +1,53 @@
 # .change_position
 
-> 28 nodes
+> 68 nodes
 
 ## Key Concepts
 
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
-- **Player** (8 connections)
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
-- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
-- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- **.get_player_by_name()** (3 connections) — `server/services/player_position_service.py`
-- **TypedDict** (1 connections)
-- **Validate and normalize position.** (1 connections) — `server/services/player_position_service.py`
-- **Get player for position change. Returns: Tuple of (player, response_dict) if…** (1 connections) — `server/services/player_position_service.py`
-- **Copy player identity fields into the position-change response.** (1 connections) — `server/services/player_position_service.py`
-- **Load player stats, returning {} when loading fails.** (1 connections) — `server/services/player_position_service.py`
-- **Get current position from player stats.** (1 connections) — `server/services/player_position_service.py`
-- **Update player position in persistence.** (1 connections) — `server/services/player_position_service.py`
-- **Build the default unsuccessful position-change payload.** (1 connections) — `server/services/player_position_service.py`
-- **Mutate persistence and in-memory tracking to reflect the requested position.** (1 connections) — `server/services/player_position_service.py`
-- **Mirror posture changes into the live connection manager.** (1 connections) — `server/services/player_position_service.py`
-- **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
-- *... and 3 more nodes in this community*
+- **test_command_admin.py** (44 connections) — `server/tests/unit/models/test_command_admin.py`
+- **SummonCommand** (20 connections) — `server/models/command_admin.py`
+- **ShutdownCommand** (11 connections) — `server/models/command_admin.py`
+- **test_teleport_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_teleport_command_with_direction()** (4 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_player_name_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_goto_command_validate_player_name_calls_validator()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_subcommand_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_npc_command_with_subcommand()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_cancel()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_shutdown_command_with_multiple_args()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_max_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_prototype_id_min_length()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_default()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_valid_range()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_max()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- **test_summon_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_admin.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [PlayerPositionService](PlayerPositionService.md) (10 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (31 shared connections)
+- [TestCombatConfigurationService](TestCombatConfigurationService.md) (3 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (2 shared connections)
+- [sub_zone](sub_zone.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_position_service.py`
+- `server/models/command_admin.py`
+- `server/tests/unit/models/test_command_admin.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 121 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

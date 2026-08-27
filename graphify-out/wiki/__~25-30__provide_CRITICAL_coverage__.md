@@ -1,31 +1,35 @@
 # **~25-30% provide CRITICAL coverage**
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- ****~25-30% provide CRITICAL coverage**** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Next Steps** (4 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **TEST_AUDIT_EXECUTIVE_SUMMARY.md** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Specifically** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Immediate (This Week)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Medium-Term (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Quick Reference** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Short-Term (This Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **The other 70-75%** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **room_service()** (5 connections) — `server/tests/unit/game/test_room_service.py`
+- **fixture** (5 connections)
+- **room_service_with_cache()** (4 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **mock_room_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **sample_room_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a mock room cache service.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a RoomService instance with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Create a sample room dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (5 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (2 shared connections)
+- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 15 (83%)
+- INFERRED: 3 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

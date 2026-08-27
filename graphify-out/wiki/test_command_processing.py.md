@@ -1,57 +1,52 @@
 # test_command_processing.py
 
-> 31 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **test_command_processing.py** (16 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **process_command_with_validation()** (13 connections) — `server/command_handler/processing.py`
-- **_dispatch_parsed_command()** (8 connections) — `server/command_handler/processing.py`
-- **_handle_processing_error()** (7 connections) — `server/command_handler/processing.py`
-- **_log_security_sensitive_command()** (7 connections) — `server/command_handler/processing.py`
-- **_run_command_service_for_validated()** (7 connections) — `server/command_handler/processing.py`
-- **_handle_validation_error()** (6 connections) — `server/command_handler/processing.py`
-- **_parse_command_line_or_client_error()** (6 connections) — `server/command_handler/processing.py`
-- **asyncio** (5 connections)
-- **test_process_command_with_validation_validation_error()** (4 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **CommandExecutionRequest** (4 connections)
-- **test_dispatch_parsed_command_client_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_dispatch_parsed_command_success()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_handle_validation_error_security_sensitive()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_process_command_with_validation_generic_error()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_run_command_service_security_sensitive_audit()** (3 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_handle_processing_error()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_log_security_sensitive_command_no_session()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_no_validated()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_success()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **test_parse_command_line_or_client_error_with_message()** (2 connections) — `server/tests/unit/commands/test_command_processing.py`
-- **Exception** (1 connections)
-- **ValidationError** (1 connections)
-- **Validate ``command_line`` via Click/Pydantic, dispatch to handlers; result dict…** (1 connections) — `server/command_handler/processing.py`
-- **Log a security-sensitive command for auditing.** (1 connections) — `server/command_handler/processing.py`
-- *... and 6 more nodes in this community*
+- **MonitoringPanel.tsx** (19 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanel.test.tsx** (11 connections) — `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- **monitoringPanelTestFixtures.ts** (11 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **mockOkJsonResponse()** (5 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanel()** (4 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **ConnectionHealthStats()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatNumber()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatPercentage()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **useMonitoringPanel()** (3 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **setupDualConnectionsUrlFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupRoundRobinMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupSequentialMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **setupTimestampMonitoringFetch()** (3 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **DualConnectionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **formatTime()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **loadMonitoringSnapshot()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **PerformanceStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **SessionStats()** (2 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **EMPTY_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **SAMPLE_MONITORING_MOCKS** (2 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringData** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **MonitoringPanelProps** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- **FetchSpy** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringMocks** (1 connections) — `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
+- **MonitoringPanelShell()** (1 connections) — `client/src/components/panels/MonitoringPanel.tsx`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [.state](state.md) (1 shared connections)
-- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
-- [command_input.py](command_input.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (3 shared connections)
+- [NPCBase](NPCBase.md) (2 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/processing.py`
-- `server/tests/unit/commands/test_command_processing.py`
+- `client/src/components/panels/MonitoringPanel.tsx`
+- `client/src/components/panels/__tests__/MonitoringPanel.test.tsx`
+- `client/src/components/panels/__tests__/monitoringPanelTestFixtures.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 51 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

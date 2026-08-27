@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **GitHub Issues task tracking** (0 connections) — `TASKS.md`
+- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `TASKS.md`
+- `scripts/items/validate_prototypes.ps1`
 
 ## Audit Trail
 

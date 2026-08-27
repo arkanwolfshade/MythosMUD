@@ -1,13 +1,14 @@
 # MythosMUD Product Requirements
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **MythosMUD Product Requirements** (2 connections) — `docs/archive/PRD.md`
-- **Room-Based Combat** (2 connections) — `docs/archive/PRD.md`
-- **Aggro System** (1 connections) — `docs/archive/PRD.md`
-- **Lucidity System** (1 connections) — `docs/archive/PRD.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- **2025_11_25_remove_items_json_column.py** (2 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- **Remove items_json column from containers table.** (1 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
+- **Restore items_json column (data will be empty).** (1 connections) — `server/alembic/versions/2025_11_25_remove_items_json_column.py`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `docs/archive/PRD.md`
+- `server/alembic/versions/2025_11_25_remove_items_json_column.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

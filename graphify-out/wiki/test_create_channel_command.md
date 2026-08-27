@@ -1,23 +1,26 @@
 # test_create_channel_command
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_channel_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Common Conversion Patterns** (5 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 1: Simple Query** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 2: Batch Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 3: Health Operations** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Pattern 4: FastAPI Dependency Injection** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [ADR-012: python-statemachine for Backend Connection FSM](ADR-012-_python-statemachine_for_Backend_Connection_FSM.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

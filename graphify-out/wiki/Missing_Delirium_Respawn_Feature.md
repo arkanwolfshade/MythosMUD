@@ -1,23 +1,24 @@
 # Missing Delirium Respawn Feature
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Lucidity -10 Delirium Threshold** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
-- **Missing Delirium Respawn Feature** (1 connections) — `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- **test_is_player_disconnecting_false()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_is_player_disconnecting_true()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test is_player_disconnecting() returns True when player is disconnecting.** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Responsive Design](Responsive_Design.md) (2 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-001_delirium-respawn-bug.md`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

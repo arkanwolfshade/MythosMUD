@@ -1,35 +1,35 @@
 # SkillUseLog
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **SkillUseLog** (9 connections) — `server/models/skill_use_log.py`
-- **test_skill_use_log.py** (6 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_creation()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_repr()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **test_skill_use_log_table_name()** (3 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **.__repr__()** (1 connections) — `server/models/skill_use_log.py`
-- **Base** (1 connections)
-- **One recorded successful use of a skill by a character at a given level.…** (1 connections) — `server/models/skill_use_log.py`
-- **Unit tests for SkillUseLog ORM model.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog maps to the expected table.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
-- **SkillUseLog __repr__ includes key identifiers.** (1 connections) — `server/tests/unit/models/test_skill_use_log.py`
+- **main()** (7 connections) — `scripts/arkham_rooms_summary.py`
+- **arkham_rooms_summary.py** (6 connections) — `scripts/arkham_rooms_summary.py`
+- **analyze_connectivity()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **generate_dot_file()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **load_room_data()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_detailed_statistics()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_room_listing()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **Print a detailed listing of all rooms by subzone.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Generate a DOT file for visualization with Graphviz.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Main function to analyze the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Analyze the connectivity of the rooms.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Print detailed statistics about the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/models/skill_use_log.py`
-- `server/tests/unit/models/test_skill_use_log.py`
+- `scripts/arkham_rooms_summary.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

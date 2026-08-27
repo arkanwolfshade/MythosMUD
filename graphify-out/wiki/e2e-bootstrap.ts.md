@@ -1,58 +1,58 @@
 # e2e-bootstrap.ts
 
-> 34 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **e2e-bootstrap.ts** (21 connections) — `client/src/test/e2e-bootstrap.ts`
-- **collect-n-daisy-quest.spec.ts** (18 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **global-setup.ts** (17 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **loadE2eEnv()** (14 connections) — `client/src/test/e2e-bootstrap.ts`
-- **failBootstrap()** (11 connections) — `client/src/test/e2e-bootstrap.ts`
-- **globalSetup()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **verifyServerBootstrap()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **spawnOutputDetail()** (6 connections) — `client/src/test/e2e-bootstrap.ts`
-- **formatLoginFailure()** (5 connections) — `client/src/test/e2e-bootstrap.ts`
-- **runE2ePlayerRoomReset()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **runE2eSeed()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **verifyE2eUsersInDatabase()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **E2E_PROJECT_ROOT** (5 connections) — `client/src/test/e2e-bootstrap.ts`
-- **e2e-bootstrap.test.ts** (5 connections) — `client/src/test/e2e-bootstrap.test.ts`
-- **redactDatabaseUrl()** (4 connections) — `client/src/test/e2e-bootstrap.ts`
-- **runEnsureE2eDatabase()** (4 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **spawnMorgan()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **EASTERN_HALLWAY_LOOK_CUE** (4 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
-- **countProfessionsPayload()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
-- **parseE2eEnvContent()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
-- **verifyClientAccessible()** (3 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **appendBootstrapFailureLog()** (2 connections) — `client/src/test/e2e-bootstrap.ts`
-- **fetchResponseBodyText()** (2 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **assertMorganVisible()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **resetDaisyQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- *... and 9 more nodes in this community*
+- **test_connection_initialization.py** (18 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **Any** (8 connections)
+- **initialize_connection_state()** (7 connections) — `server/realtime/connection_initialization.py`
+- **initialize_messaging()** (7 connections) — `server/realtime/connection_initialization.py`
+- **initialize_connection_cleaner()** (6 connections) — `server/realtime/connection_initialization.py`
+- **initialize_error_handler()** (6 connections) — `server/realtime/connection_initialization.py`
+- **initialize_game_state_provider()** (6 connections) — `server/realtime/connection_initialization.py`
+- **initialize_health_monitor()** (6 connections) — `server/realtime/connection_initialization.py`
+- **initialize_room_event_handler()** (6 connections) — `server/realtime/connection_initialization.py`
+- **test_initialize_connection_cleaner()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_connection_state()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_core_components()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_error_handler()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_game_state_provider()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_health_monitor()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_messaging()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **test_initialize_room_event_handler()** (3 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- **Initialize the health monitor with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize the error handler with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize the connection cleaner with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize the game state provider with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize messaging components with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize the room event handler with required callbacks.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Initialize websocket, presence, session, and health-check state attributes.** (1 connections) — `server/realtime/connection_initialization.py`
+- **Unit tests for connection initialization. Tests the connection_initialization…** (1 connections) — `server/tests/unit/realtime/test_connection_initialization.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [executeCommand](executeCommand.md) (6 shared connections)
-- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (5 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (5 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (4 shared connections)
-- [waitForMessage](waitForMessage.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (11 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- [EmoteService](EmoteService.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (1 shared connections)
+- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
+- [PARALLEL EXECUTION RESULTS (2025-11-05)](PARALLEL_EXECUTION_RESULTS_2025-11-05.md) (1 shared connections)
+- [edgeModalLogic.ts](edgeModalLogic.ts.md) (1 shared connections)
+- [ConnectionErrorHandler](ConnectionErrorHandler.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `@playwright/test`
-- `client/src/test/e2e-bootstrap.test.ts`
-- `client/src/test/e2e-bootstrap.ts`
-- `client/tests/e2e/runtime/fixtures/test-data.ts`
-- `client/tests/e2e/runtime/global-setup.ts`
-- `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `server/realtime/connection_initialization.py`
+- `server/tests/unit/realtime/test_connection_initialization.py`
 
 ## Audit Trail
 
-- EXTRACTED: 100 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 63 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

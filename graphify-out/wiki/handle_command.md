@@ -1,50 +1,56 @@
 # handle_command
 
-> 32 nodes
+> 45 nodes
 
 ## Key Concepts
 
-- **handle_command()** (11 connections) — `server/command_handler_unified.py`
-- **CommandRequest** (8 connections) — `server/command_handler_unified.py`
-- **asyncio** (7 connections)
-- **TestProcessCommandUnified** (6 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestHandleCommand** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **TestLegacyFunctions** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_success()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_handle_command_unauthorized()** (5 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_legacy()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_blocked()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_normal_processing()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_rate_limited()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_process_command_unified_special_routing()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **.test_get_help_content_none()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **BaseModel** (1 connections)
-- **post** (1 connections)
-- **Request** (1 connections)
-- **Handle incoming HTTP command requests.** (1 connections) — `server/command_handler_unified.py`
-- **Request model for command processing.** (1 connections) — `server/command_handler_unified.py`
-- **Test process_command_unified processes normal commands.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command HTTP endpoint.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command raises HTTPException when not authenticated.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test handle_command successfully processes command.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- **Test legacy compatibility functions.** (1 connections) — `server/tests/unit/commands/test_command_handler_unified.py`
-- *... and 7 more nodes in this community*
+- **AggressiveMobNPC** (31 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_aggressive_mob_npc.py** (24 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **_make_aggro()** (13 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **.flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_flee()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._handle_patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.hunt_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **.patrol_territory()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_attack_via_create_task_with_running_loop()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_handles_no_current_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_false_when_no_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_sets_player_in_range_when_players_in_room()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_enrich_behavior_context_swallows_compute_errors()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_flee_error_returns_false()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_get_attack_damage_from_behavior_config()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_get_attack_damage_invalid_string_falls_back_to_one()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_hunt_target_avoids_duplicate_ids()** (3 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/aggressive_mob_npc.py`
+- **test_attack_target_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_attack_target_fallback_publishes_event()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_attack_via_combat_integration_none_when_missing()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_attack_via_dropped_without_loop_or_bus()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_attack_via_event_bus_without_running_loop()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- **test_compute_player_context_without_service()** (2 connections) — `server/tests/unit/npc/test_aggressive_mob_npc.py`
+- *... and 20 more nodes in this community*
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (16 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [worktree-plan-template.md](worktree-plan-template.md.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [NPC Occupants Verification Summary](NPC_Occupants_Verification_Summary.md) (3 shared connections)
+- [📈 Performance Impact](📈_Performance_Impact.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [Invite](Invite.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler_unified.py`
-- `server/tests/unit/commands/test_command_handler_unified.py`
+- `server/npc/aggressive_mob_npc.py`
+- `server/tests/unit/npc/test_aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 82 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

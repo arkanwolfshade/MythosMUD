@@ -1,55 +1,50 @@
 # test_admin_setlucidity_command.py
 
-> 73 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **test_admin_setlucidity_command.py** (45 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **admin_setlucidity_command.py** (31 connections) — `server/commands/admin_setlucidity_command.py`
-- **asyncio** (24 connections)
-- **_handle_admin_set_lucidity_command()** (17 connections) — `server/commands/admin_setlucidity_command.py`
-- **_execute_lucidity_change()** (14 connections) — `server/commands/admin_setlucidity_command.py`
-- **Any** (12 connections)
-- **LucidityChangeCtx** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_apply_lucidity_change()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_check_admin_permissions()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_extract_command_args()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_resolve_target_player()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_setup_command_execution()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_command_context()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_validate_lcd_value()** (8 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_catatonia_registry_from_app()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_current_lcd()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_get_player_service_from_app()** (7 connections) — `server/commands/admin_setlucidity_command.py`
-- **_log_lucidity_success()** (5 connections) — `server/commands/admin_setlucidity_command.py`
-- **test_apply_lucidity_change_adjustment_error()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_apply_lucidity_change_admin_logger_failure()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_apply_lucidity_change_success()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **UUID** (5 connections)
-- **test_execute_lucidity_change_success()** (4 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_check_admin_permissions_current_player_missing()** (3 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- **test_check_admin_permissions_denied()** (3 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
-- *... and 48 more nodes in this community*
+- **Async Remediation Summary - December 3, 2025** (25 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🏆 Achievement Highlights** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🔧 Code Changes Made** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📚 Deliverables** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🚀 Deployment Readiness** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📞 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Performance Improvements** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **💡 Recommendations** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **💰 ROI Analysis** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Audit Compliance Score** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎭 Closing Remarks** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎓 Key Learnings** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🚨 Risk Assessment** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Success Criteria - Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📈 Success Metrics** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎓 Technical Debt Reduced** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🧪 Test Coverage** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🔍 Testing Strategy** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📋 Remaining Work** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📊 Remediation Results** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Short-Term (This Week)** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Status**: ✅**REMEDIATION COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **1. Fixed Event Loop Blocking in PassiveLucidityFluxService** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **2. Removed asyncio.run() from Exploration Service** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **3. Added Exception Handling for Database Engine Creation** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (14 shared connections)
-- [LucidityService](LucidityService.md) (6 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (4 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [Mythos Holiday Candidates](Mythos_Holiday_Candidates.md) (1 shared connections)
+- [2025_11_21_convert_players_player_id_to_uuid.py](2025_11_21_convert_players_player_id_to_uuid.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setlucidity_command.py`
-- `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 70 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

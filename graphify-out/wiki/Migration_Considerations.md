@@ -1,21 +1,22 @@
 # Migration Considerations
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Migration Considerations** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Data Migration** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Performance Impact** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Nameless Horrors - 2nd Edition (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Nameless Horrors - 2nd Edition.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Key extractions pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Audit Trail
 

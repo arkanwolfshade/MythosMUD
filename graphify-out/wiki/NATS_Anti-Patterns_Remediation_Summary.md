@@ -1,30 +1,31 @@
 # NATS Anti-Patterns Remediation Summary
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **NATS Anti-Patterns Remediation Summary** (10 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Completed Fixes ✅** (6 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Code Quality Improvements** (4 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Impact Assessment** (3 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **NATS_REMEDIATION_SUMMARY_2026-01-13.md** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **1. Fixed Synchronous Operation in WebSocket Helpers** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **2. Standardized Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **3. Added Message Validation to NATSMessageBroker** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **4. Improved Batch Flush Error Recovery** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **5. Improved Connection Pool Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **After Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Before Remediation** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Configuration Options** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Exception Hierarchy** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Executive Summary** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Metrics & Observability** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Next Steps (Optional)** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Performance Impact** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Remaining Medium-Priority Issues** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Testing Status** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY ISSUES** (6 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (2 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **SQLALCHEMY_CODE_REVIEW.md** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **1. SQL Injection Vulnerability in `update_player_stat_field()` - ✅ FIXED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **2. Missing Eager Loading for Relationships** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **3. Mixed Database Access Patterns** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **4. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **5. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **6. Long-Lived Sessions** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **7. Connection Pool Configuration** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **8. Transaction Boundaries** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **9. Error Handling in Database Operations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **✅ GOOD PRACTICES OBSERVED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Immediate Actions (This Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Long-term (Future)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **References** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Short-term (Next Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -32,11 +33,11 @@
 
 ## Source Files
 
-- `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

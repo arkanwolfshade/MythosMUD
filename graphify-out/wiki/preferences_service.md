@@ -1,33 +1,32 @@
 # preferences_service
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_preferences()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **fixture** (4 connections)
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
-- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **load_test_10_players.spec.ts** (9 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **generateLoadTestCredential()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **registerPlayer()** (2 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **PlayerConfig** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **analyzeLogFiles()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **executeCommand()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **selectProfessionAndCreateCharacter()** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **INVITE_CODES** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **PLAYER_CONFIGS** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
+- **NOTE: This test is designed to be executed using Playwright MCP tools for** (1 connections) — `e2e-tests/load-tests/load_test_10_players.spec.ts`
 
 ## Relationships
 
-- [test_player_preferences_service.py](test_player_preferences_service.py.md) (4 shared connections)
-- [PlayerPreferencesService](PlayerPreferencesService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_player_preferences_service.py`
+- `e2e-tests/load-tests/load_test_10_players.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (86%)
-- INFERRED: 2 (14%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

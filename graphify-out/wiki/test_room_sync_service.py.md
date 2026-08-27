@@ -1,57 +1,56 @@
 # test_room_sync_service.py
 
-> 92 nodes
+> 72 nodes
 
 ## Key Concepts
 
-- **test_room_sync_service.py** (41 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **RoomSyncService** (21 connections) — `server/services/room_sync_service.py`
-- **asyncio** (14 connections)
-- **Any** (7 connections)
-- **._handle_stale_room_data()** (6 connections) — `server/services/room_sync_service.py`
-- **.__init__()** (6 connections) — `server/services/room_sync_service.py`
-- **room_sync_service()** (5 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **._fetch_fresh_room_data()** (4 connections) — `server/services/room_sync_service.py`
-- **._process_room_update_with_validation()** (4 connections) — `server/services/room_sync_service.py`
-- **room_sync_service_with_room_service()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **sample_event()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_process_room_update_with_validation_handles_error()** (4 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **fixture** (4 connections)
-- **.get_room_data_cache_stats()** (3 connections) — `server/services/room_sync_service.py`
-- **._invalidate_stale_cache()** (3 connections) — `server/services/room_sync_service.py`
-- **.process_event_with_ordering()** (3 connections) — `server/services/room_sync_service.py`
-- **._process_room_transition()** (3 connections) — `server/services/room_sync_service.py`
-- **.set_room_service()** (3 connections) — `server/services/room_sync_service.py`
-- **mock_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_no_room_service()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_not_found()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_fetch_fresh_room_data_success()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_get_room_sync_service_returns_singleton()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- **test_handle_stale_room_data_invalid_room_id()** (3 connections) — `server/tests/unit/services/test_room_sync_service.py`
-- *... and 67 more nodes in this community*
+- **test_container_persistence_extended_crud.py** (35 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **update_container()** (24 connections) — `server/persistence/container_persistence.py`
+- **test_container_persistence_sql_injection.py** (7 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **test_create_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_database_error()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_missing_item_instance_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_items_only_prototype_id()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_no_updates()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (5 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (3 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (2 shared connections)
-- [RoomDataCache](RoomDataCache.md) (2 shared connections)
-- [RoomDataValidator](RoomDataValidator.md) (2 shared connections)
-- [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (23 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (1 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_sync_service.py`
-- `server/tests/unit/services/test_room_sync_service.py`
+- `server/persistence/container_persistence.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- `server/tests/unit/test_container_persistence_sql_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 131 (94%)
-- INFERRED: 9 (6%)
+- EXTRACTED: 115 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

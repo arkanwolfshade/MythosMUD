@@ -1,29 +1,31 @@
 # fixture
 
-> 7 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **.mock_connection()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.mock_cursor()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **fixture** (3 connections)
-- **Create a mock psycopg2 connection.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Create a mock psycopg2 cursor.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **Findings** (5 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY: Manual Statistical Calculations** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY: Dice Rolling and Stat Generation** (3 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **🔵 LOW PRIORITY: Type Hints and Documentation** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 1: Performance Monitor - Manual Statistics** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 2: Performance Tracker - Repeated Statistical Operations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 3: Stats Generator - Manual Dice Rolling** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 4: Stats Summary - Manual Summation** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Issue 5: Missing NumPy Type Hints** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **✅ RESOLVED: NumPy Dependency and Usage** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Relationships
 
-- [PostgresConnection](PostgresConnection.md) (2 shared connections)
-- [PostgresCursor](PostgresCursor.md) (1 shared connections)
+- [Real-Time Communication (WebSocket)](Real-Time_Communication_WebSocket.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,42 +1,42 @@
 # usePanelContext.ts
 
-> 17 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **usePanelContext.ts** (12 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelContext.tsx** (12 connections) — `client/src/contexts/PanelContext.tsx`
-- **usePanelContext.test.tsx** (6 connections) — `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
-- **PanelContext.test.tsx** (6 connections) — `client/src/contexts/__tests__/PanelContext.test.tsx`
-- **usePanelContext()** (5 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelPosition** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelSize** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **usePanel()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **usePanelActions()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **usePanelLayout()** (3 connections) — `client/src/contexts/hooks/usePanelContext.ts`
-- **PanelProvider()** (3 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelContextType** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelState** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelContext** (2 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelLayout** (1 connections) — `client/src/contexts/PanelContext.tsx`
-- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContext.tsx`
-- **defaultPanels** (1 connections) — `client/src/contexts/PanelContext.tsx`
+- **room_validator/tests/conftest.py** (10 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **fixture** (8 connections)
+- **temp_rooms_dir()** (4 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **dead_end_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **invalid_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_new_exit_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_self_reference()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_database()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **unreachable_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Pytest configuration and fixtures for room validator tests. Provides test data…** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [SpellEffectType](SpellEffectType.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/PanelContext.tsx`
-- `client/src/contexts/__tests__/PanelContext.test.tsx`
-- `client/src/contexts/hooks/__tests__/usePanelContext.test.tsx`
-- `client/src/contexts/hooks/usePanelContext.ts`
+- `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

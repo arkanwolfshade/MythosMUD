@@ -1,51 +1,25 @@
 # server/tests/conftest.py
 
-> 29 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **server/tests/conftest.py** (17 connections) — `server/tests/conftest.py`
-- **_apply_path_based_markers()** (6 connections) — `server/tests/conftest.py`
-- **pytest_asyncio_loop_factories()** (6 connections) — `server/tests/conftest.py`
-- **pytest_collection_modifyitems()** (5 connections) — `server/tests/conftest.py`
-- **test_logger()** (5 connections) — `server/tests/conftest.py`
-- **_create_test_event_loop()** (4 connections) — `server/tests/conftest.py`
-- **reset_config_singleton()** (4 connections) — `server/tests/conftest.py`
-- **_set_xdist_loadgroup_nodeid()** (4 connections) — `server/tests/conftest.py`
-- **Item** (4 connections)
-- **fixture** (4 connections)
-- **deterministic_random_seed()** (3 connections) — `server/tests/conftest.py`
-- **ensure_test_environment_variables()** (3 connections) — `server/tests/conftest.py`
-- **_test_file_in_category()** (3 connections) — `server/tests/conftest.py`
-- **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
-- **Config** (2 connections)
-- **AbstractEventLoop** (2 connections)
-- **BoundLogger** (1 connections)
-- **Test configuration and fixtures for MythosMUD greenfield test suite. This…** (1 connections) — `server/tests/conftest.py`
-- **Reset config singleton before and after each test. In test mode, get_config()…** (1 connections) — `server/tests/conftest.py`
-- **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
-- **Create an event loop suitable for MythosMUD tests. CRITICAL: On Windows,…** (1 connections) — `server/tests/conftest.py`
-- **Register platform-appropriate loop factories for pytest-asyncio (Python 3.14+…** (1 connections) — `server/tests/conftest.py`
-- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
-- **True when the collected test file lives under a unit/integration/e2e directory.** (1 connections) — `server/tests/conftest.py`
-- **Append @group to pytest Item nodeid for xdist --dist loadgroup scheduling.…** (1 connections) — `server/tests/conftest.py`
-- *... and 4 more nodes in this community*
+- **test_restore_mp_from_item_player_not_found()** (3 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
+- **Test restore_mp_from_item() returns error when player not found.** (1 connections) — `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [server/config/__init__.py](server-config-__init__.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [utils/config.ts](utils-config.ts.md) (1 shared connections)
+- [test_validate_codacy_coverage_gate.py](test_validate_codacy_coverage_gate.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/conftest.py`
+- `server/tests/unit/game/magic/test_mp_regeneration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,58 +1,56 @@
 # debugLogger
 
-> 31 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **debugLogger** (25 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.tsx** (16 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **.log()** (9 connections) — `client/src/utils/debugLogger.ts`
-- **debugLogger.ts** (7 connections) — `client/src/utils/debugLogger.ts`
-- **.logToConsole()** (6 connections) — `client/src/utils/debugLogger.ts`
-- **.downloadLogs()** (5 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentation.test.tsx** (5 connections) — `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- **GameTerminalPresentation()** (4 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **.error()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **.warn()** (4 connections) — `client/src/utils/debugLogger.ts`
-- **debugLogger.test.ts** (4 connections) — `client/src/utils/__tests__/debugLogger.test.ts`
-- **.debug()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.info()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **.initializeConfig()** (3 connections) — `client/src/utils/debugLogger.ts`
-- **GameTerminalPresentationProps** (2 connections) — `client/src/components/GameTerminalPresentation.tsx`
-- **.addToBuffer()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.constructor()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.createLogEntry()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.formatMessage()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getDefaultLogLevel()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.getLogsAsString()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **.shouldLog()** (2 connections) — `client/src/utils/debugLogger.ts`
-- **LogConfig** (1 connections) — `client/src/utils/debugLogger.ts`
-- **LogEntry** (1 connections) — `client/src/utils/debugLogger.ts`
-- **LogLevel** (1 connections) — `client/src/utils/debugLogger.ts`
-- *... and 6 more nodes in this community*
+- **SpellLearningService** (46 connections) — `server/game/magic/spell_learning_service.py`
+- **test_spell_learning_service.py** (16 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **.learn_spell()** (12 connections) — `server/game/magic/spell_learning_service.py`
+- **Any** (12 connections)
+- **asyncio** (11 connections)
+- **UUID** (10 connections)
+- **._validate_prerequisites()** (9 connections) — `server/game/magic/spell_learning_service.py`
+- **._load_spell_learn_context()** (6 connections) — `server/game/magic/spell_learning_service.py`
+- **._check_required_spell_prerequisites()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **._persist_spell_learning()** (5 connections) — `server/game/magic/spell_learning_service.py`
+- **._apply_mythos_corruption_on_learn()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **._check_intelligence_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **._check_power_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **._spell_learn_success_response()** (4 connections) — `server/game/magic/spell_learning_service.py`
+- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **._resolve_spell()** (3 connections) — `server/game/magic/spell_learning_service.py`
+- **learning_service()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_increase_mastery_on_cast()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_already_known()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_no_spell_id()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_book_with_spell()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- **test_learn_spell_from_npc()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (2 shared connections)
-- [useDraggablePanelInteractions.ts](useDraggablePanelInteractions.ts.md) (2 shared connections)
-- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (2 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
-- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (10 shared connections)
+- [Any](Any.md) (9 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [migrate_rooms.py](migrate_rooms.py.md) (1 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/GameTerminalPresentation.tsx`
-- `client/src/components/__tests__/GameTerminalPresentation.test.tsx`
-- `client/src/utils/__tests__/debugLogger.test.ts`
-- `client/src/utils/debugLogger.ts`
+- `server/game/magic/spell_learning_service.py`
+- `server/tests/unit/game/magic/test_spell_learning_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 104 (85%)
+- INFERRED: 18 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

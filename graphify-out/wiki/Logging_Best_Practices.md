@@ -1,27 +1,28 @@
 # Logging Best Practices
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Structured Key-Value Logging** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **Forbidden Logging Patterns** (2 connections) — `docs/LOGGING_QUICK_REFERENCE.md`
-- **Logging Best Practices** (2 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **Logging Quick Reference** (2 connections) — `docs/LOGGING_QUICK_REFERENCE.md`
+- **.set_nats_service()** (4 connections) — `server/events/distributed_event_bus.py`
+- **.__init__()** (3 connections) — `server/events/distributed_event_bus.py`
+- **Any** (2 connections)
+- **Initialize distributed EventBus. Args: nats_service: NATS service for…** (1 connections) — `server/events/distributed_event_bus.py`
+- **Set NATS service and start the bridge (call after NATS connects).** (1 connections) — `server/events/distributed_event_bus.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (2 shared connections)
+- [pylint.py](pylint.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/LOGGING_BEST_PRACTICES.md`
-- `docs/LOGGING_QUICK_REFERENCE.md`
+- `server/events/distributed_event_bus.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

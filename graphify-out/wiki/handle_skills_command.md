@@ -1,47 +1,51 @@
 # handle_skills_command
 
-> 19 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **handle_skills_command()** (12 connections) — `server/commands/skills_commands.py`
-- **test_skills_commands.py** (12 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/skills_commands.py`
-- **_format_skills_output()** (5 connections) — `server/commands/skills_commands.py`
-- **_resolve_user_id()** (5 connections) — `server/commands/skills_commands.py`
-- **Any** (5 connections)
-- **test_handle_skills_command_no_services()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_handle_skills_command_success()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_format_skills_output()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_get_container_services_missing()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_player_id_from_string()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **test_resolve_user_id_from_dict()** (2 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **UUID** (2 connections)
-- **asyncio** (2 connections)
-- **Extract and validate player_id from player object, returning UUID or None.** (1 connections) — `server/commands/skills_commands.py`
-- **Resolve user_id from current_user (auth user) or fallback to player.user_id.** (1 connections) — `server/commands/skills_commands.py`
-- **Format skills list as text output lines.** (1 connections) — `server/commands/skills_commands.py`
-- **Handle the /skills command: return the active character's skills as text.…** (1 connections) — `server/commands/skills_commands.py`
-- **Unit tests for skills command helpers.** (1 connections) — `server/tests/unit/commands/test_skills_commands.py`
+- **Stop-MythosMudProjectProcessTree()** (13 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Test-MythosMudProjectProcess()** (10 connections) — `scripts/MythosMudProcessScope.ps1`
+- **nats_manager.ps1** (9 connections) — `scripts/nats_manager.ps1`
+- **Start-NatsServer()** (7 connections) — `scripts/nats_manager.ps1`
+- **start_server.ps1** (7 connections) — `scripts/start_server.ps1`
+- **stop_server.ps1** (7 connections) — `scripts/stop_server.ps1`
+- **MythosMudProcessScope.ps1** (6 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Stop-NatsServer()** (6 connections) — `scripts/nats_manager.ps1`
+- **Test-MythosMudProtectedDevToolProcess()** (5 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Test-NatsServerRunning()** (5 connections) — `scripts/nats_manager.ps1`
+- **Get-NatsServerPath()** (4 connections) — `scripts/nats_manager.ps1`
+- **Get-NatsServerStatus()** (4 connections) — `scripts/nats_manager.ps1`
+- **Test-NatsServerInstalled()** (4 connections) — `scripts/nats_manager.ps1`
+- **Stop-NatsServerForMythosMUD()** (4 connections) — `scripts/stop_server.ps1`
+- **Get-MythosMudRepoRoot()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Stop-MythosMudProjectProcessTreeInternal()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Initialize-NatsLogDirectory()** (3 connections) — `scripts/nats_manager.ps1`
+- **Restart-NatsServer()** (3 connections) — `scripts/nats_manager.ps1`
+- **Start-NatsServerForMythosMUD()** (3 connections) — `scripts/start_server.ps1`
+- **Stop-ServerProcess()** (3 connections) — `scripts/start_server.ps1`
+- **Close-OrphanedTerminalWindows()** (3 connections) — `scripts/stop_server.ps1`
+- **Stop-PowerShellServerProcess()** (3 connections) — `scripts/stop_server.ps1`
+- **Stop-ProcessesByCommandLine()** (3 connections) — `scripts/stop_server.ps1`
+- **Get-MythosMudProtectedDevToolPattern()** (2 connections) — `scripts/MythosMudProcessScope.ps1`
+- **Find-NatsServerInstallation()** (2 connections) — `scripts/nats_manager.ps1`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [SkillService](SkillService.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [command_service.py](command_service.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/tests/unit/commands/test_skills_commands.py`
+- `scripts/MythosMudProcessScope.ps1`
+- `scripts/nats_manager.ps1`
+- `scripts/start_server.ps1`
+- `scripts/stop_server.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 49 (74%)
+- INFERRED: 17 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

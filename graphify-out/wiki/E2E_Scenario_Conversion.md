@@ -1,11 +1,12 @@
 # E2E Scenario Conversion
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Playwright CLI Automation** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
-- **E2E Scenario Conversion** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- **safe_print()** (2 connections) — `scripts/markdownlint.py`
+- **markdownlint.py** (1 connections) — `scripts/markdownlint.py`
+- **Print text, handling Unicode encoding errors on Windows.** (1 connections) — `scripts/markdownlint.py`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- `scripts/markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

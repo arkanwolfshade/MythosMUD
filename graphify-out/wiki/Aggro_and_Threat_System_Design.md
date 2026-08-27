@@ -1,22 +1,23 @@
 # Aggro and Threat System Design
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Aggro and Threat System Design** (0 connections) — `docs/architecture/aggro-threat-system.md`
+- **test_validate_combat_command_target_too_long()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command with target name too long.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/aggro-threat-system.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

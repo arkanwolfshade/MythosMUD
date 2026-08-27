@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- **Chaosium graphify snapshot - Alone against the Tide** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **alone-against-the-tide/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
 
 ## Relationships
 
@@ -14,14 +14,12 @@
 
 ## Source Files
 
-- `.cursor/plans/playwright_best-practices_remediation.plan.md`
-- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
-- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

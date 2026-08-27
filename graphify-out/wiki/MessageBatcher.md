@@ -1,24 +1,25 @@
 # MessageBatcher
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **MessageBatcher** (11 connections) — `client/src/utils/messageBatcher.ts`
-- **useMessageBatcher()** (6 connections) — `client/src/utils/messageBatcher.ts`
-- **.addMessage()** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.ts** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **.flush()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.sendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.shouldSendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.test.ts** (3 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
-- **.clear()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.generateId()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSize()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSizeBytes()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchConfig** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchedMessage** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **.constructor()** (1 connections) — `client/src/utils/messageBatcher.ts`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Communities (17 total, 12 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 0 - "Character and Skills"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 1 - "Character and Skills (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 2 - "Core Rules"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 3 - "Core Rules (3)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community 4 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -26,12 +27,11 @@
 
 ## Source Files
 
-- `client/src/utils/__tests__/messageBatcher.test.ts`
-- `client/src/utils/messageBatcher.ts`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

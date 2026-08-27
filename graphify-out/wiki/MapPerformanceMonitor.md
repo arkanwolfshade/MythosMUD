@@ -1,35 +1,36 @@
 # MapPerformanceMonitor
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.ts** (6 connections) — `client/src/components/map/utils/performance.ts`
-- **debounce()** (4 connections) — `client/src/components/map/utils/performance.ts`
-- **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
-- **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
-- **isInViewport()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
-- **.startRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **TestValidatorIntegration** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_help_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_schema_only_flag()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_with_invalid_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_with_valid_rooms()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **.test_validator_zone_filtering()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Integration tests for the main validator.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test validator with valid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test validator with invalid room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test validator JSON output format.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test validator zone filtering.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test that help text is properly displayed.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **Test schema-only validation flag.** (1 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (3 shared connections)
+- [SpellEffectType](SpellEffectType.md) (7 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/__tests__/performance.test.ts`
-- `client/src/components/map/utils/performance.ts`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (70%)
+- INFERRED: 6 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

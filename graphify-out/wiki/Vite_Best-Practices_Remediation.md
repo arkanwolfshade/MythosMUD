@@ -1,28 +1,28 @@
 # Vite Best-Practices Remediation
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
+- **rename_invites_columns.py** (5 connections) — `server/scripts/rename_invites_columns.py`
+- **apply_migration()** (3 connections) — `server/scripts/rename_invites_columns.py`
+- **main()** (3 connections) — `server/scripts/rename_invites_columns.py`
+- **Apply the migration to rename columns. Args: database_url: PostgreSQL database…** (1 connections) — `server/scripts/rename_invites_columns.py`
+- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_invites_columns.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `server/scripts/rename_invites_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

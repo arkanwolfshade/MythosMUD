@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **Mansions of Madness_ Vol 1 - Behind Closed Doors (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
-- **Mansions of Madness_ Vol 1 - Behind Closed Doors.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
+- **Success Criteria** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Functional Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Monitoring Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Performance Requirements** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

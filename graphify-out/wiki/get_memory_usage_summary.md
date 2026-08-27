@@ -1,26 +1,29 @@
 # .get_memory_usage_summary
 
-> 4 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.get_memory_usage_summary()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_memory_summary()** (3 connections) — `server/utils/memory_profiler.py`
-- **Get a summary of current memory usage.** (1 connections) — `server/utils/memory_profiler.py`
-- **Print a formatted memory usage summary.** (1 connections) — `server/utils/memory_profiler.py`
+- **run-vitest.js** (7 connections) — `client/scripts/run-vitest.js`
+- **args** (1 connections) — `client/scripts/run-vitest.js`
+- **clientRoot** (1 connections) — `client/scripts/run-vitest.js`
+- **__dirname** (1 connections) — `client/scripts/run-vitest.js`
+- **env** (1 connections) — `client/scripts/run-vitest.js`
+- **__filename** (1 connections) — `client/scripts/run-vitest.js`
+- **vitest** (1 connections) — `client/scripts/run-vitest.js`
+- **vitestBin** (1 connections) — `client/scripts/run-vitest.js`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/utils/memory_profiler.py`
+- `client/scripts/run-vitest.js`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

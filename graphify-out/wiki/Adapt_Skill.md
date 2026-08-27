@@ -1,37 +1,38 @@
 # Adapt Skill
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Implement Adaptations** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Plan Adaptation Strategy** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Adapt Skill** (6 connections) — `.claude/skills/adapt/SKILL.md`
-- **Assess Adaptation Challenge** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Content Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Desktop Adaptation (Mobile → Desktop)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Email Adaptation (Web → Email)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Layout Adaptation Techniques** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Mobile Adaptation (Desktop → Mobile)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Navigation Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Print Adaptation (Screen → Print)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Responsive Breakpoints** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Tablet Adaptation (Hybrid Approach)** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Touch Adaptation** (1 connections) — `.claude/skills/adapt/SKILL.md`
-- **Verify Adaptations** (1 connections) — `.claude/skills/adapt/SKILL.md`
+- **Introduce Color Strategically** (8 connections) — `.claude/skills/colorize/SKILL.md`
+- **Colorize Skill** (7 connections) — `.claude/skills/colorize/SKILL.md`
+- **Balance & Refinement** (4 connections) — `.claude/skills/colorize/SKILL.md`
+- **Accent Color Application** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Accessibility** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Assess Color Opportunity** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Background & Surfaces** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Borders & Accents** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Cohesion** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Data Visualization** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Decorative Elements** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Maintain Hierarchy** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Plan Color Strategy** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Semantic Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Typography Color** (1 connections) — `.claude/skills/colorize/SKILL.md`
+- **Verify Color Addition** (1 connections) — `.claude/skills/colorize/SKILL.md`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/adapt/SKILL.md`
+- `.claude/skills/colorize/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,47 +1,53 @@
 # dependencies
 
-> 25 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **dependencies** (13 connections) — `client/package.json`
-- **dompurify** (2 connections) — `client/package.json`
-- **lucide-react** (2 connections) — `client/package.json`
-- **react** (2 connections) — `client/package.json`
-- **react-dom** (2 connections) — `client/package.json`
-- **react-grid-layout** (2 connections) — `client/package.json`
-- **react-resizable** (2 connections) — `client/package.json`
-- **react-rnd** (2 connections) — `client/package.json`
-- **react-router-dom** (2 connections) — `client/package.json`
-- **reactflow** (2 connections) — `client/package.json`
-- **xstate** (2 connections) — `client/package.json`
-- **@xstate/react** (2 connections) — `client/package.json`
-- **zustand** (2 connections) — `client/package.json`
-- **dompurify** (1 connections) — `client/package.json`
-- **lucide-react** (1 connections) — `client/package.json`
-- **react** (1 connections) — `client/package.json`
-- **react-dom** (1 connections) — `client/package.json`
-- **react-grid-layout** (1 connections) — `client/package.json`
-- **react-resizable** (1 connections) — `client/package.json`
-- **react-rnd** (1 connections) — `client/package.json`
-- **react-router-dom** (1 connections) — `client/package.json`
-- **reactflow** (1 connections) — `client/package.json`
-- **xstate** (1 connections) — `client/package.json`
-- **@xstate/react** (1 connections) — `client/package.json`
-- **zustand** (1 connections) — `client/package.json`
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Remove timestamps older than the window size. Args: player_id: Player ID…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel. Args: player_id: Player…** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting. Args: player_id: Player ID channel: Channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels. Implements per-user, per-channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player. Args: player_id: Player ID channel: Specific…** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics. Returns: Dictionary with system…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel. Args: player_id:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the number of remaining messages a player can send on a channel. Args:…** (1 connections) — `server/services/rate_limiter.py`
+- **Set a custom rate limit for a channel. Args: channel: Channel name limit:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the current rate limit for a channel. Args: channel: Channel name Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [client/package.json](client-package.json.md) (1 shared connections)
+- [test_message_filtering.py](test_message_filtering.py.md) (3 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [start_server.ps1](start_server.ps1.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [Container Contents Synchronization Bug](Container_Contents_Synchronization_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `client/package.json`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

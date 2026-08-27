@@ -4,57 +4,60 @@
 
 ## Key Concepts
 
-- **test_logging_utilities.py** (41 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **logging_utilities.py** (23 connections) — `server/structured_logging/logging_utilities.py`
-- **Path** (23 connections)
-- **rotate_log_files()** (19 connections) — `server/structured_logging/logging_utilities.py`
-- **detect_environment()** (16 connections) — `server/structured_logging/logging_utilities.py`
-- **resolve_log_base()** (13 connections) — `server/structured_logging/logging_utilities.py`
-- **_rotate_single_log_file()** (6 connections) — `server/structured_logging/logging_utilities.py`
-- **Path** (6 connections)
-- **_rename_or_copy_log_file()** (5 connections) — `server/structured_logging/logging_utilities.py`
-- **_collect_rotatable_logs()** (4 connections) — `server/structured_logging/logging_utilities.py`
-- **_rotation_bound_logger()** (4 connections) — `server/structured_logging/logging_utilities.py`
-- **test_ensure_log_directory_creates_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_empty_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_existing_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_no_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_os_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_permission_error()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_ensure_log_directory_thread_safety()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_resolve_log_base_absolute_path()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_resolve_log_base_env_local_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_resolve_log_base_finds_pyproject_in_parent()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_resolve_log_base_relative_path_no_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_resolve_log_base_relative_path_with_pyproject()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_rotate_log_files_empty_directory()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **test_rotate_log_files_handles_jsonl_files()** (4 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **test_npc_definitions_api.py** (33 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **npc_definitions_api.py** (32 connections) — `server/api/admin/npc_definitions_api.py`
+- **npc_schemas.py** (25 connections) — `server/api/admin/npc_schemas.py`
+- **test_npc_spawn_rules_api.py** (18 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **_update_npc_definition_internal()** (16 connections) — `server/api/admin/npc_definitions_api.py`
+- **get_npc_definitions()** (15 connections) — `server/api/admin/npc_definitions_api.py`
+- **create_npc_spawn_rule()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **get_npc_spawn_rules()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **create_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
+- **get_npc_definition()** (14 connections) — `server/api/admin/npc_definitions_api.py`
+- **delete_npc_definition()** (12 connections) — `server/api/admin/npc_definitions_api.py`
+- **delete_npc_spawn_rule()** (12 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **_admin_user()** (12 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **NPCDefinitionUpdateParams** (11 connections) — `server/services/npc_service_models.py`
+- **BaseModel** (11 connections)
+- **NPCDefinitionResponse** (10 connections) — `server/api/admin/npc_schemas.py`
+- **NPCDefinitionUpdate** (10 connections) — `server/api/admin/npc_schemas.py`
+- **.from_orm()** (10 connections) — `server/api/admin/npc_schemas.py`
+- **test_create_npc_definition()** (10 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
+- **asyncio** (10 connections)
+- **patch** (10 connections)
+- **update_npc_definition()** (9 connections) — `server/api/admin/npc_definitions_api.py`
+- **NPCDefinitionCreate** (7 connections) — `server/api/admin/npc_schemas.py`
+- **NPCSpawnRuleResponse** (7 connections) — `server/api/admin/npc_schemas.py`
+- **test_update_npc_definition_internal()** (7 connections) — `server/tests/unit/api/test_npc_definitions_api.py`
 - *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [test_logging_handlers.py](test_logging_handlers.py.md) (12 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (5 shared connections)
-- [test_logging_processors.py](test_logging_processors.py.md) (2 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
-- [logging_file_categories.py](logging_file_categories.py.md) (2 shared connections)
-- [RoomLoader](RoomLoader.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (1 shared connections)
-- [extract_subzone_from_room_id](extract_subzone_from_room_id.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [maps.py](maps.py.md) (37 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (18 shared connections)
+- [NPCDefinition](NPCDefinition.md) (12 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (12 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [test_look_room.py](test_look_room.py.md) (4 shared connections)
+- [mock_connection_manager](mock_connection_manager.md) (3 shared connections)
+- [MetricsCollector](MetricsCollector.md) (2 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [models/container.py](models-container.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/logging_utilities.py`
-- `server/tests/unit/structured_logging/test_logging_utilities.py`
+- `server/api/admin/npc_definitions_api.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/services/npc_service_models.py`
+- `server/tests/unit/api/test_npc_definitions_api.py`
+- `server/tests/unit/api/test_npc_spawn_rules_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 178 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 289 (92%)
+- INFERRED: 24 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

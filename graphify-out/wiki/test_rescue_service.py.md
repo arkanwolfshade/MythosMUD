@@ -1,56 +1,65 @@
 # test_rescue_service.py
 
-> 80 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_rescue_service.py** (33 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service.py** (20 connections) — `server/services/rescue_service.py`
-- **asyncio** (17 connections)
-- **RescueService** (12 connections) — `server/services/rescue_service.py`
-- **fixture** (10 connections)
-- **.rescue()** (8 connections) — `server/services/rescue_service.py`
-- **Any** (7 connections)
-- **_load_rescue_participants()** (6 connections) — `server/services/rescue_service.py`
-- **.__init__()** (6 connections) — `server/services/rescue_service.py`
-- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
-- **._apply_rescue_adjustment()** (5 connections) — `server/services/rescue_service.py`
-- **_dispatch_rescue_events()** (4 connections) — `server/services/rescue_service.py`
-- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
-- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_lucidity_record()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **_rescue_success_payload()** (3 connections) — `server/services/rescue_service.py`
-- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 55 more nodes in this community*
+- **map/types.ts** (36 connections) — `client/src/components/map/types.ts`
+- **RoomNodeData** (32 connections) — `client/src/components/map/types.ts`
+- **ExitEdgeData** (22 connections) — `client/src/components/map/types.ts`
+- **saveMapChanges.ts** (22 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **EdgeCreationModalParts.tsx** (21 connections) — `client/src/components/map/EdgeCreationModalParts.tsx`
+- **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeCreationModal.tsx** (13 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **saveMapChanges.test.ts** (9 connections) — `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- **saveEdgeChanges()** (8 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **EdgeCreationData** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **EdgeValidationResult** (7 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **saveMapChanges()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **EdgeCreationModal.test.tsx** (7 connections) — `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- **resolveRoomsApiUrl()** (6 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveRoomUpdates()** (6 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **EdgeCreationModalProps** (5 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **MapEditingChanges** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **readErrorDetail()** (5 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **useMapEditing.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- **EdgeCreationModal()** (4 connections) — `client/src/components/map/EdgeCreationModal.tsx`
+- **useMapEditing()** (4 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **createExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **deleteExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveNodePositions()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **updateExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (8 shared connections)
-- [LucidityService](LucidityService.md) (4 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (3 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [test_admin_auth_service.py](test_admin_auth_service.py.md) (17 shared connections)
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (15 shared connections)
+- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (14 shared connections)
+- [compilerOptions](compilerOptions.md) (13 shared connections)
+- [middleware](middleware.md) (7 shared connections)
+- [asyncio](asyncio.md) (6 shared connections)
+- [Async Persistence Migration Plan](Async_Persistence_Migration_Plan.md) (2 shared connections)
+- [TypeScript Best Practices](TypeScript_Best_Practices.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/rescue_service.py`
-- `server/tests/unit/services/test_rescue_service.py`
+- `client/src/components/map/EdgeCreationModal.tsx`
+- `client/src/components/map/EdgeCreationModalParts.tsx`
+- `client/src/components/map/__tests__/EdgeCreationModal.test.tsx`
+- `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- `client/src/components/map/hooks/useMapEditing.ts`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/types.ts`
+- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
+- `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- `client/src/components/map/utils/mapUtils.ts`
+- `client/src/components/map/utils/saveMapChanges.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 194 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

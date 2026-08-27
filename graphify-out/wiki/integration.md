@@ -1,27 +1,31 @@
 # integration
 
-> 5 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **integration()** (5 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **fixture** (2 connections)
-- **Persistence mock with async get_player_by_id for integration tests.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **NPCCombatIntegration wired to the mock persistence layer.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **optimized_validate_filter_name()** (6 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_filter_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_filter_name_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_filter_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating invalid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for filter name fields. Args: value: The filter name to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [map/types.ts](map-types.ts.md) (4 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

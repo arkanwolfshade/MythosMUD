@@ -1,11 +1,12 @@
 # Updated Coverage Targets
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Updated Coverage Targets** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- **Placeholder Test Removal** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- **main()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **_verify()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **verify_e2e_users_seeded.py** (2 connections) — `scripts/verify_e2e_users_seeded.py`
 
 ## Relationships
 
@@ -13,13 +14,12 @@
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_STATUS.md`
-- `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
+- `scripts/verify_e2e_users_seeded.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

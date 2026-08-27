@@ -1,51 +1,57 @@
 # RoomDataCache
 
-> 73 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
-- **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **Any** (6 connections)
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
-- **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_not_found()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_stats_empty()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_get_cache_stats_with_fresh_and_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_init_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_init_default_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_newer_data_both_have_timestamps()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_newer_data_new_has_timestamp_old_doesnt()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_newer_data_old_newer_than_new()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- *... and 48 more nodes in this community*
+- **PassiveMobNPC** (57 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base.py** (25 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_passive_mob_npc.py** (20 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
+- **.__init__()** (5 connections) — `server/npc/passive_mob_npc.py`
+- **._setup_passive_mob_behavior_rules()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base_execute_behavior()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats_defaults()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_combat_stats_legacy_dp()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_is_alive_property()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_to_room_blocked_when_in_combat()** (3 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **passive_npc()** (3 connections) — `server/tests/unit/npc/test_passive_mob_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/passive_mob_npc.py`
+- **._handle_flee()** (2 connections) — `server/npc/passive_mob_npc.py`
+- **test_npc_base_ai_placeholders()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_from_dict()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_get_behavior_and_ai_config()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_handle_die_and_idle()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_heal_when_dead_returns_false()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_inventory_operations()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_simple()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_move_with_event_reaction_system()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_remove_missing_item()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_speak_and_listen()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- **test_npc_base_take_damage_and_heal()** (2 connections) — `server/tests/unit/npc/test_npc_base.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [test_room_sync_service.py](test_room_sync_service.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
+- [enum](enum.md) (6 shared connections)
+- [🧪 Testing Status](🧪_Testing_Status.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [login_user](login_user.md) (1 shared connections)
+- [Invite](Invite.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/room_data_cache.py`
-- `server/tests/unit/services/test_room_data_cache.py`
+- `server/npc/passive_mob_npc.py`
+- `server/tests/unit/npc/test_npc_base.py`
+- `server/tests/unit/npc/test_passive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 107 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 94 (82%)
+- INFERRED: 20 (18%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,13 @@
 # Chaosium graphify snapshot - Alone Against the Dark
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Alone Against the Dark** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
-- **alone-against-the-dark/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- **Call of Cthulhu Starter Set (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Call of Cthulhu Starter Set.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/MANIFEST.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

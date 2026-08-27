@@ -1,25 +1,24 @@
 # name
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **name** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **Mansions of Madness_ Vol 1 - Behind Closed Doors.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `data/MythosMUD-Obsidian/wiki/sources/Mansions of Madness_ Vol 1 - Behind Closed Doors.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

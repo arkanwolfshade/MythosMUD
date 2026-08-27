@@ -1,55 +1,48 @@
 # utils.py
 
-> 25 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **utils.py** (8 connections) — `server/container/utils.py`
-- **decode_json_column()** (7 connections) — `server/container/utils.py`
-- **._initialize_caching_services()** (6 connections) — `server/container/bundles/game.py`
-- **._build_prototype_payload()** (5 connections) — `server/container/bundles/game.py`
-- **normalize_path_from_url_or_path()** (5 connections) — `server/container/utils.py`
-- **._wire_user_manager_after_init()** (4 connections) — `server/container/bundles/game.py`
-- **._decode_json_column()** (4 connections) — `server/container/main.py`
-- **._get_project_root()** (4 connections) — `server/container/main.py`
-- **._normalize_path_from_url_or_path()** (4 connections) — `server/container/main.py`
-- **.get_service()** (3 connections) — `server/container/main.py`
-- **Any** (3 connections)
-- **Any** (3 connections)
-- **Path** (2 connections)
-- **Any** (1 connections)
-- **Path** (1 connections)
-- **Wire user_manager into follow_service and nats_message_handler when present.** (1 connections) — `server/container/bundles/game.py`
-- **Create room and profession cache services; set to None on RuntimeError.** (1 connections) — `server/container/bundles/game.py`
-- **Build a single item prototype payload from a DB row for validation.** (1 connections) — `server/container/bundles/game.py`
-- **Return and cache the repository root directory.** (1 connections) — `server/container/main.py`
-- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
-- **Delegate to shared util. Kept for backward compatibility.** (1 connections) — `server/container/main.py`
-- **Get a service by name.** (1 connections) — `server/container/main.py`
-- **Shared utilities for container and bundles. Holds helpers extracted from…** (1 connections) — `server/container/utils.py`
-- **Decode a JSON column value, returning the type's default on failure. Used by…** (1 connections) — `server/container/utils.py`
-- **Normalize an item database override into a filesystem path. DEPRECATED: Items…** (1 connections) — `server/container/utils.py`
+- **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Coord** (14 connections)
+- **RoomID** (12 connections)
+- **Room** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **infer_coordinates()** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **main()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_process_exit()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **render_with_tcod()** (8 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **build_tile_grid()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_check_disconnected_rooms()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_handle_coordinate_conflict()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_handle_spatial_collision()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_handle_unknown_direction()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_initialize_bfs_queue()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_record_explicit_coords()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_select_start_room_if_needed()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **Any** (6 connections)
+- **load_rooms_from_dir()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_load_tileset()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
+- **_handle_tcod_events()** (3 connections) — `data/local/mythos_mud_mapbuilder.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
-- [bundles/game.py](bundles-game.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [._initialize_item_services](_initialize_item_services.md) (1 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (5 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/game.py`
-- `server/container/main.py`
-- `server/container/utils.py`
+- `data/local/mythos_mud_mapbuilder.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 109 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

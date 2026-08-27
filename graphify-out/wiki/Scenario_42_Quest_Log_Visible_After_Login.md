@@ -4,15 +4,11 @@
 
 ## Key Concepts
 
-- **Scenario 42 Quest Log Visible After Login** (0 connections) — `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
+- **Composed** (0 connections)
 
 ## Relationships
 
 - No strong cross-community connections detected
-
-## Source Files
-
-- `e2e-tests/scenarios/scenario-42-quest-log-visible-after-login.md`
 
 ## Audit Trail
 

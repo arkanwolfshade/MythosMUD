@@ -1,44 +1,46 @@
 # compilerOptions
 
-> 23 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (15 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **load-tests/tsconfig.json** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **lib** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **paths** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **typeRoots** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **types** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **include** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **@playwright/test** (2 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **baseUrl** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **module** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **moduleResolution** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noEmit** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedLocals** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **noUnusedParameters** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **skipLibCheck** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **strict** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **target** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **ES2020** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **node** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@playwright/test** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- **../../client/node_modules/@types** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
-- ***.spec.ts** (1 connections) — `e2e-tests/load-tests/tsconfig.json`
+- **Migration 019: Complete Implementation Summary** (10 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **What Was Done** (5 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Files Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Risk Assessment** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Tables Affected** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Next Steps** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **1. Database Schema Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **2. Python Model Updates ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **3. Migration Script Created ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **4. Testing Infrastructure ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Before Production** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Created Files (5)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Documentation Files (4)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Executive Summary** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Foreign Key Type Updates (integer → bigint)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Immediate (Testing Phase)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Low Risk ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Medium Risk ⚠️** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Mitigation ✅** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Modified Files (10)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Primary Key Conversions (serial → bigint identity)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Success Metrics** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Text Column Conversions (varchar → text)** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
+- **Verification Status** (1 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Quick Start: Running E2E Tests](Quick_Start-_Running_E2E_Tests.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/load-tests/tsconfig.json`
+- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

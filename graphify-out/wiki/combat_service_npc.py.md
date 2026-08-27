@@ -1,54 +1,52 @@
 # combat_service_npc.py
 
-> 68 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **combat_service_npc.py** (31 connections) — `server/services/combat_service_npc.py`
-- **test_combat_service_npc_helpers.py** (31 connections) — `server/tests/unit/services/test_combat_service_npc_helpers.py`
-- **get_combat_id_for_npc()** (17 connections) — `server/services/combat_service_npc.py`
-- **find_participant_uuid_by_string_id()** (11 connections) — `server/services/combat_service_npc.py`
-- **resolve_npc_participant_id_in_combat()** (11 connections) — `server/services/combat_service_npc.py`
-- **_get_uuid_mapping()** (10 connections) — `server/services/combat_service_npc.py`
-- **UUID** (10 connections)
-- **get_combat_id_for_npc_via_mapping()** (9 connections) — `server/services/combat_service_npc.py`
-- **get_participant_current_room()** (9 connections) — `server/services/combat_service_npc.py`
-- **sync_npc_participant_dp_after_spell_damage()** (9 connections) — `server/services/combat_service_npc.py`
-- **_fallback_find_combat_id_for_npc()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_combat_by_participant()** (8 connections) — `server/services/combat_service_npc.py`
-- **get_npc_participant_current_room()** (8 connections) — `server/services/combat_service_npc.py`
-- **is_npc_in_combat_sync()** (8 connections) — `server/services/combat_service_npc.py`
-- **DataProviderProtocol** (7 connections) — `server/services/combat_service_npc.py`
-- **UUIDMappingProtocol** (7 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_string_id_mapping()** (7 connections) — `server/services/combat_service_npc.py`
-- **_get_data_provider()** (6 connections) — `server/services/combat_service_npc.py`
-- **_iter_active_combats()** (6 connections) — `server/services/combat_service_npc.py`
-- **npc_in_combat_by_uuid_lookup()** (6 connections) — `server/services/combat_service_npc.py`
-- **_participant_matches_npc_id()** (5 connections) — `server/services/combat_service_npc.py`
-- **.get_original_string_id()** (4 connections) — `server/services/combat_service_npc.py`
-- **.get_uuid_for_string_id()** (4 connections) — `server/services/combat_service_npc.py`
-- **test_get_participant_current_room_player()** (4 connections) — `server/tests/unit/services/test_combat_service_npc_helpers.py`
-- **test_resolve_npc_participant_id_in_combat_by_uuid()** (4 connections) — `server/tests/unit/services/test_combat_service_npc_helpers.py`
-- *... and 43 more nodes in this community*
+- **test_container_service.py** (65 connections) — `server/tests/unit/services/test_container_service.py`
+- **ContainerService** (53 connections)
+- **asyncio** (27 connections)
+- **_container_data()** (25 connections) — `server/tests/unit/services/test_container_service.py`
+- **_stack()** (20 connections) — `server/tests/unit/services/test_container_service.py`
+- **_container()** (14 connections) — `server/tests/unit/services/test_container_service.py`
+- **_open_from_fixture()** (10 connections) — `server/tests/unit/services/test_container_service.py`
+- **_allow_all_mutations()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_capacity_exceeded()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_item_not_found()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_reraises_unexpected_error()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_success()** (7 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_from_container_mutation_guard_suppressed()** (6 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_continues_past_other_errors()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_stops_on_capacity_error()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_loot_all_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_capacity_exceeded()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_mutation_guard_suppressed()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_transfer_to_container_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_close_container_logs_audit_when_data_available()** (4 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_lock_container_updates_state()** (4 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_open_container_already_open()** (4 connections) — `server/tests/unit/services/test_container_service.py`
+- **test_open_container_audit_failure_still_succeeds()** (4 connections) — `server/tests/unit/services/test_container_service.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [CombatService](CombatService.md) (27 shared connections)
-- [CombatInstance](CombatInstance.md) (10 shared connections)
-- [TargetMatch](TargetMatch.md) (8 shared connections)
-- [CombatParticipant](CombatParticipant.md) (8 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_service_npc.py`
-- `server/tests/unit/services/test_combat_service_npc_helpers.py`
+- `server/tests/unit/services/test_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (91%)
-- INFERRED: 17 (9%)
+- EXTRACTED: 214 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,29 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- **MythosMUD LLM Wiki (Obsidian)** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Workflows** (6 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Chaosium ingest** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Division of labor** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Graphify sync** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Ingest** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Lint** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Non-goals** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Query (durable)** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **Vault location** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **When to use this skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
+- **LLM Wiki Skill** (1 connections) — `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Relationships
 
-- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- `.claude/skills/mythosmud-llm-wiki/SKILL.md`
 
 ## Audit Trail
 

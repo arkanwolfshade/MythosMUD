@@ -4,31 +4,33 @@
 
 ## Key Concepts
 
-- **Actionable Recommendations** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Add Missing Integration Tests (70 tests, 0% risk, 10 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Command** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Critical Gap Action (Month 2)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Files** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **High-Priority Action (Next 2 Weeks)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Immediate Action (This Week)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Parametrize Repetitive Tests (170 → 50, 0% risk, 8 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Priorities** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Prune Infrastructure Tests (60 tests, 5% risk, 4 hours effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Remove Placeholder Tests (40 tests, 0% risk, 30 min effort)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Strategic Action (Next Month)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Targets** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **ADR-018: New Game Session vs Grace Reconnect** (10 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **ADR-018-new-game-session-replacement.md** (3 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **7. References** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **8. Changelog** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- **Debugging Mid-Run Drops** (1 connections) — `docs/debugging-mid-run-drops.md`
+- **Memory Leak Metrics Usage Guide** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit - Executive Summary](Test_Suite_Quality_Audit_-_Executive_Summary.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
+- `docs/debugging-mid-run-drops.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

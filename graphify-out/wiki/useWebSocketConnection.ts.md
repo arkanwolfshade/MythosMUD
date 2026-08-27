@@ -1,59 +1,52 @@
 # useWebSocketConnection.ts
 
-> 30 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnectionTestFixtures.ts** (13 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **useWebSocketConnection.pingHeartbeat.test.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **useWebSocketConnection()** (11 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **useWebSocketConnection.connection.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- **useWebSocketConnection.errorHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **useWebSocketConnection.messageHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- **useWebSocketConnection.callbacks.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- **useWebSocketConnection.cleanup.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **latestWebSocketInstance** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **wsTestState** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **ThrowingWebSocket** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **connectOpenAndRunPingInterval()** (2 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- **WebSocketConnectionOptions** (1 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **WebSocketConnectionResult** (1 connections) — `client/src/hooks/useWebSocketConnection.ts`
-- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- **.close()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.constructor()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.getCloseCalls()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.getSendCalls()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- **.send()** (1 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- *... and 5 more nodes in this community*
+- **test_shopkeeper_npc.py** (25 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **_shopkeeper()** (20 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **ShopkeeperNPC** (19 connections) — `server/npc/shopkeeper_npc.py`
+- **_shop_quantity()** (5 connections) — `server/npc/shopkeeper_npc.py`
+- **.__init__()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **._setup_shopkeeper_behavior_rules()** (3 connections) — `server/npc/shopkeeper_npc.py`
+- **test_add_buyable_item_invalid()** (3 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **.add_buyable_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.add_shop_item()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.buy_from_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.calculate_price()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.get_behavior_rules()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_greet_customer()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **._handle_restock_inventory()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **.sell_to_player()** (2 connections) — `server/npc/shopkeeper_npc.py`
+- **test_add_buyable_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_add_shop_item_and_inventory()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_add_shop_item_invalid_item()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_behavior_handlers()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_exception()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_inventory_failure()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_not_buyable()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_buy_from_player_success()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_calculate_price_default_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- **test_calculate_price_explicit_markup()** (2 connections) — `server/tests/unit/npc/test_shopkeeper_npc.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
-- [ResourceManager](ResourceManager.md) (3 shared connections)
-- [security.ts](security.ts.md) (3 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [Invite](Invite.md) (1 shared connections)
+- [build_event](build_event.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
-- `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
-- `client/src/hooks/useWebSocketConnection.ts`
+- `server/npc/shopkeeper_npc.py`
+- `server/tests/unit/npc/test_shopkeeper_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 74 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,13 @@
 # mythosTheme.ts
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
-- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
-- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
+- **Alone Against the Dark (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **Alone Against the Dark.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
 
 ## Relationships
 
@@ -14,8 +15,7 @@
 
 ## Source Files
 
-- `client/src/theme/__tests__/mythosTheme.test.ts`
-- `client/src/theme/mythosTheme.ts`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Dark.md`
 
 ## Audit Trail
 

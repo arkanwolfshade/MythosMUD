@@ -1,51 +1,59 @@
 # StatisticsAggregator
 
-> 73 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **StatisticsAggregator** (31 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **test_statistics_aggregator.py** (15 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **._build_connection_stats()** (10 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._compose_memory_stats()** (7 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **MemoryStatsSnapshot** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_connections_section()** (6 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **UUID** (6 connections)
-- **fixture** (6 connections)
-- **._memory_sessions_section()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._safe_ratio()** (5 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_connection_health()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._count_orphaned_connections()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_connection_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **.get_memory_stats()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **statistics_aggregator()** (4 connections) — `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
-- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._connection_age_extrema()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._memory_monitor_config_section()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- **._session_connection_distribution()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
-- *... and 48 more nodes in this community*
+- **authenticated.ts** (21 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- **commands.ts** (12 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **safeWait()** (11 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
+- **constants.ts** (10 connections) — `client/tests/e2e/di-migration/constants.ts`
+- **executeCommand()** (9 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **wait.ts** (9 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
+- **suite-01-core-services.spec.ts** (8 connections) — `client/tests/e2e/di-migration/suite-01-core-services.spec.ts`
+- **authenticatedTest** (7 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- **suite-03-command-handlers.spec.ts** (7 connections) — `client/tests/e2e/di-migration/suite-03-command-handlers.spec.ts`
+- **suite-04-game-tick.spec.ts** (7 connections) — `client/tests/e2e/di-migration/suite-04-game-tick.spec.ts`
+- **suite-05-websocket.spec.ts** (6 connections) — `client/tests/e2e/di-migration/suite-05-websocket.spec.ts`
+- **suite-06-integration.spec.ts** (6 connections) — `client/tests/e2e/di-migration/suite-06-integration.spec.ts`
+- **openAuthenticatedPage()** (5 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- **setupAuthStorage()** (4 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- **waitForResponse()** (4 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **api.ts** (4 connections) — `client/tests/e2e/di-migration/fixtures/api.ts`
+- **status-output.ts** (4 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
+- **expectStatusCommandOutput()** (3 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
+- **waitForGameTick()** (3 connections) — `client/tests/e2e/di-migration/fixtures/wait.ts`
+- **adminTest** (3 connections) — `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- **testAPIEndpoint()** (2 connections) — `client/tests/e2e/di-migration/fixtures/api.ts`
+- **sendCommandToPage()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **waitForAnyResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **waitForSpecificResponse()** (2 connections) — `client/tests/e2e/di-migration/fixtures/commands.ts`
+- **detectStatusOutput()** (2 connections) — `client/tests/e2e/di-migration/fixtures/status-output.ts`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (9 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/monitoring/statistics_aggregator.py`
-- `server/tests/unit/realtime/monitoring/test_statistics_aggregator.py`
+- `client/tests/e2e/di-migration/constants.ts`
+- `client/tests/e2e/di-migration/fixtures/api.ts`
+- `client/tests/e2e/di-migration/fixtures/authenticated.ts`
+- `client/tests/e2e/di-migration/fixtures/commands.ts`
+- `client/tests/e2e/di-migration/fixtures/status-output.ts`
+- `client/tests/e2e/di-migration/fixtures/wait.ts`
+- `client/tests/e2e/di-migration/suite-01-core-services.spec.ts`
+- `client/tests/e2e/di-migration/suite-02-api-endpoints.spec.ts`
+- `client/tests/e2e/di-migration/suite-03-command-handlers.spec.ts`
+- `client/tests/e2e/di-migration/suite-04-game-tick.spec.ts`
+- `client/tests/e2e/di-migration/suite-05-websocket.spec.ts`
+- `client/tests/e2e/di-migration/suite-06-integration.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 88 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,31 +4,31 @@
 
 ## Key Concepts
 
-- **SQLAlchemyAsyncLinter** (9 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_file()** (6 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_directory()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **main()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **._check_execute_call()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
-- **._is_wrapped_in_text()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_Await()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **lint_sqlalchemy_async.py** (4 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_Import()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Path** (3 connections)
-- **Call** (2 connections)
-- **.__init__()** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Await** (1 connections)
-- **Import** (1 connections)
-- **ImportFrom** (1 connections)
-- **Lint a single Python file for SQLAlchemy async issues. Returns: List of…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Lint all Python files in a directory recursively. Returns: List of (filename,…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Main entry point for the linter.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **AST visitor to detect problematic SQLAlchemy async patterns. Detects patterns…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for SQLAlchemy imports.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for SQLAlchemy text import.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check for problematic await patterns.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check if this is a problematic execute() call.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
-- **Check if the argument is wrapped in text().** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.cursor/hooks/record_edited_file.py** (11 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_test_file()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **main()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`
+- **Path** (5 connections)
+- **_is_client_test_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_payload()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_state()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_write_state_atomic()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_agent_config_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_server_test_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **Any** (2 connections)
+- **Return True if we should not record (missing data or test file).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return workspace-relative path for pattern matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under server/tests/.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load state from file; return empty dict on failure.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.cursor/hooks/record_edited_file.py`
 
 ## Relationships
 
@@ -36,11 +36,11 @@
 
 ## Source Files
 
-- `scripts/lint_sqlalchemy_async.py`
+- `.cursor/hooks/record_edited_file.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

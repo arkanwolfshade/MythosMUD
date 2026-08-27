@@ -1,24 +1,26 @@
 # 🔧 Changes Summary
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🔧 Changes Summary** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Methods Made Async** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Pattern Applied (48 times)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **._exit_is_bidirectional()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_reverse_direction()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **True if target room has a reverse exit back to from_room_id.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get reverse direction for checking bidirectional exits. Args: direction: Exit…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [rate_overrides.py](rate_overrides.py.md) (2 shared connections)
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,34 @@
 # ✅ Positive Findings
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **✅ Positive Findings** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **1. Consistent Pattern Application** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **2. Proper Async Propagation** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **3. Exception Handling Preserved** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **4. Resource Cleanup Maintained** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **5. Proper Import Organization** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **6. Documentation Added** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **schedule_end_combat_if_npc_died_best_effort()** (8 connections) — `server/npc/npc_combat_schedule.py`
+- **test_npc_combat_schedule.py** (5 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_running_loop()** (4 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **test_schedule_end_combat_if_npc_died_no_service()** (4 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **patch** (2 connections)
+- **Schedule end_combat_if_npc_died so the slain NPC no longer gets combat turns…** (1 connections) — `server/npc/npc_combat_schedule.py`
+- **Unit tests for best-effort NPC combat cleanup scheduling.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **When combat service is missing, scheduling is a no-op.** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
+- **Without a running asyncio loop, scheduling fails quietly (RuntimeError path).** (1 connections) — `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `server/npc/npc_combat_schedule.py`
+- `server/tests/unit/npc/test_npc_combat_schedule.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

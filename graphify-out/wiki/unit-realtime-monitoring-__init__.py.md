@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **unit/realtime/monitoring/__init__.py** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
-- **Realtime monitoring unit tests.** (1 connections) — `server/tests/unit/realtime/monitoring/__init__.py`
+- **test_profession_get_stat_requirements_invalid_json()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_stat_requirements returns empty dict for invalid JSON.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/monitoring/__init__.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

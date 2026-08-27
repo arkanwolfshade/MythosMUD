@@ -1,65 +1,61 @@
 # DatabaseManager
 
-> 336 nodes
+> 100 nodes
 
 ## Key Concepts
 
-- **DatabaseManager** (113 connections) — `server/database.py`
-- **.get_instance()** (88 connections) — `server/database.py`
-- **.reset_instance()** (87 connections) — `server/database.py`
-- **test_database_helpers.py** (48 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **test_database_extended.py** (44 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_error_handling.py** (43 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_init.py** (37 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **database_helpers.py** (32 connections) — `server/database_helpers.py`
-- **get_database_path()** (17 connections) — `server/database_helpers.py`
-- **reset_database()** (16 connections) — `server/database.py`
-- **asyncio** (14 connections)
-- **get_database_path()** (12 connections) — `server/database.py`
-- **get_async_session()** (12 connections) — `server/database_helpers.py`
-- **asyncio** (12 connections)
-- **get_session_maker()** (10 connections) — `server/database_helpers.py`
-- **init_db()** (10 connections) — `server/database.py`
-- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
-- **get_engine()** (9 connections) — `server/database.py`
-- **get_engine()** (9 connections) — `server/database_helpers.py`
-- **reset_database()** (9 connections) — `server/database_helpers.py`
-- **close_db()** (8 connections) — `server/database_helpers.py`
-- **init_db()** (8 connections) — `server/database_helpers.py`
-- **test_database.py** (8 connections) — `server/tests/unit/infrastructure/test_database.py`
-- **get_database_url()** (7 connections) — `server/database_helpers.py`
-- **test_close_handles_attribute_error_during_dispose()** (7 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- *... and 311 more nodes in this community*
+- **NATSSubjectManager** (52 connections) — `server/services/nats_subject_manager/manager.py`
+- **test_manager.py** (49 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **.validate_subject()** (4 connections) — `server/services/nats_subject_manager/manager.py`
+- **subject_manager()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **subject_manager_no_cache()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **subject_manager_no_metrics()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **Test NATSSubjectManager initialization without metrics.** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
+- **._cache_result()** (3 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_subscription_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
+- **._record_validation_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
+- **.register_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
+- **test_build_subject_subject_too_long()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_custom_max_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_nats_subject_manager_init_strict_validation()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **fixture** (3 connections)
+- **.clear_cache()** (2 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_chat_subscription_patterns()** (2 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_event_subscription_patterns()** (2 connections) — `server/services/nats_subject_manager/manager.py`
+- **test_build_subject_invalid_parameter_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_build_subject_multiple_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (56 shared connections)
-- [ValidationError](ValidationError.md) (23 shared connections)
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [Invite](Invite.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
+- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (15 shared connections)
+- [test_websocket_handler_rate_limit.py](test_websocket_handler_rate_limit.py.md) (8 shared connections)
+- [test_message_broadcaster.py](test_message_broadcaster.py.md) (7 shared connections)
+- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (2 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [connection_establishment.py](connection_establishment.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (1 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (1 shared connections)
+- [Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch](Uvicorn-ASGI_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
+- [compare_linting_results.py](compare_linting_results.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/api/admin/subject_controller.py`
+- `server/services/nats_subject_manager/manager.py`
+- `server/tests/unit/services/nats_subject_manager/test_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 695 (86%)
-- INFERRED: 112 (14%)
+- EXTRACTED: 147 (94%)
+- INFERRED: 10 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

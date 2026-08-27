@@ -1,24 +1,26 @@
 # Monitoring and Validation
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Monitoring and Validation** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Monthly Review Questions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Weekly Metrics** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **test_validate_secure_path_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_validate_secure_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path with path containing spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **Test validate_secure_path normalizes backslashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/tests/unit/infrastructure/test_security_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

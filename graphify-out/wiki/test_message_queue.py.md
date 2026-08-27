@@ -1,58 +1,51 @@
 # test_message_queue.py
 
-> 119 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **test_message_queue.py** (32 connections) — `server/tests/unit/realtime/test_message_queue.py`
-- **deque** (26 connections)
-- **mythos_mud_mapbuilder.py** (22 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Coord** (14 connections)
-- **RoomID** (12 connections)
-- **Room** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **infer_coordinates()** (11 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **main()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_process_exit()** (10 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_with_tcod()** (8 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **build_tile_grid()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **compute_bounds()** (7 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_check_disconnected_rooms()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **dump_ascii_to_file()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_coordinate_conflict()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_spatial_collision()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_handle_unknown_direction()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_initialize_bfs_queue()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_record_explicit_coords()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **render_text()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **_select_start_room_if_needed()** (6 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **Any** (6 connections)
-- **load_rooms_from_dir()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **run_validator_on_rooms()** (5 connections) — `data/local/mythos_mud_mapbuilder.py`
-- **example_validator()** (4 connections) — `data/local/mythos_mud_mapbuilder.py`
-- *... and 94 more nodes in this community*
+- **collect_inventory.py** (17 connections) — `server/game/quest/collect_inventory.py`
+- **Any** (14 connections)
+- **consume_prototype_from_player()** (13 connections) — `server/game/quest/collect_inventory.py`
+- **count_prototype_in_stacks()** (12 connections) — `server/game/quest/collect_inventory.py`
+- **test_collect_inventory.py** (10 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **collect_player_stacks()** (9 connections) — `server/game/quest/collect_inventory.py`
+- **_consume_from_stack_list()** (8 connections) — `server/game/quest/collect_inventory.py`
+- **_apply_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
+- **_snapshot_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
+- **_consume_from_equipped()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_nested_item_dicts()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_prototype_id()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_quantity()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_deepcopy_dict_stacks()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **.set_equipped_items()** (3 connections) — `server/models/player.py`
+- **.set_inventory()** (3 connections) — `server/models/player.py`
+- **test_collect_player_stacks_merges_inventory_and_equipped()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_consume_prototype_from_player_insufficient_returns_false()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_consume_prototype_from_player_partial_stack()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_count_prototype_in_stacks_nested_container()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **test_count_prototype_in_stacks_top_level()** (3 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **Inventory helpers for collect_n quest goals. Counts and consumes items by…** (1 connections) — `server/game/quest/collect_inventory.py`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (39 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (2 shared connections)
-- [ErrorMonitor](ErrorMonitor.md) (1 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
-- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
-- [NATSMetrics](NATSMetrics.md) (1 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
+- [Room](Room.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
 
 ## Source Files
 
-- `data/local/mythos_mud_mapbuilder.py`
-- `server/realtime/message_queue.py`
-- `server/tests/unit/realtime/test_message_queue.py`
+- `server/game/quest/collect_inventory.py`
+- `server/models/player.py`
+- `server/tests/unit/game/test_collect_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 214 (91%)
-- INFERRED: 22 (9%)
+- EXTRACTED: 90 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,47 +1,51 @@
 # verify_linting_parity.py
 
-> 28 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **verify_linting_parity.py** (13 connections) — `scripts/verify_linting_parity.py`
-- **Suppression** (11 connections) — `scripts/verify_linting_parity.py`
-- **Path** (8 connections)
-- **check_alignment()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_pylint_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_ruff_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **find_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **main()** (6 connections) — `scripts/verify_linting_parity.py`
-- **_scan_files_for_suppressions()** (6 connections) — `scripts/verify_linting_parity.py`
-- **parse_pylint_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **parse_ruff_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **_write_detailed_report()** (5 connections) — `scripts/verify_linting_parity.py`
-- **Any** (5 connections)
-- **_has_pylint_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_has_ruff_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_print_misaligned_summary()** (4 connections) — `scripts/verify_linting_parity.py`
-- **Parse a ruff noqa comment. Pattern examples: - # noqa: E501,F401 - # noqa: E501…** (1 connections) — `scripts/verify_linting_parity.py`
-- **Find all suppressions in a file.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any ruff suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any pylint suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if pylint suppressions have ruff equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if ruff suppressions have pylint equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if suppressions are aligned between tools.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Scan all Python files in server directory for suppressions.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Print summary of misaligned suppressions to console.** (1 connections) — `scripts/verify_linting_parity.py`
-- *... and 3 more nodes in this community*
+- **test_lifecycle_respawn.py** (21 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **process_respawn_queue_impl()** (13 connections) — `server/npc/lifecycle_respawn.py`
+- **_make_manager()** (12 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **_respawn_data()** (12 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **lifecycle_respawn.py** (10 connections) — `server/npc/lifecycle_respawn.py`
+- **_attempt_respawn_impl()** (9 connections) — `server/npc/lifecycle_respawn.py`
+- **_process_respawn_queue_entry()** (8 connections) — `server/npc/lifecycle_respawn.py`
+- **_cleanup_respawn_queue()** (6 connections) — `server/npc/lifecycle_respawn.py`
+- **test_attempt_respawn_can_spawn_false()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_attempt_respawn_exception_returns_false()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_attempt_respawn_migrates_lifecycle_record()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_attempt_respawn_same_npc_id_no_migration()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_entry_not_ready()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_entry_success_removes_entry()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_respawn_queue_failed_retry()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_respawn_queue_max_attempts_removes_entry()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_respawn_queue_multiple_entries()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_respawn_queue_not_ready()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **test_process_respawn_queue_success()** (4 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **Any** (4 connections)
+- **.process_respawn_queue()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **test_cleanup_respawn_queue()** (2 connections) — `server/tests/unit/npc/test_lifecycle_respawn.py`
+- **Process the respawn queue and spawn NPCs that are ready (delegates to…** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Respawn queue processing for NPC lifecycle. Extracted from lifecycle_manager to…** (1 connections) — `server/npc/lifecycle_respawn.py`
+- **Process the respawn queue and spawn NPCs that are ready. Args: manager:…** (1 connections) — `server/npc/lifecycle_respawn.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_linting_parity.py`
+- `server/npc/lifecycle_manager.py`
+- `server/npc/lifecycle_respawn.py`
+- `server/tests/unit/npc/test_lifecycle_respawn.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 79 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

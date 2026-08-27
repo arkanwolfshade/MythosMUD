@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_not_echo_channel()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False for non-echo channels.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **MythosMUD Spell Model** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
+- **CoC Spells Proposal** (1 connections) — `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `.cursor/plans/coc_spells_proposal_d3705253.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

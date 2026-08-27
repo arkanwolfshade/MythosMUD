@@ -1,26 +1,26 @@
 # plane
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **test_get_players_batch_with_players()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **Test get_players_batch with actual players (UUID conversion).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [Codacy Rules](Codacy_Rules.md) (1 shared connections)
+- [P3 · config-api](P3_·_config-api.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

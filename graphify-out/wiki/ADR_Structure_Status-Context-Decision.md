@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **ADR Structure (Status/Context/Decision)** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
-- **MythosMUD ADR Authoring Skill** (1 connections) — `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- **test_handle_container_overflow_inventory_full()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow drops to ground when inventory full.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-adr-authoring/SKILL.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

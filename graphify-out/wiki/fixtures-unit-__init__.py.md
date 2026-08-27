@@ -1,44 +1,44 @@
 # fixtures/unit/__init__.py
 
-> 20 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **fixtures/unit/__init__.py** (9 connections) — `server/tests/fixtures/unit/__init__.py`
-- **strict_mocker()** (6 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **mock_helpers.py** (5 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **dummy_request()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
-- **fakerandom()** (4 connections) — `server/tests/fixtures/unit/__init__.py`
-- **strict_patch()** (4 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **test_container()** (3 connections) — `server/tests/fixtures/unit/__init__.py`
-- **fixture** (3 connections)
-- **MockerFixture** (2 connections)
-- **Any** (2 connections)
-- **Any** (1 connections)
-- **SimpleNamespace** (1 connections)
-- **fixture** (1 connections)
-- **Unit-tier fixtures with strict mocking and in-memory fakes.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
-- **Provide deterministic random seed for unit tests.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
-- **Provide a minimal request object for testing with container support.** (1 connections) — `server/tests/fixtures/unit/__init__.py`
-- **Provide a mock ApplicationContainer for testing. This fixture creates a…** (1 connections) — `server/tests/fixtures/unit/__init__.py`
-- **Strict mocking helpers for unit tests. Provides fixtures and helpers that…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **Return a patch helper that enables autospec by default. Usage: patched_fn =…** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
-- **Convenience helper for direct calls with autospec=True by default.** (1 connections) — `server/tests/fixtures/unit/mock_helpers.py`
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Scenario 4: Muting System and Emotes **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **scenario-04-muting-system-emotes.md** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 1: Both Players Connected** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 2: AW Mutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 3: Ithaqua Uses Dance Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 4: Verify AW Does NOT See Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 5: Test Other Communication Still Works** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 6: AW Unmutes Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 7: Ithaqua Uses Dance Emote Again** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 8: Verify AW Now Sees Ithaqua's Emote** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Step 9: Test Multiple Emotes** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/fixtures/unit/__init__.py`
-- `server/tests/fixtures/unit/mock_helpers.py`
+- `e2e-tests/scenarios/scenario-04-muting-system-emotes.md`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

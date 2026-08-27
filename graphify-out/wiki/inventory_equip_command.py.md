@@ -1,59 +1,59 @@
 # inventory_equip_command.py
 
-> 78 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **inventory_equip_command.py** (46 connections) — `server/commands/inventory_equip_command.py`
-- **test_inventory_equip_command.py** (37 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- **test_equipment_helpers.py** (26 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **handle_equip_command()** (15 connections) — `server/commands/inventory_equip_command.py`
-- **resolve_unequip_slot()** (14 connections) — `server/commands/equipment_helpers.py`
-- **resolve_equip_item_index()** (13 connections) — `server/commands/equipment_helpers.py`
-- **_equip_build_work()** (13 connections) — `server/commands/inventory_equip_command.py`
-- **_sample_work()** (13 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- **_equip_run_mutation()** (12 connections) — `server/commands/inventory_equip_command.py`
-- **handle_wearable_container_on_equip()** (10 connections) — `server/commands/equipment_helpers.py`
-- **normalize_equipped_items()** (10 connections) — `server/commands/equipment_helpers.py`
-- **normalize_inventory_slots()** (10 connections) — `server/commands/equipment_helpers.py`
-- **asyncio** (10 connections)
-- **find_equipped_item_after_equip()** (9 connections) — `server/commands/equipment_helpers.py`
-- **_equip_success_payload()** (9 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_target_slot_or_error()** (9 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandWork** (8 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_persist_or_rollback()** (8 connections) — `server/commands/inventory_equip_command.py`
-- **_player()** (8 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **_equip_try_inventory_swap()** (7 connections) — `server/commands/inventory_equip_command.py`
-- **CommandResponse** (7 connections)
-- **EquipCommandInventoryStep** (6 connections) — `server/commands/inventory_equip_command.py`
-- **EquipCommandRuntime** (6 connections) — `server/commands/inventory_equip_command.py`
-- **_equip_inventory_rollback_snapshot()** (6 connections) — `server/commands/inventory_equip_command.py`
-- **test_equip_run_mutation_swap_error()** (6 connections) — `server/tests/unit/commands/test_inventory_equip_command.py`
-- *... and 53 more nodes in this community*
+- **api/monitoring.py** (39 connections) — `server/api/monitoring.py`
+- **Request** (20 connections)
+- **_resolve_connection_manager_from_request()** (15 connections) — `server/api/monitoring.py`
+- **get** (14 connections)
+- **get_health_status()** (11 connections) — `server/api/monitoring.py`
+- **get_memory_stats()** (10 connections) — `server/api/monitoring.py`
+- **_resolve_memory_leak_collector_from_request()** (10 connections) — `server/api/monitoring.py`
+- **get_connection_health_stats()** (9 connections) — `server/api/monitoring.py`
+- **get_dual_connection_stats()** (9 connections) — `server/api/monitoring.py`
+- **force_memory_cleanup()** (8 connections) — `server/api/monitoring.py`
+- **get_memory_alerts()** (8 connections) — `server/api/monitoring.py`
+- **get_memory_leak_metrics()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_stats()** (8 connections) — `server/api/monitoring.py`
+- **get_task_metrics()** (8 connections) — `server/api/monitoring.py`
+- **validate_room_integrity()** (8 connections) — `server/api/monitoring.py`
+- **get_performance_summary()** (7 connections) — `server/api/monitoring.py`
+- **get_system_alerts()** (7 connections) — `server/api/monitoring.py`
+- **reset_metrics()** (7 connections) — `server/api/monitoring.py`
+- **Any** (6 connections)
+- **_assemble_health_response()** (5 connections) — `server/api/monitoring.py`
+- **_resolve_task_registry()** (4 connections) — `server/api/monitoring.py`
+- **MessageResponse** (2 connections)
+- **HealthResponse** (2 connections)
+- **post** (2 connections)
+- **AlertsResponse** (1 connections)
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [server/services/__init__.py](server-services-__init__.py.md) (22 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (20 shared connections)
-- [command_result_text](command_result_text.md) (18 shared connections)
-- [pytest.md](pytest.md.md) (11 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (47 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [vite Best Practices](vite_Best_Practices.md) (1 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [.create_get_command](create_get_command.md) (1 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/commands/inventory_equip_command.py`
-- `server/tests/unit/commands/test_equipment_helpers.py`
-- `server/tests/unit/commands/test_inventory_equip_command.py`
+- `server/api/monitoring.py`
 
 ## Audit Trail
 
-- EXTRACTED: 263 (97%)
-- INFERRED: 8 (3%)
+- EXTRACTED: 158 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

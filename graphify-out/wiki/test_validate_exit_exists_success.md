@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_validate_exit_exists_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns True for valid exit.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

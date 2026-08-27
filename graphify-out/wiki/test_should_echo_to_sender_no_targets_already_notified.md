@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_should_echo_to_sender_no_targets_already_notified()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _should_echo_to_sender returns False when no targets and already notified.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **generate_schema_from_dev.ps1** (1 connections) — `scripts/generate_schema_from_dev.ps1`
+- **Write-ColorOutput()** (1 connections) — `scripts/generate_schema_from_dev.ps1`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `scripts/generate_schema_from_dev.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

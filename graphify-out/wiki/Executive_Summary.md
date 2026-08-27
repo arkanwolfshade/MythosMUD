@@ -1,25 +1,24 @@
 # Executive Summary
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Executive Summary** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **🟡 IMPORTANT (Medium-Value):**~2,500-3,000 tests (50-60%) —**~15-18 minutes** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Key Findings** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Test Value Distribution** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **UI Panel Resize Bug** (1 connections) — `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- **UI Panel Resize Fix Verified** (1 connections) — `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Relationships
 
-- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `investigations/sessions/2025-01-XX_session-ui-panel-resize-bug.md`
+- `investigations/sessions/2025-01-XX_verification-ui-panel-resize-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

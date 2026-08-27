@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **server/game/__init__.py** (0 connections) — `server/game/__init__.py`
+- **mythosmud** (0 connections) — `pyproject.toml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/game/__init__.py`
+- `pyproject.toml`
 
 ## Audit Trail
 

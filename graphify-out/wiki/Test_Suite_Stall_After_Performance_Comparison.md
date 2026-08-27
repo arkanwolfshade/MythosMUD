@@ -4,23 +4,22 @@
 
 ## Key Concepts
 
-- **Test Suite Stall After Performance Comparison** (2 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
-- **thread.join Without Timeout Hang** (1 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
-- **Docker Build mythos_unitql Typo** (1 connections) — `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
+- **Step-by-Step Remediation Process** (3 connections) — `.cursor/commands/server-test-remediation.md`
+- **1. Initial Assessment** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **2. Categorize Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Distill Skill](Distill_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
-- `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

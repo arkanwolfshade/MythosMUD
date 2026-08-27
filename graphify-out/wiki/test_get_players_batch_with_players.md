@@ -4,23 +4,21 @@
 
 ## Key Concepts
 
-- **test_get_players_batch_with_players()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test get_players_batch with actual players (UUID conversion).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **_scan_dml_blank_before_terminator.py** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
+- **One-off scan: blank line immediately before \\. in data/db DML (invalid COPY…** (1 connections) — `scripts/_scan_dml_blank_before_terminator.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `scripts/_scan_dml_blank_before_terminator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

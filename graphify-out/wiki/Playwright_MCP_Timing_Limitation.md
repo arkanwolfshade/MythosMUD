@@ -1,23 +1,24 @@
 # Playwright MCP Timing Limitation
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Playwright MCP Timing Limitation** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
-- **Whisper Rate Limit Sliding Window** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- **.canonical_room_id()** (3 connections) — `server/realtime/connection_manager.py`
+- **Resolve a room id to the canonical Room.id value (public method).** (1 connections) — `server/realtime/connection_manager.py`
+- **Resolve a room id to the canonical Room.id value (compatibility method).** (1 connections) — `server/realtime/connection_manager.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PopulationStats](PopulationStats.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- `server/realtime/connection_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

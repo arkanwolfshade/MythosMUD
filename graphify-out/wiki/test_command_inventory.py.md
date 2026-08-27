@@ -1,53 +1,54 @@
 # test_command_inventory.py
 
-> 134 nodes
+> 124 nodes
 
 ## Key Concepts
 
-- **test_command_inventory.py** (65 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **EquipCommand** (23 connections) — `server/models/command_inventory.py`
-- **PickupCommand** (22 connections) — `server/models/command_inventory.py`
-- **UnequipCommand** (22 connections) — `server/models/command_inventory.py`
-- **field_validator** (5 connections)
-- **.validate_equip_requirements()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_slot()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_pickup_requirements()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_search_term()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_slot()** (3 connections) — `server/models/command_inventory.py`
-- **.validate_unequip_requirements()** (3 connections) — `server/models/command_inventory.py`
-- **test_drop_command_index_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_drop_command_missing_index()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_drop_command_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_drop_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_drop_command_with_quantity()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_index_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_search_term_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_target_slot_max_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_requirements_neither_provided()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_empty_string()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_strips()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- **test_equip_command_validate_search_term_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
-- *... and 109 more nodes in this community*
+- **test_nats_message_handler.py** (73 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **asyncio** (55 connections)
+- **test_handle_nats_message_attribute_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_circuit_breaker_open()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_connection_manager_resolution_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_dlq_on_final_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_unknown_message_id_defaults()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_start_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_stop_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_event_subjects_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_nats_subscribe_error_handled()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_standardized_chat_subjects_partial_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_failure()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_subscribe_to_subject_nats_error_returns_false()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_error()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_unsubscribe_from_subject_not_found()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_property_injected_returns_none()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_connection_manager_setter_updates_helpers()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_event_data_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_event_type_detection()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_retry_on_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_runtime_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- **test_handle_nats_message_success_path_metrics()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler.py`
+- *... and 99 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (34 shared connections)
-- [.create_equip_command](create_equip_command.md) (1 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_connection_disconnection.py](test_connection_disconnection.py.md) (12 shared connections)
+- [gameStore.ts](gameStore.ts.md) (4 shared connections)
+- [test_command_service.py](test_command_service.py.md) (3 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_inventory.py`
-- `server/tests/unit/models/test_command_inventory.py`
+- `server/tests/unit/realtime/test_nats_message_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 212 (99%)
-- INFERRED: 3 (1%)
+- EXTRACTED: 191 (92%)
+- INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

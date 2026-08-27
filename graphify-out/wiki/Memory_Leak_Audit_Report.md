@@ -4,45 +4,51 @@
 
 ## Key Concepts
 
-- **Memory Leak Audit Report** (9 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Findings by Category** (8 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1. Connection Management Leaks** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Recommendations** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2. Event System Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3. Async Task and Background Task Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4. Cache and In-Memory Data Structure Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5. Client-Side Memory Leaks** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **Common Patterns Identified** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6. File Handle and I/O Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7. Circular Reference Leaks** (2 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **MEMORY_LEAK_AUDIT_REPORT.md** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.1 Database Connection Pools** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.2 WebSocket Connection Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **1.3 NATS Connection and Subscription Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.1 EventBus Subscriber Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **2.2 Client-Side Event Handler Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.1 Task Registry Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **3.2 Background Service Task Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.1 LRU Cache Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **4.2 Dictionary and Set Growth** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.1 React Hook Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **5.2 Zustand Store Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **6.1 File Handle Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
-- **7.1 Object Reference Cycles** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **test_passive_lucidity_flux_service.py** (33 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **PassiveFluxContext** (9 connections) — `server/services/passive_lucidity_flux/models.py`
+- **PlayerFluxCtx** (7 connections) — `server/services/passive_lucidity_flux/service.py`
+- **FluxServiceConfig** (6 connections) — `server/services/passive_lucidity_flux/config.py`
+- **PassiveLucidityFluxService** (6 connections)
+- **asyncio** (6 connections)
+- **test_process_single_player_no_delta()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_process_tick_applies_adjustment()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_build_room_cache()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_get_room_cached_uses_persistence()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_process_tick_skipped_when_not_due()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_resolve_context_async_with_room()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_adaptive_resistance_positive_flux_unchanged()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_adaptive_resistance_reduces_negative_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_residual_accumulates_and_emits_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_apply_residual_negative_delta()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_companion_modifier_with_lucid_and_destabilizing()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_count_companion_tiers()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_emit_telemetry_records_metric()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_emit_telemetry_with_error()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_filter_active_players_includes_recent_and_null_last_active()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_is_player_active_recent()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_lookup_base_flux_for_room_overrides()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - *... and 10 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fixture](fixture.md) (6 shared connections)
+- [test_health_monitor.py](test_health_monitor.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [NATSMetrics](NATSMetrics.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- `server/services/passive_lucidity_flux/config.py`
+- `server/services/passive_lucidity_flux/models.py`
+- `server/services/passive_lucidity_flux/service.py`
+- `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 80 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

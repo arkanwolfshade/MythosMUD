@@ -1,14 +1,16 @@
 # global-teardown.ts
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **global-teardown.ts** (4 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **globalTeardown()** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__dirname** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__filename** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **projectRoot** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -16,11 +18,11 @@
 
 ## Source Files
 
-- `client/tests/e2e/runtime/global-teardown.ts`
+- `.claude/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

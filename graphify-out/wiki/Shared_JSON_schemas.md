@@ -1,26 +1,28 @@
 # Shared JSON schemas
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Shared JSON schemas** (3 connections) — `schemas/README.md`
-- **alias_schema.json** (1 connections) — `schemas/README.md`
-- **emote_schema.json** (1 connections) — `schemas/README.md`
-- **unified_room_schema.json** (1 connections) — `schemas/README.md`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **fixture** (2 connections)
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (2 shared connections)
+- [.load_container_from_room_json](load_container_from_room_json.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/README.md`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

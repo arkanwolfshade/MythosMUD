@@ -1,78 +1,74 @@
 # ValidationError
 
-> 1375 nodes
+> 317 nodes
 
 ## Key Concepts
 
-- **ValidationError** (330 connections) — `server/exceptions.py`
-- **BaseCommand** (152 connections) — `server/models/command_base.py`
-- **pydantic.md** (117 connections) — `.claude/rules/pydantic.md`
-- **command.py** (98 connections) — `server/models/command.py`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **CommandType** (96 connections) — `server/models/command_base.py`
-- **CommandFactory** (83 connections) — `server/utils/command_factories.py`
-- **UtilityCommandFactory** (65 connections) — `server/utils/command_factories_utility.py`
-- **ExplorationCommandFactory** (59 connections) — `server/utils/command_factories_exploration.py`
-- **test_command_factories_utility.py** (52 connections) — `server/tests/unit/utils/test_command_factories_utility.py`
-- **test_command_factories_exploration.py** (49 connections) — `server/tests/unit/utils/test_command_factories_exploration.py`
-- **test_command_communication.py** (47 connections) — `server/tests/unit/models/test_command_communication.py`
-- **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
-- **command_parser.py** (47 connections) — `server/utils/command_parser.py`
-- **test_command_admin.py** (44 connections) — `server/tests/unit/models/test_command_admin.py`
-- **PlayerStateCommandFactory** (40 connections) — `server/utils/command_factories_player_state.py`
-- **test_command_moderation.py** (40 connections) — `server/tests/unit/models/test_command_moderation.py`
-- **CommunicationCommandFactory** (39 connections) — `server/utils/command_factories_communication.py`
-- **ModerationCommandFactory** (37 connections) — `server/utils/command_factories_moderation.py`
-- **security_validator.py** (36 connections) — `server/validators/security_validator.py`
-- **test_command_combat.py** (33 connections) — `server/tests/unit/models/test_command_combat.py`
-- **test_command_factories_communication.py** (30 connections) — `server/tests/unit/utils/test_command_factories_communication.py`
-- **test_command_factories_moderation.py** (30 connections) — `server/tests/unit/utils/test_command_factories_moderation.py`
-- **test_command_magic.py** (29 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Direction** (28 connections) — `server/models/command_base.py`
-- *... and 1350 more nodes in this community*
+- **ContainerComponent** (98 connections) — `server/models/container.py`
+- **ContainerSourceType** (79 connections) — `server/models/container.py`
+- **test_corpse_lifecycle_service.py** (56 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- **test_container.py** (40 connections) — `server/tests/unit/models/test_container.py`
+- **ContainerLockState** (37 connections) — `server/models/container.py`
+- **loot_all_items()** (34 connections) — `server/api/container_endpoints_loot.py`
+- **models/container.py** (34 connections) — `server/models/container.py`
+- **container_endpoints_loot.py** (32 connections) — `server/api/container_endpoints_loot.py`
+- **container_events.py** (26 connections) — `server/api/container_events.py`
+- **asyncio** (23 connections)
+- **corpse_lifecycle_service.py** (19 connections) — `server/services/corpse_lifecycle_service.py`
+- **test_container_events_loot.py** (17 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **TestLootAllItems** (16 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **api/conftest.py** (16 connections) — `server/tests/unit/api/conftest.py`
+- **TestRegisterLootEndpoints** (14 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **container_models.py** (14 connections) — `server/api/container_models.py`
+- **environmental_container_loader.py** (14 connections) — `server/services/environmental_container_loader.py`
+- **TestEmitLootAllEvent** (13 connections) — `server/tests/unit/api/test_container_events_loot.py`
+- **test_container_endpoints_loot.py** (13 connections) — `server/tests/unit/api/test_container_endpoints_loot.py`
+- **test_container_endpoints_loot_register.py** (12 connections) — `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- **CorpseServiceError** (11 connections) — `server/services/corpse_lifecycle_service.py`
+- **ContainerLootAllResponse** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerTransferResponse** (10 connections) — `server/schemas/containers/container.py`
+- **containers/container.py** (10 connections) — `server/schemas/containers/container.py`
+- **ContainerOpenResponse** (9 connections) — `server/schemas/containers/container.py`
+- *... and 292 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (83 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (69 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (34 shared connections)
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (24 shared connections)
-- [DatabaseManager](DatabaseManager.md) (23 shared connections)
-- [ErrorType](ErrorType.md) (17 shared connections)
-- [pytest.md](pytest.md.md) (17 shared connections)
-- [get_username_from_user](get_username_from_user.md) (13 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (13 shared connections)
-- [MythosMUDError](MythosMUDError.md) (12 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (12 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (11 shared connections)
+- [ContainerComponent](ContainerComponent.md) (44 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (42 shared connections)
+- [ChatService](ChatService.md) (34 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (28 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (19 shared connections)
+- [asyncio](asyncio.md) (19 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (12 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (11 shared connections)
+- [executeCommand](executeCommand.md) (11 shared connections)
+- [properties](properties.md) (6 shared connections)
+- [maps.py](maps.py.md) (6 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
 
 ## Source Files
 
-- `.claude/rules/pydantic.md`
-- `server/exceptions.py`
-- `server/models/command.py`
-- `server/models/command_admin.py`
-- `server/models/command_alias.py`
-- `server/models/command_base.py`
-- `server/models/command_channel.py`
-- `server/models/command_combat.py`
-- `server/models/command_communication.py`
-- `server/models/command_exploration.py`
-- `server/models/command_follow.py`
-- `server/models/command_inventory.py`
-- `server/models/command_magic.py`
-- `server/models/command_moderation.py`
-- `server/models/command_party.py`
-- `server/models/command_player_state.py`
-- `server/models/command_utility.py`
-- `server/tests/unit/models/test_command_admin.py`
-- `server/tests/unit/models/test_command_alias.py`
-- `server/tests/unit/models/test_command_base.py`
+- `server/api/container_endpoints_loot.py`
+- `server/api/container_events.py`
+- `server/api/container_models.py`
+- `server/models/container.py`
+- `server/schemas/containers/__init__.py`
+- `server/schemas/containers/container.py`
+- `server/schemas/containers/container_data.py`
+- `server/services/corpse_lifecycle_service.py`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/api/conftest.py`
+- `server/tests/unit/api/test_container_endpoints_loot.py`
+- `server/tests/unit/api/test_container_endpoints_loot_register.py`
+- `server/tests/unit/api/test_container_events.py`
+- `server/tests/unit/api/test_container_events_loot.py`
+- `server/tests/unit/models/test_container.py`
+- `server/tests/unit/services/test_corpse_lifecycle_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2708 (85%)
-- INFERRED: 486 (15%)
+- EXTRACTED: 710 (84%)
+- INFERRED: 132 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

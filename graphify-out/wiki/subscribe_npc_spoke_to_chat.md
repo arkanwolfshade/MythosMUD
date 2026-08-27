@@ -1,43 +1,41 @@
 # subscribe_npc_spoke_to_chat
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **subscribe_npc_spoke_to_chat()** (9 connections) — `server/game/chat_npc_system.py`
-- **set_chat_service_for_npc_system()** (8 connections) — `server/game/chat_npc_system.py`
-- **.initialize()** (7 connections) — `server/container/bundles/chat.py`
-- **subject_manager()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_npc_spoke_handler_schedules_room_speech()** (4 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **test_subscribe_npc_spoke_to_chat_once()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Initialize chat service.** (1 connections) — `server/container/bundles/chat.py`
-- **Subscribe once so NPCSpoke publishes become room chat lines.** (1 connections) — `server/game/chat_npc_system.py`
-- **Wire ChatService once at app startup (optional for unit tests).** (1 connections) — `server/game/chat_npc_system.py`
-- **NPCSpoke bridge schedules say-shaped room speech; skips whisper.** (1 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **NPCSpoke subscription is one-shot.** (1 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Create NATSSubjectManager instance.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **TypeScript Best Practices** (8 connections) — `.claude/rules/typescript.md`
+- **2. Define Clear Type Contracts** (3 connections) — `.claude/rules/typescript.md`
+- **3. Avoid `any` and Prefer `unknown` for Untyped Data** (3 connections) — `.claude/rules/typescript.md`
+- **4. Implement Robust Runtime Type Validation (Type Guards)** (3 connections) — `.claude/rules/typescript.md`
+- **5. Prefer Union Types over Traditional Enums** (3 connections) — `.claude/rules/typescript.md`
+- **7. Enforce Consistent Code Organization** (3 connections) — `.claude/rules/typescript.md`
+- **typescript.md** (1 connections) — `.claude/rules/typescript.md`
+- **1. Enable Strict Mode in `tsconfig.json`** (1 connections) — `.claude/rules/typescript.md`
+- **6. Use Generics for Reusable Components/Functions** (1 connections) — `.claude/rules/typescript.md`
+- **❌ BAD: Numeric Enums** (1 connections) — `.claude/rules/typescript.md`
+- **❌ BAD: Using `any`** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Custom Type Guards for Complex Objects** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Interfaces for Object Shapes & Classes** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Named Exports (No Default Exports)** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Organized Imports** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: String Literal Unions or `const enum`** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Type Aliases for Complex Types & Unions** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: `typeof` for Primitives** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Using `unknown` (and Type Guards)** (1 connections) — `.claude/rules/typescript.md`
 
 ## Relationships
 
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (10 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (5 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [test_manager.py](test_manager.py.md) (2 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/container/bundles/chat.py`
-- `server/game/chat_npc_system.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- `.claude/rules/typescript.md`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (85%)
-- INFERRED: 5 (15%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

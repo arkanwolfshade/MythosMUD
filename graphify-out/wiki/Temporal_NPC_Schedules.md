@@ -1,11 +1,12 @@
 # Temporal NPC Schedules
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Temporal NPC Schedules** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
-- **Schedule Service** (1 connections) — `docs/archive/temporal-npc-schedule-integration-status.md`
+- **start_local.ps1** (2 connections) — `scripts/start_local.ps1`
+- **Start-Client()** (1 connections) — `scripts/start_local.ps1`
+- **Start-Server()** (1 connections) — `scripts/start_local.ps1`
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `docs/archive/temporal-npc-schedule-integration-status.md`
+- `scripts/start_local.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

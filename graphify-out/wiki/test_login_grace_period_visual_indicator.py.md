@@ -1,61 +1,50 @@
 # test_login_grace_period_visual_indicator.py
 
-> 40 nodes
+> 48 nodes
 
 ## Key Concepts
 
-- **test_login_grace_period_visual_indicator.py** (29 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **PlayerOccupantProcessor** (21 connections) — `server/realtime/player_occupant_processor.py`
-- **player_occupant_processor.py** (15 connections) — `server/realtime/player_occupant_processor.py`
-- **asyncio** (8 connections)
-- **._create_player_occupant_info()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **.process_players_for_occupants()** (7 connections) — `server/realtime/player_occupant_processor.py`
-- **test_both_linkdead_and_warded_indicators()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_removed_after_expiration()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_player_occupant_processor()** (6 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **.__init__()** (5 connections) — `server/realtime/player_occupant_processor.py`
-- **test_warded_indicator_in_look_player()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_look_room()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_in_websocket_room_updates()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_not_shown_for_reconnections()** (5 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **UUID** (5 connections)
-- **._convert_player_ids_to_uuids()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **._ensure_player_included_in_list()** (4 connections) — `server/realtime/player_occupant_processor.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_player_occupant_processor_adds_linkdead_indicator()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **test_player_occupant_processor_no_linkdead_when_not_in_grace_period()** (3 connections) — `server/tests/unit/realtime/test_visual_indicator.py`
-- **Any** (3 connections)
-- **fixture** (1 connections)
-- **Player occupant processing utilities. This module handles querying and…** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Process players and convert to occupant information. Args: room_id: The room ID…** (1 connections) — `server/realtime/player_occupant_processor.py`
-- **Processes player occupants for rooms.** (1 connections) — `server/realtime/player_occupant_processor.py`
-- *... and 15 more nodes in this community*
+- **test_validation.py** (37 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **Test validate_subject_basic() returns False for empty subject.** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_none()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_parameter_value_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_multiple_invalid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_unused_ignored()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_pattern_params_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_custom_length()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_double_dots()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_ends_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_starts_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_too_long()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_basic_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_empty_component()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (12 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (10 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (6 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (4 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [test_look_player.py](test_look_player.py.md) (3 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
-- [test_game_state_provider.py](test_game_state_provider.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch](Uvicorn-ASGI_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (7 shared connections)
+- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_occupant_processor.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/tests/unit/services/nats_subject_manager/test_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 106 (91%)
-- INFERRED: 11 (9%)
+- EXTRACTED: 62 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

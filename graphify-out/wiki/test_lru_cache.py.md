@@ -1,51 +1,51 @@
 # test_lru_cache.py
 
-> 28 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_lru_cache.py** (17 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_with_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **cache_without_ttl()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_performance_impact()** (4 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_check_only_when_ttl_enabled()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expiration_rate_calculated()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_count_tracked_in_stats()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_not_counted_in_evictions()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_expired_entries_removed_efficiently()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_mixed_expired_and_valid_entries()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_capacity_check()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_put_expired_entries_removed_before_lru_eviction()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **test_cache_size_stays_within_bounds_after_expiration()** (2 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **fixture** (2 connections)
-- **asyncio** (1 connections)
-- **Unit tests for LRU cache expiration and eviction. Tests the LRUCache class,…** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entry count is tracked in cache stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration rate is calculated in stats.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that cache size stays within bounds after expiration cleanup.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expiration checking doesn't significantly impact performance.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache with TTL enabled.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed efficiently in bulk.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test cache behavior with mix of expired and valid entries.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Create an LRUCache without TTL.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- **Test that expired entries are removed before LRU eviction.** (1 connections) — `server/tests/unit/caching/test_lru_cache.py`
-- *... and 3 more nodes in this community*
+- **Async Code Review - Post Phase 2 Migration** (16 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🚫 Anti-Patterns NOT Found (Good!)** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **✅ Positive Findings** (7 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🔍 Anti-Pattern Check** (6 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎓 Best Practice Examples to Share** (5 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **📋 Checklist Against Best Practices** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎯 Code Quality Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🎯 Final Verdict** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🟡 Minor Recommendations (Not Blocking)** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **📈 Performance Impact Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Consistent Pattern Application** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Proper Async Propagation** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Exception Handling Preserved** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Resource Cleanup Maintained** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Proper Import Organization** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Documentation Added** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **After Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **anyio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Areas for Future Enhancement (Not Blocking)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **asyncio.mdc Compliance** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Before Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Blocking Calls in Async Functions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **❌ Calling async without await** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **Code Quality: ✅ EXCELLENT (A)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **📊 Compliance Scorecard** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [LRUCache](LRUCache.md) (4 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [TestMinimapExplorationInvestigationDoc](TestMinimapExplorationInvestigationDoc.md) (1 shared connections)
+- [C2 · REVISED — procedures-only is binding](C2_·_REVISED_—_procedures-only_is_binding.md) (1 shared connections)
+- [optimized_validate_reason_content](optimized_validate_reason_content.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/caching/test_lru_cache.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

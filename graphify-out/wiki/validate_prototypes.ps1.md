@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **validate_prototypes.ps1** (0 connections) — `scripts/items/validate_prototypes.ps1`
+- **NATS Error Handling Strategy** (0 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/items/validate_prototypes.ps1`
+- `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 
 ## Audit Trail
 

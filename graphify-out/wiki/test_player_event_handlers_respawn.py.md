@@ -1,51 +1,58 @@
 # test_player_event_handlers_respawn.py
 
-> 62 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_respawn.py** (36 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **asyncio** (22 connections)
-- **mock_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **player_respawn_event_handler()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_send_respawn_event_with_retry_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_current_lucidity_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_get_stats()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_delirium_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_delirium_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_handle_player_respawned_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_prepare_room_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- *... and 37 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **update_aggro()** (22 connections) — `server/services/aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **add_damage_threat()** (18 connections) — `server/services/aggro_threat.py`
+- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **combat_service_end.py** (12 connections) — `server/services/combat_service_end.py`
+- **UUID** (11 connections)
+- **apply_taunt()** (10 connections) — `server/services/aggro_threat.py`
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **get_npc_current_target()** (8 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
+- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
+- **on_player_entered_stealth()** (7 connections) — `server/services/aggro_threat.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **clear_aggro_for_combat()** (6 connections) — `server/services/aggro_threat.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [User](User.md) (14 shared connections)
+- [NATSService](NATSService.md) (12 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (10 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
+- [MythosMUDError](MythosMUDError.md) (3 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/services/aggro_threat.py`
+- `server/services/combat_service_end.py`
+- `server/tests/integration/test_aggro_flow.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 264 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

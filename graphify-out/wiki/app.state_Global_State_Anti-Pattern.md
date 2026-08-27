@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **app.state Global State Anti-Pattern** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
-- **Uvicorn Best Practices Remediation** (1 connections) — `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- **MythosMUD Worldbuilding Foundation (Raw)** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **MythosMUD Worldbuilding Source** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
 
 ## Relationships
 
@@ -13,7 +13,8 @@
 
 ## Source Files
 
-- `.cursor/plans/uvicorn_best_practices_remediation_plan.md`
+- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `data/MythosMUD-Obsidian/wiki/sources/MythosMUD worldbuilding.md`
 
 ## Audit Trail
 

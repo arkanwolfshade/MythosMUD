@@ -1,53 +1,49 @@
 # test_alias_commands.py
 
-> 71 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
-- **asyncio** (23 connections)
-- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
-- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
-- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
-- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
-- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
-- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
-- **test_handle_alias_command_circular_reference()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_create_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_command_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_invalid_name_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_update_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- **test_handle_aliases_command_no_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
-- *... and 46 more nodes in this community*
+- **Communities (10 total, 2 thin omitted)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Reign of Terror  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Azotottal.md** (3 connections) — `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
+- **Graph Report - Reign of Terror** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **The Old Gods (nameless patrons).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
+- **Comte Fenalik.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
+- **Azotottal** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
+- **Comte Fenalik** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
+- **Community 0 - "Azotottal (fallen angel beyond the stars) / Captain Louis Malon"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 1 - "Charenton (Paris district / asylum) / Christophe Pressi — Soldat (Soldier), age 20"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 2 - "Dreamlands / Fenalik's Mansion (Poissy)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 3 - "Reign of Terror / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 4 - "Bastille / James Coquillat"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 5 - "Azathoth / Celine Bessette"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 6 - "Christophe Pressi / Comte Benoit"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 7 - "Comte Fenalik / Horror on the Orient Express"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **The Old Gods (nameless patrons)** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (6 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (4 shared connections)
-- [command_service.py](command_service.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/alias_commands.py`
-- `server/tests/unit/commands/test_alias_commands.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Azotottal.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Comte Fenalik.md`
+- `data/MythosMUD-Obsidian/wiki/entities/The Old Gods (nameless patrons).md`
 
 ## Audit Trail
 
-- EXTRACTED: 141 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

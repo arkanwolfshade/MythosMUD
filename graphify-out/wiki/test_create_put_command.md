@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_put_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_validate_exit_exists_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test validate_exit_exists() returns True for valid exit.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

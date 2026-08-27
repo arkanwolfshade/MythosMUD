@@ -1,61 +1,65 @@
 # test_error_logging.py
 
-> 76 nodes
+> 59 nodes
 
 ## Key Concepts
 
-- **test_error_logging.py** (25 connections) — `server/tests/unit/utils/test_error_logging.py`
-- **test_enhanced_error_logging.py** (24 connections) — `server/tests/unit/utils/test_enhanced_error_logging.py`
-- **create_enhanced_error_context()** (14 connections) — `server/utils/enhanced_error_logging.py`
-- **wrap_third_party_exception_enhanced()** (12 connections) — `server/utils/enhanced_error_logging.py`
-- **log_structured_error()** (11 connections) — `server/utils/enhanced_error_logging.py`
-- **create_error_context()** (10 connections) — `server/api/player_helpers.py`
-- **create_context_from_request()** (10 connections) — `server/utils/error_logging.py`
-- **create_logged_http_exception_enhanced()** (9 connections) — `server/utils/enhanced_error_logging.py`
-- **Any** (9 connections)
-- **log_and_raise_http_enhanced()** (8 connections) — `server/utils/enhanced_error_logging.py`
-- **_log_http_error()** (8 connections) — `server/utils/enhanced_error_logging.py`
-- **wrap_third_party_exception()** (8 connections) — `server/utils/error_logging.py`
-- **log_performance_metric()** (7 connections) — `server/utils/enhanced_error_logging.py`
-- **log_security_event_enhanced()** (7 connections) — `server/utils/enhanced_error_logging.py`
-- **create_context_from_websocket()** (7 connections) — `server/utils/error_logging.py`
-- **create_logged_http_exception()** (7 connections) — `server/utils/error_logging.py`
-- **log_error_with_context()** (7 connections) — `server/utils/error_logging.py`
-- **log_and_raise_http()** (6 connections) — `server/utils/error_logging.py`
-- **test_player_helpers.py** (6 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **increment_exception()** (5 connections) — `server/monitoring/exception_metrics.py`
-- **Any** (5 connections)
-- **exception_metrics.py** (4 connections) — `server/monitoring/exception_metrics.py`
-- **get_summary()** (3 connections) — `server/monitoring/exception_metrics.py`
-- **test_create_error_context_with_user_sets_user_id_and_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- **test_create_error_context_without_user_sets_metadata()** (3 connections) — `server/tests/unit/api/test_player_helpers.py`
-- *... and 51 more nodes in this community*
+- **websocket_handler.py** (64 connections) — `server/realtime/websocket_handler.py`
+- **websocket_handler_message_loop.py** (27 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_websocket_disconnect_message()** (11 connections) — `server/realtime/websocket_helpers.py`
+- **websocket_handler_app_state.py** (11 connections) — `server/realtime/websocket_handler_app_state.py`
+- **handle_message_loop_exception()** (10 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **is_client_disconnected_exception()** (9 connections) — `server/realtime/websocket_helpers.py`
+- **send_websocket_error_response()** (7 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **WebSocket** (7 connections)
+- **handle_json_decode_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_generic_exception()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **handle_websocket_runtime_error()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_exception_in_message_loop()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **process_websocket_inbound_message()** (6 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **UUID** (6 connections)
+- **resolve_and_setup_app_state_services()** (5 connections) — `server/realtime/websocket_handler_app_state.py`
+- **cleanup_websocket_connection()** (5 connections) — `server/realtime/websocket_handler_connection.py`
+- **send_welcome_event()** (5 connections) — `server/realtime/websocket_handler_connection.py`
+- **setup_initial_connection_state()** (5 connections) — `server/realtime/websocket_handler_connection.py`
+- **UUID** (5 connections)
+- **handle_websocket_disconnect()** (4 connections) — `server/realtime/websocket_handler_message_loop.py`
+- **test_websocket_handler_disconnect.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- **test_websocket_handler_helpers.py** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_helpers.py`
+- **_mirror_service_to_app_state()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- **_services_from_container()** (3 connections) — `server/realtime/websocket_handler_app_state.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (39 shared connections)
-- [MythosMUDError](MythosMUDError.md) (13 shared connections)
-- [ValidationError](ValidationError.md) (8 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [User](User.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (17 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (8 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (7 shared connections)
+- [test_goto_helpers.py](test_goto_helpers.py.md) (7 shared connections)
+- [CombatAuditLogger](CombatAuditLogger.md) (6 shared connections)
+- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (4 shared connections)
+- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (4 shared connections)
+- [App.tsx](App.tsx.md) (4 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (4 shared connections)
+- [field_validator](field_validator.md) (4 shared connections)
+- [UUID](UUID.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/player_helpers.py`
-- `server/monitoring/exception_metrics.py`
-- `server/tests/unit/api/test_player_helpers.py`
-- `server/tests/unit/utils/test_enhanced_error_logging.py`
-- `server/tests/unit/utils/test_error_logging.py`
-- `server/utils/enhanced_error_logging.py`
-- `server/utils/error_logging.py`
+- `server/realtime/websocket_handler.py`
+- `server/realtime/websocket_handler_app_state.py`
+- `server/realtime/websocket_handler_connection.py`
+- `server/realtime/websocket_handler_message_loop.py`
+- `server/realtime/websocket_helpers.py`
+- `server/tests/unit/realtime/test_websocket_handler_disconnect.py`
+- `server/tests/unit/realtime/test_websocket_handler_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 159 (89%)
+- INFERRED: 19 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

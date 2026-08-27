@@ -1,43 +1,41 @@
 # Any
 
-> 22 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Any** (7 connections)
-- **.validate_data()** (6 connections) — `schemas/validator.py`
-- **.validate_room()** (6 connections) — `schemas/validator.py`
-- **.__init__()** (4 connections) — `schemas/validator.py`
-- **.validate_alias_bundle()** (4 connections) — `schemas/validator.py`
-- **.validate_emote_file()** (4 connections) — `schemas/validator.py`
-- **.validate_room_database()** (4 connections) — `schemas/validator.py`
-- **.validate_room_file()** (4 connections) — `schemas/validator.py`
-- **.get_exit_flags()** (3 connections) — `schemas/validator.py`
-- **.get_exit_target()** (3 connections) — `schemas/validator.py`
-- **._load_schema()** (3 connections) — `schemas/validator.py`
-- **Path** (3 connections)
-- **Validate a room file against the schema. Args: file_path: Path to the room JSON…** (1 connections) — `schemas/validator.py`
-- **Validate all rooms in a database against the schema. Args: room_database:…** (1 connections) — `schemas/validator.py`
-- **Validate a serialized alias bundle against the alias schema. Args: alias_data:…** (1 connections) — `schemas/validator.py`
-- **Validate emote definition data against the emote schema. Args: emote_data:…** (1 connections) — `schemas/validator.py`
-- **Extract target room ID from exit data, handling both formats. Args: exit_data:…** (1 connections) — `schemas/validator.py`
-- **Extract flags from exit data, handling both formats. Args: exit_data: Exit data…** (1 connections) — `schemas/validator.py`
-- **Initialize the schema validator. Args: schema_path: Path to the JSON schema…** (1 connections) — `schemas/validator.py`
-- **Load and cache the JSON schema.** (1 connections) — `schemas/validator.py`
-- **Validate a JSON document against the loaded schema. Args: data: Data to…** (1 connections) — `schemas/validator.py`
-- **Validate a single room against the schema. Args: room_data: Room data to…** (1 connections) — `schemas/validator.py`
+- **LoggingPatternLinter** (8 connections) — `scripts/lint_logging_patterns.py`
+- **lint_file()** (5 connections) — `scripts/lint_logging_patterns.py`
+- **main()** (4 connections) — `scripts/lint_logging_patterns.py`
+- **.visit_Call()** (3 connections) — `scripts/lint_logging_patterns.py`
+- **.visit_FormattedValue()** (3 connections) — `scripts/lint_logging_patterns.py`
+- **.visit_Import()** (3 connections) — `scripts/lint_logging_patterns.py`
+- **.visit_ImportFrom()** (3 connections) — `scripts/lint_logging_patterns.py`
+- **lint_logging_patterns.py** (3 connections) — `scripts/lint_logging_patterns.py`
+- **Path** (2 connections)
+- **Check for deprecated logging imports.** (2 connections) — `scripts/lint_logging_patterns.py`
+- **.__init__()** (1 connections) — `scripts/lint_logging_patterns.py`
+- **FormattedValue** (1 connections)
+- **Call** (1 connections)
+- **Import** (1 connections)
+- **ImportFrom** (1 connections)
+- **Main entry point for the logging pattern linter.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **AST visitor to detect deprecated logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Check for deprecated logging patterns in function calls.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Check for f-string usage in logging contexts.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Lint a single Python file for logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (11 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/validator.py`
+- `scripts/lint_logging_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

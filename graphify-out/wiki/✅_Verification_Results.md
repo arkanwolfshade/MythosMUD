@@ -1,25 +1,26 @@
 # ✅ Verification Results
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **✅ Verification Results** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Linting** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Result**: ✅**ALL CHECKS PASSED** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Test Results** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **2025_11_25_remove_get_container_contents_json_procedure.py** (3 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **Remove deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **Restore deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

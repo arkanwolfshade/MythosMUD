@@ -1,44 +1,34 @@
 # Async Remediation Summary - December 3, 2025
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Async Remediation Summary - December 3, 2025** (25 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **🧪 Test Coverage** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📋 Remaining Work** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📊 Remediation Results** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **ASYNC_REMEDIATION_SUMMARY_2025-12-03.md** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Executive Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **📝 Git Commit Message** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Issues Addressed (12 of 12)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **New Tests Created** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Phase 2: Async Persistence Migration (2-3 weeks)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Status**: ✅**CRITICAL FIXES COMPLETE** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Test Execution** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone against the Tide  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Communities (4 total, 2 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **alone-against-the-tide/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Community 0 - "Kingsport Setting"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Community 1 - "Solo Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [✅ Verified Already Implemented](✅_Verified_Already_Implemented.md) (1 shared connections)
-- [📚 Documentation Created](📚_Documentation_Created.md) (1 shared connections)
-- [🎯 Performance Improvements](🎯_Performance_Improvements.md) (1 shared connections)
-- [🚀 Deployment Readiness](🚀_Deployment_Readiness.md) (1 shared connections)
-- [📈 Success Metrics](📈_Success_Metrics.md) (1 shared connections)
-- [🎓 Key Learnings](🎓_Key_Learnings.md) (1 shared connections)
-- [🔍 Testing Strategy](🔍_Testing_Strategy.md) (1 shared connections)
-- [🔧 Code Changes Made](🔧_Code_Changes_Made.md) (1 shared connections)
-- [📞 Next Steps](📞_Next_Steps.md) (1 shared connections)
-- [🎯 Audit Compliance Score](🎯_Audit_Compliance_Score.md) (1 shared connections)
-- [📚 Deliverables](📚_Deliverables.md) (1 shared connections)
-- [🏆 Achievement Highlights](🏆_Achievement_Highlights.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

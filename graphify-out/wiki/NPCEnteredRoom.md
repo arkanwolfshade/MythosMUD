@@ -1,68 +1,61 @@
 # NPCEnteredRoom
 
-> 277 nodes
+> 73 nodes
 
 ## Key Concepts
 
-- **NPCEnteredRoom** (46 connections) — `server/events/event_types.py`
-- **test_npc_event_handlers.py** (46 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **NPCLeftRoom** (43 connections) — `server/events/event_types.py`
-- **test_event_handler.py** (42 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **RealTimeEventHandler** (36 connections) — `server/realtime/event_handler.py`
-- **event_handler.py** (36 connections) — `server/realtime/event_handler.py`
-- **test_lifecycle_manager.py** (27 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
-- **NPCEventHandler** (26 connections) — `server/realtime/npc_event_handlers.py`
-- **PlayerRespawnedEvent** (21 connections) — `server/events/event_types.py`
-- **_make_manager()** (18 connections) — `server/tests/unit/npc/test_lifecycle_manager.py`
-- **npc_event_handlers.py** (17 connections) — `server/realtime/npc_event_handlers.py`
-- **PlayerDeliriumRespawnedEvent** (16 connections) — `server/events/event_types.py`
-- **asyncio** (16 connections)
-- **asyncio** (15 connections)
-- **test_npc_event_handlers_helpers.py** (15 connections) — `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
-- **.__init__()** (9 connections) — `server/realtime/event_handler.py`
-- **._initialize_modules()** (8 connections) — `server/realtime/event_handler.py`
-- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **get_room_sync_service()** (8 connections) — `server/services/room_sync_service.py`
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **event_handler()** (7 connections) — `server/tests/unit/realtime/test_event_handler.py`
-- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_room_message()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- *... and 252 more nodes in this community*
+- **MythosChronicle** (27 connections) — `server/time/time_service.py`
+- **time_service.py** (27 connections) — `server/time/time_service.py`
+- **game_tick_corpses.py** (21 connections) — `server/app/game_tick_corpses.py`
+- **datetime** (15 connections)
+- **get_mythos_chronicle()** (13 connections) — `server/time/time_service.py`
+- **_ensure_utc()** (11 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleLike** (9 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **cleanup_decayed_corpses()** (8 connections) — `server/app/game_tick_corpses.py`
+- **_cleanup_single_decayed_corpse()** (8 connections) — `server/app/game_tick_corpses.py`
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **time/__init__.py** (8 connections) — `server/time/__init__.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **_create_corpse_lifecycle_service()** (6 connections) — `server/app/game_tick_corpses.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.freeze()** (5 connections) — `server/time/time_service.py`
+- **._hours_between()** (5 connections) — `server/time/time_service.py`
+- **.to_real_datetime()** (5 connections) — `server/time/time_service.py`
+- **MythosCalendarComponents** (4 connections) — `server/time/time_service.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (27 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (26 shared connections)
-- [lifecycle_manager.py](lifecycle_manager.py.md) (12 shared connections)
-- [PlayerEnteredRoom](PlayerEnteredRoom.md) (12 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (10 shared connections)
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (9 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [NATSError](NATSError.md) (8 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (6 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (6 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (9 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
+- [Memory Leak Prevention System - Implementation Summary](Memory_Leak_Prevention_System_-_Implementation_Summary.md) (7 shared connections)
+- [Cursor Subagents Overview](Cursor_Subagents_Overview.md) (3 shared connections)
+- [executeCommand](executeCommand.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (2 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [admin_teleport_commands.py](admin_teleport_commands.py.md) (2 shared connections)
+- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (2 shared connections)
+- [EmoteService](EmoteService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/npc/movement_integration.py`
-- `server/realtime/event_handler.py`
-- `server/realtime/npc_event_handlers.py`
-- `server/realtime/player_event_handlers.py`
-- `server/services/room_sync_service.py`
-- `server/tests/unit/npc/test_lifecycle_manager.py`
-- `server/tests/unit/realtime/test_event_handler.py`
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
-- `server/tests/unit/realtime/test_npc_event_handlers_helpers.py`
+- `server/app/game_tick_corpses.py`
+- `server/time/__init__.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 540 (91%)
-- INFERRED: 53 (9%)
+- EXTRACTED: 185 (98%)
+- INFERRED: 4 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

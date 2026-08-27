@@ -1,47 +1,46 @@
 # .create_put_command
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.create_put_command()** (14 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_put_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_only_item()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_quantity_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_quantity_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_with_in()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command_with_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_put_command_multi_word_container()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_multi_word_container_no_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_put_command_with_in_keyword()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() handles optional 'in' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_put_command() with quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_put_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() raises error with only item.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() handles 'in' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() raises error when quantity is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() raises error when quantity is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() handles multi-word container.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_put_command() handles multi-word container without quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Create put command. Supports: put <item> [in] <container> [quantity] The "in"…** (1 connections) — `server/utils/command_factories_inventory.py`
+- **migrate_rooms.py** (12 connections) — `scripts/migrate_rooms.py`
+- **migrate_rooms()** (10 connections) — `scripts/migrate_rooms.py`
+- **_create_subzone_structure()** (4 connections) — `scripts/migrate_rooms.py`
+- **_create_zone_structure()** (4 connections) — `scripts/migrate_rooms.py`
+- **_load_and_validate_rooms()** (4 connections) — `scripts/migrate_rooms.py`
+- **_create_backup()** (3 connections) — `scripts/migrate_rooms.py`
+- **create_subzone_config()** (3 connections) — `scripts/migrate_rooms.py`
+- **create_zone_config()** (3 connections) — `scripts/migrate_rooms.py`
+- **determine_zone_type()** (3 connections) — `scripts/migrate_rooms.py`
+- **load_existing_rooms()** (3 connections) — `scripts/migrate_rooms.py`
+- **main()** (3 connections) — `scripts/migrate_rooms.py`
+- **_migrate_room_file()** (3 connections) — `scripts/migrate_rooms.py`
+- **_group_rooms_by_zone()** (2 connections) — `scripts/migrate_rooms.py`
+- **Determine the zone type based on the zone name. Args: zone_name: Name of the…** (1 connections) — `scripts/migrate_rooms.py`
+- **Load existing rooms and validate.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create backup if requested.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create zone directory and config. Returns zone_path.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create sub-zone directory and config. Returns subzone_path.** (1 connections) — `scripts/migrate_rooms.py`
+- **Load all existing room files from the flat structure. Args: rooms_path: Path to…** (1 connections) — `scripts/migrate_rooms.py`
+- **Migrate a single room file.** (1 connections) — `scripts/migrate_rooms.py`
+- **Migrate existing rooms to the new hierarchical structure. Args: rooms_path:…** (1 connections) — `scripts/migrate_rooms.py`
+- **Main entry point for the migration script.** (1 connections) — `scripts/migrate_rooms.py`
+- **Create a default zone configuration. Args: zone_name: Name of the zone…** (1 connections) — `scripts/migrate_rooms.py`
+- **Create a default sub-zone configuration. Args: subzone_name: Name of the sub-…** (1 connections) — `scripts/migrate_rooms.py`
 
 ## Relationships
 
-- [InventoryCommandFactory](InventoryCommandFactory.md) (10 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (7 shared connections)
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/utils/command_factories_inventory.py`
+- `scripts/migrate_rooms.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (71%)
-- INFERRED: 13 (29%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

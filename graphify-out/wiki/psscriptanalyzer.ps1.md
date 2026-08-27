@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **psscriptanalyzer.ps1** (1 connections) — `scripts/psscriptanalyzer.ps1`
-- **Import-PSScriptAnalyzerModule()** (1 connections) — `scripts/psscriptanalyzer.ps1`
+- **Updated Coverage Targets** (1 connections) — `docs/archive/TEST_OPTIMIZATION_STATUS.md`
+- **Placeholder Test Removal** (1 connections) — `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `scripts/psscriptanalyzer.ps1`
+- `docs/archive/TEST_OPTIMIZATION_STATUS.md`
+- `docs/archive/TEST_OPTIMIZATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

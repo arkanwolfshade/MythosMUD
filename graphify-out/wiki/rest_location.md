@@ -1,25 +1,23 @@
 # rest_location
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **rest_location** (4 connections) — `schemas/room_schema.json`
-- **default** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
+- **command_handler_unified/__init__.py** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
+- **Command handler unified unit tests.** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `server/tests/unit/command_handler_unified/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

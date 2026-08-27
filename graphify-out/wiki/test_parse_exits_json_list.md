@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_exits_json_list()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with list.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **.__init__()** (2 connections) — `server/game/stats_generator.py`
+- **Initialize the stats generator.** (1 connections) — `server/game/stats_generator.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/game/stats_generator.py`
 
 ## Audit Trail
 

@@ -1,26 +1,25 @@
 # Next Steps
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Next Steps** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Medium Term (Weeks 2-6)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Short Term (Week 1)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Movement Message Dual Panel Routing** (1 connections) — `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- **Missing game_tick Client Handler** (1 connections) — `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `investigations/sessions/2025-01-XX_movement-message-routing-bug.md`
+- `investigations/sessions/2025-01-XX_session-game-tick-messages-not-displaying.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

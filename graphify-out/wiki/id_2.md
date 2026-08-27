@@ -1,24 +1,28 @@
 # id
 
-> 3 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
+- **.validate_database_url()** (3 connections) — `server/config/models/server_db.py`
+- **.validate_pool_config()** (3 connections) — `server/config/models/server_db.py`
+- **.validate_port()** (3 connections) — `server/config/models/server_db.py`
+- **field_validator** (3 connections)
+- **Validate port is in valid range.** (1 connections) — `server/config/models/server_db.py`
+- **Validate database URL format - PostgreSQL only.** (1 connections) — `server/config/models/server_db.py`
+- **Validate pool configuration values are positive.** (1 connections) — `server/config/models/server_db.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `server/config/models/server_db.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

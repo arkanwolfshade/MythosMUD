@@ -1,39 +1,47 @@
 # Polish Systematically
 
-> 18 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Polish Systematically** (13 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Skill** (6 connections) — `.claude/skills/polish/SKILL.md`
-- **Code Quality** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Color & Contrast** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Content & Copy** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Edge Cases & Error States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Final Verification** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Forms & Inputs** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Icons & Images** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Interaction States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Micro-interactions & Transitions** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Performance** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Checklist** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Pre-Polish Assessment** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Responsiveness** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Typography Refinement** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Visual Alignment & Spacing** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **test_player_death_service.py** (49 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_room_name_for_death_empty_location()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_room_name_for_death_no_container()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_room_name_for_death_no_room()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_get_room_name_for_death_with_room()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_death_service_init()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_player_death_service_init_no_dependencies()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_publish_death_event_no_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_publish_death_event_with_event_bus()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **test_publish_death_event_with_killer_info()** (2 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Unit tests for player death service. Tests the PlayerDeathService class for…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _get_room_name_for_death() returns room name when available.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _get_room_name_for_death() returns room_id when room not found.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _get_room_name_for_death() returns 'Unknown' for empty location.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _get_room_name_for_death() returns room_id when async_persistence…** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _publish_death_event() publishes event when event bus available.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _publish_death_event() includes killer information.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test _publish_death_event() does nothing when event bus unavailable.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test PlayerDeathService initialization.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
+- **Test PlayerDeathService initialization without dependencies.** (1 connections) — `server/tests/unit/services/test_player_death_service.py`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- [](unnamed.md) (13 shared connections)
+- [asyncio](asyncio.md) (12 shared connections)
+- [test_persistence_container_persistence.py](test_persistence_container_persistence.py.md) (7 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [3. REFACTOR Findings (935 findings)](3._REFACTOR_Findings_935_findings.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [Test process_mortally_wounded_](Test_process_mortally_wounded_.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/polish/SKILL.md`
+- `server/tests/unit/services/test_player_death_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

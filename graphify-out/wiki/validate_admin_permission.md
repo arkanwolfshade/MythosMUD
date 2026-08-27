@@ -1,47 +1,42 @@
 # validate_admin_permission
 
-> 16 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **validate_admin_permission()** (20 connections) — `server/commands/admin_permission_utils.py`
-- **test_admin_permission_utils.py** (12 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **asyncio** (6 connections)
-- **_BrokenAdminPlayer** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_attribute_error()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_logs_secondary_failure()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_missing_is_admin_attr()** (4 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_granted()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_is_admin_false()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **test_validate_admin_permission_no_player()** (3 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **.is_admin()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **mock_admin_logger()** (2 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
-- **Any** (1 connections)
-- **fixture** (1 connections)
-- **Validate that a player has admin permissions. Args: player: Player object to…** (1 connections) — `server/commands/admin_permission_utils.py`
-- **Unit tests for admin permission validation.** (1 connections) — `server/tests/unit/commands/test_admin_permission_utils.py`
+- **Persistence Layer Extraction - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Next Steps** (5 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Migration Path for Callers** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Results** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Cleanup** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Architecture Changes** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Benefits** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **File Size Reduction** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Files Modified** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 1: Continue Using Sync Interface** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 2: Migrate to Async Interface (Recommended)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 2: API Endpoints (6 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 3: Real-time Handlers (8 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 4: Services (15 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 5-7: Game, NPC, and Test files** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Removed Deprecated Code** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Summary** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Validation** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Relationships
 
-- [test_goto_helpers.py](test_goto_helpers.py.md) (3 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (1 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [required](required.md) (2 shared connections)
+- [Phase 2: Infrastructure Test Reduction (Week 2)](Phase_2-_Infrastructure_Test_Reduction_Week_2.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_permission_utils.py`
-- `server/tests/unit/commands/test_admin_permission_utils.py`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (95%)
-- INFERRED: 2 (5%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

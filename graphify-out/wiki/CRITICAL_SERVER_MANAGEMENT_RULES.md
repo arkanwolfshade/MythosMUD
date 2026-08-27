@@ -1,28 +1,30 @@
 # CRITICAL SERVER MANAGEMENT RULES
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **CRITICAL SERVER MANAGEMENT RULES** (4 connections) — `.claude/rules/server-management.md`
-- **Server Authority (Critical)** (2 connections) — `.claude/rules/server-management.md`
-- **Server Management** (2 connections) — `.claude/rules/server-management.md`
-- **Implications** (1 connections) — `.claude/rules/server-management.md`
-- **MANDATORY SERVER STARTUP PROCEDURE** (1 connections) — `.claude/rules/server-management.md`
-- **ONE SERVER ONLY RULE** (1 connections) — `.claude/rules/server-management.md`
-- **PRE-COMMAND CHECKLIST** (1 connections) — `.claude/rules/server-management.md`
+- **Specific File Reviews** (9 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/auth/endpoints.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/config/models.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/command.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/models/game.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/invite.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/player.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **`server/schemas/user.py`** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Changes by document](Changes_by_document.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/server-management.md`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

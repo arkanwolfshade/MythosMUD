@@ -1,25 +1,28 @@
 # Risk Assessment
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Risk Assessment** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Implementation Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Technical Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **User Experience Risks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **required** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **required** (3 connections) — `schemas/emote_schema.json`
+- **other_message** (2 connections) — `schemas/emote_schema.json`
+- **self_message** (2 connections) — `schemas/emote_schema.json`
+- **aliases** (1 connections) — `db/static/schemas/emotes.schema.json`
 
 ## Relationships
 
-- [Chat Panel Separation Specification](Chat_Panel_Separation_Specification.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [optimized_validate_target_player](optimized_validate_target_player.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `db/static/schemas/emotes.schema.json`
+- `schemas/emote_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

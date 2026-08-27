@@ -1,45 +1,57 @@
 # asyncio
 
-> 21 nodes
+> 65 nodes
 
 ## Key Concepts
 
-- **asyncio** (13 connections)
-- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **publish() returning False should surface as False from EventPublisher.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_game_tick_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() with additional metadata.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_entered_event() handles NATS errors.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_player_left_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_logout_commands.py** (43 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **logout_commands.py** (26 connections) — `server/commands/logout_commands.py`
+- **handle_logout_command()** (24 connections) — `server/commands/logout_commands.py`
+- **asyncio** (18 connections)
+- **_get_player_for_logout()** (13 connections) — `server/commands/logout_commands.py`
+- **handle_quit_command()** (13 connections) — `server/commands/logout_commands.py`
+- **Any** (13 connections)
+- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
+- **_disconnect_player_connections()** (9 connections) — `server/commands/logout_commands.py`
+- **_prepare_player_for_logout()** (7 connections) — `server/commands/logout_commands.py`
+- **_update_and_save_player_last_active()** (7 connections) — `server/commands/logout_commands.py`
+- **_force_disconnect_player()** (4 connections) — `server/commands/logout_commands.py`
+- **_get_app_services()** (4 connections) — `server/commands/logout_commands.py`
+- **_resolve_disconnect_player_id()** (4 connections) — `server/commands/logout_commands.py`
+- **test_disconnect_player_connections_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_disconnect_player_connections_no_manager()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_disconnect_player_connections_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_corrupted_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_from_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_get_player_for_logout_persistence_returns_coroutine()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- **test_handle_logout_command_no_player()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
+- *... and 40 more nodes in this community*
 
 ## Relationships
 
-- [test_event_publisher.py](test_event_publisher.py.md) (12 shared connections)
-- [EventPublisher](EventPublisher.md) (3 shared connections)
-- [test_publish_player_left_resolves_names_from_persistence](test_publish_player_left_resolves_names_from_persistence.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (20 shared connections)
+- [MPRegenerationService](MPRegenerationService.md) (8 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [Multi-Word Spell Name Parsing Failure](Multi-Word_Spell_Name_Parsing_Failure.md) (4 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `server/commands/logout_commands.py`
+- `server/tests/unit/commands/test_logout_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (92%)
-- INFERRED: 3 (8%)
+- EXTRACTED: 170 (93%)
+- INFERRED: 12 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

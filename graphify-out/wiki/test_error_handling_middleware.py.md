@@ -1,58 +1,51 @@
 # test_error_handling_middleware.py
 
-> 64 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **test_error_handling_middleware.py** (30 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **error_handling_middleware.py** (20 connections) — `server/middleware/error_handling_middleware.py`
-- **ErrorHandlingMiddleware** (17 connections) — `server/middleware/error_handling_middleware.py`
-- **register_error_handlers()** (11 connections) — `server/middleware/error_handling_middleware.py`
-- **._handle_exception()** (10 connections) — `server/middleware/error_handling_middleware.py`
-- **setup_error_handling()** (10 connections) — `server/middleware/error_handling_middleware.py`
-- **_http_scope()** (8 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **add_error_handling_middleware()** (7 connections) — `server/middleware/error_handling_middleware.py`
-- **.log_exception()** (7 connections) — `server/middleware/error_handling_middleware.py`
-- **request_id_from_scope()** (7 connections) — `server/middleware/error_handling_middleware.py`
-- **.__call__()** (6 connections) — `server/middleware/error_handling_middleware.py`
-- **.dispatch()** (6 connections) — `server/middleware/error_handling_middleware.py`
-- **test_registered_exception_handlers_return_json()** (6 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **server/middleware/__init__.py** (6 connections) — `server/middleware/__init__.py`
-- **asyncio** (6 connections)
-- **extract_user_id_from_non_mapping()** (5 connections) — `server/middleware/error_handling_middleware.py`
-- **_error_log_kwargs()** (5 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_log_exception_levels_and_session()** (5 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_add_register_setup_error_handling()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_call_handles_exception()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_call_sets_request_id_and_success()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_dispatch_success_and_exception()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_handle_exception_fallback_when_handler_fails()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **test_request_id_from_scope()** (4 connections) — `server/tests/unit/middleware/test_error_handling_middleware.py`
-- **FastAPI** (4 connections)
-- *... and 39 more nodes in this community*
+- **TestHelperFunctions** (33 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **asyncio** (21 connections)
+- **TestHandleSpecialCommandRouting** (6 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_command()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_alias_storage_none()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_emote_conversion()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_handle_special_command_routing_returns_none()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_casting()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_catatonia()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_all_command_blocks_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_allowed_commands()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_error_handling()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_is_casting()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_no_magic_service()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_casting_state_not_casting()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_no_player()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_not_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_grace_period_block_uuid_conversion()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_invalid_expanded()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_alias()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_no_storage()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_process_alias_expansion_unsafe_alias()** (4 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_handler_unified_helpers.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (4 shared connections)
-- [MythosMUDError](MythosMUDError.md) (4 shared connections)
-- [ErrorType](ErrorType.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
-- [server/main.py](server-main.py.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_connection_statistics.py](test_connection_statistics.py.md) (27 shared connections)
+- [run_flee_effect](run_flee_effect.md) (5 shared connections)
+- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/__init__.py`
-- `server/middleware/error_handling_middleware.py`
-- `server/tests/unit/middleware/test_error_handling_middleware.py`
+- `server/tests/unit/commands/test_command_handler_unified_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (93%)
-- INFERRED: 10 (7%)
+- EXTRACTED: 119 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

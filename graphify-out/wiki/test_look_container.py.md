@@ -1,57 +1,61 @@
 # test_look_container.py
 
-> 207 nodes
+> 98 nodes
 
 ## Key Concepts
 
-- **test_look_container.py** (58 connections) — `server/tests/unit/commands/test_look_container.py`
-- **test_look_container_helpers.py** (46 connections) — `server/tests/unit/commands/test_look_container_helpers.py`
-- **look_container.py** (45 connections) — `server/commands/look_container.py`
-- **_find_container_in_room()** (24 connections) — `server/commands/look_container.py`
-- **_find_container_wearable()** (23 connections) — `server/commands/look_container.py`
-- **JsonMap** (22 connections)
-- **_format_container_display()** (21 connections) — `server/commands/look_container.py`
-- **_find_container_in_room_or_equipped()** (17 connections) — `server/commands/look_container.py`
-- **_try_lookup_container_implicit()** (16 connections) — `server/commands/look_container.py`
-- **_find_container_via_inner_container()** (14 connections) — `server/commands/look_container.py`
-- **_handle_container_look()** (13 connections) — `server/commands/look_container.py`
-- **JsonMap** (13 connections)
-- **asyncio** (13 connections)
-- **_format_container_contents()** (12 connections) — `server/commands/look_container.py`
-- **ContainerLookArgs** (10 connections) — `server/commands/look_container.py`
-- **_get_container_description()** (10 connections) — `server/commands/look_container.py`
-- **_as_map()** (9 connections) — `server/commands/look_container.py`
-- **_get_container_data_from_component()** (9 connections) — `server/commands/look_container.py`
-- **_try_match_container_component()** (9 connections) — `server/commands/look_container.py`
-- **_extract_container_metadata()** (8 connections) — `server/commands/look_container.py`
-- **_fetch_container()** (7 connections) — `server/commands/look_container.py`
-- **_find_container_via_wearable_service()** (7 connections) — `server/commands/look_container.py`
-- **_matches_item_instance_id()** (7 connections) — `server/commands/look_container.py`
-- **_matches_name_or_slot()** (7 connections) — `server/commands/look_container.py`
-- **test_handle_container_look_success()** (7 connections) — `server/tests/unit/commands/test_look_container.py`
-- *... and 182 more nodes in this community*
+- **api/player_effects.py** (33 connections) — `server/api/player_effects.py`
+- **test_player_effects_endpoints.py** (30 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **test_player_requests.py** (26 connections) — `server/tests/unit/schemas/test_player_requests.py`
+- **player_requests.py** (18 connections) — `server/schemas/players/player_requests.py`
+- **apply_lucidity_loss()** (13 connections) — `server/api/player_effects.py`
+- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
+- **apply_corruption()** (12 connections) — `server/api/player_effects.py`
+- **apply_fear()** (12 connections) — `server/api/player_effects.py`
+- **damage_player()** (12 connections) — `server/api/player_effects.py`
+- **gain_occult_knowledge()** (12 connections) — `server/api/player_effects.py`
+- **heal_player()** (12 connections) — `server/api/player_effects.py`
+- **DamageRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **LucidityLossRequest** (11 connections) — `server/schemas/players/player_requests.py`
+- **BaseModel** (11 connections)
+- **CorruptionRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **FearRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **HealRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **OccultKnowledgeRequest** (10 connections) — `server/schemas/players/player_requests.py`
+- **test_apply_lucidity_loss_validation_maps_to_404()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- **UUID** (7 connections)
+- **asyncio** (7 connections)
+- **FastAPIRequest** (6 connections)
+- **post** (6 connections)
+- **test_apply_corruption_success()** (5 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
+- *... and 73 more nodes in this community*
 
 ## Relationships
 
-- [look_command.py](look_command.py.md) (11 shared connections)
-- [Protocol](Protocol.md) (10 shared connections)
-- [coerce_int](coerce_int.md) (5 shared connections)
-- [sample_container](sample_container.md) (5 shared connections)
-- [test_look_helpers.py](test_look_helpers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [command_result_text](command_result_text.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (31 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (14 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (14 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (7 shared connections)
+- [test_logging_processors.py](test_logging_processors.py.md) (3 shared connections)
+- [maps.py](maps.py.md) (2 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [models/container.py](models-container.py.md) (1 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/look_container.py`
-- `server/tests/unit/commands/test_look_container.py`
-- `server/tests/unit/commands/test_look_container_helpers.py`
+- `server/api/player_effects.py`
+- `server/schemas/players/player_effects.py`
+- `server/schemas/players/player_requests.py`
+- `server/tests/unit/api/test_player_effects_endpoints.py`
+- `server/tests/unit/schemas/test_player_requests.py`
 
 ## Audit Trail
 
-- EXTRACTED: 430 (99%)
-- INFERRED: 5 (1%)
+- EXTRACTED: 233 (88%)
+- INFERRED: 33 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

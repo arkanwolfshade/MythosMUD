@@ -1,31 +1,34 @@
 # P8 · Applied
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **P8 · Applied** (9 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **P8-Applied.md** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Code changes — comment-only, explicitly authorised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Documentation changes — 33 files** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Issues created — 14** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Issues reopened — 12** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **New ADRs** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Not done — deliberately** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Security — filed privately, not publicly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
-- **Verification** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Enhanced Logging Quick Reference** (10 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Context Binding** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Validation Checklist** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Clear Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **🚨 CRITICAL: DO NOT USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **For complete documentation, see [ENHANCED_LOGGING_GUIDE.md](ENHANCED_LOGGING_GUIDE.md)** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Log Levels** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **✅ MANDATORY: ALWAYS USE** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **One-page cheat sheet for MythosMUD enhanced logging patterns** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Quick Fixes** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Request Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Security Features** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PostgreSQL Procedures Migration - Audit Spreadsheet](PostgreSQL_Procedures_Migration_-_Audit_Spreadsheet.md) (1 shared connections)
+- [2026_02_18_add_profession_modifiers_columns.py](2026_02_18_add_profession_modifiers_columns.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

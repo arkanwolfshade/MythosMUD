@@ -1,21 +1,25 @@
 # Future Enhancements
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Future Enhancements** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Advanced Features** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Document metadata** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Integration Opportunities** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **F-String Logging Violations** (3 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **Pre-Commit F-String Hook Gaps** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- **Enhanced Logging Compliance Audit** (1 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **F-String Logging Remediation Complete** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- **AST-Based F-String Logging Detector** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Relationships
 
-- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Audit Trail
 

@@ -1,28 +1,33 @@
 # sample_container
 
-> 7 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **sample_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
-- **sample_equipped_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_container.py`
-- **fixture** (3 connections)
-- **Create a sample container.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Create a sample equipped container item.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
-- **Create a mock prototype registry.** (1 connections) — `server/tests/unit/commands/test_look_container.py`
+- **grype.py** (9 connections) — `scripts/grype.py`
+- **_run_grype_scan()** (5 connections) — `scripts/grype.py`
+- **main()** (4 connections) — `scripts/grype.py`
+- **_handle_grype_result()** (3 connections) — `scripts/grype.py`
+- **merge_windows_machine_user_path_into_environ()** (3 connections) — `scripts/grype.py`
+- **repo_root()** (3 connections) — `scripts/grype.py`
+- **_resolve_grype_executable()** (3 connections) — `scripts/grype.py`
+- **_grype_command()** (2 connections) — `scripts/grype.py`
+- **CompletedProcess** (2 connections)
+- **Path** (1 connections)
+- **Append Machine and User Path from the registry (matches hadolint.ps1 behavior).…** (1 connections) — `scripts/grype.py`
+- **Return the MythosMUD project root (parent of scripts/).** (1 connections) — `scripts/grype.py`
 
 ## Relationships
 
-- [test_look_container.py](test_look_container.py.md) (5 shared connections)
+- [test_nats_service_health.py](test_nats_service_health.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_container.py`
+- `scripts/grype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

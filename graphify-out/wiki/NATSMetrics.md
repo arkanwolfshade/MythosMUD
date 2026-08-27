@@ -1,54 +1,59 @@
 # NATSMetrics
 
-> 50 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **NATSMetrics** (33 connections) — `server/services/nats_metrics.py`
-- **.get_metrics()** (3 connections) — `server/services/nats_metrics.py`
-- **test_nats_metrics_get_metrics()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_get_metrics_empty_processing_times()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_init()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_message_processing_times_maxlen()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_batch_flush_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_publish_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_error()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_record_subscribe_success()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_connection_health_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_nats_metrics_update_pool_utilization_clamped()** (3 connections) — `server/tests/unit/services/test_nats_service.py`
-- **.__init__()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_ack_failure()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_ack_success()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_batch_flush()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_nak()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_publish()** (2 connections) — `server/services/nats_metrics.py`
-- **.record_subscribe()** (2 connections) — `server/services/nats_metrics.py`
-- **.update_connection_health()** (2 connections) — `server/services/nats_metrics.py`
-- **.update_pool_utilization()** (2 connections) — `server/services/nats_metrics.py`
-- *... and 25 more nodes in this community*
+- **test_admin_setlucidity_command.py** (45 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **admin_setlucidity_command.py** (31 connections) — `server/commands/admin_setlucidity_command.py`
+- **asyncio** (24 connections)
+- **_handle_admin_set_lucidity_command()** (17 connections) — `server/commands/admin_setlucidity_command.py`
+- **_execute_lucidity_change()** (14 connections) — `server/commands/admin_setlucidity_command.py`
+- **Any** (12 connections)
+- **LucidityChangeCtx** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_apply_lucidity_change()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_check_admin_permissions()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_extract_command_args()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_resolve_target_player()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_setup_command_execution()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_command_context()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_validate_lcd_value()** (8 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_catatonia_registry_from_app()** (7 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_current_lcd()** (7 connections) — `server/commands/admin_setlucidity_command.py`
+- **_get_player_service_from_app()** (7 connections) — `server/commands/admin_setlucidity_command.py`
+- **LucidityUpdateResult** (5 connections) — `server/services/lucidity_helpers.py`
+- **_log_lucidity_success()** (5 connections) — `server/commands/admin_setlucidity_command.py`
+- **test_apply_lucidity_change_adjustment_error()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_apply_lucidity_change_admin_logger_failure()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_apply_lucidity_change_success()** (5 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **UUID** (5 connections)
+- **test_execute_lucidity_change_success()** (4 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- **test_check_admin_permissions_current_player_missing()** (3 connections) — `server/tests/unit/commands/test_admin_setlucidity_command.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [test_nats_service.py](test_nats_service.py.md) (17 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
-- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (7 shared connections)
+- [pytest.md](pytest.md.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
+- [look_command.py](look_command.py.md) (2 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (1 shared connections)
+- [Memory Leak Audit Report](Memory_Leak_Audit_Report.md) (1 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_metrics.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/commands/admin_setlucidity_command.py`
+- `server/services/lucidity_helpers.py`
+- `server/tests/unit/commands/test_admin_setlucidity_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 194 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

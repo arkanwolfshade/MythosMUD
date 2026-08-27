@@ -1,14 +1,16 @@
 # MythosLoginForm.tsx
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **MythosLoginForm.tsx** (4 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginFormProps** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginActions()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginInputs()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginForm()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
@@ -16,11 +18,11 @@
 
 ## Source Files
 
-- `client/src/mythosApp/MythosLoginForm.tsx`
+- `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,41 +1,39 @@
 # channel_broadcasting_strategies.py
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **channel_broadcasting_strategies.py** (14 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **ChannelBroadcastingStrategy** (12 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **WhisperChannelStrategy** (8 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **GlobalChannelStrategy** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.__init__()** (7 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.register_strategy()** (3 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **ABC** (2 connections)
-- **Channel Broadcasting Strategies for NATS Message Handler. This module…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for whisper channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Abstract base class for channel broadcasting strategies.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize the strategy factory.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Register a new strategy for a channel type. Args: channel_type: Channel type to…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for global channel broadcasting.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **CircuitBreaker Implementation Planning Document** (14 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Rollback Plan** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Configuration Schema** (2 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Dependencies** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Gradual Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Immediate Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Objectives** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Overview** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Server Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Timeline** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (6 shared connections)
-- [test_channel_broadcasting_strategies.py](test_channel_broadcasting_strategies.py.md) (6 shared connections)
-- [UUID](UUID.md) (4 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (3 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (3 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [1. Disconnect Grace Period Duration](1._Disconnect_Grace_Period_Duration.md) (1 shared connections)
+- [2025_11_25_normalize_container_schema.py](2025_11_25_normalize_container_schema.py.md) (1 shared connections)
+- [NPC Startup Duplication Analysis](NPC_Startup_Duplication_Analysis.md) (1 shared connections)
+- [Petersen's Abominations (source summary)](Petersen's_Abominations_source_summary.md) (1 shared connections)
+- [Dead Light and Other Dark Turns (source summary)](Dead_Light_and_Other_Dark_Turns_source_summary.md) (1 shared connections)
+- [Mansions of Madness_ Vol 1 - Behind Closed Doors (source summary)](Mansions_of_Madness__Vol_1_-_Behind_Closed_Doors_source_summary.md) (1 shared connections)
+- [Call of Cthulhu Investigator Handbook 7th Edition (source summary)](Call_of_Cthulhu_Investigator_Handbook_7th_Edition_source_summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

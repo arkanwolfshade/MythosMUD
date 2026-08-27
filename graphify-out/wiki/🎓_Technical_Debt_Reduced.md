@@ -1,20 +1,21 @@
 # 🎓 Technical Debt Reduced
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🎓 Technical Debt Reduced** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **After** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Before** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **MythosMUD Product Requirements** (2 connections) — `docs/archive/PRD.md`
+- **Room-Based Combat** (2 connections) — `docs/archive/PRD.md`
+- **Aggro System** (1 connections) — `docs/archive/PRD.md`
+- **Lucidity System** (1 connections) — `docs/archive/PRD.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/archive/PRD.md`
 
 ## Audit Trail
 

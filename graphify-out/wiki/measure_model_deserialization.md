@@ -1,38 +1,45 @@
 # .measure_model_deserialization
 
-> 15 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **.measure_model_deserialization()** (8 connections) — `server/utils/memory_profiler.py`
-- **.measure_model_instantiation()** (8 connections) — `server/utils/memory_profiler.py`
-- **.measure_model_serialization()** (7 connections) — `server/utils/memory_profiler.py`
-- **.get_current_memory_usage()** (6 connections) — `server/utils/memory_profiler.py`
-- **.get_memory_delta()** (6 connections) — `server/utils/memory_profiler.py`
-- **.start_profiling()** (5 connections) — `server/utils/memory_profiler.py`
-- **.stop_profiling()** (5 connections) — `server/utils/memory_profiler.py`
-- **BaseModel** (1 connections)
-- **Measure memory usage for model deserialization. Args: model_class: The Pydantic…** (1 connections) — `server/utils/memory_profiler.py`
-- **Start memory profiling.** (1 connections) — `server/utils/memory_profiler.py`
-- **Stop memory profiling.** (1 connections) — `server/utils/memory_profiler.py`
-- **Get current memory usage in bytes.** (1 connections) — `server/utils/memory_profiler.py`
-- **Get memory delta from baseline.** (1 connections) — `server/utils/memory_profiler.py`
-- **Measure memory usage for model instantiation. Args: model_class: The Pydantic…** (1 connections) — `server/utils/memory_profiler.py`
-- **Measure memory usage for model serialization. Args: instances: List of model…** (1 connections) — `server/utils/memory_profiler.py`
+- **test_player_repository_room.py** (15 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **validate_and_fix_player_room()** (13 connections) — `server/persistence/repositories/player_repository_room.py`
+- **should_skip_room_validation()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
+- **validate_and_fix_player_room_with_persistence()** (10 connections) — `server/persistence/repositories/player_repository_room.py`
+- **_player()** (9 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **player_repository_room.py** (9 connections) — `server/persistence/repositories/player_repository_room.py`
+- **test_validate_and_fix_player_room_with_persistence_commits()** (4 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_empty_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_instanced_room()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_should_skip_room_validation_tutorial_bedroom()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_already_at_fallback()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_fallback_missing_in_cache()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_moves_to_foyer()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **test_validate_and_fix_player_room_valid()** (3 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
+- **Any** (3 connections)
+- **Player** (3 connections)
+- **asyncio** (1 connections)
+- **Player room validation helpers for PlayerRepository. Validates and fixes…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Return True if room validation should be skipped (cache empty, instanced, or…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate player's current room and fix if invalid. Args: room_cache: Shared…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Validate and fix player room, persisting the fix if needed. Args: room_cache:…** (1 connections) — `server/persistence/repositories/player_repository_room.py`
+- **Unit tests for player_repository_room helpers.** (1 connections) — `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (7 shared connections)
-- [Any](Any.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (11 shared connections)
 
 ## Source Files
 
-- `server/utils/memory_profiler.py`
+- `server/persistence/repositories/player_repository_room.py`
+- `server/tests/unit/persistence/test_player_repository_room.py`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 54 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,29 @@
 # test_quest_start_by_trigger_then_abandon
 
-> 9 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_quest_start_by_trigger_then_abandon()** (10 connections) — `server/tests/integration/test_quest_flow.py`
-- **test_quest_start_log_abandon_flow()** (10 connections) — `server/tests/integration/test_quest_flow.py`
-- **_make_shared_session_factory()** (4 connections) — `server/tests/integration/test_quest_flow.py`
-- **integration** (2 connections)
-- **asyncio** (2 connections)
-- **serial** (2 connections)
-- **Integration: start leave_the_tutorial, get_quest_log shows it, abandon, log…** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Start quest via start_quest_by_trigger(room), then abandon. Verifies trigger-…** (1 connections) — `server/tests/integration/test_quest_flow.py`
-- **Return a callable that behaves like a session maker but always yields the same…** (1 connections) — `server/tests/integration/test_quest_flow.py`
+- **MythosMUD Server Test Suite** (3 connections) — `server/tests/README.md`
+- **server/tests/unit/commands/** (2 connections) — `server/commands/__tests__/README.md`
+- **Unit Test Tier** (2 connections) — `server/tests/README.md`
+- **Integration Test Tier** (1 connections) — `server/tests/README.md`
+- **make test-server** (1 connections) — `server/tests/README.md`
+- **Command Tests Relocated** (1 connections) — `server/commands/__tests__/README.md`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [QuestService](QuestService.md) (2 shared connections)
-- [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_quest_flow.py`
+- `server/commands/__tests__/README.md`
+- `server/tests/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (73%)
-- INFERRED: 6 (27%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

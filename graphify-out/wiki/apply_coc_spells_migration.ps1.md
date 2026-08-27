@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_coc_spells_migration.ps1** (0 connections) — `scripts/apply_coc_spells_migration.ps1`
+- **Dual Connection System Tasks** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_coc_spells_migration.ps1`
+- `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Audit Trail
 

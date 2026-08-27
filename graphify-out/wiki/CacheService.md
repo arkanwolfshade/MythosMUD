@@ -1,41 +1,42 @@
 # CacheService
 
-> 14 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **CacheService** (15 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.__init__()** (7 connections) — `server/caching/cache_service.py`
-- **.preload_frequently_accessed_data()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations. This service…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the cache service. Args: persistence: Persistence layer instance…** (1 connections) — `server/caching/cache_service.py`
-- **Preload frequently accessed data into caches. This method loads commonly used…** (1 connections) — `server/caching/cache_service.py`
+- **UpgradeImplementationPlan** (11 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_complete_plan()** (8 connections) — `scripts/upgrade_implementation_plan.py`
+- **main()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_migration_guides()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_monitoring_plan()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_phase_1_plan()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_phase_2_plan()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_phase_3_plan()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **.generate_rollback_procedures()** (3 connections) — `scripts/upgrade_implementation_plan.py`
+- **upgrade_implementation_plan.py** (2 connections) — `scripts/upgrade_implementation_plan.py`
+- **.__init__()** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate Phase 2: Minor Updates Plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Comprehensive upgrade implementation plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate Phase 3: Major Updates Plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate detailed migration guides** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate rollback procedures** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate post-upgrade monitoring plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate complete upgrade implementation plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Main execution function** (1 connections) — `scripts/upgrade_implementation_plan.py`
+- **Generate Phase 1: Patch Updates Plan** (1 connections) — `scripts/upgrade_implementation_plan.py`
 
 ## Relationships
 
-- [test_cache_service.py](test_cache_service.py.md) (5 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
-- [RoomCacheService](RoomCacheService.md) (1 shared connections)
-- [NPCCacheService](NPCCacheService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `scripts/upgrade_implementation_plan.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

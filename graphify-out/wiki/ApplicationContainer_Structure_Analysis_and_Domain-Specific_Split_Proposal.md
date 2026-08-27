@@ -1,42 +1,45 @@
 # ApplicationContainer Structure Analysis and Domain-Specific Split Proposal
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **ApplicationContainer Structure Analysis and Domain-Specific Split Proposal** (9 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2. Current Structure Analysis** (5 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3. Proposed Domain-Specific Split** (4 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **4. Migration Path** (4 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **APPLICATION_CONTAINER_ANALYSIS.md** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **1. Executive Summary** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.1 Attribute Inventory by Domain** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.2 Initialization Order and Dependencies** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.3 Private Initializers and Helpers** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **2.4 Public API and Consumers** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.1 Option A: Internal Bundles (Recommended)** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.2 Option B: Composed Sub-Containers (Alternative)** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **3.3 Dependency Flow Between Bundles** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **5. Backward Compatibility** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **6. Success Criteria** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **7. References** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Current state (architecture-cleanup)** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 1: Extract bundles without changing behavior [COMPLETE]** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 2: Reduce ApplicationContainer to orchestrator [COMPLETE]** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
-- **Phase 3: (Optional) Extract service factories** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Phase 2 Async Persistence Migration - Status Update** (7 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **PHASE2_MIGRATION_COMPLETE.md** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **🎯 Decision Point** (4 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **PHASE2_MIGRATION_STATUS.md** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **✅ Completed Today** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **📊 Effort Analysis** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **PassiveLucidityFluxService Tick Blocking** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Awaiting Your Direction, Professor Wolfshade** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **🚦 Current Status** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Room Cache 60s TTL** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **adjusts spectacles and awaits instruction** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Critical Phase 1 Fixes (100% Complete)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **My Recommendation** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option A: Deploy Critical Fixes Now (RECOMMENDED)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option B: Complete Full Migration First** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option C: Hybrid Approach** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Phase 2 Migration Progress (17% Complete - 2/12 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Remaining Estimate** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Time Invested** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **📝 What Needs Your Decision** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
+- **Option A Deploy Critical Fixes Now** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_flee_command.py](test_flee_command.py.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `docs/archive/PHASE2_MIGRATION_STATUS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 22 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

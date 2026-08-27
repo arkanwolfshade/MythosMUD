@@ -1,55 +1,56 @@
 # magic_service_completion.py
 
-> 25 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
-- **MagicServiceCompletionMixin** (12 connections) — `server/game/magic/magic_service_completion.py`
-- **UUID** (12 connections)
-- **Any** (11 connections)
-- **._execute_casting_immediately()** (9 connections) — `server/game/magic/magic_service_completion.py`
-- **._complete_casting()** (8 connections) — `server/game/magic/magic_service_completion.py`
-- **._recreate_target_from_state()** (7 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_complete_casting_via_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._try_queue_spell_for_combat()** (6 connections) — `server/game/magic/magic_service_completion.py`
-- **._apply_spell_costs_and_effects()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._get_player_and_room()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **._parse_casting_target_id()** (5 connections) — `server/game/magic/magic_service_completion.py`
-- **_is_heal_other_target()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_healing_update_event()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **_send_spell_completion_message()** (4 connections) — `server/game/magic/magic_service_completion.py`
-- **Casting completion flow for spellcasting. Mixin that handles completing a…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs and process effects. Args: player_id: Player ID spell: Spell…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Parse target_id from casting state. Returns None if missing or invalid.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply costs and queue spell for next combat round. Returns True if queued,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Apply spell costs/effects, send completion message and healing event.** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **If in combat, try to queue spell for next round. Return True if queued, False…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Complete a casting and apply spell effects. In combat, spells are queued for…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Mixin for MagicService: complete casting (player/room, target, costs/effects,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Get player and room_id for casting completion. Returns: Tuple of (player,…** (1 connections) — `server/game/magic/magic_service_completion.py`
-- **Recreate target from stored casting state. Args: casting_state: The casting…** (1 connections) — `server/game/magic/magic_service_completion.py`
+- **ItemPrototypeModel** (37 connections) — `server/game/items/models.py`
+- **test_item_prototype_models.py** (15 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **_valid_payload()** (9 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **field_validator** (5 connections)
+- **.validate_effect_components()** (3 connections) — `server/game/items/models.py`
+- **.validate_flags()** (3 connections) — `server/game/items/models.py`
+- **.validate_item_type()** (3 connections) — `server/game/items/models.py`
+- **.validate_tags()** (3 connections) — `server/game/items/models.py`
+- **.validate_wear_slots()** (3 connections) — `server/game/items/models.py`
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
+- **test_item_prototype_accepts_valid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_accepts_valid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_normalizes_effect_components_and_tags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_empty_effect_components()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_item_type()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_valid_minimal()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **constants.py** (3 connections) — `server/game/items/constants.py`
+- **BaseModel** (1 connections)
+- **Constants supporting item prototype validation. These enumerations anchor the…** (1 connections) — `server/game/items/constants.py`
+- **Validate and normalize effect components. Args: value: The list of effect…** (1 connections) — `server/game/items/models.py`
+- **Validate and normalize tags. Args: value: The list of tags to validate Returns:…** (1 connections) — `server/game/items/models.py`
+- **Validated representation of an item prototype definition. This model keeps the…** (1 connections) — `server/game/items/models.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [magic_service.py](magic_service.py.md) (6 shared connections)
-- [TargetMatch](TargetMatch.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [SpellLearningService](SpellLearningService.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
+- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (13 shared connections)
+- [test_alias_expansion.py](test_alias_expansion.py.md) (7 shared connections)
+- [authenticated.ts](authenticated.ts.md) (2 shared connections)
+- [command_input.py](command_input.py.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service_completion.py`
+- `server/game/items/constants.py`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/unit/game/items/test_item_prototype_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (77%)
+- INFERRED: 17 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

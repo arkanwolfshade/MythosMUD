@@ -1,52 +1,49 @@
 # test_config_model_helpers.py
 
-> 22 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_config_model_helpers.py** (12 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **_apply_url_fallback()** (8 connections) — `server/config/models/_helpers.py`
-- **_validate_tls_files_and_maybe_update_url()** (7 connections) — `server/config/models/_helpers.py`
-- **.ensure_url_set()** (5 connections) — `server/config/models/server_db.py`
-- **.validate_tls_config()** (4 connections) — `server/config/models/nats.py`
-- **test_apply_url_fallback_from_database_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_default_cors_origins_from_env()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_validate_tls_files_missing_cert_raises()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_validate_tls_updates_url_scheme()** (3 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **Any** (3 connections)
-- **test_apply_url_fallback_from_npc_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **test_apply_url_fallback_keeps_existing_url()** (2 connections) — `server/tests/unit/config/test_config_model_helpers.py`
-- **MonkeyPatch** (2 connections)
-- **Path** (2 connections)
-- **model_validator** (1 connections)
-- **Any** (1 connections)
-- **model_validator** (1 connections)
-- **If url is missing, set it from npc_url in data or from DATABASE_* env vars.…** (1 connections) — `server/config/models/_helpers.py`
-- **When TLS is enabled, validate cert/key (and optional CA) exist and update url…** (1 connections) — `server/config/models/_helpers.py`
-- **Validate TLS configuration is complete when enabled.** (1 connections) — `server/config/models/nats.py`
-- **Ensure url is set - use npc_url as fallback if url is missing. This handles…** (1 connections) — `server/config/models/server_db.py`
-- **Unit tests for server.config.models._helpers.** (1 connections) — `server/tests/unit/config/test_config_model_helpers.py`
+- **PydanticErrorHandler** (22 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.handle_validation_error()** (12 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedErrorInfo** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **convert_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **handle_pydantic_error()** (8 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.convert_to_mythos_error()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_error_details()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._create_fallback_error_response()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._extract_error_info()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._generate_user_friendly_message()** (7 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ValidationError** (7 connections)
+- **.create_handler()** (6 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_error_type()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._determine_severity()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._format_single_field_error_message()** (5 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **_ExtractedFieldErrorInfo** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._get_display_field_name()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **._get_field_path()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (3 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **ErrorContextInitKwargs** (3 connections)
+- **StandardizedErrorResponseDict** (3 connections)
+- **Unpack** (3 connections)
+- **TypedDict** (2 connections)
+- **ErrorContext** (1 connections)
+- **Initialize the Pydantic error handler. Args: context: Optional error context…** (1 connections) — `server/error_handlers/pydantic_error_handler.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [test_config_models.py](test_config_models.py.md) (3 shared connections)
-- [_parse_env_list](_parse_env_list.md) (3 shared connections)
-- [config/models/__init__.py](config-models-__init__.py.md) (1 shared connections)
-- [NATSConfig](NATSConfig.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [canonical_room_id_impl](canonical_room_id_impl.md) (21 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (2 shared connections)
 
 ## Source Files
 
-- `server/config/models/_helpers.py`
-- `server/config/models/nats.py`
-- `server/config/models/server_db.py`
-- `server/tests/unit/config/test_config_model_helpers.py`
+- `server/error_handlers/pydantic_error_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 92 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

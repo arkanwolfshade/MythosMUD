@@ -1,48 +1,56 @@
 # test_alias_expansion.py
 
-> 19 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **test_alias_expansion.py** (14 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **handle_expanded_command()** (11 connections) — `server/command_handler/alias_expansion.py`
-- **check_alias_safety()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **validate_expanded_command()** (10 connections) — `server/command_handler/alias_expansion.py`
-- **asyncio** (5 connections)
-- **test_check_alias_safety_cycle_detected()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_depth_too_deep()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_check_alias_safety_ok()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_delegates()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_handle_expanded_command_depth_limit()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_invalid_content()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **test_validate_expanded_command_too_long()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
-- **Any** (1 connections)
-- **CommandExecutionRequest** (1 connections)
-- **Handle command processing with alias expansion and loop detection. This…** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Check if an alias is safe to expand. Builds an alias dependency graph and…** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Validate an expanded command for length and content. Args: expanded_command:…** (1 connections) — `server/command_handler/alias_expansion.py`
-- **Unit tests for alias_expansion module.** (1 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **PrototypeRegistry** (44 connections) — `server/game/items/prototype_registry.py`
+- **test_prototype_registry.py** (18 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **.load_from_path()** (6 connections) — `server/game/items/prototype_registry.py`
+- **._load_one_prototype()** (6 connections) — `server/game/items/prototype_registry.py`
+- **._record_validation_failure()** (5 connections) — `server/game/items/prototype_registry.py`
+- **_make_prototype()** (5 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (5 connections)
+- **test_load_from_path_missing_directory()** (4 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Any** (4 connections)
+- **.__init__()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.invalid_entries()** (3 connections) — `server/game/items/prototype_registry.py`
+- **test_all_returns_values()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_find_by_tag()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_get_missing_raises()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_get_returns_prototype()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_durability_anomaly()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_invalid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_valid_json()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **test_load_from_path_validation_error()** (3 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **Path** (3 connections)
+- **test_invalid_entries_returns_copy()** (2 connections) — `server/tests/unit/game/items/test_prototype_registry.py`
+- **ValidationError** (1 connections)
+- **Get all invalid entries that failed validation. Returns: list[dict]: List of…** (1 connections) — `server/game/items/prototype_registry.py`
+- **In-memory registry for validated item prototypes.** (1 connections) — `server/game/items/prototype_registry.py`
+- **Load prototypes from a directory of JSON files.** (1 connections) — `server/game/items/prototype_registry.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [command_handler_unified.py](command_handler_unified.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [command_input.py](command_input.py.md) (3 shared connections)
-- [AliasGraph](AliasGraph.md) (1 shared connections)
-- [test_command_processing.py](test_command_processing.py.md) (1 shared connections)
-- [test_command_validator.py](test_command_validator.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (15 shared connections)
+- [authenticated.ts](authenticated.ts.md) (11 shared connections)
+- [magic_service_completion.py](magic_service_completion.py.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [command_input.py](command_input.py.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/alias_expansion.py`
-- `server/tests/unit/commands/test_alias_expansion.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/unit/game/items/test_prototype_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 64 (73%)
+- INFERRED: 24 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

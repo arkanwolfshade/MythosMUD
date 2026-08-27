@@ -1,22 +1,23 @@
 # vitest-jest-dom.d.ts
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **vitest-jest-dom.d.ts** (0 connections) — `client/src/test/vitest-jest-dom.d.ts`
+- **test_create_who_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_who_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/test/vitest-jest-dom.d.ts`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

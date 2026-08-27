@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **stop_monitoring.ps1** (0 connections) — `scripts/stop_monitoring.ps1`
+- **Troubleshooting Guide for MythosMUD** (0 connections) — `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/stop_monitoring.ps1`
+- `docs/TROUBLESHOOTING_GUIDE.md`
 
 ## Audit Trail
 

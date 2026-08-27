@@ -1,20 +1,21 @@
 # Log Analysis and Monitoring
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Log Analysis and Monitoring** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Custom Log Analysis** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Using Our Log Analysis Tools** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **ensure_e2e_database.ps1** (3 connections) — `scripts/ensure_e2e_database.ps1`
+- **Get-ProfessionCount()** (1 connections) — `scripts/ensure_e2e_database.ps1`
+- **Invoke-ProfessionSeedFile()** (1 connections) — `scripts/ensure_e2e_database.ps1`
+- **Resolve-PsqlPath()** (1 connections) — `scripts/ensure_e2e_database.ps1`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `scripts/ensure_e2e_database.ps1`
 
 ## Audit Trail
 

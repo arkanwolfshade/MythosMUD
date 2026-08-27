@@ -1,51 +1,65 @@
 # test_nats_service_health.py
 
-> 38 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **asyncio** (15 connections)
-- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **nats_config()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_cancel_background_tasks()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_cancel_background_tasks_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_disconnect_removes_all_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_flush_batch_empty()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_flush_batch_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_perform_health_check_error()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_perform_health_check_no_client()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_perform_health_check_success()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_perform_health_check_timeout()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_publish_batch_adds_to_batch()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_publish_batch_flushes_when_full()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_service_restart_no_duplicate_subscriptions()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_stop_health_monitoring()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_stop_health_monitoring_no_task()** (4 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **test_get_connection_stats()** (3 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **fixture** (2 connections)
-- **NATS health-check, batch flush, and subscription-lifecycle tests.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **Test _stop_health_monitoring() handles no task.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **Test publish_batch() adds message to batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **Test publish_batch() flushes when batch is full.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- **Test _flush_batch() successfully flushes batch.** (1 connections) — `server/tests/unit/services/test_nats_service_health.py`
-- *... and 13 more nodes in this community*
+- **safe_run_static()** (28 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_run()** (22 connections) — `scripts/utils/safe_subprocess.py`
+- **safe_subprocess.py** (21 connections) — `scripts/utils/safe_subprocess.py`
+- **worktree-ops.py** (11 connections) — `scripts/worktree-ops.py`
+- **get_project_root()** (8 connections) — `scripts/worktree-ops.py`
+- **get_current_worktree()** (7 connections) — `scripts/worktree-ops.py`
+- **install_dependencies()** (6 connections) — `scripts/worktree-ops.py`
+- **main()** (6 connections) — `scripts/worktree-ops.py`
+- **run_format()** (6 connections) — `scripts/worktree-ops.py`
+- **run_lint()** (6 connections) — `scripts/worktree-ops.py`
+- **run_tests()** (6 connections) — `scripts/worktree-ops.py`
+- **show_status()** (6 connections) — `scripts/worktree-ops.py`
+- **validate_path()** (5 connections) — `scripts/utils/safe_subprocess.py`
+- **sqlint.py** (5 connections) — `scripts/sqlint.py`
+- **run_psql_command()** (4 connections) — `scripts/load_seed_data.py`
+- **_resolve_sqlint_cmd()** (4 connections) — `scripts/sqlint.py`
+- **validate_command()** (4 connections) — `scripts/utils/safe_subprocess.py`
+- **run_command()** (4 connections) — `scripts/worktree-ops.py`
+- **main()** (3 connections) — `scripts/load_seed_data.py`
+- **_is_tool_crash()** (3 connections) — `scripts/sqlint.py`
+- **install.py** (3 connections) — `scripts/install.py`
+- **load_seed_data.py** (3 connections) — `scripts/load_seed_data.py`
+- **Path** (3 connections)
+- **get_project_root()** (2 connections) — `scripts/install.py`
+- **bandit.py** (2 connections) — `scripts/bandit.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (17 shared connections)
-- [NATSConfig](NATSConfig.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (6 shared connections)
+- [test_validation.py](test_validation.py.md) (4 shared connections)
+- [config/models/__init__.py](config-models-__init__.py.md) (4 shared connections)
+- [Domain Model Anemic Anti-Pattern Audit](Domain_Model_Anemic_Anti-Pattern_Audit.md) (3 shared connections)
+- [test_connection_cleaner.py](test_connection_cleaner.py.md) (3 shared connections)
+- [sample_container](sample_container.md) (3 shared connections)
+- [P4 · Intent Sweep — Core Feature Issues](P4_·_Intent_Sweep_—_Core_Feature_Issues.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_nats_service_health.py`
+- `scripts/bandit.py`
+- `scripts/build.py`
+- `scripts/format.py`
+- `scripts/install.py`
+- `scripts/lint.py`
+- `scripts/load_seed_data.py`
+- `scripts/run.py`
+- `scripts/sqlfluff.py`
+- `scripts/sqlint.py`
+- `scripts/utils/safe_subprocess.py`
+- `scripts/worktree-ops.py`
 
 ## Audit Trail
 
-- EXTRACTED: 59 (80%)
-- INFERRED: 15 (20%)
+- EXTRACTED: 118 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

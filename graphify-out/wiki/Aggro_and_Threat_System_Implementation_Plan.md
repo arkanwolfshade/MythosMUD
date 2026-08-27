@@ -1,28 +1,30 @@
 # Aggro and Threat System Implementation Plan
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **aggro-threat-implementation-plan.md** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Constants (locked)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Key Modules and Files** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **References** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Status** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **.resolve_player_name()** (4 connections) — `server/game/player_search_service.py`
+- **.get_online_players()** (3 connections) — `server/game/player_search_service.py`
+- **.search_players_by_name()** (3 connections) — `server/game/player_search_service.py`
+- **.validate_player_name()** (3 connections) — `server/game/player_search_service.py`
+- **PlayerRead** (3 connections)
+- **Search for players by name with fuzzy matching. This method returns multiple…** (1 connections) — `server/game/player_search_service.py`
+- **Validate a player name for chat system use. This checks if the name is valid…** (1 connections) — `server/game/player_search_service.py`
+- **Resolve a player name with fuzzy matching and case-insensitive search. This…** (1 connections) — `server/game/player_search_service.py`
+- **Get a list of currently online players. Note: This is a placeholder…** (1 connections) — `server/game/player_search_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
 
 ## Source Files
 
-- `docs/archive/aggro-threat-implementation-plan.md`
+- `server/game/player_search_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

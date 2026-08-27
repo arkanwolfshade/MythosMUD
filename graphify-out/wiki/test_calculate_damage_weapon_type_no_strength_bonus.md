@@ -1,24 +1,27 @@
 # test_calculate_damage_weapon_type_no_strength_bonus
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_calculate_damage_weapon_type_no_strength_bonus()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Non-physical damage type does not add strength bonus to weapon line.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **escapeRegExpLiteral()** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **toMessageMatchPattern()** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **message-match.test.ts** (3 connections) — `client/src/test/message-match.test.ts`
+- **message-match.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `client/src/test/message-match.test.ts`
+- `client/tests/e2e/runtime/fixtures/message-match.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

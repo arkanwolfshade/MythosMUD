@@ -1,60 +1,61 @@
 # test_player_disconnect_handlers.py
 
-> 77 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **test_player_disconnect_handlers.py** (35 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **player_disconnect_handlers.py** (29 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
-- **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
-- **age_off_disconnected_sessions()** (13 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_remove_player_from_online_tracking()** (10 connections) — `server/realtime/player_disconnect_handlers.py`
-- **asyncio** (8 connections)
-- **UUID** (7 connections)
-- **_get_session_maps_for_age_off()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_purge_expired_sessions_from_maps()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_empty_player_name()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_player_name()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room_found()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_no_player()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_player_left_called()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_with_room()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **_session_ids_past_age_off()** (3 connections) — `server/realtime/player_disconnect_handlers.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_keeps_recent()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_missing_attrs_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_removes_expired()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_cleanup_player_references()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- *... and 52 more nodes in this community*
+- **test_combat_service_modules.py** (62 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **asyncio** (36 connections)
+- **combat_service_events.py** (15 connections) — `server/services/combat_service_events.py`
+- **_combat_instance()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **_dp_sync()** (14 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **CombatDPSync** (12 connections) — `server/services/combat_hp_sync.py`
+- **_attack_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **_participant()** (10 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **handle_combat_completion()** (8 connections) — `server/services/combat_service_attack.py`
+- **broadcast_aggro_target_switches()** (8 connections) — `server/services/combat_service_events.py`
+- **publish_npc_damage_event()** (8 connections) — `server/services/combat_service_events.py`
+- **UUID** (8 connections)
+- **._persist_player_dp_sync()** (7 connections) — `server/services/combat_hp_sync.py`
+- **publish_npc_died_event()** (7 connections) — `server/services/combat_service_events.py`
+- **test_apply_damage_and_check_involuntary_flee_suppresses_non_damaging_phantom()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **test_finalize_attack_result_and_process_attack()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **test_finalize_attack_result_phantom_dissipation()** (6 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **._get_persistence()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._update_and_save_player_dp()** (5 connections) — `server/services/combat_hp_sync.py`
+- **test_apply_damage_and_check_involuntary_flee()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **test_register_combat_delegates_to_service()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **test_validate_melee_location_paths()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **test_validate_melee_or_end_combat_ends()** (5 connections) — `server/tests/unit/services/test_combat_service_modules.py`
+- **._log_death_threshold_events()** (4 connections) — `server/services/combat_hp_sync.py`
+- **._publish_player_dp_correction_event()** (4 connections) — `server/services/combat_hp_sync.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (9 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (3 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
-- [extract_player_name](extract_player_name.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [MythosMUDError](MythosMUDError.md) (22 shared connections)
+- [NATSService](NATSService.md) (11 shared connections)
+- [.get_instance](get_instance.md) (7 shared connections)
+- [User](User.md) (6 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_disconnect_handlers.py`
-- `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- `server/services/combat_hp_sync.py`
+- `server/services/combat_service_attack.py`
+- `server/services/combat_service_events.py`
+- `server/tests/unit/services/test_combat_service_modules.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 245 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

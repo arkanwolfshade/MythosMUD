@@ -4,20 +4,20 @@
 
 ## Key Concepts
 
-- **test_generate_room_id_from_zone_data_with_prefix()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _generate_room_id_from_zone_data when stable_id already has full path.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **value_objects/__init__.py** (1 connections) — `server/domain/value_objects/__init__.py`
+- **Domain value objects for MythosMUD. Value objects are immutable objects defined…** (1 connections) — `server/domain/value_objects/__init__.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/domain/value_objects/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

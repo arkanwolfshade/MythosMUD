@@ -1,33 +1,40 @@
 # main
 
-> 11 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/check_coverage_thresholds.py`
-- **check_coverage_thresholds.py** (5 connections) — `scripts/check_coverage_thresholds.py`
-- **_ensure_coverage_xml_or_exit()** (4 connections) — `scripts/check_coverage_thresholds.py`
-- **parse_coverage_xml()** (4 connections) — `scripts/check_coverage_thresholds.py`
-- **check_thresholds()** (3 connections) — `scripts/check_coverage_thresholds.py`
-- **_print_results_and_exit()** (3 connections) — `scripts/check_coverage_thresholds.py`
-- **Path** (3 connections)
-- **Exit if coverage.xml not found. In pre-commit context, exit 0 so commits aren't…** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Print coverage results and exit with appropriate code.** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Parse coverage.xml and return file coverage percentages.** (1 connections) — `scripts/check_coverage_thresholds.py`
-- **Check files against their thresholds. Returns hard-fail messages.** (1 connections) — `scripts/check_coverage_thresholds.py`
+- **CacheService** (15 connections) — `server/caching/cache_service.py`
+- **TestCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **.preload_frequently_accessed_data()** (2 connections) — `server/caching/cache_service.py`
+- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
+- **Main cache service that coordinates all caching operations. This service…** (1 connections) — `server/caching/cache_service.py`
+- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
+- **Preload frequently accessed data into caches. This method loads commonly used…** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (2 shared connections)
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
+- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (2 shared connections)
+- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_coverage_thresholds.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 25 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

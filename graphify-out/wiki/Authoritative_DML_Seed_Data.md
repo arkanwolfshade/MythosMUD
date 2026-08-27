@@ -1,22 +1,23 @@
 # Authoritative DML Seed Data
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Authoritative DML Seed Data** (0 connections) — `data/db/README.md`
+- **test_create_npc_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_npc_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `data/db/README.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

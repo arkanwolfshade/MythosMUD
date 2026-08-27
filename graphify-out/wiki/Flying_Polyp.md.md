@@ -1,11 +1,12 @@
 # Flying Polyp.md
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Flying Polyp.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
-- **Flying Polyp** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
+- **10 Concurrent Players Load Test** (2 connections) — `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
+- **who Command Unawaited Coroutine Bug** (1 connections) — `e2e-tests/load-tests/load_test_analysis.md`
+- **Load Test Suite** (1 connections) — `e2e-tests/load-tests/README.md`
 
 ## Relationships
 
@@ -13,11 +14,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Flying Polyp.md`
+- `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
+- `e2e-tests/load-tests/README.md`
+- `e2e-tests/load-tests/load_test_analysis.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

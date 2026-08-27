@@ -1,30 +1,31 @@
 # ConnectionManager Refactoring Summary
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **ConnectionManager Refactoring Summary** (9 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Extracted Modules** (8 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Architecture Improvements** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Refactoring Results** (3 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **REFACTORING_SUMMARY.md** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **1. Statistics & Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **2. Error Handling (`realtime/errors/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **3. Health Monitoring (`realtime/monitoring/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **4. Cleanup & Maintenance (`realtime/maintenance/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **5. Game State Management (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **6. Room Event Integration (`realtime/integration/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **7. Message Broadcasting (`realtime/messaging/`)** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **After** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Before** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **File Size Reduction** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Future Refactoring Opportunities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Overview** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Remaining Core Responsibilities** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Test Coverage** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Scenario 3: Movement Between Rooms **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **scenario-03-movement-between-rooms.md** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **✅ READY FOR TESTING** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 1: Both Players in Main Foyer** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 2: AW Moves East** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 3: Verify Ithaqua Sees AW Leave** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 4: Verify AW Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 5: Ithaqua Moves East to Join AW** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 6: Verify AW Sees Ithaqua Enter** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 7: Verify Ithaqua Sees No Self-Movement Messages** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 8: Test Return Movement** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Step 9: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
 
 ## Relationships
 
@@ -32,11 +33,11 @@
 
 ## Source Files
 
-- `docs/archive/REFACTORING_SUMMARY.md`
+- `e2e-tests/scenarios/scenario-03-movement-between-rooms.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_broadcast_combat_attack()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_combat_attack broadcasts attack event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_execute_applicable_rules_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test execute_applicable_rules() handles exceptions.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- [test_player_spell_repository.py](test_player_spell_repository.py.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 

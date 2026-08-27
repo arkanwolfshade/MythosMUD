@@ -1,51 +1,52 @@
 # HallucinationFrequencyService
 
-> 33 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **HallucinationFrequencyService** (20 connections) — `server/services/hallucination_frequency_service.py`
-- **asyncio** (9 connections)
-- **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
-- **UUID** (5 connections)
-- **test_check_room_entry_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_check_time_based_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_handles_lucidity_errors()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_room_entry_roll()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_cooldown_active()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_requires_session()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_triggers_and_sets_cooldown()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_unknown_tier()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_wrong_trigger_type()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **AsyncSession** (4 connections)
-- **.__init__()** (2 connections) — `server/services/hallucination_frequency_service.py`
-- **Any** (1 connections)
-- **Check if hallucination should trigger on room entry (Uneasy tier). Args:…** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if hallucination should trigger based on time (Fractured/Deranged tiers).…** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Service for managing hallucination frequency checks based on player tier.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Initialize the hallucination frequency service.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if a hallucination should trigger based on tier and frequency rules.…** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Lucidity service errors are swallowed and return False.** (1 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- *... and 8 more nodes in this community*
+- **ChatLogger** (28 connections) — `server/services/chat_logger.py`
+- **._write_log_entry()** (14 connections) — `server/services/chat_logger.py`
+- **._get_current_log_file()** (6 connections) — `server/services/chat_logger.py`
+- **Any** (6 connections)
+- **.__init__()** (5 connections) — `server/services/chat_logger.py`
+- **._process_log_entry()** (5 connections) — `server/services/chat_logger.py`
+- **Path** (5 connections)
+- **.get_log_file_paths()** (4 connections) — `server/services/chat_logger.py`
+- **.get_log_stats()** (4 connections) — `server/services/chat_logger.py`
+- **.log_chat_message()** (4 connections) — `server/services/chat_logger.py`
+- **.log_moderation_event()** (4 connections) — `server/services/chat_logger.py`
+- **.log_system_event()** (4 connections) — `server/services/chat_logger.py`
+- **._queue_log_entry()** (4 connections) — `server/services/chat_logger.py`
+- **.log_message_flagged()** (3 connections) — `server/services/chat_logger.py`
+- **.log_player_joined_room()** (3 connections) — `server/services/chat_logger.py`
+- **.log_player_left_room()** (3 connections) — `server/services/chat_logger.py`
+- **.log_player_muted()** (3 connections) — `server/services/chat_logger.py`
+- **.log_player_unmuted()** (3 connections) — `server/services/chat_logger.py`
+- **.log_rate_limit_violation()** (3 connections) — `server/services/chat_logger.py`
+- **._start_writer_thread()** (3 connections) — `server/services/chat_logger.py`
+- **._writer_worker()** (3 connections) — `server/services/chat_logger.py`
+- **._ensure_log_directories()** (2 connections) — `server/services/chat_logger.py`
+- **.shutdown()** (2 connections) — `server/services/chat_logger.py`
+- **.wait_for_queue_processing()** (2 connections) — `server/services/chat_logger.py`
+- **Shutdown the logger and wait for writer thread to finish.** (1 connections) — `server/services/chat_logger.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [LucidityService](LucidityService.md) (4 shared connections)
-- [FakeHallucinationService](FakeHallucinationService.md) (2 shared connections)
+- [test_npc_combat_integration_service_npc_aggro.py](test_npc_combat_integration_service_npc_aggro.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [Chaosium CoC Catalog](Chaosium_CoC_Catalog.md) (1 shared connections)
+- [Container Contents Synchronization Bug](Container_Contents_Synchronization_Bug.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/hallucination_frequency_service.py`
-- `server/tests/unit/services/test_hallucination_services.py`
+- `server/services/chat_logger.py`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (82%)
-- INFERRED: 12 (18%)
+- EXTRACTED: 75 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

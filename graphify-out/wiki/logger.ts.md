@@ -1,74 +1,53 @@
 # logger.ts
 
-> 62 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **logger.ts** (38 connections) — `client/src/utils/logger.ts`
-- **logger** (33 connections) — `client/src/utils/logger.ts`
-- **types/mythosTime.ts** (24 connections) — `client/src/types/mythosTime.ts`
-- **MythosTimeState** (23 connections) — `client/src/types/mythosTime.ts`
-- **systemHandlers.ts** (23 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **eventHandlers/index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
-- **HeaderBar.tsx** (17 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **systemHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- **utils/mythosTime.ts** (13 connections) — `client/src/utils/mythosTime.ts`
-- **MythosTimeHud.tsx** (12 connections) — `client/src/components/MythosTimeHud.tsx`
-- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **useCommandHandlers.ts** (10 connections) — `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- **formatMythosTime12Hour()** (9 connections) — `client/src/utils/mythosTime.ts`
-- **index.test.ts** (8 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- **logger.test.ts** (8 connections) — `client/src/utils/logger.test.ts`
-- **EventHandler** (7 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
-- **MythosTimePayload** (7 connections) — `client/src/types/mythosTime.ts`
-- **buildMythosTimeState()** (7 connections) — `client/src/utils/mythosTime.ts`
-- **mythosTime.test.ts** (7 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
-- **handleMythosTimeUpdate()** (6 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **isMythosTimePayload()** (6 connections) — `client/src/types/mythosTime.ts`
-- **MythosTimeHud.test.tsx** (6 connections) — `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- **HeaderBar()** (5 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **useMythosTimeBootstrap()** (5 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **MythosTimeHud()** (4 connections) — `client/src/components/MythosTimeHud.tsx`
-- *... and 37 more nodes in this community*
+- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
+- **UUID** (10 connections)
+- **Any** (8 connections)
+- **AsyncSession** (8 connections)
+- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.is_channel_muted()** (7 connections) — `server/services/player_preferences_service.py`
+- **.mute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.unmute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.update_default_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.delete_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_muted_channels()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **Get preferences for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Update a player's default channel. Args: session: Database session player_id:…** (1 connections) — `server/services/player_preferences_service.py`
+- **Mute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Unmute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Service for managing player channel preferences. This service handles: - Player…** (1 connections) — `server/services/player_preferences_service.py`
+- **Get list of muted channels for a player. Args: session: Database session…** (1 connections) — `server/services/player_preferences_service.py`
+- **Check if a specific channel is muted for a player. Args: session: Database…** (1 connections) — `server/services/player_preferences_service.py`
+- **Initialize the PlayerPreferencesService. Note: This service now uses PostgreSQL…** (1 connections) — `server/services/player_preferences_service.py`
+- **Delete preferences for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (20 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (19 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (10 shared connections)
-- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (9 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (9 shared connections)
-- [projectorRoom.ts](projectorRoom.ts.md) (7 shared connections)
-- [roomHandlers.ts](roomHandlers.ts.md) (6 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (6 shared connections)
-- [messageHandlers.ts](messageHandlers.ts.md) (5 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (5 shared connections)
-- [security.ts](security.ts.md) (5 shared connections)
-- [playerHandlers.ts](playerHandlers.ts.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (2 shared connections)
+- [deprecated_patterns.py](deprecated_patterns.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
+- [mark_player_seen_impl](mark_player_seen_impl.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/MythosTimeHud.tsx`
-- `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- `client/src/components/ui-v2/HeaderBar.tsx`
-- `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
-- `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/index.ts`
-- `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- `client/src/components/ui-v2/eventHandlers/types.ts`
-- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
-- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- `client/src/types/mythosTime.ts`
-- `client/src/utils/__tests__/mythosTime.test.ts`
-- `client/src/utils/logger.test.ts`
-- `client/src/utils/logger.ts`
-- `client/src/utils/mythosTime.ts`
+- `server/services/player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 265 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 68 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,30 +1,29 @@
 # items
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **test_run_make_stages.py** (7 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **_load_module()** (5 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_keep_going_requested()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_nonzero()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_ok()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_stage_failed_from_output_traceback()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **test_makefile_composites_use_fail_fast_runner()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **Tests for scripts/run_make_stages.py fail-fast helpers.** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Relationships
 
-- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
-- [required](required.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `server/tests/unit/scripts/test_run_make_stages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **E2E Session Report 2025-12-02** (2 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
-- **Admin Teleportation Display Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
-- **Whisper Messages Not Received Bug** (1 connections) — `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- **Client Security and Privacy Policies** (2 connections) — `client/README.md`
+- **DOMPurify Sanitization** (1 connections) — `client/README.md`
+- **WebSocket Subprotocol Auth** (1 connections) — `client/README.md`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `e2e-tests/SESSION_REPORT_2025-12-02.md`
+- `client/README.md`
 
 ## Audit Trail
 

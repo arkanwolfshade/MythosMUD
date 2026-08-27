@@ -1,24 +1,25 @@
 # 📈 Performance Impact Assessment
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **📈 Performance Impact Assessment** (3 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **After Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **Before Migration** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **🚀 How to Run Remaining Tests** (4 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Docker-Based Testing (Zero bcrypt Issues)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Individual Module Testing (For Debugging)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
+- **Quick Start (All Tests in One Fresh Session)** (1 connections) — `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Relationships
 
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (1 shared connections)
+- [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `docs/archive/COVERAGE_IMPROVEMENT_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

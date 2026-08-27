@@ -1,59 +1,51 @@
 # IdleMovementHandler
 
-> 97 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **IdleMovementHandler** (56 connections) — `server/npc/idle_movement.py`
-- **test_idle_movement.py** (36 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **idle_movement.py** (18 connections) — `server/npc/idle_movement.py`
-- **.execute_idle_movement()** (8 connections) — `server/npc/idle_movement.py`
-- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
-- **patch** (8 connections)
-- **_npc_id_str()** (7 connections) — `server/npc/idle_movement.py`
-- **.select_exit()** (6 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weights()** (5 connections) — `server/npc/idle_movement.py`
-- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
-- **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
-- **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
-- **._try_idle_room_change()** (4 connections) — `server/npc/idle_movement.py`
-- **_passes_movement_probability()** (4 connections) — `server/npc/idle_movement.py`
-- **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_not_alive()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_check()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
-- **_cfg_bool()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_distance_to_room()** (3 connections) — `server/npc/idle_movement.py`
-- **._calculate_exit_weight()** (3 connections) — `server/npc/idle_movement.py`
-- *... and 72 more nodes in this community*
+- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **asyncio** (13 connections)
+- **.start()** (4 connections) — `server/services/game_tick_service.py`
+- **.test_start_already_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_task_already_done()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_cancellation()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_publish_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **._tick_loop()** (3 connections) — `server/services/game_tick_service.py`
+- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
+- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
+- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [idle_movement_handler](idle_movement_handler.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (3 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [.__init__](__init__.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [_container_data_to_dict](_container_data_to_dict.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/idle_movement.py`
-- `server/tests/unit/npc/test_idle_movement.py`
+- `server/services/game_tick_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 152 (84%)
-- INFERRED: 30 (16%)
+- EXTRACTED: 89 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

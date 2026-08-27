@@ -1,8 +1,8 @@
 # LoggedHTTPException
 
-> God node · 359 connections · `server/exceptions.py`
+> God node · 271 connections · `server/exceptions.py`
 
-**Community:** [LoggedHTTPException](LoggedHTTPException.md)
+**Community:** [NPCSpawningService](NPCSpawningService.md)
 
 ## Connections by Relation
 
@@ -14,7 +14,6 @@
 - get_container_and_player_for_loot_all() `EXTRACTED`
 - _update_npc_definition_internal() `EXTRACTED`
 - _start_login_grace_period_body() `EXTRACTED`
-- update_room_position() `EXTRACTED`
 - get_npc_definitions() `EXTRACTED`
 - spawn_npc_instance() `EXTRACTED`
 - create_npc_spawn_rule() `EXTRACTED`
@@ -27,6 +26,7 @@
 - create_npc_definition() `EXTRACTED`
 - get_npc_definition() `EXTRACTED`
 - get_npc_population_stats() `EXTRACTED`
+- replay_dlq_message() `EXTRACTED`
 
 ### contains
 - server/exceptions.py `EXTRACTED`
@@ -35,23 +35,23 @@
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
-- endpoints.py `EXTRACTED`
-- [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
-- test_monitoring_endpoints.py `EXTRACTED`
 - test_players_api_coverage.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
-- legacy_error_handlers.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
-- test_legacy_error_handlers.py `EXTRACTED`
-- rooms.py `EXTRACTED`
-- [real_time.py](real_time.py.md) `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
-- test_real_time_helpers.py `EXTRACTED`
-- standardized_responses.py `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 - [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
+- test_npc_definitions_api.py `EXTRACTED`
+- npc_definitions_api.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
+- [subject_controller.py](subject_controller.py.md) `EXTRACTED`
+- api/metrics.py `EXTRACTED`
+- test_player_effects_endpoints.py `EXTRACTED`
+- test_standardized_responses.py `EXTRACTED`
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) `EXTRACTED`
+- npc_instances_api.py `EXTRACTED`
 
 ### inherits
 - LoggedException `EXTRACTED`
@@ -63,19 +63,12 @@
 ### rationale_for
 - HTTPException with automatic logging. This class extends FastAPI's… `EXTRACTED`
 
-### references
-- ._handle_logged_http_exception() `EXTRACTED`
-- ._get_logged_http_user_friendly_message() `EXTRACTED`
-
 ### uses
-- logged_http_exception_handler() `INFERRED`
 - TestLootAllItems `INFERRED`
-- [TestErrorHandlers](TestErrorHandlers.md) `INFERRED`
 - [TestMonitoringEndpoints](TestMonitoringEndpoints.md) `INFERRED`
 - TestRegisterLootEndpoints `INFERRED`
 - TestRollCharacterStats `INFERRED`
 - TestHandleTransferItemsExceptions `INFERRED`
-- register_error_handlers() `INFERRED`
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
 - TestGetContainerAndPlayerForLootAll `INFERRED`
@@ -88,6 +81,9 @@
 - TestCloseContainer `INFERRED`
 - test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
 - test_register_pattern_invalid() `INFERRED`
+- TestExceptionChaining `INFERRED`
+- TestExceptionHandlerContext `INFERRED`
+- TestExceptionHandlerLoggerCalls `INFERRED`
 
 ---
 

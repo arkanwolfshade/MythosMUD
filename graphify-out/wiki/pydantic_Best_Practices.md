@@ -1,29 +1,24 @@
 # pydantic Best Practices
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **pydantic Best Practices** (8 connections) — `.claude/rules/pydantic.md`
-- **1. Model Naming and Organization** (1 connections) — `.claude/rules/pydantic.md`
-- **2. Strict Typing and Immutability** (1 connections) — `.claude/rules/pydantic.md`
-- **3. Safe Default Values** (1 connections) — `.claude/rules/pydantic.md`
-- **4. Custom Validation Logic** (1 connections) — `.claude/rules/pydantic.md`
-- **5. Settings Management** (1 connections) — `.claude/rules/pydantic.md`
-- **6. Editor Integration (VS Code / Pylance)** (1 connections) — `.claude/rules/pydantic.md`
-- **7. Common Pitfalls** (1 connections) — `.claude/rules/pydantic.md`
+- **Chaosium graphify snapshot - Malleus Monstrorum - Cthulhu Mythos Bestiary** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
+- **malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/rules/pydantic.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

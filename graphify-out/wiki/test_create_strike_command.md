@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_strike_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_strike_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_normalize_player_id_uuid()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Test normalize_player_id() with UUID.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [Responsive Design](Responsive_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 

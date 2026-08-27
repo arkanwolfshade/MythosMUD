@@ -1,69 +1,52 @@
 # fixtures/auth.ts
 
-> 61 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **fixtures/auth.ts** (91 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **loginPlayer()** (40 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **test-data.ts** (25 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
-- **multiplayer-contexts.ts** (24 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- **waitForPlayableSession()** (16 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **recoverPlayableSession()** (13 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **TEST_TIMEOUTS** (13 connections) — `client/tests/e2e/runtime/fixtures/test-data.ts`
-- **assertCommandChannelReady()** (11 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **clickWithoutStability()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **reopenClosedPage()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **resolveActivePage()** (8 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **recoverPlayableViaSpaNavigation()** (7 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **skills-visibility.spec.ts** (7 connections) — `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
-- **panel-minimize-dock.spec.ts** (7 connections) — `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
-- **CharacterSelectionPage** (6 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- **getLivePageForUsername()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **reconnectPlayableSession()** (6 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **linkdead-recovery.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
-- **multiplayer-browser-window.d.ts** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
-- **isPageUsable()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **refreshPlayableSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **rememberPageSession()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **restorePlayableAfterLogin()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **tryInPlacePlayableRecovery()** (5 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **CharacterSelectionPage.ts** (5 connections) — `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- *... and 36 more nodes in this community*
+- **test_spell_effects.py** (47 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **asyncio** (29 connections)
+- **test_process_effect_flee_not_in_combat()** (6 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_publish_npc_spell_damage_syncs_participant_when_npc_room_missing()** (6 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_damage_to_npc_success()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_damage_to_npc_unavailable()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **mock_target_match()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_corruption_adjust_invalid_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_create_object_invalid_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_damage_invalid_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_corruption_adjust()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_create_object()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_damage()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_flee_services_not_configured()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_heal()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_lucidity_adjust()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_stat_modify()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_status_effect()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_effect_teleport()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_heal_heal_other_rejects_self_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_heal_invalid_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_heal_steal_life_capped_by_target_dp()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_heal_steal_life_damages_target_and_heals_caster()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_heal_steal_life_target_zero_dp()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- **test_process_lucidity_adjust_invalid_target()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (64 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (31 shared connections)
-- [executeCommand](executeCommand.md) (31 shared connections)
-- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (18 shared connections)
-- [character-cleanup.ts](character-cleanup.ts.md) (9 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (5 shared connections)
-- [authenticated.ts](authenticated.ts.md) (4 shared connections)
-- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (19 shared connections)
+- [Any](Any.md) (18 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (12 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/character/character-deletion.spec.ts`
-- `client/tests/e2e/runtime/character/character-name-uniqueness.spec.ts`
-- `client/tests/e2e/runtime/character/character-selection.spec.ts`
-- `client/tests/e2e/runtime/character/multi-character-creation.spec.ts`
-- `client/tests/e2e/runtime/character/skills-visibility.spec.ts`
-- `client/tests/e2e/runtime/connection/login-bootstrap.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/linkdead-recovery.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-window.d.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
-- `client/tests/e2e/runtime/fixtures/test-data.ts`
-- `client/tests/e2e/runtime/pages/CharacterSelectionPage.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- `client/tests/e2e/runtime/quest/quest-log-visible.spec.ts`
-- `client/tests/e2e/runtime/ui/panel-minimize-dock.spec.ts`
+- `server/tests/unit/game/magic/test_spell_effects.py`
 
 ## Audit Trail
 
-- EXTRACTED: 286 (98%)
-- INFERRED: 6 (2%)
+- EXTRACTED: 125 (86%)
+- INFERRED: 20 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

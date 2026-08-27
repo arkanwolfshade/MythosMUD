@@ -1,32 +1,37 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Investigator Handbook 7th Edition  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Communities (1 total, 1 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- **PutCommand** (12 connections) — `server/models/command_inventory.py`
+- **test_put_command_container_min_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_item_min_length()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_quantity_validation_min()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **test_put_command_with_quantity()** (3 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Command for putting items from inventory into a container.** (1 connections) — `server/models/command_inventory.py`
+- **Test PutCommand requires item and container.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test PutCommand can have optional quantity.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test PutCommand validates item min length.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test PutCommand validates container min length.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
+- **Test PutCommand validates quantity is >= 1.** (1 connections) — `server/tests/unit/models/test_command_inventory.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [devDependencies](devDependencies.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/GRAPH_REPORT.md`
+- `server/models/command_inventory.py`
+- `server/tests/unit/models/test_command_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 21 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

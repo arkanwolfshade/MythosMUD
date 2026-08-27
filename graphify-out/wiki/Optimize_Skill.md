@@ -1,31 +1,32 @@
 # Optimize Skill
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Optimization Strategy** (6 connections) — `.claude/skills/optimize/SKILL.md`
-- **Optimize Skill** (6 connections) — `.claude/skills/optimize/SKILL.md`
-- **Core Web Vitals Optimization** (4 connections) — `.claude/skills/optimize/SKILL.md`
-- **Animation Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Assess Performance Issues** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Cumulative Layout Shift (CLS < 0.1)** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **First Input Delay (FID < 100ms) / INP (< 200ms)** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Largest Contentful Paint (LCP < 2.5s)** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Loading Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Network Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Performance Monitoring** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **React/Framework Optimization** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Rendering Performance** (1 connections) — `.claude/skills/optimize/SKILL.md`
-- **Verify Improvements** (1 connections) — `.claude/skills/optimize/SKILL.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Berlin - The Wicked City  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Communities (8 total, 5 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **berlin-the-wicked-city/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 0 - "Baron Arthur von Kleist; Pyotr Shabelsky-Bork"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 1 - "The Demon-Großmann; Demonic Mutation Table"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community 2 - "Erwin Kern; Manfred Freiherr von Killinger"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/optimize/SKILL.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/GRAPH_REPORT.md`
 
 ## Audit Trail
 

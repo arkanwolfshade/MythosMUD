@@ -1,48 +1,53 @@
 # test_lint_raw_sql_in_python.py
 
-> 29 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_lint_raw_sql_in_python.py** (18 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **_load_script()** (16 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **_LintRawSqlModule** (6 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_baseline_allowlist_matches_current_codebase()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_comment_mentioning_select_star()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_docstring_prose_with_select_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_procedure_call_no_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_does_not_flag_procedure_call_with_from()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_bare_table_select_from_split_across_lines()** (3 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_allowlist_entries_are_suppressed_and_counted()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_bare_table_select_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_delete_from()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_insert_into()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_select_star()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_flags_raw_update_set()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_new_unallowlisted_site_is_reported()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_overdue_allowlist_entry_warns_but_does_not_fail()** (2 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **._find_raw_sql_lines()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **.scan()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **Protocol** (1 connections)
-- **Unit tests for scripts/lint_raw_sql_in_python.py. Verifies the detection logic…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **Ordinary English sentence-case prose ('Select ... from ...') must not match --…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **The shipped RAW_SQL_ALLOWLIST must exactly match what the scanner currently…** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- **Typed surface of the loaded script, for the parts these tests exercise.** (1 connections) — `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
-- *... and 4 more nodes in this community*
+- **NATSMessageBroadcastMixin** (25 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._broadcast_to_room_with_filtering()** (11 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Any** (7 connections)
+- **._get_player_lucidity_tier()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._send_messages_to_players()** (6 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._apply_dampening_and_send_message()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._filter_target_players()** (5 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._check_player_mute_status()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._echo_message_to_sender()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._extract_chat_event_info()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._format_message_for_receiver()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_user_manager()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._preload_receiver_mute_data()** (4 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._collect_room_targets()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._should_echo_to_sender()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._compare_canonical_rooms()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_player_room_from_online_players()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._get_player_room_from_persistence()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._is_player_in_room()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **._should_apply_mute_check()** (2 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **NATSMessageHandlerMixinBase** (1 connections)
+- **Determine if message should be echoed to sender. Args: channel: Channel type…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Echo message back to sender. Args: sender_id: Sender player ID chat_event: Chat…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- **Broadcast room-based messages with server-side filtering. This method ensures…** (1 connections) — `server/realtime/nats_message_handler_broadcast.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [container_persistence.py](container_persistence.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
+- [look_command.py](look_command.py.md) (1 shared connections)
+- [CombatEventHandler](CombatEventHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_lint_raw_sql_in_python.py`
+- `server/realtime/nats_message_handler_broadcast.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 69 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

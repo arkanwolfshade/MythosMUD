@@ -1,37 +1,45 @@
 # _find_dead_connections
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
-- **test_find_dead_connections_all_active()** (7 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_connected()** (7 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_no_player()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_none_websocket()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_find_dead_connections_not_in_active()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Find dead WebSocket connections for a player before acquiring lock. Args:…** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when player not found.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() returns empty list when all connections are…** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() skips connections not in active_websockets.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() raises ConnectionError when websocket is None.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **Test _find_dead_connections() finds dead connections.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **StatisticsAggregator** (30 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_connection_health_stats()** (8 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_ages()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._build_health_stats_response()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._build_health_trends()** (4 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_connection_types()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._analyze_session_health()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **._calculate_session_health_percentages()** (3 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.get_memory_alerts()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **.__init__()** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze connection types. Args: connection_metadata: Connection metadata…** (2 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Analyze session health. Args: connection_metadata: Connection metadata Returns:…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Calculate session health percentages. Args: session_health: Session health…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build health trends statistics. Args: connection_ages: List of connection ages…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Build connection health statistics response. Args: total_connections: Total…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Aggregates statistics from connection management components. This class…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get comprehensive connection health statistics. Args: connection_metadata:…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Get memory-related alerts. Args: connection_timestamps: Connection timestamp…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
+- **Initialize the statistics aggregator. Args: memory_monitor: MemoryMonitor…** (1 connections) — `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Relationships
 
-- [test_connection_establishment.py](test_connection_establishment.py.md) (16 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (5 shared connections)
-- [connection_establishment.py](connection_establishment.py.md) (3 shared connections)
+- [Step 2: Ask UX-Focused Questions](Step_2-_Ask_UX-Focused_Questions.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
+- [Security Implementation](Security_Implementation.md) (4 shared connections)
+- [Migration Workflow (Per File)](Migration_Workflow_Per_File.md) (3 shared connections)
+- [PostgresRow](PostgresRow.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/realtime/monitoring/statistics_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 47 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

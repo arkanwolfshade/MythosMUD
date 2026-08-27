@@ -1,74 +1,55 @@
 # gameStore.ts
 
-> 98 nodes
+> 87 nodes
 
 ## Key Concepts
 
-- **gameStore.ts** (37 connections) — `client/src/stores/gameStore.ts`
-- **CorpseOverlay.tsx** (25 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- **containerStore.ts** (24 connections) — `client/src/stores/containerStore.ts`
-- **ContainerSplitPaneView.tsx** (23 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- **useContainerSplitPane.ts** (20 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
-- **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
-- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
-- **useGameStore** (12 connections) — `client/src/stores/gameStore.ts`
-- **useContainerStore** (11 connections) — `client/src/stores/containerStore.ts`
-- **ContainerComponent** (10 connections) — `client/src/stores/containerStore.ts`
-- **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
-- **InventoryStack** (9 connections) — `client/src/stores/containerStore.ts`
-- **useContainerSplitPane()** (9 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **corpseOverlayUtils.ts** (9 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **ContainerDragAndDrop.test.tsx** (9 connections) — `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
-- **CorpseOverlay()** (7 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- **ContainerSplitPane.test.tsx** (7 connections) — `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
-- **CorpseOverlay.test.tsx** (7 connections) — `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
-- **getCorpseTiming()** (6 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **BackpackTab()** (5 connections) — `client/src/components/containers/BackpackTab.tsx`
-- **ContainerSplitPane()** (5 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
-- **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
-- **formatTimeRemaining()** (4 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- *... and 73 more nodes in this community*
+- **CircuitBreaker** (43 connections) — `server/realtime/circuit_breaker.py`
+- **test_circuit_breaker.py** (33 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **CircuitState** (25 connections) — `server/realtime/circuit_breaker.py`
+- **CircuitBreakerOpen** (12 connections) — `server/realtime/circuit_breaker.py`
+- **circuit_breaker.py** (12 connections) — `server/realtime/circuit_breaker.py`
+- **.call()** (9 connections) — `server/realtime/circuit_breaker.py`
+- **asyncio** (8 connections)
+- **._transition_to()** (6 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_rejects_when_open()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **.get_stats()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_failure()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._on_success()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **._time_until_retry()** (4 connections) — `server/realtime/circuit_breaker.py`
+- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_circuit_breaker_init()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_get_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_opens_circuit_at_threshold()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_failure_resets_success_count()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_on_success_increments_success_count_half_open()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_reset()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- *... and 62 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (10 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (8 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (5 shared connections)
-- [MythosPanel.tsx](MythosPanel.tsx.md) (4 shared connections)
-- [stateNormalization.ts](stateNormalization.ts.md) (3 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (3 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (3 shared connections)
-- [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (2 shared connections)
-- [useRoomMapData.ts](useRoomMapData.ts.md) (2 shared connections)
-- [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [test_command_inventory.py](test_command_inventory.py.md) (4 shared connections)
+- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
+- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
+- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
+- [Argon2 Password Hashing Best Practices](Argon2_Password_Hashing_Best_Practices.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/containers/BackpackTab.tsx`
-- `client/src/components/containers/ContainerSplitPane.tsx`
-- `client/src/components/containers/ContainerSplitPaneView.tsx`
-- `client/src/components/containers/CorpseOverlay.tsx`
-- `client/src/components/containers/__tests__/BackpackTab.test.tsx`
-- `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
-- `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
-- `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
-- `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
-- `client/src/components/containers/corpseOverlayUtils.ts`
-- `client/src/components/containers/useContainerSplitPane.ts`
-- `client/src/stores/__tests__/containerStore.test.ts`
-- `client/src/stores/__tests__/gameStore.test.ts`
-- `client/src/stores/containerStore.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/realtime/circuit_breaker.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 140 (81%)
+- INFERRED: 32 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,12 @@
 # Zustand Best Practices
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Slice-Based Organization** (1 connections) — `.claude/rules/zustand.md`
-- **Zustand Best Practices** (1 connections) — `.claude/rules/zustand.md`
+- **Enhanced Logging Migration Complete** (2 connections) — `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
+- **Enhanced Logging Implementation Complete** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
+- **Enhanced Logging Implementation Summary** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
@@ -13,12 +14,14 @@
 
 ## Source Files
 
-- `.claude/rules/zustand.md`
+- `docs/archive/IMPLEMENTATION_COMPLETE.md`
+- `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
+- `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,72 +1,62 @@
 # GameLogPanel.tsx
 
-> 41 nodes
+> 64 nodes
 
 ## Key Concepts
 
-- **GameLogPanel.tsx** (18 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **GameLogPanelSections.tsx** (16 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
-- **@testing-library/jest-dom/vitest** (14 connections) — `client/tsconfig.test.json`
-- **ChatMessage** (10 connections) — `client/src/stores/gameStore.ts`
-- **GameLogPanel()** (9 connections) — `client/src/components/panels/GameLogPanel.tsx`
-- **gameLogPanelUtils.ts** (9 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **gameLogPanelUtils.test.ts** (7 connections) — `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
-- **gameLogFilter.ts** (7 connections) — `client/src/utils/gameLogFilter.ts`
-- **GameLogMessagesList()** (6 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **game-log-panel.spec.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
-- **panels/__tests__/game-log-panel.test.tsx** (6 connections) — `client/src/components/panels/__tests__/game-log-panel.test.tsx`
-- **useGameLogPanelState.ts** (6 connections) — `client/src/components/panels/useGameLogPanelState.ts`
-- **GameLogPanelFilterBar()** (5 connections) — `client/src/components/panels/GameLogPanelSections.tsx`
-- **filterGameLogMessages()** (5 connections) — `client/src/utils/gameLogFilter.ts`
-- **GameLogListMessage** (4 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **formatGameLogTimestamp()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogMessageClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogMessageFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogMessageRowClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogSearchInputClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **getGameLogTimeFilterSelectClassName()** (4 connections) — `client/src/components/panels/gameLogPanelUtils.ts`
-- **useGameLogPanelState()** (4 connections) — `client/src/components/panels/useGameLogPanelState.ts`
-- **messagePassesGameLogFilters()** (4 connections) — `client/src/utils/gameLogFilter.ts`
-- **components/__tests__/game-log-panel.test.tsx** (4 connections) — `client/src/components/__tests__/game-log-panel.test.tsx`
-- *... and 16 more nodes in this community*
+- **command_result_text()** (41 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
+- **test_inventory_put_command.py** (25 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **inventory_put_command.py** (22 connections) — `server/commands/inventory_put_command.py`
+- **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **handle_put_command()** (16 connections) — `server/commands/inventory_put_command.py`
+- **asyncio** (14 connections)
+- **_put_resolve_container_id()** (13 connections) — `server/commands/inventory_put_command.py`
+- **_put_transfer_finish()** (13 connections) — `server/commands/inventory_put_command.py`
+- **asyncio** (12 connections)
+- **_put_run_validated()** (10 connections) — `server/commands/inventory_put_command.py`
+- **PutCommandRuntime** (7 connections) — `server/commands/inventory_put_command.py`
+- **PutValidatedWork** (7 connections) — `server/commands/inventory_put_command.py`
+- **test_put_run_validated_container_error()** (7 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_put_run_validated_success()** (7 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_handle_drop_command_broadcasts_room_event_after_persist()** (6 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **remove_item_from_inventory()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **test_handle_drop_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_equip_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_get_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_inventory_command_no_persistence()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_put_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_unequip_command_no_target()** (5 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **test_handle_put_command_success()** (5 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_handle_put_command_validation_error()** (5 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- **test_put_resolve_container_missing_id()** (5 connections) — `server/tests/unit/commands/test_inventory_put_command.py`
+- *... and 39 more nodes in this community*
 
 ## Relationships
 
-- [EldritchIcon.tsx](EldritchIcon.tsx.md) (8 shared connections)
-- [performance.test.tsx](performance.test.tsx.md) (4 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (3 shared connections)
-- [debugLogger](debugLogger.md) (3 shared connections)
-- [gameStore.ts](gameStore.ts.md) (3 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (3 shared connections)
-- [SafeHtml.tsx](SafeHtml.tsx.md) (3 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (2 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (2 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
-- [ChatPanelRuntimeViewParts.tsx](ChatPanelRuntimeViewParts.tsx.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (26 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (12 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (12 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (5 shared connections)
+- [api/player_effects.py](api-player_effects.py.md) (5 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (3 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [Any](Any.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/__tests__/game-log-panel.test.tsx`
-- `client/src/components/panels/GameLogMessagesList.tsx`
-- `client/src/components/panels/GameLogPanel.tsx`
-- `client/src/components/panels/GameLogPanelSections.tsx`
-- `client/src/components/panels/__tests__/GameLogPanel.test.tsx`
-- `client/src/components/panels/__tests__/game-log-panel.spec.tsx`
-- `client/src/components/panels/__tests__/game-log-panel.test.tsx`
-- `client/src/components/panels/__tests__/gameLogPanelUtils.test.ts`
-- `client/src/components/panels/gameLogPanelUtils.ts`
-- `client/src/components/panels/useGameLogPanelState.ts`
-- `client/src/stores/gameStore.ts`
-- `client/src/utils/__tests__/gameLogFilter.test.ts`
-- `client/src/utils/gameLogFilter.ts`
-- `client/tsconfig.test.json`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_put_command.py`
+- `server/tests/unit/commands/inventory_commands_test_support.py`
+- `server/tests/unit/commands/test_inventory_commands.py`
+- `server/tests/unit/commands/test_inventory_put_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 186 (85%)
+- INFERRED: 33 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

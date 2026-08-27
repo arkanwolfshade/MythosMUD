@@ -1,28 +1,33 @@
 # SampleModel
 
-> 7 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **SampleModel** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_serialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **OtherModel** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **BaseModel** (2 connections)
-- **Test Pydantic model for memory profiling tests.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test MemoryProfiler.measure_model_serialization() returns stats.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Second model for compare_models_memory_usage.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **GridLayoutManager.tsx** (6 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **GridLayoutManager.test.tsx** (6 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **GridLayoutManager()** (2 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **GridLayoutManagerProps** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **PanelComponent** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **constructor()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **disconnect()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **observe()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **unobserve()** (1 connections) — `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
+- **layoutConfig** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
+- **ResponsiveGridLayout** (1 connections) — `client/src/components/layout/GridLayoutManager.tsx`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_memory_profiler.py`
+- `client/src/components/layout/GridLayoutManager.tsx`
+- `client/src/components/layout/__tests__/GridLayoutManager.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

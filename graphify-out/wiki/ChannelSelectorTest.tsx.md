@@ -1,22 +1,23 @@
 # ChannelSelectorTest.tsx
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ChannelSelectorTest.tsx** (0 connections) — `client/src/components/ChannelSelectorTest.tsx`
+- **test_command_factory_init()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory initialization.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ChannelSelectorTest.tsx`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

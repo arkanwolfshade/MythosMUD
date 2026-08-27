@@ -1,56 +1,54 @@
 # test_container_persistence_async_helpers.py
 
-> 60 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_container_persistence_async_helpers.py** (41 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- **container_persistence_async.py** (36 connections) — `server/persistence/container_persistence_async.py`
-- **create_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
-- **get_container_async()** (15 connections) — `server/persistence/container_persistence_async.py`
-- **update_container_async()** (14 connections) — `server/persistence/container_persistence_async.py`
-- **_finalize_container_creation()** (13 connections) — `server/persistence/container_persistence_async.py`
-- **fetch_container_items_async()** (12 connections) — `server/persistence/container_persistence_async.py`
-- **Any** (12 connections)
-- **asyncio** (12 connections)
-- **_container_data_from_row()** (11 connections) — `server/persistence/container_persistence_async.py`
-- **delete_container_async()** (10 connections) — `server/persistence/container_persistence_async.py`
-- **_populate_container_items_async()** (10 connections) — `server/persistence/container_persistence_async.py`
-- **_call_create_container_procedure()** (9 connections) — `server/persistence/container_persistence_async.py`
-- **AsyncSession** (9 connections)
-- **_build_item_dict()** (8 connections) — `server/persistence/container_persistence_async.py`
-- **_parse_jsonb()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **_row_to_mapping()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **_validate_container_create_params()** (7 connections) — `server/persistence/container_persistence_async.py`
-- **_parse_item_metadata()** (6 connections) — `server/persistence/container_persistence_async.py`
-- **_prepare_container_create_params()** (6 connections) — `server/persistence/container_persistence_async.py`
-- **UUID** (6 connections)
-- **ContainerData** (5 connections)
-- **test_call_create_container_procedure_no_row()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- **test_delete_container_async_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- **test_populate_container_items_skips_invalid_and_failed()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
-- *... and 35 more nodes in this community*
+- **CombatMonitoringService** (32 connections) — `server/services/combat_monitoring_service.py`
+- **Any** (9 connections)
+- **.__init__()** (7 connections) — `server/services/combat_monitoring_service.py`
+- **._check_error_threshold()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **._check_resource_thresholds()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **.record_combat_error()** (4 connections) — `server/services/combat_monitoring_service.py`
+- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.to_dict()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.add_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **._check_performance_threshold()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.end_combat_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.end_turn_monitoring()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_active_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_all_alerts()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_current_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_metrics_history()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.get_monitoring_summary()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.refresh_configuration()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.remove_alert_callback()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **._save_metrics_snapshot()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **.update_resource_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **._update_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **._update_turn_timing_metrics()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **record_combat_error()** (3 connections) — `server/services/combat_monitoring_service.py`
+- **test_record_combat_error_disabled()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (26 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (13 shared connections)
-- [_container_data_to_dict](_container_data_to_dict.md) (4 shared connections)
-- [ValidationError](ValidationError.md) (4 shared connections)
-- [container_persistence.py](container_persistence.py.md) (2 shared connections)
-- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (2 shared connections)
-- [test_container_query_helpers_async.py](test_container_query_helpers_async.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (19 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [container](container.md) (1 shared connections)
+- [request_with_app_container](request_with_app_container.md) (1 shared connections)
+- [test_level_service.py](test_level_service.py.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_persistence_async.py`
-- `server/tests/unit/persistence/test_container_persistence_async_helpers.py`
+- `server/services/combat_monitoring_service.py`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 194 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 88 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

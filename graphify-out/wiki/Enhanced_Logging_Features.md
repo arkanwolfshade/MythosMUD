@@ -1,27 +1,29 @@
 # Enhanced Logging Features
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Features** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Correlation IDs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Exception Tracking** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **MDC (Mapped Diagnostic Context)** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Security Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **emotes.schema.json** (7 connections) — `db/static/schemas/emotes.schema.json`
+- **required** (2 connections) — `db/static/schemas/emotes.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **$id** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **$schema** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **title** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **emotes** (1 connections) — `db/static/schemas/emotes.schema.json`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `db/static/schemas/emotes.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,25 @@
 # Petersen's Abominations (source summary)
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Petersen's Abominations (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Petersen's Abominations.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **Testing Strategy** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Load Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Unit Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,35 @@
 # mcp.json
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **mcp.json** (4 connections) — `.cursor/mcp.json`
-- **jcodemunch** (4 connections) — `.cursor/mcp.json`
-- **codacy** (3 connections) — `.cursor/mcp.json`
-- **context7** (3 connections) — `.cursor/mcp.json`
-- **playwright** (3 connections) — `.cursor/mcp.json`
-- **npx** (3 connections) — `.cursor/mcp.json`
-- **JCODEMUNCH_MAX_FOLDER_FILES** (1 connections) — `.cursor/mcp.json`
-- **uvx** (1 connections) — `.cursor/mcp.json`
-- **@codacy/codacy-mcp** (1 connections) — `.cursor/mcp.json`
-- **jcodemunch-mcp** (1 connections) — `.cursor/mcp.json`
-- **@playwright/mcp** (1 connections) — `.cursor/mcp.json`
-- **@upstash/context7-mcp** (1 connections) — `.cursor/mcp.json`
+- **connectionStore.ts** (12 connections) — `client/src/stores/connectionStore.ts`
+- **useConnectionStore** (5 connections) — `client/src/stores/connectionStore.ts`
+- **createInitialState()** (3 connections) — `client/src/stores/connectionStore.ts`
+- **generateSessionId()** (3 connections) — `client/src/stores/connectionStore.ts`
+- **connectionStore.test.ts** (3 connections) — `client/src/stores/__tests__/connectionStore.test.ts`
+- **ConnectionActions** (1 connections) — `client/src/stores/connectionStore.ts`
+- **ConnectionHealth** (1 connections) — `client/src/stores/connectionStore.ts`
+- **ConnectionMetadata** (1 connections) — `client/src/stores/connectionStore.ts`
+- **ConnectionSelectors** (1 connections) — `client/src/stores/connectionStore.ts`
+- **ConnectionState** (1 connections) — `client/src/stores/connectionStore.ts`
+- **ConnectionStore** (1 connections) — `client/src/stores/connectionStore.ts`
+- **GameEvent** (1 connections) — `client/src/stores/connectionStore.ts`
+- **mockWebSocket** (1 connections) — `client/src/stores/__tests__/connectionStore.test.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [stateNormalization.ts](stateNormalization.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/mcp.json`
+- `client/src/stores/__tests__/connectionStore.test.ts`
+- `client/src/stores/connectionStore.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,33 +1,44 @@
 # overrides
 
-> 12 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **overrides** (5 connections) — `package.json`
-- **package.json** (3 connections) — `package.json`
-- **dependencies** (2 connections) — `package.json`
-- **eslint** (2 connections) — `package.json`
-- **devDependencies** (2 connections) — `package.json`
-- **markdownlint-cli** (2 connections) — `package.json`
-- **flatted** (1 connections) — `package.json`
-- **js-yaml** (1 connections) — `package.json`
-- **linkify-it** (1 connections) — `package.json`
-- **markdown-it** (1 connections) — `package.json`
-- **eslint** (1 connections) — `package.json`
-- **markdownlint-cli** (1 connections) — `package.json`
+- **optimized_validate_player_name()** (13 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_player_name_rejects_spaces()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_special_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_too_long()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_too_short()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_numbers()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_underscore()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name below min length.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name above max length.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with spaces.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with underscore.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with hyphen.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with numbers.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with special characters (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for player name fields. Args: value: The player name to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [map/types.ts](map-types.ts.md) (10 shared connections)
+- [Server Realtime Module](Server_Realtime_Module.md) (1 shared connections)
+- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
 
 ## Source Files
 
-- `package.json`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

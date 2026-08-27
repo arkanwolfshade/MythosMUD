@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_parse_exits_json_other_type()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
-- **Test _parse_exits_json with non-string, non-list value.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- **._get_npc_stats()** (2 connections) — `server/npc/combat_integration.py`
+- **Get NPC stats or use defaults.** (1 connections) — `server/npc/combat_integration.py`
 
 ## Relationships
 
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
+- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_cache.py`
+- `server/npc/combat_integration.py`
 
 ## Audit Trail
 

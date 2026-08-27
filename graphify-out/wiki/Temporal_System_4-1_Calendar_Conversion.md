@@ -1,23 +1,24 @@
 # Temporal System 4:1 Calendar Conversion
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **4:1 Temporal Compression Ratio** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
-- **Temporal System 4:1 Calendar Conversion** (1 connections) — `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_get_combat_status_message_not_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test get_combat_status_message when in combat.** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/convert_temporal_system_to_4_1_ratio_with_real-world_calendar_f530d460.plan.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

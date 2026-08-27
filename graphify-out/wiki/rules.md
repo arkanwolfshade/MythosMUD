@@ -1,48 +1,41 @@
 # rules
 
-> 26 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **rules** (8 connections) — `client/knip.json`
-- **knip.json** (7 connections) — `client/knip.json`
-- **ignoreDependencies** (5 connections) — `client/knip.json`
-- **entry** (4 connections) — `client/knip.json`
-- **ignoreBinaries** (3 connections) — `client/knip.json`
-- **project** (3 connections) — `client/knip.json`
-- **binaries** (1 connections) — `client/knip.json`
-- **dependencies** (1 connections) — `client/knip.json`
-- **devDependencies** (1 connections) — `client/knip.json`
-- **exports** (1 connections) — `client/knip.json`
-- **files** (1 connections) — `client/knip.json`
-- **types** (1 connections) — `client/knip.json`
-- **unlisted** (1 connections) — `client/knip.json`
-- **$schema** (1 connections) — `client/knip.json`
-- **treatConfigHintsAsErrors** (1 connections) — `client/knip.json`
-- **vite.userConfig.ts** (1 connections) — `client/knip.json`
-- **cross-env** (1 connections) — `client/knip.json`
-- **markdownlint-cli** (1 connections) — `client/knip.json`
-- **pwsh** (1 connections) — `client/knip.json`
-- **src/**/*.{ts,tsx,js,jsx}** (1 connections) — `client/knip.json`
-- **@stoplight/spectral-cli** (1 connections) — `client/knip.json`
-- **stylelint** (1 connections) — `client/knip.json`
-- **tests/e2e/runtime/global-setup.ts** (1 connections) — `client/knip.json`
-- **tests/e2e/runtime/global-teardown.ts** (1 connections) — `client/knip.json`
-- **tests/**/*.ts** (1 connections) — `client/knip.json`
-- *... and 1 more nodes in this community*
+- **TestValidateRoomData** (11 connections) — `server/tests/unit/test_world_loader.py`
+- **patch** (8 connections)
+- **.test_validate_room_data_creates_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_not_available()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validator_creation_fails()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_errors()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns empty list when validation not available.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() with provided validator.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() creates validator when not provided.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns validation errors.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() raises exception in strict mode with errors.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns empty list when validator creation fails.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() handles validation exception.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() raises in strict mode when validation exception…** (1 connections) — `server/tests/unit/test_world_loader.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
 
 ## Source Files
 
-- `client/knip.json`
+- `server/tests/unit/test_world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 34 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

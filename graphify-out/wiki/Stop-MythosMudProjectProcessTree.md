@@ -4,48 +4,46 @@
 
 ## Key Concepts
 
-- **Stop-MythosMudProjectProcessTree()** (13 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Test-MythosMudProjectProcess()** (10 connections) — `scripts/MythosMudProcessScope.ps1`
-- **nats_manager.ps1** (9 connections) — `scripts/nats_manager.ps1`
-- **Start-NatsServer()** (7 connections) — `scripts/nats_manager.ps1`
-- **start_server.ps1** (7 connections) — `scripts/start_server.ps1`
-- **stop_server.ps1** (7 connections) — `scripts/stop_server.ps1`
-- **MythosMudProcessScope.ps1** (6 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Stop-NatsServer()** (6 connections) — `scripts/nats_manager.ps1`
-- **Test-MythosMudProtectedDevToolProcess()** (5 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Test-NatsServerRunning()** (5 connections) — `scripts/nats_manager.ps1`
-- **Get-NatsServerPath()** (4 connections) — `scripts/nats_manager.ps1`
-- **Get-NatsServerStatus()** (4 connections) — `scripts/nats_manager.ps1`
-- **Test-NatsServerInstalled()** (4 connections) — `scripts/nats_manager.ps1`
-- **Stop-NatsServerForMythosMUD()** (4 connections) — `scripts/stop_server.ps1`
-- **Get-MythosMudRepoRoot()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Stop-MythosMudProjectProcessTreeInternal()** (3 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Initialize-NatsLogDirectory()** (3 connections) — `scripts/nats_manager.ps1`
-- **Restart-NatsServer()** (3 connections) — `scripts/nats_manager.ps1`
-- **Start-NatsServerForMythosMUD()** (3 connections) — `scripts/start_server.ps1`
-- **Stop-ServerProcess()** (3 connections) — `scripts/start_server.ps1`
-- **Close-OrphanedTerminalWindows()** (3 connections) — `scripts/stop_server.ps1`
-- **Stop-PowerShellServerProcess()** (3 connections) — `scripts/stop_server.ps1`
-- **Stop-ProcessesByCommandLine()** (3 connections) — `scripts/stop_server.ps1`
-- **Get-MythosMudProtectedDevToolPattern()** (2 connections) — `scripts/MythosMudProcessScope.ps1`
-- **Find-NatsServerInstallation()** (2 connections) — `scripts/nats_manager.ps1`
+- **test_websocket_handler_app_state_connection.py** (23 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **asyncio** (8 connections)
+- **Test _resolve_and_setup_app_state_services when container has no services.** (6 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_cleanup_connection_mute_cleanup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_connect_failure()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_setup_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_initial_state_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_shutdown_rejected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_connection_with_room_and_death()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_handle_websocket_message_loop()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_container_no_services()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_missing_services()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_app_state()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_no_container_attribute()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_player_service()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_only_user_manager()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_already_set()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_player_service_no_hasattr()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_services_already_set()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_already_set()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **test_resolve_and_setup_app_state_services_user_manager_no_hasattr()** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **Test _resolve_and_setup_app_state_services when only player_service is…** (2 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **Unit tests for WebSocket handler app state resolution and connection handling.…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **Test _cleanup_connection handles error during mute cleanup. #679: UserManager…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
+- **Test _handle_websocket_message_loop processes messages.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 - *... and 8 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_error_logging.py](test_error_logging.py.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/MythosMudProcessScope.ps1`
-- `scripts/nats_manager.ps1`
-- `scripts/start_server.ps1`
-- `scripts/stop_server.ps1`
+- `server/tests/unit/realtime/test_websocket_handler_app_state_connection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (74%)
-- INFERRED: 17 (26%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

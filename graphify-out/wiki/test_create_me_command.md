@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_me_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_me_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_add_room_occupant_new_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test add_room_occupant() adds occupant to new room.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 

@@ -1,30 +1,43 @@
 # Protocol
 
-> 9 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Protocol** (4 connections)
-- **_HasId** (3 connections) — `server/services/admin_auth_service.py`
-- **_HasIsAdmin** (3 connections) — `server/services/admin_auth_service.py`
-- **_HasIsSuperuser** (3 connections) — `server/services/admin_auth_service.py`
-- **_HasUsername** (3 connections) — `server/services/admin_auth_service.py`
-- **Narrowing for user shapes that expose is_superuser.** (1 connections) — `server/services/admin_auth_service.py`
-- **Narrowing for user shapes that expose is_admin.** (1 connections) — `server/services/admin_auth_service.py`
-- **Narrowing for user shapes that expose username.** (1 connections) — `server/services/admin_auth_service.py`
-- **Narrowing for user shapes that expose id.** (1 connections) — `server/services/admin_auth_service.py`
+- **MessageBroker** (11 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.request()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
+- **server/infrastructure/__init__.py** (3 connections) — `server/infrastructure/__init__.py`
+- **.connect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.disconnect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.is_connected()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.unsubscribe()** (2 connections) — `server/infrastructure/message_broker.py`
+- **Any** (2 connections)
+- **Protocol** (1 connections)
+- **Infrastructure layer for MythosMUD. This package contains abstractions for…** (1 connections) — `server/infrastructure/__init__.py`
+- **Send a request and wait for a reply (request-reply pattern). Args: subject:…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Protocol defining the message broker interface. This abstract interface allows…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Connect to the message broker. Returns: bool: True if connection successful,…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Disconnect from the message broker. Closes all subscriptions and releases…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Check if connected to the message broker. Returns: bool: True if connected,…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Publish a message to a subject/topic. Args: subject: Subject/topic to publish…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Subscribe to a subject/topic with a message handler. Args: subject:…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Unsubscribe from a subject/topic. Args: subscription_id: ID returned from…** (1 connections) — `server/infrastructure/message_broker.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (2 shared connections)
+- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/admin_auth_service.py`
+- `server/infrastructure/__init__.py`
+- `server/infrastructure/message_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

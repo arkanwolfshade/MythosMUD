@@ -1,45 +1,48 @@
 # Execution Steps
 
-> 23 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Scenario 5: Chat Messages Between Players **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **scenario-05-chat-messages.md** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 1: Clean State - Unmute Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 2: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 3: AW Sends Chat Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 4: Verify Ithaqua Sees AW's Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 5: Ithaqua Replies** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 6: Verify AW Sees Ithaqua's Reply** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 7: Test Multiple Messages** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 8: Test Message Formatting** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 9: Test Message History** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **retry_with_backoff()** (14 connections) — `server/utils/retry.py`
+- **test_retry.py** (14 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_cause_chain_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_wrapped_connection_closed()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_failure_then_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_async_success()** (4 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_non_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_is_transient_error_transient()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_failure_then_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **test_retry_with_backoff_success()** (3 connections) — `server/tests/unit/utils/test_retry.py`
+- **asyncio** (3 connections)
+- **F** (1 connections)
+- **Unit tests for retry utilities. Tests the retry decorator and retry logic.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() with async function succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test is_transient_error() identifies transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() with async function retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test is_transient_error() returns False for non-transient errors.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **DatabaseError wrapping asyncpg closed-connection must still retry (e2e…** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **__cause__ ConnectionDoesNotExistError makes the outer wrapper transient.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() succeeds on first attempt.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Test retry_with_backoff() retries on failure then succeeds.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **Decorator to retry a function with exponential backoff on transient errors.…** (1 connections) — `server/utils/retry.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (6 shared connections)
+- [properties](properties.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- `server/tests/unit/utils/test_retry.py`
+- `server/utils/retry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 42 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

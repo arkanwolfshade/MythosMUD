@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **main()** (1 connections) — `scripts/analyze_markdownlint.py`
-- **analyze_markdownlint.py** (1 connections) — `scripts/analyze_markdownlint.py`
+- **bind_request_context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **Mapped Diagnostic Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
@@ -13,7 +13,8 @@
 
 ## Source Files
 
-- `scripts/analyze_markdownlint.py`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
 
 ## Audit Trail
 

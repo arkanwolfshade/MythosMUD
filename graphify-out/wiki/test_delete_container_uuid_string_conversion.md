@@ -1,24 +1,24 @@
 # test_delete_container_uuid_string_conversion
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
-- **Test delete_container handles UUID to string conversion.** (1 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **Chaosium graphify snapshot - Does Love Forgive_** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **does-love-forgive/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
 
 ## Relationships
 
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

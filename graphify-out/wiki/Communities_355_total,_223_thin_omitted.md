@@ -1,48 +1,65 @@
 # Communities (355 total, 223 thin omitted)
 
-> 133 nodes
+> 122 nodes
 
 ## Key Concepts
 
-- **Communities (355 total, 223 thin omitted)** (133 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 0 - "Nyarlathotep Avatars"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 100 - "Call Daoloth / Daoloth"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 101 - "Call Nyogtha / Clutch of Nyogtha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 102 - "Call Saaitii / Saaitii"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 103 - "Call Zu-Che-Quon / Enchant Bells of Horror"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 104 - "Cast Out Shan / Shaggai"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 105 - "Casting the Runes / Elder Sign"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 106 - "Byatis / Contact Byatis"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 107 - "Call of Cthulhu Rulebook / The Grand Grimoire of Cthulhu Mythos Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 108 - "Chaugnar Faugn / Contact Chaugnar Faugn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 109 - "City in the Sands / Contact Flying Polyp"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 10 - "Named Baneful Spells"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 110 - "Contact Zoth-Ommog / Ponape Figurine"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 111 - "Create Curse Whistle / Pipes Of Madness"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 112 - "Create Gate / Create Gate Window"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 113 - "Create Sign of Barzai / Strange Legends of New England"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 114 - "Brew Paut / Enchant Magic Staves"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 115 - "Dampen Light / Enchant Pipes"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 116 - "Destroy Spawn of Yig / spawn of Yig"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 117 - "Detect Enchantment / Evil Eye"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 118 - "Eibon's Wheel of Mist / Enchant Dagger of Nyarlathotep"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 119 - "Enchant Book / star vampire"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 11 - "Gate Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- **Community 120 - "Cthulhu / Grasp of Cthulhu"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
-- *... and 108 more nodes in this community*
+- **test_chat_npc_system.py** (47 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **ChatMessage** (34 connections) — `server/game/chat_message.py`
+- **chat_npc_system.py** (34 connections) — `server/game/chat_npc_system.py`
+- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
+- **chat_message.py** (19 connections) — `server/game/chat_message.py`
+- **chat_message_helpers.py** (13 connections) — `server/game/chat_message_helpers.py`
+- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
+- **send_npc_say_to_room()** (12 connections) — `server/game/chat_npc_system.py`
+- **test_chat_message_helpers.py** (12 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
+- **send_personal_system_message()** (10 connections) — `server/game/chat_npc_system.py`
+- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
+- **create_and_log_chat_message()** (8 connections) — `server/game/chat_message_helpers.py`
+- **deliver_npc_room_speech()** (8 connections) — `server/game/chat_npc_system.py`
+- **schedule_npc_room_speech()** (8 connections) — `server/game/chat_npc_system.py`
+- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **asyncio** (8 connections)
+- **_ChatDeliveryService** (7 connections) — `server/game/chat_npc_system.py`
+- **deliver_personal_system()** (7 connections) — `server/game/chat_npc_system.py`
+- **subscribe_npc_spoke_to_chat()** (7 connections) — `server/game/chat_npc_system.py`
+- **title_from_quest_result()** (7 connections) — `server/game/quest/quest_chat_notify.py`
+- **register_npc_display_name()** (7 connections) — `server/npc/npc_display_names.py`
+- **_mock_chat_service()** (7 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Grand Grimoire of Cthulhu Mythos Magic  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_The_Grand_Grimoire_of_Cthulhu_Mythos_Magic__2026-08-12.md) (1 shared connections)
+- [Room](Room.md) (13 shared connections)
+- [NPCDefinition](NPCDefinition.md) (12 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (11 shared connections)
+- [GameTerminal.tsx](GameTerminal.tsx.md) (11 shared connections)
+- [magic_service.py](magic_service.py.md) (9 shared connections)
+- [ContainerRepository](ContainerRepository.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [get_help_content](get_help_content.md) (5 shared connections)
+- [Async Facades Implementation - COMPLETE ✅](Async_Facades_Implementation_-_COMPLETE_✅.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [apply_communication_dampening](apply_communication_dampening.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/GRAPH_REPORT.md`
+- `server/game/chat_message.py`
+- `server/game/chat_message_helpers.py`
+- `server/game/chat_npc_system.py`
+- `server/game/quest/quest_chat_notify.py`
+- `server/npc/npc_display_names.py`
+- `server/tests/unit/game/test_chat_message_helpers.py`
+- `server/tests/unit/game/test_chat_npc_system.py`
 
 ## Audit Trail
 
-- EXTRACTED: 133 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 314 (98%)
+- INFERRED: 6 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

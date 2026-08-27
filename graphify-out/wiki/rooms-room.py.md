@@ -1,48 +1,50 @@
 # rooms/room.py
 
-> 18 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
-- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
-- **RoomPositionUpdateResponse** (7 connections) — `server/schemas/rooms/room.py`
-- **RoomResponse** (7 connections) — `server/schemas/rooms/room.py`
-- **players/player_respawn.py** (7 connections) — `server/schemas/players/player_respawn.py`
-- **rooms/__init__.py** (7 connections) — `server/schemas/rooms/__init__.py`
-- **RoomData** (6 connections) — `server/schemas/rooms/room_data.py`
-- **room_data.py** (5 connections) — `server/schemas/rooms/room_data.py`
-- **BaseModel** (3 connections)
-- **BaseModel** (1 connections)
-- **Player respawn API response schemas for MythosMUD server. This module provides…** (1 connections) — `server/schemas/players/player_respawn.py`
-- **Rooms domain schemas: room API responses.** (1 connections) — `server/schemas/rooms/__init__.py`
-- **Room data schema for MythosMUD. This module defines Pydantic models for room…** (1 connections) — `server/schemas/rooms/room_data.py`
-- **Room data structure for API responses. This model represents room information…** (1 connections) — `server/schemas/rooms/room_data.py`
-- **Room API response schemas for MythosMUD server. This module provides Pydantic…** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for listing rooms.** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for updating room position.** (1 connections) — `server/schemas/rooms/room.py`
-- **Response model for single room information. This model uses a flexible…** (1 connections) — `server/schemas/rooms/room.py`
+- **Test Suite Quality Audit - Executive Summary** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Recommended Decision** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Financial Impact (If You're Tracking Dev Time)** (5 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- ****25-30% (~1,250-1,500 tests) provide CRITICAL regression protection**** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Final Recommendation** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Answer to Original Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Deliverables Summary** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Key Findings** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Test Value Distribution** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **TL;DR - Answer to Your Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **"What percentage of tests provide critical coverage?"** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Breakdown** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **By Category** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **CI/CD Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Commit to full 2-month optimization plan** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Comparison to Industry Benchmarks** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Created Documents** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Developer Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement gap filling only (skip pruning)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement only Phase 1 (Quick Wins)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Maintenance Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Full Optimization (Recommended)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Wins Only** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option C: Strategic Focus** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Start with Option B (Quick Wins) Immediately** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [NumPy Code Review - MythosMUD Codebase](NumPy_Code_Review_-_MythosMUD_Codebase.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/players/player_respawn.py`
-- `server/schemas/rooms/__init__.py`
-- `server/schemas/rooms/room.py`
-- `server/schemas/rooms/room_data.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 32 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

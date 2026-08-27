@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_validate_player_in_room_with_cache_true()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns True when player in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
+- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/react_best-practices_remediation.plan.md`
+- `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

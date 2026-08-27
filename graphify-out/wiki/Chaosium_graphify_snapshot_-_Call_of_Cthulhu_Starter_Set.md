@@ -1,12 +1,13 @@
 # Chaosium graphify snapshot - Call of Cthulhu Starter Set
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Starter Set** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
-- **call-of-cthulhu-starter-set/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- **Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **Malleus Monstrorum - Cthulhu Mythos Bestiary.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/MANIFEST.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

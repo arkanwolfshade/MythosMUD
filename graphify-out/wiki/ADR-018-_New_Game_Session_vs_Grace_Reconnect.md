@@ -1,36 +1,34 @@
 # ADR-018: New Game Session vs Grace Reconnect
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **ADR-018: New Game Session vs Grace Reconnect** (10 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **ADR-018-new-game-session-replacement.md** (3 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **2. Context** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **3. Decision** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **4. Alternatives Considered** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **5. Consequences** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **6. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **7. References** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **8. Changelog** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- **Debugging Mid-Run Drops** (1 connections) — `docs/debugging-mid-run-drops.md`
-- **Memory Leak Metrics Usage Guide** (1 connections) — `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
+- **MapPerformanceMonitor** (8 connections) — `client/src/components/map/utils/performance.ts`
+- **performance.ts** (6 connections) — `client/src/components/map/utils/performance.ts`
+- **debounce()** (4 connections) — `client/src/components/map/utils/performance.ts`
+- **performance.test.ts** (4 connections) — `client/src/components/map/__tests__/performance.test.ts`
+- **.getAverageRenderTime()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **.getStats()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **throttle()** (2 connections) — `client/src/components/map/utils/performance.ts`
+- **isInViewport()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.endRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.getFps()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.reset()** (1 connections) — `client/src/components/map/utils/performance.ts`
+- **.startRender()** (1 connections) — `client/src/components/map/utils/performance.ts`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/MEMORY_LEAK_METRICS_USAGE_GUIDE.md`
-- `docs/architecture/decisions/ADR-018-new-game-session-replacement.md`
-- `docs/debugging-mid-run-drops.md`
+- `client/src/components/map/__tests__/performance.test.ts`
+- `client/src/components/map/utils/performance.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

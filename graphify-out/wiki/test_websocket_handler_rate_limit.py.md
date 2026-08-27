@@ -1,36 +1,39 @@
 # test_websocket_handler_rate_limit.py
 
-> 14 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_rate_limit.py** (8 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_no_connection_id()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **test_check_rate_limit_passed()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **asyncio** (3 connections)
-- **fixture** (2 connections)
-- **Unit tests for websocket handler rate limiting. Tests the rate limiting…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when no connection_id.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns True when rate limit check passes.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
-- **Test _check_rate_limit() returns False when rate limit exceeded.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- **.build_subject()** (7 connections) — `server/services/nats_subject_manager/manager.py`
+- **Any** (7 connections)
+- **._ensure_pattern_exists()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **._ensure_required_params()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **._format_subject()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_pattern_info()** (5 connections) — `server/services/nats_subject_manager/manager.py`
+- **._ensure_subject_length()** (4 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_all_patterns()** (4 connections) — `server/services/nats_subject_manager/manager.py`
+- **.get_performance_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
+- **Build a NATS subject from a pattern and parameters. Args: pattern_name: Name of…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Ensure pattern exists in registry. Args: pattern_name: Name of the pattern to…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Ensure all required parameters are provided. Args: pattern_name: Name of the…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Format subject string from pattern and parameters. Args: pattern_name: Name of…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Ensure subject length is within limits. Args: subject: Subject string to…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Get information about a registered pattern. Args: pattern_name: Name of the…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Get all registered patterns. Returns: Dictionary of all registered patterns…** (1 connections) — `server/services/nats_subject_manager/manager.py`
+- **Get current performance metrics. Returns: Dictionary containing performance…** (1 connections) — `server/services/nats_subject_manager/manager.py`
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [DatabaseManager](DatabaseManager.md) (8 shared connections)
+- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (5 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_websocket_handler_rate_limit.py`
+- `server/services/nats_subject_manager/manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

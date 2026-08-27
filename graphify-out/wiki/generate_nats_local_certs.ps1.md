@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **generate_nats_local_certs.ps1** (0 connections) — `scripts/generate_nats_local_certs.ps1`
+- **Event Subscription Cleanup Patterns** (0 connections) — `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/generate_nats_local_certs.ps1`
+- `docs/EVENT_SUBSCRIPTION_CLEANUP_PATTERNS.md`
 
 ## Audit Trail
 

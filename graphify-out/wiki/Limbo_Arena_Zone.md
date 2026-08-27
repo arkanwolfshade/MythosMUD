@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Limbo Arena Zone** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
-- **Gladiator Ring Arena** (1 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- **ApplicationContainer** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
+- **DI Migration Test Results** (1 connections) — `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- `client/tests/e2e/DI_MIGRATION_TEST_RESULTS.md`
 
 ## Audit Trail
 

@@ -1,60 +1,55 @@
 # login_user
 
-> 62 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **login_user()** (35 connections) — `server/auth/endpoints.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (20 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_endpoints_login_profession.py** (11 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **asyncio** (11 connections)
-- **_authenticate_user_credentials()** (8 connections) — `server/auth/endpoints.py`
-- **_check_shutdown_status()** (8 connections) — `server/auth/endpoints.py`
-- **Request** (8 connections)
-- **_find_user_by_username()** (7 connections) — `server/auth/endpoints.py`
-- **_get_user_characters()** (7 connections) — `server/auth/endpoints.py`
-- **_validate_invite_code()** (7 connections) — `server/auth/endpoints.py`
-- **test_login_user_authenticate_raises_exception()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_authenticate_returns_none()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_generic_exception()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_id_mismatch()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_invalid_credentials()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_no_email()** (7 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **_check_username_exists()** (6 connections) — `server/auth/endpoints.py`
-- **_mark_invite_as_used()** (6 connections) — `server/auth/endpoints.py`
-- **test_login_user_player_no_profession_id()** (6 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_error()** (6 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_none()** (6 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_success()** (6 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_http_exception_re_raised()** (6 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_not_found()** (6 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- *... and 37 more nodes in this community*
+- **IdleMovementHandler** (53 connections) — `server/npc/idle_movement.py`
+- **test_idle_movement.py** (36 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **._should_idle_move_inner()** (8 connections) — `server/npc/idle_movement.py`
+- **patch** (8 connections)
+- **.should_idle_move()** (5 connections) — `server/npc/idle_movement.py`
+- **._is_npc_in_combat()** (4 connections) — `server/npc/idle_movement.py`
+- **._npc_registered_in_combat()** (4 connections) — `server/npc/idle_movement.py`
+- **idle_movement_handler()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_is_npc_in_combat_true()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_false_when_registered_in_combat()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_active()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_not_alive()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_check()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_fails_when_random_above_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_probability_passes_when_random_below_threshold()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_should_idle_move_true_when_not_in_combat_and_probability_succeeds()** (4 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **._check_npc_combat_via_string_mapping()** (3 connections) — `server/npc/idle_movement.py`
+- **._check_npc_combat_via_uuid()** (3 connections) — `server/npc/idle_movement.py`
+- **mock_event_bus()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_different_rooms()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_different_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_calculate_distance_to_room_same_subzone()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- **test_execute_idle_movement_no_current_room()** (3 connections) — `server/tests/unit/npc/test_idle_movement.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (19 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
-- [register_user](register_user.md) (11 shared connections)
-- [test_users.py](test_users.py.md) (3 shared connections)
-- [Invite](Invite.md) (3 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
-- [test_auth_dependencies.py](test_auth_dependencies.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [CORSConfig](CORSConfig.md) (14 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (2 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [RoomDataCache](RoomDataCache.md) (1 shared connections)
+- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
+- `server/npc/idle_movement.py`
+- `server/tests/unit/npc/test_idle_movement.py`
 
 ## Audit Trail
 
-- EXTRACTED: 146 (79%)
-- INFERRED: 39 (21%)
+- EXTRACTED: 118 (80%)
+- INFERRED: 29 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,51 +1,52 @@
 # test_quality_fragmentation_guard.py
 
-> 40 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **test_quality_fragmentation_guard.py** (25 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **Path** (8 connections)
-- **test_collect_repo_texts_reports_unreadable_files()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_emit_results_does_not_print_failure_or_warning_bodies()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_does_not_flag_tiny_function_with_two_usages()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_flags_single_use_for_non_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_flags_tiny_single_use_function()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **Protocol** (4 connections)
-- **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- *... and 15 more nodes in this community*
+- **PlayerRepositoryProtocol** (22 connections) — `server/persistence/protocols.py`
+- **test_protocol_ellipsis_bodies_via_unbound_methods()** (22 connections) — `server/tests/unit/persistence/test_protocols.py`
+- **Player** (11 connections)
+- **UUID** (6 connections)
+- **.get_players_batch()** (5 connections) — `server/persistence/protocols.py`
+- **.update_player_last_active()** (5 connections) — `server/persistence/protocols.py`
+- **.delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **.get_active_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_name()** (4 connections) — `server/persistence/protocols.py`
+- **.get_player_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_players_by_user_id()** (4 connections) — `server/persistence/protocols.py`
+- **.get_players_in_room()** (4 connections) — `server/persistence/protocols.py`
+- **.save_player()** (4 connections) — `server/persistence/protocols.py`
+- **.save_players()** (4 connections) — `server/persistence/protocols.py`
+- **.soft_delete_player()** (4 connections) — `server/persistence/protocols.py`
+- **.validate_and_fix_player_room()** (4 connections) — `server/persistence/protocols.py`
+- **.list_players()** (3 connections) — `server/persistence/protocols.py`
+- **datetime** (2 connections)
+- **Protocol for player persistence operations. Defines the contract used by…** (1 connections) — `server/persistence/protocols.py`
+- **Get the first active player for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get all players (including deleted) for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get active (non-deleted) players for a user ID.** (1 connections) — `server/persistence/protocols.py`
+- **Get an active player by name (case-insensitive).** (1 connections) — `server/persistence/protocols.py`
+- **Save a player to the database.** (1 connections) — `server/persistence/protocols.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (16 shared connections)
-- [_collect_python_public_defs_and_tiny](_collect_python_public_defs_and_tiny.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_realtime_bundle_nats.py](test_realtime_bundle_nats.py.md) (8 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [TaskRegistry](TaskRegistry.md) (1 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- `server/tests/unit/test_quality_fragmentation_guard.py`
+- `server/persistence/protocols.py`
+- `server/tests/unit/persistence/test_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (83%)
-- INFERRED: 17 (17%)
+- EXTRACTED: 69 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

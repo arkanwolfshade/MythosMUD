@@ -4,53 +4,55 @@
 
 ## Key Concepts
 
-- **useRoomEditModal.ts** (18 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModal.tsx** (16 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalForm.tsx** (16 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **fieldBorderClass()** (5 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModal()** (4 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **useRoomEditModal()** (4 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModal.test.tsx** (4 connections) — `client/src/components/map/__tests__/RoomEditModal.test.tsx`
-- **buildInitialFormData()** (3 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditFormData** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditDescriptionField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalForm()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditNameField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditSubZoneField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditZoneField()** (2 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalTabs()** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
-- **toFormValue()** (2 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModalTabs.tsx** (2 connections) — `client/src/components/map/RoomEditModalTabs.tsx`
-- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **EnvironmentOption** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **RoomEditModalFormProps** (1 connections) — `client/src/components/map/RoomEditModalForm.tsx`
-- **EditableRoomField** (1 connections) — `client/src/components/map/useRoomEditModal.ts`
-- **RoomEditModalContent()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalFooter()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalHeader()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
-- **RoomEditModalShell()** (1 connections) — `client/src/components/map/RoomEditModal.tsx`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\S. Petersen's Field Guide to Lovecraftian Horrors  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Communities (10 total, 4 thin omitted)** (7 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Cosmic Horror.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- **Pulp Sanity.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
+- **Lucidity.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
+- **Cosmic Horror** (4 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- **Using Luck (Pulp).md** (3 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
+- **Dimensional Shambler.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
+- **Formless Spawn.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- **The Hungry Void.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
+- **Evocations of the Inner God.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
+- **Voice on the Phone.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- **Pandora's Box (Pulp campaign).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
+- **Formless Spawn** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- **Graph Report - S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 0 - "Azathoth / Byakhee"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 1 - "Call of Cthulhu / Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 2 - "Dimensional Shambler / Elder Thing"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 3 - "Abhoth / Atlach-Nacha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 4 - "Deep One / Ghast"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community 5 - "Dark Young / Dark Young of Shub-Niggurath"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
 - *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
-- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (2 shared connections)
-- [gameStore.ts](gameStore.ts.md) (2 shared connections)
-- [RoomNodeData](RoomNodeData.md) (1 shared connections)
-- [map/types.ts](map-types.ts.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/components/map/RoomEditModal.tsx`
-- `client/src/components/map/RoomEditModalForm.tsx`
-- `client/src/components/map/RoomEditModalTabs.tsx`
-- `client/src/components/map/__tests__/RoomEditModal.test.tsx`
-- `client/src/components/map/useRoomEditModal.ts`
+- `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/GRAPH_REPORT.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
+- `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
+- `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (92%)
-- INFERRED: 5 (8%)
+- EXTRACTED: 38 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

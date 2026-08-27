@@ -1,58 +1,61 @@
 # WebSocketMessageValidator
 
-> 86 nodes
+> 133 nodes
 
 ## Key Concepts
 
-- **WebSocketMessageValidator** (44 connections) — `server/realtime/message_validator.py`
-- **MessageValidationError** (39 connections) — `server/realtime/message_validator.py`
-- **test_message_validator.py** (31 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **websocket_handler_validation.py** (22 connections) — `server/realtime/websocket_handler_validation.py`
-- **message_validator.py** (10 connections) — `server/realtime/message_validator.py`
-- **.parse_and_validate()** (7 connections) — `server/realtime/message_validator.py`
-- **._unwrap_string_inner_message_if_json()** (7 connections) — `server/realtime/message_validator.py`
-- **.validate_json_structure()** (7 connections) — `server/realtime/message_validator.py`
-- **validate_websocket_message()** (7 connections) — `server/realtime/websocket_handler_validation.py`
-- **._parse_outer_json_object()** (6 connections) — `server/realtime/message_validator.py`
-- **resolve_expected_csrf_token()** (6 connections) — `server/realtime/websocket_handler_validation.py`
-- **get_message_validator()** (5 connections) — `server/realtime/message_validator.py`
-- **._extract_csrf_token_string()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_csrf()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_schema()** (5 connections) — `server/realtime/message_validator.py`
-- **.validate_size()** (5 connections) — `server/realtime/message_validator.py`
-- **check_websocket_message_rate_limit()** (5 connections) — `server/realtime/websocket_handler_validation.py`
-- **validate_message_csrf_and_restore_metadata()** (5 connections) — `server/realtime/websocket_handler_validation.py`
-- **_deep_dict()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_inner_json_depth_exceeded()** (5 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **._validate_string_lengths()** (4 connections) — `server/realtime/message_validator.py`
-- **get_connection_csrf_context()** (4 connections) — `server/realtime/websocket_handler_validation.py`
-- **test_parse_and_validate_csrf_inner_token_must_match_expected_not_outer_wrapper()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_parse_and_validate_rejects_oversized_raw_payload()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- **test_validate_json_structure_accepts_depth_equal_to_limit()** (4 connections) — `server/tests/unit/realtime/test_message_validator.py`
-- *... and 61 more nodes in this community*
+- **test_magic_commands.py** (50 connections) — `server/tests/unit/commands/test_magic_commands.py`
+- **MagicCommandHandler** (30 connections) — `server/commands/magic_commands.py`
+- **asyncio** (29 connections)
+- **magic_commands.py** (26 connections) — `server/commands/magic_commands.py`
+- **Any** (19 connections)
+- **magic_service()** (13 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **handle_cast_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_learn_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spell_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_spells_command()** (9 connections) — `server/commands/magic_commands.py`
+- **handle_stop_command()** (9 connections) — `server/commands/magic_commands.py`
+- **.__init__()** (8 connections) — `server/commands/magic_commands.py`
+- **.handle_cast_command()** (7 connections) — `server/commands/magic_commands.py`
+- **fixture** (7 connections)
+- **SpellCommandError** (6 connections) — `server/commands/magic_commands.py`
+- **._build_cast_response()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_learn_command()** (6 connections) — `server/commands/magic_commands.py`
+- **.handle_spell_command()** (6 connections) — `server/commands/magic_commands.py`
+- **._interrupt_rest_for_cast()** (6 connections) — `server/commands/magic_commands.py`
+- **._resolve_learn_context()** (5 connections) — `server/commands/magic_commands.py`
+- **._resolve_spell_context()** (5 connections) — `server/commands/magic_commands.py`
+- **Enum** (5 connections)
+- **._announce_spell_cast()** (4 connections) — `server/commands/magic_commands.py`
+- **._build_cast_success_message()** (4 connections) — `server/commands/magic_commands.py`
+- **._build_learn_response()** (4 connections) — `server/commands/magic_commands.py`
+- *... and 108 more nodes in this community*
 
 ## Relationships
 
-- [ErrorType](ErrorType.md) (9 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
-- [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (12 shared connections)
+- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (8 shared connections)
+- [Any](Any.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (6 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [debugLogger](debugLogger.md) (3 shared connections)
+- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (3 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (1 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_validator.py`
-- `server/realtime/websocket_handler_validation.py`
-- `server/tests/unit/realtime/test_message_validator.py`
+- `server/commands/magic_commands.py`
+- `server/tests/unit/commands/test_magic_commands.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (79%)
-- INFERRED: 41 (21%)
+- EXTRACTED: 251 (91%)
+- INFERRED: 26 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

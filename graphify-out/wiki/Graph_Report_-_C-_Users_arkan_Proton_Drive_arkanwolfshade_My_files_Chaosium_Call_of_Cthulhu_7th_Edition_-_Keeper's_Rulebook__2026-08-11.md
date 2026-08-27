@@ -1,37 +1,40 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)
 
-> 16 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Communities (17 total, 12 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 0 - "Character and Skills"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 1 - "Character and Skills (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 2 - "Core Rules"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 3 - "Core Rules (3)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community 4 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- **Async Remediation Complete** (11 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🚀 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🎯 What Was Done** (4 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **🎓 Key Takeaway** (3 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Status**: ✅**COMPLETE AND READY FOR DEPLOYMENT** (2 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Adjusts spectacles with scholarly satisfaction** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Critical Fixes Implemented (4 Code Changes)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **December 3, 2025** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Documentation Created (5 Documents, ~2,500 lines)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **📚 Key Documents** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Mission Accomplished** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Next Sprint (Optional)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **📊 Results Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Tests Created (1 Comprehensive Suite)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **This Week** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **Today** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
+- **test_async_audit_compliance.py** (1 connections) — `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/GRAPH_REPORT.md`
+- `docs/archive/ASYNC_REMEDIATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

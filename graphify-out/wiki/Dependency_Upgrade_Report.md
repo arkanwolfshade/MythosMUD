@@ -1,22 +1,23 @@
 # Dependency Upgrade Report
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Dependency Upgrade Report** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- **test_validate_combat_command_suspicious_patterns_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_combat_command suspicious patterns path (line 158).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/dependency_upgrade_report.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

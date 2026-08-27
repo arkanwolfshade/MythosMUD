@@ -1,43 +1,43 @@
 # _StubPlayerRepo
 
-> 18 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **_StubPlayerRepo** (16 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (6 connections)
-- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (5 connections) — `server/tests/unit/utils/test_retry.py`
-- **.get_player_by_id()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_batch()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.soft_delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.update_player_last_active()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_active_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_name()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_in_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_player()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.validate_and_fix_player_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **Retry decorator must not treat wrapped closed-connection as final on attempt 1.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **properties** (10 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **end_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **start_hour** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **category** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **id** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **name** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **notes** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) (3 shared connections)
-- [retry.py](retry.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (3 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Alone_Against_the_Dark__2026-08-11.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_protocols.py`
-- `server/tests/unit/utils/test_retry.py`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

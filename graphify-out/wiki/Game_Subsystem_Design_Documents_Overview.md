@@ -1,67 +1,54 @@
 # Game Subsystem Design Documents Overview
 
-> 33 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **Game Subsystem Design Documents Overview** (15 connections) — `docs/subsystems/README.md`
-- **Movement Subsystem Design** (11 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **SUBSYSTEM_MOVEMENT_DESIGN.md** (7 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **Combat Subsystem Design** (6 connections) — `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- **Magic Subsystem Design** (4 connections) — `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- **Rest Subsystem Design** (4 connections) — `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
-- **Status Effects Subsystem Design** (4 connections) — `docs/subsystems/SUBSYSTEM_STATUS_EFFECTS_DESIGN.md`
-- **Command Handler Patterns** (3 connections) — `docs/COMMAND_HANDLER_PATTERNS.md`
-- **Command Models Reference** (3 connections) — `docs/COMMAND_MODELS_REFERENCE.md`
-- **Lucidity Subsystem Design** (3 connections) — `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- **Respawn Subsystem Design** (3 connections) — `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
-- **Command Security Guide** (2 connections) — `docs/COMMAND_SECURITY_GUIDE.md`
-- **Follow Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
-- **NPC Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- **Party Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
-- **Rescue Subsystem Design** (2 connections) — `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
-- **1. Overview** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **2. Architecture** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **3. Key design decisions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **4. Constraints** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **5. Component interactions** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **6. Developer guide** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **7. Troubleshooting** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **8. Related docs** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- **9. Changelog** (1 connections) — `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- *... and 8 more nodes in this community*
+- **persistence/container_helpers.py** (20 connections) — `server/persistence/container_helpers.py`
+- **container_query_helpers.py** (16 connections) — `server/persistence/container_query_helpers.py`
+- **fetch_container_items()** (9 connections) — `server/persistence/container_helpers.py`
+- **_build_container_data_from_row()** (9 connections) — `server/persistence/container_query_helpers.py`
+- **update_container_items()** (8 connections) — `server/persistence/container_helpers.py`
+- **get_containers_by_entity_id()** (7 connections) — `server/persistence/container_query_helpers.py`
+- **get_decayed_containers()** (7 connections) — `server/persistence/container_query_helpers.py`
+- **_coerce_row_quantity()** (6 connections) — `server/persistence/container_helpers.py`
+- **get_containers_by_room_id()** (6 connections) — `server/persistence/container_query_helpers.py`
+- **_item_dict_from_contents_row()** (5 connections) — `server/persistence/container_helpers.py`
+- **Any** (4 connections)
+- **ContainerData** (4 connections)
+- **UUID** (3 connections)
+- **_metadata_dict_from_cell()** (2 connections) — `server/persistence/container_helpers.py`
+- **PsycopgConnection** (2 connections)
+- **datetime** (2 connections)
+- **UUID** (2 connections)
+- **PsycopgCursor** (1 connections)
+- **Helper functions for container persistence operations.** (1 connections) — `server/persistence/container_helpers.py`
+- **Fetch container items directly from normalized tables. Queries…** (1 connections) — `server/persistence/container_helpers.py`
+- **Update container items using stored procedures. Args: cursor: Database cursor…** (1 connections) — `server/persistence/container_helpers.py`
+- **Normalize quantity/position from DB row cells; bool -> 1 (not…** (1 connections) — `server/persistence/container_helpers.py`
+- **Query helper functions for container persistence operations.** (1 connections) — `server/persistence/container_query_helpers.py`
+- **Get all containers that have decayed (decay_at < current_time). Args: conn:…** (1 connections) — `server/persistence/container_query_helpers.py`
+- **Build ContainerData object from database row. Args: conn: Database connection…** (1 connections) — `server/persistence/container_query_helpers.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [player_event_handlers.py](player_event_handlers.py.md) (11 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [TaskRegistry](TaskRegistry.md) (6 shared connections)
+- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/COMMAND_HANDLER_PATTERNS.md`
-- `docs/COMMAND_MODELS_REFERENCE.md`
-- `docs/COMMAND_SECURITY_GUIDE.md`
-- `docs/COMMAND_TESTING_GUIDE.md`
-- `docs/EVENT_OWNERSHIP_MATRIX.md`
-- `docs/NATS_SUBJECT_PATTERNS.md`
-- `docs/subsystems/README.md`
-- `docs/subsystems/SUBSYSTEM_ADMIN_COMMANDS_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_COMBAT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_EMOTE_POSE_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_FOLLOW_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_LUCIDITY_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_MAGIC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_MOVEMENT_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_NPC_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_PARTY_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_RESCUE_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_RESPAWN_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_REST_DESIGN.md`
-- `docs/subsystems/SUBSYSTEM_SKILLS_LEVEL_DESIGN.md`
+- `server/persistence/container_helpers.py`
+- `server/persistence/container_query_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 75 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

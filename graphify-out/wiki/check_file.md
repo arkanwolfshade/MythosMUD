@@ -1,31 +1,32 @@
 # check_file
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **check_file()** (6 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **check_asyncio_run_guardrails.py** (4 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **main()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_string_literals()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **_strip_triple_quoted_blocks()** (3 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Path** (1 connections)
-- **Remove triple-quoted string blocks from file content.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Remove string literals from line to avoid false positives inside docs/strings.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Return list of (line_no, line) where asyncio.run( appears in code.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
-- **Return 0 if no asyncio.run( in server/, else 1.** (1 connections) — `scripts/check_asyncio_run_guardrails.py`
+- **Improve Typography Systematically** (6 connections) — `.claude/skills/typeset/SKILL.md`
+- **Typeset Skill** (6 connections) — `.claude/skills/typeset/SKILL.md`
+- **Assess Current Typography** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Establish Hierarchy** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Fix Readability** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Font Selection** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Plan Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Refine Details** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Verify Typography Improvements** (1 connections) — `.claude/skills/typeset/SKILL.md`
+- **Weight Consistency** (1 connections) — `.claude/skills/typeset/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_asyncio_run_guardrails.py`
+- `.claude/skills/typeset/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

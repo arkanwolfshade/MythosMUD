@@ -1,30 +1,32 @@
 # run_make_stages.py
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **main()** (5 connections) — `scripts/run_make_stages.py`
-- **run_make_stages.py** (5 connections) — `scripts/run_make_stages.py`
-- **keep_going_requested()** (3 connections) — `scripts/run_make_stages.py`
-- **run_stage()** (3 connections) — `scripts/run_make_stages.py`
-- **stage_failed_from_output()** (3 connections) — `scripts/run_make_stages.py`
-- **_print_fail()** (2 connections) — `scripts/run_make_stages.py`
-- **Return True when Make was invoked with -k / --keep-going.** (1 connections) — `scripts/run_make_stages.py`
-- **Return a short failure reason, or None if the stage is OK.** (1 connections) — `scripts/run_make_stages.py`
-- **Run `make <stage>`, stream output, return (exit_code, captured_output).** (1 connections) — `scripts/run_make_stages.py`
+- **FAILURE PATTERN RECOGNITION** (6 connections) — `.cursor/commands/server-test-remediation.md`
+- **3. Systematic Investigation Approach** (5 connections) — `.cursor/commands/server-test-remediation.md`
+- **A. Database-Related Failures** (2 connections) — `.cursor/commands/server-test-remediation.md`
+- **B. Authentication/Security Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **C. WebSocket/Connection Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **D. Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **E. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Authentication Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For Game Logic Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **For WebSocket Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
+- [Distill Skill](Distill_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/run_make_stages.py`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,32 @@
 # Measurement and Validation
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Measurement and Validation** (6 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **After Each Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Before Starting Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Capture Baseline** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Verify Metrics** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Weekly Dashboard** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **generate_sql.mjs** (5 connections) — `scripts/static_data/README.md`
+- **Canonical DML Merge (mythos_*_dml.sql)** (2 connections) — `scripts/static_data/README.md`
+- **world_and_emotes_generated.sql** (2 connections) — `scripts/static_data/README.md`
+- **PostgreSQL DDL Initialization** (1 connections) — `scripts/README.md`
+- **AJV JSON Schema Validation** (1 connections) — `scripts/static_data/README.md`
+- **Deterministic UUID v5 Namespace** (1 connections) — `scripts/static_data/README.md`
+- **Static Data SQL Generation** (1 connections) — `scripts/static_data/README.md`
+- **generate_sql.mjs Path Resolution Failure** (1 connections) — `scripts/static_data/temp_debug.txt`
 
 ## Relationships
 
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `scripts/README.md`
+- `scripts/static_data/README.md`
+- `scripts/static_data/temp_debug.txt`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **domain/events/__init__.py** (1 connections) — `server/domain/events/__init__.py`
-- **Domain events for MythosMUD. Domain events represent significant state changes…** (1 connections) — `server/domain/events/__init__.py`
+- **Room Subscription Timing Race** (1 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- **Connection Message Not Broadcast** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `server/domain/events/__init__.py`
+- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- `e2e-tests/scenarios/scenario-01-basic-connection.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

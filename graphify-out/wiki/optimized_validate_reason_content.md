@@ -1,32 +1,30 @@
 # optimized_validate_reason_content
 
-> 8 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **optimized_validate_reason_content()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_reason_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_reason_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_reason_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid reason content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating reason content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for reason content fields. Args: value: The reason to…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **🔴 Anti-Patterns Check (Critical)** (9 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Blocking the Event Loop?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Missing `await` Keywords?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Using `asyncio.run()` in Library Code?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Mixing Sync and Async Code Incorrectly?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Forgetting to Await Awaitable Objects?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Not Handling Exceptions?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **7. Over-using Locks?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **8. Unstructured Concurrency?** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
-- [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
-- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
+- [test_lru_cache.py](test_lru_cache.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

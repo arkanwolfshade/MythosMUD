@@ -1,24 +1,27 @@
 # test_get_npc_stats_preserves_values
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_get_npc_stats_preserves_values()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **Provided npc_stats are returned as-is.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **2026_02_09_add_player_effects_table.py** (3 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

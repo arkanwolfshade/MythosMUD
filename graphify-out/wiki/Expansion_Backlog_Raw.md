@@ -1,25 +1,25 @@
 # Expansion Backlog (Raw)
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Expansion Backlog (Raw)** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- **Delta Green** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- **Things and Notes to Expand On** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- **Phase 4: File System Operations** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.1 Room Loading Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.2 Player Data File Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **4.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Startup Duplication Analysis](NPC_Startup_Duplication_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
-- `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

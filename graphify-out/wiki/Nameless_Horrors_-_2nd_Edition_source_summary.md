@@ -1,14 +1,16 @@
 # Nameless Horrors - 2nd Edition (source summary)
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Nameless Horrors - 2nd Edition (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **Nameless Horrors - 2nd Edition.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
-- **Key extractions pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **useGridLayout.ts** (6 connections) — `client/src/hooks/useGridLayout.ts`
+- **useGridLayout()** (2 connections) — `client/src/hooks/useGridLayout.ts`
+- **useGridLayout.test.ts** (2 connections) — `client/src/hooks/__tests__/useGridLayout.test.ts`
+- **PanelState** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **UseGridLayoutReturn** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **layoutConfig** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **STORAGE_KEYS** (1 connections) — `client/src/hooks/useGridLayout.ts`
 
 ## Relationships
 
@@ -16,11 +18,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- `client/src/hooks/__tests__/useGridLayout.test.ts`
+- `client/src/hooks/useGridLayout.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

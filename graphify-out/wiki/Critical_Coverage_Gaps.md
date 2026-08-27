@@ -1,48 +1,49 @@
 # Critical Coverage Gaps
 
-> 32 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **Critical Coverage Gaps** (33 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 10: Configuration Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 1: Domain Layer (NEW ARCHITECTURE)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 2: Message Broker Abstraction** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 3: ApplicationContainer Lifecycle** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 4: Error Recovery Paths** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 5: Async/Await Pattern Verification** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 6: Rate Limiting and Throttling** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 7: WebSocket Connection Edge Cases** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 8: Combat System Integration** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap 9: Database Migration and Schema Evolution** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Gap Description** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Missing Tests** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- *... and 7 more nodes in this community*
+- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
+- **long_description** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **prototype_id** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **short_description** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **weight** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Missing Test Scenarios](Missing_Test_Scenarios.md) (1 shared connections)
-- [Net Impact Summary](Net_Impact_Summary.md) (1 shared connections)
+- [enum](enum.md) (4 shared connections)
+- [required](required.md) (1 shared connections)
+- [Dependency Upgrade Strategy Specification](Dependency_Upgrade_Strategy_Specification.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_GAPS.md`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 42 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,59 +1,56 @@
 # test_validation.py
 
-> 86 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_validation.py** (37 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **SubjectValidator** (23 connections) — `server/services/nats_subject_manager/validation.py`
-- **SubjectValidationError** (21 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **nats_subject_manager/exceptions.py** (13 connections) — `server/services/nats_subject_manager/exceptions.py`
-- **validation.py** (7 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_parameter_value()** (5 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_pattern_params()** (4 connections) — `server/services/nats_subject_manager/validation.py`
-- **custom_length_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **strict_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_subject_validator_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **fixture** (3 connections)
-- **.__init__()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subject_basic()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subject_components()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **.validate_subscription_pattern()** (2 connections) — `server/services/nats_subject_manager/validation.py`
-- **test_validate_parameter_value_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_none()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_numbers()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_strict_allows_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_strict_no_underscores()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **test_validate_parameter_value_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- *... and 61 more nodes in this community*
+- **quality_fragmentation_ai_guardrails.py** (30 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **quality_fragmentation_lizard.py** (25 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **quality_fragmentation_guard.py** (24 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **quality_fragmentation_core.py** (18 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **ChangedFile** (11 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **GuardContext** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_ai_guardrails()** (9 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **git_show_file()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **run_cmd()** (9 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_fragmentation_trends()** (9 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **quality_fragmentation_trends.py** (9 connections) — `scripts/ci/quality_fragmentation_trends.py`
+- **LizardFunctionRow** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **main()** (8 connections) — `scripts/ci/quality_fragmentation_guard.py`
+- **_check_head_rows()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_process_head_lizard()** (8 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **build_context()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **is_safe_git_ref()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **nloc_for_text()** (7 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **check_lizard_limits()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_has_override_in_file()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **parse_lizard_output()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **run_lizard_on_content()** (7 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- **_process_added_file_checks()** (6 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- **collect_repo_texts()** (6 connections) — `scripts/ci/quality_fragmentation_core.py`
+- **_process_base_lizard()** (6 connections) — `scripts/ci/quality_fragmentation_lizard.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [manager.py](manager.py.md) (12 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (11 shared connections)
-- [NATSSubjectManager](NATSSubjectManager.md) (3 shared connections)
-- [test_manager.py](test_manager.py.md) (2 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_pattern_matcher.py](test_pattern_matcher.py.md) (1 shared connections)
-- [subject_controller.py](subject_controller.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (16 shared connections)
+- [environment](environment.md) (8 shared connections)
+- [test_nats_service_health.py](test_nats_service_health.py.md) (4 shared connections)
+- [MythosMUD Server Runbook](MythosMUD_Server_Runbook.md) (3 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/exceptions.py`
-- `server/services/nats_subject_manager/validation.py`
-- `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- `scripts/ci/quality_fragmentation_ai_guardrails.py`
+- `scripts/ci/quality_fragmentation_core.py`
+- `scripts/ci/quality_fragmentation_guard.py`
+- `scripts/ci/quality_fragmentation_lizard.py`
+- `scripts/ci/quality_fragmentation_trends.py`
+- `scripts/ci/quality_fragmentation_usage.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 178 (89%)
+- INFERRED: 22 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

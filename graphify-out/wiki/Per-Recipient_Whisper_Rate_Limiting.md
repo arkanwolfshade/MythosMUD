@@ -1,27 +1,26 @@
 # Per-Recipient Whisper Rate Limiting
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Per-Recipient Whisper Rate Limiting** (2 connections) — `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
-- **Scenario 15 Rate Limiting Blocked** (2 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
-- **Whisper System Remediation** (1 connections) — `e2e-tests/REMAINING_WORK_SUMMARY.md`
-- **Global Whisper Rate Limit** (1 connections) — `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- **_RoomPersistence** (4 connections) — `server/npc/aggressive_mob_npc.py`
+- **.get_room_by_id()** (2 connections) — `server/npc/aggressive_mob_npc.py`
+- **Protocol** (1 connections)
+- **Protocol for persistence with get_room_by_id.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Return the room object for the given room_id, or None if not found.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/REMAINING_WORK_SUMMARY.md`
-- `e2e-tests/SCENARIO_15_BLOCKED_SUMMARY.md`
-- `e2e-tests/SCENARIO_15_RATE_LIMITING_BLOCKED.md`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,57 +1,48 @@
 # SpellLearningService
 
-> 40 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **SpellLearningService** (46 connections) — `server/game/magic/spell_learning_service.py`
-- **test_spell_learning_service.py** (16 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **.learn_spell()** (12 connections) — `server/game/magic/spell_learning_service.py`
-- **Any** (12 connections)
-- **asyncio** (11 connections)
-- **UUID** (10 connections)
-- **._validate_prerequisites()** (9 connections) — `server/game/magic/spell_learning_service.py`
-- **._load_spell_learn_context()** (6 connections) — `server/game/magic/spell_learning_service.py`
-- **._check_required_spell_prerequisites()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_book()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_npc()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **.learn_spell_from_quest()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **._persist_spell_learning()** (5 connections) — `server/game/magic/spell_learning_service.py`
-- **._apply_mythos_corruption_on_learn()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **._check_intelligence_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **._check_power_requirement()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **._spell_learn_success_response()** (4 connections) — `server/game/magic/spell_learning_service.py`
-- **.increase_mastery_on_cast()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **._resolve_spell()** (3 connections) — `server/game/magic/spell_learning_service.py`
-- **learning_service()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_increase_mastery_on_cast()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_already_known()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_book_no_spell_id()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_book_with_spell()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- **test_learn_spell_from_npc()** (3 connections) — `server/tests/unit/game/magic/test_spell_learning_service.py`
-- *... and 15 more nodes in this community*
+- **FastAPI Code Review - Anti-Patterns and Best Practices** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Medium Priority Issues** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Work Completed** (8 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Final Summary** (7 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Low Priority Issues** (5 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Critical Issues** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Code Review** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **10. ℹ️ **Dependency Injection Pattern**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **11. ℹ️ **API Versioning** (OPTIONAL - NOT REQUIRED FOR WEBAPP)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. ✅ **Inconsistent Response Models** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. Response Models (Critical Issue #1) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. Dependency Injection (Critical Issue #3) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. 🟡 **Fat Endpoints with Business Logic** - **IN PROGRESS**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. ✅ **Direct app.state Access Instead of Dependency Injection** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. Error Handling (Medium Issue #7) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. ⚠️ **Inconsistent Router Prefix Patterns**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. Type Hints (Medium Issue #6) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. ✅ **Monitoring Endpoints in main.py Instead of Router** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. Monitoring Endpoints (Medium Issue #5) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. ✅ **Missing Type Hints in Some Endpoints** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. Router Prefix Documentation (Medium Issue #4) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. Fat Endpoints Refactoring (Critical Issue #2) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. ✅ **Inconsistent Error Handling** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **8. ℹ️ **Service Layer Organization**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [magic_service.py](magic_service.py.md) (11 shared connections)
-- [TargetMatch](TargetMatch.md) (10 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (1 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/magic/spell_learning_service.py`
-- `server/tests/unit/game/magic/test_spell_learning_service.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (85%)
-- INFERRED: 18 (15%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

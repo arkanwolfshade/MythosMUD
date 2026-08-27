@@ -1,27 +1,30 @@
 # add_suppression_to_file
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **add_suppression_to_file()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
-- **main()** (4 connections) — `scripts/fix_psscriptanalyzer.py`
-- **fix_psscriptanalyzer.py** (2 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Path** (2 connections)
-- **Add suppression comment to a PowerShell file if it uses Write-Host and doesn't…** (1 connections) — `scripts/fix_psscriptanalyzer.py`
-- **Process all PowerShell scripts in the scripts directory.** (1 connections) — `scripts/fix_psscriptanalyzer.py`
+- **test_websocket_handler_json_error.py** (5 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **mock_websocket()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **test_handle_json_decode_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **asyncio** (1 connections)
+- **fixture** (1 connections)
+- **Unit tests for websocket handler JSON error handling. Tests the JSON decode…** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Create a mock WebSocket.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
+- **Test _handle_json_decode_error() sends error response.** (1 connections) — `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_error_logging.py](test_error_logging.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_psscriptanalyzer.py`
+- `server/tests/unit/realtime/test_websocket_handler_json_error.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

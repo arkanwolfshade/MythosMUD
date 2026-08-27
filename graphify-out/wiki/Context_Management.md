@@ -1,25 +1,26 @@
 # Context Management
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Context Management** (4 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Request Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **System Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **User Context** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **fix_file()** (4 connections) — `scripts/batch_fix_suppressions.py`
+- **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
+- **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
+- **Path** (2 connections)
+- **Fix suppressions in a file. Returns: (number_fixed, list of changes)** (1 connections) — `scripts/batch_fix_suppressions.py`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `scripts/batch_fix_suppressions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

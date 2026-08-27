@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **NPCs Not Updating On Player Movement** (2 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **exclude_player Occupants Snapshot Pattern** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
-- **Canonical Room ID NPC Matching Remediation** (1 connections) — `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
+- **mythosTheme.ts** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme** (2 connections) — `client/src/theme/mythosTheme.ts`
+- **mythosTheme.test.ts** (2 connections) — `client/src/theme/__tests__/mythosTheme.test.ts`
 
 ## Relationships
 
@@ -14,12 +14,12 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement-REMEDIATION.md`
-- `investigations/sessions/2025-01-30_session-001_npcs-not-updating-on-player-movement.md`
+- `client/src/theme/__tests__/mythosTheme.test.ts`
+- `client/src/theme/mythosTheme.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

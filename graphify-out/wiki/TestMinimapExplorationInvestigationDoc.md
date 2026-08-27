@@ -1,31 +1,32 @@
 # TestMinimapExplorationInvestigationDoc
 
-> 10 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **TestMinimapExplorationInvestigationDoc** (5 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_describes_uuid_vs_stable_id_mismatch()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_explains_impact_on_non_admin_users()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_investigation_doc_exists()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **test_minimap_exploration_documentation.py** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Guardrails for minimap / exploration documentation. Ensures the investigation…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Content checks for the minimap explored-rooms investigation document.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **The session document must remain present for traceability.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must state that explored room identifiers are UUIDs, not…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must tie the bug to non-admin minimap behavior (not only admins).** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **✅ Best Practices Compliance** (11 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **10. Exception Handling in Async Operations (asyncio.mdc Section 2.5)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **1. Blocking the Event Loop (asyncio.mdc Section 2.3)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **2. Async/Await Usage (anyio.mdc Section 2.2)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **3. Method Signature Consistency (asyncio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **4. Error Handling (asyncio.mdc Section 2.5)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **5. Resource Management (anyio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **6. Task Groups / Structured Concurrency (anyio.mdc Section 2.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **7. Avoiding asyncio.run() in Library Code (asyncio.mdc Section 6.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **8. State Management (asyncio.mdc Section 2.4)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **9. Connection Pooling (anyio.mdc Section 3.1)** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_lru_cache.py](test_lru_cache.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **command_handler_unified/__init__.py** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
-- **Command handler unified unit tests.** (1 connections) — `server/tests/unit/command_handler_unified/__init__.py`
+- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/command_handler_unified/__init__.py`
+- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Audit Trail
 

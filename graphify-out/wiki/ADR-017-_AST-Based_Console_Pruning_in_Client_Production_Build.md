@@ -1,22 +1,23 @@
 # ADR-017: AST-Based Console Pruning in Client Production Build
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ADR-017: AST-Based Console Pruning in Client Production Build** (0 connections) — `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- **test_get_random_error_message_unknown_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _get_random_error_message with unknown error type.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-017-ast-console-pruning-client-build.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

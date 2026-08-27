@@ -1,38 +1,24 @@
 # properties
 
-> 13 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **test_get_applicable_rules_priority_order()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test get_applicable_rules() returns rules in priority order.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [days](days.md) (2 shared connections)
-- [required](required.md) (1 shared connections)
-- [id](id.md) (1 shared connections)
-- [start_hour](start_hour.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
+- [test_player_spell_repository.py](test_player_spell_repository.py.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

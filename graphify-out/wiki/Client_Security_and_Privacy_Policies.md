@@ -1,12 +1,13 @@
 # Client Security and Privacy Policies
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Client Security and Privacy Policies** (2 connections) — `client/README.md`
-- **DOMPurify Sanitization** (1 connections) — `client/README.md`
-- **WebSocket Subprotocol Auth** (1 connections) — `client/README.md`
+- **DML Migrations Apply Paths** (3 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **DML Migrations Apply Paths.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **Agent rule** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
+- **Facts** (1 connections) — `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `client/README.md`
+- `data/MythosMUD-Obsidian/wiki/code/DML Migrations Apply Paths.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

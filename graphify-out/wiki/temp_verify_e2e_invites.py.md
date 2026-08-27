@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **temp_verify_e2e_invites.py** (0 connections) — `scripts/temp_verify_e2e_invites.py`
+- **Whisper System Production-Ready** (0 connections) — `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/temp_verify_e2e_invites.py`
+- `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Audit Trail
 

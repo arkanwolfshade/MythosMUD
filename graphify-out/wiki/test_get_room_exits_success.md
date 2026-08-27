@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_room_exits_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_exits() returns exits dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **apply_container_migrations.py** (1 connections) — `scripts/apply_container_migrations.py`
+- **Apply container schema normalization migrations to mythos_dev database. This…** (1 connections) — `scripts/apply_container_migrations.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `scripts/apply_container_migrations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,26 @@
 # 🚦 Next Steps
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **🚦 Next Steps** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Immediate (Today)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Production Deployment** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **This Week** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **2025_11_25_normalize_container_schema.py** (3 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **Normalize container schema with proper relational structure.** (1 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
+- **Revert to denormalized schema with items_json.** (1 connections) — `server/alembic/versions/2025_11_25_normalize_container_schema.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/alembic/versions/2025_11_25_normalize_container_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

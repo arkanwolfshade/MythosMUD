@@ -1,11 +1,12 @@
 # MOTD Sacred Styling
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **MOTD Sacred Styling** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **MUI to TailwindCSS Migration** (1 connections) — `docs/archive/PLANNING_tailwind.md`
+- **remove_dir()** (2 connections) — `scripts/clean.py`
+- **clean.py** (1 connections) — `scripts/clean.py`
+- **Path** (1 connections)
 
 ## Relationships
 
@@ -13,11 +14,11 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_tailwind.md`
+- `scripts/clean.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

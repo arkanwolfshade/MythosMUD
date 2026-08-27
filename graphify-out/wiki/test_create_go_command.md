@@ -1,19 +1,20 @@
 # test_create_go_command
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_go_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Character Creation Revamp** (2 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **CoC-Style Skills Allocation** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
+- **Skill Use Tracking and Level-Up Improvement** (1 connections) — `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `docs/archive/character_creation_revamp_coc_skills_plan.md`
 
 ## Audit Trail
 

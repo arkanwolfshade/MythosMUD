@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_broadcast_player_mortally_wounded_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test broadcast_player_mortally_wounded handles personal message errors.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_profession_set_mechanical_effects()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test set_mechanical_effects stores dict as JSON string.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 

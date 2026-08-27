@@ -1,58 +1,59 @@
 # test_websocket_handler_core.py
 
-> 88 nodes
+> 153 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_core.py** (43 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **asyncio** (28 connections)
-- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **handle_websocket_message()** (11 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_handle_chat_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_empty_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_single_word_no_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_whitespace_only()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_with_provided_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception_should_break()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_chat()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_aliases_dir()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_in_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_type_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_error_response()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_system_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_system_message_disconnected()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- *... and 63 more nodes in this community*
+- **ChatService** (92 connections) — `server/game/chat_service.py`
+- **test_chat_service.py** (44 connections) — `server/tests/unit/game/test_chat_service.py`
+- **UUID** (28 connections)
+- **asyncio** (22 connections)
+- **.send_say_message()** (7 connections) — `server/game/chat_service.py`
+- **.send_emote_message()** (6 connections) — `server/game/chat_service.py`
+- **._chat_send_services()** (5 connections) — `server/game/chat_service.py`
+- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
+- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
+- **_publish_room_chat()** (4 connections) — `server/game/chat_service.py`
+- **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- *... and 128 more nodes in this community*
 
 ## Relationships
 
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (12 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (5 shared connections)
-- [ErrorType](ErrorType.md) (4 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (4 shared connections)
-- [get_help_content](get_help_content.md) (4 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
-- [StandardizedErrorResponse](StandardizedErrorResponse.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [ContainerRepository](ContainerRepository.md) (14 shared connections)
+- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (11 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (3 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (1 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [service.py](service.py.md) (1 shared connections)
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (91%)
-- INFERRED: 14 (9%)
+- EXTRACTED: 248 (89%)
+- INFERRED: 32 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

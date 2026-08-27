@@ -1,14 +1,13 @@
 # User
 
-> God node · 293 connections · `server/models/user.py`
+> God node · 255 connections · `server/models/user.py`
 
-**Community:** [User](User.md)
+**Community:** [NATSServicePoolMixin](NATSServicePoolMixin.md)
 
 ## Connections by Relation
 
 ### calls
 - _admin_user() `EXTRACTED`
-- _create_user_object() `EXTRACTED`
 - quest_seed_data() `EXTRACTED`
 - test_user_get_display_name_all_empty() `EXTRACTED`
 - test_user_get_display_name_falls_back_to_id() `EXTRACTED`
@@ -28,27 +27,27 @@
 ### imports
 - models/player.py `EXTRACTED`
 - server/models/__init__.py `EXTRACTED`
-- async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
 - [maps.py](maps.py.md) `EXTRACTED`
-- endpoints.py `EXTRACTED`
 - [container_endpoints_basic.py](container_endpoints_basic.py.md) `EXTRACTED`
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
-- rooms.py `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
 - test_npc_definitions_api.py `EXTRACTED`
 - npc_definitions_api.py `EXTRACTED`
+- container_endpoints_loot.py `EXTRACTED`
+- database_helpers.py `EXTRACTED`
+- [subject_controller.py](subject_controller.py.md) `EXTRACTED`
+- api/metrics.py `EXTRACTED`
 
 ### inherits
-- Base `EXTRACTED`
+- [Base](Base.md) `EXTRACTED`
 - SQLAlchemyBaseUserTableUUID `EXTRACTED`
 
 ### method
@@ -83,25 +82,25 @@
 
 ### uses
 - [Player](Player.md) `INFERRED`
-- Base `INFERRED`
+- [Base](Base.md) `INFERRED`
 - [Invite](Invite.md) `INFERRED`
 - _admin_user() `INFERRED`
 - test_lucidity_adjustment_round_trip() `INFERRED`
 - test_add_player_effect_generates_id() `INFERRED`
 - test_apply_exploration_filter_if_needed_calls_for_normal_user() `INFERRED`
 - test_apply_exploration_filter_if_needed_skips_for_superuser() `INFERRED`
-- test_login_user_authenticate_raises_exception() `INFERRED`
-- test_login_user_authenticate_returns_none() `INFERRED`
-- test_login_user_generic_exception() `INFERRED`
-- test_login_user_id_mismatch() `INFERRED`
-- test_login_user_invalid_credentials() `INFERRED`
-- test_login_user_no_email() `INFERRED`
-- test_register_user_duplicate_username() `INFERRED`
 - test_db_connectivity_create_and_read_user() `INFERRED`
 - test_get_ascii_minimap_success() `INFERRED`
 - test_get_current_superuser_failure() `INFERRED`
 - test_get_current_superuser_with_none_user() `INFERRED`
 - test_get_current_verified_user_failure() `INFERRED`
+- test_get_current_verified_user_with_none_user() `INFERRED`
+- test_username_authentication_backend_login() `INFERRED`
+- test_get_current_room_id_none_when_persistence_errors() `INFERRED`
+- test_get_player_and_exploration_returns_none_when_no_player() `INFERRED`
+- test_set_map_origin_success() `INFERRED`
+- test_get_all_professions_requires_auth() `INFERRED`
+- test_get_current_superuser_success() `INFERRED`
 
 ---
 

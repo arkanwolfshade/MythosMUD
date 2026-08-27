@@ -1,64 +1,51 @@
 # bundles/game.py
 
-> 102 nodes
+> 75 nodes
 
 ## Key Concepts
 
-- **bundles/game.py** (46 connections) — `server/container/bundles/game.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **validate_calendar.py** (18 connections) — `scripts/validate_calendar.py`
-- **._init_player_quest_layer()** (16 connections) — `server/container/bundles/game.py`
-- **normalize_environment()** (15 connections) — `server/utils/project_paths.py`
-- **get_calendar_paths_for_environment()** (14 connections) — `server/utils/project_paths.py`
-- **.initialize()** (12 connections) — `server/container/bundles/game.py`
-- **project_paths.py** (12 connections) — `server/utils/project_paths.py`
-- **get_environment_data_dir()** (10 connections) — `server/utils/project_paths.py`
-- **get_project_root()** (10 connections) — `server/utils/project_paths.py`
-- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
-- **._init_temporal_layer()** (9 connections) — `server/container/bundles/game.py`
-- **_get_calendar_paths()** (7 connections) — `scripts/validate_calendar.py`
-- **.__init__()** (7 connections) — `server/services/schedule_service.py`
-- **_check_holiday_coverage()** (6 connections) — `scripts/validate_calendar.py`
-- **_load_and_validate_holidays()** (6 connections) — `scripts/validate_calendar.py`
-- **_validate_schedule_files()** (6 connections) — `scripts/validate_calendar.py`
-- **Path** (6 connections)
-- **_print_success_message()** (5 connections) — `scripts/validate_calendar.py`
-- **._load_from_database()** (5 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_load_from_database_success()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- *... and 77 more nodes in this community*
+- **OccupantFormatter** (41 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
+- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
+- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
+- **occupant_formatter.py** (6 connections) — `server/realtime/occupant_formatter.py`
+- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
+- **Any** (5 connections)
+- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_chars()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_invalid_length()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_uuid_string_valid()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
+- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (47 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (19 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
-- [utils.py](utils.py.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [User](User.md) (2 shared connections)
-- [RoomService](RoomService.md) (2 shared connections)
-- [UserManager](UserManager.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [SkillService](SkillService.md) (2 shared connections)
-- [test_level_service.py](test_level_service.py.md) (2 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [run-vitest.js](run-vitest.js.md) (2 shared connections)
+- [spell_effects_support.py](spell_effects_support.py.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
-- `server/container/bundles/game.py`
-- `server/services/schedule_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
-- `server/tests/unit/utils/test_project_paths.py`
-- `server/utils/project_paths.py`
+- `server/realtime/occupant_formatter.py`
+- `server/tests/unit/realtime/test_occupant_formatter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 276 (99%)
-- INFERRED: 4 (1%)
+- EXTRACTED: 124 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

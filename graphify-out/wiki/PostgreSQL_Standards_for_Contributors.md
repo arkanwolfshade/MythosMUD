@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **PostgreSQL Standards for Contributors** (0 connections) — `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
+- **playwright.config.ts** (0 connections) — `client/playwright.config.ts`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md`
+- `client/playwright.config.ts`
 
 ## Audit Trail
 

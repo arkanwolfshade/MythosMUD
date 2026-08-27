@@ -1,22 +1,23 @@
 # Owner and App Roles Per Environment
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Owner and App Roles Per Environment** (0 connections) — `db/roles/README.md`
+- **test_create_reply_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_reply_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `db/roles/README.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

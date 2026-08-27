@@ -1,24 +1,27 @@
 # test_handle_admin_set_stat_command_success_str
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_handle_admin_set_stat_command_success_str()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test successful setting of STR stat.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **Test Modernization Checklist** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 0: Foundation** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1: Fix Failures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2: Modernize Units** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Pattern Updates** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: New Coverage** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (2 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

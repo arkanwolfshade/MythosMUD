@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
-- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **test_handle_equip_wearable_container_with_lock_state()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container with lock_state and allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/motion-design.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,11 +1,12 @@
 # Migration Final Report
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Migration Final Report** (1 connections) — `docs/archive/MIGRATION_FINAL_REPORT.md`
-- **Argon2 Implementation Plan** (1 connections) — `docs/archive/PLANNING_argon2.md`
+- **Playwright DI Migration Validation** (2 connections) — `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- **Playwright Best-Practices Remediation** (1 connections) — `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- **E2E Harness Overhaul** (1 connections) — `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Relationships
 
@@ -13,13 +14,14 @@
 
 ## Source Files
 
-- `docs/archive/MIGRATION_FINAL_REPORT.md`
-- `docs/archive/PLANNING_argon2.md`
+- `.cursor/plans/playwright_best-practices_remediation.plan.md`
+- `.cursor/plans/playwright_test_plan_for_di_migration_validation_30b56bf7.plan.md`
+- `.cursor/plans/refactor-e2e-harness_e2e-harness.plan.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

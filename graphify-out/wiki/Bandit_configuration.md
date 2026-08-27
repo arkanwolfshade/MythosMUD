@@ -1,11 +1,12 @@
 # Bandit configuration
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Bandit B101 B105 B106 test skips** (1 connections) — `bandit.yml`
-- **Bandit configuration** (1 connections) — `bandit.yml`
+- **Single Session Per User** (2 connections) — `docs/archive/connection_termination_demo.md`
+- **force_disconnect_player** (1 connections) — `docs/archive/connection_termination_demo.md`
+- **Player Spawn Protection** (1 connections) — `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Relationships
 
@@ -13,12 +14,13 @@
 
 ## Source Files
 
-- `bandit.yml`
+- `docs/archive/connection_termination_demo.md`
+- `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

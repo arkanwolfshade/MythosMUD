@@ -1,53 +1,34 @@
 # websocket_integration.py
 
-> 39 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **websocket_integration.py** (23 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_message()** (7 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketRateLimiter** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_game_action()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_endpoint()** (4 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_chat_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **handle_websocket_error()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **auth_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **chat_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **game_service** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_manager** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **WebSocketDisconnect** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.verify_token()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **authenticate_websocket_connection()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **validate_websocket_message()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **websocket_heartbeat()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **.check_rate_limit()** (2 connections) — `docs/examples/logging/websocket_integration.py`
-- **Exception** (2 connections)
-- **.process_message()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.process_action()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.accept()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.client()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- **.broadcast_message()** (1 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 14 more nodes in this community*
+- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
-- [User](User.md) (1 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [WebSocketManager](WebSocketManager.md) (1 shared connections)
+- [messaging_integration](messaging_integration.md) (1 shared connections)
+- [main](main.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/websocket_integration.py`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 12 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

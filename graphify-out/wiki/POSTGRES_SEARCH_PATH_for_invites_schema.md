@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **POSTGRES_SEARCH_PATH for invites schema** (1 connections) — `tools/invite_tools/README.md`
-- **run_invite_tools.ps1** (1 connections) — `tools/invite_tools/README.md`
+- **test_handle_container_overflow_save_player_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_container_overflow handles save_player error gracefully.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/README.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

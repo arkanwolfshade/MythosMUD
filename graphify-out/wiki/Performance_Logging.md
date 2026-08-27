@@ -1,24 +1,29 @@
 # Performance Logging
 
-> 3 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Performance Logging** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **API Request Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Database Query Logging** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **P3 · persistence-db** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **P3 · persistence-db Findings** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **H4 · D1 resolved — the code is a three-pattern hybrid no document describes** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **H5 · "Services never construct raw queries" is false at three layers** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **H6 · "Fully Async" is true of the class but not of the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
+- **STALE — docs behind completed work** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
 
 ## Relationships
 
-- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-Persistence.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

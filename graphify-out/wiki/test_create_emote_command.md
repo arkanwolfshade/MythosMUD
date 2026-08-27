@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_emote_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_adjust_room_drop_remove()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() removes stack when quantity is 0.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [server/main.py](server-main.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

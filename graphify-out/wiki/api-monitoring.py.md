@@ -1,62 +1,78 @@
 # api/monitoring.py
 
-> 106 nodes
+> 139 nodes
 
 ## Key Concepts
 
-- **api/monitoring.py** (64 connections) — `server/api/monitoring.py`
-- **test_monitoring_endpoints.py** (59 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **monitoring_models.py** (23 connections) — `server/api/monitoring_models.py`
-- **BaseModel** (19 connections)
-- **Request** (19 connections)
-- **asyncio** (15 connections)
-- **_resolve_connection_manager_from_request()** (14 connections) — `server/api/monitoring.py`
-- **get_movement_monitor()** (14 connections) — `server/game/movement_monitor.py`
-- **get** (14 connections)
-- **get_memory_stats()** (11 connections) — `server/api/monitoring.py`
-- **get_movement_metrics()** (11 connections) — `server/api/monitoring.py`
-- **_resolve_event_bus_from_request()** (11 connections) — `server/api/monitoring.py`
-- **_request_with_container()** (11 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
-- **force_memory_cleanup()** (10 connections) — `server/api/monitoring.py`
-- **get_connection_health_stats()** (10 connections) — `server/api/monitoring.py`
-- **get_dual_connection_stats()** (10 connections) — `server/api/monitoring.py`
-- **reset_metrics()** (10 connections) — `server/api/monitoring.py`
-- **_resolve_memory_leak_collector()** (10 connections) — `server/api/monitoring.py`
-- **validate_room_integrity()** (10 connections) — `server/api/monitoring.py`
-- **get_cache_metrics()** (9 connections) — `server/api/monitoring.py`
-- **get_eventbus_metrics()** (9 connections) — `server/api/monitoring.py`
-- **get_memory_alerts()** (9 connections) — `server/api/monitoring.py`
-- **get_memory_leak_metrics()** (9 connections) — `server/api/monitoring.py`
-- **get_performance_stats()** (9 connections) — `server/api/monitoring.py`
-- **get_performance_summary()** (9 connections) — `server/api/monitoring.py`
-- *... and 81 more nodes in this community*
+- **ui-v2/types.ts** (87 connections) — `client/src/components/ui-v2/types.ts`
+- **PanelState** (24 connections) — `client/src/components/ui-v2/types.ts`
+- **panelReducerHandlers.ts** (24 connections) — `client/src/components/ui-v2/PanelSystem/panelReducerHandlers.ts`
+- **PanelPosition** (21 connections) — `client/src/components/ui-v2/types.ts`
+- **panelManagerReducer.ts** (20 connections) — `client/src/components/ui-v2/PanelSystem/panelManagerReducer.ts`
+- **GameClientV2MinimapSection.tsx** (19 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- **panelReducerHandlers.test.ts** (19 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelReducerHandlers.test.ts`
+- **PanelSize** (18 connections) — `client/src/components/ui-v2/types.ts`
+- **panelMinimizeDock.ts** (17 connections) — `client/src/components/ui-v2/PanelSystem/panelMinimizeDock.ts`
+- **PanelContainerViews.tsx** (16 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- **savePanelLayout()** (13 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **usePanelContainerView.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
+- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
+- **PanelLayoutHandlers** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- **ExpandedPanelRnd.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- **PanelContainer.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- **panelLayoutBootstrap.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutBootstrap.ts`
+- **panelLayoutValidationTypeCheck.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidationTypeCheck.ts`
+- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **panelMinimizeDock.test.ts** (12 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
+- **MinimizedPanelRnd.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- **panelLayoutClamp.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutClamp.ts`
+- **panelLayoutValidation.ts** (11 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutValidation.ts`
+- **PanelSystem/__tests__/PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- **MinimizedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [HealthStatus](HealthStatus.md) (23 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (18 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [get_monitoring_dashboard](get_monitoring_dashboard.md) (11 shared connections)
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (7 shared connections)
-- [test_movement_monitor.py](test_movement_monitor.py.md) (5 shared connections)
-- [MovementMonitor](MovementMonitor.md) (5 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (2 shared connections)
-- [TaskRegistry](TaskRegistry.md) (2 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [MovementService](MovementService.md) (2 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
+- [nats_exceptions.py](nats_exceptions.py.md) (36 shared connections)
+- [NPCBase](NPCBase.md) (19 shared connections)
+- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (15 shared connections)
+- [mapUtils.ts](mapUtils.ts.md) (7 shared connections)
+- [send_game_event](send_game_event.md) (5 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (3 shared connections)
+- [CommandPanel.tsx](CommandPanel.tsx.md) (2 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
+- [AdminAuthService](AdminAuthService.md) (2 shared connections)
+- [.state](state.md) (2 shared connections)
+- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (2 shared connections)
+- [LogAggregator](LogAggregator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/api/monitoring.py`
-- `server/api/monitoring_models.py`
-- `server/game/movement_monitor.py`
-- `server/tests/unit/api/test_monitoring_endpoints.py`
+- `client/src/components/PanelManager.tsx`
+- `client/src/components/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutBootstrap.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelLayoutClamp.test.ts`
+- `client/src/components/ui-v2/PanelSystem/__tests__/panelMinimizeDock.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 355 (98%)
-- INFERRED: 9 (2%)
+- EXTRACTED: 471 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

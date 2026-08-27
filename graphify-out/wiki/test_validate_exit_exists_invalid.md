@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_exit_exists_invalid()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False for invalid exit.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Cursor hooks.json** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
+- **Cursor Hooks Development Plan** (1 connections) — `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/cursor_hooks_development_plan_23b08582.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

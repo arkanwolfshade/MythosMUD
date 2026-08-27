@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_send_messages_to_players_with_tags()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _send_messages_to_players adds tags from dampening.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Deprecated get_async_persistence Global** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
+- **Architecture Review Remediation** (1 connections) — `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `.cursor/plans/architecture_review_remediation_9704434e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

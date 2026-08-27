@@ -1,39 +1,40 @@
 # .check_bidirectional_connections
 
-> 18 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **.check_bidirectional_connections()** (6 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_dead_ends()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_self_references()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.generate_minimap_graph()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_opposite_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_room_zone()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get the opposite direction for bidirectional checking.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms with no exits (dead ends). Args: room_database: Dictionary mapping…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms that reference themselves in exits. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Generate minimap graph data for visualization. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Build adjacency graph from room database. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get target room ID from exit data.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check if exit is marked as one-way.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Extract zone and sub_zone from room data. Args: room_id: Room identifier…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check for bidirectional connections between rooms, accounting for zone…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **fixtures/shared/__init__.py** (7 connections) — `server/tests/fixtures/shared/__init__.py`
+- **StubPersistence** (6 connections) — `server/tests/fixtures/shared/__init__.py`
+- **stub_persistence()** (4 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Any** (4 connections)
+- **fake_clock()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_player_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_user_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.add_player()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.get_player_by_name()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **fixture** (2 connections)
+- **.__init__()** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Shared fixtures and builders for all test tiers.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a user dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a player dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a monotonic counter for time-based tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Stub persistence layer for unit tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Get a player by name.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Add a player to the stub.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a stub persistence layer.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
 
 ## Relationships
 
-- [RoomLoader](RoomLoader.md) (9 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/path_validator.py`
+- `server/tests/fixtures/shared/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

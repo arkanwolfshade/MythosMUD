@@ -1,24 +1,27 @@
 # test_handle_admin_set_stat_command_invalid_stat_name
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_handle_admin_set_stat_command_invalid_stat_name()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **Test invalid stat name handling.** (1 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
+- **Modern Testing Patterns** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 1: Container-Based Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 2: Mock Container for Unit Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 3: Parametrized Integration Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 4: Fixture Factories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Pattern 5: Async Test Context Managers** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- [test_admin_setstat_command.py](test_admin_setstat_command.py.md) (2 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() returns empty list when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **PostgreSQL Audit Remediation** (1 connections) — `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
+- **PostgreSQL Procedures Migration** (1 connections) — `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/postgresql-audit-remediation_92cd2475.plan.md`
+- `.cursor/plans/postgresql_procedures_migration_70bfac4b.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

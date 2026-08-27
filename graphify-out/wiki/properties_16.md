@@ -1,38 +1,43 @@
 # properties
 
-> 17 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/room_schema.json`
-- **exits** (5 connections) — `schemas/room_schema.json`
-- **down** (2 connections) — `schemas/room_schema.json`
-- **east** (2 connections) — `schemas/room_schema.json`
-- **north** (2 connections) — `schemas/room_schema.json`
-- **south** (2 connections) — `schemas/room_schema.json`
-- **up** (2 connections) — `schemas/room_schema.json`
-- **west** (2 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **additionalProperties** (1 connections) — `schemas/room_schema.json`
-- **description** (1 connections) — `schemas/room_schema.json`
-- **type** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
-- **oneOf** (1 connections) — `schemas/room_schema.json`
+- **NATS Medium-Priority Remediation Summary** (9 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Completed Medium-Priority Fixes ✅** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Configuration Options** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Implementation Details** (4 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Health Monitoring** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Impact Assessment** (3 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **NATSMessageBroker** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **1. Integrated Subject Manager into NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **2. Added Health Monitoring to NATSMessageBroker** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **3. Documented Manual Acknowledgment Strategy** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **After Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Before Medium-Priority Fixes** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Event Callback Improvements** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Manual Acknowledgment** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Remaining Low-Priority Items** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Subject Manager Integration** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Summary** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **Testing Status** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
+- **NATSSubjectManager** (1 connections) — `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [Financial Impact (If You're Tracking Dev Time)](Financial_Impact_If_You're_Tracking_Dev_Time.md) (2 shared connections)
 
 ## Source Files
 
-- `schemas/room_schema.json`
+- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `docs/archive/NATS_MEDIUM_PRIORITY_REMEDIATION_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

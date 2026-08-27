@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_validate_exit_exists_from_room_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False when from_room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **Procedures-First PostgreSQL CRUD** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- **Eliminate Raw CRUD SQL** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

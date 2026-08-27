@@ -1,25 +1,23 @@
 # zone
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **zone** (4 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **test_database_config_validate_url_empty()** (2 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test DatabaseConfig URL validation with empty URL.** (1 connections) — `server/tests/unit/config/test_config_models.py`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- [click Best Practices](click_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

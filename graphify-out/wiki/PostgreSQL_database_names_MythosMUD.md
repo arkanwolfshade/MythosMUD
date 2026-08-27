@@ -1,26 +1,28 @@
 # PostgreSQL database names (MythosMUD)
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **PostgreSQL database names (MythosMUD)** (4 connections) — `.claude/rules/database.md`
-- **database.md** (1 connections) — `.claude/rules/database.md`
-- **CRITICAL: Which databases may be reset** (1 connections) — `.claude/rules/database.md`
-- **Database placement (production vs test)** (1 connections) — `.claude/rules/database.md`
-- **Enforcement** (1 connections) — `.claude/rules/database.md`
+- **gh-stack (MythosMUD)** (7 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.claude/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Server Test Suite](MythosMUD_Server_Test_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/database.md`
+- `.claude/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

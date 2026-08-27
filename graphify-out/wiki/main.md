@@ -1,33 +1,33 @@
 # main
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_write_state_atomic()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **.cursor/hooks/trigger_test_agent.py** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Path** (3 connections)
-- **NoReturn** (1 connections)
-- **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_bidirectional_returns_em_dash()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_east_returns_gt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_one_way_west_returns_lt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _horizontal_exit_char_between (em dash, >, <).** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Bidirectional horizontal exit between two rooms uses an em dash.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way east exit renders as a greater-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **One-way west exit renders as a less-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **When there are no horizontal exits, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (5 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/hooks/trigger_test_agent.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

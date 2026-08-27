@@ -1,23 +1,24 @@
 # Arkham City (MOTD Zone)
 
-> 14 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Arkham City (MOTD Zone)** (6 connections) — `data/local/motd.html`
-- **MythosMUD Message of the Day** (5 connections) — `data/local/motd.html`
-- **Arkham Sanitarium Room DAG** (3 connections) — `data/local/sanitarium_dag.html`
-- **Simple Room Graph - Arkham City** (3 connections) — `data/local/simple_room_visualization.html`
-- **Welcome to the Dreamlands** (2 connections) — `data/local/motd.html`
-- **The Yellow Sign** (2 connections) — `data/local/motd.html`
-- **arkham_001 Town Square** (2 connections) — `data/unit_test/README.md`
-- **arkham_002 University Gates** (2 connections) — `data/unit_test/README.md`
-- **Arkham City Graph PNG** (2 connections) — `data/local/arkham_city_graph.png`
-- **Innsmouth (MOTD Zone)** (1 connections) — `data/local/motd.html`
-- **Katmandu** (1 connections) — `data/local/motd.html`
-- **Sanitarium Eastern Hallway Branch** (1 connections) — `data/local/sanitarium_dag.html`
-- **arkham_006 University Quad** (1 connections) — `data/unit_test/README.md`
-- **Arkham City PDF Map** (1 connections) — `data/local/arkham_city.pdf`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **gateways-to-terror/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 0 - "Pre-Generated Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 1 - "Pre-Generated Investigators (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 2 - "Pre-Generated Investigators (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -25,17 +26,12 @@
 
 ## Source Files
 
-- `data/local/arkham_city.pdf`
-- `data/local/arkham_city_graph.png`
-- `data/local/motd.html`
-- `data/local/sanitarium_dag.html`
-- `data/local/simple_room_visualization.html`
-- `data/unit_test/README.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (62%)
-- INFERRED: 6 (38%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

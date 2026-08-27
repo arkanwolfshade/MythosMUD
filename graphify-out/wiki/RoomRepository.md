@@ -1,45 +1,45 @@
 # RoomRepository
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **RoomRepository** (16 connections) — `server/persistence/repositories/room_repository.py`
-- **room_repository.py** (8 connections) — `server/persistence/repositories/room_repository.py`
-- **test_room_repository.py** (7 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
-- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **test_get_room_by_id_from_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_list_rooms_returns_cache_values()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_save_room_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_save_rooms_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **Room repository for async persistence operations. This module provides async…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Repository for room persistence operations. Handles room caching and retrieval.…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Initialize the room repository. Args: room_cache: Shared room cache dictionary** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Get a room by ID from cache. Args: room_id: Room identifier Returns: Room |…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **List all cached rooms. Returns: list[Room]: List of all rooms Note: This is…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save a room to the cache. Args: room: Room object to save Note: Rooms are…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save multiple rooms to the cache. Args: rooms: List of room objects to save…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Unit tests for RoomRepository.** (1 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_alias_expansion.py** (14 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **handle_expanded_command()** (9 connections) — `server/command_handler/alias_expansion.py`
+- **check_alias_safety()** (8 connections) — `server/command_handler/alias_expansion.py`
+- **validate_expanded_command()** (8 connections) — `server/command_handler/alias_expansion.py`
+- **asyncio** (5 connections)
+- **test_check_alias_safety_cycle_detected()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_depth_too_deep()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_check_alias_safety_ok()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_handle_expanded_command_delegates()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_handle_expanded_command_depth_limit()** (3 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_invalid_content()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_ok()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **test_validate_expanded_command_too_long()** (2 connections) — `server/tests/unit/commands/test_alias_expansion.py`
+- **Any** (1 connections)
+- **CommandExecutionRequest** (1 connections)
+- **Handle command processing with alias expansion and loop detection. This…** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Check if an alias is safe to expand. Builds an alias dependency graph and…** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Validate an expanded command for length and content. Args: expanded_command:…** (1 connections) — `server/command_handler/alias_expansion.py`
+- **Unit tests for alias_expansion module.** (1 connections) — `server/tests/unit/commands/test_alias_expansion.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (7 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
-- [Room](Room.md) (1 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [TestLogoutCommand](TestLogoutCommand.md) (1 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
+- [apply_migration](apply_migration.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/room_repository.py`
-- `server/tests/unit/persistence/test_room_repository.py`
+- `server/command_handler/alias_expansion.py`
+- `server/tests/unit/commands/test_alias_expansion.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

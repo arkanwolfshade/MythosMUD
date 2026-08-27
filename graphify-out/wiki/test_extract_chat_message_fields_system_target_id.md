@@ -1,19 +1,20 @@
 # test_extract_chat_message_fields_system_target_id
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Personal system chat maps target_id to target_player_id and keeps speaker_kind.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Call of Cthulhu 7th Edition Keeper Screen Pack.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
 
 ## Audit Trail
 

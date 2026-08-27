@@ -1,50 +1,44 @@
 # Frontend Design Skill
 
-> 16 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Frontend Design Skill** (15 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **AI Slop Avoidance** (2 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Critique Skill** (2 connections) — `.cursor/skills/critique/SKILL.md`
-- **Design Context Gathering Protocol** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **teach-impeccable Prerequisite** (1 connections) — `.cursor/skills/frontend-design/SKILL.md`
-- **Tailwind CSS Anti-Pattern Remediation** (1 connections) — `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
-- **Adapt Skill** (1 connections) — `.cursor/skills/adapt/SKILL.md`
-- **Animate Skill** (1 connections) — `.cursor/skills/animate/SKILL.md`
-- **Arrange Skill** (1 connections) — `.cursor/skills/arrange/SKILL.md`
-- **Audit Skill** (1 connections) — `.cursor/skills/audit/SKILL.md`
-- **Bolder Skill** (1 connections) — `.cursor/skills/bolder/SKILL.md`
-- **Clarify Skill** (1 connections) — `.cursor/skills/clarify/SKILL.md`
-- **Colorize Skill** (1 connections) — `.cursor/skills/colorize/SKILL.md`
-- **Delight Skill** (1 connections) — `.cursor/skills/delight/SKILL.md`
-- **Distill Skill** (1 connections) — `.cursor/skills/distill/SKILL.md`
-- **Extract Skill** (1 connections) — `.cursor/skills/extract/SKILL.md`
+- **properties** (9 connections) — `db/static/schemas/holidays.schema.json`
+- **day** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **month** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **id** (3 connections) — `db/static/schemas/holidays.schema.json`
+- **name** (3 connections) — `db/static/schemas/holidays.schema.json`
+- **season** (3 connections) — `db/static/schemas/holidays.schema.json`
+- **tradition** (3 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [check_and_apply_map_migrations.py](check_and_apply_map_migrations.py.md) (2 shared connections)
+- [Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition](Chaosium_graphify_snapshot_-_Cthulhu_Dark_Ages_-_3rd_Edition.md) (1 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/tailwind_css_anti-pattern_remediation_af2debc7.plan.md`
-- `.cursor/skills/adapt/SKILL.md`
-- `.cursor/skills/animate/SKILL.md`
-- `.cursor/skills/arrange/SKILL.md`
-- `.cursor/skills/audit/SKILL.md`
-- `.cursor/skills/bolder/SKILL.md`
-- `.cursor/skills/clarify/SKILL.md`
-- `.cursor/skills/colorize/SKILL.md`
-- `.cursor/skills/critique/SKILL.md`
-- `.cursor/skills/delight/SKILL.md`
-- `.cursor/skills/distill/SKILL.md`
-- `.cursor/skills/extract/SKILL.md`
-- `.cursor/skills/frontend-design/SKILL.md`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

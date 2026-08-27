@@ -1,25 +1,23 @@
 # 💡 Recommendations
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **💡 Recommendations** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Immediate** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Medium-Term (Next 2-3 Weeks)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Short-Term (This Week)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Playwright MCP core-tabs Capability** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
+- **MCP Tab Management Issue** (1 connections) — `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `e2e-tests/MCP_TAB_MANAGEMENT_ISSUE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

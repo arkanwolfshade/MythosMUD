@@ -1,20 +1,20 @@
 # test_get_room_persistence_not_found
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not found in persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **What Are They?** (3 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **`anyio` (Third-Party Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **`asyncio` (Python Standard Library)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_room_service.py](test_room_service.py.md) (1 shared connections)
+- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 

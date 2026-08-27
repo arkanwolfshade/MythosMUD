@@ -1,32 +1,33 @@
 # Room Pathing Validator Implementation Spec
 
-> 9 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Room Pathing Validator Implementation Spec** (3 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **Connectivity Analysis** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Legacy string exit format** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Object exit format with flags** (2 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Legacy exit format migration support** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **earth_arkhamcity_intersection_derby_high start room** (2 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
-- **Bidirectional Path Validation** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **Exit Flags (one_way, self_reference)** (1 connections) — `tools/room_toolkit/room_validator/README.md`
-- **ValidationRule abstract base** (1 connections) — `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- **_FakeNPCService** (6 connections) — `scripts/bench_cache_npc.py`
+- **bench_cache_npc.py** (6 connections) — `scripts/bench_cache_npc.py`
+- **bench_npc_cache()** (5 connections) — `scripts/bench_cache_npc.py`
+- **Any** (4 connections)
+- **.get_npc_definition()** (2 connections) — `scripts/bench_cache_npc.py`
+- **.get_npc_definitions()** (2 connections) — `scripts/bench_cache_npc.py`
+- **.get_spawn_rules()** (2 connections) — `scripts/bench_cache_npc.py`
+- **main()** (2 connections) — `scripts/bench_cache_npc.py`
+- **.__init__()** (1 connections) — `scripts/bench_cache_npc.py`
+- **NPC cache micro-benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache_npc.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/README.md`
-- `tools/room_toolkit/room_validator/room_validator_instructions.md`
+- `scripts/bench_cache_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

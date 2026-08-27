@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **apply_container_migrations.py** (1 connections) — `scripts/apply_container_migrations.py`
-- **Apply container schema normalization migrations to mythos_dev database. This…** (1 connections) — `scripts/apply_container_migrations.py`
+- **Migration Final Report** (1 connections) — `docs/archive/MIGRATION_FINAL_REPORT.md`
+- **Argon2 Implementation Plan** (1 connections) — `docs/archive/PLANNING_argon2.md`
 
 ## Relationships
 
@@ -13,12 +13,13 @@
 
 ## Source Files
 
-- `scripts/apply_container_migrations.py`
+- `docs/archive/MIGRATION_FINAL_REPORT.md`
+- `docs/archive/PLANNING_argon2.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

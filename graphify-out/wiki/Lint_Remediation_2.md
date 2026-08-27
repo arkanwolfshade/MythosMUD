@@ -1,33 +1,34 @@
 # Lint Remediation
 
-> 12 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Lint Remediation** (8 connections) — `.cursor/commands/lint-remediation.md`
-- **Fix patterns by tier** (4 connections) — `.cursor/commands/lint-remediation.md`
-- **lint-remediation.md** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🔴 Critical — compilation errors** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Entry point** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Error code table** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Fix-verify loop** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟡 High — code quality** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **🟢 Medium — style** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Never** (1 connections) — `.cursor/commands/lint-remediation.md`
-- **Priority** (1 connections) — `.cursor/commands/lint-remediation.md`
+- **Simplify the Design** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Distill Skill** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Assess Current State** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Code Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Content Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Document Removed Complexity** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Information Architecture** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Interaction Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Layout Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Plan Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Verify Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Visual Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/lint-remediation.md`
+- `.claude/skills/distill/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

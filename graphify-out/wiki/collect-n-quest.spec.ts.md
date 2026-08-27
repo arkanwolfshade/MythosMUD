@@ -1,48 +1,39 @@
 # collect-n-quest.spec.ts
 
-> 21 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **executeCommandWithoutRecovery()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureArmitagePresent()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **listArmitageIds()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **assertCollectNJournalComplete()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **escapeRegExp()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **summonAndPickupCollectItems()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **turnInCollectNQuest()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **despawnArmitage()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **askCollectNQuest()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **despawnQuestGiverInstances()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureAdminInFoyer()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **abandonCollectNQuest()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **assertQuestGiverVisible()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **DIALOGUE** (1 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **COLLECT_N** (1 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **applies_to** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **days** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **effects** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (27 shared connections)
-- [executeCommand](executeCommand.md) (20 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (18 shared connections)
-- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (5 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (2 shared connections)
+- [_StubPlayerRepo](_StubPlayerRepo.md) (3 shared connections)
+- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Alone_Against_the_Dark__2026-08-11.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

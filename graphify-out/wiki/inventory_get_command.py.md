@@ -1,58 +1,58 @@
 # inventory_get_command.py
 
-> 39 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **inventory_get_command.py** (30 connections) — `server/commands/inventory_get_command.py`
-- **test_inventory_get_command.py** (26 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
-- **_handle_get_from_room()** (16 connections) — `server/commands/inventory_get_command.py`
-- **_get_from_container_path()** (15 connections) — `server/commands/inventory_get_command.py`
-- **_get_transfer_out_of_container()** (11 connections) — `server/commands/inventory_get_command.py`
-- **asyncio** (10 connections)
-- **GetCommandRuntime** (8 connections) — `server/commands/inventory_get_command.py`
-- **GetItemSpec** (8 connections) — `server/commands/inventory_get_command.py`
-- **FloorPickupEnvironment** (7 connections) — `server/commands/inventory_pickup_command.py`
-- **_get_route_after_validation()** (7 connections) — `server/commands/inventory_get_command.py`
-- **FloorPickupPayload** (6 connections) — `server/commands/inventory_pickup_command.py`
-- **test_get_from_container_path_item_not_in_container()** (6 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_get_from_container_path_missing_container()** (6 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **inventory_command_coercion.py** (6 connections) — `server/commands/inventory_command_coercion.py`
-- **test_handle_get_command_uses_pickup_wiring()** (5 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **CommandResponse** (5 connections)
-- **_container_transfer_messages()** (4 connections) — `server/commands/inventory_get_command.py`
-- **test_get_transfer_out_of_container_error()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_get_transfer_out_of_container_not_success()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_get_transfer_out_of_container_success()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_handle_get_from_room_index_error()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_handle_get_from_room_invalid_quantity()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **test_handle_get_from_room_unresolved_index()** (4 connections) — `server/tests/unit/commands/test_inventory_get_command.py`
-- **.__init__()** (3 connections) — `server/commands/inventory_pickup_command.py`
-- *... and 14 more nodes in this community*
+- **test_combat_attack.py** (20 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **combat_attack.py** (19 connections) — `server/commands/combat_attack.py`
+- **run_handle_attack_command()** (11 connections) — `server/commands/combat_attack.py`
+- **asyncio** (11 connections)
+- **_execute_phantom_combat_action()** (8 connections) — `server/commands/combat_attack.py`
+- **Any** (8 connections)
+- **_execute_combat_action()** (7 connections) — `server/commands/combat_attack.py`
+- **_validate_attack_player_and_room()** (7 connections) — `server/commands/combat_attack.py`
+- **_resolve_combat_damage()** (6 connections) — `server/commands/combat_attack.py`
+- **_validate_attack_preconditions()** (6 connections) — `server/commands/combat_attack.py`
+- **_get_combat_action_context()** (5 connections) — `server/commands/combat_attack.py`
+- **_validate_attack_target_and_action()** (5 connections) — `server/commands/combat_attack.py`
+- **test_execute_phantom_combat_action_success()** (5 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_run_handle_attack_command_routes_phantom_target()** (5 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_execute_combat_action_failure_message()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_execute_phantom_combat_action_already_dissipated()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_get_combat_action_context_missing_player()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_run_handle_attack_command_blocked_by_rest()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_run_handle_attack_command_success_path()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_validate_attack_player_and_room_incapacitated()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_validate_attack_player_and_room_missing_target()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_validate_attack_player_and_room_no_combat_zone()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_validate_attack_target_and_action_invalid()** (4 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **mock_handler()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **test_resolve_combat_damage_unarmed_fallback()** (3 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [command_result_text](command_result_text.md) (19 shared connections)
-- [pytest.md](pytest.md.md) (13 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (12 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (5 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (3 shared connections)
-- [coerce_int](coerce_int.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [NATSService](NATSService.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [MythosMUDError](MythosMUDError.md) (2 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
+- [npc_combat_grace.py](npc_combat_grace.py.md) (1 shared connections)
+- [test_npc_combat_integration_service_player_attacks.py](test_npc_combat_integration_service_player_attacks.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_command_coercion.py`
-- `server/commands/inventory_get_command.py`
-- `server/commands/inventory_pickup_command.py`
-- `server/tests/unit/commands/test_inventory_get_command.py`
+- `server/commands/combat_attack.py`
+- `server/tests/unit/commands/test_combat_attack.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (83%)
-- INFERRED: 26 (17%)
+- EXTRACTED: 103 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

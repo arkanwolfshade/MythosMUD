@@ -1,52 +1,47 @@
 # test_command_factories_inventory.py
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_command_factories_inventory.py** (49 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **.create_unequip_command()** (14 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_unequip_command_empty()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_whitespace()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_all_slots()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_known_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_multi_word()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_unequip_command_unknown_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Unit tests for inventory command factories. Tests the InventoryCommandFactory…** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() raises error with empty args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() raises error with whitespace only.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() handles known slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() handles unknown slot as search term.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() handles multi-word search term.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() handles all known slots.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() creates UnequipCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_unequip_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Create unequip command.** (1 connections) — `server/utils/command_factories_inventory.py`
+- **NATS Anti-Patterns and Best Practices Review** (10 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Conclusion** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Critical Anti-Patterns 🔴** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **10. **Missing Connection Health Monitoring in Broker** (Observability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **1. **Synchronous Operations in Non-Handler Context** (Low Priority)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **2. **Event Handler Callbacks May Block** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **3. **Inconsistent Error Handling Patterns** (Code Quality)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **4. **Missing Input Validation in Some Methods** (Security/Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **5. **Subject Naming: Potential for Too Broad Wildcards** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **6. **Connection Pool Error Handling** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **7. **Message Acknowledgment: Manual Ack Not Default** (Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **8. **Batch Flush Error Recovery** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **9. **Inconsistent Use of Subject Manager** (Maintainability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **All Issues Completed ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Completed Improvements ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Immediate Actions (High Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Long-term (Low Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Short-term (Medium Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Relationships
 
-- [InventoryCommandFactory](InventoryCommandFactory.md) (19 shared connections)
-- [.create_equip_command](create_equip_command.md) (8 shared connections)
-- [.create_put_command](create_put_command.md) (7 shared connections)
-- [.create_get_command](create_get_command.md) (7 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [.create_drop_command](create_drop_command.md) (4 shared connections)
-- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Financial Impact (If You're Tracking Dev Time)](Financial_Impact_If_You're_Tracking_Dev_Time.md) (1 shared connections)
+- [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/utils/command_factories_inventory.py`
+- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (87%)
-- INFERRED: 11 (13%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

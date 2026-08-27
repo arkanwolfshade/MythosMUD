@@ -1,25 +1,26 @@
 # 💰 ROI Analysis
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **💰 ROI Analysis** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Break-Even** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Investment** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **Return** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Summary: Test Quality Metrics** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **By removing 15% of tests, we** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Current State** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Optimized State (After Pruning)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Value Proposition** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

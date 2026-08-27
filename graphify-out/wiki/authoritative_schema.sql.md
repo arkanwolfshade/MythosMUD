@@ -1,23 +1,25 @@
 # authoritative_schema.sql
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **authoritative_schema.sql** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
-- **Authoritative Database Schema from mythos_dev** (1 connections) — `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- **test_handle_equip_wearable_container_existing_container_different_item_instance()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **test_handle_equip_wearable_container_existing_container_no_metadata()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_equip_wearable_container when existing container has no metadata.** (2 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (2 shared connections)
+- [asyncio](asyncio.md) (2 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/generate-authoritative-database-schema-from-mythos-dev-8db3cde5.plan.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

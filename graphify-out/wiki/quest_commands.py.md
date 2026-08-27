@@ -1,60 +1,48 @@
 # quest_commands.py
 
-> 40 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **quest_commands.py** (40 connections) — `server/commands/quest_commands.py`
-- **Any** (18 connections)
-- **handle_journal_command()** (14 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_npc_sub()** (11 connections) — `server/commands/quest_commands.py`
-- **_resolve_quest_command_context()** (10 connections) — `server/commands/quest_commands.py`
-- **resolve_npc_in_player_room()** (9 connections) — `server/commands/quest_commands.py`
-- **_talk_with_npc()** (9 connections) — `server/commands/talk_command.py`
-- **_get_quest_service()** (7 connections) — `server/commands/quest_commands.py`
-- **npc_definition_id()** (7 connections) — `server/commands/quest_commands.py`
-- **_active_npc_ids_in_room()** (6 connections) — `server/commands/quest_commands.py`
-- **_emit_npc_lines_for_results()** (6 connections) — `server/commands/quest_commands.py`
-- **_quest_command_ready()** (6 connections) — `server/commands/quest_commands.py`
-- **_resolve_player_id()** (6 connections) — `server/commands/quest_commands.py`
-- **UUID** (6 connections)
-- **_format_one_quest_entry()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_quest_log()** (5 connections) — `server/commands/quest_commands.py`
-- **_get_container_and_persistence()** (5 connections) — `server/commands/quest_commands.py`
-- **_handle_quest_abandon()** (5 connections) — `server/commands/quest_commands.py`
-- **_format_goal_line()** (4 connections) — `server/commands/quest_commands.py`
-- **_format_quest_action_results()** (4 connections) — `server/commands/quest_commands.py`
-- **_parse_quest_subcommand()** (4 connections) — `server/commands/quest_commands.py`
-- **Quest commands: journal / quests (quest log), quest abandon/ask/turnin. Returns…** (1 connections) — `server/commands/quest_commands.py`
-- **Return a single goal progress line for the quest log.** (1 connections) — `server/commands/quest_commands.py`
-- **Return lines for a single quest log entry.** (1 connections) — `server/commands/quest_commands.py`
-- **Format quest log entries as text for the player.** (1 connections) — `server/commands/quest_commands.py`
-- *... and 15 more nodes in this community*
+- **🧪 MythosMUD E2E Testing Strategy** (10 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Timeline** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **E2E Testing Strategy** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 2: Core E2E Test Implementation** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 3: Advanced Testing Features** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Technical Specifications** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Current State Analysis** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 1: Infrastructure Consolidation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Success Metrics** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **PLANNING_e2e.md** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.1 Unified Test Environment** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.2 Test Framework Architecture** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.1 Authentication Testing (Priority 1)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.2 Movement System Testing (Priority 2)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.3 Chat System Testing (Priority 3)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.1 Performance & Reliability** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.2 Debugging & Failure Analysis** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.3 Test Data Management** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Client-Side Testing 🔄** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Conclusion** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **False Positive Prevention** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Immediate Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Long-term Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [test_quest_commands.py](test_quest_commands.py.md) (11 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (9 shared connections)
-- [talk_command.py](talk_command.py.md) (9 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (5 shared connections)
-- [QuestService](QuestService.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [_get_npc_room_id](_get_npc_room_id.md) (2 shared connections)
-- [_should_include_npc](_should_include_npc.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/quest_commands.py`
-- `server/commands/talk_command.py`
+- `docs/archive/PLANNING_e2e.md`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (95%)
-- INFERRED: 7 (5%)
+- EXTRACTED: 40 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

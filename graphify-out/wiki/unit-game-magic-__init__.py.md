@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **unit/game/magic/__init__.py** (1 connections) — `server/tests/unit/game/magic/__init__.py`
-- **Game magic unit tests.** (1 connections) — `server/tests/unit/game/magic/__init__.py`
+- **is_alive Called As Function Not Property** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **Admin Look Mob Stats Bug** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/game/magic/__init__.py`
+- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Audit Trail
 

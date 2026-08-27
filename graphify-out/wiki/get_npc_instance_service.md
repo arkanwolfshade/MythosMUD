@@ -1,68 +1,62 @@
 # get_npc_instance_service
 
-> 189 nodes
+> 100 nodes
 
 ## Key Concepts
 
-- **get_npc_instance_service()** (79 connections) — `server/services/npc_instance_service.py`
-- **test_npc_admin_commands.py** (55 connections) — `server/tests/unit/commands/test_npc_admin_commands.py`
-- **asyncio** (41 connections)
-- **router.py** (30 connections) — `server/commands/npc_admin/router.py`
-- **npc_admin/__init__.py** (25 connections) — `server/commands/npc_admin/__init__.py`
-- **instance.py** (23 connections) — `server/commands/npc_admin/instance.py`
-- **npc_admin_commands.py** (22 connections) — `server/commands/npc_admin_commands.py`
-- **_build_subcommand_map()** (20 connections) — `server/commands/npc_admin/router.py`
-- **handle_npc_command()** (17 connections) — `server/commands/npc_admin/router.py`
-- **definition.py** (17 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_behavior_command()** (14 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_create_command()** (14 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_spawn_command()** (14 connections) — `server/commands/npc_admin/instance.py`
-- **test_occupants.py** (14 connections) — `server/commands/npc_admin/test_occupants.py`
-- **handle_npc_edit_command()** (13 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_test_occupants_command()** (13 connections) — `server/commands/npc_admin/test_occupants.py`
-- **handle_npc_react_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_stop_command()** (12 connections) — `server/commands/npc_admin/behavior.py`
-- **handle_npc_delete_command()** (11 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_list_command()** (11 connections) — `server/commands/npc_admin/definition.py`
-- **handle_npc_despawn_command()** (11 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_move_command()** (11 connections) — `server/commands/npc_admin/instance.py`
-- **handle_npc_population_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_status_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- **handle_npc_zone_command()** (11 connections) — `server/commands/npc_admin/monitoring.py`
-- *... and 164 more nodes in this community*
+- **test_auth_utils.py** (53 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **AuthenticationError** (32 connections) — `server/exceptions.py`
+- **create_access_token()** (30 connections) — `server/auth_utils.py`
+- **decode_access_token()** (25 connections) — `server/auth_utils.py`
+- **hash_password()** (16 connections) — `server/auth_utils.py`
+- **auth_utils.py** (13 connections) — `server/auth_utils.py`
+- **verify_password()** (8 connections) — `server/auth_utils.py`
+- **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_jwt_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_create_access_token_with_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_success()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_type_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_custom_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_expired_token_immediately()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_with_wrong_algorithm()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **test_decode_access_token_wrong_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (23 shared connections)
-- [get_logger](get_logger.md) (21 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (9 shared connections)
-- [NPCDefinition](NPCDefinition.md) (8 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (8 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (5 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (4 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (4 shared connections)
-- [npc_database.py](npc_database.py.md) (3 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (3 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
+- [UserManager](UserManager.md) (8 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [test_combat_service_modules.py](test_combat_service_modules.py.md) (4 shared connections)
+- [test_combat_validator.py](test_combat_validator.py.md) (4 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Optimization Strategy Overview](Optimization_Strategy_Overview.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/npc_admin/__init__.py`
-- `server/commands/npc_admin/behavior.py`
-- `server/commands/npc_admin/definition.py`
-- `server/commands/npc_admin/instance.py`
-- `server/commands/npc_admin/monitoring.py`
-- `server/commands/npc_admin/router.py`
-- `server/commands/npc_admin/test_occupants.py`
-- `server/commands/npc_admin_commands.py`
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/commands/test_npc_admin_commands.py`
+- `server/auth_utils.py`
+- `server/exceptions.py`
+- `server/tests/unit/auth/test_auth_utils.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 497 (93%)
-- INFERRED: 37 (7%)
+- EXTRACTED: 195 (90%)
+- INFERRED: 22 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,48 +4,45 @@
 
 ## Key Concepts
 
-- **E2E Test Suite AI Execution Improvements - Summary** (11 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **What Was Done** (7 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Key Features of Improvements** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Key Improvements by Failure Mode** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Next Actions** (5 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Expected Benefits** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Files Changed** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Infinite Loop Prevention** (4 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Mandatory Execution Protocol** (4 connections) — `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- **Implementation Status** (3 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **IMPROVEMENTS_SUMMARY.md** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **1. Updated Core Configuration** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **1. Visual Emphasis** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **2. Enhanced Execution Guards** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **2. Multi-Layer Protection** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **3. Created Comprehensive Template** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **3. Psychological Design** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **4. Created Implementation Guide** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **4. Documentation Quality** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **5. Created Quick Reference** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **6. Updated README** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **✅ Completed** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Conclusion** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **Executive Summary** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
-- **For AI Executors** (1 connections) — `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- **TestHierarchicalSchema** (21 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **._validate_room()** (21 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **ValidationResult** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **test_hierarchical_schema.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_environment_inheritance_logic()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_environment_value()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_exits_fail_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_missing_description_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_room_missing_exits_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_subzone_environment()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_zone_type()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_invalid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_exits_pass_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_hierarchical_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_subzone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_zone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.test_valid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.setUp()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **Test that invalid environment values fail validation.** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- **Test that a valid zone configuration passes validation.** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 - *... and 19 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [SpellEffectType](SpellEffectType.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/AI_EXECUTION_IMPROVEMENTS.md`
-- `e2e-tests/AI_EXECUTOR_QUICK_REFERENCE.md`
-- `e2e-tests/EXECUTION_GUARDS.md`
-- `e2e-tests/IMPROVEMENTS_SUMMARY.md`
+- `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 65 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **invites table** (0 connections) — `tools/invite_tools/README.md`
+- **lizard.py** (0 connections) — `scripts/lizard.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `tools/invite_tools/README.md`
+- `scripts/lizard.py`
 
 ## Audit Trail
 

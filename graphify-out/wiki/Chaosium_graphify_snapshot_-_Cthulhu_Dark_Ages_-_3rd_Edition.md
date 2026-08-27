@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **cthulhu-dark-ages-3rd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- **duration_hours** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

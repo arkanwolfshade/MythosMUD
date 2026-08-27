@@ -1,37 +1,45 @@
 # MUD Disconnect Grace Period & Rest Command: Industry Comparison
 
-> 6 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **MUD Disconnect Grace Period & Rest Command: Industry Comparison** (15 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **11. Missing Features from Other MUDs** (2 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **disconnect_grace_period_comparison.md** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Executive Summary** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Features We're NOT Implementing (but exist elsewhere)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Questions for Discussion** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **SQLAlchemyAsyncLinter** (9 connections) — `scripts/lint_sqlalchemy_async.py`
+- **lint_file()** (6 connections) — `scripts/lint_sqlalchemy_async.py`
+- **lint_directory()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
+- **main()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
+- **._check_execute_call()** (5 connections) — `scripts/lint_sqlalchemy_async.py`
+- **._is_wrapped_in_text()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.visit_Await()** (4 connections) — `scripts/lint_sqlalchemy_async.py`
+- **lint_sqlalchemy_async.py** (4 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.visit_Import()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.visit_ImportFrom()** (3 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Path** (3 connections)
+- **Call** (2 connections)
+- **Check for SQLAlchemy imports.** (2 connections) — `scripts/lint_sqlalchemy_async.py`
+- **.__init__()** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Await** (1 connections)
+- **Import** (1 connections)
+- **ImportFrom** (1 connections)
+- **Lint a single Python file for SQLAlchemy async issues. Returns: List of…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Lint all Python files in a directory recursively. Returns: List of (filename,…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Main entry point for the linter.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **AST visitor to detect problematic SQLAlchemy async patterns. Detects patterns…** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Check for problematic await patterns.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Check if this is a problematic execute() call.** (1 connections) — `scripts/lint_sqlalchemy_async.py`
+- **Check if the argument is wrapped in text().** (1 connections) — `scripts/lint_sqlalchemy_async.py`
 
 ## Relationships
 
-- [5. Rest Command Countdown Duration](5._Rest_Command_Countdown_Duration.md) (1 shared connections)
-- [6. Rest Location (Inn/Hotel) Behavior](6._Rest_Location_Inn-Hotel_Behavior.md) (1 shared connections)
-- [7. Reconnection During Grace Period](7._Reconnection_During_Grace_Period.md) (1 shared connections)
-- [8. Grace Period After Intentional Disconnect](8._Grace_Period_After_Intentional_Disconnect.md) (1 shared connections)
-- [9. Command Blocking During Grace Period](9._Command_Blocking_During_Grace_Period.md) (1 shared connections)
-- [10. Grace Period Persistence](10._Grace_Period_Persistence.md) (1 shared connections)
-- [Recommendations Summary](Recommendations_Summary.md) (1 shared connections)
-- [2. Auto-Attack During Grace Period](2._Auto-Attack_During_Grace_Period.md) (1 shared connections)
-- [3. Grace Period Visibility & Messaging](3._Grace_Period_Visibility_&_Messaging.md) (1 shared connections)
-- [1. Disconnect Grace Period Duration](1._Disconnect_Grace_Period_Duration.md) (1 shared connections)
-- [4. Rest/Quit Command During Combat](4._Rest-Quit_Command_During_Combat.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `scripts/lint_sqlalchemy_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

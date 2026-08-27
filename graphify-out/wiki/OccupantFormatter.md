@@ -1,50 +1,52 @@
 # OccupantFormatter
 
-> 75 nodes
+> 70 nodes
 
 ## Key Concepts
 
-- **OccupantFormatter** (41 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter.py** (29 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **._is_uuid_string()** (8 connections) — `server/realtime/occupant_formatter.py`
-- **._is_valid_name_for_occupant()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_dict_occupant_for_update()** (7 connections) — `server/realtime/occupant_formatter.py`
-- **._process_npc_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **._process_player_name_for_update()** (6 connections) — `server/realtime/occupant_formatter.py`
-- **.separate_occupants_by_type()** (5 connections) — `server/realtime/occupant_formatter.py`
-- **Any** (5 connections)
-- **._add_valid_name_to_lists()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **._process_string_occupant_for_update()** (4 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_chars()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_dashes()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_invalid_length()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_uuid_string_valid()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_non_string()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_none()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_uuid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- *... and 50 more nodes in this community*
+- **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
+- **asyncio** (23 connections)
+- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
+- **handle_unalias_command()** (12 connections) — `server/commands/alias_commands.py`
+- **handle_aliases_command()** (11 connections) — `server/commands/alias_commands.py`
+- **_create_alias()** (5 connections) — `server/commands/alias_commands.py`
+- **_extract_alias_params()** (4 connections) — `server/commands/alias_commands.py`
+- **_view_alias()** (4 connections) — `server/commands/alias_commands.py`
+- **test_handle_alias_command_circular_reference()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_create_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_command_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_empty()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_invalid_name_too_long()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_args()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_update_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_existing()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_from_structured_data()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_alias_command_view_nonexistent()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_error()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_handle_aliases_command_no_aliases()** (4 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- *... and 45 more nodes in this community*
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
+- [CombatParticipant](CombatParticipant.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
-- `server/tests/unit/realtime/test_occupant_formatter.py`
+- `server/commands/alias_commands.py`
+- `server/tests/unit/commands/test_alias_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 141 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

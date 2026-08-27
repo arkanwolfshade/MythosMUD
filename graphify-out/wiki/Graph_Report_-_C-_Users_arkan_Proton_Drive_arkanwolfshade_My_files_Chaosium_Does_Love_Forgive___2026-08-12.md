@@ -1,36 +1,38 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Does Love Forgive_  (2026-08-12)
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Does Love Forgive_  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **does-love-forgive/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 1 - "Anna Konrad; Lucas Reston"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 2 - "Does Love Forgive"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- **Memory Leak Audit Report** (12 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Recommendations** (4 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Common Patterns Identified** (3 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Audit Completion Summary** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Audit Methodology** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Executive Summary** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **✅ Good Patterns (No Leaks)** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **High Priority Fixes** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Low Priority Improvements** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Medium Priority Fixes** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Monitoring Recommendations** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **⚠️ Patterns to Watch** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **Risk Assessment Summary** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **PostgresConnectionPool** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **_closed_websockets Unbounded Set** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
+- **EventBus Subscriber Leaks** (1 connections) — `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [Financial Impact (If You're Tracking Dev Time)](Financial_Impact_If_You're_Tracking_Dev_Time.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- `docs/archive/MEMORY_LEAK_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

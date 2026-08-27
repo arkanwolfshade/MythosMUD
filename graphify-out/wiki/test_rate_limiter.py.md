@@ -1,51 +1,50 @@
 # test_rate_limiter.py
 
-> 61 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_rate_limiter.py** (36 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_disabled()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_logs_violation()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_check_rate_limit_within_limits()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_cleanup_old_entries()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_limit_default()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_limit_existing()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_player_stats_empty()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_error_handling()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_remaining_messages_zero()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_get_system_stats_no_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_false()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_is_player_rate_limited_true()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_channels()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_different_players()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_rate_limit_sliding_window()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **test_record_message_cleanup_old()** (2 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- *... and 36 more nodes in this community*
+- **gen_arena_migration_sql.py** (14 connections) — `scripts/gen_arena_migration_sql.py`
+- **gen_arena_dml.py** (13 connections) — `scripts/gen_arena_dml.py`
+- **strip_arena_from_dml.py** (10 connections) — `scripts/strip_arena_from_dml.py`
+- **generate_migration()** (8 connections) — `scripts/gen_arena_migration_sql.py`
+- **should_skip_line()** (8 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
+- **main()** (7 connections) — `scripts/gen_arena_dml.py`
+- **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
+- **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
+- **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_subzone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_config_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
+- **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
+- **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
+- **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
+- **get_copy_section()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_link_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [RateLimiter](RateLimiter.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `scripts/gen_arena_dml.py`
+- `scripts/gen_arena_migration_sql.py`
+- `scripts/strip_arena_from_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

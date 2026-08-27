@@ -1,24 +1,30 @@
 # test_compute_dp_update_fields
 
-> 2 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_compute_dp_update_fields()** (3 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
-- **After damage, old_dp reflects pre-hit value.** (1 connections) — `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- **NPC Occupants Verification Summary** (3 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **asyncpg UUID replace AttributeError** (2 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **NPC Display Final Fixes** (2 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **room_update Overwriting NPC Data** (1 connections) — `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- **Legacy Occupants Snapshot Format** (1 connections) — `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- **Rooms API User Object AttributeError** (1 connections) — `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/npc/test_npc_combat_integration_class.py`
+- `investigations/sessions/2025-01-28_session-npc-display-final-fixes.md`
+- `investigations/sessions/2025-01-28_session-npc-occupants-verification-summary.md`
+- `investigations/sessions/2025-01-XX_session-rooms-api-user-object-attribute-error.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

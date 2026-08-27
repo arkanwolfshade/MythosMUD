@@ -1,45 +1,50 @@
 # TestNPCCombatLifecycle
 
-> 22 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **TestNPCCombatLifecycle** (12 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **asyncio** (6 connections)
-- **.lifecycle_service()** (4 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.mock_persistence()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_no_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_exception()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_no_lifecycle_manager()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_sqlalchemy_error()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_safely_success()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_despawn_npc_with_active_npcs()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **fixture** (2 connections)
-- **Test _despawn_npc handles NPC not in active_npcs.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test suite for NPCCombatLifecycle class.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Create a NPCCombatLifecycle instance for testing.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test NPCCombatLifecycle initialization.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely successfully despawns NPC.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles missing lifecycle manager.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles exceptions gracefully.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test despawn_npc_safely handles SQLAlchemy errors.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
-- **Test _despawn_npc handles NPC in active_npcs via fallback path.** (1 connections) — `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- **P8 · Applied** (12 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **ApplicationContainer Structure Analysis and Domain-Specific Split Proposal** (9 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2. Current Structure Analysis** (5 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3. Proposed Domain-Specific Split** (4 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **4. Migration Path** (4 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **APPLICATION_CONTAINER_ANALYSIS.md** (2 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **Code changes — comment-only, explicitly authorised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Documentation changes — 33 files** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Issues created — 14** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Issues reopened — 12** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **New ADRs** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Not done — deliberately** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Security — filed privately, not publicly** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **Verification** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- **1. Executive Summary** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.1 Attribute Inventory by Domain** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.2 Initialization Order and Dependencies** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.3 Private Initializers and Helpers** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **2.4 Public API and Consumers** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.1 Option A: Internal Bundles (Recommended)** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.2 Option B: Composed Sub-Containers (Alternative)** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **3.3 Dependency Flow Between Bundles** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **5. Backward Compatibility** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **6. Success Criteria** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- **7. References** (1 connections) — `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_combat_lifecycle.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P8-Applied.md`
+- `docs/architecture/decisions/ADR-019.md`
+- `docs/archive/APPLICATION_CONTAINER_ANALYSIS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

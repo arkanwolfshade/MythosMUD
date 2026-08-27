@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_server_config_validate_port_invalid_low()** (2 connections) — `server/tests/unit/config/test_config_models.py`
+- **Test ServerConfig port validation with port too low.** (1 connections) — `server/tests/unit/config/test_config_models.py`
 
 ## Relationships
 
-- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
+- [click Best Practices](click_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/config/test_config_models.py`
 
 ## Audit Trail
 

@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_cast_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_adjust_room_drop_quantity_zero()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **Test adjust_room_drop() with quantity zero removes stack.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Relationships
 
-- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
+- [server/main.py](server-main.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
 
 ## Audit Trail
 

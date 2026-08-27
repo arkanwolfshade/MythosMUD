@@ -1,10 +1,11 @@
 # .env and YAML Config Split
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.env and YAML Config Split** (0 connections) — `docs/archive/.ENV_REFACTORING_SUMMARY.md`
+- **Eight Interactive States** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
+- **Interaction Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Relationships
 
@@ -12,11 +13,11 @@
 
 ## Source Files
 
-- `docs/archive/.ENV_REFACTORING_SUMMARY.md`
+- `.cursor/skills/frontend-design/reference/interaction-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

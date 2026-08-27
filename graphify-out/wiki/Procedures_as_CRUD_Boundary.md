@@ -1,25 +1,28 @@
 # Procedures as CRUD Boundary
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Procedures as CRUD Boundary** (1 connections) — `db/procedures/README.md`
-- **Named Schema Per Database** (1 connections) — `db/README.md`
+- **.__init__()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **FluxServiceConfig** (1 connections)
+- **CatatoniaObserverProtocol** (1 connections)
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ResourceManager](ResourceManager.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
+- [test_health_monitor.py](test_health_monitor.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/README.md`
-- `db/procedures/README.md`
+- `server/services/passive_lucidity_flux/service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

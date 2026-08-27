@@ -1,25 +1,22 @@
 # enabled
 
-> 4 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **enabled** (4 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **Distributed EventBus via NATS** (0 connections) — `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

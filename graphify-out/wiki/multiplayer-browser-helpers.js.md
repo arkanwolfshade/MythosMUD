@@ -1,49 +1,49 @@
 # multiplayer-browser-helpers.js
 
-> 38 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.js** (38 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **isElementVisible()** (11 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **evaluateGameUiLoaded()** (9 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **captureGameUiDiagnosticsInBrowser()** (8 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **getBodyInnerText()** (7 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasCommandInputInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasGameInfoPanelInBrowser()** (6 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasGameInfoAnyMessageInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasPrimaryGameUiMarkersInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **isLoginFormVisibleInBrowser()** (5 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **multiplayer-browser-helpers.test.ts** (5 connections) — `client/src/test/multiplayer-browser-helpers.test.ts`
-- **hasLoginSubmitButtonInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasRoomSubscriptionInBrowser()** (4 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **elementTextIncludesGameInfo()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasBodyTextGameUiIndicators()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasConnectedStatusInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasRoomStateIndicatorsInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasTickMessageInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **hasUsernameInputInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **isGameUiLoadedInBrowser()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **presenceEventFrom()** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **buttonHasLoginSubmitLabel()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **captureOccupantsSnapshotInBrowser()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **coalesce()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- **computedStyleHidesElement()** (2 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
-- *... and 13 more nodes in this community*
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **room_validator/schemas/unified_room_schema.json** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **plane** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **id** (3 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **allOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (1 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (1 shared connections)
+- [retry.py](retry.py.md) (1 shared connections)
+- [test_container_websocket_events.py](test_container_websocket_events.py.md) (1 shared connections)
+- [Spatial Design](Spatial_Design.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/test/multiplayer-browser-helpers.test.ts`
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.js`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

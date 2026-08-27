@@ -1,50 +1,54 @@
 # test_command_parser_helpers.py
 
-> 41 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_command_parser_helpers.py** (26 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **command_parser()** (4 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_unsupported_command()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_value_error()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_empty_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_whitespace_only_raises()** (3 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_g()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_l()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_create_command_object_with_alias_w()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_specific_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_get_command_help_unknown_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_cleans_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_no_slash()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_removes_slash_prefix()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_normalize_command_strips_whitespace()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_lowercases_command()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_simple()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **test_parse_command_parts_with_args()** (2 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **fixture** (1 connections)
-- **Unit tests for command_parser helper methods. Tests the helper methods in…** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles 'l' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles 'g' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- **Test _create_command_object() handles 'w' alias.** (1 connections) — `server/tests/unit/utils/test_command_parser_helpers.py`
-- *... and 16 more nodes in this community*
+- **NATSServicePoolMixin** (28 connections) — `server/services/nats_service_pool.py`
+- **NatsConnectOptions** (9 connections) — `server/services/nats_service_connect.py`
+- **.publish_with_pool()** (9 connections) — `server/services/nats_service_pool.py`
+- **._flush_batch()** (8 connections) — `server/services/nats_service_pool.py`
+- **configure_nats_tls()** (6 connections) — `server/services/nats_service_connect.py`
+- **nats_connect()** (6 connections) — `server/services/nats_service_connect.py`
+- **._initialize_connection_pool()** (6 connections) — `server/services/nats_service_pool.py`
+- **.publish_batch()** (6 connections) — `server/services/nats_service_pool.py`
+- **._configure_tls()** (5 connections) — `server/services/nats_service_pool.py`
+- **._create_pool_connections()** (5 connections) — `server/services/nats_service_pool.py`
+- **._get_connection()** (5 connections) — `server/services/nats_service_pool.py`
+- **._retry_failed_batch_groups()** (5 connections) — `server/services/nats_service_pool.py`
+- **._validate_pool_publish_subject()** (5 connections) — `server/services/nats_service_pool.py`
+- **._attempt_retry_batch_groups()** (4 connections) — `server/services/nats_service_pool.py`
+- **._batch_timeout()** (4 connections) — `server/services/nats_service_pool.py`
+- **._build_connect_options()** (4 connections) — `server/services/nats_service_pool.py`
+- **._create_tracked_task()** (4 connections) — `server/services/nats_service_pool.py`
+- **._publish_batch_groups()** (4 connections) — `server/services/nats_service_pool.py`
+- **._return_connection()** (4 connections) — `server/services/nats_service_pool.py`
+- **_NatsConnectFn** (3 connections) — `server/services/nats_service_connect.py`
+- **._enqueue_exhausted_batch_groups()** (3 connections) — `server/services/nats_service_pool.py`
+- **._finalize_pool_init_status()** (3 connections) — `server/services/nats_service_pool.py`
+- **._group_batch_messages()** (3 connections) — `server/services/nats_service_pool.py`
+- **._record_batch_flush_metrics()** (3 connections) — `server/services/nats_service_pool.py`
+- **.recover_failed_batches()** (3 connections) — `server/services/nats_service_pool.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (10 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (4 shared connections)
+- [test_connection_disconnection.py](test_connection_disconnection.py.md) (4 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (3 shared connections)
+- [ChatModeration](ChatModeration.md) (1 shared connections)
+- [test_aggro_threat.py](test_aggro_threat.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_parser_helpers.py`
+- `server/services/nats_service_connect.py`
+- `server/services/nats_service_pool.py`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (88%)
-- INFERRED: 6 (12%)
+- EXTRACTED: 94 (96%)
+- INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

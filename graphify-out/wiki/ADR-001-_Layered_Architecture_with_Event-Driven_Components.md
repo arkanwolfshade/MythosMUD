@@ -1,22 +1,23 @@
 # ADR-001: Layered Architecture with Event-Driven Components
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ADR-001: Layered Architecture with Event-Driven Components** (0 connections) — `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
+- **test_validate_target_exists_case_insensitive()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test validate_target_exists with case-insensitive match.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-001-layered-architecture-event-driven.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

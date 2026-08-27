@@ -1,27 +1,29 @@
 # Testing Requirements
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 0 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 1 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 2 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 3 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Phase 4 Testing** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **enum** (6 connections) — `schemas/calendar/holiday.schema.json`
+- **tradition** (3 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **catholic** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **islamic** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **jewish** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **mythos** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **neo_pagan** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
+- [jackson_linter.py](jackson_linter.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

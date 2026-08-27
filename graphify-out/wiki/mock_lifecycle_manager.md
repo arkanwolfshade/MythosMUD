@@ -1,25 +1,32 @@
 # mock_lifecycle_manager
 
-> 4 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **mock_lifecycle_manager()** (3 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **mock_npc()** (2 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **fixture** (2 connections)
-- **Create a mock lifecycle manager.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **gh-stack (MythosMUD)** (7 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **.agents/skills/gh-stack/SKILL.md** (3 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **.cursor/skills/gh-stack/SKILL.md** (2 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Automatic decision tree** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Forbidden (hangs non-interactive agents)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Full skill body** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Integration with other skills** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **Mythos defaults** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
+- **One-liner status check (PowerShell)** (1 connections) — `.cursor/skills/gh-stack/SKILL.md`
 
 ## Relationships
 
-- [test_look_npc.py](test_look_npc.py.md) (2 shared connections)
+- [Extract Skill](Extract_Skill.md) (1 shared connections)
+- [MythosMUD Server Test Suite](MythosMUD_Server_Test_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
+- `.agents/skills/gh-stack/SKILL.md`
+- `.cursor/skills/gh-stack/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

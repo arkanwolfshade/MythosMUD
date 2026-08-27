@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **unit/validators/__init__.py** (1 connections) — `server/tests/unit/validators/__init__.py`
-- **Validators unit tests.** (1 connections) — `server/tests/unit/validators/__init__.py`
+- **test_handle_unequip_wearable_container_preserves()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container preserves container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/__init__.py`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

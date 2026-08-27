@@ -1,30 +1,38 @@
 # .get_original_string_id
 
-> 6 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_integration_service.py`
-- **.__init__()** (3 connections) — `server/services/npc_combat_lifecycle.py`
-- **UUID** (2 connections)
-- **Any** (1 connections)
-- **Get the original string ID from a UUID.** (1 connections) — `server/services/npc_combat_integration_service.py`
-- **Initialize the lifecycle manager. Args: async_persistence: Async persistence…** (1 connections) — `server/services/npc_combat_lifecycle.py`
+- **.create_drop_command()** (9 connections) — `server/utils/command_factories_inventory.py`
+- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_drop_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **test_create_drop_command_with_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **test_create_drop_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() with quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_drop_command() raises error for invalid index.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **Test create_drop_command() raises error when index is not integer.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() raises error when quantity is not integer.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
+- **Test create_drop_command() creates DropCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
+- [test_connection_error_methods.py](test_connection_error_methods.py.md) (10 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [TestVerificationSqlUsersPlayers](TestVerificationSqlUsersPlayers.md) (2 shared connections)
+- [run-playwright-tests.js](run-playwright-tests.js.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_lifecycle.py`
+- `server/tests/unit/utils/test_command_factories_inventory.py`
+- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/utils/command_factories_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (70%)
+- INFERRED: 8 (30%)
 - AMBIGUOUS: 0 (0%)
 
 ---

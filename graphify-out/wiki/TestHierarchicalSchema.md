@@ -1,49 +1,56 @@
 # TestHierarchicalSchema
 
-> 47 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **TestHierarchicalSchema** (22 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **._validate_room()** (21 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **test_hierarchical_schema.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **ValidationResult** (4 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.setUp()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_environment_inheritance_logic()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_environment_value()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_exits_fail_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_missing_description_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_room_missing_exits_field()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_subzone_environment()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_zone_type()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_invalid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_environment_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_exits_pass_validation()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_hierarchical_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_room_id_patterns()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_subzone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_zone_config()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.test_valid_zone_type_values()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- **Any** (1 connections)
-- **Tests for hierarchical room schema validation. This module tests the new…** (1 connections) — `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
-- *... and 22 more nodes in this community*
+- **request_with_app_container()** (28 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_communication_commands_say_me_pose.py** (23 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **handle_say_command()** (16 connections) — `server/commands/communication_commands.py`
+- **asyncio** (15 connections)
+- **handle_pose_command()** (14 connections) — `server/commands/communication_commands.py`
+- **handle_me_command()** (7 connections) — `server/commands/communication_commands.py`
+- **test_handle_pose_command_clear_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_set_pose()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_chat_service_failure()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_delegates_broadcast_to_chat_service_with_ids()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_exception()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_player_id()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_room()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **communication_commands_mocks.py** (5 connections) — `server/tests/unit/commands/communication_commands_mocks.py`
+- **test_handle_me_command_no_action()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_me_command_success()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_pose_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **test_handle_say_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Test handle_say_command when player has no current room.** (2 connections) — `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
+- **Room-wide say; returns user-facing result dict.** (1 connections) — `server/commands/communication_commands.py`
+- **Set or clear persistent pose text.** (1 connections) — `server/commands/communication_commands.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [SchemaValidator](SchemaValidator.md) (3 shared connections)
-- [RoomLoader](RoomLoader.md) (1 shared connections)
+- [validate_room_data](validate_room_data.md) (9 shared connections)
+- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (7 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (7 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/tests/test_hierarchical_schema.py`
+- `server/commands/communication_commands.py`
+- `server/tests/unit/commands/communication_commands_mocks.py`
+- `server/tests/unit/commands/test_communication_commands_say_me_pose.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 112 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,11 +1,12 @@
 # Paired YAML and Env Config Tuples
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Paired YAML and Env Config Tuples** (1 connections) — `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
-- **Conftest Pydantic Config Migration** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
+- **Test Suite Stall After Performance Comparison** (2 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- **thread.join Without Timeout Hang** (1 connections) — `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
+- **Docker Build mythos_unitql Typo** (1 connections) — `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
-- `docs/archive/CONFTEST_MIGRATION_PLAN.md`
+- `investigations/sessions/2025-11-19_session-004_docker-build-postgresql-typo.md`
+- `investigations/sessions/2025-11-19_session-005_test-suite-stall.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

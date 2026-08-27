@@ -1,54 +1,53 @@
 # test_container_query_helpers_async.py
 
-> 26 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **test_container_query_helpers_async.py** (18 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **_build_container_data_from_row_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_decayed_containers_async()** (14 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_entity_id_async()** (13 connections) — `server/persistence/container_query_helpers_async.py`
-- **get_containers_by_room_id_async()** (12 connections) — `server/persistence/container_query_helpers_async.py`
-- **asyncio** (7 connections)
-- **_parse_jsonb()** (6 connections) — `server/persistence/container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_entity_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_containers_by_room_id_success()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_db_error()** (4 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **AsyncSession** (4 connections)
-- **ContainerData** (4 connections)
-- **_sample_row()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_default_time()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **test_get_decayed_containers_naive_time_normalized()** (3 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- **test_flee_command.py** (29 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **FleeHandlerDeps** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_request_with_persistence()** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_no_exits_returns_no_escape()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_roll_fails_returns_failure_and_uses_action()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_roll_succeeds_returns_success()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **handler()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_not_in_combat_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_not_standing_forces_stand_and_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_get_combat_command_handler_includes_flee()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **asyncio** (5 connections)
+- **flee_handler_deps()** (4 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_FleeCmdAppState** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderContainer** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **standing_player()** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **fixture** (3 connections)
 - **UUID** (3 connections)
-- **test_parse_jsonb_delegates()** (2 connections) — `server/tests/unit/persistence/test_container_query_helpers_async.py`
-- **Any** (2 connections)
-- **datetime** (2 connections)
-- **Get all containers owned by an entity (async) via get_containers_by_entity_id…** (1 connections) — `server/persistence/container_query_helpers_async.py`
-- **Get all decayed containers (async).** (1 connections) — `server/persistence/container_query_helpers_async.py`
-- **Build ContainerData from a database row (async).** (1 connections) — `server/persistence/container_query_helpers_async.py`
-- **Get all containers in a room (async) via get_containers_by_room_id procedure.** (1 connections) — `server/persistence/container_query_helpers_async.py`
-- *... and 1 more nodes in this community*
+- **_FleeCmdApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_FleeCmdRequest** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **TypedDict** (1 connections)
+- **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (19 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (6 shared connections)
-- [_container_data_to_dict](_container_data_to_dict.md) (3 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (6 shared connections)
+- [User](User.md) (4 shared connections)
+- [test_dependency_analysis.py](test_dependency_analysis.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [test_combat_service.py](test_combat_service.py.md) (2 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/persistence/container_query_helpers_async.py`
-- `server/tests/unit/persistence/test_container_query_helpers_async.py`
+- `server/tests/unit/commands/test_flee_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 88 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

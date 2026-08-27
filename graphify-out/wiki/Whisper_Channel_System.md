@@ -1,31 +1,34 @@
 # Whisper Channel System
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Whisper Channel System** (4 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Scenario 13 Whisper Basic** (2 connections) — `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- **Scenario 16 Whisper Movement** (2 connections) — `e2e-tests/scenarios/scenario-16-whisper-movement.md`
-- **Scenario 18 Whisper Logging** (2 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
-- **Scenario 14 Whisper Errors** (1 connections) — `e2e-tests/scenarios/scenario-14-whisper-errors.md`
-- **Whisper Moderation Logging** (1 connections) — `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- **handle_explore_command()** (9 connections) — `server/commands/exploration_commands.py`
+- **test_handle_explore_command()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **asyncio** (2 connections)
+- **Any** (1 connections)
+- **Handle exploration requests by returning a simple message. This lightweight…** (1 connections) — `server/commands/exploration_commands.py`
+- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [pytest.md](pytest.md.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-13-whisper-basic.md`
-- `e2e-tests/scenarios/scenario-14-whisper-errors.md`
-- `e2e-tests/scenarios/scenario-16-whisper-movement.md`
-- `e2e-tests/scenarios/scenario-18-whisper-logging.md`
+- `server/commands/exploration_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 13 (87%)
+- INFERRED: 2 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

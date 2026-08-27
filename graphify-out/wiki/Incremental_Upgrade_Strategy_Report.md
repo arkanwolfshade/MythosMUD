@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Incremental Upgrade Strategy (Report)** (1 connections) — `scripts/dependency_upgrade_report.md`
-- **Upgrade Rollback Plan** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **NATS JetStream** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS Message Acknowledgment** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Relationships
 
@@ -13,12 +13,12 @@
 
 ## Source Files
 
-- `scripts/dependency_upgrade_report.md`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

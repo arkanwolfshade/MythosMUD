@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Playwright MCP Primary Testing Tool** (2 connections) — `e2e-tests/TESTING_APPROACH.md`
-- **Server Won't Start Troubleshooting** (1 connections) — `e2e-tests/TROUBLESHOOTING.md`
-- **Standard Playwright Unsuitable for Multiplayer** (1 connections) — `e2e-tests/TESTING_APPROACH.md`
+- **PlayerPanel.tsx** (2 connections) — `client/src/components/panels/PlayerPanel.tsx`
+- **PlayerPanelProps** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
+- **PlayerPanel()** (1 connections) — `client/src/components/panels/PlayerPanel.tsx`
 
 ## Relationships
 
@@ -14,13 +14,12 @@
 
 ## Source Files
 
-- `e2e-tests/TESTING_APPROACH.md`
-- `e2e-tests/TROUBLESHOOTING.md`
+- `client/src/components/panels/PlayerPanel.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

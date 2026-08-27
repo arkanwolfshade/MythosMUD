@@ -1,50 +1,52 @@
 # test_security_utils.py
 
-> 76 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **test_security_utils.py** (41 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **validate_secure_path()** (16 connections) — `server/security_utils.py`
-- **get_secure_file_path()** (13 connections) — `server/security_utils.py`
-- **is_safe_filename()** (10 connections) — `server/security_utils.py`
-- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
-- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_mixed_case()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_numeric_filename()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_dots()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_hyphens()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_underscores()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_empty()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_unicode()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_backslash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_dot_dot()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_forward_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_is_safe_filename_with_special_chars()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- *... and 51 more nodes in this community*
+- **test_combat_persistence_handler_persistence.py** (23 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **asyncio** (16 connections)
+- **test_persist_player_dp_sync_get_stats_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_get_stats_error_new()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_persistence_failure()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_background_task_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_complete_flow_with_verification_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_no_persistence()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_player_not_found()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_save_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_success()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_persist_player_dp_sync_verify_player_save_called()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_player_not_found()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **test_verify_player_save_success()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync handles errors gracefully.** (2 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Unit tests for combat persistence handler - persistence operations. Tests…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync calls _verify_player_save.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync handles save_player error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync completes full flow with verification and logging.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync handles get_stats error.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_sync complete flow including verification.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- **Test _persist_player_dp_background schedules background task.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [character_sheets (source summary)](character_sheets_source_summary.md) (3 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [SessionManager](SessionManager.md) (1 shared connections)
+- [Vitest Best Practices](Vitest_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/security_utils.py`
-- `server/tests/unit/infrastructure/test_security_utils.py`
+- `server/tests/unit/services/test_combat_persistence_handler_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 53 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

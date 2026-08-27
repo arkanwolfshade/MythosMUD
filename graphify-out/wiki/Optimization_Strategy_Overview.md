@@ -1,24 +1,25 @@
 # Optimization Strategy Overview
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Optimization Strategy Overview** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Guiding Principles** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Success Metrics** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **setup_jwt_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **fixture** (1 connections)
+- **MonkeyPatch** (1 connections)
+- **Set JWT secret for tests.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

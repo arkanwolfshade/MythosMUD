@@ -1,62 +1,52 @@
 # NATSSubjectManager
 
-> 49 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **NATSSubjectManager** (58 connections) — `server/services/nats_subject_manager/manager.py`
-- **.build_subject()** (7 connections) — `server/services/nats_subject_manager/manager.py`
-- **Any** (7 connections)
-- **._ensure_pattern_exists()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._ensure_required_params()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._format_subject()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_pattern_info()** (5 connections) — `server/services/nats_subject_manager/manager.py`
-- **._ensure_subject_length()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_all_patterns()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **.validate_subject()** (4 connections) — `server/services/nats_subject_manager/manager.py`
-- **get_subject_manager_dependency()** (3 connections) — `server/api/admin/subject_controller.py`
-- **.__init__()** (3 connections) — `server/services/combat_event_publisher.py`
-- **._cache_result()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_performance_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **._record_validation_metrics()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **.register_pattern()** (3 connections) — `server/services/nats_subject_manager/manager.py`
-- **test_build_subject_subject_too_long()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_custom_max_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **test_nats_subject_manager_init_strict_validation()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **.clear_cache()** (2 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_chat_subscription_patterns()** (2 connections) — `server/services/nats_subject_manager/manager.py`
-- **.get_event_subscription_patterns()** (2 connections) — `server/services/nats_subject_manager/manager.py`
-- *... and 24 more nodes in this community*
+- **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **Any** (14 connections)
+- **UUID** (10 connections)
+- **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **_stale_prune_max_age_seconds()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._filter_actual_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.force_cleanup()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_player_id_from_metadata()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_players_to_check()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._get_potential_ghost_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **server/realtime/maintenance/__init__.py** (3 connections) — `server/realtime/maintenance/__init__.py`
+- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [subject_controller.py](subject_controller.py.md) (9 shared connections)
-- [test_manager.py](test_manager.py.md) (9 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (8 shared connections)
-- [test_validation.py](test_validation.py.md) (3 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (2 shared connections)
-- [test_pattern_matcher.py](test_pattern_matcher.py.md) (2 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [PhantomHostileService](PhantomHostileService.md) (4 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/services/combat_event_publisher.py`
-- `server/services/nats_subject_manager/manager.py`
-- `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- `server/realtime/maintenance/__init__.py`
+- `server/realtime/maintenance/connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (91%)
-- INFERRED: 10 (9%)
+- EXTRACTED: 90 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

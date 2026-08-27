@@ -1,11 +1,12 @@
 # Graceful Degradation Planning
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Graceful Degradation Planning** (1 connections) — `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
-- **Health Endpoint Specification** (1 connections) — `docs/archive/HEALTH_ENDPOINT_SPEC.md`
+- **Logging Aggregator Verification** (2 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **warnings.log and errors.log Aggregators** (1 connections) — `.cursor/plans/logging_aggregator_verification.plan.md`
+- **Structlog Anti-Pattern Remediation** (1 connections) — `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Relationships
 
@@ -13,13 +14,13 @@
 
 ## Source Files
 
-- `docs/archive/GRACEFUL_DEGRADATION_IMPLEMENTATION_PLANNING.md`
-- `docs/archive/HEALTH_ENDPOINT_SPEC.md`
+- `.cursor/plans/logging_aggregator_verification.plan.md`
+- `.cursor/plans/structlog_anti-pattern_remediation_1d228d75.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

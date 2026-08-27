@@ -1,22 +1,23 @@
 # items
 
-> 5 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **items** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **bonus_tags** (3 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Extract Skill** (5 connections) — `.claude/skills/extract/SKILL.md`
+- **Discover** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **Document** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **Extract & Enrich** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **Migrate** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **Plan Extraction** (1 connections) — `.claude/skills/extract/SKILL.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `.claude/skills/extract/SKILL.md`
 
 ## Audit Trail
 

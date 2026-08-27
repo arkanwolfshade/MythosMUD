@@ -1,24 +1,24 @@
 # Database Access Patterns
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Database Access Patterns** (1 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
-- **Migration 019 Testing Guide** (1 connections) — `docs/MIGRATION_019_TESTING_GUIDE.md`
+- **_NpcWithLife** (3 connections) — `server/commands/combat_handler.py`
+- **Protocol** (1 connections)
+- **NPC instance shape for alive check before accepting an attack target.** (1 connections) — `server/commands/combat_handler.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/DATABASE_ACCESS_PATTERNS.md`
-- `docs/MIGRATION_019_TESTING_GUIDE.md`
+- `server/commands/combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

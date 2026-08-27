@@ -1,36 +1,33 @@
 # Any
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
-- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **Compare memory usage across multiple model classes. Args: model_classes: List…** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted model memory usage results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted comparison results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Benchmark memory usage for all major models.** (1 connections) — `server/utils/memory_profiler.py`
+- **P3 · container-di + client + domain** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **P3 · container-di + client + domain Findings** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Further P0 reversals** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H10 · ADR-011 declares completed work as "planned"** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H7 · The global-singleton leak grew rather than shrank** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H8 · Twelve modules bypass the persistence facade — and the two docs disagree about whether that's allowed** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H9 · ADR-008 styling claim is wholly counterfactual** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Low / STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Notable CONFORMS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Register corrections** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
-- [.measure_model_deserialization](measure_model_deserialization.md) (4 shared connections)
-- [HealthStatus](HealthStatus.md) (2 shared connections)
-- [server/models/game.py](server-models-game.py.md) (1 shared connections)
-- [AliasStorage](AliasStorage.md) (1 shared connections)
-- [.get_memory_usage_summary](get_memory_usage_summary.md) (1 shared connections)
+- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/memory_profiler.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 11 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

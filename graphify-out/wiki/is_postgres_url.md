@@ -1,30 +1,34 @@
 # is_postgres_url
 
-> 6 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **is_postgres_url()** (5 connections) — `server/postgres_adapter.py`
-- **.test_is_postgres_url_false()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **.test_is_postgres_url_true()** (3 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Check if the database URL is PostgreSQL.** (1 connections) — `server/postgres_adapter.py`
-- **Test is_postgres_url() with PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
-- **Test is_postgres_url() with non-PostgreSQL URL.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- **field_validator** (8 connections)
+- **.validate_combat_alert_threshold()** (3 connections) — `server/config/models/game.py`
+- **.validate_combat_performance_threshold()** (3 connections) — `server/config/models/game.py`
+- **.validate_combat_tick_interval()** (3 connections) — `server/config/models/game.py`
+- **.validate_combat_timeout()** (3 connections) — `server/config/models/game.py`
+- **.validate_combat_xp_multiplier()** (3 connections) — `server/config/models/game.py`
+- **.validate_max_connections()** (3 connections) — `server/config/models/game.py`
+- **Validate combat alert threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate combat performance threshold.** (1 connections) — `server/config/models/game.py`
+- **Validate max connections is reasonable.** (1 connections) — `server/config/models/game.py`
+- **Validate combat tick interval.** (1 connections) — `server/config/models/game.py`
+- **Validate combat timeout.** (1 connections) — `server/config/models/game.py`
+- **Validate combat XP multiplier.** (1 connections) — `server/config/models/game.py`
 
 ## Relationships
 
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (2 shared connections)
-- [test_postgres_adapter.py](test_postgres_adapter.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [.get_combat_stats](get_combat_stats.md) (8 shared connections)
 
 ## Source Files
 
-- `server/postgres_adapter.py`
-- `server/tests/unit/infrastructure/test_postgres_adapter.py`
+- `server/config/models/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

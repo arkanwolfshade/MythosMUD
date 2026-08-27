@@ -1,44 +1,47 @@
 # verify_migration.py
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **verify_migration.py** (11 connections) — `scripts/verify_migration.py`
-- **_validate_database_data()** (8 connections) — `scripts/verify_migration.py`
-- **verify_database()** (8 connections) — `scripts/verify_migration.py`
-- **Connection** (7 connections)
-- **_check_foreign_keys()** (4 connections) — `scripts/verify_migration.py`
-- **_check_null_values()** (4 connections) — `scripts/verify_migration.py`
-- **_check_table_exists()** (4 connections) — `scripts/verify_migration.py`
-- **_print_sample_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_json_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_table_schema()** (4 connections) — `scripts/verify_migration.py`
-- **_print_json_validation_results()** (3 connections) — `scripts/verify_migration.py`
-- **_print_verification_summary()** (3 connections) — `scripts/verify_migration.py`
-- **main()** (2 connections) — `scripts/verify_migration.py`
-- **Validate JSON data integrity in players table.** (1 connections) — `scripts/verify_migration.py`
-- **Check for NULL values in required fields.** (1 connections) — `scripts/verify_migration.py`
-- **Validate database data (JSON, NULLs, sample).** (1 connections) — `scripts/verify_migration.py`
-- **Print JSON validation results.** (1 connections) — `scripts/verify_migration.py`
-- **Print sample player data.** (1 connections) — `scripts/verify_migration.py`
-- **Check foreign key constraints.** (1 connections) — `scripts/verify_migration.py`
-- **Print verification summary and return result.** (1 connections) — `scripts/verify_migration.py`
-- **Verify a single database.** (1 connections) — `scripts/verify_migration.py`
-- **Check if players table exists.** (1 connections) — `scripts/verify_migration.py`
-- **Validate table schema against expected columns.** (1 connections) — `scripts/verify_migration.py`
+- **compilerOptions** (7 connections) — `client/tests/e2e/tsconfig.json`
+- **e2e/tsconfig.json** (5 connections) — `client/tests/e2e/tsconfig.json`
+- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
+- **types** (5 connections) — `client/tsconfig.test.json`
+- **compilerOptions** (3 connections) — `client/tsconfig.test.json`
+- **typeRoots** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **types** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **include** (2 connections) — `client/tests/e2e/tsconfig.json`
+- **./tsconfig.json** (2 connections) — `client/tsconfig.test.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **composite** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **noEmit** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **rootDir** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **exclude** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **extends** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **noEmit** (1 connections) — `client/tsconfig.test.json`
+- **exclude** (1 connections) — `client/tsconfig.test.json`
+- **extends** (1 connections) — `client/tsconfig.test.json`
+- **node** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **node** (1 connections) — `client/tsconfig.test.json`
+- **../../node_modules/@types** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **./**/*.ts** (1 connections) — `client/tests/e2e/tsconfig.json`
+- **vite/client** (1 connections) — `client/tsconfig.test.json`
+- **vitest/globals** (1 connections) — `client/tsconfig.test.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Communities (11 total, 0 thin omitted)](Communities_11_total,_0_thin_omitted.md) (1 shared connections)
+- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_migration.py`
+- `client/tests/e2e/tsconfig.json`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

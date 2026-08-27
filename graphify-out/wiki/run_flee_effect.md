@@ -4,51 +4,51 @@
 
 ## Key Concepts
 
-- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_spell_effect_flee.py** (18 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
-- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
-- **asyncio** (6 connections)
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_run_flee_effect_invalid_target_type()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_invalid_uuid()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_not_in_combat()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_room_error()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_services_unavailable()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_success_and_failure()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- **_check_grace_period_block()** (23 connections) — `server/command_handler_unified.py`
+- **test_grace_period_blocking.py** (9 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **TestCheckGracePeriodBlock** (7 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **_get_grace_check_context()** (7 connections) — `server/command_handler_unified.py`
+- **test_check_grace_period_block_allows_commands_when_not_in_grace_period()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_blocks_commands()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_missing_services()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **test_check_grace_period_block_handles_player_not_found()** (4 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **.test_check_grace_period_block_handles_error()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_no_connection_manager()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_no_player_service()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_player_in_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **.test_check_grace_period_block_player_not_found()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **asyncio** (4 connections)
+- **mock_request()** (3 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 - **UUID** (2 connections)
+- **fixture** (1 connections)
+- **Resolve player_id and connection_manager for grace period check. Returns None…** (1 connections) — `server/command_handler_unified.py`
+- **Check if player is in grace period and block commands. Players in grace period…** (1 connections) — `server/command_handler_unified.py`
+- **Unit tests for grace period command blocking in unified command handler. Tests…** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Create a mock request.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() blocks commands for grace period players.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() allows commands when player not in grace…** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles missing services gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- **Test _check_grace_period_block() handles player not found gracefully.** (1 connections) — `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (13 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
-- [server/models/game.py](server-models-game.py.md) (3 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_connection_statistics.py](test_connection_statistics.py.md) (10 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (7 shared connections)
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (5 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
-- `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- `server/command_handler_unified.py`
+- `server/tests/unit/command_handler_unified/test_grace_period_blocking.py`
+- `server/tests/unit/commands/test_command_validation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 64 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

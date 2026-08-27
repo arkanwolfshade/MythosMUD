@@ -1,33 +1,33 @@
 # mark_player_seen_impl
 
-> 6 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **mark_player_seen_impl()** (7 connections) — `server/realtime/connection_helpers.py`
-- **.mark_player_seen()** (4 connections) — `server/realtime/connection_manager.py`
-- **test_mark_player_seen_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **Update last-seen timestamp for a player and all their connections.** (1 connections) — `server/realtime/connection_helpers.py`
-- **Update last-seen timestamp for a player and all their connections.** (1 connections) — `server/realtime/connection_manager.py`
-- **Test mark_player_seen_impl() marks player as seen.** (1 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- **preferences_service()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_preferences()** (4 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **fixture** (4 connections)
+- **mock_session()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **sample_player_id()** (3 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a PlayerPreferencesService instance.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create a sample player ID.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
+- **Create sample player preferences.** (1 connections) — `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Relationships
 
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (3 shared connections)
-- [ConnectionManager](ConnectionManager.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (4 shared connections)
+- [logger.ts](logger.ts.md) (1 shared connections)
+- [Async Audit Executive Summary](Async_Audit_Executive_Summary.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/tests/unit/services/test_player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (86%)
+- INFERRED: 2 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

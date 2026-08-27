@@ -1,27 +1,25 @@
 # days
 
-> 4 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **days** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **Paired YAML and Env Config Tuples** (1 connections) — `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
+- **Conftest Pydantic Config Migration** (1 connections) — `docs/archive/CONFTEST_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
-- [applies_to](applies_to.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
+- `docs/archive/CONFIGURATION_ARCHITECTURE_FINAL.md`
+- `docs/archive/CONFTEST_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,22 +1,23 @@
 # ADR-008: React 18+ with TypeScript for Client
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **ADR-008: React 18+ with TypeScript for Client** (0 connections) — `docs/architecture/decisions/ADR-008-react-typescript-client.md`
+- **test_is_valid_target_name_invalid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Test _is_valid_target_name with invalid target name.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/architecture/decisions/ADR-008-react-typescript-client.md`
+- `server/tests/unit/validators/test_combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

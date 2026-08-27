@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - The Grand Grimoire of Cthulhu Mythos Magic
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - The Grand Grimoire of Cthulhu Mythos Magic** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
-- **the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
+- **Phase 2: Database Layer Integration** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.1 Persistence Layer Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.2 Database Connection Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPC Startup Duplication Analysis](NPC_Startup_Duplication_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-grand-grimoire-of-cthulhu-mythos-magic/MANIFEST.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

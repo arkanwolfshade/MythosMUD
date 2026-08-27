@@ -1,43 +1,44 @@
 # Ruff to Pylint Rule Mapping
 
-> 22 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`docs/**/*` files: Multiple rules** (6 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Per-File Ignores (pyproject.toml)** (5 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **LINTING_RUFF_PYLINT_MAPPING.md** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **B904 - Broad except** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **E402 - Module level import not at top** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F811 - Redefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F821 - Undefined name** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **F841 - Unused variable** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`__init__.py` files: F401 (unused import)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`server/stubs/**/*.pyi` files: UP046 (old Generic syntax)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
-- **`tests/**/*` files: B011 (assert on exception)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **ContainerRepository and ItemRepository: Review and Full Async Migration Plan** (10 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **4. Full Async Migration Plan** (6 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1. Review Summary** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **3. Migration Options** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2. Scope of Migration** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.1 Current Architecture** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.2 Impact of Current Wrappers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.3 Recommendation** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.1 Functions to Migrate** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.2 Callers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **5. File Checklist** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **6. Risks and Mitigations** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **7. Success Criteria** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **8. Phase 1 Audit Results (Completed)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **9. Implementation Status** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option A: SQLAlchemy Async (Recommended)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option B: asyncpg Raw** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option C: Keep Wrappers, Add Sync Connection Pool** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 1: Preparation (no behavior change)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 2: Async implementation (container)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 3: Async implementation (item)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 4: Cleanup** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 5: Verification** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

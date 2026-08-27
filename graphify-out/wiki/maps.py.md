@@ -1,61 +1,77 @@
 # maps.py
 
-> 84 nodes
+> 268 nodes
 
 ## Key Concepts
 
-- **maps.py** (67 connections) — `server/api/maps.py`
-- **test_maps.py** (55 connections) — `server/tests/unit/api/test_maps.py`
-- **MapZoneContext** (18 connections) — `server/api/map_helpers.py`
-- **_prepare_ascii_map_context()** (18 connections) — `server/api/maps.py`
-- **asyncio** (18 connections)
-- **get_ascii_map()** (16 connections) — `server/api/maps.py`
-- **get_ascii_minimap()** (16 connections) — `server/api/maps.py`
-- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/maps.py`
-- **_run_set_map_origin()** (13 connections) — `server/api/maps.py`
-- **set_map_origin()** (13 connections) — `server/api/maps.py`
-- **recalculate_coordinates()** (12 connections) — `server/api/maps.py`
-- **_ensure_coordinates_generated()** (11 connections) — `server/api/maps.py`
-- **_filter_explored_rooms()** (11 connections) — `server/api/maps.py`
-- **_run_coordinate_recalculation()** (11 connections) — `server/api/maps.py`
-- **_get_minimap_player_and_room_id()** (10 connections) — `server/api/maps.py`
-- **AsyncSession** (10 connections)
-- **SetOriginRequest** (9 connections) — `server/api/maps.py`
-- **_build_ascii_map_response()** (9 connections) — `server/api/maps.py`
-- **_build_ascii_minimap_response()** (9 connections) — `server/api/maps.py`
-- **_get_current_room_id()** (9 connections) — `server/api/maps.py`
-- **_get_player_and_exploration_service()** (9 connections) — `server/api/maps.py`
-- **test_prepare_ascii_map_context_applies_exploration_filter()** (9 connections) — `server/tests/unit/api/test_maps.py`
-- **Request** (9 connections)
-- **_handle_ascii_map_error()** (8 connections) — `server/api/maps.py`
-- **test_ensure_coordinates_generated_when_missing()** (8 connections) — `server/tests/unit/api/test_maps.py`
-- *... and 59 more nodes in this community*
+- **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
+- **models/user.py** (63 connections) — `server/models/user.py`
+- **test_admin_auth_service.py** (56 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **get_admin_auth_service()** (44 connections) — `server/services/admin_auth_service.py`
+- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
+- **AdminAction** (34 connections) — `server/services/admin_auth_service.py`
+- **npc_instances_api.py** (29 connections) — `server/api/admin/npc_instances_api.py`
+- **AdminRole** (25 connections) — `server/services/admin_auth_service.py`
+- **npc_population_api.py** (25 connections) — `server/api/admin/npc_population_api.py`
+- **npc_spawn_rules_api.py** (25 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **admin_auth_service.py** (25 connections) — `server/services/admin_auth_service.py`
+- **npc_admin_mgmt_api.py** (23 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **test_npc_instances_api.py** (22 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **npc_router_core.py** (17 connections) — `server/api/admin/npc_router_core.py`
+- **schemas/admin/__init__.py** (16 connections) — `server/schemas/admin/__init__.py`
+- **npc_admin.py** (16 connections) — `server/schemas/admin/npc_admin.py`
+- **spawn_npc_instance()** (15 connections) — `server/api/admin/npc_instances_api.py`
+- **test_npc_admin_mgmt_api.py** (15 connections) — `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- **test_npc_population_api.py** (15 connections) — `server/tests/unit/api/admin/test_npc_population_api.py`
+- **get_npc_population_stats()** (14 connections) — `server/api/admin/npc_population_api.py`
+- **get_admin_sessions()** (13 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **despawn_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **move_npc_instance()** (13 connections) — `server/api/admin/npc_instances_api.py`
+- **get_npc_instances()** (12 connections) — `server/api/admin/npc_instances_api.py`
+- *... and 243 more nodes in this community*
 
 ## Relationships
 
-- [ExplorationService](ExplorationService.md) (26 shared connections)
-- [get_logger](get_logger.md) (24 shared connections)
-- [User](User.md) (22 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (16 shared connections)
-- [maps/__init__.py](maps-__init__.py.md) (13 shared connections)
-- [RoomService](RoomService.md) (12 shared connections)
-- [map_minimap.py](map_minimap.py.md) (8 shared connections)
-- [test_map_helpers.py](test_map_helpers.py.md) (6 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (4 shared connections)
-- [CoordinateValidator](CoordinateValidator.md) (4 shared connections)
-- [AsciiMapRenderer](AsciiMapRenderer.md) (3 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (39 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (37 shared connections)
+- [NPCSpawningService](NPCSpawningService.md) (29 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (28 shared connections)
+- [test_rooms_api.py](test_rooms_api.py.md) (16 shared connections)
+- [ContainerComponent](ContainerComponent.md) (14 shared connections)
+- [AliasStorage](AliasStorage.md) (11 shared connections)
+- [test_look_room.py](test_look_room.py.md) (10 shared connections)
+- [EldritchIcon.tsx](EldritchIcon.tsx.md) (8 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (8 shared connections)
+- [StyleGuideSections.tsx](StyleGuideSections.tsx.md) (7 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (6 shared connections)
 
 ## Source Files
 
-- `server/api/map_helpers.py`
-- `server/api/maps.py`
-- `server/tests/unit/api/test_maps.py`
+- `server/api/admin/__init__.py`
+- `server/api/admin/npc.py`
+- `server/api/admin/npc_admin_mgmt_api.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_population_api.py`
+- `server/api/admin/npc_router_core.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/models/user.py`
+- `server/schemas/__init__.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/schemas/rooms/room.py`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/api/admin/test_npc_admin_mgmt_api.py`
+- `server/tests/unit/api/admin/test_npc_population_api.py`
+- `server/tests/unit/api/test_npc_instances_api.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 314 (89%)
-- INFERRED: 38 (11%)
+- EXTRACTED: 736 (93%)
+- INFERRED: 52 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

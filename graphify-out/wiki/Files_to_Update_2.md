@@ -4,20 +4,21 @@
 
 ## Key Concepts
 
-- **Files to Update** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **2.4 Update Category D: API Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **test_evaluate_inequality_not_inequality()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Test _evaluate_inequality() returns None for non-inequality condition.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Relationships
 
-- [Uplift Strategy](Uplift_Strategy.md) (1 shared connections)
+- [test_player_spell_repository.py](test_player_spell_repository.py.md) (1 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

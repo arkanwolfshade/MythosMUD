@@ -1,47 +1,59 @@
 # .create_get_command
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.create_get_command()** (13 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_get_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_quantity_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_quantity_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command_with_from()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command_multi_word_container()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_multi_word_container_no_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_only_item_get_from_room()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_get_command_with_from_keyword()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() creates GetCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() handles optional 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() with single arg returns get-from-room…** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() raises error when quantity is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() raises error when quantity is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles multi-word container.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_get_command() handles multi-word container without quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Create get command. Supports: get <item> [from] <container> [quantity] The…** (1 connections) — `server/utils/command_factories_inventory.py`
+- **RoomCacheService** (25 connections) — `server/caching/cache_service.py`
+- **get_cache_manager()** (21 connections) — `server/caching/lru_cache.py`
+- **TestRoomCacheService** (14 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_RoomObj** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_returns_none()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
+- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
+- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Any** (1 connections)
+- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
+- **Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload** (1 connections) — `server/caching/cache_service.py`
+- **Get the global cache manager instance. Returns: The global cache manager…** (1 connections) — `server/caching/lru_cache.py`
 
 ## Relationships
 
-- [InventoryCommandFactory](InventoryCommandFactory.md) (10 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (7 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (2 shared connections)
+- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (8 shared connections)
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (7 shared connections)
+- [required](required.md) (6 shared connections)
+- [MythosMUD Logging Standards](MythosMUD_Logging_Standards.md) (2 shared connections)
+- [AGENTS.md](AGENTS.md.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (1 shared connections)
+- [debrief_command.py](debrief_command.py.md) (1 shared connections)
+- [analyze_coverage_gaps.py](analyze_coverage_gaps.py.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
+- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/utils/command_factories_inventory.py`
+- `server/caching/cache_service.py`
+- `server/caching/lru_cache.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (72%)
-- INFERRED: 12 (28%)
+- EXTRACTED: 69 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

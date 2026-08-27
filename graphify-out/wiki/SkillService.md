@@ -1,60 +1,57 @@
 # SkillService
 
-> 26 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **SkillService** (38 connections) — `server/game/skill_service.py`
-- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
-- **Any** (9 connections)
-- **_get_container_services()** (8 connections) — `server/commands/skills_commands.py`
-- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
-- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
-- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
-- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
-- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
-- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
-- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
-- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
-- **test_get_container_services_ok()** (3 connections) — `server/tests/unit/commands/test_skills_commands.py`
-- **Get container, persistence, and skill_service from request, or None if…** (1 connections) — `server/commands/skills_commands.py`
-- **Raise ValueError if any skill_id appears in both occupation and personal…** (1 connections) — `server/game/skill_service.py`
-- **Build skill_key -> total modifier from profession skill_modifiers (supports…** (1 connections) — `server/game/skill_service.py`
-- **Compute final skill_id -> value: base + profession mod, then occupation…** (1 connections) — `server/game/skill_service.py`
-- **Validate skills allocation without persisting. Raises ValueError if invalid.…** (1 connections) — `server/game/skill_service.py`
-- **Set all skills for a character at creation. Validates occupation_slots (9…** (1 connections) — `server/game/skill_service.py`
-- **Return list of {skill_id, skill_key, skill_name, value} for the player. If the…** (1 connections) — `server/game/skill_service.py`
-- **Service for skills catalog, per-character skills, use logging, and improvement…** (1 connections) — `server/game/skill_service.py`
-- **Return list of skill dicts (id, key, name, base_value, allow_at_creation,…** (1 connections) — `server/game/skill_service.py`
-- **Raise ValueError if occupation_slots are not exactly one 70, two 60, three 50,…** (1 connections) — `server/game/skill_service.py`
-- **Require exactly 4 skill_ids; Cthulhu Mythos not allowed; all skill_ids unique.** (1 connections) — `server/game/skill_service.py`
-- *... and 1 more nodes in this community*
+- **spell_effects_support.py** (20 connections) — `server/game/magic/spell_effects_support.py`
+- **test_spell_effects_support.py** (14 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **process_create_object_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
+- **process_stat_modify_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
+- **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
+- **_apply_stat_modify_to_player()** (8 connections) — `server/game/magic/spell_effects_support.py`
+- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **_build_stat_modifications()** (7 connections) — `server/game/magic/spell_effects_support.py`
+- **_create_object_for_room()** (7 connections) — `server/game/magic/spell_effects_support.py`
+- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **spell_effects_stats.py** (6 connections) — `server/game/magic/spell_effects_stats.py`
+- **Any** (6 connections)
+- **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
+- **test_process_create_object_for_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_create_object_missing_prototype()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_rejects_non_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_process_stat_modify_success()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_create_object_for_room_placeholder()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **asyncio** (4 connections)
+- **test_build_stat_modifications_missing()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_build_stat_modifications_shorthand()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
+- **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [UUID](UUID.md) (6 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (5 shared connections)
-- [handle_skills_command](handle_skills_command.md) (5 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [User](User.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (13 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (7 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [test_skill_service.py](test_skill_service.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [extract_player_name](extract_player_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/skills_commands.py`
-- `server/game/skill_service.py`
-- `server/tests/unit/commands/test_skills_commands.py`
-- `server/tests/unit/game/test_skill_service.py`
+- `server/game/magic/spell_effects_stats.py`
+- `server/game/magic/spell_effects_support.py`
+- `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (90%)
-- INFERRED: 8 (10%)
+- EXTRACTED: 102 (95%)
+- INFERRED: 5 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

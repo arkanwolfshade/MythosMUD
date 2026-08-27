@@ -1,21 +1,22 @@
 # 📚 Changes by Category
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **📚 Changes by Category** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Combat/Death (2 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Core Layer (4 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Service Layer (8 files)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **2025_11_21_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from VARCHAR to UUID. PostgreSQL can directly cast…** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from UUID back to VARCHAR. This is a downgrade path,…** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Audit Trail
 

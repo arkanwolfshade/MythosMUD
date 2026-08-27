@@ -1,24 +1,25 @@
 # 🧪 Testing Status
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **🧪 Testing Status** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Automated Tests** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Manual Testing Required** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **._handle_respond_to_greeting()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **.respond_to_player()** (3 connections) — `server/npc/passive_mob_npc.py`
+- **Respond to player interaction.** (1 connections) — `server/npc/passive_mob_npc.py`
+- **Handle responding to greeting action.** (1 connections) — `server/npc/passive_mob_npc.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [RoomDataCache](RoomDataCache.md) (2 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/npc/passive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

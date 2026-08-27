@@ -1,31 +1,32 @@
 # SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch
 
-> 22 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **SQLAlchemy Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (6 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Recommendations Summary** (4 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (2 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **SQLALCHEMY_CODE_REVIEW.md** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **1. SQL Injection Vulnerability in `update_player_stat_field()` - ✅ FIXED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **2. Missing Eager Loading for Relationships** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **3. Mixed Database Access Patterns** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **4. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **5. Missing Indexes on Foreign Keys** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **6. Long-Lived Sessions** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **7. Connection Pool Configuration** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **8. Transaction Boundaries** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **9. Error Handling in Database Operations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **✅ GOOD PRACTICES OBSERVED** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Immediate Actions (This Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Long-term (Future)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **References** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Short-term (Next Sprint)** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
-- **Testing Recommendations** (1 connections) — `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- **MythosMUD Dependency Upgrade Strategy - Implementation Summary** (8 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **What Has Been Accomplished** (5 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Implementation Strategy** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Next Steps** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Critical Findings** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **DEPENDENCY_UPGRADE_SUMMARY.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **⚠️ Breaking Changes Detected** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Conclusion** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🔍 Dependency Analysis** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📋 Documentation Generated** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Immediate Actions (Today)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Long-term Planning (Next 2-3 Weeks)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📚 Migration Guides Available** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🎯 Priority Recommendations** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🚀 Ready-to-Execute Phase 1** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📊 Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🔄 Safety Measures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🛡️ Safety Measures in Place** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **Short-term Planning (This Week)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **📞 Support Resources** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
+- **🛠️ Tools Created** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
 
 ## Relationships
 
@@ -33,11 +34,11 @@
 
 ## Source Files
 
-- `docs/archive/SQLALCHEMY_CODE_REVIEW.md`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

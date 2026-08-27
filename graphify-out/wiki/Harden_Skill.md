@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **Harden Skill** (1 connections) — `.cursor/skills/harden/SKILL.md`
-- **Normalize Skill** (1 connections) — `.cursor/skills/normalize/SKILL.md`
+- **test_handle_unequip_wearable_container_no_allowed_roles()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Test handle_unequip_wearable_container when container has no allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/skills/harden/SKILL.md`
-- `.cursor/skills/normalize/SKILL.md`
+- `server/tests/unit/services/test_wearable_container_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,54 +1,55 @@
 # handle_read_command
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **handle_read_command()** (23 connections) — `server/commands/read_command.py`
-- **test_read_command.py** (19 connections) — `server/tests/unit/commands/test_read_command.py`
-- **read_command.py** (16 connections) — `server/commands/read_command.py`
-- **asyncio** (15 connections)
-- **_process_spellbook_read()** (8 connections) — `server/commands/read_command.py`
-- **Any** (8 connections)
-- **_format_learn_spell_message()** (5 connections) — `server/commands/read_command.py`
-- **_learn_single_spell()** (5 connections) — `server/commands/read_command.py`
-- **_learn_specific_spell()** (5 connections) — `server/commands/read_command.py`
-- **_find_item_in_inventory()** (4 connections) — `server/commands/read_command.py`
-- **_list_spells_in_book()** (4 connections) — `server/commands/read_command.py`
-- **_validate_spellbook()** (4 connections) — `server/commands/read_command.py`
-- **test_handle_read_command()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_empty_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_inventory_json_error()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_item_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_multiple_spells()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_spell_learning_service()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_no_target()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_not_spellbook()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_single_spell_learn()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- **test_handle_read_command_specific_spell()** (4 connections) — `server/tests/unit/commands/test_read_command.py`
-- *... and 26 more nodes in this community*
+- **StyleGuideSections.tsx** (39 connections) — `client/src/components/ui/StyleGuideSections.tsx`
+- **StatusPanel.tsx** (26 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StyleGuide.tsx** (14 connections) — `client/src/components/ui/StyleGuide.tsx`
+- **StatusPanel.test.tsx** (12 connections) — `client/src/components/ui/__tests__/StatusPanel.test.tsx`
+- **useStatusPanel()** (10 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **ConnectionStatus()** (5 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **HealthStat()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **LucidityStat()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **MessagesCount()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **PlayerName()** (4 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **TerminalCard.tsx** (4 connections) — `client/src/components/ui/TerminalCard.tsx`
+- **PlayerStats** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **AllStats()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **CommandsCount()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **CoreAttributes()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **HorrorStats()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StatGroup()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StatusPanel()** (3 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **TerminalCard()** (3 connections) — `client/src/components/ui/TerminalCard.tsx`
+- **StatusPanelProps** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **getConnectionStatus()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **getStatValue()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **hasStat()** (2 connections) — `client/src/components/ui/StatusPanel.tsx`
+- **StyleGuideButtonsSection()** (2 connections) — `client/src/components/ui/StyleGuideSections.tsx`
+- **StyleGuideCardsSection()** (2 connections) — `client/src/components/ui/StyleGuideSections.tsx`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (11 shared connections)
+- [schemas/unified_room_schema.json](schemas-unified_room_schema.json.md) (2 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/read_command.py`
-- `server/tests/unit/commands/test_read_command.py`
+- `client/src/components/ui/StatusPanel.tsx`
+- `client/src/components/ui/StyleGuide.tsx`
+- `client/src/components/ui/StyleGuideSections.tsx`
+- `client/src/components/ui/TerminalCard.tsx`
+- `client/src/components/ui/__tests__/StatusPanel.test.tsx`
+- `client/src/components/ui/__tests__/TerminalCard.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (97%)
-- INFERRED: 3 (3%)
+- EXTRACTED: 104 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

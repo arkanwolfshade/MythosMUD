@@ -1,60 +1,56 @@
 # rescue_commands.py
 
-> 65 nodes
+> 99 nodes
 
 ## Key Concepts
 
-- **rescue_commands.py** (33 connections) — `server/commands/rescue_commands.py`
-- **handle_ground_command()** (27 connections) — `server/commands/rescue_commands.py`
-- **test_rescue_commands.py** (24 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **asyncio** (17 connections)
-- **handle_rescue_command()** (15 connections) — `server/commands/rescue_commands.py`
-- **Any** (9 connections)
-- **_run_ground_session()** (8 connections) — `server/commands/rescue_commands.py`
-- **_apply_grounding_adjustment()** (7 connections) — `server/commands/rescue_commands.py`
-- **patch** (7 connections)
-- **_get_ground_services()** (6 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_apply_lucidity_error()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_not_catatonic()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_success()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_ground_command_target_player_key()** (6 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **UUID** (6 connections)
-- **_complete_ground_command()** (5 connections) — `server/commands/rescue_commands.py`
-- **_normalize_player_ids()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_failure_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_send_grounding_success_events()** (5 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_context()** (5 connections) — `server/commands/rescue_commands.py`
-- **test_handle_ground_command_lucidity_record_not_found()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **test_handle_rescue_command_target_player_key()** (5 connections) — `server/tests/unit/commands/test_rescue_commands.py`
-- **_send_grounding_channeling_events()** (4 connections) — `server/commands/rescue_commands.py`
-- **_validate_ground_target()** (4 connections) — `server/commands/rescue_commands.py`
-- *... and 40 more nodes in this community*
+- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
+- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **normalize_slot_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **match_equipped_item_by_name()** (18 connections) — `server/commands/inventory_item_matching.py`
+- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
+- **_equip_stack_from_inventory_index()** (4 connections) — `server/commands/equipment_helpers.py`
+- **build_drop_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **build_inventory_candidates()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **extract_item_identifier()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_exact_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_prefix_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **match_substring_drop()** (4 connections) — `server/commands/inventory_item_matching.py`
+- **_try_resolve_unequip_by_search()** (3 connections) — `server/commands/equipment_helpers.py`
+- **clean_item_value()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_exact_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_prefix_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **search_substring_match()** (3 connections) — `server/commands/inventory_item_matching.py`
+- **test_match_equipped_item_by_name()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_equipped_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_inventory_item_by_name_not_found()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **test_match_room_drop_by_name_exact()** (3 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- *... and 74 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (10 shared connections)
-- [get_logger](get_logger.md) (7 shared connections)
-- [server/commands/__init__.py](server-commands-__init__.py.md) (5 shared connections)
-- [test_lucidity_event_dispatcher.py](test_lucidity_event_dispatcher.py.md) (5 shared connections)
-- [LucidityService](LucidityService.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (3 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
-- [.state](state.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (13 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (6 shared connections)
+- [.__init__](__init__.md) (5 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (4 shared connections)
+- [command_input.py](command_input.py.md) (3 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/rescue_commands.py`
-- `server/tests/unit/commands/test_rescue_commands.py`
+- `server/commands/equipment_helpers.py`
+- `server/commands/inventory_item_matching.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 184 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

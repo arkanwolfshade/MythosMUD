@@ -1,48 +1,49 @@
 # ._create_tracked_task
 
-> 28 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **._create_tracked_task()** (7 connections) — `server/services/nats_service.py`
-- **.connect()** (6 connections) — `server/services/nats_service.py`
-- **._on_error()** (5 connections) — `server/services/nats_service.py`
-- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
-- **._handle_error_async()** (4 connections) — `server/services/nats_service.py`
-- **._health_check_loop()** (4 connections) — `server/services/nats_service.py`
-- **._on_disconnect()** (4 connections) — `server/services/nats_service.py`
-- **._on_reconnect()** (4 connections) — `server/services/nats_service.py`
-- **._check_connection_allowed()** (3 connections) — `server/services/nats_service.py`
-- **._handle_disconnect_async()** (3 connections) — `server/services/nats_service.py`
-- **._handle_reconnect_async()** (3 connections) — `server/services/nats_service.py`
-- **._perform_health_check()** (3 connections) — `server/services/nats_service.py`
-- **._setup_connection_handlers()** (3 connections) — `server/services/nats_service.py`
-- **BaseException** (2 connections)
-- **Task** (1 connections)
-- **Async handler for NATS reconnection events.** (1 connections) — `server/services/nats_service.py`
-- **Check if connection attempt is allowed by state machine.** (1 connections) — `server/services/nats_service.py`
-- **Set up connection event handlers.** (1 connections) — `server/services/nats_service.py`
-- **Connect to NATS server with state machine tracking. Returns: True if connection…** (1 connections) — `server/services/nats_service.py`
-- **Start periodic health check monitoring task.** (1 connections) — `server/services/nats_service.py`
-- **Periodic health check loop using ping/pong.** (1 connections) — `server/services/nats_service.py`
-- **Perform a single health check via ping/pong. Returns: True if health check…** (1 connections) — `server/services/nats_service.py`
-- **Create a tracked background task with proper lifecycle management. AnyIO…** (1 connections) — `server/services/nats_service.py`
-- **Handle NATS connection errors with state machine tracking. AI: Errors may…** (1 connections) — `server/services/nats_service.py`
-- **Async handler for NATS connection errors.** (1 connections) — `server/services/nats_service.py`
-- *... and 3 more nodes in this community*
+- **test_player_service.py** (24 connections) — `server/tests/unit/game/test_player_service.py`
+- **asyncio** (19 connections)
+- **test_player_service_init()** (4 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_character_limit()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_create_player_with_stats_success()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_online_players()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_get_player_by_name_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_list_players()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_resolve_player_name_not_found()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_search_players_by_name()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_exists()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_long()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_too_short()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **test_validate_player_name_valid()** (3 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test get_player_by_name() when player is found.** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test get_player_by_id() when player is found.** (2 connections) — `server/tests/unit/game/test_player_service.py`
+- **Unit tests for player service CRUD and lookup. Delete, location, mythos status,…** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- **Test list_players() returns list of players.** (1 connections) — `server/tests/unit/game/test_player_service.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [NATSService](NATSService.md) (13 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_service.py`
+- `server/tests/unit/game/test_player_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (98%)
+- EXTRACTED: 62 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

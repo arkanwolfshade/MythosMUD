@@ -1,25 +1,27 @@
 # 📊 Final Results
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **📊 Final Results** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Additional Files Updated** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Files Migrated (12 of 12 - 100%)** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- **_set_default_if_missing()** (4 connections) — `server/models/npc.py`
+- **.__init__()** (3 connections) — `server/models/npc.py`
+- **Initialize NPCDefinition with defaults.** (1 connections) — `server/models/npc.py`
+- **Apply a default attribute value when SQLAlchemy leaves it unset or None.** (1 connections) — `server/models/npc.py`
 
 ## Relationships
 
-- [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/models/npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

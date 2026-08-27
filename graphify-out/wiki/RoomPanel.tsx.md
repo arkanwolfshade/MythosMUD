@@ -1,12 +1,13 @@
 # RoomPanel.tsx
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **RoomPanel.tsx** (2 connections) — `client/src/components/panels/RoomPanel.tsx`
-- **RoomPanelProps** (1 connections) — `client/src/components/panels/RoomPanel.tsx`
-- **RoomPanel()** (1 connections) — `client/src/components/panels/RoomPanel.tsx`
+- **The Faceless Men.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
+- **Church of Sunyata.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- **Church of Sunyata** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- **The Faceless Men** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
 
 ## Relationships
 
@@ -14,11 +15,12 @@
 
 ## Source Files
 
-- `client/src/components/panels/RoomPanel.tsx`
+- `data/MythosMUD-Obsidian/wiki/entities/Church of Sunyata.md`
+- `data/MythosMUD-Obsidian/wiki/entities/The Faceless Men.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

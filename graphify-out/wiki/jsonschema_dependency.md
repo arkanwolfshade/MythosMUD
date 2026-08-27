@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **jsonschema dependency** (0 connections) — `tools/room_toolkit/room_validator/requirements.txt`
+- **load_seed_direct.py** (0 connections) — `scripts/load_seed_direct.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/requirements.txt`
+- `scripts/load_seed_direct.py`
 
 ## Audit Trail
 

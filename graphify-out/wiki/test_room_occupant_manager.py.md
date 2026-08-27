@@ -4,47 +4,52 @@
 
 ## Key Concepts
 
-- **test_room_occupant_manager.py** (17 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **asyncio** (9 connections)
-- **occupant_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_get_players_error()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_room()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_ensure_player()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_players_and_npcs()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_room_occupant_manager_init()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type_empty_list()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **fixture** (2 connections)
-- **Unit tests for room occupant manager. Tests the RoomOccupantManager class for…** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants handles get_players error.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test separate_occupants_by_type with empty list.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test RoomOccupantManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns empty when no connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
+- **game_tick_protocols.py** (28 connections) — `server/app/game_tick_protocols.py`
+- **Protocol** (9 connections)
+- **UUID** (9 connections)
+- **_online_player_ids()** (8 connections) — `server/app/game_tick_protocols.py`
+- **_TickDeathService** (6 connections) — `server/app/game_tick_protocols.py`
+- **_TickCombatService** (5 connections) — `server/app/game_tick_protocols.py`
+- **_TickConnectionManager** (5 connections) — `server/app/game_tick_protocols.py`
+- **_TickMpRegen** (5 connections) — `server/app/game_tick_protocols.py`
+- **AsyncSession** (5 connections)
+- **_TickEventBus** (3 connections) — `server/app/game_tick_protocols.py`
+- **_TickMagicService** (3 connections) — `server/app/game_tick_protocols.py`
+- **_TickNpcLifecycle** (3 connections) — `server/app/game_tick_protocols.py`
+- **_TickRespawnService** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_combat_by_participant()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_dead_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.get_mortally_wounded_players()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.handle_player_death()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.process_mortally_wounded_tick()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.move_player_to_limbo()** (3 connections) — `server/app/game_tick_protocols.py`
+- **.publish_player_dp_decay_event_to_nats()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.send_personal_message()** (2 connections) — `server/app/game_tick_protocols.py`
+- **.process_tick_regeneration()** (2 connections) — `server/app/game_tick_protocols.py`
+- **Player** (2 connections)
+- **.process_game_tick()** (1 connections) — `server/app/game_tick_protocols.py`
+- **.publish()** (1 connections) — `server/app/game_tick_protocols.py`
 - *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (11 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (8 shared connections)
+- [User](User.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_occupant_manager.py`
+- `server/app/game_tick_protocols.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 77 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

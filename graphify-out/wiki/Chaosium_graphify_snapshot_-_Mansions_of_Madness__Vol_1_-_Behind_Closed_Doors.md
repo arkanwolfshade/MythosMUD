@@ -1,24 +1,25 @@
 # Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Mansions of Madness_ Vol 1 - Behind Closed Doors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
-- **mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- **Detailed Feature Comparison** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Entry Points** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Primitives** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Task Management** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/mansions-of-madness-vol-1-behind-closed-doors/MANIFEST.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

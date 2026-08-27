@@ -1,48 +1,50 @@
 # .create_equip_command
 
-> 20 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_equip_command_empty_search_term()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_inferred_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_search_term_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **_normalize_equip_slot_tokens()** (3 connections) — `server/utils/command_factories_inventory.py`
-- **Test create_equip_command() raises error when index is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error when index is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() handles index with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() handles search term with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error when search term is empty.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() infers slot from known slots.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() creates EquipCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Create equip command.** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Normalize multi-word slot tokens (e.g. 'main hand' -> 'main_hand'); reduces…** (1 connections) — `server/utils/command_factories_inventory.py`
+- **test_connection_event_helpers.py** (14 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **asyncio** (8 connections)
+- **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_subscribe_to_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_no_event_bus()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **test_unsubscribe_from_room_events_impl_success()** (4 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Any** (2 connections)
+- **Subscribe to room movement events for occupant broadcasting.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unsubscribe from room movement events.** (1 connections) — `server/realtime/connection_event_helpers.py`
+- **Unit tests for connection event helpers. Tests the connection_event_helpers…** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() successfully subscribes to events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test subscribe_to_room_events_impl() handles AttributeError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() successfully unsubscribes from events.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles missing event bus.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
+- **Test unsubscribe_from_room_events_impl() handles DatabaseError.** (1 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Relationships
 
-- [InventoryCommandFactory](InventoryCommandFactory.md) (9 shared connections)
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (8 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- [test_chat_logger.py](test_chat_logger.py.md) (2 shared connections)
+- [build_event](build_event.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/utils/command_factories_inventory.py`
+- `server/realtime/connection_event_helpers.py`
+- `server/tests/unit/realtime/test_connection_event_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (74%)
-- INFERRED: 12 (26%)
+- EXTRACTED: 48 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

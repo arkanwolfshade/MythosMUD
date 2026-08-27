@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Mythos-themed invite codes** (0 connections) — `tools/invite_tools/README.md`
+- **load_graphify_env.ps1** (0 connections) — `scripts/load_graphify_env.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `tools/invite_tools/README.md`
+- `scripts/load_graphify_env.ps1`
 
 ## Audit Trail
 

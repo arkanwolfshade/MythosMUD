@@ -1,12 +1,13 @@
 # Party System Reference
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Party System Reference** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Party Invite Command** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Ephemeral Grouping Party Planning** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
+- **_resolved_npm()** (3 connections) — `scripts/precommit_run_npm.py`
+- **main()** (2 connections) — `scripts/precommit_run_npm.py`
+- **precommit_run_npm.py** (2 connections) — `scripts/precommit_run_npm.py`
+- **Return absolute path to npm (prefer npm.cmd on Windows), or None if not found.** (1 connections) — `scripts/precommit_run_npm.py`
 
 ## Relationships
 
@@ -14,13 +15,12 @@
 
 ## Source Files
 
-- `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- `docs/archive/PLANNING_ephemeral_grouping.md`
+- `scripts/precommit_run_npm.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

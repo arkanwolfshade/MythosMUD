@@ -1,13 +1,14 @@
 # The Grand Grimoire of Cthulhu Mythos Magic (source summary)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **The Grand Grimoire of Cthulhu Mythos Magic (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **The Grand Grimoire of Cthulhu Mythos Magic.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **global-teardown.ts** (4 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **globalTeardown()** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **__dirname** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **__filename** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **projectRoot** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
 
 ## Relationships
 
@@ -15,11 +16,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- `client/tests/e2e/runtime/global-teardown.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

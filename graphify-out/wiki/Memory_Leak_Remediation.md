@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Memory Leak Remediation** (2 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Closed WebSockets Deque Cap** (1 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Memory Leak Metrics Collection** (1 connections) — `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+- **Chaosium graphify snapshot - Alone Against the Frost** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
+- **alone-against-the-frost/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
 
 ## Relationships
 
@@ -14,8 +14,7 @@
 
 ## Source Files
 
-- `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
-- `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-frost/MANIFEST.md`
 
 ## Audit Trail
 

@@ -4,46 +4,42 @@
 
 ## Key Concepts
 
-- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
-- **test_find_item_in_inventory_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Find an item in player inventory by name or prototype_id. Args: inventory: List…** (1 connections) — `server/commands/look_item.py`
-- **Test _find_item_in_inventory() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with no matching items.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with multiple matches (ambiguous).** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() with instance number out of range.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_inventory() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test finding item in inventory by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory by item_id.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory using 'name' field.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **Dependency Upgrade Strategy Specification** (12 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Critical Dependencies Requiring Special Attention** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Implementation Phases** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Safety Measures** (4 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Monitoring and Validation** (3 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **DEPENDENCY_UPGRADE_SPEC.md** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **argon2-cffi (23.1.0 → 25.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Automated Testing** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Deliverables** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **During Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Manual Validation** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Overview** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Phase 1: Patch Updates (Low Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Phase 2: Minor Updates (Medium Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Phase 3: Major Updates (High Risk)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Post-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Pre-Upgrade** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **protobuf (4.25.8 → 6.32.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **pytest-asyncio (0.24.0 → 1.1.0)** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Risk Assessment** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Rollback Procedures** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Scope** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Success Criteria** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
+- **Timeline** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
 
 ## Relationships
 
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (8 shared connections)
-- [test_look_item.py](test_look_item.py.md) (5 shared connections)
-- [_find_item_in_equipped](_find_item_in_equipped.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/DEPENDENCY_UPGRADE_SPEC.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,49 @@
 # CoordinateGenerator
 
-> 47 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **CoordinateGenerator** (24 connections) — `server/services/coordinate_generator.py`
-- **test_coordinate_generator.py** (18 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
-- **Any** (8 connections)
-- **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
-- **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
-- **._assign_coordinates_bfs()** (5 connections) — `server/services/coordinate_generator.py`
-- **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
-- **asyncio** (5 connections)
-- **._find_origin_room()** (4 connections) — `server/services/coordinate_generator.py`
-- **._attach_room_exits()** (3 connections) — `server/services/coordinate_generator.py`
-- **._detect_coordinate_conflicts()** (3 connections) — `server/services/coordinate_generator.py`
-- **._get_next_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
-- **._reverse_direction()** (3 connections) — `server/services/coordinate_generator.py`
-- **._room_dict_from_row()** (3 connections) — `server/services/coordinate_generator.py`
-- **._rooms_query_and_pattern()** (3 connections) — `server/services/coordinate_generator.py`
-- **._store_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **generator()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_store_coordinates_noop_on_empty()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_store_coordinates_persists_values()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_coordinates_for_zone_empty_data()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_coordinates_for_zone_stores_results()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_for_subzone_positions_linked_rooms()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_assign_coordinates_bfs()** (1 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- *... and 22 more nodes in this community*
+- **Test Suite Optimization Roadmap** (15 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 1: Quick Wins (Week 1)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 2: Infrastructure Test Reduction (Week 2)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 4: Test Consolidation (Week 4)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 6: Long-Term Optimizations (Ongoing)** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Implementation Timeline** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Net Impact Projection** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Phase 3: Coverage Test Optimization (Week 3)** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monitoring and Validation** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Optimization Strategy Overview** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Success Criteria** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Risk Mitigation Strategy** (2 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 1 (Pruning Phase)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 2 (Consolidation + Additions)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **After Month 3+ (Continuous Improvement)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Guiding Principles** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 1: Pruning and Quick Wins** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 2: Consolidation and Additions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Monthly Review Questions** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Qualitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Quantitative Goals** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Recommended Execution Order** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Rollback Plan** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Safety Measures** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [maps.py](maps.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [test_grype.py](test_grype.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_generator.py`
-- `server/tests/unit/services/test_coordinate_generator.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

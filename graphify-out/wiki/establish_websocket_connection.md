@@ -1,58 +1,57 @@
 # establish_websocket_connection
 
-> 37 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **establish_websocket_connection()** (25 connections) — `server/realtime/connection_establishment.py`
-- **test_connection_establishment_ws.py** (24 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **_FakeWebSocket** (23 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **_as_ws()** (21 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **_meta()** (12 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **asyncio** (11 connections)
-- **test_establish_websocket_connection_first_session_does_not_replace()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_missing_session_id_does_not_replace()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_new_session_disconnects_prior()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_same_session_appends()** (10 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **_player_with_room()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_cancels_rest_countdown()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_cleans_dead_connections()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_error()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_stale_session_does_not_replace()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_establish_websocket_connection_success()** (9 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **test_cleanup_failed_connection_success()** (8 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_remove_dead_connection()** (8 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **test_establish_websocket_connection_player_not_found()** (8 connections) — `server/tests/unit/realtime/test_connection_establishment_ws.py`
-- **.accept()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.close()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **ConnectionMetadata** (1 connections)
-- **WebSocket** (1 connections)
-- **Establish a new WebSocket connection. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/connection_establishment.py`
-- **Test _remove_dead_connection() removes connection from tracking.** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- *... and 12 more nodes in this community*
+- **test_combat_handler.py** (38 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_handler_with_persistence()** (22 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **asyncio** (14 connections)
+- **_as_app_with_state()** (8 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_current_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_success()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_player()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_unknown_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_accepts_live_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dead_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_dissipated_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_rejects_non_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppStatePersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_AppWithPersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_get_player_and_room_no_persistence_on_app()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_resolve_combat_target_failure_message()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_validate_combat_action_empty_name()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **_CmdType** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_false_no_attrs()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_room_forbids_combat_true()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [test_connection_establishment.py](test_connection_establishment.py.md) (40 shared connections)
-- [connection_establishment.py](connection_establishment.py.md) (13 shared connections)
-- [_find_dead_connections](_find_dead_connections.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [_FakeClientState](_FakeClientState.md) (1 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
+- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_dependency_analysis.py](test_dependency_analysis.py.md) (1 shared connections)
+- [waitForMessage](waitForMessage.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
+- [PR Coverage Thresholds](PR_Coverage_Thresholds.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment.py`
-- `server/tests/unit/realtime/test_connection_establishment_ws.py`
+- `server/tests/unit/commands/test_combat_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 110 (92%)
+- INFERRED: 9 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

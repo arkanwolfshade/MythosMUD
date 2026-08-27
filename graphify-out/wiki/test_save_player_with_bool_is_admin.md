@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_save_player_with_bool_is_admin()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_player converts bool is_admin to int.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **test_get_local_chat_scope_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
+- **Test get_local_chat_scope() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_player_repository.py](test_player_repository.py.md) (1 shared connections)
+- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/game/test_room_service.py`
 
 ## Audit Trail
 

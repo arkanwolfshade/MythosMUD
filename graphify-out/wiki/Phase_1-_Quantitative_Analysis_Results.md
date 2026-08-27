@@ -1,26 +1,28 @@
 # Phase 1: Quantitative Analysis Results
 
-> 5 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Phase 1: Quantitative Analysis Results** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.1 Test Distribution by Category** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.2 Largest Test Files (Splitting/Pruning Candidates)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1.3 Infrastructure Test Analysis** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Files** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **player_service()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.create_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.get_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.list_players()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.update_player()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **.upload_avatar()** (1 connections) — `docs/examples/logging/fastapi_integration.py`
+- **Simulate player service.** (1 connections) — `docs/examples/logging/fastapi_integration.py`
 
 ## Relationships
 
-- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
+- [Profession](Profession.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `docs/examples/logging/fastapi_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

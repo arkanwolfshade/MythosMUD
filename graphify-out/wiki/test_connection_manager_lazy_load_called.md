@@ -4,17 +4,17 @@
 
 ## Key Concepts
 
-- **test_connection_manager_lazy_load_called()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
-- **Test connection_manager property calls lazy load when None.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_profession_get_mechanical_effects_none()** (3 connections) — `server/tests/unit/models/test_profession.py`
+- **Test get_mechanical_effects returns empty dict for invalid value.** (1 connections) — `server/tests/unit/models/test_profession.py`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (1 shared connections)
-- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_messaging_integration.py`
+- `server/tests/unit/models/test_profession.py`
 
 ## Audit Trail
 

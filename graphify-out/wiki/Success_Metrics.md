@@ -1,25 +1,26 @@
 # Success Metrics
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Success Metrics** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Overall Migration Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-File Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-Phase Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **snapshot_chaosium_graphify.ps1** (4 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Export-PackSnapshot()** (4 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-ChaosiumSlug()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-GraphCount()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-HonestyNote()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
 
 ## Relationships
 
-- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `scripts/snapshot_chaosium_graphify.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

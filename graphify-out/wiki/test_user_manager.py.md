@@ -1,50 +1,51 @@
 # test_user_manager.py
 
-> 135 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **test_user_manager.py** (72 connections) — `server/tests/unit/services/test_user_manager.py`
-- **asyncio** (18 connections)
-- **test_add_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_container()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_can_send_message_channel_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_can_send_message_globally_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_can_send_message_player_muted()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_can_send_message_true()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_cleanup_expired_mutes()** (2 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 110 more nodes in this community*
+- **test_async_persistence_delegates.py** (32 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **asyncio** (22 connections)
+- **test_apply_corruption_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_fear_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_apply_lucidity_loss_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_async_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_kwargs()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_container_with_params()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_create_item_instance_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_damage_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_delete_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_ensure_item_instance_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_gain_occult_knowledge_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_entity_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_containers_by_room_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_decayed_containers_none_time()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_player_by_user_id_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_heal_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_item_instance_exists_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_soft_delete_player_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_update_container_delegates()** (4 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- **test_get_container_async_persistence_raises_when_not_initialized()** (3 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [UserManager](UserManager.md) (2 shared connections)
-- [user_manager](user_manager.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (24 shared connections)
+- [field_validator](field_validator.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 156 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 82 (78%)
+- INFERRED: 23 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

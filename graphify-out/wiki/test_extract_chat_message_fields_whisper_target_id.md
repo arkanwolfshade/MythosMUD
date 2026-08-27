@@ -1,19 +1,21 @@
 # test_extract_chat_message_fields_whisper_target_id
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_extract_chat_message_fields_whisper_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _extract_chat_message_fields handles whisper target_id.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **Expansion Backlog (Raw)** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
+- **Delta Green** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
+- **Things and Notes to Expand On** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
 
 ## Relationships
 
-- [test_nats_message_handler_chat.py](test_nats_message_handler_chat.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `data/MythosMUD-Obsidian/raw/sources/Things and notes to expand on.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Things and notes to expand on.md`
 
 ## Audit Trail
 

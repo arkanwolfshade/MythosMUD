@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_player_skills_migration.py** (0 connections) — `scripts/apply_player_skills_migration.py`
+- **command_handler_v2** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_player_skills_migration.py`
+- `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Audit Trail
 

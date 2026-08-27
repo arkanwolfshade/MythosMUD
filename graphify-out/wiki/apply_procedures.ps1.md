@@ -1,22 +1,23 @@
 # apply_procedures.ps1
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **apply_procedures.ps1** (0 connections) — `scripts/apply_procedures.ps1`
+- **test_command_factory_create_nonexistent_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test CommandFactory.create_*() methods exist for all command types.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/apply_procedures.ps1`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

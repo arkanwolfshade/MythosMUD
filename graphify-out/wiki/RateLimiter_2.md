@@ -1,56 +1,52 @@
 # RateLimiter
 
-> 85 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **RateLimiter** (69 connections) — `server/realtime/rate_limiter.py`
-- **test_connection_rate_limiter.py** (33 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **.get_message_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/realtime/rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_first()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_message_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_exceeded()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_first_attempt()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_old_attempts_removed()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_check_rate_limit_within_limit()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_large_structures_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_error()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_cleanup_old_message_attempts_removes_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_message_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_rate_limit_info_no_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- **test_rate_limiter_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_rate_limiter.py`
-- *... and 60 more nodes in this community*
+- **format_message_content()** (16 connections) — `server/realtime/message_formatters.py`
+- **test_message_formatters.py** (16 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_nats_error()** (4 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_admin()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_emote()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_global()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_local()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_pose()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_say()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_system()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_unknown_channel()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **test_format_message_content_whisper_for_recipient()** (3 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Format message content based on channel type and sender name. Args: channel:…** (1 connections) — `server/realtime/message_formatters.py`
+- **Unit tests for message formatters. Tests the message_formatters module…** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'say' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'local' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'global' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'emote' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'pose' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' channel messages (default).** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'whisper' for recipient as 'X whispers to…** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'system' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats 'admin' channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- **Test format_message_content() formats unknown channel messages.** (1 connections) — `server/tests/unit/realtime/test_message_formatters.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (9 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (6 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
-- [RateLimiter](RateLimiter.md) (4 shared connections)
-- [connection_establishment.py](connection_establishment.py.md) (2 shared connections)
-- [RoomSubscriptionManager](RoomSubscriptionManager.md) (2 shared connections)
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
-- [test_rate_limiter.py](test_rate_limiter.py.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [test_connection_disconnection.py](test_connection_disconnection.py.md) (2 shared connections)
+- [Argon2 Password Hashing Best Practices](Argon2_Password_Hashing_Best_Practices.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/rate_limiter.py`
-- `server/tests/unit/realtime/test_connection_rate_limiter.py`
+- `server/realtime/message_formatters.py`
+- `server/tests/unit/realtime/test_message_formatters.py`
 
 ## Audit Trail
 
-- EXTRACTED: 130 (90%)
-- INFERRED: 14 (10%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

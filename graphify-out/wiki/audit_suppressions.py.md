@@ -1,30 +1,31 @@
 # audit_suppressions.py
 
-> 21 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **audit_suppressions.py** (9 connections) — `scripts/audit_suppressions.py`
-- **main()** (8 connections) — `scripts/audit_suppressions.py`
-- **Any** (7 connections)
-- **find_suppressions()** (6 connections) — `scripts/audit_suppressions.py`
-- **scan_all_files()** (6 connections) — `scripts/audit_suppressions.py`
-- **print_summary_report()** (5 connections) — `scripts/audit_suppressions.py`
-- **write_report_file()** (5 connections) — `scripts/audit_suppressions.py`
-- **calculate_statistics()** (4 connections) — `scripts/audit_suppressions.py`
-- **group_by_file()** (4 connections) — `scripts/audit_suppressions.py`
-- **group_by_tool()** (4 connections) — `scripts/audit_suppressions.py`
-- **Path** (4 connections)
-- **has_explanation()** (3 connections) — `scripts/audit_suppressions.py`
-- **Scan all Python and TypeScript files for suppressions. Args: workspace_root:…** (1 connections) — `scripts/audit_suppressions.py`
-- **Calculate summary statistics from suppressions. Args: all_suppressions: List of…** (1 connections) — `scripts/audit_suppressions.py`
-- **Group suppressions by file path. Args: all_suppressions: List of all…** (1 connections) — `scripts/audit_suppressions.py`
-- **Group suppressions by tool and calculate statistics. Args: all_suppressions:…** (1 connections) — `scripts/audit_suppressions.py`
-- **Write the report to a JSON file. Args: workspace_root: Root directory of the…** (1 connections) — `scripts/audit_suppressions.py`
-- **Print the summary report to stdout. Args: report: Report dictionary…** (1 connections) — `scripts/audit_suppressions.py`
-- **Main entry point for the suppression audit.** (1 connections) — `scripts/audit_suppressions.py`
-- **Check if a suppression line has an explanation. Args: line: The full line…** (1 connections) — `scripts/audit_suppressions.py`
-- **Find all suppressions in a file. Args: file_path: Path to the file to scan…** (1 connections) — `scripts/audit_suppressions.py`
+- **fix_suppression_alignment.py** (10 connections) — `scripts/fix_suppression_alignment.py`
+- **parse_alignment_report()** (8 connections) — `scripts/fix_suppression_alignment.py`
+- **fix_file()** (7 connections) — `scripts/fix_suppression_alignment.py`
+- **_apply_fixes_to_line()** (6 connections) — `scripts/fix_suppression_alignment.py`
+- **Any** (5 connections)
+- **_group_fixes_by_line()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **main()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_missing_rules()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **add_pylint_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **add_ruff_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_file_line_pattern()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_issue_type_header()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **Path** (3 connections)
+- **Parse the alignment report to extract misaligned suppressions.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add ruff noqa comment to a line that has pylint disable.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add pylint disable comment to a line that has noqa.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Group fixes by line number.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply all fixes for a single line.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply fixes to a file.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse issue type header (MISSING RUFF or MISSING PYLINT).** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse file:line pattern from a line. Returns (file, line) or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse missing rules from a line. Returns misaligned dict or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
 
 ## Relationships
 
@@ -32,11 +33,11 @@
 
 ## Source Files
 
-- `scripts/audit_suppressions.py`
+- `scripts/fix_suppression_alignment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,27 +1,32 @@
 # _parse_set_stat_args
 
-> 4 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **_parse_set_stat_args()** (5 connections) — `server/commands/admin_setstat_command.py`
-- **_parse_value_from_args()** (3 connections) — `server/commands/admin_setstat_command.py`
-- **Parse value from args[2] when value_input is None and args has at least 3…** (1 connections) — `server/commands/admin_setstat_command.py`
-- **Parse stat name, target player, and value from command data.** (1 connections) — `server/commands/admin_setstat_command.py`
+- **check_injection_patterns()** (6 connections) — `server/validators/security_validator.py`
+- **get_injection_patterns()** (5 connections) — `server/validators/security_validator.py`
+- **test_check_injection_patterns_has_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_check_injection_patterns_no_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **test_get_injection_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test checking for injection patterns when none present.** (2 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Test getting injection patterns list.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
+- **Get the list of injection patterns used in validation. Returns: List[str]: List…** (1 connections) — `server/validators/security_validator.py`
+- **Check if text matches injection patterns. Args: text: The text to check…** (1 connections) — `server/validators/security_validator.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (2 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (5 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
+- `server/tests/unit/validators/test_security_validator.py`
+- `server/validators/security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

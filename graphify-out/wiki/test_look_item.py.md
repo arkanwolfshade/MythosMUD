@@ -1,53 +1,37 @@
 # test_look_item.py
 
-> 28 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_look_item.py** (56 connections) — `server/tests/unit/commands/test_look_item.py`
-- **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
-- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Get item description from prototype registry. Returns: Formatted result string…** (1 connections) — `server/commands/look_item.py`
-- **Unit tests for item look functionality. Tests the helper functions for looking…** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description from prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype_id is missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype exists.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype doesn't exist.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location with location name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 3 more nodes in this community*
+- **_apply_arena_seed_patch.py** (12 connections) — `scripts/_apply_arena_seed_patch.py`
+- **patch_file()** (8 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Path** (7 connections)
+- **_append_before_copy_terminator()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_arena_room_links()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_arena_room_rows()** (5 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_zone_configuration_row()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_insert_after_line_containing()** (4 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_apply_zones_and_subzones()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **main()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_with_trailing_nl()** (3 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_load_arena_links()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
+- **_load_arena_rooms()** (2 connections) — `scripts/_apply_arena_seed_patch.py`
+- **One-off idempotent patch: add limbo arena world seed to e2e/unit DML (mirrors…** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Apply arena seed slices to one DML file; return human-readable action lines.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
+- **Patch mythos_e2e and mythos_unit DML files when patch snippet files are present.** (1 connections) — `scripts/_apply_arena_seed_patch.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (20 shared connections)
-- [asyncio](asyncio.md) (12 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (8 shared connections)
-- [_find_item_in_inventory](_find_item_in_inventory.md) (5 shared connections)
-- [fixture](fixture.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
+- `scripts/_apply_arena_seed_patch.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

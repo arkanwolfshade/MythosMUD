@@ -1,40 +1,50 @@
 # properties
 
-> 11 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **properties** (12 connections) — `schemas/intersection_schema.json`
-- **id** (4 connections) — `schemas/intersection_schema.json`
-- **field1** (2 connections) — `schemas/intersection_schema.json`
-- **field2** (2 connections) — `schemas/intersection_schema.json`
-- **field3** (2 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **description** (1 connections) — `schemas/intersection_schema.json`
-- **pattern** (1 connections) — `schemas/intersection_schema.json`
-- **type** (1 connections) — `schemas/intersection_schema.json`
+- **CombatCommandFactory** (23 connections) — `server/utils/command_factories_combat.py`
+- **test_command_factories_combat.py** (14 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **.create_attack_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_kick_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_punch_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_strike_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **.create_taunt_command()** (5 connections) — `server/utils/command_factories_combat.py`
+- **test_create_attack_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_attack_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_flee_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_kick_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_punch_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_strike_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **test_create_taunt_command_no_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **.create_flee_command()** (4 connections) — `server/utils/command_factories_combat.py`
+- **Unit tests for combat command factories. Tests the CombatCommandFactory class…** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() creates AttackCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_attack_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() creates PunchCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_punch_command() allows None target (validation happens later).** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- **Test create_kick_command() creates KickCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_combat.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [intersection_schema.json](intersection_schema.json.md) (1 shared connections)
-- [name](name.md) (1 shared connections)
-- [description](description.md) (1 shared connections)
-- [plane](plane.md) (1 shared connections)
-- [zone](zone.md) (1 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [environment](environment.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
+- [test_look_player.py](test_look_player.py.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/intersection_schema.json`
+- `server/tests/unit/utils/test_command_factories_combat.py`
+- `server/utils/command_factories_combat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 58 (83%)
+- INFERRED: 12 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

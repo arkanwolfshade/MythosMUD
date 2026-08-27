@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_019_postgresql_anti_patterns_fixes.ps1** (0 connections) — `scripts/apply_019_postgresql_anti_patterns_fixes.ps1`
+- **datetime.utcnow Deprecation Fix** (0 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_019_postgresql_anti_patterns_fixes.ps1`
+- `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Audit Trail
 

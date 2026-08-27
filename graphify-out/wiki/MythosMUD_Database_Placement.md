@@ -1,50 +1,52 @@
 # MythosMUD Database Placement
 
-> 29 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **MythosMUD Database Placement** (7 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **MythosMUD Full-Stack Feature** (7 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **MythosMUD OpenAPI Workflow** (6 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **MythosMUD Pre-Commit Checklist** (5 connections) — `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **Full Stack Feature Skill** (3 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **OpenAPI Workflow Skill** (3 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Database Placement Skill** (2 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Pre-Commit Checklist Skill** (2 connections) — `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
-- **Allowed Paths Only** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Data Types** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Forbidden** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **PostgreSQL Access (Procedures and Functions)** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **When Adding or Moving Persistence** (1 connections) — `.claude/skills/mythosmud-database-placement/SKILL.md`
-- **Authority** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Checklist** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Principle** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Stack Summary** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **When to Touch Each Layer** (1 connections) — `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- **Commands** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Output** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **Requirements** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- **When to Regenerate** (1 connections) — `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- *... and 4 more nodes in this community*
+- **server/tests/conftest.py** (17 connections) — `server/tests/conftest.py`
+- **test_config.py** (9 connections) — `server/tests/unit/config/test_config.py`
+- **reset_config()** (7 connections) — `server/config/__init__.py`
+- **test_logger()** (5 connections) — `server/tests/conftest.py`
+- **reset_config_singleton()** (4 connections) — `server/tests/conftest.py`
+- **test_reset_config_clears_state()** (4 connections) — `server/tests/unit/config/test_config.py`
+- **fixture** (4 connections)
+- **deterministic_random_seed()** (3 connections) — `server/tests/conftest.py`
+- **ensure_test_environment_variables()** (3 connections) — `server/tests/conftest.py`
+- **test_get_config_has_database_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_game_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_has_server_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_returns_app_config()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **test_get_config_test_mode_returns_fresh_instances()** (3 connections) — `server/tests/unit/config/test_config.py`
+- **_get_db_name_from_url()** (2 connections) — `server/tests/conftest.py`
+- **BoundLogger** (1 connections)
+- **Reset the configuration cache. In test mode, this is a no-op since get_config()…** (1 connections) — `server/config/__init__.py`
+- **Test configuration and fixtures for MythosMUD greenfield test suite. This…** (1 connections) — `server/tests/conftest.py`
+- **Reset config singleton before and after each test. In test mode, get_config()…** (1 connections) — `server/tests/conftest.py`
+- **Set deterministic random seed for reproducible tests.** (1 connections) — `server/tests/conftest.py`
+- **Provide a logger for tests.** (1 connections) — `server/tests/conftest.py`
+- **Extract database name from a PostgreSQL URL. Returns empty string on parse…** (1 connections) — `server/tests/conftest.py`
+- **Ensure critical environment variables are set before each test. Some tests may…** (1 connections) — `server/tests/conftest.py`
+- **Unit tests for configuration system.** (1 connections) — `server/tests/unit/config/test_config.py`
+- **Test that get_config() returns fresh instances in test mode.** (1 connections) — `server/tests/unit/config/test_config.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (12 shared connections)
+- [Lint Remediation](Lint_Remediation.md) (6 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-database-placement/SKILL.md`
-- `.claude/skills/mythosmud-full-stack-feature/SKILL.md`
-- `.claude/skills/mythosmud-openapi-workflow/SKILL.md`
-- `.claude/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- `server/config/__init__.py`
+- `server/tests/conftest.py`
+- `server/tests/unit/config/test_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 54 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

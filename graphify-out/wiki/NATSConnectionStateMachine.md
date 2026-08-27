@@ -1,54 +1,50 @@
 # NATSConnectionStateMachine
 
-> 107 nodes
+> 38 nodes
 
 ## Key Concepts
 
-- **NATSConnectionStateMachine** (58 connections) — `server/realtime/connection_state_machine.py`
-- **test_connection_state_machine.py** (40 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
-- **ConnectionEvent** (5 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connection_failed()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_close_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connect_transition()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_event_enum()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_failed_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_degrade()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_no_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_with_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_invalid_transition_raises_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 82 more nodes in this community*
+- **test_health_monitor.py** (27 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **asyncio** (12 connections)
+- **fixture** (5 connections)
+- **health_monitor()** (4 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_cleanup_dead_websocket()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_is_websocket_open()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_performance_tracker()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **mock_validate_token()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_all_connections_health()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health_no_websockets()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_player_connection_health_unhealthy()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_start_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_stop_periodic_checks()** (3 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_all_connections_health_with_metadata()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_cleanup_stale_connections()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_health_monitor_init()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_periodic_health_check_task_cancel()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_process_single_connection_paths()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_validate_and_update_token()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_wait_for_task_cancellation()** (2 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_connection_stale()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_check_websocket_open()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_find_player_id_for_cleanup()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- **test_start_periodic_checks_already_running()** (1 connections) — `server/tests/unit/realtime/monitoring/test_health_monitor.py`
+- *... and 13 more nodes in this community*
 
 ## Relationships
 
-- [test_nats_service.py](test_nats_service.py.md) (4 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
-- [.on_enter_state](on_enter_state.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.state](state.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [PARALLEL EXECUTION RESULTS (2025-11-05)](PARALLEL_EXECUTION_RESULTS_2025-11-05.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `server/tests/unit/realtime/monitoring/test_health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 155 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 56 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

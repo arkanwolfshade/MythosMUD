@@ -1,59 +1,50 @@
 # test_chat_validator.py
 
-> 30 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **test_chat_validator.py** (22 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **chat_message.py** (19 connections) — `server/game/chat_message.py`
-- **validate_chat_message()** (12 connections) — `server/game/chat_validator.py`
-- **chat_validator.py** (10 connections) — `server/game/chat_validator.py`
-- **validate_room_access()** (9 connections) — `server/game/chat_validator.py`
-- **_message()** (8 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **contains_malicious_content()** (7 connections) — `server/game/chat_validator.py`
-- **test_contains_malicious_content_detects_patterns()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_accepts_valid_message()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_handles_invalid_object()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_empty_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_malicious_script()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_missing_sender()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_chat_message_rejects_too_long_content()** (3 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **.__init__()** (2 connections) — `server/game/chat_message.py`
-- **test_contains_malicious_content_allows_safe_text()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_contains_malicious_content_fails_safe_on_type_error()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_accepts_valid_room()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_allows_none_room_for_system()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_rejects_blank_room_id()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **test_validate_room_access_rejects_empty_sender()** (2 connections) — `server/tests/unit/game/test_chat_validator.py`
-- **UUID** (2 connections)
-- **ChatMessage** (1 connections)
-- **parametrize** (1 connections)
-- **Chat message model for MythosMUD. This module provides the ChatMessage class…** (1 connections) — `server/game/chat_message.py`
-- *... and 5 more nodes in this community*
+- **test_chat_moderation.py** (31 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **asyncio** (14 connections)
+- **moderation()** (3 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **fixture** (3 connections)
+- **player_service()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_add_admin_returns_true()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_handles_internal_error()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_includes_player_name()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_invalid_player_id()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_player_not_found()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_get_mute_status_with_personal_mutes()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_channel_delegates_to_user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_unmute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **user_manager()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_can_send_message()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (7 shared connections)
-- [ChatMessage](ChatMessage.md) (6 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [chat_service.py](chat_service.py.md) (4 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (1 shared connections)
-- [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (1 shared connections)
-- [ChatService](ChatService.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_message.py`
-- `server/game/chat_validator.py`
-- `server/tests/unit/game/test_chat_validator.py`
+- `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 48 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

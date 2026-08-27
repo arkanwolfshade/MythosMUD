@@ -1,30 +1,35 @@
 # apply_migration
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **apply_migration()** (4 connections) — `scripts/migrate_npc_db.py`
-- **check_schema()** (4 connections) — `scripts/migrate_npc_db.py`
-- **main()** (4 connections) — `scripts/migrate_npc_db.py`
-- **migrate_npc_db.py** (3 connections) — `scripts/migrate_npc_db.py`
-- **Path** (2 connections)
-- **Cursor** (1 connections)
-- **Check current schema of npc_spawn_rules table** (1 connections) — `scripts/migrate_npc_db.py`
-- **Apply the migration to rename columns** (1 connections) — `scripts/migrate_npc_db.py`
+- **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
+- **test_command_validator_validate_expanded_command_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_length_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_validate_expanded_command_within_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_expanded_command returns True for valid expanded…** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_expanded_command inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_expanded_command enforces expanded length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Test CommandValidator.validate_expanded_command allows commands within expanded…** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **Validate command after alias expansion. Uses stricter length limits since…** (1 connections) — `server/validators/command_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_room_service.py](test_room_service.py.md) (6 shared connections)
+- [subject_controller.py](subject_controller.py.md) (4 shared connections)
+- [RoomRepository](RoomRepository.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/migrate_npc_db.py`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (80%)
+- INFERRED: 4 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,49 +1,50 @@
 # test_memory_leak_metrics.py
 
-> 43 nodes
+> 42 nodes
 
 ## Key Concepts
 
-- **test_memory_leak_metrics.py** (24 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **collector()** (4 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_calculate_growth_rates()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_calculate_growth_rates_insufficient_history()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_cache_capacity()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_closed_websockets_threshold()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_no_alerts()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_subscriber_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_check_alerts_task_growth_rate()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_all_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_all_metrics_error_handling()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_cache_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_connection_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_connection_metrics_no_manager()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_event_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_event_metrics_no_bus()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_nats_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collect_task_metrics()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_collector_initialization()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_metrics_collection_performance()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **test_metrics_history_bounded()** (2 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **fixture** (1 connections)
-- **Unit tests for memory leak metrics collector. Tests the…** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Test collection of cache metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- **Test collection of task metrics.** (1 connections) — `server/tests/unit/monitoring/test_memory_leak_metrics.py`
-- *... and 18 more nodes in this community*
+- **CORSConfig** (27 connections) — `server/config/models/cors.py`
+- **test_cors_config.py** (14 connections) — `server/tests/unit/config/test_cors_config.py`
+- **._parse_csv()** (10 connections) — `server/config/models/cors.py`
+- **field_validator** (6 connections)
+- **._clean_list_items()** (5 connections) — `server/config/models/cors.py`
+- **._parse_json_array()** (5 connections) — `server/config/models/cors.py`
+- **._validate_non_empty()** (5 connections) — `server/config/models/cors.py`
+- **.parse_allow_headers()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_methods()** (4 connections) — `server/config/models/cors.py`
+- **.parse_allow_origins()** (4 connections) — `server/config/models/cors.py`
+- **._parse_comma_separated()** (4 connections) — `server/config/models/cors.py`
+- **.parse_expose_headers()** (4 connections) — `server/config/models/cors.py`
+- **.parse_max_age()** (3 connections) — `server/config/models/cors.py`
+- **._validate_and_warn_wildcards()** (3 connections) — `server/config/models/cors.py`
+- **.validate_max_age()** (3 connections) — `server/config/models/cors.py`
+- **test_cors_defaults_include_local_dev_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_methods_uppercases()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_origins_from_comma_separated_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_allow_origins_from_json_array()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_expose_headers_allows_empty()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_max_age_from_string()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_parse_max_age_invalid_string_uses_default()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_rejects_empty_allow_origins()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_rejects_negative_max_age()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- **test_cors_wildcard_origin_accepted()** (2 connections) — `server/tests/unit/config/test_cors_config.py`
+- *... and 17 more nodes in this community*
 
 ## Relationships
 
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/monitoring/test_memory_leak_metrics.py`
+- `server/config/models/cors.py`
+- `server/tests/unit/config/test_cors_config.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 71 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

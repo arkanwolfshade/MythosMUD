@@ -1,22 +1,23 @@
 # Contributor Covenant Code of Conduct
 
-> 1 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Contributor Covenant Code of Conduct** (0 connections) — `CODE_OF_CONDUCT.md`
+- **test_create_aliases_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_aliases_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `CODE_OF_CONDUCT.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

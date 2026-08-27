@@ -1,32 +1,33 @@
 # Attack Command Not Starting Combat
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Target Resolution via Lifecycle Manager** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **Stale Room.get_npcs After Persistence Reload** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- **Attack Command Not Starting Combat** (2 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **NPC Dual Tracking System Issue** (2 connections) — `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- **NPC Spawning vs Occupants Display Issue** (2 connections) — `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
-- **CommandType Enum vs String Comparison** (1 connections) — `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- **Flattened Occupants Losing Player NPC Distinction** (1 connections) — `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
+- **auth/conftest.py** (7 connections) — `server/tests/unit/auth/conftest.py`
+- **mock_request()** (3 connections) — `server/tests/unit/auth/conftest.py`
+- **mock_session()** (3 connections) — `server/tests/unit/auth/conftest.py`
+- **set_auth_epoch_for_tests()** (3 connections) — `server/tests/unit/auth/conftest.py`
+- **fixture** (3 connections)
+- **Pytest fixtures for auth unit tests.** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Set auth epoch so token generation and validation work in tests (no real server…** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/auth/conftest.py`
+- **Create a mock async session.** (1 connections) — `server/tests/unit/auth/conftest.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [models/container.py](models-container.py.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-attack-command-not-starting-combat.md`
-- `investigations/sessions/2025-01-29_session-001_npc-occupants-display-issue.md`
-- `investigations/sessions/2025-01-XX_session-npc-spawning-occupants-issue.md`
-- `investigations/sessions/2025-01-XX_session-occupants-npc-display.md`
+- `server/tests/unit/auth/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (50%)
-- INFERRED: 3 (50%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

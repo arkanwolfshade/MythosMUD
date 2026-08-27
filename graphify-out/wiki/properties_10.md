@@ -1,44 +1,37 @@
 # properties
 
-> 23 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **properties** (11 connections) — `db/static/schemas/room.schema.json`
-- **null** (11 connections) — `db/static/schemas/room.schema.json`
-- **string** (11 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **type** (3 connections) — `db/static/schemas/room.schema.json`
-- **down** (2 connections) — `db/static/schemas/room.schema.json`
-- **east** (2 connections) — `db/static/schemas/room.schema.json`
-- **north** (2 connections) — `db/static/schemas/room.schema.json`
-- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **south** (2 connections) — `db/static/schemas/room.schema.json`
-- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
-- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
-- **up** (2 connections) — `db/static/schemas/room.schema.json`
-- **west** (2 connections) — `db/static/schemas/room.schema.json`
+- **RoomInfo.tsx** (14 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfo.test.tsx** (10 connections) — `client/src/components/ui/__tests__/RoomInfo.test.tsx`
+- **useRoomInfo()** (8 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **DebugInfo()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomDescription()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomEntities()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomExits()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomLocation()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomName()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomOccupants()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **CompleteRoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoContextType** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoProps** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoContext** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
 
 ## Relationships
 
-- [exits](exits.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `client/src/components/ui/RoomInfo.tsx`
+- `client/src/components/ui/__tests__/RoomInfo.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

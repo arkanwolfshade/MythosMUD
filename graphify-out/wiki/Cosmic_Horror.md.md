@@ -1,41 +1,35 @@
 # Cosmic Horror.md
 
-> 17 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Cosmic Horror.md** (6 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
-- **Pulp Sanity.md** (5 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
-- **Lucidity.md** (4 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
-- **Using Luck (Pulp).md** (3 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
-- **The Hungry Void.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
-- **Evocations of the Inner God.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
-- **Voice on the Phone.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
-- **Pandora's Box (Pulp campaign).md** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
-- **Cosmic Horror** (2 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
-- **Chaosium catalog notes** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
-- **Evocations of the Inner God** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
-- **Lucidity** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
-- **Pandora's Box (Pulp campaign)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
-- **Pulp Sanity** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
-- **The Hungry Void** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
-- **Using Luck (Pulp)** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
-- **Voice on the Phone** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- **Implement Animations** (7 connections) — `.claude/skills/animate/SKILL.md`
+- **Animate Skill** (7 connections) — `.claude/skills/animate/SKILL.md`
+- **Technical Implementation** (6 connections) — `.claude/skills/animate/SKILL.md`
+- **Accessibility** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Assess Animation Opportunities** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **CSS Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Delight Moments** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Entrance Animations** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Feedback & Guidance** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **JavaScript Animation** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Micro-interactions** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Navigation & Flow** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Performance** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Plan Animation Strategy** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **State Transitions** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Timing & Easing** (1 connections) — `.claude/skills/animate/SKILL.md`
+- **Verify Quality** (1 connections) — `.claude/skills/animate/SKILL.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/concepts/Cosmic Horror.md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Evocations of the Inner God.md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Lucidity.md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Pandora's Box (Pulp campaign).md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Pulp Sanity.md`
-- `data/MythosMUD-Obsidian/wiki/concepts/The Hungry Void.md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Using Luck (Pulp).md`
-- `data/MythosMUD-Obsidian/wiki/concepts/Voice on the Phone.md`
+- `.claude/skills/animate/SKILL.md`
 
 ## Audit Trail
 

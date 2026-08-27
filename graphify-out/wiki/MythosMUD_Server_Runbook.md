@@ -1,28 +1,30 @@
 # MythosMUD Server Runbook
 
-> 7 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **MythosMUD Server Runbook** (6 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Commands** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Critical Rules** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **ONE SERVER ONLY RULE** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Pre-Start Checklist** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
-- **Server Runbook Skill** (1 connections) — `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- **compute_python_cross_file_depth()** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **quality_fragmentation_graph.py** (7 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **collect_python_defs_and_calls()** (5 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **_named_calls()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **_top_level_definitions()** (3 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **build_call_graph()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **max_path_length()** (2 connections) — `scripts/ci/quality_fragmentation_graph.py`
+- **Module** (2 connections)
+- **Path** (2 connections)
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_validation.py](test_validation.py.md) (3 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-server-runbook/SKILL.md`
+- `scripts/ci/quality_fragmentation_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

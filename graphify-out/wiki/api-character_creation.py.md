@@ -1,75 +1,59 @@
 # api/character_creation.py
 
-> 249 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **api/character_creation.py** (67 connections) — `server/api/character_creation.py`
-- **RateLimitError** (52 connections) — `server/exceptions.py`
-- **players/__init__.py** (48 connections) — `server/schemas/players/__init__.py`
-- **PlayerRead** (46 connections) — `server/schemas/players/player.py`
-- **roll_character_stats()** (26 connections) — `server/api/character_creation.py`
-- **test_character_creation.py** (24 connections) — `server/tests/unit/api/test_character_creation.py`
-- **RollStatsRequest** (23 connections) — `server/schemas/players/player_requests.py`
-- **create_character_with_stats()** (23 connections) — `server/api/character_creation.py`
-- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **ProfessionService** (21 connections) — `server/game/profession_service.py`
-- **CreateCharacterRequest** (21 connections) — `server/schemas/players/player_requests.py`
-- **players/player.py** (21 connections) — `server/schemas/players/player.py`
-- **validate_character_stats()** (15 connections) — `server/api/character_creation.py`
-- **asyncio** (14 connections)
-- **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
-- **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
-- **RollStatsResponse** (12 connections) — `server/schemas/players/character_creation.py`
-- **TestRollCharacterStats** (12 connections) — `server/tests/unit/api/test_character_creation.py`
-- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
-- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
-- **players/character_creation.py** (11 connections) — `server/schemas/players/character_creation.py`
-- **PlayerSearchService** (10 connections) — `server/game/player_search_service.py`
-- **PlayerBase** (10 connections) — `server/schemas/players/player.py`
-- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
-- **CreateCharacterResponse** (9 connections) — `server/schemas/players/character_creation.py`
-- *... and 224 more nodes in this community*
+- **MemoryLeakMetricsCollector** (28 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Any** (11 connections)
+- **.check_alerts()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_all_metrics()** (9 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_event_metrics()** (6 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_nats_metrics()** (6 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_cache_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_connection_metrics()** (5 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.__init__()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.calculate_growth_rates()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._calculate_single_growth_rate()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_cache_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_connection_alerts()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.collect_task_metrics()** (4 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_subscriber_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **._check_task_alerts()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **.__init__()** (3 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect event metrics from EventBus. Returns: Dictionary with event metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect cache metrics from CacheManager. Returns: Dictionary with cache metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect task metrics from TaskRegistry. Returns: Dictionary with task metrics** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Collect NATS subscription metrics from NATSService. Returns: Dictionary with…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Unified metrics collector for memory leak detection. Aggregates metrics from…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rate for a single metric. Args: current: Current metrics…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Calculate growth rates for metrics over time. Returns: Dictionary mapping…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- **Initialize the memory leak metrics collector. Args: event_bus: Optional event…** (1 connections) — `server/monitoring/memory_leak_metrics.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (52 shared connections)
-- [get_logger](get_logger.md) (32 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (27 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (26 shared connections)
-- [api/player_effects.py](api-player_effects.py.md) (22 shared connections)
-- [Stats](Stats.md) (16 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (13 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (12 shared connections)
-- [ErrorType](ErrorType.md) (11 shared connections)
-- [ValidationError](ValidationError.md) (11 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (7 shared connections)
+- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (4 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (2 shared connections)
+- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [.create_get_command](create_get_command.md) (1 shared connections)
+- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (1 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/api/character_creation.py`
-- `server/commands/admin_shutdown_command.py`
-- `server/exceptions.py`
-- `server/game/player_search_service.py`
-- `server/game/player_service.py`
-- `server/game/profession_service.py`
-- `server/schemas/players/__init__.py`
-- `server/schemas/players/character_creation.py`
-- `server/schemas/players/class_definition.py`
-- `server/schemas/players/player.py`
-- `server/schemas/players/player_requests.py`
-- `server/schemas/players/profession.py`
-- `server/schemas/players/stat_values.py`
-- `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/schemas/test_player_schemas.py`
+- `server/monitoring/memory_leak_metrics.py`
+- `server/monitoring/monitoring_dashboard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 696 (96%)
-- INFERRED: 31 (4%)
+- EXTRACTED: 70 (93%)
+- INFERRED: 5 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

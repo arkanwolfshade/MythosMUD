@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_arena_migration.ps1** (0 connections) — `scripts/apply_arena_migration.ps1`
+- **Dual Connection Monitoring Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_arena_migration.ps1`
+- `docs/archive/DUAL_CONNECTION_MONITORING_GUIDE.md`
 
 ## Audit Trail
 

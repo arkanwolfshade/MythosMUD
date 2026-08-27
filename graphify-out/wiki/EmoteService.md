@@ -1,54 +1,56 @@
 # EmoteService
 
-> 39 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **EmoteService** (18 connections) — `server/game/emote_service.py`
-- **test_emote_service.py** (18 connections) — `server/tests/unit/game/test_emote_service.py`
-- **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
-- **EmoteDefinition** (6 connections) — `server/game/emote_service.py`
-- **._init_emote_service()** (5 connections) — `server/container/bundles/game.py`
-- **.format_emote_messages()** (4 connections) — `server/game/emote_service.py`
-- **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
-- **test_load_emotes_handles_missing_table_gracefully()** (4 connections) — `server/tests/unit/game/test_emote_service.py`
-- **.__init__()** (3 connections) — `server/game/emote_service.py`
-- **.load_emotes()** (3 connections) — `server/game/emote_service.py`
-- **.reload_emotes()** (3 connections) — `server/game/emote_service.py`
-- **._validate_emote_payload()** (3 connections) — `server/game/emote_service.py`
-- **test_emote_service_init_does_not_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_format_emote_messages_unknown_raises()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_load_emotes_populates_from_repository()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_reload_emotes_calls_load()** (3 connections) — `server/tests/unit/game/test_emote_service.py`
-- **asyncio** (3 connections)
-- **.is_emote_alias()** (2 connections) — `server/game/emote_service.py`
-- **.list_available_emotes()** (2 connections) — `server/game/emote_service.py`
-- **test_format_emote_messages()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_is_emote_alias_and_get_definition()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_list_available_emotes()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_no_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **test_validate_emote_payload_with_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **TypedDict** (1 connections)
-- *... and 14 more nodes in this community*
+- **MetricsCollector** (18 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **test_metrics_collector.py** (7 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **Lock** (5 connections)
+- **.get_metrics()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.get_summary()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.__init__()** (3 connections) — `server/middleware/metrics_collector.py`
+- **.record_circuit_state_change()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_dlq()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_failed()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_processed()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_message_retried()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.record_processing_time()** (2 connections) — `server/middleware/metrics_collector.py`
+- **.reset_metrics()** (2 connections) — `server/middleware/metrics_collector.py`
+- **test_circuit_state_change_trims_history()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_get_summary()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_record_and_get_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **test_reset_metrics()** (2 connections) — `server/tests/unit/middleware/test_metrics_collector.py`
+- **Any** (2 connections)
+- **HolidayResolver** (1 connections)
+- **Record a circuit breaker state change. Args: old_state: Previous circuit state…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Record message processing time. Args: duration_ms: Processing duration in…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Get current metrics snapshot. Returns: Dictionary containing all metrics AI:…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Reset all metrics counters. Useful for clearing metrics after a deployment or…** (1 connections) — `server/middleware/metrics_collector.py`
+- **Simple metrics collector for NATS message delivery. Thread-safe metrics…** (1 connections) — `server/middleware/metrics_collector.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (8 shared connections)
-- [bundles/game.py](bundles-game.py.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [ValidationError](ValidationError.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_player_event_handlers_utils.py](test_player_event_handlers_utils.py.md) (1 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
+- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (1 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `server/container/bundles/game.py`
-- `server/game/emote_service.py`
-- `server/tests/unit/game/test_emote_service.py`
+- `server/middleware/metrics_collector.py`
+- `server/tests/unit/middleware/test_metrics_collector.py`
+- `server/time/tick_scheduler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

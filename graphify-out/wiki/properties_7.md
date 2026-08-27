@@ -1,43 +1,52 @@
 # properties
 
-> 19 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `schemas/unified_room_schema.json`
-- **capacity_slots** (6 connections) — `schemas/unified_room_schema.json`
-- **allowed_roles** (4 connections) — `schemas/unified_room_schema.json`
-- **weight_limit** (4 connections) — `schemas/unified_room_schema.json`
-- **key_item_id** (3 connections) — `schemas/unified_room_schema.json`
-- **items** (2 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **default** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **maximum** (1 connections) — `schemas/unified_room_schema.json`
-- **minimum** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
-- **description** (1 connections) — `schemas/unified_room_schema.json`
-- **minimum** (1 connections) — `schemas/unified_room_schema.json`
-- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **EnvironmentalContainerLoader** (18 connections) — `server/services/environmental_container_loader.py`
+- **test_environmental_container_loader.py** (17 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **.load_container_from_room_json()** (7 connections) — `server/services/environmental_container_loader.py`
+- **.migrate_room_container_to_postgresql()** (6 connections) — `server/services/environmental_container_loader.py`
+- **._parse_lock_state()** (4 connections) — `server/services/environmental_container_loader.py`
+- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
+- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
+- **._validate_container_capacity()** (3 connections) — `server/services/environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_success()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_containers_for_room_filters_environment()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_creates_new()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_migrate_room_container_existing()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **Any** (3 connections)
+- **asyncio** (3 connections)
+- **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
+- **ContainerComponent** (2 connections)
+- **UUID** (2 connections)
+- **ContainerLockState** (1 connections)
+- **migrate_room_container_to_postgresql.** (1 connections) — `server/services/environmental_container_loader.py`
+- **Load all environmental containers for a room from PostgreSQL. Args: room_id:…** (1 connections) — `server/services/environmental_container_loader.py`
+- **Service for loading environmental containers from JSON and PostgreSQL. Handles…** (1 connections) — `server/services/environmental_container_loader.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [enabled](enabled.md) (1 shared connections)
-- [lock_state](lock_state.md) (1 shared connections)
-- [container](container.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (6 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/unified_room_schema.json`
+- `server/services/environmental_container_loader.py`
+- `server/tests/unit/services/test_environmental_container_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 52 (90%)
+- INFERRED: 6 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

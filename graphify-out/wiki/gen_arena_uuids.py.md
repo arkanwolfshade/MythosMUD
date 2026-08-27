@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **gen_arena_uuids.py** (1 connections) — `scripts/gen_arena_uuids.py`
-- **Generate deterministic UUIDs for arena zone, subzone, 121 rooms. One-off script.** (1 connections) — `scripts/gen_arena_uuids.py`
+- **Playwright CLI Automation** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- **E2E Scenario Conversion** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `scripts/gen_arena_uuids.py`
+- `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
 
 ## Audit Trail
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **clean_logs.ps1** (0 connections) — `scripts/clean_logs.ps1`
+- **CI Environment Alignment** (0 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/clean_logs.ps1`
+- `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Audit Trail
 

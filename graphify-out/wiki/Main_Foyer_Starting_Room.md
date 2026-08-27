@@ -1,29 +1,28 @@
 # Main Foyer Starting Room
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Main Foyer Starting Room** (2 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- **Wrong Starting Room Bug** (2 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- **Scenario 2 Clean Game State** (1 connections) — `e2e-tests/scenarios/scenario-02-clean-game-state.md`
-- **Players Start in Different Rooms** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01.md`
+- **.validate_target_player()** (4 connections) — `server/models/command_player_state.py`
+- **.validate_modifier()** (3 connections) — `server/models/command_player_state.py`
+- **field_validator** (2 connections)
+- **Validate optional modifier for the lie command.** (1 connections) — `server/models/command_player_state.py`
+- **Validate the target player name using shared validation rules.** (1 connections) — `server/models/command_player_state.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- `e2e-tests/TEST_RESULTS_scenario-01.md`
-- `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- `e2e-tests/scenarios/scenario-02-clean-game-state.md`
+- `server/models/command_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

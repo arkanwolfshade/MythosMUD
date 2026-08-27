@@ -1,12 +1,13 @@
 # Chaosium graphify snapshot - Alone against the Tide
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Alone against the Tide** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
-- **alone-against-the-tide/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- **character_sheets (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
+- **character_sheets.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
 
 ## Relationships
 
@@ -14,11 +15,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/MANIFEST.md`
+- `data/MythosMUD-Obsidian/wiki/sources/character_sheets.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

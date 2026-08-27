@@ -1,54 +1,53 @@
 # test_combat_handler.py
 
-> 55 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **test_combat_handler.py** (40 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_handler_with_persistence()** (22 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **asyncio** (14 connections)
-- **_as_app_with_state()** (9 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_no_current_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_success()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_unknown_player()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_unknown_room()** (7 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_accepts_live_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_dead_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_dissipated_phantom()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_rejects_non_npc()** (6 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_AppStatePersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_AppWithPersistence** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_get_player_and_room_no_persistence_on_app()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_resolve_combat_target_failure_message()** (5 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_handle_flee_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_handle_taunt_command_delegates()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_validate_combat_action()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_validate_combat_action_empty_name()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **_CmdType** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_room_forbids_combat_false_no_attrs()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- *... and 30 more nodes in this community*
+- **MythosMUD Test Suite Modernization Plan** (18 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendices** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Decision Framework: Uplift vs Greenfield Rewrite** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Next Steps** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **References** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Executive Summary** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Success Metrics** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Quick Start: Minimal Viable Uplift** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Alternative: **GREENFIELD REWRITE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix A: Test File Inventory** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix B: Direct app.state Access Locations** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix C: Fixture Audit** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Cons** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Consolidation Opportunities** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current Fixture Categories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current State** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Goal** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Greenfield Only If** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **High Priority (Integration Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Key Files** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [TargetResolutionResult](TargetResolutionResult.md) (6 shared connections)
-- [TargetMatch](TargetMatch.md) (5 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (3 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [combat_loader.py](combat_loader.py.md) (1 shared connections)
+- [Execution Steps](Execution_Steps.md) (1 shared connections)
+- [test_handle_admin_set_stat_command_success_str](test_handle_admin_set_stat_command_success_str.md) (1 shared connections)
+- [panelReducerHandlers.ts](panelReducerHandlers.ts.md) (1 shared connections)
+- [._publish_attack_event](_publish_attack_event.md) (1 shared connections)
+- [user_manager](user_manager.md) (1 shared connections)
+- [test_handle_admin_set_stat_command_invalid_stat_name](test_handle_admin_set_stat_command_invalid_stat_name.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_handler.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (92%)
-- INFERRED: 10 (8%)
+- EXTRACTED: 58 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

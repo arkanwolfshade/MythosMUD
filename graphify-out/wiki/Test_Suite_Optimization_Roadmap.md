@@ -1,37 +1,29 @@
 # Test Suite Optimization Roadmap
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Test Suite Optimization Roadmap** (15 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Risk Mitigation Strategy** (2 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **TEST_OPTIMIZATION_ROADMAP.md** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Recommended Execution Order** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Rollback Plan** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Safety Measures** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **cursor** (2 connections)
+- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
 
 ## Relationships
 
-- [Optimization Strategy Overview](Optimization_Strategy_Overview.md) (1 shared connections)
-- [Phase 2: Infrastructure Test Reduction (Week 2)](Phase_2-_Infrastructure_Test_Reduction_Week_2.md) (1 shared connections)
-- [Phase 3: Coverage Test Optimization (Week 3)](Phase_3-_Coverage_Test_Optimization_Week_3.md) (1 shared connections)
-- [Phase 4: Test Consolidation (Week 4)](Phase_4-_Test_Consolidation_Week_4.md) (1 shared connections)
-- [Phase 1: Quick Wins (Week 1)](Phase_1-_Quick_Wins_Week_1.md) (1 shared connections)
-- [Phase 5: Strategic Additions (Week 5)](Phase_5-_Strategic_Additions_Week_5.md) (1 shared connections)
-- [Phase 6: Long-Term Optimizations (Ongoing)](Phase_6-_Long-Term_Optimizations_Ongoing.md) (1 shared connections)
-- [Implementation Timeline](Implementation_Timeline.md) (1 shared connections)
-- [Net Impact Projection](Net_Impact_Projection.md) (1 shared connections)
-- [Monitoring and Validation](Monitoring_and_Validation.md) (1 shared connections)
-- [Success Criteria](Success_Criteria.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `scripts/apply_quest_migrations_to_dev.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

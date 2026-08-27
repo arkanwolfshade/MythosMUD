@@ -1,28 +1,34 @@
 # PostgreSQL Procedures Migration - Audit Spreadsheet
 
-> 6 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **PostgreSQL Procedures Migration - Audit Spreadsheet** (5 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **postgresql_procedures_audit.md** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Audit Table** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Domain Grouping Summary** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Existing PostgreSQL Functions (Already in DDL)** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
-- **Scope** (1 connections) — `docs/archive/postgresql_procedures_audit.md`
+- **LOGGING_BEST_PRACTICES.md** (3 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **LOGGING_QUICK_REFERENCE.md** (3 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **NumPy Code Review** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **measure_performance** (2 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **roll_4d6_drop_lowest** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Structured Logging** (2 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **NumPy Vectorized Statistics** (2 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **enhanced_logging_config.get_logger** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [safe_run_static](safe_run_static.md) (1 shared connections)
+- [P8 · Applied](P8_·_Applied.md) (1 shared connections)
+- [Real-Time Communication (WebSocket)](Real-Time_Communication_WebSocket.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/postgresql_procedures_audit.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- `docs/archive/NUMPY_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 8 (80%)
+- INFERRED: 2 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

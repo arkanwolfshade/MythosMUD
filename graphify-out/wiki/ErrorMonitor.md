@@ -1,49 +1,49 @@
 # ErrorMonitor
 
-> 28 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **ErrorMonitor** (13 connections) — `scripts/error_monitoring.py`
-- **.calculate_error_rate()** (9 connections) — `scripts/error_monitoring.py`
-- **._parse_recent_errors()** (7 connections) — `scripts/error_monitoring.py`
-- **Any** (7 connections)
-- **.check_alerts()** (6 connections) — `scripts/error_monitoring.py`
-- **.detect_error_trends()** (5 connections) — `scripts/error_monitoring.py`
-- **._find_recent_error_logs()** (5 connections) — `scripts/error_monitoring.py`
-- **.monitor_continuously()** (5 connections) — `scripts/error_monitoring.py`
-- **._categorize_error()** (4 connections) — `scripts/error_monitoring.py`
-- **._determine_severity()** (4 connections) — `scripts/error_monitoring.py`
-- **.__init__()** (4 connections) — `scripts/error_monitoring.py`
-- **._parse_log_line()** (4 connections) — `scripts/error_monitoring.py`
-- **main()** (4 connections) — `scripts/error_monitoring.py`
-- **error_monitoring.py** (4 connections) — `scripts/error_monitoring.py`
-- **Path** (4 connections)
-- **datetime** (3 connections)
-- **Detect error trends over time. Returns trend analysis results.** (1 connections) — `scripts/error_monitoring.py`
-- **Check for alert conditions. Returns list of active alerts.** (1 connections) — `scripts/error_monitoring.py`
-- **Monitor errors continuously for a specified duration. Args: log_dir: Directory…** (1 connections) — `scripts/error_monitoring.py`
-- **Real-time error monitoring system for MythosMUD. This monitor can track error…** (1 connections) — `scripts/error_monitoring.py`
-- **Find error log files that have been modified since the given time.** (1 connections) — `scripts/error_monitoring.py`
-- **Parse recent errors from a log file.** (1 connections) — `scripts/error_monitoring.py`
-- **Parse a single log line and extract error information.** (1 connections) — `scripts/error_monitoring.py`
-- **Categorize an error based on its content.** (1 connections) — `scripts/error_monitoring.py`
-- **Initialize the error monitor. Args: log_dir: Directory containing log files…** (1 connections) — `scripts/error_monitoring.py`
-- *... and 3 more nodes in this community*
+- **EventBusProcessingMixin** (17 connections) — `server/events/event_bus_processing.py`
+- **._handle_event_async()** (8 connections) — `server/events/event_bus_processing.py`
+- **BaseEvent** (8 connections)
+- **._create_async_subscriber_tasks()** (5 connections) — `server/events/event_bus_processing.py`
+- **._publish_in_test_mode()** (5 connections) — `server/events/event_bus_processing.py`
+- **._invoke_test_mode_subscriber()** (4 connections) — `server/events/event_bus_processing.py`
+- **._log_processing_failure()** (4 connections) — `server/events/event_bus_processing.py`
+- **._process_events_async()** (4 connections) — `server/events/event_bus_processing.py`
+- **._process_sync_subscribers()** (4 connections) — `server/events/event_bus_processing.py`
+- **.publish()** (4 connections) — `server/events/event_bus_processing.py`
+- **._separate_subscribers()** (4 connections) — `server/events/event_bus_processing.py`
+- **._wait_for_async_subscribers()** (4 connections) — `server/events/event_bus_processing.py`
+- **._handle_task_result_async()** (3 connections) — `server/events/event_bus_processing.py`
+- **.inject()** (3 connections) — `server/events/event_bus_processing.py`
+- **Task** (3 connections)
+- **Exception** (1 connections)
+- **Execute sync subscribers sequentially with error isolation. Sync subscribers…** (1 connections) — `server/events/event_bus_processing.py`
+- **Create asyncio tasks for async event subscribers and track their lifecycle.…** (1 connections) — `server/events/event_bus_processing.py`
+- **Wait for all async subscriber tasks to complete and handle their results. Uses…** (1 connections) — `server/events/event_bus_processing.py`
+- **Handle a single event by calling all registered subscribers with structured…** (1 connections) — `server/events/event_bus_processing.py`
+- **Mixin: queue loop, subscriber dispatch, publish, and inject.** (1 connections) — `server/events/event_bus_processing.py`
+- **Handle async task completion with proper exception extraction.** (1 connections) — `server/events/event_bus_processing.py`
+- **Invoke one subscriber in test mode (direct call or create_task).** (1 connections) — `server/events/event_bus_processing.py`
+- **Process subscribers synchronously when tests have no running EventBus loop.** (1 connections) — `server/events/event_bus_processing.py`
+- **Log a processing error, falling back if Unicode encoding fails.** (1 connections) — `server/events/event_bus_processing.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [test_message_queue.py](test_message_queue.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [NPCDefinition](NPCDefinition.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/error_monitoring.py`
+- `server/events/event_bus_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 49 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

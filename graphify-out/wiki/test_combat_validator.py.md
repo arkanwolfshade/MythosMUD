@@ -1,50 +1,56 @@
 # test_combat_validator.py
 
-> 88 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_combat_validator.py** (52 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_combat_validator_init()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_contains_suspicious_patterns_clean()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_death_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_help_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_failure()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_success_no_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_status_message_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_status_message_not_in_combat()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_combat_victory_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_get_random_error_message_unknown_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_rate_limited()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_valid_target_name_invalid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_is_valid_target_name_valid()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_success()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_target_significantly_stronger()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_target_too_strong()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_attack_strength_weak_weapon()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_command_all_attack_aliases()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_command_exception_handling()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_command_invalid_command_type()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_combat_command_invalid_target_name()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- *... and 63 more nodes in this community*
+- **real_time.py** (34 connections) — `server/api/real_time.py`
+- **test_real_time_helpers.py** (34 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **asyncio** (20 connections)
+- **_resolve_player_id()** (13 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (11 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_path_or_token()** (10 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (9 connections) — `server/api/real_time.py`
+- **get_player_connections()** (9 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (9 connections) — `server/api/real_time.py`
+- **websocket_endpoint()** (9 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (9 connections) — `server/api/real_time.py`
+- **Any** (9 connections)
+- **WebSocket** (9 connections)
+- **get_connection_statistics()** (8 connections) — `server/api/real_time.py`
+- **_resolve_connection_manager_from_state()** (8 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_test()** (8 connections) — `server/api/real_time.py`
+- **UUID** (8 connections)
+- **_validate_and_accept_websocket()** (7 connections) — `server/api/real_time.py`
+- **_validate_websocket_connection_manager()** (7 connections) — `server/api/real_time.py`
+- **_invoke_handle_websocket_connection()** (6 connections) — `server/api/real_time.py`
+- **_extract_bearer_token()** (5 connections) — `server/api/real_time.py`
+- **_parse_subprotocol_token()** (5 connections) — `server/api/real_time.py`
+- **resolve_connection_manager()** (5 connections) — `server/api/real_time.py`
+- **websocket_player_id_fallback_allowed()** (4 connections) — `server/api/real_time.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [CombatValidator](CombatValidator.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [ValidationError](ValidationError.md) (1 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (4 shared connections)
+- [field_validator](field_validator.md) (3 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [run_extended_idle_memory_monitor.ps1](run_extended_idle_memory_monitor.ps1.md) (2 shared connections)
+- [ChatMessage](ChatMessage.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `server/api/real_time.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 95 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 202 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,60 @@
 # PopulationStats
 
-> 65 nodes
+> 102 nodes
 
 ## Key Concepts
 
-- **PopulationStats** (40 connections) — `server/npc/population_stats.py`
-- **test_population_stats.py** (23 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **population_stats.py** (7 connections) — `server/npc/population_stats.py`
-- **test_should_spawn_npc()** (4 connections) — `server/tests/unit/npc/test_population_control.py`
-- **.to_dict()** (3 connections) — `server/npc/population_stats.py`
-- **.get_population_stats()** (3 connections) — `server/npc/spawning_service.py`
-- **test_clear_population_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_despawn_npc_success()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_population_stats_existing()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_get_zone_population_summary_with_stats()** (3 connections) — `server/tests/unit/npc/test_population_control.py`
-- **test_add_npc_multiple_same_room()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_multiple_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_updates_timestamp()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_add_npc_without_definition_id()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_mixed_required_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_multiple_definitions_same_type()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_population_stats_init()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_different_definition()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_not_found()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_optional()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_partial()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_prevents_negative()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- **test_remove_npc_required()** (3 connections) — `server/tests/unit/npc/test_population_stats.py`
-- *... and 40 more nodes in this community*
+- **ConnectionManager** (165 connections) — `server/realtime/connection_manager.py`
+- **test_connection_manager_class.py** (16 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **.event_bus()** (14 connections) — `server/realtime/connection_manager.py`
+- **ConnectionManager** (11 connections)
+- **manager()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_broadcast_and_health_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_disconnect_and_session_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_room_subscription_delegates()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_safe_close_websocket()** (4 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **asyncio** (4 connections)
+- **.disconnect_connection_by_id()** (3 connections) — `server/realtime/connection_manager.py`
+- **._get_event_bus()** (3 connections) — `server/realtime/connection_manager.py`
+- **.set_event_bus()** (3 connections) — `server/realtime/connection_manager.py`
+- **.set_player_combat_service()** (3 connections) — `server/realtime/connection_manager.py`
+- **test_connection_manager_init_sets_components()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_player_connection_lookup_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_presence_and_online_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_set_async_persistence_and_services()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_stats_and_rate_limit_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **test_websocket_lifecycle_helpers()** (3 connections) — `server/tests/unit/realtime/test_connection_manager_class.py`
+- **.broadcast_global()** (2 connections) — `server/realtime/connection_manager.py`
+- **.broadcast_global_event()** (2 connections) — `server/realtime/connection_manager.py`
+- **.broadcast_room_event()** (2 connections) — `server/realtime/connection_manager.py`
+- **._check_and_cleanup()** (2 connections) — `server/realtime/connection_manager.py`
+- **._cleanup_ghost_players()** (2 connections) — `server/realtime/connection_manager.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [test_population_control.py](test_population_control.py.md) (7 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
-- [population_control.py](population_control.py.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [QuestService](QuestService.md) (34 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
+- [test_nats_service.py](test_nats_service.py.md) (7 shared connections)
+- [NPCDefinition](NPCDefinition.md) (6 shared connections)
+- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (6 shared connections)
+- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (5 shared connections)
+- [npc_database.py](npc_database.py.md) (4 shared connections)
+- [📞 Next Steps](📞_Next_Steps.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [field_validator](field_validator.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/population_stats.py`
-- `server/npc/spawning_service.py`
-- `server/tests/unit/npc/test_population_control.py`
-- `server/tests/unit/npc/test_population_stats.py`
+- `server/realtime/connection_manager.py`
+- `server/tests/unit/realtime/test_connection_manager_class.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 205 (81%)
+- INFERRED: 49 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

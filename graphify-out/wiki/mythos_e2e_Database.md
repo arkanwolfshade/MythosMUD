@@ -1,38 +1,35 @@
 # mythos_e2e Database
 
-> 11 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **mythos_e2e Database** (4 connections) — `client/tests/e2e/README.md`
-- **E2E Tests Playwright** (3 connections) — `client/tests/e2e/README.md`
-- **Playwright storageState Session Sharing** (3 connections) — `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
-- **Runtime Auth Isolation** (2 connections) — `client/tests/e2e/README.md`
-- **authenticatedTest Fixture** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
-- **E2E Login Timeout Issue** (2 connections) — `client/tests/e2e/TEST_EXECUTION_STATUS.md`
-- **E2E Timeout Analysis and Fixes** (2 connections) — `client/tests/e2e/TIMEOUT_ANALYSIS.md`
-- **Playwright E2E Runtime Tests** (1 connections) — `client/README.md`
-- **ArkanWolfshade E2E Account** (1 connections) — `client/tests/e2e/README.md`
-- **Ithaqua E2E Account** (1 connections) — `client/tests/e2e/README.md`
-- **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
+- **test_room_environment_parity.py** (7 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **_environment_enum_from_schema()** (5 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **_environment_options_from_room_edit_modal()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_room_edit_modal_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_room_hierarchy_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **test_unified_room_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Path** (1 connections)
+- **Parity test for the room environment enum (#623). Guards against the exact…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Return the `environment` property's `enum` values from a room JSON schema.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **Return the non-empty `value`s of RoomEditModal.tsx's ENVIRONMENT_OPTIONS…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **room_hierarchy_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **unified_room_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **RoomEditModal.tsx's dropdown options must equal ROOM_ENVIRONMENTS (ignoring the…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ContainerComponent](ContainerComponent.md) (1 shared connections)
 
 ## Source Files
 
-- `client/README.md`
-- `client/tests/e2e/README.md`
-- `client/tests/e2e/SESSION_SHARING_IMPLEMENTATION.md`
-- `client/tests/e2e/TEST_EXECUTION_STATUS.md`
-- `client/tests/e2e/TIMEOUT_ANALYSIS.md`
-- `e2e-tests/CLEANUP.md`
+- `server/tests/unit/test_room_environment_parity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (55%)
-- INFERRED: 5 (45%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

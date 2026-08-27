@@ -1,12 +1,13 @@
 # Random Stats Generator Planning
 
-> 3 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Random Stats Generator Planning** (2 connections) — `docs/archive/PLANNING_stats.md`
-- **Pydantic Click Command Validation Integration** (1 connections) — `docs/archive/INTEGRATION_SUMMARY.md`
-- **Random Stats Generator Technical Plan** (1 connections) — `docs/archive/PLANNING_stats_generator.md`
+- **Shared JSON schemas** (3 connections) — `schemas/README.md`
+- **alias_schema.json** (1 connections) — `schemas/README.md`
+- **emote_schema.json** (1 connections) — `schemas/README.md`
+- **unified_room_schema.json** (1 connections) — `schemas/README.md`
 
 ## Relationships
 
@@ -14,14 +15,12 @@
 
 ## Source Files
 
-- `docs/archive/INTEGRATION_SUMMARY.md`
-- `docs/archive/PLANNING_stats.md`
-- `docs/archive/PLANNING_stats_generator.md`
+- `schemas/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

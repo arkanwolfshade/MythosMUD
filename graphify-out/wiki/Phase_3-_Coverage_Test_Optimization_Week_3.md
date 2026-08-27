@@ -1,21 +1,22 @@
 # Phase 3: Coverage Test Optimization (Week 3)
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Phase 3: Coverage Test Optimization (Week 3)** (4 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 3.1: Reduce Command Handler Coverage Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 3.2: Reduce Error Logging Coverage Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 3.3: Merge Coverage Tests into Domain Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **2026_02_19_add_quest_tables.py** (2 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **Create quest_definitions, quest_instances, quest_offers tables.** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
+- **Drop quest tables (order matters for FKs).** (1 connections) — `server/alembic/versions/2026_02_19_add_quest_tables.py`
 
 ## Relationships
 
-- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/alembic/versions/2026_02_19_add_quest_tables.py`
 
 ## Audit Trail
 

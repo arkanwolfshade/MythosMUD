@@ -1,51 +1,48 @@
 # MovementMonitor
 
-> 32 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **MovementMonitor** (22 connections) — `server/game/movement_monitor.py`
-- **.get_alerts()** (6 connections) — `server/game/movement_monitor.py`
-- **.get_metrics()** (6 connections) — `server/game/movement_monitor.py`
-- **.get_performance_summary()** (5 connections) — `server/game/movement_monitor.py`
-- **.validate_room_integrity()** (5 connections) — `server/game/movement_monitor.py`
-- **._check_alerts()** (4 connections) — `server/game/movement_monitor.py`
-- **.log_performance_summary()** (4 connections) — `server/game/movement_monitor.py`
-- **.record_movement_attempt()** (4 connections) — `server/game/movement_monitor.py`
-- **movement_monitor()** (4 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **Any** (4 connections)
-- **._collect_room_player_map()** (3 connections) — `server/game/movement_monitor.py`
-- **.__init__()** (3 connections) — `server/game/movement_monitor.py`
-- **.record_integrity_check()** (3 connections) — `server/game/movement_monitor.py`
-- **sample_player_id()** (3 connections) — `server/tests/unit/game/test_movement_monitor.py`
-- **.record_concurrent_movement()** (2 connections) — `server/game/movement_monitor.py`
-- **.reset_metrics()** (2 connections) — `server/game/movement_monitor.py`
-- **UUID** (2 connections)
-- **fixture** (2 connections)
-- **Record concurrent movement count.** (1 connections) — `server/game/movement_monitor.py`
-- **Record an integrity check result.** (1 connections) — `server/game/movement_monitor.py`
-- **Validate players are not in multiple rooms.** (1 connections) — `server/game/movement_monitor.py`
-- **Get comprehensive movement metrics.** (1 connections) — `server/game/movement_monitor.py`
-- **Get current alerts based on thresholds.** (1 connections) — `server/game/movement_monitor.py`
-- **Comprehensive monitoring system for the movement system. This class provides: -…** (1 connections) — `server/game/movement_monitor.py`
-- **Check for alerts and log them.** (1 connections) — `server/game/movement_monitor.py`
-- *... and 7 more nodes in this community*
+- **Argon2 Password Hashing Best Practices** (8 connections) — `.claude/rules/argon2.md`
+- **7. Tooling and Environment** (5 connections) — `.claude/rules/argon2.md`
+- **1. Code Organization and Structure** (4 connections) — `.claude/rules/argon2.md`
+- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/argon2.md`
+- **3. Performance Considerations** (3 connections) — `.claude/rules/argon2.md`
+- **4. Security Best Practices** (3 connections) — `.claude/rules/argon2.md`
+- **5. Testing Approaches** (3 connections) — `.claude/rules/argon2.md`
+- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/argon2.md`
+- **argon2.md** (1 connections) — `.claude/rules/argon2.md`
+- **1.1. Directory Structure** (1 connections) — `.claude/rules/argon2.md`
+- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/argon2.md`
+- **1.3. Module Organization** (1 connections) — `.claude/rules/argon2.md`
+- **2.1. Design Patterns** (1 connections) — `.claude/rules/argon2.md`
+- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/argon2.md`
+- **2.3. Anti-patterns** (1 connections) — `.claude/rules/argon2.md`
+- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/argon2.md`
+- **3.2. Memory Management** (1 connections) — `.claude/rules/argon2.md`
+- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/argon2.md`
+- **4.2. Security Implementation** (1 connections) — `.claude/rules/argon2.md`
+- **5.1. Unit Testing** (1 connections) — `.claude/rules/argon2.md`
+- **5.2. Integration Testing** (1 connections) — `.claude/rules/argon2.md`
+- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/argon2.md`
+- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/argon2.md`
+- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/argon2.md`
+- **7.2. Build Configuration** (1 connections) — `.claude/rules/argon2.md`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [api/monitoring.py](api-monitoring.py.md) (5 shared connections)
-- [test_movement_monitor.py](test_movement_monitor.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/movement_monitor.py`
-- `server/tests/unit/game/test_movement_monitor.py`
+- `.claude/rules/argon2.md`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (93%)
-- INFERRED: 4 (7%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

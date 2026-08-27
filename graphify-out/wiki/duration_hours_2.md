@@ -1,21 +1,22 @@
 # duration_hours
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **DML Migrations** (4 connections) — `data/db/migrations/README.md`
+- **data/db/migrations/README.md** (1 connections) — `data/db/migrations/README.md`
+- **Dialogue definitions (#583)** (1 connections) — `data/db/migrations/README.md`
+- **Historical CSV files** (1 connections) — `data/db/migrations/README.md`
+- **Migration files** (1 connections) — `data/db/migrations/README.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `data/db/migrations/README.md`
 
 ## Audit Trail
 

@@ -1,27 +1,33 @@
 # _EventBusPublishPort
 
-> 5 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **_EventBusPublishPort** (4 connections) — `server/realtime/event_handlers.py`
-- **.publish()** (2 connections) — `server/realtime/event_handlers.py`
-- **Protocol** (1 connections)
-- **Minimal surface for publishing domain events from ConnectionManager.event_bus.** (1 connections) — `server/realtime/event_handlers.py`
-- **Publish a single event to the in-process bus.** (1 connections) — `server/realtime/event_handlers.py`
+- **TestResolveExitTarget** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_coords_and_bidirectional_when_target_has_reverse_exit()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_coords_and_not_bidirectional_when_no_reverse()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_none_when_target_room_has_no_coords()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **.test_returns_none_when_target_room_missing()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Room without a reverse exit is not considered bidirectional.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **If the target room ID does not exist, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **If the target room lacks map coordinates, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Tests for _resolve_exit_target.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Room with a reverse exit is treated as bidirectional and returns its…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Relationships
 
-- [nats_exceptions.py](nats_exceptions.py.md) (1 shared connections)
+- [properties](properties.md) (5 shared connections)
+- [Any](Any.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
+- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

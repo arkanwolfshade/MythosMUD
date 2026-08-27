@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **GET /v1/monitoring/health** (0 connections) — `server/README.md`
+- **Pytest Best-Practices Remediation** (0 connections) — `.cursor/plans/pytest_best-practices_remediation_9fb67c68.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `server/README.md`
+- `.cursor/plans/pytest_best-practices_remediation_9fb67c68.plan.md`
 
 ## Audit Trail
 

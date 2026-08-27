@@ -1,30 +1,24 @@
 # ._despawn_npc
 
-> 6 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **._despawn_npc()** (4 connections) — `server/services/npc_combat_lifecycle.py`
-- **.despawn_npc_safely()** (3 connections) — `server/services/npc_combat_lifecycle.py`
-- **.get_npc_lifecycle_manager()** (3 connections) — `server/services/player_combat_service_support.py`
-- **Despawn NPC with defensive error handling. Args: npc_id: ID of the NPC to…** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Despawn an NPC. Args: npc_id: ID of the NPC to despawn _room_id: ID of the room…** (1 connections) — `server/services/npc_combat_lifecycle.py`
-- **Return lifecycle manager (sync); may be wrapped by asyncio.to_thread.** (1 connections) — `server/services/player_combat_service_support.py`
+- **test_remove_room_occupant_removes_empty_room()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **Test remove_room_occupant() removes room when last occupant leaves.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_combat_lifecycle.py`
-- `server/services/player_combat_service_support.py`
+- `server/tests/unit/realtime/test_room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 2 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

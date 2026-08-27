@@ -1,34 +1,41 @@
 # PlayerStatsConfig
 
-> 11 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **PlayerStatsConfig** (9 connections) — `server/config/models/player_stats.py`
-- **.to_dict()** (3 connections) — `server/config/models/player_stats.py`
-- **.validate_derived_stats()** (3 connections) — `server/config/models/player_stats.py`
-- **.validate_stat_range()** (3 connections) — `server/config/models/player_stats.py`
-- **field_validator** (2 connections)
-- **Any** (1 connections)
-- **BaseSettings** (1 connections)
-- **Default player statistics configuration.** (1 connections) — `server/config/models/player_stats.py`
-- **Validate stats are in valid range.** (1 connections) — `server/config/models/player_stats.py`
-- **Validate derived stats values.** (1 connections) — `server/config/models/player_stats.py`
-- **Convert to dictionary format expected by game code.** (1 connections) — `server/config/models/player_stats.py`
+- **SpellMaterialsService** (16 connections) — `server/game/magic/spell_materials.py`
+- **.consume_materials()** (8 connections) — `server/game/magic/spell_materials.py`
+- **._build_final_inventory()** (4 connections) — `server/game/magic/spell_materials.py`
+- **.check_materials()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._consume_material_item()** (4 connections) — `server/game/magic/spell_materials.py`
+- **._process_material_requirement()** (4 connections) — `server/game/magic/spell_materials.py`
+- **Any** (4 connections)
+- **.__init__()** (3 connections) — `server/game/magic/spell_materials.py`
+- **UUID** (3 connections)
+- **Build final inventory with consumed materials removed. Args: inventory:…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume spell materials from player inventory. Args: player_id: Player ID…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Service for handling spell material requirements. Handles checking if players…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Initialize the spell materials service. Args: player_service: Player service…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Check if player has all required materials. Args: player_id: Player ID spell:…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Process a single material requirement. Args: material: Material requirement…** (1 connections) — `server/game/magic/spell_materials.py`
+- **Consume a material item. Args: item: Inventory item material_id: Material ID…** (1 connections) — `server/game/magic/spell_materials.py`
 
 ## Relationships
 
-- [config/models/__init__.py](config-models-__init__.py.md) (3 shared connections)
-- [AppConfig](AppConfig.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (7 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [test_metrics.py](test_metrics.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/config/models/player_stats.py`
+- `server/game/magic/spell_materials.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 30 (86%)
+- INFERRED: 5 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

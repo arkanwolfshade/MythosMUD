@@ -1,26 +1,28 @@
 # Dimensional Shambler.md
 
-> 4 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Dimensional Shambler.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
-- **Formless Spawn.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
-- **Dimensional Shambler** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
-- **Formless Spawn** (1 connections) — `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- **.get_stat_requirements()** (5 connections) — `server/models/profession.py`
+- **.get_requirement_display_text()** (3 connections) — `server/models/profession.py`
+- **.meets_stat_requirements()** (3 connections) — `server/models/profession.py`
+- **Check if given stats meet the profession requirements. Args: stats: Dictionary…** (1 connections) — `server/models/profession.py`
+- **Get formatted text for displaying stat requirements. Returns: Formatted string…** (1 connections) — `server/models/profession.py`
+- **Get profession stat requirements as dictionary.** (1 connections) — `server/models/profession.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (3 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/entities/Dimensional Shambler.md`
-- `data/MythosMUD-Obsidian/wiki/entities/Formless Spawn.md`
+- `server/models/profession.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

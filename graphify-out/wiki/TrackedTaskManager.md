@@ -1,61 +1,53 @@
 # TrackedTaskManager
 
-> 45 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **TrackedTaskManager** (22 connections) — `server/app/tracked_task_manager.py`
-- **test_tracked_task_manager.py** (20 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **get_global_tracked_manager()** (19 connections) — `server/app/tracked_task_manager.py`
-- **tracked_task_manager.py** (16 connections) — `server/app/tracked_task_manager.py`
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **asyncio** (8 connections)
-- **memory_leak_prevention_channel_start_session()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_supervised_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **.create_tracked_task()** (5 connections) — `server/app/tracked_task_manager.py`
-- **patch_asyncio_create_task_with_tracking()** (4 connections) — `server/app/tracked_task_manager.py`
-- **reset_global_tracked_manager()** (4 connections) — `server/app/tracked_task_manager.py`
-- **.__init__()** (3 connections) — `server/app/tracked_task_manager.py`
-- **.set_task_registry()** (3 connections) — `server/app/tracked_task_manager.py`
-- **reset_global()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_audit_orphans_counts_untracked()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_cleanup_orphaned_tasks_cancels_running()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_create_supervised_task_completes()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_create_tracked_task_registry_failure_falls_back()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_create_tracked_task_runs_coro()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_create_tracked_task_with_registry()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **test_patch_asyncio_create_task_with_tracking()** (3 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- **.actively_tracked_task_count()** (2 connections) — `server/app/tracked_task_manager.py`
-- **.audit_orphans()** (2 connections) — `server/app/tracked_task_manager.py`
-- **.cleanup_orphaned_tasks()** (2 connections) — `server/app/tracked_task_manager.py`
-- **test_global_manager_singleton()** (2 connections) — `server/tests/unit/app/test_tracked_task_manager.py`
-- *... and 20 more nodes in this community*
+- **MemoryProfiler** (33 connections) — `server/utils/memory_profiler.py`
+- **test_memory_profiler.py** (22 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_compare_models_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_current_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_delta()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_delta_no_baseline()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_get_memory_usage_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_init()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_measure_model_instantiation()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_measure_model_instantiation_zero_iterations()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_print_comparison_results()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_print_memory_summary()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_print_model_memory_usage()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_print_model_memory_usage_error()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_start_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **test_memory_profiler_stop_profiling()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **.__init__()** (2 connections) — `server/utils/memory_profiler.py`
+- **Test MemoryProfiler.measure_model_instantiation() measures memory.** (2 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Unit tests for memory profiler utilities. Tests the MemoryProfiler class…** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler.get_memory_usage_summary() returns summary.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler.print_memory_summary() doesn't raise.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler.print_model_memory_usage() doesn't raise.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler.print_model_memory_usage() handles error dict.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler initialization.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **Test MemoryProfiler.compare_models_memory_usage() aggregates stats.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (6 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (3 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (2 shared connections)
-- [GameTickService](GameTickService.md) (1 shared connections)
-- [CombatService](CombatService.md) (1 shared connections)
-- [bundles/game.py](bundles-game.py.md) (1 shared connections)
+- [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (7 shared connections)
+- [metadata](metadata.md) (6 shared connections)
+- [bench_cache.py](bench_cache.py.md) (6 shared connections)
+- [Disconnect Grace Period (linkdead)](Disconnect_Grace_Period_linkdead.md) (2 shared connections)
+- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/tracked_task_manager.py`
-- `server/container/bundles/core.py`
-- `server/tests/unit/app/test_tracked_task_manager.py`
+- `server/tests/unit/utils/test_memory_profiler.py`
+- `server/utils/memory_profiler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (92%)
-- INFERRED: 9 (8%)
+- EXTRACTED: 69 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---
