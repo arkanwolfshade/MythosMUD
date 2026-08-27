@@ -168,28 +168,6 @@ export function isRespawnApiResponse(value: unknown): value is RespawnApiRespons
 }
 
 /**
- * Open container API response (container + mutation_token).
- */
-export interface OpenContainerApiResponse {
-  container?: unknown;
-  mutation_token?: string;
-}
-
-/**
- * Type guard: Check if value is an OpenContainerApiResponse.
- */
-export function isOpenContainerApiResponse(value: unknown): value is OpenContainerApiResponse {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-  const o = value as Record<string, unknown>;
-  if (o.mutation_token !== undefined && typeof o.mutation_token !== 'string') {
-    return false;
-  }
-  return true;
-}
-
-/**
  * Type guard: Check if value is a string.
  */
 function isString(value: unknown): value is string {
