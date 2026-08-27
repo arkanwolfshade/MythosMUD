@@ -428,7 +428,6 @@ jobs:
         run: |
           npx eslint .
       - name: Dead code check (knip)
-        continue-on-error: true # Baseline has many findings; reduce over time, then remove this
         run: npm run knip
       - name: Run unit tests with coverage
         run: npm run test:coverage
