@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import type { HealthStatus } from '../../../types/health';
-import type { HallucinationMessage, LucidityStatus, RescueState } from '../../../types/lucidity';
+import type { LucidityStatus } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
 import { useTabbedInterface } from '../useTabbedInterface';
 import type { GameState } from '../utils/stateUpdateUtils';
@@ -53,8 +53,6 @@ export function useGameClientV2SurvivalAndTimeState() {
   const [isDeliriumRespawning, setIsDeliriumRespawning] = useState(false);
   const [lucidityStatus] = useState<LucidityStatus | null>(null);
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
-  const [, setHallucinationFeed] = useState<HallucinationMessage[]>([]);
-  const [rescueState, setRescueState] = useState<RescueState | null>(null);
   const [mythosTime, setMythosTime] = useState<MythosTimeState | null>(null);
   const [hasRespawned, setHasRespawned] = useState(false);
 
@@ -75,9 +73,6 @@ export function useGameClientV2SurvivalAndTimeState() {
     lucidityStatus,
     healthStatus,
     setHealthStatus,
-    setHallucinationFeed,
-    rescueState,
-    setRescueState,
     mythosTime,
     setMythosTime,
     hasRespawned,

@@ -144,4 +144,35 @@ describe('MapEditToolbar', () => {
     expect(onRedo).toHaveBeenCalledTimes(1);
     expect(onReset).toHaveBeenCalledTimes(1);
   });
+
+  describe('recalculate coordinates (#693)', () => {
+    it('should not render the recalculate button when onRecalculate is omitted', () => {
+      render(<MapEditToolbar {...defaultProps} />);
+      expect(screen.queryByRole('button', { name: /recalculate/i })).not.toBeInTheDocument();
+    });
+
+    it('should call onRecalculate when the button is clicked', async () => {
+      const onRecalculate = vi.fn(async () => {});
+      render(<MapEditToolbar {...defaultProps} onRecalculate={onRecalculate} />);
+
+      fireEvent.click(screen.getByRole('button', { name: /recalculate/i }));
+
+      await waitFor(() => {
+        expect(onRecalculate).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should alert with the error message when onRecalculate fails', async () => {
+      const onRecalculate = vi.fn(async () => {
+        throw new Error('Recalculation failed');
+      });
+      render(<MapEditToolbar {...defaultProps} onRecalculate={onRecalculate} />);
+
+      fireEvent.click(screen.getByRole('button', { name: /recalculate/i }));
+
+      await waitFor(() => {
+        expect(window.alert).toHaveBeenCalledWith('Recalculation failed');
+      });
+    });
+  });
 });

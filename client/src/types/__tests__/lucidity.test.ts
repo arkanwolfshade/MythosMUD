@@ -6,15 +6,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import type {
-  HallucinationMessage,
-  HallucinationSeverity,
-  LucidityChangeMeta,
-  LucidityStatus,
-  LucidityTier,
-  RescuePhase,
-  RescueState,
-} from '../lucidity';
+import type { LucidityChangeMeta, LucidityStatus, LucidityTier } from '../lucidity';
 
 describe('Lucidity Types', () => {
   describe('LucidityTier', () => {
@@ -92,114 +84,6 @@ describe('Lucidity Types', () => {
     });
   });
 
-  describe('HallucinationSeverity', () => {
-    it('should accept valid hallucination severity values', () => {
-      const severities: HallucinationSeverity[] = ['minor', 'moderate', 'severe'];
-
-      severities.forEach(severity => {
-        expect(typeof severity).toBe('string');
-        expect(['minor', 'moderate', 'severe']).toContain(severity);
-      });
-    });
-  });
-
-  describe('HallucinationMessage', () => {
-    it('should create valid HallucinationMessage object', () => {
-      const message: HallucinationMessage = {
-        id: 'hallucination-1',
-        title: 'Whispers in the Dark',
-        description: 'You hear voices calling your name',
-        severity: 'moderate',
-        category: 'auditory',
-        timestamp: new Date().toISOString(),
-      };
-
-      expect(message.id).toBe('hallucination-1');
-      expect(message.title).toBe('Whispers in the Dark');
-      expect(message.description).toBe('You hear voices calling your name');
-      expect(message.severity).toBe('moderate');
-      expect(message.category).toBe('auditory');
-      expect(typeof message.timestamp).toBe('string');
-    });
-
-    it('should accept optional description and category', () => {
-      const message: HallucinationMessage = {
-        id: 'hallucination-2',
-        title: 'Shadow Movement',
-        severity: 'minor',
-        timestamp: new Date().toISOString(),
-      };
-
-      expect(message.description).toBeUndefined();
-      expect(message.category).toBeUndefined();
-    });
-  });
-
-  describe('RescuePhase', () => {
-    it('should accept valid rescue phase values', () => {
-      const phases: RescuePhase[] = ['idle', 'catatonic', 'channeling', 'success', 'failed', 'sanitarium'];
-
-      phases.forEach(phase => {
-        expect(typeof phase).toBe('string');
-        expect(['idle', 'catatonic', 'channeling', 'success', 'failed', 'sanitarium']).toContain(phase);
-      });
-    });
-  });
-
-  describe('RescueState', () => {
-    it('should create valid RescueState object', () => {
-      const state: RescueState = {
-        status: 'channeling',
-        targetName: 'Player1',
-        rescuerName: 'Player2',
-        progress: 50,
-        etaSeconds: 30,
-        message: 'Rescue in progress',
-        timestamp: new Date().toISOString(),
-      };
-
-      expect(state.status).toBe('channeling');
-      expect(state.targetName).toBe('Player1');
-      expect(state.rescuerName).toBe('Player2');
-      expect(state.progress).toBe(50);
-      expect(state.etaSeconds).toBe(30);
-      expect(state.message).toBe('Rescue in progress');
-      expect(typeof state.timestamp).toBe('string');
-    });
-
-    it('should accept minimal RescueState with only required fields', () => {
-      const state: RescueState = {
-        status: 'idle',
-        timestamp: new Date().toISOString(),
-      };
-
-      expect(state.status).toBe('idle');
-      expect(state.targetName).toBeUndefined();
-      expect(state.rescuerName).toBeUndefined();
-      expect(state.progress).toBeUndefined();
-      expect(state.etaSeconds).toBeUndefined();
-      expect(state.message).toBeUndefined();
-    });
-
-    it('should accept all optional fields', () => {
-      const state: RescueState = {
-        status: 'success',
-        targetName: 'Player1',
-        rescuerName: 'Player2',
-        progress: 100,
-        etaSeconds: 0,
-        message: 'Rescue successful',
-        timestamp: new Date().toISOString(),
-      };
-
-      expect(state.targetName).toBe('Player1');
-      expect(state.rescuerName).toBe('Player2');
-      expect(state.progress).toBe(100);
-      expect(state.etaSeconds).toBe(0);
-      expect(state.message).toBe('Rescue successful');
-    });
-  });
-
   describe('Type Compatibility', () => {
     it('should allow LucidityStatus to be used in arrays', () => {
       const statuses: LucidityStatus[] = [
@@ -220,40 +104,6 @@ describe('Lucidity Types', () => {
       expect(statuses.length).toBe(2);
       expect(statuses[0].tier).toBe('lucid');
       expect(statuses[1].tier).toBe('uneasy');
-    });
-
-    it('should allow HallucinationMessage to be used in arrays', () => {
-      const messages: HallucinationMessage[] = [
-        {
-          id: 'msg1',
-          title: 'Message 1',
-          severity: 'minor',
-          timestamp: new Date().toISOString(),
-        },
-        {
-          id: 'msg2',
-          title: 'Message 2',
-          severity: 'severe',
-          timestamp: new Date().toISOString(),
-        },
-      ];
-
-      expect(messages.length).toBe(2);
-      expect(messages[0].severity).toBe('minor');
-      expect(messages[1].severity).toBe('severe');
-    });
-
-    it('should allow RescueState to transition between phases', () => {
-      const states: RescueState[] = [
-        { status: 'idle', timestamp: new Date().toISOString() },
-        { status: 'catatonic', timestamp: new Date().toISOString() },
-        { status: 'channeling', timestamp: new Date().toISOString() },
-        { status: 'success', timestamp: new Date().toISOString() },
-      ];
-
-      expect(states.length).toBe(4);
-      expect(states[0].status).toBe('idle');
-      expect(states[3].status).toBe('success');
     });
   });
 });

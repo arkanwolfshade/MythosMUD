@@ -2,7 +2,7 @@
 // As documented in "Event Processing Architecture" - Dr. Armitage, 1928
 
 import type { HealthStatus } from '../../../types/health';
-import type { LucidityStatus, RescueState } from '../../../types/lucidity';
+import type { LucidityStatus } from '../../../types/lucidity';
 import type { MythosTimeState } from '../../../types/mythosTime';
 import type { ChatMessage, Player, QuestLogEntry, Room } from '../types';
 
@@ -83,7 +83,6 @@ export interface EventHandlerContext {
   setIsDeliriumRespawning: (respawning: boolean) => void;
   setDeathLocation: (location: string) => void;
   setDeliriumLocation: (location: string) => void;
-  setRescueState: (state: RescueState | null) => void;
   onLogout?: () => void;
 }
 

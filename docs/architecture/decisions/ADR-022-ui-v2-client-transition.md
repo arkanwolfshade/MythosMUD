@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.3.0** · MythosMUD · 2026-08-26
+**Version 1.4.0** · MythosMUD · 2026-08-27
 
 ---
 
@@ -68,8 +68,10 @@ materially false premise, and the first citing a nonexistent document.
 
 - Positive: the live architecture is on record; the orphaned surface has an inventory and named
   owners (§6); a CI gate (§6) prevents silent re-accumulation once the sequence completes.
-- Negative: 82 of 155 legacy modules are confirmed orphaned but not yet deleted — this ADR is a
-  plan, not a cleanup. The bundle does not shrink until the cluster issues land.
+- Negative: this ADR was a plan, not a cleanup, until the cluster issues landed. As of #693, all
+  four removal clusters (#690-#693) have merged — the 82-of-155 orphan count this ADR opened with
+  is now retired. What remains is #694: proving the retirement finished by removing knip's
+  `continue-on-error: true` gate exception.
 - Neutral: no runtime behavior changes in the PR that introduces this ADR.
 
 ## 6. Retirement Plan
@@ -78,12 +80,20 @@ materially false premise, and the first citing a nonexistent document.
 
 **Definition of "live":** transitively reachable via a static or `import()` reference — including
 extension-inclusive imports (`from '../components/X.tsx'`) — from the production entry
-(`index.html` → `main.tsx`), following imports to closure. A module reachable only from its own
-test file, or only from another module that is itself only test-reachable, is **orphaned**, not
-live. A reference whose result is discarded — `void expr;`, a subscription whose value no
-downstream code ever reads, an import used only inside a discarded expression — does not make the
-referenced module live either: reachable-and-inert is still orphaned. (Found by #692; see the
-cluster-3 `[NOTE]` below.)
+(`index.html` → `main.tsx`), following imports to closure, **and** lying on a path from a real
+input (a server event, a user action) to a rendered output or an observable side effect. A module
+reachable only from its own test file, or only from another module that is itself only
+test-reachable, is **orphaned**, not live. Reachability alone is not liveness: a reference that
+sits on no such input-to-output path — however the reference is written — does not make the
+referenced module live. Two shapes of this were found in practice and are illustrative, not
+exhaustive:
+
+- **Consumer-side**: a reference whose result is discarded — `void expr;`, a subscription whose
+  value no downstream code ever reads, an import used only inside a discarded expression. (Found
+  by #692; see the cluster-3 `[NOTE]` below.)
+- **Producer-side**: a state slot that is read and acted on, but whose setter is never invoked with
+  a real value in production — the real event handler for the data it claims to represent never
+  calls it. (Found by #693; see the cluster-4 `[NOTE]` below.)
 
 **Stub exemption:** a module kept alive by tests alone is not orphaned if it carries an explicit
 comment naming it a stub for future implementation *and* references a GitHub Issue tracking that
@@ -150,6 +160,36 @@ cleanup is left to #694. All four Playwright specs under `tests/e2e/runtime/cont
 unmodified — they were already command-driven with no GUI assertions, independently confirming the
 text-command-reachable premise the deletion rests on.
 
+**[NOTE]**
+Cluster 4's own removal PR (#693) found the issue's 14-file list was accurate — the second cluster
+running with no undercount, after #692. Every remaining `ui/` sibling and `MythosPanel` (flagged in
+cluster 3's `[NOTE]` as "not our cascade") stayed live, confirming that call. Three status banners
+were flagged as possible behaviour gaps; investigation found the underlying server subsystems live
+but the client pipelines dead **end-to-end**, in ways worse than the flag suggested:
+`RescueStatusBanner`'s `rescueState` was read and ref-synced, but `setRescueState` was never called
+with a non-null value anywhere in production — the real `rescue_update` handler never touched it,
+only appended a chat line. `HallucinationTicker`'s feed slot discarded its own value at the
+destructure (`const [, setHallucinationFeed] = useState(...)`), and its sole producer function had
+no callers outside its own test. Both pipelines, plus their type/factory contract
+(`HallucinationMessage`, `RescueState`, `createHallucinationEntry`, `createRescueState`), were
+deleted alongside the banners — direct precedent from #692's `OpenContainerApiResponse` removal,
+not deferred to #694. This producer-side inertness is what the §6 generalization above now covers;
+it is a different flavour from #692's discarded-reference case, and finding two distinct flavours
+in two consecutive clusters is why §6 was generalized rather than given a third enumerated clause.
+`IncapacitatedBanner` had no client pipeline at all — a pure missing-renderer gap. All three are
+tracked as separate decide-then-port issues
+([#713](https://github.com/arkanwolfshade/MythosMUD/issues/713) rescue,
+[#714](https://github.com/arkanwolfshade/MythosMUD/issues/714) hallucination feed,
+[#715](https://github.com/arkanwolfshade/MythosMUD/issues/715) incapacitation) — three, not one,
+since each has a distinct server owner. `AsciiMapEditor.tsx` was an unrouted placeholder (zero
+importers, its own docstring calling it unfinished) but the sole client of a live endpoint,
+`POST /api/maps/coordinates/recalculate`; unlike every other orphan this ADR has retired, its
+action was **ported** into the live `RoomMapEditor`'s `MapEditToolbar` rather than dropped — the
+first port in the sequence since #691's `performanceTester.ts`. `src/components/ui/README.md`
+documented five deleted components alongside still-live ones and was edited, not deleted — a
+knip-invisible artifact class, the documentation counterpart to #691's stranded
+`MonitoringPanel.css`.
+
 **Removal clusters** (one issue each, filed alongside this ADR):
 
 | Cluster | Files | Contents | Issue |
@@ -157,7 +197,7 @@ text-command-reachable premise the deletion rests on.
 | Top-level demo/test + legacy GameTerminal | 26 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
 | `panels/` chat & game-log family | 42 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*`, plus 7 `chatPanel*` satellite modules found during removal | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
 | `containers/` | 6, plus the `containerStore.ts` cascade | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*`; cascade: `stores/containerStore.ts` + its test | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
-| `ui/` misc + stray singletons | 14 | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*` | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
+| `ui/` misc + stray singletons | 14, plus the rescue/hallucination client pipeline cascade | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*`; cascade: `rescueState`/`hallucinationFeed` pipelines + their type/factory contract | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
 
 Each cluster issue carries its own per-file list, an export-signature comparison against its
 apparent `ui-v2` counterpart (flagging suspected behaviour gaps — not claiming equivalence, which
@@ -188,3 +228,4 @@ what proves the retirement finished — not this ADR.
 | 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
 | 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
 | 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |
+| 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |

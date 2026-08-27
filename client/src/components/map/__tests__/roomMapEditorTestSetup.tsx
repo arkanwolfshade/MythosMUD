@@ -137,6 +137,7 @@ vi.mock('../MapEditToolbar', () => ({
     canRedo,
     onUndo,
     onRedo,
+    onRecalculate,
   }: {
     onSave?: () => void;
     onReset?: () => void;
@@ -145,6 +146,7 @@ vi.mock('../MapEditToolbar', () => ({
     canRedo?: boolean;
     onUndo?: () => void;
     onRedo?: () => void;
+    onRecalculate?: () => void;
   }) => (
     <div data-testid="map-edit-toolbar">
       <button data-testid="save-button" onClick={onSave} disabled={!hasUnsavedChanges}>
@@ -159,6 +161,11 @@ vi.mock('../MapEditToolbar', () => ({
       <button data-testid="redo-button" onClick={onRedo} disabled={!canRedo}>
         Redo
       </button>
+      {onRecalculate && (
+        <button data-testid="recalculate-button" onClick={onRecalculate}>
+          Recalculate
+        </button>
+      )}
     </div>
   ),
 }));
@@ -273,6 +280,10 @@ vi.mock('../../utils/config', () => ({
   getApiBaseUrl: () => 'http://localhost:54768',
 }));
 
+const recalculateCoordinatesMock = vi.hoisted(() => vi.fn(() => Promise.resolve({ conflict_count: 0 })));
+export { recalculateCoordinatesMock };
+
 vi.mock('../utils/saveMapChanges', () => ({
   saveMapChanges: vi.fn(() => Promise.resolve()),
+  recalculateCoordinates: recalculateCoordinatesMock,
 }));

@@ -28,6 +28,7 @@ import { RoomEditModal } from './RoomEditModal';
 import { edgeTypes, nodeTypes } from './config';
 import { useMapEditing } from './hooks/useMapEditing';
 import type { ExitEdgeData, RoomNodeData } from './types';
+import { recalculateCoordinates } from './utils/saveMapChanges';
 import {
   MAP_EDITOR_DIRECTIONS,
   useRoomMapEditorData,
@@ -192,6 +193,7 @@ type MapEditorModals = ReturnType<typeof useRoomMapEditorModals>;
 interface RoomMapEditorChromeProps {
   data: MapEditorData;
   editing: MapEditorEditing;
+  onRecalculate: () => Promise<void>;
 }
 
 interface RoomMapEditorLoadedViewProps {
@@ -199,6 +201,7 @@ interface RoomMapEditorLoadedViewProps {
   editing: MapEditorEditing;
   selection: MapEditorSelection;
   modals: MapEditorModals;
+  onRecalculate: () => Promise<void>;
 }
 
 function uniqueSubZones(rooms: MapEditorData['rooms']): string[] {
@@ -206,7 +209,7 @@ function uniqueSubZones(rooms: MapEditorData['rooms']): string[] {
   return Array.from(new Set(values));
 }
 
-function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
+function RoomMapEditorChrome({ data, editing, onRecalculate }: RoomMapEditorChromeProps) {
   const {
     plane,
     zone,
@@ -244,6 +247,7 @@ function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
           onSaveFailed={() => {
             void refetch();
           }}
+          onRecalculate={onRecalculate}
         />
       </div>
       <div className="absolute top-4 left-4 z-10">
@@ -265,13 +269,13 @@ function RoomMapEditorChrome({ data, editing }: RoomMapEditorChromeProps) {
   );
 }
 
-function RoomMapEditorLoadedView({ data, editing, selection, modals }: RoomMapEditorLoadedViewProps) {
+function RoomMapEditorLoadedView({ data, editing, selection, modals, onRecalculate }: RoomMapEditorLoadedViewProps) {
   const { nodes: editedNodes, edges: editedEdges, onNodesChange, onEdgesChange, validateEdgeCreation } = editing;
   const { handleNodeClick, handleEdgeClick } = selection;
 
   return (
     <div className="relative h-full w-full bg-mythos-terminal-background">
-      <RoomMapEditorChrome data={data} editing={editing} />
+      <RoomMapEditorChrome data={data} editing={editing} onRecalculate={onRecalculate} />
       <RoomMapEditorFlow
         flow={{
           editedNodes,
@@ -303,6 +307,20 @@ export function RoomMapEditor(props: RoomMapEditorProps) {
   );
   const selection = useRoomMapEditorSelection(data.rooms, editing.edges, props.onRoomSelect);
   const modals = useRoomMapEditorModals(data.rooms, editing.edges, editing, selection);
+
+  const handleRecalculate = async () => {
+    const result = await recalculateCoordinates(data.selectedPlane, data.selectedZone, data.selectedSubZone, {
+      authToken: props.authToken,
+      baseUrl: props.baseUrl,
+    });
+    if (result.conflict_count > 0) {
+      alert(`Recalculation complete with ${result.conflict_count} conflicts. Check console for details.`);
+      console.warn('Coordinate conflicts:', result.conflicts);
+    } else {
+      alert('Coordinates recalculated successfully.');
+    }
+    await data.refetch();
+  };
 
   if (data.isLoading) {
     return (
@@ -344,5 +362,13 @@ export function RoomMapEditor(props: RoomMapEditorProps) {
     );
   }
 
-  return <RoomMapEditorLoadedView data={data} editing={editing} selection={selection} modals={modals} />;
+  return (
+    <RoomMapEditorLoadedView
+      data={data}
+      editing={editing}
+      selection={selection}
+      modals={modals}
+      onRecalculate={handleRecalculate}
+    />
+  );
 }

@@ -8,7 +8,6 @@ interface LoginGracePeriodBannerProps {
 /**
  * Banner displayed when player is in login grace period.
  * Shows countdown timer for the 10-second immunity period.
- * Similar to IncapacitatedBanner but for login protection.
  */
 export const LoginGracePeriodBanner = memo<LoginGracePeriodBannerProps>(({ remainingSeconds, className }) => {
   // Initialize state with prop value
