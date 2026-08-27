@@ -23,10 +23,10 @@ vi.mock('../hooks/useRoomMapData', () => ({
 }));
 
 // Before RoomMapEditor: registers vi.mock('reactflow', ...) so the editor does not pull real @reactflow/core.
-import './roomMapEditorTestSetup';
+import { recalculateCoordinatesMock } from './roomMapEditorTestSetup';
 
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { RoomMapEditor } from '../RoomMapEditor';
 import type { UseRoomMapDataOptions } from '../hooks/useRoomMapData';
@@ -245,6 +245,69 @@ describe('RoomMapEditor', () => {
 
       const subzoneInput = screen.getByTestId('subzone-input');
       expect(subzoneInput).toBeInTheDocument();
+    });
+  });
+
+  describe('Recalculate coordinates (#693)', () => {
+    beforeEach(() => {
+      window.alert = vi.fn();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should call recalculateCoordinates with the current plane/zone/subZone and auth', async () => {
+      render(<RoomMapEditor {...defaultProps} subZone="test-subzone" />);
+
+      fireEvent.click(screen.getByTestId('recalculate-button'));
+
+      await waitFor(() => {
+        expect(recalculateCoordinatesMock).toHaveBeenCalledWith('test-plane', 'test-zone', 'test-subzone', {
+          authToken: 'test-token',
+          baseUrl: undefined,
+        });
+      });
+    });
+
+    it('should alert success and refetch when there are no conflicts', async () => {
+      const refetch = vi.fn();
+      useRoomMapDataMock.mockReturnValue({
+        rooms: [{ id: 'room1', name: 'Room 1', description: 'Test room', zone: 'test-zone', exits: {} }],
+        isLoading: false,
+        error: null,
+        refetch,
+      });
+      recalculateCoordinatesMock.mockResolvedValueOnce({ conflict_count: 0 });
+
+      render(<RoomMapEditor {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('recalculate-button'));
+
+      await waitFor(() => {
+        expect(window.alert).toHaveBeenCalledWith('Coordinates recalculated successfully.');
+      });
+      expect(refetch).toHaveBeenCalled();
+    });
+
+    it('should alert the conflict count and still refetch when conflicts are found', async () => {
+      const refetch = vi.fn();
+      useRoomMapDataMock.mockReturnValue({
+        rooms: [{ id: 'room1', name: 'Room 1', description: 'Test room', zone: 'test-zone', exits: {} }],
+        isLoading: false,
+        error: null,
+        refetch,
+      });
+      recalculateCoordinatesMock.mockResolvedValueOnce({ conflict_count: 2, conflicts: ['room1', 'room2'] });
+
+      render(<RoomMapEditor {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('recalculate-button'));
+
+      await waitFor(() => {
+        expect(window.alert).toHaveBeenCalledWith(
+          'Recalculation complete with 2 conflicts. Check console for details.'
+        );
+      });
+      expect(refetch).toHaveBeenCalled();
     });
   });
 });

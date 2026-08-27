@@ -30,6 +30,11 @@ export interface MapEditToolbarProps {
    * ordering), and local optimistic state no longer reflects the truth. See #627.
    */
   onSaveFailed?: () => void;
+  /**
+   * Callback for admin coordinate recalculation. Omit to hide the button entirely -- ported from
+   * the legacy AsciiMapEditor (#693), which was the endpoint's only client.
+   */
+  onRecalculate?: () => Promise<void>;
 }
 
 /**
@@ -44,8 +49,10 @@ export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
   onSave,
   onReset,
   onSaveFailed,
+  onRecalculate,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [isRecalculating, setIsRecalculating] = useState(false);
 
   const handleSave = useCallback(async () => {
     if (!hasUnsavedChanges) return;
@@ -82,6 +89,21 @@ export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
 
     onReset();
   }, [hasUnsavedChanges, onReset]);
+
+  const handleRecalculate = useCallback(async () => {
+    if (!onRecalculate) return;
+
+    setIsRecalculating(true);
+    try {
+      await onRecalculate();
+    } catch (error) {
+      console.error('Failed to recalculate coordinates:', error);
+      const message = error instanceof Error ? error.message : 'Failed to recalculate coordinates. Please try again.';
+      alert(message);
+    } finally {
+      setIsRecalculating(false);
+    }
+  }, [onRecalculate]);
 
   return (
     <div className="flex flex-col gap-2 bg-mythos-terminal-background border border-mythos-terminal-border rounded p-2 shadow-lg">
@@ -125,6 +147,17 @@ export const MapEditToolbar: React.FC<MapEditToolbarProps> = ({
       >
         ↺ Reset
       </button>
+
+      {/* Recalculate coordinates button */}
+      {onRecalculate && (
+        <button
+          onClick={handleRecalculate}
+          disabled={isRecalculating}
+          className="px-3 py-1 bg-mythos-terminal-background border border-mythos-terminal-border text-mythos-terminal-text rounded text-sm hover:bg-mythos-terminal-surface disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isRecalculating ? 'Recalculating...' : '⟳ Recalculate Coordinates'}
+        </button>
+      )}
     </div>
   );
 };

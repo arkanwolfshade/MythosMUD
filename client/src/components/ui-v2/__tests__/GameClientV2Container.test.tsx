@@ -98,10 +98,6 @@ vi.mock('./hooks/useGameConnectionManagement', () => ({
   }),
 }));
 
-vi.mock('./hooks/useHallucinationFeedCleanup', () => ({
-  useHallucinationFeedCleanup: () => {},
-}));
-
 vi.mock('./hooks/useMythosTimeBootstrap', () => ({
   useMythosTimeBootstrap: () => {},
 }));

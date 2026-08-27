@@ -6,7 +6,13 @@ import type { Edge } from 'reactflow';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { MapEditingChanges } from '../../hooks/useMapEditing';
 import type { ExitEdgeData } from '../../types';
-import { saveEdgeChanges, saveMapChanges, saveNodePositions, saveRoomUpdates } from '../saveMapChanges';
+import {
+  recalculateCoordinates,
+  saveEdgeChanges,
+  saveMapChanges,
+  saveNodePositions,
+  saveRoomUpdates,
+} from '../saveMapChanges';
 
 // Mock fetch
 globalThis.fetch = vi.fn();
@@ -298,6 +304,62 @@ describe('saveMapChanges', () => {
       const roomUpdates = new Map([['room1', { environment: 'not_real' }]]);
 
       await expect(saveRoomUpdates(roomUpdates, {})).rejects.toThrow(/Failed to save properties for room room1/);
+    });
+  });
+
+  describe('recalculateCoordinates', () => {
+    it('posts to the recalculate endpoint with plane/zone/sub_zone query params', async () => {
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ conflict_count: 0 }),
+      } as Response);
+
+      await recalculateCoordinates('earth', 'arkhamcity', 'downtown', { authToken: 'tok' });
+
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/api\/maps\/coordinates\/recalculate\?.*plane=earth.*zone=arkhamcity.*sub_zone=downtown/
+        ),
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({ Authorization: 'Bearer tok' }),
+        })
+      );
+    });
+
+    it('omits sub_zone when not provided', async () => {
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ conflict_count: 0 }),
+      } as Response);
+
+      await recalculateCoordinates('earth', 'arkhamcity', undefined, {});
+
+      const [url] = vi.mocked(fetch).mock.calls[0];
+      expect(String(url)).not.toContain('sub_zone');
+    });
+
+    it('resolves with the conflict count on success', async () => {
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ conflict_count: 2, conflicts: ['room1', 'room2'] }),
+      } as Response);
+
+      const result = await recalculateCoordinates('earth', 'arkhamcity', undefined, {});
+
+      expect(result).toEqual({ conflict_count: 2, conflicts: ['room1', 'room2'] });
+    });
+
+    it('throws with the server detail on a non-ok response', async () => {
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ detail: 'Recalculation failed' }),
+      } as Response);
+
+      await expect(recalculateCoordinates('earth', 'arkhamcity', undefined, {})).rejects.toThrow(
+        /Failed to recalculate coordinates: Recalculation failed/
+      );
     });
   });
 });

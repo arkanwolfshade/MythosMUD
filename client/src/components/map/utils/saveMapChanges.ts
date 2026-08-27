@@ -291,6 +291,44 @@ export async function saveRoomUpdates(
   }
 }
 
+export interface RecalculateCoordinatesResult {
+  conflict_count: number;
+  conflicts?: unknown;
+}
+
+/**
+ * Trigger server-side room coordinate recalculation for a plane/zone (optionally scoped to a
+ * sub-zone). Ported from the legacy `AsciiMapEditor.tsx`, the endpoint's only client (#693) --
+ * `POST /api/maps/coordinates/recalculate` (server/api/maps.py) itself is untouched.
+ */
+export async function recalculateCoordinates(
+  plane: string,
+  zone: string,
+  subZone: string | undefined,
+  options: SaveMapChangesOptions
+): Promise<RecalculateCoordinatesResult> {
+  const { authToken, baseUrl } = options;
+  const apiBaseUrl = baseUrl || getVersionedApiBaseUrl();
+  const url = new URL(resolveRoomsApiUrl(apiBaseUrl, '/api/maps/coordinates/recalculate'), window.location.origin);
+  url.searchParams.set('plane', plane);
+  url.searchParams.set('zone', zone);
+  if (subZone) {
+    url.searchParams.set('sub_zone', subZone);
+  }
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: buildJsonHeaders(authToken),
+  });
+
+  if (!response.ok) {
+    const detail = await readErrorDetail(response);
+    throw new Error(`Failed to recalculate coordinates: ${detail}`);
+  }
+
+  return (await response.json()) as RecalculateCoordinatesResult;
+}
+
 /**
  * Save all map changes to the server.
  */

@@ -27,14 +27,6 @@ Full TypeScript support with comprehensive type definitions and interfaces.
 
 ## Component Categories
 
-### Compound Components
-
-Complex components that use the compound pattern for flexible composition:
-
-**StatusPanel**: Displays player status information with sub-components
-
-**RoomInfo**: Shows room details with modular information sections
-
 ### Basic UI Components
 
 Fundamental building blocks for the interface:
@@ -43,20 +35,10 @@ Fundamental building blocks for the interface:
 
 **TerminalInput**: Text input with terminal styling
 
-**TerminalCard**: Container component with consistent styling
-
 **EldritchIcon**: Icon component with themed variants
 
 - **ChannelSelector**: Dropdown for chat channel selection
 - **MythosPanel**: Base panel component with theming
-
-### Specialized Components
-
-Purpose-built components for specific functionality:
-
-**FeedbackForm**: User feedback collection form
-
-**VirtualizedMessageList**: High-performance message list
 
 ## Usage Patterns
 
@@ -65,39 +47,6 @@ Purpose-built components for specific functionality:
 ```typescript
 // Import individual components
 import { TerminalButton, TerminalInput } from '../ui';
-
-// Import compound components
-import { StatusPanel, ConnectionStatus, PlayerName } from '../ui';
-
-// Import types
-import type { StatusPanelProps } from '../ui';
-```
-
-### Compound Component Usage
-
-```typescript
-// Using compound components
-<StatusPanel
-  player={player}
-  isConnected={isConnected}
-  playerName={playerName}
-  messagesCount={messagesCount}
-  commandsCount={commandsCount}
->
-  <ConnectionStatus />
-  <PlayerName />
-  <HealthStat />
-  <LucidityStat />
-  <CoreAttributes />
-  <HorrorStats />
-  <MessagesCount />
-  <CommandsCount />
-</StatusPanel>
-
-// Or use the AllStats convenience component
-<StatusPanel {...props}>
-  <AllStats />
-</StatusPanel>
 ```
 
 ### Basic Component Usage
@@ -149,10 +98,6 @@ All components include comprehensive test suites:
 # Run component tests
 
 npm run test:unit:run -- src/components/ui/__tests__/
-
-# Run specific component tests
-
-npm run test:unit:run -- src/components/ui/__tests__/StatusPanel.test.tsx
 ```
 
 ### Test Patterns
