@@ -10,3 +10,10 @@ htmlcov/
 coverage/
 client/coverage/
 **/lcov-report/
+
+# Ultra-wide room viz — exceeds Gemini vision limits (19418px wide)
+data/local/simple_room_graph.png
+
+# Codacy generated stubs (no semantic content)
+.codacy/generated/Lizard/lizard-filelist.txt
+.codacy/tools-configs/trivy.yaml
