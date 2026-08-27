@@ -186,6 +186,54 @@ describe('projector', () => {
       expect(next.room?.players).toEqual(['arkanwolfshade']);
     });
 
+    it('does not duplicate self when already listed with a grace-period suffix (#669)', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'Arkan_Lovecraft', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Patient Bedroom',
+          description: '',
+          exits: {},
+          players: ['Arkan_Lovecraft (warded)'],
+          npcs: [],
+          occupants: ['Arkan_Lovecraft (warded)'],
+          occupant_count: 1,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual(['Arkan_Lovecraft (warded)']);
+    });
+
+    it('does not duplicate self when listed with both linkdead and warded suffixes', () => {
+      const prev = {
+        ...getInitialGameState(),
+        player: { name: 'Arkan_Lovecraft', id: 'p1' },
+        room: {
+          id: 'room1',
+          name: 'Patient Bedroom',
+          description: '',
+          exits: {},
+          players: ['Arkan_Lovecraft (linkdead) (warded)'],
+          npcs: [],
+          occupants: ['Arkan_Lovecraft (linkdead) (warded)'],
+          occupant_count: 1,
+        },
+      };
+      const next = projectEvent(prev, {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'hello', channel: 'say' },
+      });
+      expect(next.room?.players).toEqual(['Arkan_Lovecraft (linkdead) (warded)']);
+    });
+
     it('does not inject self when player name is empty', () => {
       const prev = {
         ...getInitialGameState(),

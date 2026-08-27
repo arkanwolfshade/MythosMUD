@@ -252,6 +252,33 @@ describe('projector', () => {
       expect(next.messages[0].messageType).toBe('combat');
     });
 
+    it('chat_message with channel=system is typed system, not chat (regression, #674)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: '[SYSTEM] Quest completed: Leave the tutorial', channel: 'system' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].messageType).toBe('system');
+      expect(next.messages[0].channel).toBe('system');
+    });
+
+    it('chat_message with channel=say is still typed chat (no regression)', () => {
+      const prev = getInitialGameState();
+      const event: GameEvent = {
+        event_type: 'chat_message',
+        timestamp: new Date().toISOString(),
+        sequence_number: 1,
+        data: { message: 'Arkan says: hello', channel: 'say' },
+      };
+      const next = projectEvent(prev, event);
+      expect(next.messages).toHaveLength(1);
+      expect(next.messages[0].messageType).toBe('chat');
+    });
+
     it('game_state with room replaces previous room (server-authoritative, no merge)', () => {
       const prev = getInitialGameState();
       const withRoom: GameState = {

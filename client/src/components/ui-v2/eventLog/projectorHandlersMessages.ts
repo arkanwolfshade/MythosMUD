@@ -92,7 +92,15 @@ export const messageHandlers: Partial<Record<string, ProjectorHandler>> = {
     const channel = event.data.channel as string | undefined;
     if (!message || !channel) return prevState;
     const messageType =
-      channel === 'whisper' ? 'whisper' : channel === 'shout' ? 'shout' : channel === 'emote' ? 'emote' : 'chat';
+      channel === 'whisper'
+        ? 'whisper'
+        : channel === 'shout'
+          ? 'shout'
+          : channel === 'emote'
+            ? 'emote'
+            : channel === 'system'
+              ? 'system'
+              : 'chat';
     const msg = buildChatMessage(message, event.timestamp, { messageType, channel });
     return { ...prevState, messages: appendMessage(prevState.messages, msg) };
   },

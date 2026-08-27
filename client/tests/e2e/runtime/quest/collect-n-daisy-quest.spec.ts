@@ -145,5 +145,12 @@ test.describe('collect_n daisy quest ask/turnin', () => {
     await waitForMessage(page, /Quest completed:\s*Gather Sanitarium Daisies/i, 25000);
     const turninMsgs = await getMessages(page);
     expect(turninMsgs.some(m => /Quest completed:\s*Gather Sanitarium Daisies/i.test(m))).toBe(true);
+
+    // Panel routing contract (#674): quest lifecycle lines are Game Info, never Chat History.
+    const questCompletedCue = /Quest completed:\s*Gather Sanitarium Daisies/i;
+    const gameInfoText = await page.getByTestId('game-panel-gameInfo').innerText();
+    const chatHistoryText = await page.getByTestId('game-panel-chatHistory').innerText();
+    expect(questCompletedCue.test(gameInfoText)).toBe(true);
+    expect(questCompletedCue.test(chatHistoryText)).toBe(false);
   });
 });
