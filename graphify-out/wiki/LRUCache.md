@@ -1,48 +1,54 @@
 # LRUCache
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **Async Persistence Migration Plan** (11 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 2: Migrate Callers to Async** (8 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 3: Remove PersistenceLayer** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 5: Create Greenfield Async Tests** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 6: Verification and Cleanup** (5 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 4: Delete Persistence Unit Tests** (4 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Implementation Notes** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **Phase 1: Identify All Sync Callers** (3 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **ASYNC_PERSISTENCE_MIGRATION_PLAN.md** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **1.1 Find all PersistenceLayer usage** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **1.2 Document call sites** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.1 Update ApplicationContainer** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.2 Update lifespan.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.3 Migrate API endpoints** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.4 Migrate services** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.5 Migrate commands** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.6 Update test fixtures** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **2.7 Update integration tests** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.1 Delete persistence.py** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.2 Update persistence package** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.3 Remove hook decorator** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **3.4 Update imports** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.1 Identify test files to delete** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.2 Delete test files** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- **4.3 Update integration tests** (1 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
-- *... and 13 more nodes in this community*
+- **LRUCache** (29 connections) — `server/caching/lru_cache.py`
+- **K** (7 connections)
+- **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
+- **.put()** (6 connections) — `server/caching/lru_cache.py`
+- **.get()** (5 connections) — `server/caching/lru_cache.py`
+- **.items()** (5 connections) — `server/caching/lru_cache.py`
+- **V** (5 connections)
+- **.get_stats()** (4 connections) — `server/caching/lru_cache.py`
+- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
+- **.delete()** (3 connections) — `server/caching/lru_cache.py`
+- **._evict_expired_entries()** (3 connections) — `server/caching/lru_cache.py`
+- **.keys()** (3 connections) — `server/caching/lru_cache.py`
+- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
+- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
+- **.size()** (3 connections) — `server/caching/lru_cache.py`
+- **.values()** (3 connections) — `server/caching/lru_cache.py`
+- **.clear()** (2 connections) — `server/caching/lru_cache.py`
+- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
+- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
+- **Put an item into the cache. Args: key: The key to store value: The value to…** (1 connections) — `server/caching/lru_cache.py`
+- **Delete an item from the cache. Args: key: The key to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
+- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
+- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
+- **Get cache statistics. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/lru_cache.py`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_lru_cache.py](test_lru_cache.py.md) (4 shared connections)
+- [CacheManager](CacheManager.md) (3 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
+- [NPCCacheService](NPCCacheService.md) (1 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
+- [RoomCacheService](RoomCacheService.md) (1 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md`
+- `server/caching/lru_cache.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (89%)
+- INFERRED: 7 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

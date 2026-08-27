@@ -1,63 +1,57 @@
 # ContainerRepository
 
-> 125 nodes
+> 40 nodes
 
 ## Key Concepts
 
-- **chat_service.py** (40 connections) — `server/game/chat_service.py`
-- **chat_channel_message_senders.py** (33 connections) — `server/game/chat_channel_message_senders.py`
-- **test_chat_message_senders.py** (27 connections) — `server/tests/unit/game/test_chat_message_senders.py`
-- **chat_message_senders.py** (24 connections) — `server/game/chat_message_senders.py`
-- **ChatSendServices** (19 connections) — `server/game/chat_channel_message_senders.py`
-- **send_whisper_message()** (16 connections) — `server/game/chat_channel_message_senders.py`
-- **send_system_message()** (15 connections) — `server/game/chat_channel_message_senders.py`
-- **send_predefined_emote()** (14 connections) — `server/game/chat_message_senders.py`
-- **ChatLogger** (13 connections) — `server/game/chat_channel_message_senders.py`
-- **ChatUserManager** (13 connections) — `server/game/chat_channel_message_senders.py`
-- **_attr()** (13 connections) — `server/tests/unit/game/test_chat_message_senders.py`
-- **asyncio** (13 connections)
-- **ChatRateLimiter** (12 connections) — `server/game/chat_channel_message_senders.py`
-- **send_local_message()** (12 connections) — `server/game/chat_message_senders.py`
-- **chat_validation_helpers.py** (12 connections) — `server/game/chat_validation_helpers.py`
-- **ChatPlayerService** (11 connections) — `server/game/chat_channel_message_senders.py`
-- **send_global_message()** (11 connections) — `server/game/chat_channel_message_senders.py`
-- **send_party_message()** (11 connections) — `server/game/chat_message_senders.py`
-- **_ctx()** (11 connections) — `server/tests/unit/game/test_chat_message_senders.py`
-- **_player()** (11 connections) — `server/tests/unit/game/test_chat_message_senders.py`
-- **ChatResult** (10 connections)
-- **ChatEmoteService** (9 connections) — `server/game/chat_channel_message_senders.py`
-- **ChatPlayerView** (9 connections) — `server/game/chat_channel_message_senders.py`
-- **send_party_message()** (9 connections) — `server/game/chat_channel_message_senders.py`
-- **WhisperTracker** (8 connections) — `server/game/chat_channel_message_senders.py`
-- *... and 100 more nodes in this community*
+- **ContainerRepository** (25 connections) — `server/persistence/repositories/container_repository.py`
+- **test_container_repository.py** (22 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **_container_data_to_dict()** (13 connections) — `server/persistence/repositories/container_repository.py`
+- **_sample_container_data()** (11 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **asyncio** (8 connections)
+- **.create_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_containers_by_entity_id()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.get_decayed_containers()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **.update_container()** (7 connections) — `server/persistence/repositories/container_repository.py`
+- **Any** (7 connections)
+- **.get_containers_by_room_id()** (6 connections) — `server/persistence/repositories/container_repository.py`
+- **.delete_container()** (5 connections) — `server/persistence/repositories/container_repository.py`
+- **test_create_container()** (5 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **UUID** (5 connections)
+- **test_get_container_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_containers_by_entity_id()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_containers_by_room_id()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_update_container()** (4 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/container_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_container_data_to_dict_renames_keys()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_delete_container()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- **test_get_decayed_containers()** (3 connections) — `server/tests/unit/persistence/repositories/test_container_repository.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (15 shared connections)
-- [test_websocket_handler_core.py](test_websocket_handler_core.py.md) (14 shared connections)
-- [Communities (355 total, 223 thin omitted)](Communities_355_total,_223_thin_omitted.md) (8 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (1 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
-- [Async Facades Implementation - COMPLETE ✅](Async_Facades_Implementation_-_COMPLETE_✅.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [ContainerData](ContainerData.md) (9 shared connections)
+- [container_query_helpers_async.py](container_query_helpers_async.py.md) (9 shared connections)
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (4 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (4 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_channel_message_senders.py`
-- `server/game/chat_message_senders.py`
-- `server/game/chat_service.py`
-- `server/game/chat_validation_helpers.py`
-- `server/tests/unit/game/test_chat_message_senders.py`
-- `vulture_allowlist.py`
+- `server/persistence/repositories/container_repository.py`
+- `server/tests/unit/persistence/repositories/test_container_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 325 (94%)
-- INFERRED: 19 (6%)
+- EXTRACTED: 104 (90%)
+- INFERRED: 11 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

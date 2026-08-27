@@ -1,34 +1,33 @@
 # grype.py
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Easy Coverage Wins - Quick Analysis** (9 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **📊 Recommended Priority Order** (4 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎉 Summary** (2 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🚀 Next Steps** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 1: Quick Wins (Tier 1 + Tier 2) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 2: Medium Effort (Tier 3) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 3: New Small Files (Tier 4) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **Phase 4: Additional Realtime Files 🔄 IN PROGRESS** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 1: 0% Coverage - Small Files (Easiest Wins) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 2: Close to 70% (Quick Top-Ups) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 3: Medium Files with Low Coverage ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **🎯 Tier 4: New Easy Wins (Small Realtime Files) ✅ COMPLETED** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
-- **💡 Why These Are Easy Wins** (1 connections) — `docs/archive/EASY_COVERAGE_WINS.md`
+- **grype.py** (9 connections) — `scripts/grype.py`
+- **_run_grype_scan()** (5 connections) — `scripts/grype.py`
+- **main()** (4 connections) — `scripts/grype.py`
+- **_handle_grype_result()** (3 connections) — `scripts/grype.py`
+- **merge_windows_machine_user_path_into_environ()** (3 connections) — `scripts/grype.py`
+- **repo_root()** (3 connections) — `scripts/grype.py`
+- **_resolve_grype_executable()** (3 connections) — `scripts/grype.py`
+- **_grype_command()** (2 connections) — `scripts/grype.py`
+- **CompletedProcess** (2 connections)
+- **Path** (1 connections)
+- **Append Machine and User Path from the registry (matches hadolint.ps1 behavior).…** (1 connections) — `scripts/grype.py`
+- **Return the MythosMUD project root (parent of scripts/).** (1 connections) — `scripts/grype.py`
 
 ## Relationships
 
-- [🎭 Closing Remarks](🎭_Closing_Remarks.md) (1 shared connections)
+- [safe_run_static](safe_run_static.md) (3 shared connections)
 
 ## Source Files
 
-- `docs/archive/EASY_COVERAGE_WINS.md`
+- `scripts/grype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

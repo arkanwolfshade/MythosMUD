@@ -1,23 +1,22 @@
 # Configuration Refactoring Complete
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_combat_command_all_attack_aliases()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command accepts all attack aliases.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Configuration Refactoring Complete** (0 connections) — `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/archive/CONFIGURATION_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

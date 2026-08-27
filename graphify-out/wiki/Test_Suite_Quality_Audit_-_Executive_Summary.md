@@ -1,36 +1,49 @@
 # Test Suite Quality Audit - Executive Summary
 
-> 15 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **validate_codacy_coverage_gate.py** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **validate_python_gate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Path** (6 connections)
-- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **cobertura_root_line_rate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **_parse_cobertura_xml()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **validate_lcov_gate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **lcov_aggregate_hits()** (4 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **main()** (3 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Parse Cobertura XML with defusedxml (lazy import: LCOV-only runs skip this…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Return root line-rate from Cobertura XML (0.0--1.0).** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **True if report lists at least one instrumented class. `coverage xml…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Sum LH (lines hit) and LF (lines found) across all LCOV records.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Fail fast if Python Cobertura aggregate or server scope is insufficient.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
-- **Fail fast if LCOV aggregate line rate is below minimum.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Test Suite Quality Audit - Executive Summary** (13 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Recommended Decision** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Financial Impact (If You're Tracking Dev Time)** (5 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- ****25-30% (~1,250-1,500 tests) provide CRITICAL regression protection**** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Final Recommendation** (3 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Answer to Original Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Deliverables Summary** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Key Findings** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Test Value Distribution** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **TL;DR - Answer to Your Question** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **"What percentage of tests provide critical coverage?"** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Breakdown** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **By Category** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **CI/CD Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Commit to full 2-month optimization plan** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Comparison to Industry Benchmarks** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Created Documents** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Developer Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement gap filling only (skip pruning)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Implement only Phase 1 (Quick Wins)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Maintenance Time Saved** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Full Optimization (Recommended)** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Wins Only** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option C: Strategic Focus** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Start with Option B (Quick Wins) Immediately** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
+- [Actionable Recommendations](Actionable_Recommendations.md) (1 shared connections)
+- [Critical Insights](Critical_Insights.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/validate_codacy_coverage_gate.py`
+- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

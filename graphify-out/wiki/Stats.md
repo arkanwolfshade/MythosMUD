@@ -1,57 +1,64 @@
 # Stats
 
-> 170 nodes
+> 181 nodes
 
 ## Key Concepts
 
-- **test_look_npc.py** (60 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_look_npc_helpers.py** (34 connections) — `server/tests/unit/commands/test_look_npc_helpers.py`
-- **look_npc.py** (25 connections) — `server/commands/look_npc.py`
-- **_parse_stat_datetime()** (16 connections) — `server/commands/look_npc.py`
-- **_format_npc_description()** (15 connections) — `server/commands/look_npc.py`
-- **_get_npc_room_id()** (14 connections) — `server/commands/look_npc.py`
-- **_parse_npc_stats_dict()** (14 connections) — `server/commands/look_npc.py`
-- **_should_include_npc()** (14 connections) — `server/commands/look_npc.py`
-- **Any** (14 connections)
-- **_format_npc_stats_for_admin()** (12 connections) — `server/commands/look_npc.py`
-- **_find_matching_npcs()** (11 connections) — `server/commands/look_npc.py`
-- **_format_lifecycle_info()** (11 connections) — `server/commands/look_npc.py`
-- **_get_lifecycle_manager()** (11 connections) — `server/commands/look_npc.py`
-- **_format_core_attributes()** (10 connections) — `server/commands/look_npc.py`
-- **_format_other_stats()** (10 connections) — `server/commands/look_npc.py`
-- **_format_single_npc_result()** (10 connections) — `server/commands/look_npc.py`
-- **_try_lookup_npc_implicit()** (10 connections) — `server/commands/look_npc.py`
-- **asyncio** (7 connections)
-- **_format_multiple_npcs_result()** (6 connections) — `server/commands/look_npc.py`
-- **_get_npcs_in_room()** (5 connections) — `server/commands/look_npc.py`
-- **test_format_npc_stats_for_admin_no_npc_id()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_stats_for_admin_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- *... and 145 more nodes in this community*
+- **Stats** (77 connections) — `server/models/game.py`
+- **StatsGenerator** (43 connections) — `server/game/stats_generator.py`
+- **test_character_creation_service.py** (33 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
+- **test_stats_generator.py** (20 connections) — `server/tests/unit/game/test_stats_generator.py`
+- **stats_generator.py** (16 connections) — `server/game/stats_generator.py`
+- **character_creation_service.py** (15 connections) — `server/game/character_creation_service.py`
+- **CharacterCreationService** (12 connections) — `server/game/character_creation_service.py`
+- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
+- **.create_character_with_stats()** (6 connections) — `server/game/character_creation_service.py`
+- **.validate_current_vs_max_stats()** (6 connections) — `server/models/game.py`
+- **.validate_character_stats()** (5 connections) — `server/game/character_creation_service.py`
+- **Any** (5 connections)
+- **.get_available_classes_info()** (4 connections) — `server/game/character_creation_service.py`
+- **.__init__()** (4 connections) — `server/game/character_creation_service.py`
+- **.roll_character_stats()** (4 connections) — `server/game/character_creation_service.py`
+- **._calculate_max_lucidity()** (4 connections) — `server/models/game.py`
+- **._calculate_max_magic_points()** (4 connections) — `server/models/game.py`
+- **._compute_max_dp_if_missing()** (4 connections) — `server/models/game.py`
+- **.__init__()** (4 connections) — `server/models/game.py`
+- **.max_lucidity()** (4 connections) — `server/models/game.py`
+- **.max_magic_points()** (4 connections) — `server/models/game.py`
+- **character_creation_service()** (4 connections) — `server/tests/unit/game/test_character_creation_service.py`
+- **._get_class_description()** (3 connections) — `server/game/character_creation_service.py`
+- **._calculate_max_dp()** (3 connections) — `server/models/game.py`
+- *... and 156 more nodes in this community*
 
 ## Relationships
 
-- [GameTerminal.tsx](GameTerminal.tsx.md) (9 shared connections)
-- [test_look_room.py](test_look_room.py.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [test_manager.py](test_manager.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Stats](Stats.md) (12 shared connections)
+- [roll_character_stats](roll_character_stats.md) (10 shared connections)
+- [ValidationError](ValidationError.md) (10 shared connections)
+- [models/player.py](models-player.py.md) (10 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (8 shared connections)
+- [DatabaseError](DatabaseError.md) (7 shared connections)
+- [StatusEffect](StatusEffect.md) (6 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (4 shared connections)
+- [test_player_service.py](test_player_service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [players.py](players.py.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_npc.py`
-- `server/tests/unit/commands/test_look_npc.py`
-- `server/tests/unit/commands/test_look_npc_helpers.py`
+- `server/game/character_creation_service.py`
+- `server/game/stats_generator.py`
+- `server/models/game.py`
+- `server/tests/unit/game/test_character_creation_service.py`
+- `server/tests/unit/game/test_stats_generator.py`
+- `server/tests/unit/models/test_game_stats_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 310 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 336 (97%)
+- INFERRED: 9 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

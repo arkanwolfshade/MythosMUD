@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - Pulp Cthulhu (7th edition Call of Cthulhu)
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **📊 METRICS AND SUCCESS CRITERIA** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Code Quality Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Performance Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Test Coverage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Chaosium graphify snapshot - Pulp Cthulhu (7th edition Call of Cthulhu)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- **pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
 
 ## Relationships
 
-- [.get_professions](get_professions.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

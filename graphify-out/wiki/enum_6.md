@@ -1,31 +1,31 @@
 # enum
 
-> 8 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **ensure_directory_exists()** (6 connections) — `server/security_utils.py`
-- **test_ensure_directory_exists_creates()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_existing()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_ensure_directory_exists_relative_path()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Ensure a directory exists and return its absolute path. Args: directory: The…** (1 connections) — `server/security_utils.py`
-- **Test ensure_directory_exists with existing directory.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists creates directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test ensure_directory_exists with relative path.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **enum** (6 connections) — `schemas/unified_room_schema.json`
+- **environment** (5 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/security_utils.py`
-- `server/tests/unit/infrastructure/test_security_utils.py`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

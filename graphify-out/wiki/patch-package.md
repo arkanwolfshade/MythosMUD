@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_set_mechanical_effects_empty_dict()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_mechanical_effects handles empty dict.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **patch-package** (2 connections) — `client/package.json`
+- **patch-package** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

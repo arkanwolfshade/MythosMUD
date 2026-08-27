@@ -1,25 +1,25 @@
 # Hierarchical Test Structure
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.validate_password()** (3 connections) — `server/auth/endpoints.py`
-- **field_validator** (1 connections)
-- **Validate password length and content.** (1 connections) — `server/auth/endpoints.py`
+- **Hierarchical Test Structure** (1 connections) — `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- **Phased Test Migration** (1 connections) — `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/auth/endpoints.py`
+- `docs/archive/TEST_REFACTORING_FINAL_SUMMARY.md`
+- `docs/archive/TEST_REFACTORING_IMPLEMENTATION_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

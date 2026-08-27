@@ -1,27 +1,26 @@
 # 2026_02_18_add_profession_modifiers_columns.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Common Patterns** (6 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **API Requests** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Database Operations** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Errors with Context** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
-- **User Actions** (1 connections) — `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- **2026_02_18_add_profession_modifiers_columns.py** (3 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **Add stat_modifiers and skill_modifiers columns to professions table.** (1 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
+- **Remove stat_modifiers and skill_modifiers columns from professions table.** (1 connections) — `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
 
 ## Relationships
 
-- [P8 · Applied](P8_·_Applied.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_QUICK_REFERENCE.md`
+- `server/alembic/versions/2026_02_18_add_profession_modifiers_columns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

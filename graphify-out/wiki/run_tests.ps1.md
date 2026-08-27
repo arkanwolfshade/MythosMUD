@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Gladiator Ring Arena Plan** (0 connections) — `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- **run_tests.ps1** (0 connections) — `scripts/tests/run_tests.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/gladiator_ring_arena_6a674c58.plan.md`
+- `scripts/tests/run_tests.ps1`
 
 ## Audit Trail
 

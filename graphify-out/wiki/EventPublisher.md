@@ -1,48 +1,55 @@
 # EventPublisher
 
-> 27 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **.fix_schema_issues()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Path** (7 connections)
-- **.create_backup()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **.load_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **.save_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix self-references by adding proper flags. Args: room_database: Complete room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing exits field. Returns True if fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing optional fields. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Initialize the room fixer. Args: base_path: Base directory for room files** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix missing fields based on errors. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Save fixed room if changes were made.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Fix basic schema issues. Args: room_database: Complete room database…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Create a backup of a room file. Args: file_path: Path to the file to backup…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **Load a room file safely. Args: file_path: Path to the room file Returns: Room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- *... and 2 more nodes in this community*
+- **EventPublisher** (32 connections) — `server/realtime/event_publisher.py`
+- **._create_event_message()** (7 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_entered_event()** (7 connections) — `server/realtime/event_publisher.py`
+- **.publish_player_left_event()** (7 connections) — `server/realtime/event_publisher.py`
+- **._publish_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **.publish_game_tick_event()** (5 connections) — `server/realtime/event_publisher.py`
+- **JsonMap** (5 connections)
+- **._get_async_persistence()** (4 connections) — `server/realtime/event_publisher.py`
+- **._resolve_player_and_room_names()** (4 connections) — `server/realtime/event_publisher.py`
+- **.get_next_sequence_number()** (3 connections) — `server/realtime/event_publisher.py`
+- **._player_event_subject()** (3 connections) — `server/realtime/event_publisher.py`
+- **test_event_publisher_init_without_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **.reset_sequence_number()** (2 connections) — `server/realtime/event_publisher.py`
+- **Publish a player_entered event to NATS. Args: player_id: ID of the player who…** (1 connections) — `server/realtime/event_publisher.py`
+- **Publish a player_left event to NATS. Args: player_id: ID of the player who left…** (1 connections) — `server/realtime/event_publisher.py`
+- **Publish a game_tick event to NATS. Args: timestamp: Optional custom timestamp…** (1 connections) — `server/realtime/event_publisher.py`
+- **Create a standardized event message structure. Args: event_type: Type of event…** (1 connections) — `server/realtime/event_publisher.py`
+- **Get the next sequence number for event ordering. Returns: Next sequence number** (1 connections) — `server/realtime/event_publisher.py`
+- **Reset the sequence number to 0.** (1 connections) — `server/realtime/event_publisher.py`
+- **Get async_persistence (#679: injected at construction by RealtimeBundle).** (1 connections) — `server/realtime/event_publisher.py`
+- **Service for publishing real-time game events to NATS subjects. This service…** (1 connections) — `server/realtime/event_publisher.py`
+- **Test EventPublisher initialization without subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [SpellEffectType](SpellEffectType.md) (13 shared connections)
+- [test_event_publisher.py](test_event_publisher.py.md) (7 shared connections)
+- [test_event_publisher_init_with_initial_sequence](test_event_publisher_init_with_initial_sequence.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
+- [_EventPersistence](_EventPersistence.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- [get_global_tracked_manager](get_global_tracked_manager.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [event_publisher](event_publisher.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/fixer.py`
+- `server/realtime/event_publisher.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 50 (85%)
+- INFERRED: 9 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

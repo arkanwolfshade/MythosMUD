@@ -1,53 +1,54 @@
 # test_chat_pose_helpers.py
 
-> 28 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_combat_death_handler.py** (31 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **asyncio** (11 connections)
-- **patch** (9 connections)
-- **fixture** (5 connections)
-- **handler()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **npc_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **player_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_create_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_create_corpse_skips_without_persistence()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_create_corpse_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_player_death_events_broadcast_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_player_death_events_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_target_state_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_target_state_mortally_wounded_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_handle_target_state_player_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **combat()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **combat_service()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_log_room_subscribers()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_log_room_subscribers_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_publish_npc_death_event_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_publish_npc_death_event_success()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_resolve_connection_manager_from_service()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_resolve_connection_manager_missing_getter()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- **test_resolve_original_npc_id_missing_mapping()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
-- *... and 3 more nodes in this community*
+- **test_chat_pose_helpers.py** (18 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **set_player_pose()** (15 connections) — `server/game/chat_pose_helpers.py`
+- **chat_pose_helpers.py** (15 connections) — `server/game/chat_pose_helpers.py`
+- **clear_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **get_player_pose()** (7 connections) — `server/game/chat_pose_helpers.py`
+- **asyncio** (7 connections)
+- **get_room_poses()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **normalize_player_id()** (6 connections) — `server/game/chat_pose_helpers.py`
+- **Any** (5 connections)
+- **test_get_room_poses()** (4 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **UUID** (4 connections)
+- **test_get_and_clear_player_pose()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_empty()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_nats_failure()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_no_room()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_player_not_found()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_success()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_set_player_pose_too_long()** (3 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **_player()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **test_normalize_player_id()** (2 connections) — `server/tests/unit/game/test_chat_pose_helpers.py`
+- **Pose management helpers for chat service.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Clear a player's pose. Args: player_id: ID of the player pose_manager: Pose…** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Get all poses for players in a room. Args: room_id: ID of the room…** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_helpers.py`
+- **Set a player's pose (temporary, in-memory only). Args: player_id: ID of the…** (1 connections) — `server/game/chat_pose_helpers.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_combat_service.py](test_combat_service.py.md) (3 shared connections)
-- [NATSService](NATSService.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (2 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [User](User.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (5 shared connections)
+- [ChatMessage](ChatMessage.md) (2 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [chat_nats_publisher.py](chat_nats_publisher.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_death_handler.py`
+- `server/game/chat_pose_helpers.py`
+- `server/tests/unit/game/test_chat_pose_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 70 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

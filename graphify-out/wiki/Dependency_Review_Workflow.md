@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **MythosMUD UI Component Library** (2 connections) — `client/src/components/ui/README.md`
-- **Mythos Terminal Theme Tokens** (1 connections) — `client/src/components/ui/README.md`
-- **StatusPanel** (1 connections) — `client/src/components/ui/README.md`
+- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
+- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
+- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
 
 ## Relationships
 
@@ -14,12 +14,13 @@
 
 ## Source Files
 
-- `client/src/components/ui/README.md`
+- `.github/dependabot.yml`
+- `.github/workflows/dependency-review.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # Single Session Per User
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **current_room_id VARCHAR(50) Truncation** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **Catatonic Movement Prevention Bug** (2 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **WebSocket Go Command Unified Handler Bypass** (1 connections) — `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- **Movement Valid Exits Rejection Bug** (1 connections) — `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- **Single Session Per User** (2 connections) — `docs/archive/connection_termination_demo.md`
+- **force_disconnect_player** (1 connections) — `docs/archive/connection_termination_demo.md`
+- **Player Spawn Protection** (1 connections) — `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Relationships
 
@@ -15,13 +14,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-001_catatonic-movement-and-exit-bugs.md`
-- `investigations/sessions/2025-11-20_movement-bug-investigation.md`
+- `docs/archive/connection_termination_demo.md`
+- `docs/archive/player_protection_system_dec_21.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

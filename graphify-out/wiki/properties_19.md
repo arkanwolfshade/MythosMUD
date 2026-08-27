@@ -1,40 +1,33 @@
 # properties
 
-> 18 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Recommended Test Additions** (10 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Net Impact Summary** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Test Coverage Gaps Report** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Net Result** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **1. MessageBroker Integration Tests (15 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **2. ApplicationContainer Lifecycle Tests (10 tests, ~1 hour)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **3. Database Migration Tests (10 tests, ~1.5 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **4. WebSocket Edge Case Tests (15 tests, ~2 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **5. Error Recovery Tests (20 tests, ~3 hours)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Additions** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Coverage Gap Priority Matrix** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **If We Execute Full Recommendations** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Immediate Priority (Add First)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Removals** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Secondary Priority (Add Second)** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **"The goal is not comprehensive coverage of all code, but comprehensive protection of all user value."** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~3.5 hours effort, closes critical gaps** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Total: 35 tests, ~5 hours effort, improves reliability** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
+- **properties** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [Execution Steps](Execution_Steps.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
+- [special_rules](special_rules.md) (1 shared connections)
+- [npc_spawn_modifier](npc_spawn_modifier.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_COVERAGE_GAPS.md`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

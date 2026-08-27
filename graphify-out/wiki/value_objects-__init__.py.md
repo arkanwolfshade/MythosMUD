@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **PR Coverage Thresholds** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
-- **Pull Request Template** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
+- **value_objects/__init__.py** (1 connections) — `server/domain/value_objects/__init__.py`
+- **Domain value objects for MythosMUD. Value objects are immutable objects defined…** (1 connections) — `server/domain/value_objects/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.github/PULL_REQUEST_TEMPLATE.md`
+- `server/domain/value_objects/__init__.py`
 
 ## Audit Trail
 

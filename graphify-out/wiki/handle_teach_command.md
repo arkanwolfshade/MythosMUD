@@ -1,45 +1,51 @@
 # handle_teach_command
 
-> 23 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **verify_migration.py** (11 connections) — `scripts/verify_migration.py`
-- **_validate_database_data()** (8 connections) — `scripts/verify_migration.py`
-- **verify_database()** (8 connections) — `scripts/verify_migration.py`
-- **Connection** (7 connections)
-- **_check_foreign_keys()** (4 connections) — `scripts/verify_migration.py`
-- **_check_null_values()** (4 connections) — `scripts/verify_migration.py`
-- **_check_table_exists()** (4 connections) — `scripts/verify_migration.py`
-- **_print_sample_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_json_data()** (4 connections) — `scripts/verify_migration.py`
-- **_validate_table_schema()** (4 connections) — `scripts/verify_migration.py`
-- **_print_json_validation_results()** (3 connections) — `scripts/verify_migration.py`
-- **_print_verification_summary()** (3 connections) — `scripts/verify_migration.py`
-- **main()** (2 connections) — `scripts/verify_migration.py`
-- **Validate JSON data integrity in players table.** (1 connections) — `scripts/verify_migration.py`
-- **Check for NULL values in required fields.** (1 connections) — `scripts/verify_migration.py`
-- **Validate database data (JSON, NULLs, sample).** (1 connections) — `scripts/verify_migration.py`
-- **Print JSON validation results.** (1 connections) — `scripts/verify_migration.py`
-- **Print sample player data.** (1 connections) — `scripts/verify_migration.py`
-- **Check foreign key constraints.** (1 connections) — `scripts/verify_migration.py`
-- **Print verification summary and return result.** (1 connections) — `scripts/verify_migration.py`
-- **Verify a single database.** (1 connections) — `scripts/verify_migration.py`
-- **Check if players table exists.** (1 connections) — `scripts/verify_migration.py`
-- **Validate table schema against expected columns.** (1 connections) — `scripts/verify_migration.py`
+- **handle_teach_command()** (19 connections) — `server/commands/teach_command.py`
+- **teach_command.py** (15 connections) — `server/commands/teach_command.py`
+- **test_teach_command.py** (14 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **asyncio** (9 connections)
+- **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
+- **test_handle_teach_command()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_no_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_not_npc_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_success_with_corruption()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_target_resolution_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Any** (4 connections)
+- **patch** (4 connections)
+- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
+- **_get_teach_services()** (3 connections) — `server/commands/teach_command.py`
+- **test_handle_teach_command_no_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **test_handle_teach_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Teach command handler for learning spells from NPC teachers. This module…** (1 connections) — `server/commands/teach_command.py`
+- **Handle /teach command for learning spells from NPCs. Usage: /teach <npc_name>…** (1 connections) — `server/commands/teach_command.py`
+- **Unit tests for teach command handlers. Tests the teach command functionality.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Test handle_teach_command() teaches spell to player.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Test handle_teach_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **Test handle_teach_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [get_username_from_user](get_username_from_user.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_migration.py`
+- `server/commands/teach_command.py`
+- `server/tests/unit/commands/test_teach_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

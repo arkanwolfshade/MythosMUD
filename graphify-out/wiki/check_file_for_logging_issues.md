@@ -1,32 +1,28 @@
 # check_file_for_logging_issues
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **mock_container_service()** (4 connections) — `server/tests/unit/api/test_containers.py`
-- **fixture** (4 connections)
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock request object.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Create a mock container service.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **check_file_for_logging_issues()** (4 connections) — `scripts/check_logging_consistency.py`
+- **main()** (4 connections) — `scripts/check_logging_consistency.py`
+- **check_logging_consistency.py** (2 connections) — `scripts/check_logging_consistency.py`
+- **Path** (2 connections)
+- **Check a single file for logging consistency issues. Args: file_path: Path to…** (1 connections) — `scripts/check_logging_consistency.py`
+- **Main function to check all service files for logging consistency.** (1 connections) — `scripts/check_logging_consistency.py`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (4 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/api/test_containers.py`
+- `scripts/check_logging_consistency.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (85%)
-- INFERRED: 2 (15%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

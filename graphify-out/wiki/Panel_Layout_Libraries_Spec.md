@@ -1,12 +1,11 @@
 # Panel Layout Libraries Spec
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Server Authority Remediation** (2 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **game_state Room Replace (not Merge)** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
-- **Server Authority Rule** (1 connections) — `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- **Panel Layout Libraries Spec** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- **Client Architecture Improvements Plan** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `.cursor/plans/server_authority_remediation_de891aa1.plan.md`
+- `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
+- `docs/archive/PLANNING_client_architecture_improvements.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,70 +1,78 @@
 # eventHandlers/types.ts
 
-> 156 nodes
+> 128 nodes
 
 ## Key Concepts
 
-- **Spell** (136 connections) — `server/models/spell.py`
-- **SpellEffectType** (45 connections) — `server/models/spell.py`
-- **SpellSchool** (37 connections) — `server/models/spell.py`
-- **SpellTargetType** (34 connections) — `server/models/spell.py`
-- **SpellRangeType** (32 connections) — `server/models/spell.py`
-- **test_spell.py** (32 connections) — `server/tests/unit/models/test_spell.py`
-- **spell.py** (29 connections) — `server/models/spell.py`
-- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
-- **SpellMaterial** (25 connections) — `server/models/spell.py`
-- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
-- **test_spell_materials.py** (23 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **test_spell_costs.py** (20 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_spell_registry.py** (19 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **_spell()** (15 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
-- **spell_costs.py** (13 connections) — `server/game/magic/spell_costs.py`
-- **spell_materials.py** (11 connections) — `server/game/magic/spell_materials.py`
-- **_spell()** (10 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
-- **test_get_combat_target_auto_selects_opponent()** (10 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
-- **_spell()** (9 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_magic_healing_events.py`
-- **self_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
-- **test_spell_with_materials()** (8 connections) — `server/tests/unit/models/test_spell.py`
-- **UUID** (8 connections)
-- *... and 131 more nodes in this community*
+- **eventHandlers/types.ts** (44 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **stateUpdateUtils.ts** (43 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **logger.ts** (37 connections) — `client/src/utils/logger.ts`
+- **Room** (36 connections) — `client/src/components/ui-v2/types.ts`
+- **ChatMessage** (33 connections) — `client/src/components/ui-v2/types.ts`
+- **lucidity.ts** (33 connections) — `client/src/types/lucidity.ts`
+- **Player** (32 connections) — `client/src/components/ui-v2/types.ts`
+- **logger** (32 connections) — `client/src/utils/logger.ts`
+- **GameState** (26 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
+- **useGameClientV2ContainerRefsAndBootstrap.ts** (25 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerRefsAndBootstrap.ts`
+- **health.ts** (25 connections) — `client/src/types/health.ts`
+- **LucidityStatus** (24 connections) — `client/src/types/lucidity.ts`
+- **HealthStatus** (23 connections) — `client/src/types/health.ts`
+- **CharacterInfoPanel.tsx** (23 connections) — `client/src/components/ui-v2/panels/CharacterInfoPanel.tsx`
+- **MythosTimeState** (21 connections) — `client/src/types/mythosTime.ts`
+- **eventHandlers/index.ts** (17 connections) — `client/src/components/ui-v2/eventHandlers/index.ts`
+- **useGameClientV2ContainerState.ts** (17 connections) — `client/src/components/ui-v2/hooks/useGameClientV2ContainerState.ts`
+- **usePlayerStatusEffects.ts** (17 connections) — `client/src/components/ui-v2/hooks/usePlayerStatusEffects.ts`
+- **useEventProcessing.test.ts** (16 connections) — `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
+- **EventHandlerContext** (15 connections) — `client/src/components/ui-v2/eventHandlers/types.ts`
+- **RescueState** (15 connections) — `client/src/types/lucidity.ts`
+- **messageHandlers.test-utils.ts** (15 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- **useGameConnectionManagement.ts** (15 connections) — `client/src/components/ui-v2/hooks/useGameConnectionManagement.ts`
+- **useRefSynchronization.ts** (14 connections) — `client/src/components/ui-v2/hooks/useRefSynchronization.ts`
+- **stateUpdateUtils.test.ts** (14 connections) — `client/src/components/ui-v2/utils/__tests__/stateUpdateUtils.test.ts`
+- *... and 103 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (45 shared connections)
-- [Any](Any.md) (36 shared connections)
-- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (23 shared connections)
-- [test_metrics.py](test_metrics.py.md) (16 shared connections)
-- [ContainerComponent](ContainerComponent.md) (15 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (15 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (13 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (12 shared connections)
-- [debugLogger](debugLogger.md) (10 shared connections)
-- [extract_player_name](extract_player_name.md) (8 shared connections)
-- [SkillService](SkillService.md) (7 shared connections)
-- [PlayerStatsConfig](PlayerStatsConfig.md) (7 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (64 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (43 shared connections)
+- [systemHandlers.ts](systemHandlers.ts.md) (33 shared connections)
+- [GameEvent](GameEvent.md) (29 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (22 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (19 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (17 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (13 shared connections)
+- [messageHandlers.ts](messageHandlers.ts.md) (12 shared connections)
+- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (10 shared connections)
+- [Profession](Profession.md) (8 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (7 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_materials.py`
-- `server/game/magic/spell_registry.py`
-- `server/game/magic/spell_targeting.py`
-- `server/models/spell.py`
-- `server/tests/unit/game/magic/test_magic_healing_events.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
-- `server/tests/unit/game/magic/test_spell_costs.py`
-- `server/tests/unit/game/magic/test_spell_materials.py`
-- `server/tests/unit/game/magic/test_spell_registry.py`
-- `server/tests/unit/game/magic/test_spell_targeting.py`
-- `server/tests/unit/models/test_spell.py`
+- `client/src/components/health/HealthMeter.tsx`
+- `client/src/components/health/IncapacitatedBanner.tsx`
+- `client/src/components/health/__tests__/HealthMeter.test.tsx`
+- `client/src/components/lucidity/HallucinationTicker.tsx`
+- `client/src/components/lucidity/LucidityMeter.tsx`
+- `client/src/components/lucidity/RescueStatusBanner.tsx`
+- `client/src/components/lucidity/__tests__/HallucinationTicker.test.tsx`
+- `client/src/components/lucidity/__tests__/LucidityMeter.test.tsx`
+- `client/src/components/lucidity/__tests__/RescueStatusBanner.test.tsx`
+- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2.test.tsx`
+- `client/src/components/ui-v2/eventHandlers/__tests__/index.test.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/messageHandlers.test-utils.ts`
+- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/index.ts`
+- `client/src/components/ui-v2/eventHandlers/types.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
+- `client/src/components/ui-v2/hooks/__tests__/useEventProcessing.test.ts`
+- `client/src/components/ui-v2/hooks/useCommandHandlers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 448 (73%)
-- INFERRED: 168 (27%)
+- EXTRACTED: 654 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

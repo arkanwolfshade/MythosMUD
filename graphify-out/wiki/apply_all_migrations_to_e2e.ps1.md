@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Dependency Upgrade Implementation Plan** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- **apply_all_migrations_to_e2e.ps1** (0 connections) — `scripts/apply_all_migrations_to_e2e.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/upgrade_implementation_plan.md`
+- `scripts/apply_all_migrations_to_e2e.ps1`
 
 ## Audit Trail
 

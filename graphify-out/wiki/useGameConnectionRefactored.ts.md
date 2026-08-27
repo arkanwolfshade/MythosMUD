@@ -1,51 +1,70 @@
 # useGameConnectionRefactored.ts
 
-> 40 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **test_quality_fragmentation_guard.py** (25 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **scan_changed_files()** (14 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_guard_module()** (13 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_set_repo_root()** (11 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **Path** (8 connections)
-- **test_collect_repo_texts_reports_unreadable_files()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_emit_results_does_not_print_failure_or_warning_bodies()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_does_not_flag_tiny_function_with_two_usages()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_flags_single_use_for_non_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_flags_tiny_single_use_function()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_single_use_for_test_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_scan_changed_files_skips_tiny_single_use_for_grouped_file()** (5 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_QualityGuardModule** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_build_python_call_usage_map()** (4 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_trends_module()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_git_show_file_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_run_cmd_decodes_subprocess_output_as_utf8()** (4 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **Protocol** (4 connections)
-- **_QualityLizardModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_QualityTrendsModule** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **_call_target_name()** (3 connections) — `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- **_load_lizard_module()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_append_fragmentation_failures_when_files_added_and_avg_function_length_drops()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- **test_append_rule_b_failure_for_fragmentation_limit()** (3 connections) — `server/tests/unit/test_quality_fragmentation_guard.py`
-- *... and 15 more nodes in this community*
+- **useGameConnectionRefactored.ts** (18 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useWebSocketConnection.ts** (18 connections) — `client/src/hooks/useWebSocketConnection.ts`
+- **useWebSocketConnectionTestFixtures.ts** (13 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **MockWebSocket** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **useWebSocketConnection.pingHeartbeat.test.ts** (12 connections) — `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
+- **useWebSocketConnection()** (11 connections) — `client/src/hooks/useWebSocketConnection.ts`
+- **useGameConnection()** (10 connections) — `client/src/hooks/useGameConnectionRefactored.ts`
+- **useWebSocketConnection.connection.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
+- **useWebSocketConnection.errorHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
+- **useWebSocketConnection.messageHandling.test.ts** (9 connections) — `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
+- **useWebSocketConnection.callbacks.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
+- **useWebSocketConnection.cleanup.test.ts** (8 connections) — `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
+- **useConnectionStateMachine.ts** (8 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **wsConnectionAfterEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **wsConnectionBeforeEach()** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **defaultOptions** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **latestWebSocketInstance** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **wsTestState** (7 connections) — `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- **useConnectionState.ts** (7 connections) — `client/src/hooks/useConnectionState.ts`
+- **useSessionManagement.ts** (7 connections) — `client/src/hooks/useSessionManagement.ts`
+- **useGameConnection.ts** (5 connections) — `client/src/hooks/useGameConnection.ts`
+- **useConnectionState()** (4 connections) — `client/src/hooks/useConnectionState.ts`
+- **useSessionManagement()** (4 connections) — `client/src/hooks/useSessionManagement.ts`
+- **connectionMachine** (4 connections) — `client/src/hooks/useConnectionStateMachine.ts`
+- **useGameConnection.test.ts** (4 connections) — `client/src/hooks/useGameConnection.test.ts`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [test_validation.py](test_validation.py.md) (16 shared connections)
-- [environment](environment.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (10 shared connections)
+- [security.ts](security.ts.md) (5 shared connections)
+- [ResourceManager](ResourceManager.md) (3 shared connections)
+- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/ci/quality_fragmentation_ai_guardrails.py`
-- `server/tests/unit/test_quality_fragmentation_guard.py`
+- `client/src/hooks/__tests__/useConnectionState.test.ts`
+- `client/src/hooks/__tests__/useConnectionStateMachine.test.ts`
+- `client/src/hooks/__tests__/useGameConnection.export.test.ts`
+- `client/src/hooks/__tests__/useSessionManagement.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.callbacks.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.cleanup.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.connection.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.errorHandling.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.messageHandling.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnection.pingHeartbeat.test.ts`
+- `client/src/hooks/__tests__/useWebSocketConnectionTestFixtures.ts`
+- `client/src/hooks/useConnectionState.ts`
+- `client/src/hooks/useConnectionStateMachine.test.ts`
+- `client/src/hooks/useConnectionStateMachine.ts`
+- `client/src/hooks/useGameConnection.test.ts`
+- `client/src/hooks/useGameConnection.ts`
+- `client/src/hooks/useGameConnectionRefactored.ts`
+- `client/src/hooks/useSessionManagement.ts`
+- `client/src/hooks/useWebSocketConnection.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 81 (83%)
-- INFERRED: 17 (17%)
+- EXTRACTED: 141 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

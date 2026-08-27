@@ -1,24 +1,23 @@
 # Three-Column Panel Wireframe Layout
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_should_apply_mute_check_non_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_should_apply_mute_check_sensitive_channel()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test should_apply_mute_check() returns True for sensitive channels.** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **Three-Column Panel Wireframe Layout** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
+- **Wireframe Layout Verification** (1 connections) — `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Relationships
 
-- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `investigations/sessions/2025-01-XX_verification-wireframe-match.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

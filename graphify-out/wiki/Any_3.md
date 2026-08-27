@@ -1,41 +1,46 @@
 # Any
 
-> 20 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **LoggingPatternLinter** (8 connections) — `scripts/lint_logging_patterns.py`
-- **lint_file()** (5 connections) — `scripts/lint_logging_patterns.py`
-- **main()** (4 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_Call()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_FormattedValue()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_Import()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/lint_logging_patterns.py`
-- **lint_logging_patterns.py** (3 connections) — `scripts/lint_logging_patterns.py`
-- **Path** (2 connections)
-- **Check for deprecated logging imports.** (2 connections) — `scripts/lint_logging_patterns.py`
-- **.__init__()** (1 connections) — `scripts/lint_logging_patterns.py`
-- **FormattedValue** (1 connections)
-- **Call** (1 connections)
-- **Import** (1 connections)
-- **ImportFrom** (1 connections)
-- **Main entry point for the logging pattern linter.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **AST visitor to detect deprecated logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for deprecated logging patterns in function calls.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Check for f-string usage in logging contexts.** (1 connections) — `scripts/lint_logging_patterns.py`
-- **Lint a single Python file for logging patterns.** (1 connections) — `scripts/lint_logging_patterns.py`
+- **Any** (13 connections)
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.__init__()** (4 connections) — `server/caching/cache_service.py`
+- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
+- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
+- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
+- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room()** (3 connections) — `server/caching/cache_service.py`
+- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
+- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
+- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
+- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
+- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
+- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
+- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
+- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCCacheService](NPCCacheService.md) (4 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
+- [RoomCacheService](RoomCacheService.md) (3 shared connections)
+- [CacheService](CacheService.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/lint_logging_patterns.py`
+- `server/caching/cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

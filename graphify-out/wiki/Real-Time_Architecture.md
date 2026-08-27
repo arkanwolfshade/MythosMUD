@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Zustand Stores** (0 connections) — `client/README.md`
+- **Real-Time Architecture** (0 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/README.md`
+- `docs/REAL_TIME_ARCHITECTURE.md`
 
 ## Audit Trail
 

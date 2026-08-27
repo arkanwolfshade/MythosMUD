@@ -1,50 +1,78 @@
 # ui-v2/types.ts
 
-> 79 nodes
+> 133 nodes
 
 ## Key Concepts
 
-- **test_npc_event_handlers.py** (46 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **asyncio** (16 connections)
-- **npc_event_handler()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_entered_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_handle_npc_left_room_with_npc_instance()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_schedule_room_occupants_update_does_not_leak_coro_when_register_fails()** (4 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_message_builder()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **mock_send_occupants_update()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_no_match()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_determine_direction_from_rooms_room_not_found()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_send_room_message_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_send_room_message_no_room_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **Test _parse_behavior_config() with invalid JSON.** (3 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- **test_get_behavior_config_from_instance_method()** (2 connections) — `server/tests/unit/realtime/test_npc_event_handlers.py`
-- *... and 54 more nodes in this community*
+- **ui-v2/types.ts** (88 connections) — `client/src/components/ui-v2/types.ts`
+- **GameClientV2.tsx** (54 connections) — `client/src/components/ui-v2/GameClientV2.tsx`
+- **GameClientV2AuxiliaryPanels.tsx** (29 connections) — `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
+- **PanelPosition** (21 connections) — `client/src/components/ui-v2/types.ts`
+- **GameClientV2MinimapSection.tsx** (19 connections) — `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- **PanelSize** (18 connections) — `client/src/components/ui-v2/types.ts`
+- **PanelContainerViews.tsx** (16 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- **usePanelContainerView.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelContainerView.ts`
+- **usePanelManagerProviderState.ts** (13 connections) — `client/src/components/ui-v2/PanelSystem/usePanelManagerProviderState.ts`
+- **characterInfoPanelOutline.ts** (13 connections) — `client/src/components/ui-v2/utils/characterInfoPanelOutline.ts`
+- **PanelLayoutHandlers** (12 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- **ExpandedPanelRnd.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- **PanelContainer.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- **PanelManagerContext.tsx** (12 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **MinimizedPanelRnd.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- **PanelSystem/__tests__/PanelManager.test.tsx** (11 connections) — `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- **PanelManagerContextValue** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- **LocationPanel.tsx** (10 connections) — `client/src/components/ui-v2/panels/LocationPanel.tsx`
+- **OccupantsPanel.tsx** (10 connections) — `client/src/components/ui-v2/panels/OccupantsPanel.tsx`
+- **ExpandedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
+- **MinimizedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- **PanelSystem/PanelManager.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- **QuestLogPanel.tsx** (9 connections) — `client/src/components/ui-v2/panels/QuestLogPanel.tsx`
+- **ExpandedPanelBody.tsx** (9 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
+- **panelLayoutTypes.ts** (9 connections) — `client/src/components/ui-v2/PanelSystem/panelLayoutTypes.ts`
+- *... and 108 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (14 shared connections)
-- [FStringLoggingFixer](FStringLoggingFixer.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (64 shared connections)
+- [PanelState](PanelState.md) (36 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (28 shared connections)
+- [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (8 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (7 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (5 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (5 shared connections)
+- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (4 shared connections)
+- [systemHandlers.ts](systemHandlers.ts.md) (4 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
+- [playerHandlers.ts](playerHandlers.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_npc_event_handlers.py`
+- `client/src/components/PanelManager.tsx`
+- `client/src/components/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/GameClientV2.tsx`
+- `client/src/components/ui-v2/GameClientV2AuxiliaryPanels.tsx`
+- `client/src/components/ui-v2/GameClientV2Minimap.tsx`
+- `client/src/components/ui-v2/GameClientV2MinimapSection.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelBody.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/ExpandedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelHeader.tsx`
+- `client/src/components/ui-v2/PanelSystem/MinimizedPanelRnd.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainer.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerShared.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelContainerViews.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManager.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelManagerContext.tsx`
+- `client/src/components/ui-v2/PanelSystem/PanelSolidUnderlay.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelContainer.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/PanelManager.test.tsx`
+- `client/src/components/ui-v2/PanelSystem/__tests__/usePanelManager.test.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (90%)
-- INFERRED: 12 (10%)
+- EXTRACTED: 478 (100%)
+- INFERRED: 2 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

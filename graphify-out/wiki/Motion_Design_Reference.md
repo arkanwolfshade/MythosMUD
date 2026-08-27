@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_with_lock_state()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container with lock_state and allowed_roles.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Motion 100/300/500 Duration Rule** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
+- **Motion Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Relationships
 
-- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `.cursor/skills/frontend-design/reference/motion-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

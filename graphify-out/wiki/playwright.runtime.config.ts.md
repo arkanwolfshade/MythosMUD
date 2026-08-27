@@ -1,12 +1,11 @@
 # playwright.runtime.config.ts
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Party System Reference** (2 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Party Invite Command** (1 connections) — `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- **Ephemeral Grouping Party Planning** (1 connections) — `docs/archive/PLANNING_ephemeral_grouping.md`
+- **playwright.runtime.config.ts** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
+- **PARALLEL_WORKERS** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
 
 ## Relationships
 
@@ -14,13 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/PARTY_SYSTEM_REFERENCE.md`
-- `docs/archive/PLANNING_ephemeral_grouping.md`
+- `client/tests/e2e/playwright.runtime.config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

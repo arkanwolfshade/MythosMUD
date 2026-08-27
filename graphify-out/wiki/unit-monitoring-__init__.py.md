@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **unit/monitoring/__init__.py** (1 connections) — `server/tests/unit/monitoring/__init__.py`
+- **Monitoring unit tests.** (1 connections) — `server/tests/unit/monitoring/__init__.py`
 
 ## Relationships
 
-- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
-- [get_room_environment](get_room_environment.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/monitoring/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

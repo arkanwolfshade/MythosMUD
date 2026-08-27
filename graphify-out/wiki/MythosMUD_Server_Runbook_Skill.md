@@ -1,12 +1,11 @@
 # MythosMUD Server Runbook Skill
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Dead Code Cleanup Completion** (2 connections) — `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- **Legacy Files Cleanup Summary** (1 connections) — `docs/archive/CLEANUP_SUMMARY.md`
-- **Dead Code Cleanup Planning** (1 connections) — `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- **One Server Only Rule** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
+- **MythosMUD Server Runbook Skill** (1 connections) — `.cursor/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/CLEANUP_SUMMARY.md`
-- `docs/archive/DEAD_CODE_CLEANUP_COMPLETION.md`
-- `docs/archive/DEAD_CODE_CLEANUP_PLANNING.md`
+- `.cursor/skills/mythosmud-server-runbook/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

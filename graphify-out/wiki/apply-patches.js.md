@@ -1,23 +1,22 @@
 # apply-patches.js
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_status_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_status_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **apply-patches.js** (0 connections) — `client/scripts/apply-patches.js`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/scripts/apply-patches.js`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

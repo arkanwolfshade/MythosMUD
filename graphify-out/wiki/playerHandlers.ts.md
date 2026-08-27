@@ -1,57 +1,54 @@
 # playerHandlers.ts
 
-> 33 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **GameMechanicsService** (26 connections) — `server/game/mechanics.py`
-- **test_mechanics.py** (16 connections) — `server/tests/unit/game/test_mechanics.py`
-- **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
-- **asyncio** (8 connections)
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
-- **test_apply_corruption_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_damage_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_experience_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_gain_occult_knowledge_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_heal_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.__init__()** (3 connections) — `server/game/mechanics.py`
-- **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **test_apply_lucidity_loss_player_not_found()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
-- **.apply_corruption()** (2 connections) — `server/game/mechanics.py`
-- **.apply_fear()** (2 connections) — `server/game/mechanics.py`
-- **.apply_lucidity_loss()** (2 connections) — `server/game/mechanics.py`
-- **.damage_player()** (2 connections) — `server/game/mechanics.py`
-- **.gain_experience()** (2 connections) — `server/game/mechanics.py`
-- **.gain_occult_knowledge()** (2 connections) — `server/game/mechanics.py`
-- **.heal_player()** (2 connections) — `server/game/mechanics.py`
-- **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
-- **Damage a player's health.** (1 connections) — `server/game/mechanics.py`
-- **Award experience points to a player. CRITICAL FIX: This method prevents XP…** (1 connections) — `server/game/mechanics.py`
-- *... and 8 more nodes in this community*
+- **playerHandlers.ts** (24 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **healthEventUtils.ts** (16 connections) — `client/src/utils/healthEventUtils.ts`
+- **playerHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- **buildHealthStatusFromEvent()** (9 connections) — `client/src/utils/healthEventUtils.ts`
+- **determineDpTier()** (7 connections) — `client/src/types/health.ts`
+- **healthEventUtils.test.ts** (6 connections) — `client/src/utils/__tests__/healthEventUtils.test.ts`
+- **buildHealthChangeMessage()** (4 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerDpUpdated()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerRespawned()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerUpdate()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **mergePlayerStats()** (3 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **parseHealthEventNumbers()** (3 connections) — `client/src/utils/healthEventUtils.ts`
+- **readDpField()** (3 connections) — `client/src/utils/healthEventUtils.ts`
+- **handlePlayerDeliriumRespawned()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerDied()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEntered()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerEnteredGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeft()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **handlePlayerLeftGame()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **pickStatNumber()** (2 connections) — `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- **formatSource()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **humanizeReason()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **inferReasonFromDelta()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **parseNumber()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- **resolveInCombat()** (2 connections) — `client/src/utils/healthEventUtils.ts`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [command_service.py](command_service.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (2 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (1 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
-- [GameConfig](GameConfig.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (17 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `server/game/mechanics.py`
-- `server/npc/combat_integration_base.py`
-- `server/tests/unit/game/test_mechanics.py`
+- `client/src/components/ui-v2/eventHandlers/__tests__/playerHandlers.test.ts`
+- `client/src/components/ui-v2/eventHandlers/playerHandlers.ts`
+- `client/src/types/__tests__/health.test.ts`
+- `client/src/types/health.ts`
+- `client/src/utils/__tests__/healthEventUtils.test.ts`
+- `client/src/utils/healthEventUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (89%)
-- INFERRED: 8 (11%)
+- EXTRACTED: 74 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

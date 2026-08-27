@@ -1,72 +1,65 @@
 # NATSService
 
-> 154 nodes
+> 246 nodes
 
 ## Key Concepts
 
-- **models/combat.py** (59 connections) — `server/models/combat.py`
-- **CombatParticipantType** (45 connections) — `server/models/combat.py`
-- **CombatParticipantData** (39 connections) — `server/services/combat_types.py`
-- **nats_exceptions.py** (38 connections) — `server/services/nats_exceptions.py`
-- **combat_service_start.py** (28 connections) — `server/services/combat_service_start.py`
-- **combat_death_handler.py** (20 connections) — `server/services/combat_death_handler.py`
-- **combat_turn_processor.py** (19 connections) — `server/services/combat_turn_processor.py`
-- **test_combat_cleanup_handler.py** (19 connections) — `server/tests/unit/services/test_combat_cleanup_handler.py`
-- **.create_combat_instance()** (17 connections) — `server/services/combat_initialization.py`
-- **TestCombatInitializer** (15 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **combat_initialization.py** (15 connections) — `server/services/combat_initialization.py`
-- **CombatStatus** (13 connections) — `server/models/combat.py`
-- **test_combat_turn_participant_actions.py** (13 connections) — `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- **TestCombatParticipantData** (12 connections) — `server/tests/unit/services/test_combat_types.py`
-- **_resolve_npc_target()** (11 connections) — `server/services/combat_turn_participant_actions.py`
-- **combat_cleanup_handler.py** (11 connections) — `server/services/combat_cleanup_handler.py`
-- **combat_types.py** (11 connections) — `server/services/combat_types.py`
-- **CombatCleanupHandler** (9 connections) — `server/services/combat_cleanup_handler.py`
-- **apply_target_rest_and_grace_checks()** (9 connections) — `server/services/combat_service_start.py`
-- **test_combat_initialization.py** (9 connections) — `server/tests/unit/services/test_combat_initialization.py`
-- **CombatInitializer** (8 connections) — `server/services/combat_initialization.py`
-- **get_connection_manager_for_combat_check()** (7 connections) — `server/services/combat_service_start.py`
-- **_select_npc_target()** (7 connections) — `server/services/combat_turn_participant_actions.py`
-- **check_target_rest_and_grace_period()** (6 connections) — `server/services/combat_service_start.py`
-- **publish_combat_started_event()** (6 connections) — `server/services/combat_service_start.py`
-- *... and 129 more nodes in this community*
+- **NATSService** (165 connections) — `server/services/nats_service.py`
+- **test_nats_service_helpers.py** (60 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **NATSConfig** (37 connections) — `server/config/models/nats.py`
+- **nats_service.py** (34 connections) — `server/services/nats_service.py`
+- **asyncio** (26 connections)
+- **test_nats_service_pool.py** (24 connections) — `server/tests/unit/services/test_nats_service_pool.py`
+- **test_nats_service_health.py** (23 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- **asyncio** (15 connections)
+- **NATSUnsubscribeError** (14 connections) — `server/services/nats_exceptions.py`
+- **asyncio** (11 connections)
+- **JsonMap** (9 connections)
+- **.disconnect()** (8 connections) — `server/services/nats_service.py`
+- **._create_tracked_task()** (7 connections) — `server/services/nats_service.py`
+- **_mock_create_tracked_task()** (7 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **.connect()** (6 connections) — `server/services/nats_service.py`
+- **.__init__()** (6 connections) — `server/services/nats_service.py`
+- **._verify_subscription_cleanup()** (6 connections) — `server/services/nats_service.py`
+- **_assert_tracked_coro_closed()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_start_health_monitoring_creates_task()** (6 connections) — `server/tests/unit/services/test_nats_service_helpers.py`
+- **test_nats_service_init_with_config()** (6 connections) — `server/tests/unit/services/test_nats_service.py`
+- **_NatsListenerClient** (5 connections) — `server/services/nats_service.py`
+- **NatsMessageCallback** (5 connections) — `server/services/nats_service.py`
+- **._on_error()** (5 connections) — `server/services/nats_service.py`
+- **._start_health_monitoring()** (5 connections) — `server/services/nats_service.py`
+- **nats_service()** (5 connections) — `server/tests/unit/services/test_nats_service_health.py`
+- *... and 221 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (29 shared connections)
-- [MythosMUDError](MythosMUDError.md) (27 shared connections)
-- [User](User.md) (25 shared connections)
-- [test_combat_service.py](test_combat_service.py.md) (24 shared connections)
-- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (12 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (11 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (10 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (10 shared connections)
-- [.get_instance](get_instance.md) (9 shared connections)
-- [ChatMessage](ChatMessage.md) (8 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (5 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (5 shared connections)
+- [NATSError](NATSError.md) (65 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (11 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [NATSServicePoolMixin](NATSServicePoolMixin.md) (4 shared connections)
+- [DistributedEventBus](DistributedEventBus.md) (3 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (2 shared connections)
+- [combat_service.py](combat_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_cleanup_handler.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_initialization.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_start.py`
-- `server/services/combat_turn_participant_actions.py`
-- `server/services/combat_turn_processor.py`
-- `server/services/combat_types.py`
+- `server/config/models/nats.py`
 - `server/services/nats_exceptions.py`
-- `server/tests/unit/services/test_combat_cleanup_handler.py`
-- `server/tests/unit/services/test_combat_initialization.py`
-- `server/tests/unit/services/test_combat_turn_participant_actions.py`
-- `server/tests/unit/services/test_combat_types.py`
+- `server/services/nats_service.py`
+- `server/tests/unit/services/test_nats_service.py`
+- `server/tests/unit/services/test_nats_service_health.py`
+- `server/tests/unit/services/test_nats_service_helpers.py`
+- `server/tests/unit/services/test_nats_service_pool.py`
 
 ## Audit Trail
 
-- EXTRACTED: 448 (95%)
-- INFERRED: 25 (5%)
+- EXTRACTED: 450 (79%)
+- INFERRED: 117 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # Item System Blueprint
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Memory Leak Remediation** (2 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Closed WebSockets Deque Cap** (1 connections) — `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
-- **Memory Leak Metrics Collection** (1 connections) — `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
+- **Item Prototype and Instance Split** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
+- **Item System Blueprint** (1 connections) — `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `.cursor/plans/memory_leak_metrics_collection_plan_a4707e8b.plan.md`
-- `.cursor/plans/memory_leak_remediation_plan_6321808e.plan.md`
+- `docs/archive/ITEM_SYSTEM_SPEC/ITEM_SYSTEM_DESIGN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

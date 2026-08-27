@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **.codacy.yml** (2 connections) — `.codacy.yml`
-- **bandit.yml** (1 connections) — `bandit.yml`
-- **Codacy MCP Rules** (1 connections) — `.claude/rules/codacy.md`
+- **Scenario 20 Logout Errors** (2 connections) — `e2e-tests/scenarios/scenario-20-logout-errors.md`
+- **Scenario 19 Logout Button** (1 connections) — `e2e-tests/scenarios/scenario-19-logout-button.md`
+- **Scenario 21 Logout Accessibility** (1 connections) — `e2e-tests/scenarios/scenario-21-logout-accessibility.md`
 
 ## Relationships
 
@@ -14,14 +14,14 @@
 
 ## Source Files
 
-- `.claude/rules/codacy.md`
-- `.codacy.yml`
-- `bandit.yml`
+- `e2e-tests/scenarios/scenario-19-logout-button.md`
+- `e2e-tests/scenarios/scenario-20-logout-errors.md`
+- `e2e-tests/scenarios/scenario-21-logout-accessibility.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

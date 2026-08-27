@@ -1,23 +1,22 @@
 # Security Auditor Agent
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_go_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Security Auditor Agent** (0 connections) — `.claude/agents/security-auditor.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.claude/agents/security-auditor.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

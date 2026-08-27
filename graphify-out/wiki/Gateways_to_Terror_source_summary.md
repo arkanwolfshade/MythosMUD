@@ -1,27 +1,25 @@
 # Gateways to Terror (source summary)
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **ConnectionPanel.tsx** (3 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **ConnectionPanel.test.tsx** (3 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
-- **ConnectionPanel()** (2 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **ConnectionPanelProps** (1 connections) — `client/src/components/panels/ConnectionPanel.tsx`
-- **localStorageMock** (1 connections) — `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
+- **Gateways to Terror (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Gateways to Terror.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/panels/ConnectionPanel.tsx`
-- `client/src/components/panels/__tests__/ConnectionPanel.test.tsx`
+- `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

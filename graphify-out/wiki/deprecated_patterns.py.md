@@ -4,52 +4,45 @@
 
 ## Key Concepts
 
-- **test_channel_commands.py** (21 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **handle_channel_command()** (14 connections) — `server/commands/channel_commands.py`
-- **_handle_default_channel_setting()** (10 connections) — `server/commands/channel_commands.py`
-- **_get_persistence_and_player()** (9 connections) — `server/commands/channel_commands.py`
-- **asyncio** (9 connections)
-- **_extract_channel_from_command()** (8 connections) — `server/commands/channel_commands.py`
-- **_validate_channel_name()** (5 connections) — `server/commands/channel_commands.py`
-- **test_get_persistence_and_player_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_get_persistence_and_player_not_found()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_default_subcommand()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_switch_valid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_channel_command_usage_when_channel_missing()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_invalid_channel()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_sqlalchemy_error()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_handle_default_channel_setting_success()** (4 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Any** (4 connections)
-- **test_extract_channel_from_command_direct()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_missing()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_extract_channel_from_command_parsed_fallback()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **test_validate_channel_name_invalid()** (3 connections) — `server/tests/unit/commands/test_channel_commands.py`
-- **Validate channel name. Returns error dict if invalid, None if valid.** (1 connections) — `server/commands/channel_commands.py`
-- **Handle the channel command for switching channels or setting default channel.…** (1 connections) — `server/commands/channel_commands.py`
-- **Get persistence and player. Returns (persistence, player) or (None, None) if…** (1 connections) — `server/commands/channel_commands.py`
-- **Extract channel name from command_data. Returns channel name or None.** (1 connections) — `server/commands/channel_commands.py`
+- **deprecated_patterns.py** (19 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **risky_operation()** (4 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **database** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_api_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_batch_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_error_handling()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_exception_handling()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_performance_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **expensive_operation()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **process_item()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **process_request()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **.query()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_async_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_basic_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_database_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_logging_in_loops()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_logging_without_context()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_request_context()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_security_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **deprecated_websocket_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **async_work()** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED database logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED API logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED WebSocket logging patterns - EXAMPLE ONLY.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
+- **Demonstrate DEPRECATED batch logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
 - *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
-- [logger.ts](logger.ts.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/channel_commands.py`
-- `server/tests/unit/commands/test_channel_commands.py`
+- `docs/examples/logging/deprecated_patterns.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

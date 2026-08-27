@@ -1,12 +1,11 @@
 # Architecture Remediation Implementation Summary
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Impeccable design context** (2 connections) — `.impeccable.md`
-- **Legibility under pressure** (1 connections) — `.impeccable.md`
-- **Dark terminal-first aesthetic** (1 connections) — `.impeccable.md`
+- **Architecture Remediation Implementation Summary** (1 connections) — `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
+- **Architecture Remediation Plan** (1 connections) — `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
@@ -14,12 +13,13 @@
 
 ## Source Files
 
-- `.impeccable.md`
+- `docs/archive/ARCHITECTURE_IMPLEMENTATION_SUMMARY.md`
+- `docs/archive/ARCHITECTURE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

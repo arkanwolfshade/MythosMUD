@@ -1,37 +1,36 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Quick Start: Running E2E Tests** (10 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Troubleshooting** (5 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 1: Start the E2E Test Server** (3 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Expected Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Method A: Use the E2E startup script (Simplest)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Method B: Manual startup (More control)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Next Actions** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Prerequisites ✅** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: "element(s) not found" errors** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Login failed (500)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Server won't start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Problem: Tests timeout waiting for elements** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 2: Wait for Server to Start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Step 3: Run the E2E Tests** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Test Credentials** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
-- **Viewing Test Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Gateways to Terror  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **gateways-to-terror/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 0 - "Pre-Generated Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 1 - "Pre-Generated Investigators (1)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community 2 - "Pre-Generated Investigators (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [event_publisher](event_publisher.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/QUICK_START_E2E_TESTS.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/gateways-to-terror/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

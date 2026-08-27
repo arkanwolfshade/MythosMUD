@@ -1,39 +1,36 @@
 # analyze_log_file
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **format_combat_status()** (6 connections) — `server/commands/combat_helpers.py`
-- **get_combat_target()** (6 connections) — `server/commands/combat_helpers.py`
-- **test_combat_helpers.py** (6 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_format_combat_status_not_in_combat()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **test_get_combat_target_not_found()** (3 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Any** (2 connections)
-- **Produce a human-readable combat status string. This helper is retained for…** (1 connections) — `server/commands/combat_helpers.py`
-- **Resolve a combat target by name. The current implementation is intentionally…** (1 connections) — `server/commands/combat_helpers.py`
-- **Unit tests for combat command helper functions. Tests helper functions in…** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() formats combat status.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test format_combat_status() handles player not in combat.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() finds target.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
-- **Test get_combat_target() returns None when target not found.** (1 connections) — `server/tests/unit/commands/test_combat_helpers.py`
+- **analyze_log_file()** (8 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **analyze_logs.py** (6 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **generate_report()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **main()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **parse_log_line()** (4 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **categorize_error()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **categorize_warning()** (3 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Any** (3 connections)
+- **Path** (2 connections)
+- **Generate a formatted report from log analysis.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Parse a log line into structured data. Expected format: YYYY-MM-DD HH:MM:SS -…** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Categorize an error message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Categorize a warning message by type.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
+- **Analyze a log file and return statistics.** (1 connections) — `e2e-tests/load-tests/analyze_logs.py`
 
 ## Relationships
 
-- [test_dependency_analysis.py](test_dependency_analysis.py.md) (3 shared connections)
-- [waitForMessage](waitForMessage.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_helpers.py`
+- `e2e-tests/load-tests/analyze_logs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (82%)
-- INFERRED: 4 (18%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

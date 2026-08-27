@@ -1,30 +1,26 @@
 # Call of Cthulhu 7th Edition - Keeper's Rulebook (source summary)
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestApplyRateLimitingForOpenContainer** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_apply_rate_limiting_for_open_container_exceeded()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_apply_rate_limiting_for_open_container_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test apply_rate_limiting_for_open_container function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test apply_rate_limiting_for_open_container passes when allowed.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test apply_rate_limiting_for_open_container raises exception when rate limited.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Call of Cthulhu 7th Edition - Keeper's Rulebook (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **Call of Cthulhu 7th Edition - Keeper's Rulebook.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (3 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition - Keeper's Rulebook.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (82%)
-- INFERRED: 2 (18%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

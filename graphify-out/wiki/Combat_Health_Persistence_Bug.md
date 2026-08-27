@@ -1,12 +1,11 @@
 # Combat Health Persistence Bug
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Combat Messages Dual Panel Display** (2 connections) — `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- **Combat Turn Order UUID Display** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- **Missing NPC Death Message Handlers** (1 connections) — `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- **Combat Health Persistence Bug** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- **Combat Health Persistence Remediation** (1 connections) — `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Relationships
 
@@ -14,14 +13,13 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-19_session-002_combat-message-uuid-display.md`
-- `investigations/sessions/2025-11-19_session-003_combat-messages-dual-panel-display.md`
-- `investigations/sessions/2025-12-01_session-npc-death-messages-not-displaying.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_FIX_PLAN.md`
+- `docs/archive/COMBAT_HEALTH_PERSISTENCE_REMEDIATION_PLAN.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

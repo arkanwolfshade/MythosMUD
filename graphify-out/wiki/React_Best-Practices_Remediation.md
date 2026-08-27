@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Mypy Remediation Skill** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **MythosMUD Pre-Commit Checklist** (1 connections) — `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- **React Best-Practices Remediation** (1 connections) — `.cursor/plans/react_best-practices_remediation.plan.md`
+- **Room Editor Backend APIs** (1 connections) — `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Relationships
 
@@ -13,8 +13,8 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
-- `.cursor/skills/mythosmud-pre-commit-checklist/SKILL.md`
+- `.cursor/plans/react_best-practices_remediation.plan.md`
+- `.cursor/plans/room_editor_backend_apis.plan.md`
 
 ## Audit Trail
 

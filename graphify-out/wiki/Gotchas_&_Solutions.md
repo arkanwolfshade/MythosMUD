@@ -1,28 +1,26 @@
 # Gotchas & Solutions
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **🔴 CRITICAL ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **2. asyncio.run() Called from Existing Event Loop Context** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **5. Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **6. F-String Logging Destroying Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Gotchas & Solutions** (5 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gotcha 1: Async Propagation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gotcha 2: Mixing Sync and Async** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gotcha 3: Transaction Management** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Gotcha 4: Testing Async Code** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [.get_professions](get_professions.md) (1 shared connections)
+- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

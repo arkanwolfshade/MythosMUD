@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **AGENTS.md Authoritative Guidance** (1 connections) — `.github/copilot-instructions.md`
-- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
+- **domain/__init__.py** (1 connections) — `server/domain/__init__.py`
+- **Domain layer for MythosMUD. This package contains the core business logic and…** (1 connections) — `server/domain/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.github/copilot-instructions.md`
+- `server/domain/__init__.py`
 
 ## Audit Trail
 

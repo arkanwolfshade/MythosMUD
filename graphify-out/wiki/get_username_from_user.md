@@ -1,59 +1,78 @@
 # get_username_from_user
 
-> 49 nodes
+> 408 nodes
 
 ## Key Concepts
 
-- **FollowService** (36 connections) — `server/game/follow_service.py`
-- **_str_id()** (15 connections) — `server/game/follow_service.py`
-- **.request_follow()** (10 connections) — `server/game/follow_service.py`
-- **UUID** (10 connections)
-- **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
-- **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
-- **._handle_npc_follower_move()** (8 connections) — `server/game/follow_service.py`
-- **._handle_player_follower_move()** (8 connections) — `server/game/follow_service.py`
-- **.__init__()** (8 connections) — `server/game/follow_service.py`
-- **.unfollow()** (8 connections) — `server/game/follow_service.py`
-- **Any** (8 connections)
-- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
-- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
-- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
-- **._schedule_coro()** (7 connections) — `server/game/follow_service.py`
-- **.get_followers()** (6 connections) — `server/game/follow_service.py`
-- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
-- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
-- **._ensure_follower_standing()** (5 connections) — `server/game/follow_service.py`
-- **.get_following()** (5 connections) — `server/game/follow_service.py`
-- **.get_following_display_name()** (5 connections) — `server/game/follow_service.py`
-- **._on_npc_entered_room()** (5 connections) — `server/game/follow_service.py`
-- **._send_result_and_player_update()** (5 connections) — `server/game/follow_service.py`
-- **.on_player_disconnect()** (4 connections) — `server/game/follow_service.py`
-- **._send_follow_request_to_target()** (4 connections) — `server/game/follow_service.py`
-- *... and 24 more nodes in this community*
+- **get_username_from_user()** (50 connections) — `server/utils/command_helpers.py`
+- **combat_handler.py** (47 connections) — `server/commands/combat_handler.py`
+- **test_command_parser.py** (47 connections) — `server/tests/unit/utils/test_command_parser.py`
+- **command_parser.py** (47 connections) — `server/utils/command_parser.py`
+- **TargetType** (45 connections) — `server/schemas/shared/target_resolution.py`
+- **test_target_resolution_service.py** (43 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetResolutionResult** (36 connections) — `server/schemas/shared/target_resolution.py`
+- **target_resolution_service.py** (29 connections) — `server/services/target_resolution_service.py`
+- **test_command_helpers.py** (28 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **combat_attack.py** (25 connections) — `server/commands/combat_attack.py`
+- **parse_command()** (24 connections) — `server/utils/command_parser.py`
+- **test_follow_commands.py** (24 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **party_commands.py** (21 connections) — `server/commands/party_commands.py`
+- **asyncio** (21 connections)
+- **test_combat_attack.py** (20 connections) — `server/tests/unit/commands/test_combat_attack.py`
+- **CommandParser** (19 connections) — `server/utils/command_parser.py`
+- **follow_commands.py** (18 connections) — `server/commands/follow_commands.py`
+- **command_helpers.py** (18 connections) — `server/utils/command_helpers.py`
+- **handle_follow_command()** (17 connections) — `server/commands/follow_commands.py`
+- **validate_command_safety()** (17 connections) — `server/utils/command_helpers.py`
+- **test_command_helpers_functions.py** (17 connections) — `server/tests/unit/utils/test_command_helpers_functions.py`
+- **schemas/shared/__init__.py** (16 connections) — `server/schemas/shared/__init__.py`
+- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
+- **TargetMetadata** (15 connections) — `server/schemas/shared/target_metadata.py`
+- **command_processor.py** (14 connections) — `server/utils/command_processor.py`
+- *... and 383 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (13 shared connections)
-- [test_nats_broker.py](test_nats_broker.py.md) (6 shared connections)
-- [test_combat_persistence_handler_events.py](test_combat_persistence_handler_events.py.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [testing_examples.py](testing_examples.py.md) (2 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
-- [Dead Code Cleanup Completion](Dead_Code_Cleanup_Completion.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (33 shared connections)
+- [TargetMatch](TargetMatch.md) (28 shared connections)
+- [AliasStorage](AliasStorage.md) (28 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (26 shared connections)
+- [get_logger](get_logger.md) (18 shared connections)
+- [BaseCommand](BaseCommand.md) (15 shared connections)
+- [test_party_commands.py](test_party_commands.py.md) (12 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (9 shared connections)
+- [admin_mute_commands.py](admin_mute_commands.py.md) (7 shared connections)
+- [test_admin_commands.py](test_admin_commands.py.md) (7 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (6 shared connections)
+- [CommandFactory](CommandFactory.md) (6 shared connections)
 
 ## Source Files
 
-- `server/game/follow_service.py`
+- `server/commands/admin_mute_commands.py`
+- `server/commands/combat_attack.py`
+- `server/commands/combat_handler.py`
+- `server/commands/follow_commands.py`
+- `server/commands/party_commands.py`
+- `server/schemas/shared/__init__.py`
+- `server/schemas/shared/target_metadata.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/services/target_resolution_service.py`
+- `server/tests/unit/commands/test_combat_attack.py`
+- `server/tests/unit/commands/test_follow_commands.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/tests/unit/services/test_target_resolution_service.py`
+- `server/tests/unit/test_command_parser_smoke.py`
+- `server/tests/unit/utils/test_command_helpers.py`
+- `server/tests/unit/utils/test_command_helpers_functions.py`
+- `server/tests/unit/utils/test_command_parser.py`
+- `server/utils/command_helpers.py`
+- `server/utils/command_parser.py`
+- `server/utils/command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 122 (92%)
-- INFERRED: 11 (8%)
+- EXTRACTED: 902 (91%)
+- INFERRED: 93 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

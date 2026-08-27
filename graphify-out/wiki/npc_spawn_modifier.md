@@ -1,24 +1,25 @@
 # npc_spawn_modifier
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_get_room_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() falls back to persistence when cache unavailable.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **minimum** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
-- [get_room_environment](get_room_environment.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

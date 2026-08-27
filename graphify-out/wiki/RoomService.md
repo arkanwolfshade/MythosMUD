@@ -1,59 +1,66 @@
 # RoomService
 
-> 51 nodes
+> 120 nodes
 
 ## Key Concepts
 
-- **test_admin_summon_command.py** (34 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **_resolve_summon_context()** (15 connections) — `server/commands/admin_summon_command.py`
-- **handle_summon_command()** (13 connections) — `server/commands/admin_summon_command.py`
-- **asyncio** (13 connections)
-- **_complete_summon()** (10 connections) — `server/commands/admin_summon_command.py`
-- **_parse_summon_command_data()** (10 connections) — `server/commands/admin_summon_command.py`
-- **Any** (10 connections)
-- **_broadcast_and_log_summon_success()** (8 connections) — `server/commands/admin_summon_command.py`
-- **_validate_summon_prerequisites()** (8 connections) — `server/commands/admin_summon_command.py`
-- **_create_summon_item_instance()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_summon_npc_stub_response()** (6 connections) — `server/commands/admin_summon_command.py`
-- **_log_summon_success()** (5 connections) — `server/commands/admin_summon_command.py`
-- **test_complete_summon_factory_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_persist_summoned_item_swallows_db_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_broadcast_and_log_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_complete_summon_no_instance_without_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_complete_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_create_summon_item_instance_factory_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_context_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_context_none()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_handle_summon_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_persist_summoned_item_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- **test_resolve_summon_context_permission_denied()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
-- *... and 26 more nodes in this community*
+- **RoomService** (96 connections) — `server/game/room_service.py`
+- **rooms.py** (61 connections) — `server/api/rooms.py`
+- **room_service.py** (24 connections) — `server/game/room_service.py`
+- **test_rooms_api.py** (24 connections) — `server/tests/unit/api/test_rooms_api.py`
+- **exploration_service.py** (18 connections) — `server/services/exploration_service.py`
+- **update_room_position()** (16 connections) — `server/api/rooms.py`
+- **_apply_exploration_filter_if_needed()** (13 connections) — `server/api/rooms.py`
+- **list_rooms()** (13 connections) — `server/api/rooms.py`
+- **Any** (13 connections)
+- **rooms/__init__.py** (13 connections) — `server/schemas/rooms/__init__.py`
+- **test_rooms_exploration_filter.py** (13 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- **_validate_admin_room_action()** (12 connections) — `server/api/rooms.py`
+- **get_room()** (10 connections) — `server/api/rooms.py`
+- **_invalidate_room_cache()** (10 connections) — `server/api/rooms.py`
+- **Request** (10 connections)
+- **_update_room_position_in_db()** (9 connections) — `server/api/rooms.py`
+- **_validate_room_position_update()** (9 connections) — `server/api/rooms.py`
+- **RoomListResponse** (8 connections) — `server/schemas/rooms/room.py`
+- **.get_room()** (8 connections) — `server/game/room_service.py`
+- **rooms/room.py** (8 connections) — `server/schemas/rooms/room.py`
+- **asyncio** (8 connections)
+- **RoomPositionUpdateResponse** (7 connections) — `server/schemas/rooms/room.py`
+- **RoomResponse** (7 connections) — `server/schemas/rooms/room.py`
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **test_apply_exploration_filter_admin_sees_all_rooms_when_filter_requested()** (7 connections) — `server/tests/unit/api/test_rooms_exploration_filter.py`
+- *... and 95 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (14 shared connections)
-- [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [authenticated.ts](authenticated.ts.md) (4 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [_apply_stat_change_and_build_result](_apply_stat_change_and_build_result.md) (1 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (67 shared connections)
+- [User](User.md) (37 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (22 shared connections)
+- [DatabaseError](DatabaseError.md) (9 shared connections)
+- [map_minimap.py](map_minimap.py.md) (8 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [test_room_service.py](test_room_service.py.md) (4 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
+- [time_event_consumer.py](time_event_consumer.py.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [api/player_respawn.py](api-player_respawn.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_summon_command.py`
-- `server/tests/unit/commands/test_admin_summon_command.py`
+- `server/api/rooms.py`
+- `server/game/room_service.py`
+- `server/schemas/rooms/__init__.py`
+- `server/schemas/rooms/room.py`
+- `server/schemas/rooms/room_data.py`
+- `server/services/exploration_service.py`
+- `server/tests/unit/api/test_rooms_api.py`
+- `server/tests/unit/api/test_rooms_exploration_filter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 123 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 366 (88%)
+- INFERRED: 48 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

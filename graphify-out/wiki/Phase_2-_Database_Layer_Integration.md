@@ -1,25 +1,21 @@
 # Phase 2: Database Layer Integration
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Modular E2E Test Suite** (4 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Validation Passed** (1 connections) — `e2e-tests/END_TO_END_VALIDATION.md`
-- **AI Context Limit 20KB** (1 connections) — `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- **MULTIPLAYER_SCENARIOS_PLAYBOOK** (1 connections) — `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- **E2E Test Suite README** (1 connections) — `e2e-tests/README.md`
+- **Phase 2: Database Layer Integration** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.1 Persistence Layer Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.2 Database Connection Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **2.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/COMPREHENSIVE_OVERVIEW.md`
-- `e2e-tests/END_TO_END_VALIDATION.md`
-- `e2e-tests/FILE_SIZE_ANALYSIS.md`
-- `e2e-tests/README.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 

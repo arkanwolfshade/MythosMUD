@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Whisper Location Independence** (0 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- **stylelint.py** (0 connections) — `scripts/stylelint.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
+- `scripts/stylelint.py`
 
 ## Audit Trail
 

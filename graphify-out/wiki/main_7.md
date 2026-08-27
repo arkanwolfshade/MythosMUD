@@ -1,21 +1,17 @@
 # main
 
-> 12 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Zustand Best Practices** (10 connections) — `.claude/rules/zustand.md`
-- **2. Slice-Based Organization** (2 connections) — `.claude/rules/zustand.md`
-- **zustand.md** (1 connections) — `.claude/rules/zustand.md`
-- **1. Typed Store Shape (TypeScript First)** (1 connections) — `.claude/rules/zustand.md`
-- **3. Naming Conventions** (1 connections) — `.claude/rules/zustand.md`
-- **4. Functional Updates to Prevent Stale Closures** (1 connections) — `.claude/rules/zustand.md`
-- **5. Selectors and Shallow Comparison for Performance** (1 connections) — `.claude/rules/zustand.md`
-- **6. Essential Middleware Usage** (1 connections) — `.claude/rules/zustand.md`
-- **7. Initializing Stores Outside Components** (1 connections) — `.claude/rules/zustand.md`
-- **8. Asynchronous Actions** (1 connections) — `.claude/rules/zustand.md`
-- **MythosMUD client** (1 connections) — `.claude/rules/zustand.md`
-- **Slice-Based Organization** (1 connections) — `.claude/rules/zustand.md`
+- **main()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_run_quest_ddl()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **_seed_leave_the_tutorial()** (4 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **apply_quest_migrations_to_dev.py** (3 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **cursor** (2 connections)
+- **Connect to DB from DATABASE_URL, run quest DDL and seed (leave_the_tutorial),…** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Create quest_definitions, quest_instances, quest_offers tables and indexes.** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
+- **Insert leave_the_tutorial quest definition and room offer (idempotent).** (1 connections) — `scripts/apply_quest_migrations_to_dev.py`
 
 ## Relationships
 
@@ -23,11 +19,11 @@
 
 ## Source Files
 
-- `.claude/rules/zustand.md`
+- `scripts/apply_quest_migrations_to_dev.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,36 +1,32 @@
 # P3 · container-di + client + domain
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with cancel action.** (2 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Parse shutdown command parameters. Args: command_data: Command data dictionary…** (1 connections) — `server/commands/admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with no args defaults to 10 seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with negative seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with zero seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
-- **Test parse_shutdown_parameters() with invalid string.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **P3 · container-di + client + domain** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **P3-Cluster-DI-Client-Domain.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Further P0 reversals** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H10 · ADR-011 declares completed work as "planned"** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H7 · The global-singleton leak grew rather than shrank** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H8 · Twelve modules bypass the persistence facade — and the two docs disagree about whether that's allowed** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **H9 · ADR-008 styling claim is wholly counterfactual** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Low / STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Medium** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Notable CONFORMS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
+- **Register corrections** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Relationships
 
-- [MythosPanel.tsx](MythosPanel.tsx.md) (7 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_shutdown_command.py`
-- `server/tests/unit/commands/test_admin_shutdown_command.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-DI-Client-Domain.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

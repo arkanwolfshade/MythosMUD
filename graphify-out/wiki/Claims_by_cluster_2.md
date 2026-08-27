@@ -4,31 +4,32 @@
 
 ## Key Concepts
 
-- **Execution Timeline** (13 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 1: Pruning Phase** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 2: Consolidation + Gap Filling** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Month 3+: Continuous Improvement** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Ongoing Tasks** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 1: Quick Wins** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 2: Infrastructure Reduction** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 3: Coverage Test Optimization** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 4: Verification and Validation** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 5: Parametrization (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 6: Parametrization (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 7: Critical Gap Tests (Part 1)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **Week 8: Critical Gap Tests (Part 2)** (1 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **P2 · Structural & Architecture Doc Claim Register** (5 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **P2-Structural-Claims.md** (3 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **config-api — API_OPENAPI_SPECIFICATION** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **container-di — BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **container-di — CONTAINER_SYSTEM_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Corpus correction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Design↔design contradictions (findings without needing code)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **domain — aggro-threat-system** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **events-nats — EVENT_OWNERSHIP_MATRIX, DISTRIBUTED_EVENTBUS_NATS, NATS_SUBJECT_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **persistence-db — PERSISTENCE_REPOSITORY_ARCHITECTURE, DATABASE_ACCESS_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **realtime-connection — REAL_TIME_ARCHITECTURE, CONNECTION_MANAGER_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
+- **Verified during extraction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 
 ## Relationships
 
-- [test_audit_logger.py](test_audit_logger.py.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
+- [ADR-020: WebSocket Authentication and CSRF](ADR-020-_WebSocket_Authentication_and_CSRF.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

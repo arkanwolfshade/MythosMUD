@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Gladiator Ring (Arena)** (0 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Whisper System Investigation Report** (0 connections) — `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/plans/gladiator_ring_arena_plan.md`
+- `e2e-tests/WHISPER_SYSTEM_INVESTIGATION_REPORT.md`
 
 ## Audit Trail
 

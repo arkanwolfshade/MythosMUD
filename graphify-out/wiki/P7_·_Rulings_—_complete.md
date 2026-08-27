@@ -1,38 +1,32 @@
 # P7 · Rulings — complete
 
-> 13 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **TestExecuteTransfer** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_execute_transfer_to_container()** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_execute_transfer_to_player()** (6 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestGetPlayerIdFromUser** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_get_player_id_from_user_not_found()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_get_player_id_from_user_success()** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **asyncio** (4 connections)
-- **Test get_player_id_from_user raises exception when player not found.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test execute_transfer function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test execute_transfer calls transfer_to_container for to_container direction.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test execute_transfer calls transfer_from_container for to_player direction.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_player_id_from_user function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_player_id_from_user returns player ID.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **P7 · Rulings — complete** (10 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C1 · What are the ADRs for? — **Mark provenance, keep ADRs for new decisions**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C2 · Query construction — **Fix the guard now, defer the doc decision**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C3 · Layer boundaries — **Split three ways**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C4 · Container architecture doc — **Restore to `docs/` with a provenance note**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C5 · Doc↔doc contradictions — **In-place for ADR-003, cross-reference for ADR-004**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C6 · Contract drift — **Record `/v1` + fix all dependent paths**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C7 · Closed-but-not-built — **Reopen everything**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C8 · Undocumented systems — **ADR for WebSocket security + ui-v2; doc updates for the rest**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **C9 · ADR-009 collision — **Write the effects ADR under a free number, fix 4 citations**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (6 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (3 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (89%)
-- INFERRED: 3 (11%)
+- EXTRACTED: 10 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

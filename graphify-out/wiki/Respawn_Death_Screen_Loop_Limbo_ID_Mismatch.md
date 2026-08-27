@@ -1,33 +1,30 @@
 # Respawn Death Screen Loop Limbo ID Mismatch
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **._execute_wander_movement()** (6 connections) — `server/npc/threading.py`
-- **._process_wander_action()** (5 connections) — `server/npc/threading.py`
-- **._process_npc_message()** (4 connections) — `server/npc/threading.py`
-- **._resolve_wander_npc()** (3 connections) — `server/npc/threading.py`
-- **Process a message for an NPC.** (1 connections) — `server/npc/threading.py`
-- **Resolve active NPC instance and definition for a WANDER action.** (1 connections) — `server/npc/threading.py`
-- **Run idle movement for a resolved wander NPC.** (1 connections) — `server/npc/threading.py`
-- **Process a WANDER action for idle movement. Args: npc_id: ID of the NPC to move…** (1 connections) — `server/npc/threading.py`
+- **Respawn Death Screen Loop Limbo ID Mismatch** (3 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- **Respawn Persistence JSONB Mutation Failure** (2 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- **Death Threshold and Posture Bugs** (2 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
+- **limbo_death_void vs limbo_death_void_limbo_death_void** (1 connections) — `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- **SQLAlchemy JSONB Mutation Detection** (1 connections) — `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- **HP -10 Limbo Transition Delay** (1 connections) — `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
 
 ## Relationships
 
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (5 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Mansions of Madness_ Vol 1 - Behind Closed Doors  (2026-08-12)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Mansions_of_Madness__Vol_1_-_Behind_Closed_Doors__2026-08-12.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/threading.py`
+- `investigations/sessions/2025-11-19_session-005_respawn-death-screen-loop.md`
+- `investigations/sessions/2025-11-20_respawn-persistence-bug-investigation.md`
+- `investigations/sessions/2025-11-20_session-002_death-posture-bugs.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

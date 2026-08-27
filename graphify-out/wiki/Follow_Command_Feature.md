@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Vite Logo SVG** (1 connections) — `client/public/vite.svg`
-- **React Logo SVG** (1 connections) — `client/src/assets/react.svg`
+- **FollowService** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
+- **Follow Command Feature** (1 connections) — `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `client/public/vite.svg`
-- `client/src/assets/react.svg`
+- `.cursor/plans/follow_command_feature_5e00ae07.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

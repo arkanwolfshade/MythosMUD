@@ -1,33 +1,31 @@
 # Combat Client Crash
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **._get_npc_display_name()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/npc/combat_integration.py`
-- **._get_npc_name_from_lifecycle()** (4 connections) — `server/npc/combat_integration.py`
-- **._derive_npc_name_from_id()** (3 connections) — `server/npc/combat_integration.py`
-- **Resolve NPC instance display name from lifecycle manager, or derive from npc_id.** (1 connections) — `server/npc/combat_integration.py`
-- **Best-effort lookup of NPC name from the lifecycle manager.** (1 connections) — `server/npc/combat_integration.py`
-- **Resolve the NPC lifecycle manager from the app state, if available.** (1 connections) — `server/npc/combat_integration.py`
-- **Fallback name derivation: first segment of npc_id (e.g. nightgaunt_limbo_... ->…** (1 connections) — `server/npc/combat_integration.py`
+- **Combat Client Crash** (3 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **NATS Event Message Field Mismatch** (2 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **Combat Disconnect At NPC Death** (2 connections) — `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- **event_data vs data Field Name Mismatch** (1 connections) — `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- **CombatMessaging Connection Manager Init Failure** (1 connections) — `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- **Passive Lucidity Flux Performance Degradation** (1 connections) — `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Relationships
 
-- [test_movement_monitor.py](test_movement_monitor.py.md) (4 shared connections)
-- [TestGracefulDegradation](TestGracefulDegradation.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `investigations/sessions/2025-11-19_session-001_nats-message-validation-failure.md`
+- `investigations/sessions/2025-11-19_session-002_combat-client-crash.md`
+- `investigations/sessions/2025-11-20_combat-disconnect-bug-investigation.md`
+- `investigations/sessions/2025-11-30_session-001_passive-sanity-flux-performance.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

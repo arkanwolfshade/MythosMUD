@@ -4,23 +4,23 @@
 
 ## Key Concepts
 
-- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **sample_event_dict()** (3 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **fixture** (2 connections)
-- **Create a mock player service.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
-- **Create a sample event dictionary.** (1 connections) — `server/tests/unit/structured_logging/test_logging_processors.py`
+- **name** (5 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- [zone](zone.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/test_logging_processors.py`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,24 +1,23 @@
 # player_respawned Event Payload Gap
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **distributed_bus()** (4 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
-- **fixture** (1 connections)
-- **Create a DistributedEventBus without NATS.** (1 connections) — `server/tests/unit/events/test_distributed_event_bus.py`
+- **player_respawned Event Payload Gap** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- **Posture Desync After Respawn** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Relationships
 
-- [required](required.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/events/test_distributed_event_bus.py`
+- `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

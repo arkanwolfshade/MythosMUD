@@ -1,65 +1,52 @@
 # CombatValidator
 
-> 67 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **executeCommand()** (85 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **player.ts** (47 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **ensurePlayableConnection()** (36 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **whisper-movement.spec.ts** (35 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **combat-messages-game-info.spec.ts** (31 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensureStanding()** (26 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **admin-set-stat-command.spec.ts** (23 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **ensurePlayableAlive()** (20 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **tryStartCombat()** (9 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **clickWithoutStability()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **getPageSessionCredentials()** (9 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **despawnSanitariumCultists()** (9 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **spawnCombatTargetNpc()** (8 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **ensureNotInCombat()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **goEastFromFoyer()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **listSanitariumCultistIds()** (8 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
-- **retryUntilCombatStarted()** (7 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **resolveSpawnedCultistTarget()** (6 connections) — `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- **lookAndStand()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **prepAwForAdminSet()** (5 connections) — `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- **attemptEastHop()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **lookAndWaitForUi()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **moveAwToEasternHallway()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **sendCrossRoomWhisper()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- **whisperUntilSenderAck()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- *... and 42 more nodes in this community*
+- **CombatValidator** (26 connections) — `server/validators/combat_validator.py`
+- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
+- **combat_validator()** (4 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
+- **Any** (4 connections)
+- **test_validate_can_attack_target_different_party_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
+- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
+- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
+- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
+- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
+- **.get_combat_death_message()** (2 connections) — `server/validators/combat_validator.py`
+- **.get_combat_help_message()** (2 connections) — `server/validators/combat_validator.py`
+- **.get_combat_result_message()** (2 connections) — `server/validators/combat_validator.py`
+- **.get_combat_victory_message()** (2 connections) — `server/validators/combat_validator.py`
+- **fixture** (1 connections)
+- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **When party_service is None, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [test_command_processor.py](test_command_processor.py.md) (106 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (37 shared connections)
-- [Design Critique](Design_Critique.md) (26 shared connections)
-- [NATSConfig](NATSConfig.md) (18 shared connections)
-- [health_service](health_service.md) (10 shared connections)
-- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (5 shared connections)
+- [test_combat_validator.py](test_combat_validator.py.md) (5 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/utils/__tests__/deathVoidLocation.test.ts`
-- `client/src/utils/deathVoidLocation.ts`
-- `client/tests/e2e/runtime/admin/admin-set-stat-command.spec.ts`
-- `client/tests/e2e/runtime/combat/combat-messages-game-info.spec.ts`
-- `client/tests/e2e/runtime/commands/who-command.spec.ts`
-- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
-- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/fixtures/player.ts`
-- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- `server/tests/unit/validators/test_combat_validator.py`
+- `server/validators/combat_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 367 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,22 +4,22 @@
 
 ## Key Concepts
 
-- **verify_tutorial_migrations.ps1** (3 connections) — `scripts/verify_tutorial_migrations.ps1`
-- **Write-ColorOutput()** (3 connections) — `scripts/verify_tutorial_migrations.ps1`
-- **Test-Migration08()** (2 connections) — `scripts/verify_tutorial_migrations.ps1`
-- **Test-Migration12()** (2 connections) — `scripts/verify_tutorial_migrations.ps1`
+- **Testing Strategy** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Load Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Unit Tests** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_tutorial_migrations.ps1`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,41 +1,31 @@
 # populate_test_npc_databases.py
 
-> 16 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
-- **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
-- **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
-- **_set_database_url_from_env()** (5 connections) — `tools/invite_tools/generate_invites_db.py`
-- **generate_unique_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **get_existing_codes()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
-- **datetime** (3 connections)
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Get existing invite codes from the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Create an invite in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Use DATABASE_URL so scripts can run without full AppConfig.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
-- **Parse YYYY-MM-DD to end-of-day UTC (naive). Invite valid through that date.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
+- **populate_test_npc_databases.py** (7 connections) — `scripts/populate_test_npc_databases.py`
+- **main()** (5 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_data_from_source()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **populate_database()** (4 connections) — `scripts/populate_test_npc_databases.py`
+- **get_npc_database_url()** (3 connections) — `scripts/populate_test_npc_databases.py`
+- **Populate a PostgreSQL database with NPC data. Args: target_url: PostgreSQL…** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Main function to populate test NPC databases.** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Get NPC database URL for the specified environment. Args: environment:…** (1 connections) — `scripts/populate_test_npc_databases.py`
+- **Extract NPC data from the source PostgreSQL database. Args: source_url:…** (1 connections) — `scripts/populate_test_npc_databases.py`
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [Test Suite Refactoring Plan](Test_Suite_Refactoring_Plan.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (5 shared connections)
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites_db.py`
+- `scripts/populate_test_npc_databases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 14 (88%)
+- INFERRED: 2 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,61 +1,52 @@
 # test_look_container.py
 
-> 98 nodes
+> 102 nodes
 
 ## Key Concepts
 
-- **api/player_effects.py** (33 connections) — `server/api/player_effects.py`
-- **test_player_effects_endpoints.py** (30 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **test_player_requests.py** (26 connections) — `server/tests/unit/schemas/test_player_requests.py`
-- **player_requests.py** (18 connections) — `server/schemas/players/player_requests.py`
-- **apply_lucidity_loss()** (13 connections) — `server/api/player_effects.py`
-- **EffectResponse** (12 connections) — `server/schemas/players/player_effects.py`
-- **apply_corruption()** (12 connections) — `server/api/player_effects.py`
-- **apply_fear()** (12 connections) — `server/api/player_effects.py`
-- **damage_player()** (12 connections) — `server/api/player_effects.py`
-- **gain_occult_knowledge()** (12 connections) — `server/api/player_effects.py`
-- **heal_player()** (12 connections) — `server/api/player_effects.py`
-- **DamageRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **LucidityLossRequest** (11 connections) — `server/schemas/players/player_requests.py`
-- **BaseModel** (11 connections)
-- **CorruptionRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **FearRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **HealRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **OccultKnowledgeRequest** (10 connections) — `server/schemas/players/player_requests.py`
-- **test_apply_lucidity_loss_validation_maps_to_404()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **_user()** (8 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- **UUID** (7 connections)
-- **asyncio** (7 connections)
-- **FastAPIRequest** (6 connections)
-- **post** (6 connections)
-- **test_apply_corruption_success()** (5 connections) — `server/tests/unit/api/test_player_effects_endpoints.py`
-- *... and 73 more nodes in this community*
+- **test_look_container.py** (58 connections) — `server/tests/unit/commands/test_look_container.py`
+- **JsonMap** (22 connections)
+- **_handle_container_look()** (13 connections) — `server/commands/look_container.py`
+- **asyncio** (13 connections)
+- **ContainerLookArgs** (10 connections) — `server/commands/look_container.py`
+- **_get_container_description()** (10 connections) — `server/commands/look_container.py`
+- **test_handle_container_look_success()** (7 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_handle_container_look_not_found()** (6 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_try_lookup_container_implicit_success()** (6 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_in_equipped()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_in_room()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container()** (5 connections) — `server/tests/unit/commands/test_look_container.py`
+- **_result_text()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **sample_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **sample_equipped_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_by_container_id()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_instance_number_out_of_range()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_no_get_containers()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_or_equipped_not_found()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_success()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_in_room_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_get_container_method()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- **test_find_container_via_inner_container_no_inner_container()** (4 connections) — `server/tests/unit/commands/test_look_container.py`
+- *... and 77 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (31 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (14 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (14 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (7 shared connections)
-- [test_logging_processors.py](test_logging_processors.py.md) (3 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
-- [canonical_room_id_impl](canonical_room_id_impl.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [models/container.py](models-container.py.md) (1 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (50 shared connections)
+- [look_command.py](look_command.py.md) (4 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/player_effects.py`
-- `server/schemas/players/player_effects.py`
-- `server/schemas/players/player_requests.py`
-- `server/tests/unit/api/test_player_effects_endpoints.py`
-- `server/tests/unit/schemas/test_player_requests.py`
+- `server/commands/look_container.py`
+- `server/tests/unit/commands/test_look_container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 233 (88%)
-- INFERRED: 33 (12%)
+- EXTRACTED: 203 (99%)
+- INFERRED: 3 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

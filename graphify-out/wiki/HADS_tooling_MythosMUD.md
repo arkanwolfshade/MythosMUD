@@ -1,27 +1,26 @@
 # HADS tooling (MythosMUD)
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **P8 · Action plan** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Documentation edits** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Issues to reopen — **C7**** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **New ADRs (next free numbers, index updated in `decisions/README.md`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Remediation plans to draft (not execute)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
-- **Verification before closing P8** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- **HADS tooling (MythosMUD)** (4 connections) — `scripts/hads/README.md`
+- **hads/README.md** (1 connections) — `scripts/hads/README.md`
+- **Policy** (1 connections) — `scripts/hads/README.md`
+- **Source pin** (1 connections) — `scripts/hads/README.md`
+- **Usage** (1 connections) — `scripts/hads/README.md`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P7-Rulings.md`
+- `scripts/hads/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

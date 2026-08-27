@@ -1,11 +1,10 @@
 # Performance Profiler Agent
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **unit/structured_logging/__init__.py** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
-- **Structured logging unit tests.** (1 connections) — `server/tests/unit/structured_logging/__init__.py`
+- **Performance Profiler Agent** (0 connections) — `.claude/agents/performance-profiler.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/tests/unit/structured_logging/__init__.py`
+- `.claude/agents/performance-profiler.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

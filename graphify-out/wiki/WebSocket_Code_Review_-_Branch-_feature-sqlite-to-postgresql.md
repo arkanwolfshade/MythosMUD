@@ -4,52 +4,44 @@
 
 ## Key Concepts
 
-- **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
-- **setup.ts** (13 connections) — `client/src/test/setup.ts`
-- **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **resolveSanitizeWindow()** (5 connections) — `client/src/utils/domPurifyClient.ts`
-- **installLocalStorageShim()** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **localStorageShim.ts** (5 connections) — `client/src/utils/localStorageShim.ts`
-- **domPurifyClient.test.ts** (5 connections) — `client/src/utils/__tests__/domPurifyClient.test.ts`
-- **resolveVitestSanitizeWindow()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **sanitizeWithDomPurify()** (4 connections) — `client/src/utils/domPurifyClient.ts`
-- **localStorageShim.test.ts** (4 connections) — `client/src/utils/__tests__/localStorageShim.test.ts`
-- **installDomPurifyTestWindow()** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **collectWindowCandidates()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **resetDomPurifyClientForTests()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **verifiesDomPurifySanitize()** (3 connections) — `client/src/utils/domPurifyClient.ts`
-- **domPurifyTestWindow.ts** (3 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **INCOMING_HTML_DOMPURIFY_CONFIG** (3 connections) — `client/src/utils/security.ts`
-- **createDomPurifyTestWindow()** (2 connections) — `client/src/test/domPurifyTestWindow.ts`
-- **isUsableStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **peekExistingLocalStorage()** (2 connections) — `client/src/utils/localStorageShim.ts`
-- **DOMPurifyInstance** (1 connections) — `client/src/utils/domPurifyClient.ts`
-- **constructor()** (1 connections) — `client/src/test/setup.ts`
-- **disconnect()** (1 connections) — `client/src/test/setup.ts`
-- **observe()** (1 connections) — `client/src/test/setup.ts`
-- **takeRecords()** (1 connections) — `client/src/test/setup.ts`
-- **unobserve()** (1 connections) — `client/src/test/setup.ts`
+- **WebSocket Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🟡 Anti-Patterns and Code Smells** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🔴 Critical Issues** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **✅ Positive Findings** (5 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **📋 Recommendations Summary** (4 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🟢 Performance Concerns** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **🔵 Security Considerations** (3 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **WEBSOCKET_CODE_REVIEW.md** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **10. **No Message Batching**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **11. **Missing Rate Limiting on WebSocket Messages**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **12. **Insufficient Authentication Validation**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **1. **Dependency Injection Pattern**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **1. **Event Loop Anti-Pattern in Connection Manager**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **2. **Missing Input Validation on Server Side**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **2. **Modern Async Patterns**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **3. **Error Boundaries**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **3. **Synchronous Blocking Operations in Async Context**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **4. **Large Payload Risk in Room Updates**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **4. **Security**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **5. **Complex Event Handlers**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **6. **Tight Coupling Between Components**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **7. **Missing Reconnection Logic on Server**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **8. **Error Handling Gaps**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **9. **Inefficient Room Occupant Lookups**** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/WEBSOCKET_CODE_REVIEW.md`
 - *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (4 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (4 shared connections)
-- [TestRoomDataFixer](TestRoomDataFixer.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/test/domPurifyTestWindow.ts`
-- `client/src/test/setup.ts`
-- `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/localStorageShim.test.ts`
-- `client/src/utils/domPurifyClient.ts`
-- `client/src/utils/localStorageShim.ts`
-- `client/src/utils/security.ts`
+- `docs/archive/WEBSOCKET_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 54 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

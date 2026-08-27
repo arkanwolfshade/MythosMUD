@@ -1,13 +1,12 @@
 # Chaosium graphify snapshot - Call of Cthulhu Keeper Tips
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Gateways to Terror (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Gateways to Terror.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- **Chaosium graphify snapshot - Call of Cthulhu Keeper Tips** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **call-of-cthulhu-keeper-tips/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Gateways to Terror.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,65 +1,71 @@
 # useMythosAppActions.ts
 
-> 56 nodes
+> 57 nodes
 
 ## Key Concepts
 
-- **Profession** (26 connections) — `client/src/components/ProfessionCard.tsx`
-- **useStatsRollingActions.ts** (22 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **useProfessions.ts** (21 connections) — `client/src/hooks/useProfessions.ts`
-- **ProfessionCard.tsx** (19 connections) — `client/src/components/ProfessionCard.tsx`
-- **StatsRollingScreen.tsx** (16 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **useStatsRolling.ts** (16 connections) — `client/src/hooks/useStatsRolling.ts`
-- **Stats** (15 connections) — `client/src/hooks/useStatsRolling.ts`
-- **ProfessionSelectionScreen.tsx** (14 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **StatsRollingScreen.test.tsx** (8 connections) — `client/src/components/StatsRollingScreen.test.tsx`
-- **loadProfessions()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **parseProfessionsErrorResponse()** (5 connections) — `client/src/hooks/useProfessions.ts`
-- **useStatsRolling()** (5 connections) — `client/src/hooks/useStatsRolling.ts`
-- **parseErrorMessage()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **performStatsRoll()** (5 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **CreationSlice** (4 connections) — `client/src/mythosApp/useMythosAppState.ts`
-- **useProfessions()** (4 connections) — `client/src/hooks/useProfessions.ts`
-- **applyFailedStatsRoll()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **handleStatsRollResponse()** (4 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **ProfessionSelectionScreen.test.tsx** (4 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
-- **StatsRollingScreenProps** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **PerformStatsRollParams** (3 connections) — `client/src/hooks/useStatsRollingActions.ts`
-- **ProfessionCard()** (3 connections) — `client/src/components/ProfessionCard.tsx`
-- **ProfessionSelectionScreen()** (3 connections) — `client/src/components/ProfessionSelectionScreen.tsx`
-- **StatsRollingScreen()** (3 connections) — `client/src/components/StatsRollingScreen.tsx`
-- **parseProfessionsBody()** (3 connections) — `client/src/hooks/useProfessions.ts`
-- *... and 31 more nodes in this community*
+- **useMythosAppActions.ts** (34 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **logoutHandler.ts** (28 connections) — `client/src/utils/logoutHandler.ts`
+- **isServerUnavailable()** (18 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **serverAvailability.ts** (16 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **deleteCharacterActions.ts** (14 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
+- **motdContinueFlow.ts** (14 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **secureTokenStorage** (14 connections) — `client/src/utils/security.ts`
+- **selectCharacterFlow.ts** (13 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
+- **tryStartLoginGracePeriod()** (11 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **logoutHandler()** (11 connections) — `client/src/utils/logoutHandler.ts`
+- **useMythosSessionChrome.ts** (11 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
+- **useMythosAppActions()** (10 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **App.logout.test.tsx** (8 connections) — `client/src/__tests__/App.logout.test.tsx`
+- **src/__tests__/LogoutFlow.integration.test.tsx** (8 connections) — `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- **runSelectCharacterFlow()** (7 connections) — `client/src/mythosApp/selectCharacterFlow.ts`
+- **executeDeleteCharacterUi()** (6 connections) — `client/src/mythosApp/deleteCharacterActions.ts`
+- **useCharacterHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **useMotdAndLogoutHandlers()** (6 connections) — `client/src/mythosApp/useMythosAppActions.ts`
+- **useMythosSessionChrome()** (6 connections) — `client/src/mythosApp/useMythosSessionChrome.ts`
+- **isGracePeriodServerUnavailableError()** (5 connections) — `client/src/mythosApp/motdContinueFlow.ts`
+- **stringIndicatesServerUnavailable()** (5 connections) — `client/src/mythosApp/serverAvailability.ts`
+- **readLogoutErrorMessage()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **sendLogoutCommandToServer()** (5 connections) — `client/src/utils/logoutHandler.ts`
+- **logoutHandler.test.ts** (5 connections) — `client/src/utils/__tests__/logoutHandler.test.ts`
+- **errorDetailString()** (4 connections) — `client/src/mythosApp/serverAvailability.ts`
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (23 shared connections)
-- [test_item.py](test_item.py.md) (12 shared connections)
-- [GameTickService](GameTickService.md) (8 shared connections)
-- [test_delete_container_success](test_delete_container_success.md) (8 shared connections)
-- [NPCCombatMemory](NPCCombatMemory.md) (8 shared connections)
-- [TypeScript Best Practices](TypeScript_Best_Practices.md) (6 shared connections)
-- [TestRoomDataFixer](TestRoomDataFixer.md) (2 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (2 shared connections)
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (40 shared connections)
+- [Profession](Profession.md) (11 shared connections)
+- [security.ts](security.ts.md) (8 shared connections)
+- [utils/config.ts](utils-config.ts.md) (7 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (7 shared connections)
+- [App.tsx](App.tsx.md) (6 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
+- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (1 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (1 shared connections)
+- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ProfessionCard.test.tsx`
-- `client/src/components/ProfessionCard.tsx`
-- `client/src/components/ProfessionSelectionScreen.test.tsx`
-- `client/src/components/ProfessionSelectionScreen.tsx`
-- `client/src/components/StatsRollingScreen.test.tsx`
-- `client/src/components/StatsRollingScreen.tsx`
-- `client/src/hooks/useProfessions.ts`
-- `client/src/hooks/useStatsRolling.ts`
-- `client/src/hooks/useStatsRollingActions.ts`
-- `client/src/mythosApp/appLazyScreens.tsx`
-- `client/src/mythosApp/useMythosAppState.ts`
+- `client/src/__tests__/App.logout.test.tsx`
+- `client/src/__tests__/LogoutFlow.integration.test.tsx`
+- `client/src/mythosApp/__tests__/useMythosSessionChrome.test.ts`
+- `client/src/mythosApp/characterSessionApi.ts`
+- `client/src/mythosApp/deleteCharacterActions.ts`
+- `client/src/mythosApp/deleteCharacterFlow.ts`
+- `client/src/mythosApp/motdContinueFlow.ts`
+- `client/src/mythosApp/selectCharacterFlow.ts`
+- `client/src/mythosApp/serverAvailability.ts`
+- `client/src/mythosApp/startLoginGracePeriod.ts`
+- `client/src/mythosApp/useMythosAppActions.ts`
+- `client/src/mythosApp/useMythosSessionChrome.ts`
+- `client/src/utils/__tests__/logoutHandler.test.ts`
+- `client/src/utils/logoutHandler.ts`
+- `client/src/utils/security.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 168 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 209 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

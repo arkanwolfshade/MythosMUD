@@ -1,24 +1,23 @@
 # check_no_production_assert.py
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **MessageBatcher** (11 connections) — `client/src/utils/messageBatcher.ts`
-- **useMessageBatcher()** (6 connections) — `client/src/utils/messageBatcher.ts`
-- **.addMessage()** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.ts** (5 connections) — `client/src/utils/messageBatcher.ts`
-- **.flush()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.sendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **.shouldSendBatch()** (3 connections) — `client/src/utils/messageBatcher.ts`
-- **messageBatcher.test.ts** (3 connections) — `client/src/utils/__tests__/messageBatcher.test.ts`
-- **.clear()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.generateId()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSize()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **.getBatchSizeBytes()** (2 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchConfig** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **BatchedMessage** (1 connections) — `client/src/utils/messageBatcher.ts`
-- **.constructor()** (1 connections) — `client/src/utils/messageBatcher.ts`
+- **check_no_production_assert.py** (6 connections) — `scripts/check_no_production_assert.py`
+- **_AssertFinder** (5 connections) — `scripts/check_no_production_assert.py`
+- **find_assert_line_numbers()** (5 connections) — `scripts/check_no_production_assert.py`
+- **is_production_server_py()** (5 connections) — `scripts/check_no_production_assert.py`
+- **main()** (4 connections) — `scripts/check_no_production_assert.py`
+- **_path_parts_indicate_production_server()** (3 connections) — `scripts/check_no_production_assert.py`
+- **Path** (3 connections)
+- **.visit_Assert()** (2 connections) — `scripts/check_no_production_assert.py`
+- **_excluded_server_module_filename()** (2 connections) — `scripts/check_no_production_assert.py`
+- **.__init__()** (1 connections) — `scripts/check_no_production_assert.py`
+- **Assert** (1 connections)
+- **True for MythosMUD backend modules under ``server/``, excluding tests and…** (1 connections) — `scripts/check_no_production_assert.py`
+- **Collect line numbers of assert statements.** (1 connections) — `scripts/check_no_production_assert.py`
+- **Return sorted unique line numbers of ``assert`` in file; empty if none or…** (1 connections) — `scripts/check_no_production_assert.py`
 
 ## Relationships
 
@@ -26,12 +25,11 @@
 
 ## Source Files
 
-- `client/src/utils/__tests__/messageBatcher.test.ts`
-- `client/src/utils/messageBatcher.ts`
+- `scripts/check_no_production_assert.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

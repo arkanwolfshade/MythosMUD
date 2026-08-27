@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **mythos_dev mythos_unit mythos_e2e Databases** (0 connections) — `db/databases/README.md`
+- **GitHub Actions Remediation** (0 connections) — `.cursor/plans/github-actions-remediation.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/databases/README.md`
+- `.cursor/plans/github-actions-remediation.plan.md`
 
 ## Audit Trail
 

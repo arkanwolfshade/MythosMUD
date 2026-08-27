@@ -1,37 +1,33 @@
 # ._connect_nats
 
-> 16 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_check_pr_issue_references.py** (15 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_bare_reference_is_not_linked()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_closes_keyword_links_the_issue()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_closes_links_multiple_comma_separated_issues()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_fixes_and_resolved_keywords_link_case_insensitively()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_empty_candidates_short_circuits()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_filters_to_open_only()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_get_open_issue_numbers_returns_none_on_lookup_failure()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_keyword_linked_and_bare_reference_coexist()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_clean_when_no_references()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_degrades_gracefully_when_gh_lookup_fails()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_emits_github_annotation_in_ci()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_silent_when_referenced_issue_already_closed()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_main_warns_on_open_bare_reference()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **test_no_references_at_all()** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
-- **Tests for scripts/check_pr_issue_references.py. Covers the closing-keyword…** (1 connections) — `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- **._connect_nats()** (7 connections) — `server/container/bundles/realtime.py`
+- **._handle_nats_connect_error()** (5 connections) — `server/container/bundles/realtime.py`
+- **._handle_nats_connect_false()** (4 connections) — `server/container/bundles/realtime.py`
+- **._raise_if_e2e_nats_required()** (4 connections) — `server/container/bundles/realtime.py`
+- **BaseException** (1 connections)
+- **Raise RuntimeError when e2e requires live NATS; no-op for other environments.** (1 connections) — `server/container/bundles/realtime.py`
+- **Convert connect failures into hard error (e2e) or soft log (other envs).** (1 connections) — `server/container/bundles/realtime.py`
+- **Handle connect() returning False; raise for e2e, soft-warn otherwise.** (1 connections) — `server/container/bundles/realtime.py`
+- **Connect to NATS if enabled and not unit_test. Returns NATSService or None.…** (1 connections) — `server/container/bundles/realtime.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_check_pr_issue_references.py`
+- `server/container/bundles/realtime.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

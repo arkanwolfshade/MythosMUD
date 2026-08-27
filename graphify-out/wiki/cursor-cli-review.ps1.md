@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Client message handling and GameState projection** (0 connections) — `docs/client-message-handling.md`
+- **cursor-cli-review.ps1** (0 connections) — `scripts/cursor-cli-review.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/client-message-handling.md`
+- `scripts/cursor-cli-review.ps1`
 
 ## Audit Trail
 

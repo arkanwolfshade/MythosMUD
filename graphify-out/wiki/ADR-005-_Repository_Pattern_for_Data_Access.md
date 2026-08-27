@@ -1,23 +1,22 @@
 # ADR-005: Repository Pattern for Data Access
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_attack_strength_target_significantly_stronger()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength when target is significantly stronger.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ADR-005: Repository Pattern for Data Access** (0 connections) — `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/architecture/decisions/ADR-005-repository-pattern-data-access.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

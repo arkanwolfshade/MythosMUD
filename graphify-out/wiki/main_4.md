@@ -1,14 +1,20 @@
 # main
 
-> 5 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_grype.py** (4 connections) — `server/tests/unit/scripts/test_grype.py`
-- **test_grype_config_excludes_e2e_harness_paths()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
-- **test_grype_script_defines_repo_root_next_to_makefile()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
-- **test_makefile_codacy_tools_does_not_invoke_grype()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
-- **Regression tests for scripts/grype.py project-root anchoring and scan config.** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **main()** (6 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **_write_state_atomic()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **.cursor/hooks/trigger_test_agent.py** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Path** (3 connections)
+- **NoReturn** (1 connections)
+- **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
 
 ## Relationships
 
@@ -16,11 +22,11 @@
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_grype.py`
+- `.cursor/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

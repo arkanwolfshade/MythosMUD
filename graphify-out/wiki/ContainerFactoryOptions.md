@@ -1,35 +1,35 @@
 # ContainerFactoryOptions
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **P4 · Intent Sweep — Core Feature Issues** (11 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CLOSED BUT NOT BUILT** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#17 · Party — one of three bullets built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#21 · Admin commands — "ban" was in the issue title and never built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#29 · Cultist faction and PvP — zero implementation** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#30 · Branching quests and morality — two of three bullets absent** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#62 · Tick-rate validation — not built** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **#9 · The xterm.js substitution — real, user-facing, unrecorded** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Conforming, worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **CRITICAL · Authentication has no brute-force protection** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Out-of-corpus (design exists, outside the audited 29)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Partial deliveries** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Silent renames — features built under different names than requested** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
-- **Undocumented systems (no design doc anywhere in `docs/`)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- **ContainerFactoryOptions** (6 connections) — `server/models/container.py`
+- **.create_corpse()** (5 connections) — `server/models/container.py`
+- **UUID** (5 connections)
+- **.create_environment()** (4 connections) — `server/models/container.py`
+- **.create_equipment()** (4 connections) — `server/models/container.py`
+- **.is_decayed()** (3 connections) — `server/models/container.py`
+- **datetime** (3 connections)
+- **TypedDict** (1 connections)
+- **Check if container has decayed (for corpse containers).** (1 connections) — `server/models/container.py`
+- **Factory method to create an environmental container.** (1 connections) — `server/models/container.py`
+- **Factory method to create a wearable equipment container.** (1 connections) — `server/models/container.py`
+- **Factory method to create a corpse container.** (1 connections) — `server/models/container.py`
+- **Shared optional fields for container factory methods.** (1 connections) — `server/models/container.py`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (5 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P4-Intent-Core-Issues.md`
+- `server/models/container.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

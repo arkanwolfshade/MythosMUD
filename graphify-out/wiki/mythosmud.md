@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **R'lyeh** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **mythosmud** (0 connections) — `pyproject.toml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- `pyproject.toml`
 
 ## Audit Trail
 

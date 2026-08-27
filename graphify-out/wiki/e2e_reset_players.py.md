@@ -1,31 +1,28 @@
 # e2e_reset_players.py
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **_FakeRoomManager** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **_FakePerformanceTracker** (4 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.record_connection_establishment()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.remove_player_from_all_rooms()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.subscribe_to_room()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_load_default_respawn_room()** (3 connections) — `scripts/e2e_reset_players.py`
+- **main()** (3 connections) — `scripts/e2e_reset_players.py`
+- **_reset_e2e_players()** (3 connections) — `scripts/e2e_reset_players.py`
+- **e2e_reset_players.py** (3 connections) — `scripts/e2e_reset_players.py`
+- **Load DEFAULT_RESPAWN_ROOM from disk so analyzers do not need to resolve the…** (1 connections) — `scripts/e2e_reset_players.py`
+- **Entry point: run E2E player reset via anyio.** (1 connections) — `scripts/e2e_reset_players.py`
 
 ## Relationships
 
-- [test_go_command.py](test_go_command.py.md) (2 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `scripts/e2e_reset_players.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

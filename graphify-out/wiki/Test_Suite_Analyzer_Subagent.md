@@ -1,34 +1,33 @@
 # Test Suite Analyzer Subagent
 
-> 25 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **Migration Strategy** (10 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **App.State to Dependency Injection Migration Plan** (9 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Current State Analysis** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Implementation Guidelines** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **app.state_to_dependency_injection_migration_5749b0cc.plan.md** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Access Patterns** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Dependencies** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Dependency Injection Pattern** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Estimated Effort** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Overview** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 1: Extend ApplicationContainer (8-12 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 2: Create Dependency Injection Functions (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 3: Migrate Route Handlers and API Endpoints (12-16 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 4: Migrate Background Tasks and Game Tick Processing (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 5: Migrate Command Handlers (16-20 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 6: Migrate WebSocket and Real-time Handlers (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 7: Remove Dual Storage Pattern (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 8: Migrate Test Suite (20-30 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Phase 9: Cleanup and Documentation (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Risk Mitigation** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Service Initialization Order** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Services Currently ONLY in app.state** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Services in BOTH container and app.state (duplicated)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Success Criteria** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
-- **Testing Strategy** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Test Suite Analyzer Subagent** (12 connections) — `.claude/agents/test-analyzer.md`
+- **Capabilities** (5 connections) — `.claude/agents/test-analyzer.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/test-analyzer.md`
+- **Coverage Requirements** (3 connections) — `.claude/agents/test-analyzer.md`
+- **Test Quality Standards** (3 connections) — `.claude/agents/test-analyzer.md`
+- **test-analyzer.md** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Best Practices** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Coverage Analysis** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Coverage Gap Analysis** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Critical Files Requiring High Coverage** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Critical Path Coverage** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Forbidden Test Patterns** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Gap Identification** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Integration** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Methodology** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Notes** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Output Format** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Overall Coverage** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Purpose** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Recommendations** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Required Test Patterns** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Test Quality Assessment** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Test Quality Review** (1 connections) — `.claude/agents/test-analyzer.md`
+- **Usage** (1 connections) — `.claude/agents/test-analyzer.md`
 
 ## Relationships
 
@@ -36,11 +35,11 @@
 
 ## Source Files
 
-- `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- `.claude/agents/test-analyzer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,46 +1,50 @@
 # test_game_state_provider.py
 
-> 23 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **apply_communication_dampening()** (12 connections) — `server/services/lucidity_communication_dampening.py`
-- **lucidity_communication_dampening.py** (11 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_lucidity_communication_dampening.py** (11 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **DampeningResult** (8 connections) — `server/services/lucidity_communication_dampening.py`
-- **_apply_receiver_effects()** (5 connections) — `server/services/lucidity_communication_dampening.py`
-- **should_block_shout()** (4 connections) — `server/services/lucidity_communication_dampening.py`
-- **patch** (4 connections)
-- **_apply_sender_effects()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **_maybe_muffle_fractured_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **_maybe_scramble_deranged_message()** (3 connections) — `server/services/lucidity_communication_dampening.py`
-- **test_deranged_incoming_scrambles_words()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_incoming_strips_punctuation()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_appends_glyph()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_fractured_outgoing_no_glyph_when_roll_high()** (3 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_deranged_shout_blocked()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_should_block_shout_deranged()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **test_whisper_uneasy_adds_strained_tag()** (2 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
-- **TypedDict** (1 connections)
-- **Communication dampening utilities for lucidity system. Implements communication…** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Check if shout should be blocked based on tier.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Filtered chat payload after lucidity-tier effects.** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Apply communication dampening based on lucidity tiers. Args: message: Original…** (1 connections) — `server/services/lucidity_communication_dampening.py`
-- **Unit tests for lucidity communication dampening.** (1 connections) — `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- **test_game_state_provider.py** (42 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **asyncio** (23 connections)
+- **fixture** (5 connections)
+- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_no_player_ids()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_with_npcs()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_no_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_quest_log_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_room_data_with_conversion()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [GameStateProvider](GameStateProvider.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_communication_dampening.py`
-- `server/tests/unit/services/test_lucidity_communication_dampening.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 108 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

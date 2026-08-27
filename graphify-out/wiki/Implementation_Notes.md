@@ -1,34 +1,31 @@
 # Implementation Notes
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **TestValidateUserForLootAll** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **TestValidateUserForTransfer** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_loot_all_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_loot_all_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_transfer_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_transfer_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_transfer function.** (2 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_transfer passes with valid user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_transfer raises exception for None user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_loot_all passes with valid user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_loot_all raises exception for None user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Success Criteria** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **Testing Strategy** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (6 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (89%)
-- INFERRED: 2 (11%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

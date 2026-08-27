@@ -1,16 +1,14 @@
 # S. Petersen's Field Guide to Lovecraftian Horrors (source summary)
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Three-Column Game UI Layout** (6 connections) — `client/wireframe.png`
-- **Character Info Panel** (1 connections) — `client/wireframe.png`
-- **Chat History Panel** (1 connections) — `client/wireframe.png`
-- **Command History and Input** (1 connections) — `client/wireframe.png`
-- **Game Info Panel** (1 connections) — `client/wireframe.png`
-- **Location Room Description Occupants** (1 connections) — `client/wireframe.png`
-- **MythosMUD Client UI Wireframe** (1 connections) — `client/wireframe.png`
+- **S. Petersen's Field Guide to Lovecraftian Horrors (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **S. Petersen's Field Guide to Lovecraftian Horrors.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
+- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
 
 ## Relationships
 
@@ -18,11 +16,11 @@
 
 ## Source Files
 
-- `client/wireframe.png`
+- `data/MythosMUD-Obsidian/wiki/sources/S. Petersen's Field Guide to Lovecraftian Horrors.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

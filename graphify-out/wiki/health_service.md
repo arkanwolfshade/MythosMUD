@@ -1,34 +1,28 @@
 # health_service
 
-> 9 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **local-channel-isolation.spec.ts** (25 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **prepareLocalIsolationPair()** (6 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **ensureIthaquaInFoyer()** (5 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **leaveEasternHallwayWest()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **primeBothForCoLocate()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **returnAwToFoyerIfInHallway()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **softCommand()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **pageShowsEasternHallway()** (2 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
-- **waitForLookReflected()** (2 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- **health_service()** (5 connections) — `server/tests/unit/services/test_health_service.py`
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/services/test_health_service.py`
+- **fixture** (2 connections)
+- **Create a mock connection manager.** (1 connections) — `server/tests/unit/services/test_health_service.py`
+- **Create a HealthService instance.** (1 connections) — `server/tests/unit/services/test_health_service.py`
 
 ## Relationships
 
-- [test_command_processor.py](test_command_processor.py.md) (16 shared connections)
-- [CombatValidator](CombatValidator.md) (10 shared connections)
-- [NATSConfig](NATSConfig.md) (3 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (1 shared connections)
+- [HealthStatus](HealthStatus.md) (3 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
+- `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (75%)
+- INFERRED: 2 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

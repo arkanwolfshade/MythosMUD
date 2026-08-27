@@ -1,55 +1,53 @@
 # test_command_validator.py
 
-> 54 nodes
+> 118 nodes
 
 ## Key Concepts
 
-- **ResourceManager** (19 connections) — `client/src/utils/resourceCleanup.ts`
-- **clientMetricsCollector.ts** (10 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **ClientMetricsCollector** (9 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **resourceCleanup.ts** (9 connections) — `client/src/utils/resourceCleanup.ts`
-- **MockWebSocket** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **resourceCleanup.test.ts** (7 connections) — `client/src/utils/__tests__/resourceCleanup.test.ts`
-- **getClientMetricsCollector()** (6 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **useResourceCleanup()** (5 connections) — `client/src/utils/resourceCleanup.ts`
-- **useComponentLifecycleTracking.ts** (5 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
-- **createTimerCleanup()** (4 connections) — `client/src/utils/resourceCleanup.ts`
-- **useComponentLifecycleTracking.test.ts** (4 connections) — `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
-- **useStoreSubscriptionTracking.test.ts** (4 connections) — `client/src/hooks/__tests__/useStoreSubscriptionTracking.test.ts`
-- **useStoreSubscriptionTracking.ts** (4 connections) — `client/src/hooks/useStoreSubscriptionTracking.ts`
-- **useComponentLifecycleTracking()** (3 connections) — `client/src/hooks/useComponentLifecycleTracking.ts`
-- **useStoreSubscriptionTracking()** (3 connections) — `client/src/hooks/useStoreSubscriptionTracking.ts`
-- **.getMetrics()** (3 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **createCustomResourceCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **createWebSocketCleanup()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **.getResourceStats()** (3 connections) — `client/src/utils/resourceCleanup.ts`
-- **.logMetrics()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **.setResourceManager()** (2 connections) — `client/src/utils/clientMetricsCollector.ts`
-- **.cleanup()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerCustomResource()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerInterval()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- **.registerTimer()** (2 connections) — `client/src/utils/resourceCleanup.ts`
-- *... and 29 more nodes in this community*
+- **test_command_validator.py** (52 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **CommandValidator** (40 connections) — `server/validators/command_validator.py`
+- **.validate_command_content()** (11 connections) — `server/validators/command_validator.py`
+- **clean_command_input()** (9 connections) — `server/validators/command_validator.py`
+- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
+- **validate_command_format()** (9 connections) — `server/validators/command_validator.py`
+- **server/validators/__init__.py** (9 connections) — `server/validators/__init__.py`
+- **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
+- **is_suspicious_input()** (8 connections) — `server/validators/command_validator.py`
+- **normalize_command()** (8 connections) — `server/validators/command_validator.py`
+- **.sanitize_for_logging()** (7 connections) — `server/validators/command_validator.py`
+- **.validate_alias_definition()** (7 connections) — `server/validators/command_validator.py`
+- **validate_command_length()** (7 connections) — `server/validators/command_validator.py`
+- **.extract_command_name()** (5 connections) — `server/validators/command_validator.py`
+- **test_command_validator_extract_command_name()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_extract_command_name_empty()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_extract_command_name_with_slash()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_admin()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_case_insensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_empty()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_security_sensitive_non_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_valid_command_name()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_is_valid_command_name_invalid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_sanitize_for_logging()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- **test_command_validator_sanitize_for_logging_removes_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
+- *... and 93 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatMemory](NPCCombatMemory.md) (2 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [processing.py](processing.py.md) (7 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (5 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useComponentLifecycleTracking.test.ts`
-- `client/src/hooks/__tests__/useStoreSubscriptionTracking.test.ts`
-- `client/src/hooks/useComponentLifecycleTracking.ts`
-- `client/src/hooks/useStoreSubscriptionTracking.ts`
-- `client/src/utils/__tests__/clientMetricsCollector.test.ts`
-- `client/src/utils/__tests__/resourceCleanup.test.ts`
-- `client/src/utils/clientMetricsCollector.ts`
-- `client/src/utils/resourceCleanup.ts`
+- `server/tests/unit/validators/test_command_validator.py`
+- `server/validators/__init__.py`
+- `server/validators/command_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 77 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 191 (88%)
+- INFERRED: 26 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

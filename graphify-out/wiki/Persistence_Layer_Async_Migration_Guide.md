@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Test Co-location** (0 connections) — `.claude/rules/vitest.md`
+- **Persistence Layer Async Migration Guide** (0 connections) — `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/vitest.md`
+- `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
 ## Audit Trail
 

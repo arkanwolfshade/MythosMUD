@@ -1,56 +1,49 @@
 # test_player_event_handlers_utils.py
 
-> 79 nodes
+> 92 nodes
 
 ## Key Concepts
 
-- **TaskRegistry** (49 connections) — `server/app/task_registry.py`
-- **test_task_registry.py** (25 connections) — `server/tests/unit/app/test_task_registry.py`
-- **asyncio** (14 connections)
-- **task_registry.py** (13 connections) — `server/app/task_registry.py`
-- **Any** (10 connections)
-- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
-- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
-- **Task** (8 connections)
-- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
-- **.register_task()** (7 connections) — `server/app/task_registry.py`
-- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
-- **unregister_task()** (7 connections) — `server/app/task_registry.py`
-- **register_task()** (6 connections) — `server/app/task_registry.py`
-- **test_module_level_helpers()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
-- **get_registry()** (5 connections) — `server/app/task_registry.py`
-- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
-- **test_register_closes_coro_when_create_task_fails()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
-- **.__init__()** (4 connections) — `server/app/task_registry.py`
-- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
-- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
-- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
-- **test_cancel_task_by_name()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_get_registry_info_and_metrics()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
-- **test_list_active_tasks_and_stats_by_type()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
-- *... and 54 more nodes in this community*
+- **test_player_event_handlers_utils.py** (48 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **player_event_handler_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **asyncio** (4 connections)
+- **fixture** (4 connections)
+- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_get_player_info_success()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_add_valid_name_to_lists_invalid_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_add_valid_name_to_lists_none_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_add_valid_name_to_lists_npc()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_add_valid_name_to_lists_player()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_empty()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_mixed()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_build_occupants_snapshot_data_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_count_occupants_by_type_empty()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_count_occupants_by_type_mixed()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_npc_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_dict_with_player_name()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_invalid_type()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_extract_name_from_occupant_string()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [_container_data_to_dict](_container_data_to_dict.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (2 shared connections)
-- [EmoteService](EmoteService.md) (1 shared connections)
-- [test_item_instance_persistence.py](test_item_instance_persistence.py.md) (1 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/task_registry.py`
-- `server/tests/unit/app/test_task_registry.py`
+- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 157 (90%)
-- INFERRED: 17 (10%)
+- EXTRACTED: 100 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

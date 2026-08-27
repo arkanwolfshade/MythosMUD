@@ -1,31 +1,29 @@
 # migrate_file
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestGenerateRoomId** (6 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_basic()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_empty_components()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_special_characters()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **.test_generate_room_id_with_underscores()** (3 connections) — `server/tests/unit/test_world_loader.py`
-- **Test generate_room_id() function.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- **Test generate_room_id() with basic components.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- **Test generate_room_id() handles components with underscores.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- **Test generate_room_id() with empty components.** (1 connections) — `server/tests/unit/test_world_loader.py`
-- **Test generate_room_id() preserves special characters in components.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **migrate_file()** (5 connections) — `scripts/migrate_async_persistence.py`
+- **MigrationResult** (4 connections) — `scripts/migrate_async_persistence.py`
+- **main()** (3 connections) — `scripts/migrate_async_persistence.py`
+- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
+- **Path** (2 connections)
+- **NamedTuple** (1 connections)
+- **Result of a file migration.** (1 connections) — `scripts/migrate_async_persistence.py`
+- **Migrate a single file to use async persistence patterns. Args: file_path: Path…** (1 connections) — `scripts/migrate_async_persistence.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/test_world_loader.py`
+- `scripts/migrate_async_persistence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,40 +1,26 @@
 # .__init__
 
-> 11 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Authoritative Environment DML** (7 connections) — `db/LEGACY_FILES.md`
-- **Historical DDL Final Status** (3 connections) — `db/verification/ddl_final_status.md`
-- **Removed Schema and Migration SQL** (2 connections) — `db/LEGACY_FILES.md`
-- **Historical DDL Partial Status** (2 connections) — `db/verification/ddl_status.md`
-- **Historical DDL Verification Summary** (2 connections) — `db/verification/ddl_verification_summary.md`
-- **static_seed.sql (Deprecated)** (1 connections) — `data/static/generated_sql/README.md`
-- **DB Bootstrap Execution Order** (1 connections) — `db/databases/README.md`
-- **mythos_dev players UUID Schema Variation** (1 connections) — `db/verification/ddl_verification_summary.md`
-- **Spells Seed Data (Deprecated)** (1 connections) — `data/spells/README.md`
-- **Generated World and Emotes SQL** (1 connections) — `data/static/generated_sql/README.md`
-- **Legacy Schema Files Removed** (1 connections) — `db/schema/README.md`
+- **.__init__()** (4 connections) — `server/game/level_service.py`
+- **LevelUpHook** (1 connections)
+- **Any** (1 connections)
+- **Initialize the level service. Args: async_persistence: Async persistence for…** (1 connections) — `server/game/level_service.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 
 ## Source Files
 
-- `data/spells/README.md`
-- `data/static/generated_sql/README.md`
-- `db/LEGACY_FILES.md`
-- `db/databases/README.md`
-- `db/schema/README.md`
-- `db/verification/ddl_final_status.md`
-- `db/verification/ddl_status.md`
-- `db/verification/ddl_verification_summary.md`
+- `server/game/level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (82%)
-- INFERRED: 2 (18%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

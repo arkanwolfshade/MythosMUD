@@ -1,40 +1,38 @@
 # Communities (10 total, 2 thin omitted)
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **static_data/package.json** (8 connections) — `scripts/static_data/package.json`
-- **dependencies** (4 connections) — `scripts/static_data/package.json`
-- **scripts** (4 connections) — `scripts/static_data/package.json`
-- **ajv** (2 connections) — `scripts/static_data/package.json`
-- **ajv-formats** (2 connections) — `scripts/static_data/package.json`
-- **uuid** (2 connections) — `scripts/static_data/package.json`
-- **overrides** (2 connections) — `scripts/static_data/package.json`
-- **description** (1 connections) — `scripts/static_data/package.json`
-- **name** (1 connections) — `scripts/static_data/package.json`
-- **fast-uri** (1 connections) — `scripts/static_data/package.json`
-- **private** (1 connections) — `scripts/static_data/package.json`
-- **build** (1 connections) — `scripts/static_data/package.json`
-- **generate-sql** (1 connections) — `scripts/static_data/package.json`
-- **validate** (1 connections) — `scripts/static_data/package.json`
-- **type** (1 connections) — `scripts/static_data/package.json`
-- **version** (1 connections) — `scripts/static_data/package.json`
-- **ajv** (1 connections) — `scripts/static_data/package.json`
-- **ajv-formats** (1 connections) — `scripts/static_data/package.json`
-- **uuid** (1 connections) — `scripts/static_data/package.json`
+- **Communities (10 total, 2 thin omitted)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Reign of Terror  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 0 - "Azotottal (fallen angel beyond the stars) / Captain Louis Malon"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 1 - "Charenton (Paris district / asylum) / Christophe Pressi — Soldat (Soldier), age 20"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 2 - "Dreamlands / Fenalik's Mansion (Poissy)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 3 - "Reign of Terror / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 4 - "Bastille / James Coquillat"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 5 - "Azathoth / Celine Bessette"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 6 - "Christophe Pressi / Comte Benoit"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community 7 - "Comte Fenalik / Horror on the Orient Express"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Paris (Reign of Terror).md](Paris_Reign_of_Terror.md.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/static_data/package.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/reign-of-terror/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

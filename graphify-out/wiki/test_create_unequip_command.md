@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_exit_rows_multiple_exits_same_room()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_exit_rows with multiple exits from same room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_create_unequip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_unequip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

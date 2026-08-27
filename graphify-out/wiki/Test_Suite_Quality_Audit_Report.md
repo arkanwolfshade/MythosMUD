@@ -1,33 +1,37 @@
 # Test Suite Quality Audit Report
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_monitoring_init.py** (7 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_lazy_performance_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **test_monitoring_getattr_unknown_raises()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Unit tests for server.monitoring lazy __getattr__ re-exports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Exception tracker symbols import without triggering numpy lazy paths.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **__getattr__ resolves MonitoringDashboard and get_monitoring_dashboard.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **__getattr__ resolves PerformanceStats and get_performance_monitor.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Unknown attribute names raise AttributeError.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
-- **Direct __getattr__ covers both branch returns for dashboard imports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Test Suite Quality Audit Report** (9 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Conclusion** (5 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Actionable Recommendations** (4 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **TEST_QUALITY_AUDIT_REPORT.md** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **~25-30% (1,250-1,500 tests) provide CRITICAL protection** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Answer to Your Question** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase A: Quick Wins (1-2 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase B: Medium Effort (4-8 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Phase C: Strategic Enhancements (8-16 hours effort)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Recommended Action** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **The remaining 70-75% provide** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Executive Summary](Executive_Summary.md) (1 shared connections)
+- [3.3 Value Distribution Calculation](3.3_Value_Distribution_Calculation.md) (1 shared connections)
+- [Phase 1: Quantitative Analysis Results](Phase_1-_Quantitative_Analysis_Results.md) (1 shared connections)
+- [Phase 4: Recommendations](Phase_4-_Recommendations.md) (1 shared connections)
+- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
+- [Phase 2: Qualitative Analysis Results](Phase_2-_Qualitative_Analysis_Results.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/monitoring/test_monitoring_init.py`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

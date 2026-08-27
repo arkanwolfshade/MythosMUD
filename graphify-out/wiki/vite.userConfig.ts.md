@@ -1,34 +1,38 @@
 # vite.userConfig.ts
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Commands** (12 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Add a branch — `gh stack add`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Check out a stack — `gh stack checkout`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Initialize a stack — `gh stack init`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Link branches as a stack (no local tracking) — `gh stack link`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Navigate the stack** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Push branches to remote — `gh stack push`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Rebase the stack — `gh stack rebase`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Remove a stack — `gh stack unstack`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Submit branches and create PRs — `gh stack submit`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **Sync the stack — `gh stack sync`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
-- **View the stack — `gh stack view`** (1 connections) — `.agents/skills/gh-stack/SKILL.md`
+- **vite.userConfig.ts** (7 connections) — `client/vite.userConfig.ts`
+- **vite.config.ts** (5 connections) — `client/vite.config.ts`
+- **configureForwardAuthorization()** (3 connections) — `client/vite.proxyAuthorization.ts`
+- **createViteUserConfig()** (3 connections) — `client/vite.userConfig.ts`
+- **vite.proxyAuthorization.ts** (2 connections) — `client/vite.proxyAuthorization.ts`
+- **vite.vitestOptions.ts** (2 connections) — `client/vite.vitestOptions.ts`
+- **vitestTestOptions** (2 connections) — `client/vite.vitestOptions.ts`
+- **vitest.config.ts** (1 connections) — `client/vitest.config.ts`
+- **vitest.config.d.ts** (1 connections) — `client/vitest.config.d.ts`
+- **TODO: Implement AST-based console removal plugin to selectively remove** (1 connections) — `client/vite.config.ts`
+- **TODO: Implement AST-based console removal to preserve console.error/warn** (1 connections) — `client/vite.userConfig.ts`
 
 ## Relationships
 
-- [Extract Skill](Extract_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.agents/skills/gh-stack/SKILL.md`
+- `client/vite.config.ts`
+- `client/vite.proxyAuthorization.ts`
+- `client/vite.userConfig.ts`
+- `client/vite.vitestOptions.ts`
+- `client/vitest.config.d.ts`
+- `client/vitest.config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 13 (93%)
+- INFERRED: 1 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

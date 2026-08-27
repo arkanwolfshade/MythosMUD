@@ -1,48 +1,47 @@
 # test_load_world_seed.py
 
-> 27 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **attach_compatibility_properties()** (13 connections) — `server/realtime/connection_compatibility.py`
-- **test_connection_compatibility.py** (9 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **connection_compatibility.py** (8 connections) — `server/realtime/connection_compatibility.py`
-- **_create_property_with_accessors()** (6 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_connection_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_message_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **_attach_room_properties()** (5 connections) — `server/realtime/connection_compatibility.py`
-- **Any** (5 connections)
-- **test_attach_compatibility_properties_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_connection_window()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_max_connection_attempts()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_pending_messages()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_occupants()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **test_attach_compatibility_properties_room_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Compatibility helpers for connection manager. This module provides…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Create getter, setter, and deleter functions for a property. Args: getter_attr:…** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach room-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach connection-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach message-related compatibility properties.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Attach compatibility properties to the ConnectionManager class.** (1 connections) — `server/realtime/connection_compatibility.py`
-- **Unit tests for connection compatibility. Tests the connection_compatibility…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches pending_messages property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches room_subscriptions property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches max_connection_attempts…** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- **Test attach_compatibility_properties() attaches connection_window property.** (1 connections) — `server/tests/unit/realtime/test_connection_compatibility.py`
-- *... and 2 more nodes in this community*
+- **test_load_world_seed.py** (12 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **LoadWorldSeedTestApi** (10 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_validate_environment_rejects_non_allowlist_database_name()** (6 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_asyncpg_server_settings_defaults_to_db_name()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_asyncpg_server_settings_respects_postgres_search_path()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **world_seed_api_module_scope()** (5 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_LoadWorldSeedScriptInternals** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **_load_script_module()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_database_url_for_cli_replaces_asyncpg_prefix()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_decodes_user_password()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **test_parse_pg_url_for_psql_rejects_missing_host()** (3 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **regression** (3 connections)
+- **MonkeyPatch** (3 connections)
+- **CaptureFixture** (1 connections)
+- **fixture** (1 connections)
+- **Protocol** (1 connections)
+- **Regression tests for scripts/load_world_seed.py (URL parsing, allowlist,…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **When POSTGRES_SEARCH_PATH is unset, search_path defaults to the DB name from…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **POSTGRES_SEARCH_PATH overrides the default schema/search_path.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Attributes of scripts/load_world_seed.py we read after dynamic import (not on…** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Typed facade over scripts/load_world_seed.py helpers (dynamic import).** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **Dynamically loaded scripts/load_world_seed.py for unit tests.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **database_url_for_cli strips the asyncpg driver prefix for CLI tools.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **parse_pg_url_for_psql URL-decodes credentials and returns connection parts.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- **parse_pg_url_for_psql requires a host in the URL.** (1 connections) — `server/tests/unit/scripts/test_load_world_seed.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_compatibility.py`
-- `server/tests/unit/realtime/test_connection_compatibility.py`
+- `server/tests/unit/scripts/test_load_world_seed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

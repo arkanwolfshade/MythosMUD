@@ -1,23 +1,22 @@
 # Docker Best Practices Rule
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_unalias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unalias_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Docker Best Practices Rule** (0 connections) — `.cursor/rules/docker.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.cursor/rules/docker.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

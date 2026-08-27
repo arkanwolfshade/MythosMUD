@@ -1,61 +1,60 @@
 # map_minimap.py
 
-> 52 nodes
+> 97 nodes
 
 ## Key Concepts
 
-- **item_instance_persistence_async.py** (20 connections) — `server/persistence/item_instance_persistence_async.py`
-- **CreateItemInstanceInput** (18 connections) — `server/async_persistence_constants.py`
-- **ItemRepository** (16 connections) — `server/persistence/repositories/item_repository.py`
-- **test_item_instance_persistence_async.py** (14 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
-- **EnsureItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
-- **create_item_instance_async()** (11 connections) — `server/persistence/item_instance_persistence_async.py`
-- **item_repository.py** (11 connections) — `server/persistence/repositories/item_repository.py`
-- **ensure_item_instance_async()** (10 connections) — `server/persistence/item_instance_persistence_async.py`
-- **test_item_repository.py** (8 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
-- **async_persistence_constants.py** (7 connections) — `server/async_persistence_constants.py`
-- **_metadata_from_options()** (6 connections) — `server/persistence/item_instance_persistence_async.py`
-- **.__init__()** (5 connections) — `server/async_persistence.py`
-- **item_instance_exists_async()** (5 connections) — `server/persistence/item_instance_persistence_async.py`
-- **_item_instance_upsert_params()** (5 connections) — `server/persistence/item_instance_persistence_async.py`
-- **_run_item_instance_upsert()** (5 connections) — `server/persistence/item_instance_persistence_async.py`
-- **asyncio** (5 connections)
-- **test_create_item_instance_async_db_error()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
-- **test_create_item_instance_async_missing_id()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
-- **AsyncSession** (4 connections)
-- **.create_item_instance()** (3 connections) — `server/async_persistence.py`
-- **.create_item_instance()** (3 connections) — `server/persistence/repositories/item_repository.py`
-- **.ensure_item_instance()** (3 connections) — `server/persistence/repositories/item_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/item_repository.py`
-- **repository()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
-- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
-- *... and 27 more nodes in this community*
+- **map_minimap.py** (21 connections) — `server/api/map_minimap.py`
+- **test_map_minimap_helpers.py** (21 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **generate_minimap_html()** (16 connections) — `server/api/map_minimap.py`
+- **test_map_helpers.py** (16 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **map_helpers.py** (15 connections) — `server/api/map_helpers.py`
+- **load_rooms_with_coordinates()** (14 connections) — `server/api/map_helpers.py`
+- **load_single_room_with_coordinates()** (11 connections) — `server/api/map_helpers.py`
+- **_ensure_current_room_in_minimap_rooms()** (11 connections) — `server/api/map_minimap.py`
+- **load_room_exits()** (9 connections) — `server/api/map_helpers.py`
+- **_apply_minimap_fallback_coordinates()** (9 connections) — `server/api/map_minimap.py`
+- **_resolve_current_room_for_minimap()** (9 connections) — `server/api/map_minimap.py`
+- **ascii_map_renderer.py** (9 connections) — `server/services/ascii_map_renderer.py`
+- **build_room_dict()** (8 connections) — `server/api/map_helpers.py`
+- **_append_room_with_fallback_coords_if_needed()** (8 connections) — `server/api/map_minimap.py`
+- **_MockResultRows** (7 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **build_zone_pattern()** (7 connections) — `server/api/map_helpers.py`
+- **asyncio** (7 connections)
+- **TestApplyMinimapFallbackCoordinates** (6 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_generate_minimap_html_admin_path()** (6 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_generate_minimap_html_non_admin_filters_exploration()** (6 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **TestBuildZonePattern** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **TestAppendRoomWithFallbackCoordsIfNeeded** (5 connections) — `server/tests/unit/api/test_map_minimap_helpers.py`
+- **test_load_room_exits_attaches_exits_by_stable_id()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_rooms_with_coordinates_executes_zone_query_and_exits()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
+- **test_load_single_room_with_coordinates_loads_exits()** (5 connections) — `server/tests/unit/api/test_map_helpers.py`
+- *... and 72 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (12 shared connections)
-- [TaskRegistry](TaskRegistry.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (8 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_logout_commands.py](test_logout_commands.py.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [User](User.md) (17 shared connections)
+- [RoomService](RoomService.md) (8 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_ascii_map_renderer_exits.py](test_ascii_map_renderer_exits.py.md) (1 shared connections)
+- [test_ascii_map_renderer_grid.py](test_ascii_map_renderer_grid.py.md) (1 shared connections)
+- [._get_vertical_exit_char](_get_vertical_exit_char.md) (1 shared connections)
 
 ## Source Files
 
-- `server/async_persistence.py`
-- `server/async_persistence_constants.py`
-- `server/persistence/item_instance_persistence_async.py`
-- `server/persistence/repositories/item_repository.py`
-- `server/tests/unit/persistence/repositories/test_item_repository.py`
-- `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- `server/api/map_helpers.py`
+- `server/api/map_minimap.py`
+- `server/services/ascii_map_renderer.py`
+- `server/tests/unit/api/test_map_helpers.py`
+- `server/tests/unit/api/test_map_minimap_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 125 (93%)
-- INFERRED: 9 (7%)
+- EXTRACTED: 203 (98%)
+- INFERRED: 5 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,35 +1,35 @@
 # AnyIO Code Review - Anti-Patterns and Issues
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **PanelContextRuntime.tsx** (10 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelContextRuntime.test.tsx** (5 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
-- **PanelState** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelProvider()** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelContext** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelContextType** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelLayout** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelPosition** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **PanelSize** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
-- **useRuntimePanelContext()** (1 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
-- **defaultPanels** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **AnyIO Code Review - Anti-Patterns and Issues** (7 connections) — `docs/archive/anyio_code_review.md`
+- **Migration Priority** (4 connections) — `docs/archive/anyio_code_review.md`
+- **anyio_code_review.md** (2 connections) — `docs/archive/anyio_code_review.md`
+- **anyio_vs_asyncio_comparison.md** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Executive Summary** (1 connections) — `docs/archive/anyio_code_review.md`
+- **High Priority (Entry Points)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Low Priority (Complex Refactoring)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Medium Priority (Core Primitives)** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Notes** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Recommendations** (1 connections) — `docs/archive/anyio_code_review.md`
+- **Testing Considerations** (1 connections) — `docs/archive/anyio_code_review.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Critical Issues](Critical_Issues.md) (1 shared connections)
+- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/contexts/PanelContextRuntime.tsx`
-- `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- `docs/archive/anyio_code_review.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

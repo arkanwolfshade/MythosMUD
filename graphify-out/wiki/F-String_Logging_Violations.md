@@ -1,28 +1,29 @@
 # F-String Logging Violations
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **fixture** (3 connections)
-- **Create a mock ConnectionManager.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **Create a mock FastAPI request.** (1 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
+- **F-String Logging Violations** (3 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **Pre-Commit F-String Hook Gaps** (2 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- **Enhanced Logging Compliance Audit** (1 connections) — `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- **F-String Logging Remediation Complete** (1 connections) — `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- **AST-Based F-String Logging Detector** (1 connections) — `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Relationships
 
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_grace_period.py`
+- `investigations/sessions/2025-01-28_session-enhanced-logging-compliance-audit.md`
+- `investigations/sessions/2025-01-28_session-fstring-violations-remediated.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-analysis.md`
+- `investigations/sessions/2025-01-28_session-pre-commit-hook-fix.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,12 +1,11 @@
 # db/migrations/README.md
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Whisper NATS Subject Bug Fix** (2 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- **chat.whisper.player Subject Segment** (1 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- **Whisper Work Completed and Remaining** (1 connections) — `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
+- **db/migrations/README.md** (1 connections) — `db/migrations/README.md`
+- **DDL Migrations (Removed)** (1 connections) — `db/migrations/README.md`
 
 ## Relationships
 
@@ -14,12 +13,11 @@
 
 ## Source Files
 
-- `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
-- `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
+- `db/migrations/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

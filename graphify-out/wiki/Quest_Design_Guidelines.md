@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **postcss.config.js** (0 connections) — `client/postcss.config.js`
+- **Quest Design Guidelines** (0 connections) — `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/postcss.config.js`
+- `docs/QUEST_DESIGN_GUIDELINES.md`
 
 ## Audit Trail
 

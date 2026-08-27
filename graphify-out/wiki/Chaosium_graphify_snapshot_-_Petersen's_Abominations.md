@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - Petersen's Abominations
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **📚 REFERENCES AND RESOURCES** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Best Practice Documents** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **External Resources** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Investigation Reports** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Chaosium graphify snapshot - Petersen's Abominations** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- **petersen-s-abominations/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
 
 ## Relationships
 
-- [.get_professions](get_professions.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/petersen-s-abominations/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,25 @@
 # _FakeClientState
 
-> 7 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Test Coverage Requirements** (4 connections) — `.claude/rules/test-coverage.md`
-- **Test Quality Standards** (3 connections) — `.claude/rules/test-coverage.md`
-- **test-coverage.md** (1 connections) — `.claude/rules/test-coverage.md`
-- **Coverage Measurement** (1 connections) — `.claude/rules/test-coverage.md`
-- **Forbidden Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
-- **Minimum Coverage Standard** (1 connections) — `.claude/rules/test-coverage.md`
-- **Required Test Patterns** (1 connections) — `.claude/rules/test-coverage.md`
+- **_FakeClientState** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **.__init__()** (2 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_connection_establishment.py](test_connection_establishment.py.md) (1 shared connections)
+- [_as_mgr](_as_mgr.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/test-coverage.md`
+- `server/tests/unit/realtime/test_connection_establishment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -4,11 +4,15 @@
 
 ## Key Concepts
 
-- **MemoryMonitor** (0 connections)
+- **SECURITY.md** (0 connections) — `SECURITY.md`
 
 ## Relationships
 
 - No strong cross-community connections detected
+
+## Source Files
+
+- `SECURITY.md`
 
 ## Audit Trail
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Structlog Implementation Plan** (1 connections) — `docs/archive/PLANNING_logging.md`
-- **Main.py Refactoring Plan** (1 connections) — `docs/archive/PLANNING_main_refactor.md`
+- **ensure_codacy_coverage_reporter_ci.sh** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
+- **ensure_codacy_coverage_reporter_ci.sh script** (1 connections) — `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_logging.md`
-- `docs/archive/PLANNING_main_refactor.md`
+- `scripts/ensure_codacy_coverage_reporter_ci.sh`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

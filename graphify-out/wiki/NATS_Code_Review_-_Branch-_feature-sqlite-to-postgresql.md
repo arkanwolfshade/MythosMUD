@@ -4,45 +4,44 @@
 
 ## Key Concepts
 
-- **CommandRateLimiter** (17 connections) — `server/middleware/command_rate_limiter.py`
-- **test_command_rate_limiter.py** (11 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **_fixed_clock()** (8 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **datetime** (8 connections)
-- **test_get_stats_and_cleanup_inactive()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_get_wait_time_when_rate_limited()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_blocks_at_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_is_allowed_under_limit()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_reset_player_and_all()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **test_sliding_window_expires_old_commands()** (4 connections) — `server/tests/unit/middleware/test_command_rate_limiter.py`
-- **.get_stats()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.__init__()** (3 connections) — `server/middleware/command_rate_limiter.py`
-- **.cleanup_inactive_players()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_remaining_commands()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.get_wait_time()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.is_allowed()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_all()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **.reset_player()** (2 connections) — `server/middleware/command_rate_limiter.py`
-- **datetime** (2 connections)
-- **Any** (1 connections)
-- **Get number of commands player can still execute. Args: player_name: Player to…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for a specific player. Useful for admin commands or when…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Reset rate limit for all players. Clears all accumulated timestamp data.…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Get system-wide rate limiting statistics. Returns: Dictionary containing rate…** (1 connections) — `server/middleware/command_rate_limiter.py`
-- **Remove timestamp data for players who haven't been active recently. Prevents…** (1 connections) — `server/middleware/command_rate_limiter.py`
+- **NATS Code Review - Branch: feature/sqlite-to-postgresql** (10 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Positive Findings ✅** (5 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Critical Issues 🔴** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **NATS Code Review** (2 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **10. **Inconsistent Error Handling**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **11. **Missing Input Validation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Blocking Operations in Message Handlers** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **2. **Missing Message Acknowledgment** (Anti-pattern violation)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Connection Pool Not Used by Default** (Inefficiency)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **4. **Subject Naming Inconsistency** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **5. **No TLS Configuration** (Security concern)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **6. **Error Handler May Block** (Anti-pattern risk)** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **7. **Batch Flush Uses Deprecated Event Loop Method**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **8. **No Connection Health Monitoring**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **9. **Memory Leak Risk in Metrics**** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_CODE_REVIEW.md`
 - *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/command_rate_limiter.py`
-- `server/tests/unit/middleware/test_command_rate_limiter.py`
+- `docs/archive/NATS_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 51 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

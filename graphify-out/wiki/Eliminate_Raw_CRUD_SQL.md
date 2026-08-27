@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **black.md** (1 connections) — `.claude/rules/black.md`
-- **Not Black — this repo uses Ruff** (1 connections) — `.claude/rules/black.md`
+- **Procedures-First PostgreSQL CRUD** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
+- **Eliminate Raw CRUD SQL** (1 connections) — `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `.claude/rules/black.md`
+- `.cursor/plans/eliminate-raw-crud-sql_1bc86515.plan.md`
 
 ## Audit Trail
 

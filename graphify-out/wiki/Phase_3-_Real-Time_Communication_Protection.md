@@ -1,23 +1,21 @@
 # Phase 3: Real-Time Communication Protection
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Playwright MCP Scenarios** (3 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Hybrid E2E Testing Approach** (2 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Automated Playwright CLI Tests** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Mandatory Execution Order** (1 connections) — `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- **Room Occupants Fix** (1 connections) — `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- **Phase 3: Real-Time Communication Protection** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.1 NATS Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.2 WebSocket Protection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **3.3 Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/MULTIPLAYER_TEST_RULES.md`
-- `e2e-tests/OCCUPANT_FIX_VERIFICATION.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 

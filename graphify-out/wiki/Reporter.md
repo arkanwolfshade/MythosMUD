@@ -1,53 +1,50 @@
 # Reporter
 
-> 84 nodes
+> 91 nodes
 
 ## Key Concepts
 
-- **test_quest_service.py** (43 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_MockDefRepo** (30 connections) — `server/tests/unit/game/test_quest_service.py`
-- **asyncio** (27 connections)
-- **_MockInstanceRepo** (25 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_make_definition_row()** (18 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_InstanceStub** (15 connections) — `server/tests/unit/game/test_quest_service.py`
-- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_already_completed()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_reaccept_after_abandon()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_abandon_no_instance()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_get_quest_log_returns_entries()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_auto_completes_when_goals_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_complete_activity_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_suppresses_intermediate_progress_notify()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_record_kill_updates_progress()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_prereq_not_met()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_requires_any_satisfied()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 59 more nodes in this community*
+- **Reporter** (56 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **test_reporter.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_error()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [Room](Room.md) (31 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [GameTerminal.tsx](GameTerminal.tsx.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (1 shared connections)
-- [utils/layout.ts](utils-layout.ts.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (12 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_quest_service.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_reporter.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 219 (88%)
-- INFERRED: 31 (12%)
+- EXTRACTED: 132 (96%)
+- INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

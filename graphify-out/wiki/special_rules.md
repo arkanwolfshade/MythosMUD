@@ -1,23 +1,25 @@
 # special_rules
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **unit/infrastructure/__init__.py** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
-- **Infrastructure unit tests.** (1 connections) — `server/tests/unit/infrastructure/__init__.py`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/__init__.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,28 +1,27 @@
 # Advanced Chat Channels Specification
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **CRITICAL · WebSocket authentication bypass on `/ws`** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **AGENT-REPORTED, NOT YET VERIFIED BY ME — `/ws/{player_id}`** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Documentation status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Issue #472 status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **Recommended fix — one guard, not three** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **VERIFIED — anonymous WebSocket connection via query parameter** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
-- **VERIFIED — CSRF validation fails open** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- **Advanced Chat Channels Specification** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Global Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Local Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Whisper Chat Channel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- **Advanced Chat Channels Tasks** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CRITICAL-WebSocket-Auth.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/tasks.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

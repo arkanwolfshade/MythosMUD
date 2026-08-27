@@ -1,31 +1,30 @@
 # SyntaxErrorFixer
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **ChatPoseManager** (8 connections) — `server/game/chat_pose_manager.py`
-- **.normalize_player_id()** (5 connections) — `server/game/chat_pose_manager.py`
-- **.clear_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.set_pose()** (3 connections) — `server/game/chat_pose_manager.py`
-- **.get_all_poses()** (2 connections) — `server/game/chat_pose_manager.py`
-- **.__init__()** (2 connections) — `server/game/chat_pose_manager.py`
-- **Manages in-memory storage of player poses.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Initialize the pose manager.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Normalize player identifiers to string form.** (1 connections) — `server/game/chat_pose_manager.py`
-- **Set a player's pose in memory. Args: player_id: ID of the player pose: Pose…** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get a player's current pose. Args: player_id: ID of the player Returns: Current…** (1 connections) — `server/game/chat_pose_manager.py`
-- **Clear a player's pose. Args: player_id: ID of the player Returns: True if pose…** (1 connections) — `server/game/chat_pose_manager.py`
-- **Get all poses (for testing/debugging). Returns: Dictionary mapping player IDs…** (1 connections) — `server/game/chat_pose_manager.py`
+- **SyntaxErrorFixer** (7 connections) — `scripts/fix_syntax_errors.py`
+- **.fix_specific_file()** (5 connections) — `scripts/fix_syntax_errors.py`
+- **main()** (4 connections) — `scripts/fix_syntax_errors.py`
+- **.process_files()** (4 connections) — `scripts/fix_syntax_errors.py`
+- **.fix_malformed_logger_calls()** (3 connections) — `scripts/fix_syntax_errors.py`
+- **Path** (3 connections)
+- **fix_syntax_errors.py** (2 connections) — `scripts/fix_syntax_errors.py`
+- **.__init__()** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Process multiple files and return statistics.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Main function to run the syntax error fixer.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Tool to fix syntax errors introduced by automated f-string remediation.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Fix malformed logger calls with broken syntax.** (1 connections) — `scripts/fix_syntax_errors.py`
+- **Fix syntax errors in a specific file.** (1 connections) — `scripts/fix_syntax_errors.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/chat_pose_manager.py`
+- `scripts/fix_syntax_errors.py`
 
 ## Audit Trail
 

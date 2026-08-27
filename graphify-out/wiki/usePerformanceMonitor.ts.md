@@ -1,32 +1,30 @@
 # usePerformanceMonitor.ts
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **AsyncPersistenceRoomLookup** (4 connections) — `server/realtime/websocket_handler_connection.py`
-- **PlayerDisconnectService** (4 connections) — `server/realtime/websocket_handler_connection.py`
-- **PlayerMuteCleanup** (4 connections) — `server/realtime/websocket_handler_connection.py`
-- **Protocol** (3 connections)
-- **.on_player_disconnect()** (2 connections) — `server/realtime/websocket_handler_connection.py`
-- **.get_room_by_id()** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **.cleanup_player_mutes()** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Notify subsystems when a WebSocket session ends for a player.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Narrow persistence surface for loading ``Room`` by id in the WS handler.** (1 connections) — `server/realtime/websocket_handler_connection.py`
-- **Narrow UserManager surface for clearing a disconnected player's mute state.** (1 connections) — `server/realtime/websocket_handler_connection.py`
+- **usePerformanceMonitor.ts** (6 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **usePerformanceMonitor.test.ts** (3 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- **usePerformanceMonitor()** (2 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- **ExtendedPerformance** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **PerformanceMemory** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **PerformanceMetrics** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
+- **UsePerformanceMonitorOptions** (1 connections) — `client/src/hooks/usePerformanceMonitor.ts`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/websocket_handler_connection.py`
+- `client/src/hooks/__tests__/usePerformanceMonitor.test.ts`
+- `client/src/hooks/usePerformanceMonitor.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

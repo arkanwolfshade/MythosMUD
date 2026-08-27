@@ -1,24 +1,23 @@
 # Mandatory AI Execution Contract
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **PerformanceStats** (3 connections) — `server/realtime/monitoring/performance_tracker.py`
-- **TypedDict** (1 connections)
-- **Type definition for performance statistics tracking.** (1 connections) — `server/realtime/monitoring/performance_tracker.py`
+- **Mandatory AI Execution Contract** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
+- **E2E Scenario Template** (1 connections) — `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/monitoring/performance_tracker.py`
+- `e2e-tests/SCENARIO_TEMPLATE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

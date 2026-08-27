@@ -1,32 +1,33 @@
 # main
 
-> 9 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **player_event_handler_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **fixture** (4 connections)
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **mock_logger()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **mock_name_extractor()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a mock name extractor.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a mock logger.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Create a PlayerEventHandlerUtils instance.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **main()** (6 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_exit_empty()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_load_state()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **_write_state_atomic()** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **.claude/hooks/trigger_test_agent.py** (4 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Path** (3 connections)
+- **NoReturn** (1 connections)
+- **Exit successfully with no decision (allow the stop).** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
+- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.claude/hooks/trigger_test_agent.py`
 
 ## Relationships
 
-- [Responsive Design](Responsive_Design.md) (4 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `.claude/hooks/trigger_test_agent.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

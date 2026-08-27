@@ -1,23 +1,22 @@
 # lazyLoading.test.tsx
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_whoami_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_whoami_command delegates to player_state factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **lazyLoading.test.tsx** (0 connections) — `client/src/components/map/__tests__/lazyLoading.test.tsx`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/src/components/map/__tests__/lazyLoading.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

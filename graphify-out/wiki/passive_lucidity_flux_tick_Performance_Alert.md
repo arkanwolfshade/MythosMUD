@@ -1,26 +1,24 @@
 # passive_lucidity_flux_tick Performance Alert
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **party_service()** (4 connections) — `server/tests/unit/game/test_party_service.py`
-- **fixture** (1 connections)
-- **PartyService with no dependencies (in-memory only).** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **passive_lucidity_flux_tick Performance Alert** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
+- **Warnings Log Investigation** (1 connections) — `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Relationships
 
-- [SafeHtml.tsx](SafeHtml.tsx.md) (1 shared connections)
-- [WebSocket Best Practices](WebSocket_Best_Practices.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_party_service.py`
+- `investigations/sessions/2025-01-29_session-001_warnings-log-investigation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

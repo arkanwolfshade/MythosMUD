@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Client Test Remediation Skill** (0 connections) — `.cursor/commands/client-test-remediation.md`
+- **Whisper System Production-Ready** (0 connections) — `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/commands/client-test-remediation.md`
+- `e2e-tests/WHISPER_TESTING_COMPLETE.md`
 
 ## Audit Trail
 

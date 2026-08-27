@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Uvicorn Best Practices** (0 connections) — `.claude/rules/uvicorn.md`
+- **NATS Error Handling Strategy** (0 connections) — `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/uvicorn.md`
+- `docs/NATS_ERROR_HANDLING_STRATEGY.md`
 
 ## Audit Trail
 

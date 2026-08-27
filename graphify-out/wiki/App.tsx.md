@@ -4,54 +4,69 @@
 
 ## Key Concepts
 
-- **test_websocket_handler_coverage_gaps.py** (26 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **asyncio** (20 connections)
-- **handle_websocket_connection()** (12 connections) — `server/realtime/websocket_handler.py`
-- **load_player_mute_data()** (8 connections) — `server/realtime/websocket_helpers.py`
-- **test_handle_chat_message_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_chat_message_runtime_error_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_exception_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_game_command_runtime_error_handling()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_connect_failed()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_full_flow()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_setup_fails()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_handle_websocket_connection_welcome_fails()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_websocket_command_resolve_connection_manager_from_app()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_message_loop_should_raise_exception()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_process_exception_in_message_loop()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_already_disconnected()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_cannot_call_error()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_send_welcome_event_close_message_sent()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_should_exit()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_websocket_disconnect()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **test_setup_initial_connection_state_with_room()** (3 connections) — `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
-- **UUID** (2 connections)
+- **App.tsx** (22 connections) — `client/src/App.tsx`
+- **App()** (21 connections) — `client/src/App.tsx`
+- **app.test.helpers.ts** (19 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **ProfessionSystemErrorHandling.test.tsx** (14 connections) — `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
+- **professionSystemErrorHandling.test.helpers.ts** (13 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **createMockLoginResponse()** (12 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **app.test.mocks.tsx** (12 connections) — `client/src/__tests__/app.test.mocks.tsx`
+- **registerAppTestHooks()** (11 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **fetchSpy** (10 connections) — `client/src/__tests__/app.test.mocks.tsx`
+- **App.logoutError.test.tsx** (8 connections) — `client/src/__tests__/App.logoutError.test.tsx`
+- **components/__tests__/LogoutFlow.integration.test.tsx** (7 connections) — `client/src/components/__tests__/LogoutFlow.integration.test.tsx`
+- **App.keyboard.test.tsx** (7 connections) — `client/src/__tests__/App.keyboard.test.tsx`
+- **App.loading.test.tsx** (7 connections) — `client/src/__tests__/App.loading.test.tsx`
+- **App.login.test.tsx** (7 connections) — `client/src/__tests__/App.login.test.tsx`
+- **App.motd.test.tsx** (7 connections) — `client/src/__tests__/App.motd.test.tsx`
+- **App.registration.test.tsx** (7 connections) — `client/src/__tests__/App.registration.test.tsx`
+- **App.statsRolling.test.tsx** (7 connections) — `client/src/__tests__/App.statsRolling.test.tsx`
+- **App.tokenValidation.test.tsx** (7 connections) — `client/src/__tests__/App.tokenValidation.test.tsx`
+- **createMockProfessions()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **setupBasicMocks()** (5 connections) — `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
+- **App.demo.test.tsx** (5 connections) — `client/src/__tests__/App.demo.test.tsx`
+- **App.formState.test.tsx** (5 connections) — `client/src/__tests__/App.formState.test.tsx`
+- **StatRollingWithProfessionRequirements.test.tsx** (5 connections) — `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
+- **createMockProfessionsFetchResponse()** (4 connections) — `client/src/__tests__/app.test.helpers.ts`
+- **createMockJsonResponse()** (3 connections) — `client/src/__tests__/app.test.helpers.ts`
 - *... and 23 more nodes in this community*
 
 ## Relationships
 
-- [ExceptionTracker](ExceptionTracker.md) (6 shared connections)
-- [CombatAuditLogger](CombatAuditLogger.md) (4 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (4 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (3 shared connections)
-- [test_room_subscription_manager_drops.py](test_room_subscription_manager_drops.py.md) (1 shared connections)
-- [verify_schema_match.sh](verify_schema_match.sh.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (6 shared connections)
+- [utils/config.ts](utils-config.ts.md) (2 shared connections)
+- [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
+- [Profession](Profession.md) (1 shared connections)
+- [security.ts](security.ts.md) (1 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_helpers.py`
-- `server/tests/unit/realtime/test_websocket_handler_coverage_gaps.py`
+- `client/src/App.integration.test.tsx`
+- `client/src/App.tsx`
+- `client/src/__tests__/App.demo.test.tsx`
+- `client/src/__tests__/App.formState.test.tsx`
+- `client/src/__tests__/App.keyboard.test.tsx`
+- `client/src/__tests__/App.loading.test.tsx`
+- `client/src/__tests__/App.login.test.tsx`
+- `client/src/__tests__/App.logoutError.test.tsx`
+- `client/src/__tests__/App.motd.test.tsx`
+- `client/src/__tests__/App.registration.test.tsx`
+- `client/src/__tests__/App.statsRolling.test.tsx`
+- `client/src/__tests__/App.tokenValidation.test.tsx`
+- `client/src/__tests__/CharacterCreationNavigation.test.tsx`
+- `client/src/__tests__/ProfessionPersistence.test.tsx`
+- `client/src/__tests__/ProfessionSelectionVariants.test.tsx`
+- `client/src/__tests__/ProfessionSystemErrorHandling.test.tsx`
+- `client/src/__tests__/StatRollingWithProfessionRequirements.test.tsx`
+- `client/src/__tests__/app.test.helpers.ts`
+- `client/src/__tests__/app.test.mocks.tsx`
+- `client/src/__tests__/professionSystemErrorHandling.test.helpers.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (95%)
-- INFERRED: 5 (5%)
+- EXTRACTED: 142 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

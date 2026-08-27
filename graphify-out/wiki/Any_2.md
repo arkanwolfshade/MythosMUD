@@ -1,56 +1,50 @@
 # Any
 
-> 31 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **SlotValidationError** (21 connections) — `server/services/equipment_service.py`
-- **handle_unequip_command()** (18 connections) — `server/commands/inventory_unequip_command.py`
-- **test_inventory_unequip_command.py** (13 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_unequip_run_mutation()** (9 connections) — `server/commands/inventory_unequip_command.py`
-- **test_handle_unequip_command_slot_validation_error()** (7 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_unequip_success_payload()** (6 connections) — `server/commands/inventory_unequip_command.py`
-- **test_handle_unequip_command_mutation_suppressed()** (6 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **test_handle_unequip_command_persist_rollback()** (6 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **test_handle_unequip_command_success()** (6 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_unequip_persist_or_rollback()** (5 connections) — `server/commands/inventory_unequip_command.py`
-- **_mutation_cm()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_player_with_equipped()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **_request_wiring()** (5 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- **CommandResponse** (4 connections)
-- **asyncio** (4 connections)
-- **test_equip_from_inventory_invalid_slot_index()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **test_equip_from_inventory_no_slot_type()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **test_equip_from_inventory_slot_mismatch()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **test_equip_from_inventory_slot_type_inventory_requires_target_slot()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **test_unequip_to_inventory_empty_slot()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **test_unequip_to_inventory_no_slot_type()** (3 connections) — `server/tests/unit/services/test_equipment_service.py`
-- **Player** (3 connections)
-- **Unequip an item into the player's inventory.** (1 connections) — `server/commands/inventory_unequip_command.py`
-- **Raised when requested slots or inventory positions are invalid.** (1 connections) — `server/services/equipment_service.py`
-- **Unit tests for inventory_unequip_command module.** (1 connections) — `server/tests/unit/commands/test_inventory_unequip_command.py`
-- *... and 6 more nodes in this community*
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **Any** (9 connections)
+- **UUID** (7 connections)
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **Raise ValueError if any skill_id appears in both occupation and personal…** (1 connections) — `server/game/skill_service.py`
+- **Build skill_key -> total modifier from profession skill_modifiers (supports…** (1 connections) — `server/game/skill_service.py`
+- **Compute final skill_id -> value: base + profession mod, then occupation…** (1 connections) — `server/game/skill_service.py`
+- **Validate skills allocation without persisting. Raises ValueError if invalid.…** (1 connections) — `server/game/skill_service.py`
+- **Set all skills for a character at creation. Validates occupation_slots (9…** (1 connections) — `server/game/skill_service.py`
+- **Return list of {skill_id, skill_key, skill_name, value} for the player. If the…** (1 connections) — `server/game/skill_service.py`
+- **Record one successful use of a skill at the character's current level. Used for…** (1 connections) — `server/game/skill_service.py`
+- **Return distinct skill_ids that the player successfully used at the given level.…** (1 connections) — `server/game/skill_service.py`
+- **For each skill the player used during the previous level, roll d100. If roll >…** (1 connections) — `server/game/skill_service.py`
+- **Roll d100 against the character's skill value; on success record use and return…** (1 connections) — `server/game/skill_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (28 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (5 shared connections)
-- [.__init__](__init__.md) (2 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (2 shared connections)
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (2 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (13 shared connections)
+- [models/player.py](models-player.py.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/inventory_unequip_command.py`
-- `server/services/equipment_service.py`
-- `server/tests/unit/commands/test_inventory_unequip_command.py`
-- `server/tests/unit/services/test_equipment_service.py`
+- `server/game/skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (89%)
-- INFERRED: 10 (11%)
+- EXTRACTED: 56 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

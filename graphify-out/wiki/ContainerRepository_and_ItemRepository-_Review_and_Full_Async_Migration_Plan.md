@@ -1,46 +1,44 @@
 # ContainerRepository and ItemRepository: Review and Full Async Migration Plan
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **Phase 4: Recommendations** (17 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.1 Pruning Candidates (750 tests, ~5 minutes savings)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.2 Consolidation Opportunities** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.3 Coverage Gap Identification** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4.4 Optimization Recommendations** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **5. Add Critical Integration Tests for New Architecture** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Files to Remove/Drastically Reduce** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Files to Review** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **4. Migrate Model Tests to Property-Based Testing** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **6. Continuous Test Quality Review** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **7. Test Performance Optimization** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Critical Code Lacking Tests** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Example Consolidation** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Example Low-Value Pattern** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **HIGH-PRIORITY PRUNE (454 tests, ~3 minutes)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Immediate Actions (High ROI)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Long-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **LOW-PRIORITY PRUNE (100+ tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **MEDIUM-PRIORITY PRUNE (88 tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Medium-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Parametrization Opportunities** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
-- **Specific Patterns to Remove** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **ContainerRepository and ItemRepository: Review and Full Async Migration Plan** (10 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **4. Full Async Migration Plan** (6 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1. Review Summary** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **3. Migration Options** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2. Scope of Migration** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.1 Current Architecture** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.2 Impact of Current Wrappers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **1.3 Recommendation** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.1 Functions to Migrate** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **2.2 Callers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **5. File Checklist** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **6. Risks and Mitigations** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **7. Success Criteria** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **8. Phase 1 Audit Results (Completed)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **9. Implementation Status** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option A: SQLAlchemy Async (Recommended)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option B: asyncpg Raw** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Option C: Keep Wrappers, Add Sync Connection Pool** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 1: Preparation (no behavior change)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 2: Async implementation (container)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 3: Async implementation (item)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 4: Cleanup** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Phase 5: Verification** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

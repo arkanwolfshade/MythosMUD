@@ -1,18 +1,16 @@
 # Three-Column Game UI Layout
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **run_bug_prevention_tests.ps1** (8 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Write-ColorOutput()** (7 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Write-Section()** (5 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Invoke-ClientTest()** (4 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Invoke-IntegrationTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Invoke-ServerTest()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Show-TestSummary()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Write-Header()** (3 connections) — `scripts/run_bug_prevention_tests.ps1`
-- **Test-Command()** (2 connections) — `scripts/run_bug_prevention_tests.ps1`
+- **Three-Column Game UI Layout** (6 connections) — `client/wireframe.png`
+- **Character Info Panel** (1 connections) — `client/wireframe.png`
+- **Chat History Panel** (1 connections) — `client/wireframe.png`
+- **Command History and Input** (1 connections) — `client/wireframe.png`
+- **Game Info Panel** (1 connections) — `client/wireframe.png`
+- **Location Room Description Occupants** (1 connections) — `client/wireframe.png`
+- **MythosMUD Client UI Wireframe** (1 connections) — `client/wireframe.png`
 
 ## Relationships
 
@@ -20,11 +18,11 @@
 
 ## Source Files
 
-- `scripts/run_bug_prevention_tests.ps1`
+- `client/wireframe.png`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

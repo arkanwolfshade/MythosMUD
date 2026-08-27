@@ -1,54 +1,54 @@
 # RateLimiter
 
-> 111 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **NATSConnectionStateMachine** (58 connections) — `server/realtime/connection_state_machine.py`
-- **test_connection_state_machine.py** (40 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **connection_state_machine.py** (10 connections) — `server/realtime/connection_state_machine.py`
-- **ConnectionEvent** (5 connections) — `server/realtime/connection_state_machine.py`
-- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
-- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **.on_connection_failed()** (3 connections) — `server/realtime/connection_state_machine.py`
-- **test_can_attempt_connection_circuit_open()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_disconnected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_can_attempt_connection_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_close_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connect_transition()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connected_successfully_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_event_enum()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_failed_from_connecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_degrade()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_connected()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_disconnect_from_degraded()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_get_stats_no_error()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 86 more nodes in this community*
+- **RateLimiter** (17 connections) — `server/services/rate_limiter.py`
+- **._cleanup_old_entries()** (6 connections) — `server/services/rate_limiter.py`
+- **.get_limit()** (6 connections) — `server/services/rate_limiter.py`
+- **.check_rate_limit()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_player_stats()** (5 connections) — `server/services/rate_limiter.py`
+- **.get_remaining_messages()** (4 connections) — `server/services/rate_limiter.py`
+- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
+- **.record_message()** (4 connections) — `server/services/rate_limiter.py`
+- **test_rate_limiter_initialization()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **test_rate_limiter_legacy_config()** (4 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **.get_system_stats()** (3 connections) — `server/services/rate_limiter.py`
+- **.is_player_rate_limited()** (3 connections) — `server/services/rate_limiter.py`
+- **.reset_player_limits()** (2 connections) — `server/services/rate_limiter.py`
+- **.set_limit()** (2 connections) — `server/services/rate_limiter.py`
+- **Any** (2 connections)
+- **Remove timestamps older than the window size. Args: player_id: Player ID…** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is within rate limits for a channel. Args: player_id: Player…** (1 connections) — `server/services/rate_limiter.py`
+- **Record a message for rate limiting. Args: player_id: Player ID channel: Channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Sliding window rate limiter for chat channels. Implements per-user, per-channel…** (1 connections) — `server/services/rate_limiter.py`
+- **Get rate limiting statistics for a player. Args: player_id: Player ID Returns:…** (1 connections) — `server/services/rate_limiter.py`
+- **Reset rate limiting for a player. Args: player_id: Player ID channel: Specific…** (1 connections) — `server/services/rate_limiter.py`
+- **Get system-wide rate limiting statistics. Returns: Dictionary with system…** (1 connections) — `server/services/rate_limiter.py`
+- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
+- **Check if a player is currently rate limited on a channel. Args: player_id:…** (1 connections) — `server/services/rate_limiter.py`
+- **Get the number of remaining messages a player can send on a channel. Args:…** (1 connections) — `server/services/rate_limiter.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [test_aggro_threat.py](test_aggro_threat.py.md) (3 shared connections)
-- [ChatModeration](ChatModeration.md) (2 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_rate_limiter.py](test_rate_limiter.py.md) (3 shared connections)
+- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [rate_limiter](rate_limiter.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [get_config](get_config.md) (1 shared connections)
+- [ChatLogger](ChatLogger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_state_machine.py`
-- `server/tests/unit/realtime/test_connection_state_machine.py`
+- `server/services/rate_limiter.py`
+- `server/tests/unit/services/test_rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 161 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

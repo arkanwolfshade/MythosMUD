@@ -1,32 +1,32 @@
 # Earth Plane
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **test_emotes_procedures.py** (6 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **emote_row()** (5 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **test_get_emote_aliases_joins_owning_emote()** (4 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **test_get_emotes_includes_the_new_row()** (4 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **async_sessionmaker** (3 connections)
-- **AsyncSession** (3 connections)
-- **asyncio** (2 connections)
-- **fixture** (1 connections)
-- **Integration tests for db/procedures/emotes.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
-- **Create one emote with one alias. Yields (stable_id, alias).** (1 connections) — `server/tests/integration/test_emotes_procedures.py`
+- **Earth Plane** (4 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Arkham City** (3 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **Miskatonic University** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **Innsmouth** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- **The Dreamlands** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **The Investigators** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Limbo / Death Plane** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Arkham City Zone Visualization** (1 connections) — `data/local/arkham_city_visualization.html`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_emotes_procedures.py`
+- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
+- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `data/local/arkham_city_visualization.html`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 6 (86%)
+- INFERRED: 1 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

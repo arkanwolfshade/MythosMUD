@@ -1,23 +1,22 @@
 # message-match.test.ts
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **other_message** (6 connections) — `schemas/emote_schema.json`
-- **description** (1 connections) — `schemas/emote_schema.json`
-- **maxLength** (1 connections) — `schemas/emote_schema.json`
-- **minLength** (1 connections) — `schemas/emote_schema.json`
-- **pattern** (1 connections) — `schemas/emote_schema.json`
-- **type** (1 connections) — `schemas/emote_schema.json`
+- **escapeRegExpLiteral()** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **toMessageMatchPattern()** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
+- **message-match.test.ts** (3 connections) — `client/src/test/message-match.test.ts`
+- **message-match.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/message-match.ts`
 
 ## Relationships
 
-- [optimized_validate_target_player](optimized_validate_target_player.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/emote_schema.json`
+- `client/src/test/message-match.test.ts`
+- `client/tests/e2e/runtime/fixtures/message-match.ts`
 
 ## Audit Trail
 

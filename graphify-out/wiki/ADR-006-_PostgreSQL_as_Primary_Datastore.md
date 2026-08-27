@@ -1,23 +1,22 @@
 # ADR-006: PostgreSQL as Primary Datastore
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_attack_strength_weak_weapon()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_attack_strength with weak weapon.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ADR-006: PostgreSQL as Primary Datastore** (0 connections) — `docs/architecture/decisions/ADR-006-postgresql-primary-datastore.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/architecture/decisions/ADR-006-postgresql-primary-datastore.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

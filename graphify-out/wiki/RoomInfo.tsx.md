@@ -1,38 +1,37 @@
 # RoomInfo.tsx
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **UX Writing** (15 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Error Messages: The Formula** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Writing for Translation** (3 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Avoid Redundant Copy** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Confirmation Dialogs: Use Sparingly** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Consistency: The Terminology Problem** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Don't Blame the User** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Empty States Are Opportunities** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Error Message Templates** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Form Instructions** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Loading States** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Plan for Expansion** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **The Button Label Problem** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Translation-Friendly Patterns** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Voice vs Tone** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
-- **Writing for Accessibility** (1 connections) — `.claude/skills/frontend-design/reference/ux-writing.md`
+- **RoomInfo.tsx** (14 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfo.test.tsx** (10 connections) — `client/src/components/ui/__tests__/RoomInfo.test.tsx`
+- **useRoomInfo()** (8 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **DebugInfo()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomDescription()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomEntities()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomExits()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomLocation()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomName()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomOccupants()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **CompleteRoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoContextType** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoProps** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **RoomInfoContext** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
-- [compilerOptions](compilerOptions.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/ux-writing.md`
+- `client/src/components/ui/RoomInfo.tsx`
+- `client/src/components/ui/__tests__/RoomInfo.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 30 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

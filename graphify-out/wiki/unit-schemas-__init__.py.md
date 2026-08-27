@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **e2e-run-parallel.ps1** (0 connections) — `scripts/e2e-run-parallel.ps1`
+- **unit/schemas/__init__.py** (0 connections) — `server/tests/unit/schemas/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/e2e-run-parallel.ps1`
+- `server/tests/unit/schemas/__init__.py`
 
 ## Audit Trail
 

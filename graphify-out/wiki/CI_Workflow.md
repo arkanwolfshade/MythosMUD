@@ -1,21 +1,20 @@
 # CI Workflow
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\character_sheets  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Communities (3 total, 2 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **character-sheets/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Community 0 - "Player Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **CI Workflow** (5 connections) — `.github/workflows/ci.yml`
+- **CI Python Backend Job** (4 connections) — `.github/workflows/ci.yml`
+- **Codacy Coverage Finalize Job** (3 connections) — `.github/workflows/ci.yml`
+- **mythosmud_data Private Submodule Checkout** (3 connections) — `.github/workflows/ci.yml`
+- **CodeQL Test Credential Exclusions** (2 connections) — `.github/codeql/codeql-config.yml`
+- **CI React Client Job** (2 connections) — `.github/workflows/ci.yml`
+- **step-security Harden Runner** (2 connections) — `.github/workflows/ci.yml`
+- **CodeQL Configuration** (2 connections) — `.github/codeql/codeql-config.yml`
+- **CodeQL Workflow** (2 connections) — `.github/workflows/codeql.yml`
+- **OpenSSF Scorecard Workflow** (2 connections) — `.github/workflows/scorecards.yml`
+- **mythos_unit CI Database Bootstrap** (1 connections) — `.github/workflows/ci.yml`
 
 ## Relationships
 
@@ -23,12 +22,15 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- `.github/codeql/codeql-config.yml`
+- `.github/workflows/ci.yml`
+- `.github/workflows/codeql.yml`
+- `.github/workflows/scorecards.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (79%)
+- INFERRED: 3 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Cthulhu Dark Ages - 3rd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **cthulhu-dark-ages-3rd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- **main()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **_verify()** (2 connections) — `scripts/verify_e2e_users_seeded.py`
+- **verify_e2e_users_seeded.py** (2 connections) — `scripts/verify_e2e_users_seeded.py`
 
 ## Relationships
 
@@ -14,12 +14,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/MANIFEST.md`
+- `scripts/verify_e2e_users_seeded.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

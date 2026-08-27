@@ -1,38 +1,32 @@
 # enum
 
-> 14 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **P2 · Structural & Architecture Doc Claim Register** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Claims by cluster** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **ADR-015: PostgreSQL Procedures and Functions for Data Access** (3 connections) — `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
-- **config-api — API_OPENAPI_SPECIFICATION** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **container-di — BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **container-di — CONTAINER_SYSTEM_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Corpus correction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Design↔design contradictions (findings without needing code)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **domain — aggro-threat-system** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **events-nats — EVENT_OWNERSHIP_MATRIX, DISTRIBUTED_EVENTBUS_NATS, NATS_SUBJECT_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **persistence-db — PERSISTENCE_REPOSITORY_ARCHITECTURE, DATABASE_ACCESS_PATTERNS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **realtime-connection — REAL_TIME_ARCHITECTURE, CONNECTION_MANAGER_ARCHITECTURE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **Verified during extraction** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- **PostgreSQL Procedures and Functions README** (1 connections) — `db/procedures/README.md`
+- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
-- [Communities (11 total, 0 thin omitted)](Communities_11_total,_0_thin_omitted.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P2-Structural-Claims.md`
-- `db/procedures/README.md`
-- `docs/architecture/decisions/ADR-015-postgresql-procedures-migration.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

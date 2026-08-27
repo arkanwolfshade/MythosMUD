@@ -1,33 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Amplify the Design** (7 connections) — `.claude/skills/bolder/SKILL.md`
-- **Bolder Skill** (6 connections) — `.claude/skills/bolder/SKILL.md`
-- **Assess Current State** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Color Intensification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Composition Boldness** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Motion & Animation** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Plan Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Spatial Drama** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Typography Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Verify Quality** (1 connections) — `.claude/skills/bolder/SKILL.md`
-- **Visual Effects** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Communities (1 total, 0 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Community 0 - "Mythos Subjects"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/bolder/SKILL.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

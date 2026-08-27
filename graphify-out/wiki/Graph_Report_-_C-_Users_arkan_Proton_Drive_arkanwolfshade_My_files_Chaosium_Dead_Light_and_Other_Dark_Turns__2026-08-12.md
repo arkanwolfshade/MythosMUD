@@ -1,33 +1,32 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Hardening Dimensions** (8 connections) — `.claude/skills/harden/SKILL.md`
-- **Harden Skill** (5 connections) — `.claude/skills/harden/SKILL.md`
-- **Accessibility Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Assess Hardening Needs** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Edge Cases & Boundary Conditions** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Error Handling** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Input Validation & Sanitization** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Internationalization (i18n)** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Performance Resilience** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Testing Strategies** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Text Overflow & Wrapping** (1 connections) — `.claude/skills/harden/SKILL.md`
-- **Verify Hardening** (1 connections) — `.claude/skills/harden/SKILL.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **dead-light-and-other-dark-turns/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Communities (2 total, 2 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/harden/SKILL.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,64 +1,55 @@
 # test_logging_handlers.py
 
-> 100 nodes
+> 71 nodes
 
 ## Key Concepts
 
-- **NPCCombatDataProvider** (35 connections) — `server/services/npc_combat_data_provider.py`
-- **npc_combat_integration_validation_mixin.py** (20 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **_NPCCombatIntegrationValidationDeps** (18 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **npc_combat_data_provider.py** (18 connections) — `server/services/npc_combat_data_provider.py`
-- **npc_combat_integration_combat_mixin.py** (18 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **test_npc_combat_data_provider.py** (18 connections) — `server/tests/unit/services/test_npc_combat_data_provider.py`
-- **_NPCCombatIntegrationDeps** (14 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **NPCCombatIntegrationValidationMixin** (11 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.store_npc_xp_mapping_for_mixin()** (10 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **NPCCombatIntegrationCombatMixin** (9 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._process_combat_attack()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.start_new_combat_for_mixin()** (8 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._apply_npc_attack_damage_for_npc_initiated_combat()** (7 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **asyncio** (7 connections)
-- **._broadcast_room_after_npc_death()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.get_combat_service()** (6 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **.get_data_provider()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_uuid_mapping()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._setup_combat_uuids_and_mappings()** (6 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **.get_npc_combat_data()** (5 connections) — `server/services/npc_combat_data_provider.py`
-- **.get_data_provider()** (5 connections) — `server/services/npc_combat_integration_combat_mixin.py`
-- **._setup_combat_uuids_npc_attacker()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_and_get_npc_instance()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **._validate_combat_location()** (5 connections) — `server/services/npc_combat_integration_validation_mixin.py`
-- **UUID** (5 connections)
-- *... and 75 more nodes in this community*
+- **test_logging_handlers.py** (29 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **create_aggregator_handler()** (22 connections) — `server/structured_logging/logging_handlers.py`
+- **logging_handlers.py** (17 connections) — `server/structured_logging/logging_handlers.py`
+- **SafeRotatingFileHandler** (15 connections) — `server/structured_logging/logging_handlers.py`
+- **WarningOnlyFilter** (12 connections) — `server/structured_logging/logging_handlers.py`
+- **AsyncioConnLostWriteFilter** (9 connections) — `server/structured_logging/logging_handlers.py`
+- **_aggregator_handler_class_for_windows()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **_make_exec_for_aggregator()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **._open()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **.shouldRollover()** (5 connections) — `server/structured_logging/logging_handlers.py`
+- **test_create_aggregator_handler_warning_level()** (5 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_error_level()** (4 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **RotatingFileHandler** (4 connections)
+- **.filter()** (3 connections) — `server/structured_logging/logging_handlers.py`
+- **temp_log_dir()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **temp_log_file()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_non_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_retries_on_error()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_windows_platform()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_with_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_create_aggregator_handler_without_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_init()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_open_no_base_filename()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_open_returns_stringio_on_final_failure()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- **test_safe_rotating_file_handler_open_success()** (3 connections) — `server/tests/unit/structured_logging/test_logging_handlers.py`
+- *... and 46 more nodes in this community*
 
 ## Relationships
 
-- [MythosMUDError](MythosMUDError.md) (13 shared connections)
-- [command_service.py](command_service.py.md) (11 shared connections)
-- [NATSService](NATSService.md) (10 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (9 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (4 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (4 shared connections)
-- [test_auth_dependencies.py](test_auth_dependencies.py.md) (3 shared connections)
-- [test_look_room.py](test_look_room.py.md) (3 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [ChatMessage](ChatMessage.md) (1 shared connections)
-- [test_magic_healing_events.py](test_magic_healing_events.py.md) (1 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (6 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [logging_file_categories.py](logging_file_categories.py.md) (3 shared connections)
+- [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (3 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/combat_messaging_integration.py`
-- `server/services/npc_combat_data_provider.py`
-- `server/services/npc_combat_integration_combat_mixin.py`
-- `server/services/npc_combat_integration_service.py`
-- `server/services/npc_combat_integration_validation_mixin.py`
-- `server/tests/unit/services/test_npc_combat_data_provider.py`
+- `server/structured_logging/logging_handlers.py`
+- `server/tests/unit/structured_logging/test_logging_handlers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 221 (92%)
-- INFERRED: 19 (8%)
+- EXTRACTED: 126 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

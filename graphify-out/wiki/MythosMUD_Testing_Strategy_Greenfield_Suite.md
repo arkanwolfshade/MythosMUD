@@ -1,41 +1,33 @@
 # MythosMUD Testing Strategy (Greenfield Suite)
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_message_filtering.py** (36 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_collect_room_targets_empty()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_muted_by_receiver()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_muted_by_receiver_not_muted()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_message_filtering_helper_init()** (2 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_muted_by_receiver_exception()** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **test_is_player_muted_global_mute_and_admin()** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Unit tests for message filtering. Tests the MessageFilteringHelper class.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test is_player_muted_by_receiver() checks mute status.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test is_player_muted_by_receiver() returns False when not muted.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test MessageFilteringHelper initialization.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
-- **Test collect_room_targets() returns empty set when no subscribers.** (1 connections) — `server/tests/unit/realtime/test_message_filtering.py`
+- **MythosMUD Testing Strategy (Greenfield Suite)** (9 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **TESTING_GREENFIELD.md** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Coverage policy** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Fixtures/layout** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Isolation rules** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Logging and diagnostics** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Markers** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Mocking standards** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Tiers and commands** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **What to run when** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
 
 ## Relationships
 
-- [](unnamed.md) (11 shared connections)
-- [Hardening Dimensions](Hardening_Dimensions.md) (10 shared connections)
-- [Three-Column Panel Wireframe Layout](Three-Column_Panel_Wireframe_Layout.md) (2 shared connections)
-- [apply_migration](apply_migration.md) (2 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [Test _get_user_manager() falls](Test__get_user_manager_falls.md) (1 shared connections)
+- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
+- [TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md](TEST_COVERAGE_DISCONNECT_GRACE_PERIOD_REST.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_message_filtering.py`
+- `docs/archive/TESTING_GREENFIELD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

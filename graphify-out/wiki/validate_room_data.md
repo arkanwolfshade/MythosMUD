@@ -1,54 +1,46 @@
 # validate_room_data
 
-> 35 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_communication_commands_channels.py** (21 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **asyncio** (13 connections)
-- **handle_global_command()** (11 connections) — `server/commands/communication_commands.py`
-- **handle_local_command()** (10 connections) — `server/commands/communication_commands.py`
-- **handle_system_command()** (10 connections) — `server/commands/communication_commands.py`
-- **test_handle_global_command_level_too_low()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_no_room()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_not_admin()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_global_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_local_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **test_handle_system_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **Local channel message.** (1 connections) — `server/commands/communication_commands.py`
-- **Global channel message (level-gated in flow).** (1 connections) — `server/commands/communication_commands.py`
-- **Admin-only system broadcast.** (1 connections) — `server/commands/communication_commands.py`
-- **Unit tests for local, global, and system chat command handlers.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **Test handle_global_command when player level is too low.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **Test handle_global_command successful execution.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- **Test handle_system_command with no message.** (1 connections) — `server/tests/unit/commands/test_communication_commands_channels.py`
-- *... and 10 more nodes in this community*
+- **validate_room_data()** (17 connections) — `server/world_loader.py`
+- **patch** (8 connections)
+- **.test_validate_room_data_creates_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_strict_validation_raises()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_exception_strict()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validation_not_available()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_validator_creation_fails()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_errors()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **.test_validate_room_data_with_validator()** (4 connections) — `server/tests/unit/test_world_loader.py`
+- **SchemaValidator** (1 connections)
+- **Test validate_room_data() returns empty list when validation not available.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() with provided validator.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() creates validator when not provided.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns validation errors.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() raises exception in strict mode with errors.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() returns empty list when validator creation fails.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() handles validation exception.** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Test validate_room_data() raises in strict mode when validation exception…** (1 connections) — `server/tests/unit/test_world_loader.py`
+- **Validate room data against schema if validation is available. Args: room_data:…** (1 connections) — `server/world_loader.py`
 
 ## Relationships
 
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (9 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [RoomDataValidator](RoomDataValidator.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_world_loader.py](test_world_loader.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [get_room_environment](get_room_environment.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_channels.py`
+- `server/tests/unit/test_world_loader.py`
+- `server/world_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 39 (95%)
+- INFERRED: 2 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

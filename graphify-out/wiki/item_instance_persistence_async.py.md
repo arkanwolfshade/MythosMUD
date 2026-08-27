@@ -1,52 +1,61 @@
 # item_instance_persistence_async.py
 
-> 72 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **test_npc_service.py** (50 connections) — `server/tests/unit/services/test_npc_service.py`
-- **asyncio** (35 connections)
-- **_mock_result_mappings_all()** (29 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_def_row()** (18 connections) — `server/tests/unit/services/test_npc_service.py`
-- **_spawn_rule_row()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_success()** (6 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_npc_definition_with_base_stats()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_max_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_invalid_min_population()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_delete_spawn_rule_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_case_insensitive()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_by_name_not_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definition_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_sub_zone()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_by_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_npc_definitions_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rule_found()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_get_spawn_rules_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_probability()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_invalid_type()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_update_npc_definition_success()** (5 connections) — `server/tests/unit/services/test_npc_service.py`
-- **test_create_spawn_rule_definition_not_found()** (4 connections) — `server/tests/unit/services/test_npc_service.py`
-- *... and 47 more nodes in this community*
+- **item_instance_persistence_async.py** (20 connections) — `server/persistence/item_instance_persistence_async.py`
+- **CreateItemInstanceInput** (18 connections) — `server/async_persistence_constants.py`
+- **ItemRepository** (17 connections) — `server/persistence/repositories/item_repository.py`
+- **item_repository.py** (15 connections) — `server/persistence/repositories/item_repository.py`
+- **test_item_instance_persistence_async.py** (14 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **create_item_instance_async()** (13 connections) — `server/persistence/item_instance_persistence_async.py`
+- **ensure_item_instance_async()** (12 connections) — `server/persistence/item_instance_persistence_async.py`
+- **EnsureItemInstanceInput** (11 connections) — `server/async_persistence_constants.py`
+- **test_item_repository.py** (8 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **item_instance_exists_async()** (7 connections) — `server/persistence/item_instance_persistence_async.py`
+- **async_persistence_constants.py** (7 connections) — `server/async_persistence_constants.py`
+- **_metadata_from_options()** (6 connections) — `server/persistence/item_instance_persistence_async.py`
+- **_item_instance_upsert_params()** (5 connections) — `server/persistence/item_instance_persistence_async.py`
+- **_run_item_instance_upsert()** (5 connections) — `server/persistence/item_instance_persistence_async.py`
+- **.create_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
+- **.ensure_item_instance()** (5 connections) — `server/persistence/repositories/item_repository.py`
+- **asyncio** (5 connections)
+- **.item_instance_exists()** (4 connections) — `server/persistence/repositories/item_repository.py`
+- **test_create_item_instance_async_db_error()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **test_create_item_instance_async_missing_id()** (4 connections) — `server/tests/unit/persistence/test_item_instance_persistence_async.py`
+- **AsyncSession** (4 connections)
+- **.create_item_instance()** (3 connections) — `server/async_persistence.py`
+- **.__init__()** (3 connections) — `server/persistence/repositories/item_repository.py`
+- **repository()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- **test_create_item_instance_delegates()** (3 connections) — `server/tests/unit/persistence/repositories/test_item_repository.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [Recommended Test Additions](Recommended_Test_Additions.md) (7 shared connections)
-- [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [MetricsCollector](MetricsCollector.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (16 shared connections)
+- [item_instance_persistence.py](item_instance_persistence.py.md) (7 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (1 shared connections)
+- [ContainerData](ContainerData.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_npc_service.py`
+- `server/async_persistence.py`
+- `server/async_persistence_constants.py`
+- `server/persistence/item_instance_persistence_async.py`
+- `server/persistence/repositories/item_repository.py`
+- `server/tests/unit/persistence/repositories/test_item_repository.py`
+- `server/tests/unit/persistence/test_item_instance_persistence_async.py`
 
 ## Audit Trail
 
-- EXTRACTED: 169 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 133 (94%)
+- INFERRED: 8 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

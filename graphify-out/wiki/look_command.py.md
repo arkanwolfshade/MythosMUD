@@ -1,63 +1,60 @@
 # look_command.py
 
-> 119 nodes
+> 81 nodes
 
 ## Key Concepts
 
-- **LucidityService** (75 connections) — `server/services/lucidity_service.py`
-- **debrief_command.py** (26 connections) — `server/commands/debrief_command.py`
-- **test_debrief_command.py** (26 connections) — `server/tests/unit/commands/test_debrief_command.py`
-- **ActiveLucidityService** (23 connections) — `server/services/active_lucidity_service.py`
-- **active_lucidity_service.py** (23 connections) — `server/services/active_lucidity_service.py`
-- **handle_debrief_command()** (20 connections) — `server/commands/debrief_command.py`
-- **UUID** (12 connections)
-- **UnknownEncounterCategoryError** (9 connections) — `server/services/active_lucidity_service.py`
-- **_generate_narrative_recap()** (9 connections) — `server/commands/debrief_command.py`
-- **_perform_therapy_if_requested()** (9 connections) — `server/commands/debrief_command.py`
-- **asyncio** (9 connections)
-- **._finalize_lucidity_adjustment()** (8 connections) — `server/services/lucidity_service.py`
-- **Any** (8 connections)
-- **_check_debrief_availability()** (7 connections) — `server/commands/debrief_command.py`
-- **_validate_debrief_context()** (7 connections) — `server/commands/debrief_command.py`
-- **.apply_lucidity_adjustment()** (7 connections) — `server/services/lucidity_service.py`
-- **._calculate_max_lcd()** (7 connections) — `server/services/lucidity_service.py`
-- **_get_catatonia_registry_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **_get_persistence_from_app()** (6 connections) — `server/commands/debrief_command.py`
-- **.perform_recovery_action()** (6 connections) — `server/services/active_lucidity_service.py`
-- **._send_lucidity_change_event_if_needed()** (6 connections) — `server/services/lucidity_service.py`
-- **_complete_debrief()** (5 connections) — `server/commands/debrief_command.py`
-- **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
-- **._add_liabilities_for_adjustment()** (5 connections) — `server/services/lucidity_service.py`
-- *... and 94 more nodes in this community*
+- **look_command.py** (58 connections) — `server/commands/look_command.py`
+- **test_look_command.py** (26 connections) — `server/tests/unit/commands/test_look_command.py`
+- **handle_look_command()** (18 connections) — `server/commands/look_command.py`
+- **_handle_implicit_target_lookup()** (14 connections) — `server/commands/look_command.py`
+- **_setup_look_command()** (13 connections) — `server/commands/look_command.py`
+- **_route_look_command()** (12 connections) — `server/commands/look_command.py`
+- **_get_app_and_persistence()** (11 connections) — `server/commands/look_command.py`
+- **_validate_look_prerequisites()** (11 connections) — `server/commands/look_command.py`
+- **_get_room_drops()** (10 connections) — `server/commands/look_command.py`
+- **_try_direction_look()** (10 connections) — `server/commands/look_command.py`
+- **_try_explicit_player_look()** (10 connections) — `server/commands/look_command.py`
+- **FastAPI** (10 connections)
+- **asyncio** (10 connections)
+- **_LookPersistence** (9 connections) — `server/commands/look_command.py`
+- **LookRouteCtx** (9 connections) — `server/commands/look_command.py`
+- **_try_explicit_container_look()** (9 connections) — `server/commands/look_command.py`
+- **_try_explicit_item_look()** (9 connections) — `server/commands/look_command.py`
+- **CommandResponse** (9 connections)
+- **_as_response()** (8 connections) — `server/commands/look_command.py`
+- **_LookRoom** (7 connections) — `server/commands/look_command.py`
+- **_container_from_app()** (7 connections) — `server/commands/look_command.py`
+- **_connection_manager_from_app()** (6 connections) — `server/commands/look_command.py`
+- **_prototype_registry_from_app()** (6 connections) — `server/commands/look_command.py`
+- **_try_implicit_target_lookup()** (6 connections) — `server/commands/look_command.py`
+- **test_handle_look_command_accepts_websocket_request_context()** (5 connections) — `server/tests/unit/commands/test_look_command.py`
+- *... and 56 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (18 shared connections)
-- [test_npc_combat_handlers.py](test_npc_combat_handlers.py.md) (18 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (14 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (9 shared connections)
-- [PlayerGuidFormatter](PlayerGuidFormatter.md) (8 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (4 shared connections)
-- [User](User.md) (3 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
-- [SchemaValidator](SchemaValidator.md) (3 shared connections)
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (9 shared connections)
+- [test_look_room.py](test_look_room.py.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [test_look_player.py](test_look_player.py.md) (5 shared connections)
+- [_find_item_in_equipped](_find_item_in_equipped.md) (5 shared connections)
+- [test_look_container.py](test_look_container.py.md) (4 shared connections)
+- [build_event](build_event.md) (3 shared connections)
+- [look_npc.py](look_npc.py.md) (3 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/debrief_command.py`
-- `server/services/active_lucidity_service.py`
-- `server/services/lucidity_service.py`
-- `server/tests/unit/commands/test_debrief_command.py`
-- `server/tests/unit/services/test_lucidity_service.py`
+- `server/commands/look_command.py`
+- `server/tests/unit/commands/test_look_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 277 (88%)
-- INFERRED: 36 (12%)
+- EXTRACTED: 229 (97%)
+- INFERRED: 7 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

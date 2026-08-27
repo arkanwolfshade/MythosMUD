@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **Phase 6: Monitoring and Observability** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.1 Metrics Collection** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.2 Health Check Endpoints** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **6.3 Logging Integration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Call of Cthulhu 7th Edition Keeper Screen Pack (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **Call of Cthulhu 7th Edition Keeper Screen Pack.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
 
 ## Relationships
 
-- [NPC Startup Duplication Analysis](NPC_Startup_Duplication_Analysis.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu 7th Edition Keeper Screen Pack.md`
 
 ## Audit Trail
 

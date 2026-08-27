@@ -1,23 +1,22 @@
 # Architecture Decision Records Index
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_get_combat_result_message_success_with_damage()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_result_message with successful attack and damage.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Architecture Decision Records Index** (0 connections) — `docs/architecture/decisions/README.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/architecture/decisions/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,42 +1,47 @@
 # compilerOptions
 
-> 21 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **Asyncio Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (5 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (3 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **1. Blocking Synchronous Operations in Async Methods** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **2. asyncio.run() Called from Context with Existing Event Loop** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **5. Event Loop Change Detection May Not Handle All Cases** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **6. Synchronous Database Operations in Async Context** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **7. Missing Transaction Management in Batch Operations** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **8. Connection Pool Size Configuration** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **9. F-String SQL Queries (Minor Security Concern)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Immediate Actions (Critical)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Long-term (Medium Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **✅ POSITIVE FINDINGS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **📚 REFERENCES** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **Short-term (High Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
-- **🔍 TESTING RECOMMENDATIONS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **compilerOptions** (18 connections) — `client/tsconfig.json`
+- **paths** (8 connections) — `client/tsconfig.json`
+- **exclude** (8 connections) — `client/tsconfig.json`
+- **client/tsconfig.json** (4 connections) — `client/tsconfig.json`
+- **lib** (4 connections) — `client/tsconfig.json`
+- **include** (2 connections) — `client/tsconfig.json`
+- **@api/*** (2 connections) — `client/tsconfig.json`
+- **@components/*** (2 connections) — `client/tsconfig.json`
+- **@hooks/*** (2 connections) — `client/tsconfig.json`
+- **@lib/*** (2 connections) — `client/tsconfig.json`
+- **@stores/*** (2 connections) — `client/tsconfig.json`
+- **@styles/*** (2 connections) — `client/tsconfig.json`
+- **@utils/*** (2 connections) — `client/tsconfig.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.json`
+- **baseUrl** (1 connections) — `client/tsconfig.json`
+- **isolatedModules** (1 connections) — `client/tsconfig.json`
+- **jsx** (1 connections) — `client/tsconfig.json`
+- **module** (1 connections) — `client/tsconfig.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.json`
+- **noEmit** (1 connections) — `client/tsconfig.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.json`
+- **resolveJsonModule** (1 connections) — `client/tsconfig.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.json`
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- `client/tsconfig.json`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 46 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,30 +1,29 @@
 # Migration Roadmap
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Communities (17 total, 16 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **doors-to-darkness/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Migration Roadmap** (6 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 5: Game & NPC Systems (Priority 4) 🎮** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 2: API Endpoints (Priority 1) 🎯** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 3: Real-Time Handlers (Priority 2) 🚀** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 4: High-Impact Services (Priority 3) ⚡** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 6: Test Migration (Priority 5) 🧪** (2 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (11 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (2 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Files to Migrate (6 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Game Systems (3 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **NPC Systems (7 files)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Test Files (17 total)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 

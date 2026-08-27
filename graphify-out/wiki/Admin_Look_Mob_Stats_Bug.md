@@ -1,26 +1,24 @@
 # Admin Look Mob Stats Bug
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **fixture** (1 connections)
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **is_alive Called As Function Not Property** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
+- **Admin Look Mob Stats Bug** (1 connections) — `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Relationships
 
-- [server/main.py](server-main.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `investigations/sessions/2025-12-11_session-001_admin-stats-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (75%)
-- INFERRED: 1 (25%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

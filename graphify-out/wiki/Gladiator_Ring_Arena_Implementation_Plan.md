@@ -4,41 +4,38 @@
 
 ## Key Concepts
 
-- **test_users_current_user_logging.py** (13 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **get_current_user_with_logging()** (11 connections) — `server/auth/users.py`
-- **asyncio** (7 connections)
-- **test_get_current_user_with_logging_generic_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_http_exception()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_long_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_auth_header()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_request()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_no_user()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **test_get_current_user_with_logging_success()** (5 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when HTTPException is raised.** (2 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with long Authorization header.** (2 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **DependsParam** (1 connections)
-- **Enhanced get_current_user with detailed logging.** (1 connections) — `server/auth/users.py`
-- **Unit tests for get_current_user_with_logging wrapper.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging with successful authentication.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when request is None.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
-- **Test _get_current_user_with_logging when no user is returned.** (1 connections) — `server/tests/unit/auth/test_users_current_user_logging.py`
+- **Gladiator Ring (Arena) Implementation Plan** (8 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Todos (detailed)** (5 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Gladiator Ring (Arena) — Implementation Todos** (4 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator-ring-arena-implementation-todos.md** (2 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **gladiator_ring_arena_plan.md** (2 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Phase 1: Schema and world data (Codebase Explorer for DML/schema pattern discovery) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 2: Tutorial exit and respawn (main agent)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 3: NPC startup — also spawn in arena (main agent) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Phase 4: Tests and validation (main agent / Test Suite Analyzer) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Plan frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **Subagent usage** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- **1. Schema and data: zone, subzone, rooms, links** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **2. Tutorial exit and respawn** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **3. NPCs also spawn in arena** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **4. Tests and validation** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Implementation references** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Plan summary** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Relationships
 
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (8 shared connections)
-- [models/container.py](models-container.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [maps.py](maps.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/auth/users.py`
-- `server/tests/unit/auth/test_users_current_user_logging.py`
+- `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
+- `docs/archive/plans/gladiator_ring_arena_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (84%)
-- INFERRED: 7 (16%)
+- EXTRACTED: 17 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

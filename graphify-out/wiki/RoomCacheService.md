@@ -1,51 +1,54 @@
 # RoomCacheService
 
-> 31 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **CastCommand** (20 connections) — `server/models/command_magic.py`
-- **._resolve_heal_cast()** (4 connections) — `server/utils/command_factories_utility.py`
-- **field_validator** (4 connections)
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **.validate_target()** (3 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **.validate_spell_name()** (3 connections) — `server/models/command_magic.py`
-- **test_cast_command_required_fields()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_spell_name_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_target_max_length()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_empty()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_valid()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_spell_name_whitespace_only()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_empty_string()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_strips()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_validate_target_whitespace()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **test_cast_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Validate spell name format.** (3 connections) — `server/models/command_magic.py`
-- **Command for casting a spell.** (1 connections) — `server/models/command_magic.py`
-- **Validate target format.** (1 connections) — `server/models/command_magic.py`
-- **Test CastCommand requires spell_name.** (1 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Test CastCommand can have optional target.** (1 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Test CastCommand validates and strips spell_name.** (1 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Test CastCommand rejects empty spell_name.** (1 connections) — `server/tests/unit/models/test_command_magic.py`
-- **Test CastCommand rejects whitespace-only spell_name.** (1 connections) — `server/tests/unit/models/test_command_magic.py`
-- *... and 6 more nodes in this community*
+- **RoomCacheService** (29 connections) — `server/caching/cache_service.py`
+- **TestRoomCacheService** (14 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **_RoomObj** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.persistence()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_cache_hit()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_returns_none()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_with_to_dict()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_concurrent_create_uses_existing()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_lazy_creates_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_init_uses_existing_rooms_cache()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_preload_rooms()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.invalidate_room()** (2 connections) — `server/caching/cache_service.py`
+- **.preload_rooms()** (2 connections) — `server/caching/cache_service.py`
+- **.to_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_cache_hit()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_get_room_sync_miss_caches_dict()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **.test_invalidate_room()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **Any** (1 connections)
+- **Service for caching room data.** (1 connections) — `server/caching/cache_service.py`
+- **Invalidate cached room data. Args: room_id: The room ID to invalidate** (1 connections) — `server/caching/cache_service.py`
+- **Preload multiple rooms into cache. Args: room_ids: List of room IDs to preload** (1 connections) — `server/caching/cache_service.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (17 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (3 shared connections)
+- [test_cache_service.py](test_cache_service.py.md) (8 shared connections)
+- [Any](Any.md) (3 shared connections)
+- [NPCCacheService](NPCCacheService.md) (3 shared connections)
+- [bench_cache.py](bench_cache.py.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [CacheService](CacheService.md) (1 shared connections)
+- [._init_player_quest_layer](_init_player_quest_layer.md) (1 shared connections)
+- [RoomService](RoomService.md) (1 shared connections)
+- [LRUCache](LRUCache.md) (1 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/command_magic.py`
-- `server/tests/unit/models/test_command_magic.py`
-- `server/utils/command_factories_utility.py`
+- `server/caching/cache_service.py`
+- `server/tests/unit/caching/test_cache_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 54 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

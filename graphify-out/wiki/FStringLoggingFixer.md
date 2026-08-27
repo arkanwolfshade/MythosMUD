@@ -4,53 +4,45 @@
 
 ## Key Concepts
 
-- **NPCEventHandler** (26 connections) — `server/realtime/npc_event_handlers.py`
-- **.handle_npc_entered()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_npc_left_message()** (8 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_spawn_message()** (7 connections) — `server/realtime/npc_event_handlers.py`
-- **.handle_npc_left()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._send_room_message()** (6 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_instance()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_name()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **._schedule_room_occupants_update()** (5 connections) — `server/realtime/npc_event_handlers.py`
-- **Any** (5 connections)
-- **._determine_direction_from_rooms()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._extract_spawn_message_from_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_behavior_config_from_instance()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._get_npc_departure_message()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._parse_behavior_config()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **._validate_npc_left_room()** (4 connections) — `server/realtime/npc_event_handlers.py`
-- **Extract spawn_message from behavior_config. Args: behavior_config: The parsed…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the spawn message for an NPC from its behavior_config. If no custom spawn…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the name of an NPC by ID. Args: npc_id: The NPC ID Returns: NPC name or…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Determine the direction from one room to another by checking room exits. Args:…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Handles all NPC-related real-time events.** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Get the departure message for an NPC from its behavior_config. If no custom…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Send a message to all players in a room. Args: room_id: The room ID message:…** (1 connections) — `server/realtime/npc_event_handlers.py`
-- **Initialize the NPC event handler. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/npc_event_handlers.py`
+- **FStringLoggingFixer** (16 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_fstring_logging_in_file()** (7 connections) — `scripts/automated_fstring_fixer.py`
+- **Path** (6 connections)
+- **.extract_variables_from_fstring()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **._handle_complex_pattern_replacement()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.process_files()** (5 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_simple_pattern()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._read_file_content()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._validate_file()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._write_file_if_changed()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **main()** (4 connections) — `scripts/automated_fstring_fixer.py`
+- **._build_complex_params()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.create_structured_message()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.fix_complex_pattern()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **.generate_report()** (3 connections) — `scripts/automated_fstring_fixer.py`
+- **automated_fstring_fixer.py** (2 connections) — `scripts/automated_fstring_fixer.py`
+- **Any** (2 connections)
+- **.__init__()** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Match** (1 connections)
+- **Validate that file exists and is a Python file.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Read file content with error handling.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Build parameters list for complex patterns.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Handle replacement for complex f-string patterns with additional parameters.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Write file if content has changed.** (1 connections) — `scripts/automated_fstring_fixer.py`
+- **Fix f-string logging violations in a single file.** (1 connections) — `scripts/automated_fstring_fixer.py`
 - *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (6 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (3 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (3 shared connections)
-- [test_look_room.py](test_look_room.py.md) (3 shared connections)
-- [test_event_publisher.py](test_event_publisher.py.md) (2 shared connections)
-- [_container_data_to_dict](_container_data_to_dict.md) (2 shared connections)
-- [ChatLogger](ChatLogger.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/npc_event_handlers.py`
+- `scripts/automated_fstring_fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 48 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMUD Codacy Tool Suite** (0 connections) — `.codacy/README.md`
+- **Testing Guide for MythosMUD** (0 connections) — `docs/TESTING.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/README.md`
+- `docs/TESTING.md`
 
 ## Audit Trail
 

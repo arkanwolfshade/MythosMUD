@@ -1,69 +1,66 @@
 # SpellEffectType
 
-> 116 nodes
+> 126 nodes
 
 ## Key Concepts
 
-- **RoomLoader** (58 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **PathValidator** (27 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **room_validator/validator.py** (22 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **RoomFixer** (20 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
-- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- **main()** (19 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **temp_dir()** (12 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
-- **TestValidatorComponents** (11 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **core/__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
-- **_initialize_validator_components()** (9 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **test_validator_integration.py** (9 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **TestValidatorEdgeCases** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
-- **_validate_config_files()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_validate_room_connectivity()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **Any** (7 connections)
-- **.test_full_validation_pipeline()** (6 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
-- **reporter.py** (6 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **room_loader.py** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
-- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
-- *... and 91 more nodes in this community*
+- **SpellEffectType** (45 connections) — `server/models/spell.py`
+- **SpellSchool** (37 connections) — `server/models/spell.py`
+- **SpellTargetType** (34 connections) — `server/models/spell.py`
+- **SpellRangeType** (32 connections) — `server/models/spell.py`
+- **test_spell.py** (32 connections) — `server/tests/unit/models/test_spell.py`
+- **spell.py** (29 connections) — `server/models/spell.py`
+- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **SpellMaterial** (25 connections) — `server/models/spell.py`
+- **test_spell_materials.py** (23 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **test_spell_costs.py** (20 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_spell_registry.py** (19 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **_spell()** (15 connections) — `server/tests/unit/game/magic/test_spell_materials.py`
+- **_spell()** (10 connections) — `server/tests/unit/game/magic/test_spell_costs.py`
+- **test_get_combat_target_auto_selects_opponent()** (10 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **_spell()** (9 connections) — `server/tests/unit/game/magic/test_spell_registry.py`
+- **self_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_spell_with_materials()** (8 connections) — `server/tests/unit/models/test_spell.py`
+- **asyncio** (8 connections)
+- **base_spell()** (7 connections) — `server/tests/unit/game/magic/test_magic_service.py`
+- **area_spell()** (7 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **entity_spell()** (7 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
+- **test_spell_default_values()** (7 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_is_mythos_false()** (7 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_is_mythos_true()** (7 connections) — `server/tests/unit/models/test_spell.py`
+- **test_spell_lucidity_cost_validation_negative()** (7 connections) — `server/tests/unit/models/test_spell.py`
+- *... and 101 more nodes in this community*
 
 ## Relationships
 
-- [enum](enum.md) (18 shared connections)
-- [EventPublisher](EventPublisher.md) (13 shared connections)
-- [test_room_renderer.py](test_room_renderer.py.md) (12 shared connections)
-- [combat_loader.py](combat_loader.py.md) (12 shared connections)
-- [Codebase Explorer Subagent](Codebase_Explorer_Subagent.md) (9 shared connections)
-- [MapPerformanceMonitor](MapPerformanceMonitor.md) (7 shared connections)
-- [DraggablePanelView.tsx](DraggablePanelView.tsx.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [usePanelContext.ts](usePanelContext.ts.md) (1 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
+- [TargetMatch](TargetMatch.md) (37 shared connections)
+- [SpellEffects](SpellEffects.md) (16 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (11 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (11 shared connections)
+- [test_magic_healing_events.py](test_magic_healing_events.py.md) (10 shared connections)
+- [models/player.py](models-player.py.md) (6 shared connections)
+- [PlayerService](PlayerService.md) (5 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [SpellMaterialsService](SpellMaterialsService.md) (4 shared connections)
+- [get_username_from_user](get_username_from_user.md) (4 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (2 shared connections)
 
 ## Source Files
 
-- `.claude/rules/click.md`
-- `server/tests/unit/structured_logging/test_logging_utilities.py`
-- `tools/room_toolkit/room_validator/core/__init__.py`
-- `tools/room_toolkit/room_validator/core/fixer.py`
-- `tools/room_toolkit/room_validator/core/path_validator.py`
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/core/room_loader.py`
-- `tools/room_toolkit/room_validator/core/schema_validator.py`
-- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
-- `tools/room_toolkit/room_validator/validator.py`
+- `server/game/magic/spell_registry.py`
+- `server/models/spell.py`
+- `server/tests/unit/game/magic/test_magic_service.py`
+- `server/tests/unit/game/magic/test_spell_costs.py`
+- `server/tests/unit/game/magic/test_spell_materials.py`
+- `server/tests/unit/game/magic/test_spell_registry.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
+- `server/tests/unit/models/test_spell.py`
 
 ## Audit Trail
 
-- EXTRACTED: 243 (88%)
-- INFERRED: 34 (12%)
+- EXTRACTED: 294 (72%)
+- INFERRED: 114 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

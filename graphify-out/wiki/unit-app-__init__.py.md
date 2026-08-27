@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_magic_system_migration.ps1** (0 connections) — `scripts/apply_magic_system_migration.ps1`
+- **unit/app/__init__.py** (0 connections) — `server/tests/unit/app/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_magic_system_migration.ps1`
+- `server/tests/unit/app/__init__.py`
 
 ## Audit Trail
 

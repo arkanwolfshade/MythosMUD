@@ -1,54 +1,59 @@
 # test_lucidity_event_dispatcher.py
 
-> 51 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **handle_whisper_command()** (20 connections) — `server/commands/communication_commands.py`
-- **test_communication_commands_whisper_reply.py** (18 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command.py** (14 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **asyncio** (11 connections)
-- **handle_reply_command()** (10 connections) — `server/commands/communication_commands.py`
-- **asyncio** (7 connections)
-- **test_handle_reply_command_no_last_whisper_sender()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_chat_service_failure()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_success()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_target_not_found()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_whisper_to_self()** (5 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_reply_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_message()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_services()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_handle_whisper_command_no_target()** (4 connections) — `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- **test_whisper_command_missing_message()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_missing_target()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_sender_not_found()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_success()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_target_not_found()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **test_whisper_command_whisper_to_self()** (4 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_whisper_command.py`
-- *... and 26 more nodes in this community*
+- **test_lucidity_event_dispatcher.py** (35 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **asyncio** (24 connections)
+- **send_rescue_update_event()** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **lucidity_event_dispatcher.py** (18 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_lucidity_change_event()** (17 connections) — `server/services/lucidity_event_dispatcher.py`
+- **LucidityChangeEventExtras** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **send_catatonia_event()** (12 connections) — `server/services/lucidity_event_dispatcher.py`
+- **_dispatch_player_event()** (11 connections) — `server/services/lucidity_event_dispatcher.py`
+- **UUID** (6 connections)
+- **test_send_lucidity_change_event_with_liabilities()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_max_lcd()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_metadata()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_with_reason_and_source()** (5 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_dispatch_player_event_import_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_dispatch_player_event_uuid_conversion()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_basic()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_dispatch_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_current_lcd()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_message()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_catatonia_event_with_rescuer_and_target()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_basic()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_dispatch_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_lucidity_change_event_string_player_id()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_rescue_update_event_basic()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- **test_send_rescue_update_event_dispatch_error()** (4 connections) — `server/tests/unit/services/test_lucidity_event_dispatcher.py`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [TestHierarchicalSchema](TestHierarchicalSchema.md) (8 shared connections)
-- [test_movement_service.py](test_movement_service.py.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [_lucidity_change_payload_with_liabilities](_lucidity_change_payload_with_liabilities.md) (15 shared connections)
+- [models/player.py](models-player.py.md) (8 shared connections)
+- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (7 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (5 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [_format_liabilities](_format_liabilities.md) (2 shared connections)
+- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [mock_send_game_event](mock_send_game_event.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/communication_commands.py`
-- `server/tests/unit/commands/test_communication_commands_whisper_reply.py`
-- `server/tests/unit/commands/test_whisper_command.py`
+- `server/services/lucidity_event_dispatcher.py`
+- `server/tests/unit/services/test_lucidity_event_dispatcher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 105 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 146 (97%)
+- INFERRED: 5 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

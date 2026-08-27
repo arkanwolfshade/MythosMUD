@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **unit/realtime/maintenance/__init__.py** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
-- **Realtime maintenance unit tests.** (1 connections) — `server/tests/unit/realtime/maintenance/__init__.py`
+- **wsl-bashrc-codacy.sh** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
+- **wsl-bashrc-codacy.sh script** (1 connections) — `.codacy/wsl-bashrc-codacy.sh`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `server/tests/unit/realtime/maintenance/__init__.py`
+- `.codacy/wsl-bashrc-codacy.sh`
 
 ## Audit Trail
 

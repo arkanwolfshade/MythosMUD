@@ -1,13 +1,12 @@
 # Fixture Optimization Complete
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Rooms List SQL ::uuid[] Parameter Conflict** (2 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Minimap Explored Rooms UUID vs stable_id** (2 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
-- **asyncpg Colon Cast Parameter Parsing** (1 connections) — `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- **Explored Room UUIDs Treated As stable_ids** (1 connections) — `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- **Fixture Optimization Complete** (2 connections) — `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- **E2E Testing Setup Status** (1 connections) — `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- **Test Suite Post-Merge Refactoring** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -15,13 +14,14 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-12-07_session-sql-syntax-error-rooms-list.md`
-- `investigations/sessions/2026-01-04_session-minimap-explored-rooms-bug.md`
+- `docs/archive/E2E_TESTING_SETUP_STATUS.md`
+- `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
+- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

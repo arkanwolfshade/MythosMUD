@@ -1,61 +1,59 @@
 # TaskRegistry
 
-> 29 nodes
+> 80 nodes
 
 ## Key Concepts
 
-- **server/persistence/__init__.py** (32 connections) — `server/persistence/__init__.py`
-- **item_instance_persistence.py** (18 connections) — `server/persistence/item_instance_persistence.py`
-- **test_item_instance_persistence.py** (17 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **ensure_item_instance()** (12 connections) — `server/persistence/item_instance_persistence.py`
-- **create_item_instance()** (11 connections) — `server/persistence/item_instance_persistence.py`
-- **get_item_instance()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **item_instance_exists()** (7 connections) — `server/persistence/item_instance_persistence.py`
-- **Any** (7 connections)
-- **_execute_item_instance_upsert()** (6 connections) — `server/persistence/item_instance_persistence.py`
-- **_handle_item_instance_db_error()** (4 connections) — `server/persistence/item_instance_persistence.py`
-- **_item_instance_row_values()** (4 connections) — `server/persistence/item_instance_persistence.py`
-- **test_create_item_instance_db_error()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_missing_id()** (3 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_create_item_instance_success()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_ensure_item_instance_calls_create()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_get_item_instance_not_found()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_false()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **test_item_instance_exists_true()** (2 connections) — `server/tests/unit/persistence/test_item_instance_persistence.py`
-- **Exception** (1 connections)
-- **Persistence package for MythosMUD. This package contains persistence utilities…** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: PersistenceLayer and get_persistence removed - all code now uses…** (1 connections) — `server/persistence/__init__.py`
-- **# NOTE: Removed PersistenceLayer, get_persistence, and reset_persistence from…** (1 connections) — `server/persistence/__init__.py`
-- **Item instance persistence operations. As documented in the restricted archives,…** (1 connections) — `server/persistence/item_instance_persistence.py`
-- **Create a new item instance in the database.** (1 connections) — `server/persistence/item_instance_persistence.py`
-- *... and 4 more nodes in this community*
+- **TaskRegistry** (51 connections) — `server/app/task_registry.py`
+- **test_task_registry.py** (25 connections) — `server/tests/unit/app/test_task_registry.py`
+- **asyncio** (14 connections)
+- **task_registry.py** (13 connections) — `server/app/task_registry.py`
+- **Any** (10 connections)
+- **get_registry()** (9 connections) — `server/app/task_registry.py`
+- **._setup_task_tracking()** (9 connections) — `server/app/task_registry.py`
+- **_sleep_briefly()** (9 connections) — `server/tests/unit/app/test_task_registry.py`
+- **Task** (8 connections)
+- **TaskMetadata** (7 connections) — `server/app/task_registry.py`
+- **.register_task()** (7 connections) — `server/app/task_registry.py`
+- **.shutdown_all()** (7 connections) — `server/app/task_registry.py`
+- **unregister_task()** (7 connections) — `server/app/task_registry.py`
+- **register_task()** (6 connections) — `server/app/task_registry.py`
+- **test_module_level_helpers()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
+- **._create_task_completion_callback()** (5 connections) — `server/app/task_registry.py`
+- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
+- **test_register_closes_coro_when_create_task_fails()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
+- **.__init__()** (4 connections) — `server/app/task_registry.py`
+- **.cancel_task()** (4 connections) — `server/app/task_registry.py`
+- **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
+- **.unregister_task()** (4 connections) — `server/app/task_registry.py`
+- **test_cancel_task_by_name()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_get_registry_info_and_metrics()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- **test_list_active_tasks_and_stats_by_type()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
+- *... and 55 more nodes in this community*
 
 ## Relationships
 
-- [map_minimap.py](map_minimap.py.md) (8 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (7 shared connections)
-- [Game Subsystem Design Documents Overview](Game_Subsystem_Design_Documents_Overview.md) (6 shared connections)
-- [ContainerComponent](ContainerComponent.md) (6 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
-- [test_quality_fragmentation_guard.py](test_quality_fragmentation_guard.py.md) (1 shared connections)
-- [test_realtime_bundle_nats.py](test_realtime_bundle_nats.py.md) (1 shared connections)
-- [NPCCacheService](NPCCacheService.md) (1 shared connections)
-- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (4 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [get_global_tracked_manager](get_global_tracked_manager.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/__init__.py`
-- `server/persistence/item_instance_persistence.py`
-- `server/tests/unit/persistence/test_item_instance_persistence.py`
+- `server/app/task_registry.py`
+- `server/tests/unit/app/test_task_registry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 162 (90%)
+- INFERRED: 18 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

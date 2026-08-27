@@ -1,25 +1,29 @@
 # nats_broker
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - The Malleus Monstrorum Keeper Deck** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **the-malleus-monstrorum-keeper-deck/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- **nats_broker()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **nats_config()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **fixture** (2 connections)
+- **Create a NATSConfig instance.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **Create a NATSMessageBroker instance.** (1 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_nats_broker.py](test_nats_broker.py.md) (2 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/MANIFEST.md`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 7 (88%)
+- INFERRED: 1 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

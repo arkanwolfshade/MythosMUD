@@ -1,25 +1,24 @@
 # validate_codacy_coverage_gate.py
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **generate_status_doc()** (7 connections) — `scripts/analyze_coverage_gaps.py`
-- **analyze_coverage_gaps.py** (7 connections) — `scripts/analyze_coverage_gaps.py`
-- **main()** (5 connections) — `scripts/analyze_coverage_gaps.py`
-- **parse_coverage_xml()** (5 connections) — `scripts/analyze_coverage_gaps.py`
-- **Any** (5 connections)
-- **categorize_files()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_critical_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_normal_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **_write_priority_recommendations()** (4 connections) — `scripts/analyze_coverage_gaps.py`
-- **Path** (3 connections)
-- **Categorize files into critical below threshold, normal below threshold, and…** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write critical files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write normal files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Write priority recommendations section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Generate coverage status markdown document.** (1 connections) — `scripts/analyze_coverage_gaps.py`
-- **Parse coverage.xml and return detailed file coverage information.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **validate_codacy_coverage_gate.py** (7 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **validate_python_gate()** (6 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Path** (6 connections)
+- **cobertura_has_server_sources()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **cobertura_root_line_rate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **_parse_cobertura_xml()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **validate_lcov_gate()** (5 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **lcov_aggregate_hits()** (4 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **main()** (3 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Parse Cobertura XML with defusedxml (lazy import: LCOV-only runs skip this…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Return root line-rate from Cobertura XML (0.0--1.0).** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **True if report lists at least one instrumented class. `coverage xml…** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Sum LH (lines hit) and LF (lines found) across all LCOV records.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Fail fast if Python Cobertura aggregate or server scope is insufficient.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
+- **Fail fast if LCOV aggregate line rate is below minimum.** (1 connections) — `scripts/validate_codacy_coverage_gate.py`
 
 ## Relationships
 
@@ -27,11 +26,11 @@
 
 ## Source Files
 
-- `scripts/analyze_coverage_gaps.py`
+- `scripts/validate_codacy_coverage_gate.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 26 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

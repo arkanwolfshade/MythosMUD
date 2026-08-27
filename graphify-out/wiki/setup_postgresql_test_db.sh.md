@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
-- **call-of-cthulhu-the-coloring-book/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **setup_postgresql_test_db.sh** (2 connections) — `scripts/setup_postgresql_test_db.sh`
+- **PGPASSWORD** (1 connections) — `scripts/setup_postgresql_test_db.sh`
+- **setup_postgresql_test_db.sh script** (1 connections) — `scripts/setup_postgresql_test_db.sh`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- `scripts/setup_postgresql_test_db.sh`
 
 ## Audit Trail
 

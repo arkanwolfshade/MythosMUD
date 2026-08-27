@@ -1,32 +1,28 @@
 # 📚 Documentation Created
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **Earth Plane** (4 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Arkham City** (3 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Miskatonic University** (2 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **Innsmouth** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- **The Dreamlands** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **The Investigators** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Limbo / Death Plane** (1 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- **Arkham City Zone Visualization** (1 connections) — `data/local/arkham_city_visualization.html`
+- **📚 Documentation Created** (6 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **1. Comprehensive Audit Report** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **2. Executive Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **3. Developer Quick Reference** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **4. Migration Tracker** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **5. Test Suite** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
-- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
-- `data/local/arkham_city_visualization.html`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

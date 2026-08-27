@@ -1,51 +1,50 @@
 # TestLogoutCommand
 
-> 30 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **AliasGraph** (18 connections) — `server/utils/alias_graph.py`
-- **test_alias_graph.py** (9 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_build_graph()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_clear()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_detect_cycle_no_cycle()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_get_expansion_depth()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_init()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **test_alias_graph_is_safe_to_expand()** (3 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
-- **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
-- **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
-- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
-- **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
-- **.clear()** (2 connections) — `server/utils/alias_graph.py`
-- **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
-- **Unit tests for alias_graph utilities. Tests the AliasGraph class.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph initialization.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.build_graph() builds dependency graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.detect_cycle() returns None when no cycle.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.is_safe_to_expand() returns True when safe.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.get_expansion_depth() returns depth.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Test AliasGraph.clear() clears the graph.** (1 connections) — `server/tests/unit/utils/test_alias_graph.py`
-- **Check if alias can be safely expanded without creating cycles. Args:…** (1 connections) — `server/utils/alias_graph.py`
-- **Calculate maximum expansion depth for an alias. Returns the length of the…** (1 connections) — `server/utils/alias_graph.py`
-- **Clear the dependency graph.** (1 connections) — `server/utils/alias_graph.py`
-- *... and 5 more nodes in this community*
+- **TestLogoutCommand** (13 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Any** (8 connections)
+- **asyncio** (8 connections)
+- **.test_logout_command_connection_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_general_error_handling()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_no_persistence()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persistence_error()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_persists_position()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_player_not_found()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_success()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.test_logout_command_with_args()** (5 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **test_logout_command.py** (4 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_alias_storage()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_current_user()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **.mock_request()** (3 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **fixture** (3 connections)
+- **Unit tests for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence is not available.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when persistence operations fail.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test cases for the logout command handler.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when connection cleanup fails.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Create a mock request object.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command with arguments (should be ignored).** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command when player is not found in persistence.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- **Test logout command with general error handling.** (1 connections) — `server/tests/unit/commands/test_logout_command.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [RoomRepository](RoomRepository.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
+- [logout_commands.py](logout_commands.py.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [utility_commands.py](utility_commands.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_alias_graph.py`
-- `server/utils/alias_graph.py`
+- `server/tests/unit/commands/test_logout_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (85%)
+- INFERRED: 8 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

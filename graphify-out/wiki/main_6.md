@@ -1,38 +1,33 @@
 # main
 
-> 13 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **fixture** (6 connections)
-- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
-- **catalog_with_own_language_and_mythos()** (4 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_player_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **mock_skill_use_log_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock PlayerSkillRepository.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock AsyncPersistenceLayer (get_profession_by_id, get_player_by_id).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock SkillUseLogRepository for use logging and improvement (plan 10.4).** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **SkillService with mocks.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Minimal catalog: accounting, library_use, own_language, cthulhu_mythos (for…** (1 connections) — `server/tests/unit/game/test_skill_service.py`
-- **Mock SkillRepository returning catalog.** (1 connections) — `server/tests/unit/game/test_skill_service.py`
+- **main()** (6 connections) — `scripts/simple_room_graph.py`
+- **simple_room_graph.py** (5 connections) — `scripts/simple_room_graph.py`
+- **generate_simple_dot_file()** (3 connections) — `scripts/simple_room_graph.py`
+- **generate_simple_html_visualization()** (3 connections) — `scripts/simple_room_graph.py`
+- **load_room_data()** (3 connections) — `scripts/simple_room_graph.py`
+- **print_simple_statistics()** (3 connections) — `scripts/simple_room_graph.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/simple_room_graph.py`
+- **Print simplified statistics about the room data.** (1 connections) — `scripts/simple_room_graph.py`
+- **Main function to generate the simplified visualization.** (1 connections) — `scripts/simple_room_graph.py`
+- **Generate a simplified DOT file focusing only on room nodes.** (1 connections) — `scripts/simple_room_graph.py`
+- **Generate a simplified HTML visualization.** (1 connections) — `scripts/simple_room_graph.py`
 
 ## Relationships
 
-- [MessageFilteringHelper](MessageFilteringHelper.md) (6 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
-- [CacheManager](CacheManager.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/game/test_skill_service.py`
+- `scripts/simple_room_graph.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

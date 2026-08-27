@@ -1,30 +1,28 @@
 # P0 · Previously-Known Deviations
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **tailwind Best Practices** (8 connections) — `.claude/rules/tailwind.md`
-- **tailwind.md** (1 connections) — `.claude/rules/tailwind.md`
-- **1. Design System Configuration** (1 connections) — `.claude/rules/tailwind.md`
-- **2. Component Abstraction** (1 connections) — `.claude/rules/tailwind.md`
-- **3. Class Ordering & Readability** (1 connections) — `.claude/rules/tailwind.md`
-- **4. Mobile-First & Responsive Design** (1 connections) — `.claude/rules/tailwind.md`
-- **5. Performance Optimization** (1 connections) — `.claude/rules/tailwind.md`
-- **6. Accessibility** (1 connections) — `.claude/rules/tailwind.md`
-- **7. Theming & Dark Mode** (1 connections) — `.claude/rules/tailwind.md`
+- **P0 · Previously-Known Deviations** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **ACCEPTED — do not re-report as new** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Contradiction found in prior work** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Corroboration of the P2 provenance finding** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **Deferred / residual (open by admission)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **PLANNED-NOT-DONE — highest-value rows** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
+- **REMEDIATED — expect CONFORMS; a deviation here is a regression** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/tailwind.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P0-Known-Deviations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

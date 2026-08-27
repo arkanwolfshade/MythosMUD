@@ -1,15 +1,13 @@
 # multiplayer-browser-helpers.d.ts
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **_run_dialogue_ddl()** (4 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **main()** (3 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **apply_dialogue_migrations_to_dev.py** (2 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **cursor** (1 connections)
-- **Create dialogue_definitions table if missing in the given schema.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
-- **Connect via DATABASE_URL and ensure dialogue_definitions exists.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **multiplayer-browser-helpers.d.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **GameUiDiagnostics** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **OccupantsSnapshot** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **PresenceEvent** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 
 ## Relationships
 
@@ -17,11 +15,11 @@
 
 ## Source Files
 
-- `scripts/apply_dialogue_migrations_to_dev.py`
+- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

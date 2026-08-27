@@ -1,51 +1,52 @@
 # test_nats_broker.py
 
-> 80 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_follow_service.py** (48 connections) — `server/tests/unit/game/test_follow_service.py`
-- **asyncio** (20 connections)
-- **test_follow_request_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_follow_service.py`
-- **fixture** (5 connections)
-- **follow_service()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_npc_entered_room_moves_followers()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_move_failure_auto_unfollow()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_moves_followers()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_entered_room_no_from_room_id_skips_propagation()** (4 connections) — `server/tests/unit/game/test_follow_service.py`
-- **connection_manager()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **event_bus()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **movement_service()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_invalid_request_id()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_accept_follow_success()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_decline_follow_success()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_already_standing()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_fails_to_stand()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_ensure_follower_standing_sitting_stands()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_expire_pending_requests_removes_stale()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_npc()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_following_player_resolves_name()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_get_following_display_not_following()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_on_player_disconnect_cancels_pending_requests()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_already_following_rejected()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- **test_request_follow_npc_immediate()** (3 connections) — `server/tests/unit/game/test_follow_service.py`
-- *... and 55 more nodes in this community*
+- **test_nats_broker.py** (57 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **asyncio** (35 connections)
+- **test_connect_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_error_handling()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_request_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_subscribe_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_unsubscribe_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_already_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_sets_callbacks()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_connect_with_user_password()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_handles_unsubscribe_error()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_no_client()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnect_unsubscribes_all()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_disconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_error_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_json_serialization()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_publish_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- **test_reconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (8 shared connections)
-- [get_username_from_user](get_username_from_user.md) (6 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [nats_broker.py](nats_broker.py.md) (14 shared connections)
+- [NATSMessageBroker](NATSMessageBroker.md) (6 shared connections)
+- [nats_broker](nats_broker.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/infrastructure/test_nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 128 (92%)
+- INFERRED: 11 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

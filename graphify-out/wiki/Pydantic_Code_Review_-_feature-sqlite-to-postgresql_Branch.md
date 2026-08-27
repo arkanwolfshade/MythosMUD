@@ -1,49 +1,44 @@
 # Pydantic Code Review - feature/sqlite-to-postgresql Branch
 
-> 31 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **TEMPORAL_SYSTEM_RESEARCH.md** (7 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **2. Mythos Time Model Draft** (6 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Mythos Holiday Candidates** (5 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **3. Implementation Blueprint** (5 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **MythosMUD Temporal Compression Briefing** (5 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **4. Client HUD Implementation** (4 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **MythosChronicle** (3 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **4.0 In-Game Hours Per Real Hour** (3 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Implementation Notes** (2 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **1. Research Synthesis** (2 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **DikuMUD Baseline Compression** (2 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Canonical and Derived Observances** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Narrative Flavor Seeds** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Opportunities for Expansion** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Calendar structure** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Chronicle bootstrap** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Configuration & persistence** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Core services** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Day-night cadence** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Holiday mirroring** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **HUD rendering** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Integration points** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Key takeaways** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **Major religious observances** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- **<!-- Mythic Temporal Spec Draft — prepared for Prof. Wolfshade -->** (1 connections) — `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
-- *... and 6 more nodes in this community*
+- **Pydantic Code Review - feature/sqlite-to-postgresql Branch** (11 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Medium Priority Issues** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Code Quality Observations** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **High Priority Issues** (3 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Critical Issues** (2 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **⚠️ Areas for Improvement** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Business Logic in Models - Stats.**init**** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Conclusion** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🔴 CRITICAL: Security Vulnerability - `extra="allow"` in Stats Model** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Field Validator Organization** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **✅ Good Practices Found** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Immediate Actions (High Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Long-term Improvements (Low Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Missing `model_rebuild()` Usage** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟢 Optional Fields Without Explicit Defaults** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **🟡 Performance: Missing `__slots__` in Frequently Used Models** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **References** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Short-term Improvements (Medium Priority)** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PYDANTIC_CODE_REVIEW.md](PYDANTIC_CODE_REVIEW.md.md) (1 shared connections)
+- [Specific File Reviews](Specific_File_Reviews.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- `docs/archive/TEMPORAL_SYSTEM_RESEARCH.md`
+- `docs/archive/PYDANTIC_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

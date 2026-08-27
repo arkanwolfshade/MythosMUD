@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **MOTD Sacred Styling** (1 connections) — `docs/archive/PLANNING_tailwind.md`
-- **MUI to TailwindCSS Migration** (1 connections) — `docs/archive/PLANNING_tailwind.md`
+- **ensure_uv_ci.sh** (1 connections) — `scripts/ensure_uv_ci.sh`
+- **ensure_uv_ci.sh script** (1 connections) — `scripts/ensure_uv_ci.sh`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_tailwind.md`
+- `scripts/ensure_uv_ci.sh`
 
 ## Audit Trail
 

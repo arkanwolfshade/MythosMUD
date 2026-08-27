@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - Dead Light and Other Dark Turns
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Migration Considerations** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Backward Compatibility** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Data Migration** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Performance Impact** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Chaosium graphify snapshot - Dead Light and Other Dark Turns** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- **dead-light-and-other-dark-turns/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
 
 ## Relationships
 
-- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - Nameless Horrors - 2nd Edition
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Recommendation for MythosMUD** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 1: Full Migration (Recommended for Long-Term)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 2: Hybrid Approach (Pragmatic)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Option 3: Stay with asyncio (Status Quo)** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Chaosium graphify snapshot - Nameless Horrors - 2nd Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- **nameless-horrors-2nd-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
 
 ## Relationships
 
-- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/nameless-horrors-2nd-edition/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

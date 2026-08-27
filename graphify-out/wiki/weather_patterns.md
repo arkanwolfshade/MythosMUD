@@ -1,24 +1,26 @@
 # weather_patterns
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Petersen's Abominations (source summary)** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Petersen's Abominations.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
-- **Key extrated pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- **weather_patterns** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Petersen's Abominations.md`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

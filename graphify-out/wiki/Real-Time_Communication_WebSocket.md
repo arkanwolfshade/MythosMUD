@@ -1,30 +1,27 @@
 # Real-Time Communication (WebSocket)
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **NumPy Code Review - MythosMUD Codebase** (6 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Summary of Recommendations** (4 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Code Quality Improvements Achieved** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Completed Actions** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Conclusion** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **✅ Implementation Status** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
-- **Testing Considerations** (1 connections) — `docs/archive/NUMPY_CODE_REVIEW.md`
+- **Real-Time Communication (WebSocket)** (5 connections) — `docs/archive/realtime.md`
+- **realtime.md** (1 connections) — `docs/archive/realtime.md`
+- **Authentication and Token in URL** (1 connections) — `docs/archive/realtime.md`
+- **Connection Grace Periods** (1 connections) — `docs/archive/realtime.md`
+- **Deprecated Endpoints** (1 connections) — `docs/archive/realtime.md`
+- **Production: HTTPS and WSS** (1 connections) — `docs/archive/realtime.md`
 
 ## Relationships
 
-- [PostgreSQL Procedures Migration - Audit Spreadsheet](PostgreSQL_Procedures_Migration_-_Audit_Spreadsheet.md) (1 shared connections)
-- [fixture](fixture.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/NUMPY_CODE_REVIEW.md`
+- `docs/archive/realtime.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

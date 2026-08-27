@@ -1,11 +1,10 @@
 # Test Refactoring Executive Summary
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **player_id is UUID** (1 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
-- **MythosMUD Database Placement Skill** (1 connections) — `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- **Test Refactoring Executive Summary** (0 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-database-placement/SKILL.md`
+- `docs/archive/TEST_REFACTORING_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,31 +1,30 @@
 # fix_markdown_line_length.py
 
-> 22 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **identify_critical_code.py** (9 connections) — `scripts/identify_critical_code.py`
-- **analyze_function()** (8 connections) — `scripts/identify_critical_code.py`
-- **analyze_file()** (7 connections) — `scripts/identify_critical_code.py`
-- **process_ast_functions()** (6 connections) — `scripts/identify_critical_code.py`
-- **calculate_complexity()** (4 connections) — `scripts/identify_critical_code.py`
-- **calculate_priority()** (4 connections) — `scripts/identify_critical_code.py`
-- **check_file_keywords()** (4 connections) — `scripts/identify_critical_code.py`
-- **main()** (4 connections) — `scripts/identify_critical_code.py`
-- **Any** (4 connections)
-- **check_function_keywords()** (3 connections) — `scripts/identify_critical_code.py`
-- **AST** (3 connections)
-- **Path** (2 connections)
-- **AsyncFunctionDef** (1 connections)
-- **FunctionDef** (1 connections)
-- **Check file path and name for keyword matches. Args: file_path: Path to file to…** (1 connections) — `scripts/identify_critical_code.py`
-- **Check function name for keyword matches. Args: func_name: Function name to…** (1 connections) — `scripts/identify_critical_code.py`
-- **Analyze a single function node for critical indicators. Args: node: Function…** (1 connections) — `scripts/identify_critical_code.py`
-- **Process all functions in the AST and identify critical ones. Args: tree: AST…** (1 connections) — `scripts/identify_critical_code.py`
-- **Analyze a file for critical code indicators. Args: file_path: Path to file to…** (1 connections) — `scripts/identify_critical_code.py`
-- **Calculate priority score for a file (higher = more critical). Args: analysis:…** (1 connections) — `scripts/identify_critical_code.py`
-- **Main entry point for critical code identification.** (1 connections) — `scripts/identify_critical_code.py`
-- **Calculate cyclomatic complexity of an AST node. Args: node: AST node to analyze…** (1 connections) — `scripts/identify_critical_code.py`
+- **fix_markdown_line_length.py** (10 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_line()** (7 connections) — `scripts/fix_markdown_line_length.py`
+- **fix_markdown_file()** (6 connections) — `scripts/fix_markdown_line_length.py`
+- **main()** (5 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_plain_text()** (5 connections) — `scripts/fix_markdown_line_length.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_list_item()** (4 connections) — `scripts/fix_markdown_line_length.py`
+- **should_skip_line()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_header()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **wrap_line_with_links()** (3 connections) — `scripts/fix_markdown_line_length.py`
+- **Path** (3 connections)
+- **is_in_code_block()** (2 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a line that contains markdown links.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap plain text at word boundaries.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Fix line length issues in a markdown file. Returns: (changed, lines_modified):…** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Check if a line should be skipped (code blocks, tables, etc.).** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Parse markdownlint output file to get list of files with line length issues.…** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Main function to fix markdown line length issues.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Check if we're currently inside a code block.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a long line intelligently. Returns a list of wrapped lines.** (1 connections) — `scripts/fix_markdown_line_length.py`
+- **Wrap a list item with proper indentation.** (1 connections) — `scripts/fix_markdown_line_length.py`
 
 ## Relationships
 
@@ -33,11 +32,11 @@
 
 ## Source Files
 
-- `scripts/identify_critical_code.py`
+- `scripts/fix_markdown_line_length.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

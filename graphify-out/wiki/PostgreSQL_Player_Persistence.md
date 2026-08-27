@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_018_fix_players_name_constraint.ps1** (0 connections) — `scripts/apply_018_fix_players_name_constraint.ps1`
+- **PostgreSQL Player Persistence** (0 connections) — `server/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_018_fix_players_name_constraint.ps1`
+- `server/README.md`
 
 ## Audit Trail
 

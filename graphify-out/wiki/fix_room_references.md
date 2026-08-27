@@ -1,19 +1,18 @@
 # fix_room_references
 
-> 10 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Cursor Subagents Overview** (5 connections) — `.cursor/agents/README.md`
-- **Bug Investigator Subagent** (3 connections) — `.cursor/agents/bug-investigator.md`
-- **Security Auditor Subagent** (2 connections) — `.cursor/agents/security-auditor.md`
-- **Address Semgrep Security Findings Plan** (2 connections) — `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- **Codebase Explorer Subagent** (1 connections) — `.cursor/agents/codebase-explorer.md`
-- **Performance Profiler Subagent** (1 connections) — `.cursor/agents/performance-profiler.md`
-- **Test Suite Analyzer Subagent** (1 connections) — `.cursor/agents/test-analyzer.md`
-- **Official Test Credentials** (1 connections) — `.cursor/commands/investigate-bug.md`
-- **Subagent Automatic Discovery** (1 connections) — `.cursor/agents/QUICK_START.md`
-- **Codacy High/Critical Issues Remediation** (1 connections) — `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
+- **fix_room_references()** (6 connections) — `scripts/fix_room_references.py`
+- **load_room_file()** (4 connections) — `scripts/fix_room_references.py`
+- **save_room_file()** (4 connections) — `scripts/fix_room_references.py`
+- **fix_room_references.py** (4 connections) — `scripts/fix_room_references.py`
+- **Path** (3 connections)
+- **main()** (2 connections) — `scripts/fix_room_references.py`
+- **Load a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Save a room file safely.** (1 connections) — `scripts/fix_room_references.py`
+- **Fix room ID references in the northside area. Args: base_path: Path to the…** (1 connections) — `scripts/fix_room_references.py`
 
 ## Relationships
 
@@ -21,21 +20,12 @@
 
 ## Source Files
 
-- `.cursor/agents/QUICK_START.md`
-- `.cursor/agents/README.md`
-- `.cursor/agents/bug-investigator.md`
-- `.cursor/agents/codebase-explorer.md`
-- `.cursor/agents/performance-profiler.md`
-- `.cursor/agents/security-auditor.md`
-- `.cursor/agents/test-analyzer.md`
-- `.cursor/commands/investigate-bug.md`
-- `.cursor/plans/address_semgrep_security_findings_9934ff00.plan.md`
-- `.cursor/plans/codacy-high-critical-issues-remediation_f14ea647.plan.md`
+- `scripts/fix_room_references.py`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (78%)
-- INFERRED: 2 (22%)
+- EXTRACTED: 13 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

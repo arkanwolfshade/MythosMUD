@@ -1,24 +1,23 @@
 # Create New Character Rendering Gap
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_take_room_drop_all()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **test_take_room_drop_full_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() removes entire stack when quantity >= available.** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **showProfessionSelection With Existing Characters** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
+- **Create New Character Rendering Gap** (1 connections) — `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Relationships
 
-- [server/main.py](server-main.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `investigations/sessions/2025-12-17_session-001_create-character-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

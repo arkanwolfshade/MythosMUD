@@ -1,70 +1,65 @@
 # inventory_command_helpers.py
 
-> 373 nodes
+> 159 nodes
 
 ## Key Concepts
 
-- **DatabaseManager** (112 connections) — `server/database.py`
-- **.get_instance()** (87 connections) — `server/database.py`
-- **.reset_instance()** (87 connections) — `server/database.py`
-- **database.py** (83 connections) — `server/database.py`
-- **test_database_helpers.py** (48 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
-- **get_async_session()** (44 connections) — `server/database.py`
-- **test_database_extended.py** (44 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
-- **test_database_error_handling.py** (43 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
-- **test_database_init.py** (37 connections) — `server/tests/unit/infrastructure/test_database_init.py`
-- **database_helpers.py** (32 connections) — `server/database_helpers.py`
-- **get_database_path()** (17 connections) — `server/database_helpers.py`
-- **reset_database()** (16 connections) — `server/database.py`
-- **._initialize_database()** (15 connections) — `server/database.py`
-- **asyncio** (14 connections)
-- **.initialize()** (12 connections) — `server/container/bundles/core.py`
-- **get_database_path()** (12 connections) — `server/database.py`
-- **get_async_session()** (12 connections) — `server/database_helpers.py`
-- **asyncio** (12 connections)
-- **CoreBundle** (11 connections) — `server/container/bundles/core.py`
-- **get_session_maker()** (10 connections) — `server/database_helpers.py`
-- **init_db()** (10 connections) — `server/database.py`
-- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
-- **get_engine()** (9 connections) — `server/database_helpers.py`
-- **reset_database()** (9 connections) — `server/database_helpers.py`
-- **_create_engine_or_raise()** (8 connections) — `server/database.py`
-- *... and 348 more nodes in this community*
+- **inventory_command_helpers.py** (50 connections) — `server/commands/inventory_command_helpers.py`
+- **test_inventory_helpers.py** (38 connections) — `server/tests/unit/commands/test_inventory_helpers.py`
+- **persist_player()** (30 connections) — `server/commands/inventory_command_helpers.py`
+- **test_inventory_helpers_extended.py** (27 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_inventory_commands_more_helpers.py** (24 connections) — `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- **inventory_item_matching.py** (22 connections) — `server/commands/inventory_item_matching.py`
+- **broadcast_room_event()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_state()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **resolve_state_and_player()** (19 connections) — `server/commands/inventory_command_helpers.py`
+- **match_room_drop_by_name()** (19 connections) — `server/commands/inventory_item_matching.py`
+- **resolve_player()** (17 connections) — `server/commands/inventory_command_helpers.py`
+- **match_inventory_item_by_name()** (16 connections) — `server/commands/inventory_item_matching.py`
+- **asyncio** (15 connections)
+- **test_inventory_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- **Player** (11 connections)
+- **asyncio** (11 connections)
+- **resolve_pickup_item_index()** (8 connections) — `server/commands/inventory_command_helpers.py`
+- **ensure_item_instance_for_pickup()** (7 connections) — `server/commands/inventory_command_helpers.py`
+- **_sync_collect_quests_after_inventory_save()** (7 connections) — `server/commands/inventory_command_helpers.py`
+- **test_resolve_player_username_error()** (6 connections) — `server/tests/unit/commands/test_inventory_helpers_extended.py`
+- **test_inventory_commands_state_helpers.py** (6 connections) — `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
+- **_collect_progress_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **_player_uuid_for_quest_sync()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **prepare_extracted_stack()** (5 connections) — `server/commands/inventory_command_helpers.py`
+- **build_equipped_candidates()** (5 connections) — `server/commands/inventory_item_matching.py`
+- *... and 134 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (60 shared connections)
-- [ContainerComponent](ContainerComponent.md) (31 shared connections)
-- [get_logger](get_logger.md) (23 shared connections)
-- [mock_connection_manager](mock_connection_manager.md) (12 shared connections)
-- [populate_test_npc_databases.py](populate_test_npc_databases.py.md) (5 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (3 shared connections)
-- [NATSMetrics](NATSMetrics.md) (3 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (3 shared connections)
-- [User](User.md) (3 shared connections)
-- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (3 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (31 shared connections)
+- [equipment_helpers.py](equipment_helpers.py.md) (20 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (15 shared connections)
+- [AliasStorage](AliasStorage.md) (10 shared connections)
+- [command_result_text](command_result_text.md) (7 shared connections)
+- [InventorySchemaValidationError](InventorySchemaValidationError.md) (7 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (7 shared connections)
+- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (6 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (3 shared connections)
+- [Player](Player.md) (3 shared connections)
+- [get_username_from_user](get_username_from_user.md) (3 shared connections)
 
 ## Source Files
 
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/container/bundles/core.py`
-- `server/database.py`
-- `server/database_config_helpers.py`
-- `server/database_helpers.py`
-- `server/tests/unit/infrastructure/test_database.py`
-- `server/tests/unit/infrastructure/test_database_error_handling.py`
-- `server/tests/unit/infrastructure/test_database_extended.py`
-- `server/tests/unit/infrastructure/test_database_helpers.py`
-- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/commands/inventory_command_helpers.py`
+- `server/commands/inventory_item_matching.py`
+- `server/tests/unit/commands/test_inventory_commands_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_more_helpers.py`
+- `server/tests/unit/commands/test_inventory_commands_state_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers.py`
+- `server/tests/unit/commands/test_inventory_helpers_extended.py`
 
 ## Audit Trail
 
-- EXTRACTED: 858 (88%)
-- INFERRED: 122 (12%)
+- EXTRACTED: 403 (98%)
+- INFERRED: 9 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

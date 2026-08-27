@@ -1,12 +1,11 @@
 # ftfy Unicode Normalization
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **setup_postgresql_test_db.sh** (2 connections) — `scripts/setup_postgresql_test_db.sh`
-- **PGPASSWORD** (1 connections) — `scripts/setup_postgresql_test_db.sh`
-- **setup_postgresql_test_db.sh script** (1 connections) — `scripts/setup_postgresql_test_db.sh`
+- **ftfy Unicode Normalization** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
+- **Sanitization Over Validation** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `scripts/setup_postgresql_test_db.sh`
+- `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

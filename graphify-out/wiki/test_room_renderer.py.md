@@ -1,50 +1,51 @@
 # test_room_renderer.py
 
-> 90 nodes
+> 54 nodes
 
 ## Key Concepts
 
-- **Reporter** (56 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **TestReporter** (27 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.print_bidirectional_errors()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_error()** (5 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_parsing_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_room_header()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_summary()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_errors()** (4 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **test_reporter.py** (4 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.format_error()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_success()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_validation_warnings()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.print_warning()** (3 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
-- **.test_colorize_output_unknown_color()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_colorize_output_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_with_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_error_without_suggestion()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_format_warning()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_generate_json_output()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_init_with_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_init_without_colors()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_error()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- **.test_print_header_custom_title()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- *... and 65 more nodes in this community*
+- **test_room_renderer.py** (25 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **format_room_drop_lines()** (24 connections) — `server/utils/room_renderer.py`
+- **test_format_room_drop_lines()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
+- **test_format_room_drop_lines_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
+- **test_format_room_drop_lines_fallback_name()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
+- **test_format_room_drop_lines_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
+- **test_build_room_drop_summary_empty()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_build_room_drop_summary_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_build_room_drop_summary_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_converts_to_dict()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_nested_structure()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_clone_room_drops_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_empty_list()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_empty_none()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_invalid_quantity_string()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_invalid_quantity_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_large_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_missing_quantity()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_handles_missing_slot_type()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_multiple_drops()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_single_drop()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- **test_format_room_drop_lines_uses_default_when_no_name_or_id()** (3 connections) — `server/tests/unit/utils/test_room_renderer.py`
+- *... and 29 more nodes in this community*
 
 ## Relationships
 
-- [SpellEffectType](SpellEffectType.md) (12 shared connections)
+- [build_event](build_event.md) (20 shared connections)
+- [test_look_room.py](test_look_room.py.md) (3 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_reporter.py`
-- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `server/tests/unit/utils/test_room_renderer.py`
+- `server/tests/unit/utils/test_room_renderer_functions.py`
+- `server/utils/room_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 132 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 87 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

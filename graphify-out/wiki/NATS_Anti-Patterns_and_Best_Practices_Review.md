@@ -1,52 +1,46 @@
 # NATS Anti-Patterns and Best Practices Review
 
-> 34 nodes
+> 24 nodes
 
 ## Key Concepts
 
-- **test_look_item.py** (56 connections) — `server/tests/unit/commands/test_look_item.py`
-- **fixture** (4 connections)
-- **mock_prototype_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_equipped_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_inventory_item()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **sample_room_drop()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_no_get_equipped_items_method()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_equipped_item_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_fallback_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_inventory_with_name_field()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in inventory by name.** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Unit tests for item look functionality. Tests the helper functions for looking…** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location successfully.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location with location name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when prototype not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 9 more nodes in this community*
+- **NATS Anti-Patterns and Best Practices Review** (10 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **High Priority Issues 🟡** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Medium Priority Issues 🟢** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Recommendations Summary** (4 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Code Quality Issues** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Conclusion** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Critical Anti-Patterns 🔴** (3 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **10. **Missing Connection Health Monitoring in Broker** (Observability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **1. **Synchronous Operations in Non-Handler Context** (Low Priority)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **2. **Event Handler Callbacks May Block** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **3. **Inconsistent Error Handling Patterns** (Code Quality)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **4. **Missing Input Validation in Some Methods** (Security/Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **5. **Subject Naming: Potential for Too Broad Wildcards** (Anti-pattern)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **6. **Connection Pool Error Handling** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **7. **Message Acknowledgment: Manual Ack Not Default** (Reliability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **8. **Batch Flush Error Recovery** (Resilience)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **9. **Inconsistent Use of Subject Manager** (Maintainability)** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **All Issues Completed ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Completed Improvements ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Executive Summary** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Immediate Actions (High Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Long-term (Low Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Short-term (Medium Priority) - COMPLETED ✅** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **Testing Recommendations** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Relationships
 
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (18 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (12 shared connections)
-- [Migration Strategy](Migration_Strategy.md) (8 shared connections)
-- [find_fstring_logging_violations](find_fstring_logging_violations.md) (8 shared connections)
-- [ComprehensiveLoggingMiddleware](ComprehensiveLoggingMiddleware.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NATS Anti-Patterns Review 2026-01-13](NATS_Anti-Patterns_Review_2026-01-13.md) (1 shared connections)
+- [Positive Findings ✅](Positive_Findings_✅.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
 
 ## Audit Trail
 
-- EXTRACTED: 88 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

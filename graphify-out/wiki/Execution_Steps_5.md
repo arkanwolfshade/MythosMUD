@@ -1,58 +1,43 @@
 # Execution Steps
 
-> 23 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **TEST_AUDIT_EXECUTIVE_SUMMARY.md** (7 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **TEST_COVERAGE_GAPS.md** (5 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **TEST_OPTIMIZATION_ROADMAP.md** (5 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **TEST_MODERNIZATION_PLAN.md** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **TEST_VALUE_DISTRIBUTION.md** (4 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **ConnectionManager Facade** (4 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Test Pruning Candidates** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **MessageBroker Abstraction Gap** (3 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Placeholder assert True Tests** (3 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **REFACTORING_SUMMARY.md** (2 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **MessageBroadcaster** (2 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **25-30 Percent Critical Tests** (2 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **ApplicationContainer Lifecycle Gap** (2 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **ApplicationContainer Test Fixtures** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Framework Behavior Tests** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- **Low-Value Infrastructure Tests** (2 connections) — `docs/archive/TEST_VALUE_DISTRIBUTION.md`
-- **ConnectionCleaner** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **PerformanceTracker** (1 connections) — `docs/archive/REFACTORING_SUMMARY.md`
-- **Domain Layer Coverage Gap** (1 connections) — `docs/archive/TEST_COVERAGE_GAPS.md`
-- **Shared SQLAlchemy Declarative Base** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Option B Quick Wins First** (1 connections) — `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Phased Uplift Not Greenfield** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- **Parametrize Repetitive Tests** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Execution Steps** (14 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Scenario 17: Whisper Integration **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **scenario-17-whisper-integration.md** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 10: Test Whisper with Performance Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 11: Test Whisper with Logging Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 12: Test Whisper with Rate Limiting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 13: Verify System Integration Summary** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 1: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 2: Test Whisper with Player Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 3: Test Whisper with Location Tracking Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 4: Test Whisper with Message Broadcasting Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 5: Test Whisper with Movement System Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 6: Test Whisper with Session Management Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 7: Test Whisper with Database Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 8: Test Whisper with Authentication Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Step 9: Test Whisper with Error Handling Integration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Relationships
 
-- [Enhanced Logging Quick Reference](Enhanced_Logging_Quick_Reference.md) (1 shared connections)
-- [rooms/room.py](rooms-room.py.md) (1 shared connections)
-- [NumPy Code Review - MythosMUD Codebase](NumPy_Code_Review_-_MythosMUD_Codebase.md) (1 shared connections)
-- [properties](properties.md) (1 shared connections)
-- [test_combat_handler.py](test_combat_handler.py.md) (1 shared connections)
-- [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
-- [test_audit_logger.py](test_audit_logger.py.md) (1 shared connections)
-- [validate_inventory_payload](validate_inventory_payload.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/REFACTORING_SUMMARY.md`
-- `docs/archive/TEST_AUDIT_EXECUTIVE_SUMMARY.md`
-- `docs/archive/TEST_COVERAGE_GAPS.md`
-- `docs/archive/TEST_MODERNIZATION_PLAN.md`
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- `docs/archive/TEST_PRUNING_CANDIDATES.md`
-- `docs/archive/TEST_VALUE_DISTRIBUTION.md`
+- `e2e-tests/scenarios/scenario-17-whisper-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (91%)
-- INFERRED: 3 (9%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

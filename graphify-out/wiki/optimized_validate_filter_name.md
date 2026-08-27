@@ -1,30 +1,31 @@
 # optimized_validate_filter_name
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Implementation Notes** (5 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Spec Tasks** (4 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **ENVIRONMENT_CONTAMINATION_TASKS.md** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Critical Priority** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Dependencies** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Environment Contamination Remediation Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Success Criteria** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Tasks** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
-- **Testing Strategy** (1 connections) — `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- **optimized_validate_filter_name()** (6 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_filter_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_filter_name_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_filter_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating invalid filter name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for filter name fields. Args: value: The filter name to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ENVIRONMENT_CONTAMINATION_TASKS.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

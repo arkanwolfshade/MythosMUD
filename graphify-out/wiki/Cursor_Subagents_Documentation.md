@@ -1,14 +1,13 @@
 # Cursor Subagents Documentation
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **DomainError** (3 connections) — `server/domain/exceptions/__init__.py`
-- **exceptions/__init__.py** (2 connections) — `server/domain/exceptions/__init__.py`
-- **Exception** (1 connections)
-- **Domain-specific exceptions for MythosMUD. These exceptions represent business…** (1 connections) — `server/domain/exceptions/__init__.py`
-- **Base exception for all domain errors.** (1 connections) — `server/domain/exceptions/__init__.py`
+- **Cursor Subagents Documentation** (2 connections) — `docs/CURSOR_SUBAGENTS.md`
+- **Cursor Workflows Documentation** (2 connections) — `docs/CURSOR_WORKFLOWS.md`
+- **Cursor CLI Documentation** (1 connections) — `docs/CURSOR_CLI.md`
+- **Cursor IDE Setup Guide** (1 connections) — `docs/CURSOR_SETUP_GUIDE.md`
 
 ## Relationships
 
@@ -16,11 +15,14 @@
 
 ## Source Files
 
-- `server/domain/exceptions/__init__.py`
+- `docs/CURSOR_CLI.md`
+- `docs/CURSOR_SETUP_GUIDE.md`
+- `docs/CURSOR_SUBAGENTS.md`
+- `docs/CURSOR_WORKFLOWS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,52 +1,35 @@
 # asyncio
 
-> 24 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **test_security_utils.py** (41 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **get_secure_file_path()** (13 connections) — `server/security_utils.py`
-- **test_get_secure_file_path_creates_directory()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_invalid_characters()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_mixed_case()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_numeric_filename()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_valid()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_dots()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_hyphens()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_slash()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_spaces()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **test_get_secure_file_path_with_underscores()** (3 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Get a secure file path within a base directory. Args: filename: The filename…** (1 connections) — `server/security_utils.py`
-- **Unit tests for security utilities. Tests path validation and file security…** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with valid filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects invalid characters.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects filenames with slashes.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path creates base directory if it doesn't exist.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with underscores.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with dots.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path accepts filenames with hyphens.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with numeric filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path with mixed case filename.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
-- **Test get_secure_file_path rejects filenames with spaces.** (1 connections) — `server/tests/unit/infrastructure/test_security_utils.py`
+- **test_party_invite_event_envelope_shape()** (5 connections) — `server/tests/unit/game/test_party_service.py`
+- **asyncio** (5 connections)
+- **test_accept_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_decline_party_invite_success()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_creates_pending()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **test_request_party_invite_target_already_in_party_rejected()** (3 connections) — `server/tests/unit/game/test_party_service.py`
+- **Accepting a party invite adds the player to the party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Declining removes pending invite and does not add to party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Request fails if target is already in a party.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **party_invite producer emits a build_event-shaped envelope.** (1 connections) — `server/tests/unit/game/test_party_service.py`
+- **Requesting a party invite creates a pending invite (target must accept).** (1 connections) — `server/tests/unit/game/test_party_service.py`
 
 ## Relationships
 
-- [AsciiMapRenderer](AsciiMapRenderer.md) (12 shared connections)
-- [.optimize_payload](optimize_payload.md) (8 shared connections)
-- [enum](enum.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [Monitoring and Validation](Monitoring_and_Validation.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_party_service.py](test_party_service.py.md) (5 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (1 shared connections)
+- [PartyService](PartyService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/security_utils.py`
-- `server/tests/unit/infrastructure/test_security_utils.py`
+- `server/tests/unit/game/test_party_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 63 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

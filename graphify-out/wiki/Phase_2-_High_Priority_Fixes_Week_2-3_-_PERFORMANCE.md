@@ -1,32 +1,30 @@
 # Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **.retry_async()** (5 connections) — `server/realtime/nats_retry_handler.py`
-- **.calculate_backoff()** (4 connections) — `server/realtime/nats_retry_handler.py`
-- **.get_retry_stats()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.retry_with_backoff()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **.update_config()** (3 connections) — `server/realtime/nats_retry_handler.py`
-- **Any** (3 connections)
-- **Calculate exponential backoff delay with jitter. Args: attempt: Current attempt…** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Retry a function with exponential backoff. Args: func: Async function to retry…** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Get retry statistics. Returns: Dictionary with retry metrics AI: For monitoring…** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Retry async function with exponential backoff. Attempts the function up to…** (1 connections) — `server/realtime/nats_retry_handler.py`
-- **Update retry configuration dynamically. Allows runtime adjustment of retry…** (1 connections) — `server/realtime/nats_retry_handler.py`
+- **Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.1: Add Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.2: Complete Async Persistence Migration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.3: Optimize Database Flush Operations** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.4: Load Only Active Players** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.5: Use NATS Connection Pool by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.6: Add TLS Configuration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.7: Improve Event Loop Change Detection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Task 2.8: Review Transaction Error Handling** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [test_command_service.py](test_command_service.py.md) (6 shared connections)
+- [Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES](Phase_1-_Critical_Fixes_Week_1_-_BLOCKING_ISSUES.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

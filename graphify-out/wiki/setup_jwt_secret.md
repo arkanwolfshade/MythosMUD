@@ -1,56 +1,26 @@
 # setup_jwt_secret
 
-> 90 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_connection_helpers_impl.py** (38 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **connection_helpers.py** (22 connections) — `server/realtime/connection_helpers.py`
-- **convert_uuids_to_strings()** (18 connections) — `server/realtime/connection_helpers.py`
-- **asyncio** (12 connections)
-- **_send_to_websockets()** (11 connections) — `server/realtime/connection_helpers.py`
-- **_optimize_payload()** (10 connections) — `server/realtime/connection_helpers.py`
-- **send_personal_message_old_impl()** (10 connections) — `server/realtime/connection_helpers.py`
-- **Any** (10 connections)
-- **test_connection_helpers.py** (9 connections) — `server/tests/unit/realtime/test_connection_helpers.py`
-- **handle_new_login_impl()** (8 connections) — `server/realtime/connection_helpers.py`
-- **_update_delivery_status()** (8 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_global_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **broadcast_room_event_impl()** (6 connections) — `server/realtime/connection_helpers.py`
-- **_queue_message_if_needed()** (6 connections) — `server/realtime/connection_helpers.py`
-- **mark_player_seen_impl()** (5 connections) — `server/realtime/connection_helpers.py`
-- **test_send_to_websockets_websocket_error()** (5 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_broadcast_global_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_broadcast_room_event_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_handle_new_login_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_handle_new_login_impl_cancels_orphan_rest_countdown()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_optimize_payload_optimization_failure()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_personal_message_old_impl()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_personal_message_old_impl_no_connections()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- **test_send_to_websockets_inactive_connection()** (4 connections) — `server/tests/unit/realtime/test_connection_helpers_impl.py`
-- *... and 65 more nodes in this community*
+- **setup_jwt_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
+- **fixture** (1 connections)
+- **MonkeyPatch** (1 connections)
+- **Set JWT secret for tests.** (1 connections) — `server/tests/unit/auth/test_auth_utils.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
-- [properties](properties.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [test_message_handler_factory.py](test_message_handler_factory.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers.py`
-- `server/tests/unit/realtime/test_connection_helpers_impl.py`
+- `server/tests/unit/auth/test_auth_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 173 (99%)
-- INFERRED: 2 (1%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

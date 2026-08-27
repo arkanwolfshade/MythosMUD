@@ -1,34 +1,36 @@
 # AnyIO vs Asyncio: High-Level Comparison and Decision Guide
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **._get_player()** (5 connections) — `server/realtime/connection_manager.py`
-- **Player** (5 connections)
-- **.broadcast_connection_message()** (4 connections) — `server/realtime/connection_manager.py`
-- **._get_players_batch()** (4 connections) — `server/realtime/connection_manager.py`
-- **._send_initial_game_state()** (4 connections) — `server/realtime/connection_manager.py`
-- **.track_player_connected()** (4 connections) — `server/realtime/connection_manager.py`
-- **Get a player from the persistence layer (async version).** (1 connections) — `server/realtime/connection_manager.py`
-- **Get a player from the persistence layer (public API).** (1 connections) — `server/realtime/connection_manager.py`
-- **Get multiple players from the persistence layer in a single batch operation.** (1 connections) — `server/realtime/connection_manager.py`
-- **Track when a player connects.** (1 connections) — `server/realtime/connection_manager.py`
-- **Broadcast a connection message for a player who is already tracked as online.** (1 connections) — `server/realtime/connection_manager.py`
-- **Send initial game_state event to a newly connected player.** (1 connections) — `server/realtime/connection_manager.py`
+- **AnyIO vs Asyncio: High-Level Comparison and Decision Guide** (10 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Pros and Cons** (5 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **My Academic Opinion (Mythos Persona)** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Adjusts spectacles and peers at the codebase** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **anyio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **anyio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **asyncio Cons ❌** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **asyncio Pros ✅** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Decision Matrix** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Next Steps** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [QuestService](QuestService.md) (5 shared connections)
-- [PopulationStats](PopulationStats.md) (5 shared connections)
+- [AnyIO Code Review - Anti-Patterns and Issues](AnyIO_Code_Review_-_Anti-Patterns_and_Issues.md) (1 shared connections)
+- [Real-World Impact for MythosMUD](Real-World_Impact_for_MythosMUD.md) (1 shared connections)
+- [Recommendation for MythosMUD](Recommendation_for_MythosMUD.md) (1 shared connections)
+- [Core Architectural Differences](Core_Architectural_Differences.md) (1 shared connections)
+- [What Are They?](What_Are_They_.md) (1 shared connections)
+- [Detailed Feature Comparison](Detailed_Feature_Comparison.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

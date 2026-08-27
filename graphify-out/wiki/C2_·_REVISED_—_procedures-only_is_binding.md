@@ -1,32 +1,29 @@
 # C2 · REVISED — procedures-only is binding
 
-> 11 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **🔍 Specific File Reviews** (11 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ container_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ corpse_lifecycle_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ database.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ exploration_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ npc_combat_integration_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ passive_lucidity_flux_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ persistence.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ player_death_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ user_manager.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
-- **✅ wearable_container_service.py** (1 connections) — `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- **C2 · REVISED — procedures-only is binding** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **The rule** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **C2-Revised-Ruling.md** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for enforcement (#618)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for the code — migration backlog** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Consequence for the documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Known bounded exception** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
 
 ## Relationships
 
-- [test_lru_cache.py](test_lru_cache.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_CODE_REVIEW_POST_MIGRATION.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

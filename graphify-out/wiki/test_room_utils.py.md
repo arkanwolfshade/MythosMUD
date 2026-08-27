@@ -1,53 +1,54 @@
 # test_room_utils.py
 
-> 41 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_game_tick_processing_async.py** (23 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **asyncio** (15 connections)
-- **process_combat_tick()** (10 connections) — `server/app/game_tick_processing.py`
-- **test_process_combat_tick_no_service()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_combat_tick_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_damage()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_no_remaining()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_damage_over_time_effect_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_healing()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_no_remaining()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_heal_over_time_effect_success()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_damage_over_time()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_expired()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_single_effect_heal_over_time()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_container()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_process_status_effects_no_online_players()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_changes()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **test_update_player_status_effects_no_changes()** (4 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_app()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_container()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **mock_player()** (3 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **fixture** (3 connections)
-- **Test _update_player_status_effects() when no changes occurred.** (2 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
-- **Unit tests for game tick processing async functions. Tests the async game tick…** (1 connections) — `server/tests/unit/app/test_game_tick_processing_async.py`
-- *... and 16 more nodes in this community*
+- **test_room_utils.py** (22 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **extract_subzone_from_room_id()** (15 connections) — `server/utils/room_utils.py`
+- **room_utils.py** (10 connections) — `server/utils/room_utils.py`
+- **get_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **get_plane_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **get_subzone_local_channel_subject()** (6 connections) — `server/utils/room_utils.py`
+- **get_zone_from_room_id()** (6 connections) — `server/utils/room_utils.py`
+- **is_valid_room_id_format()** (5 connections) — `server/utils/room_utils.py`
+- **test_extract_subzone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_downtown()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_extract_subzone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_dream()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_plane_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_subzone_local_channel_subject()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_subzone_local_channel_subject_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_innsmouth()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_get_zone_from_room_id_invalid()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **test_is_valid_room_id_format()** (3 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Unit tests for room_utils. Tests utility functions for room operations.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_subzone_local_channel_subject() generates subject.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- **Test get_subzone_local_channel_subject() returns None for invalid room ID.** (1 connections) — `server/tests/unit/utils/test_room_utils.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (16 shared connections)
-- [FakeHallucinationService](FakeHallucinationService.md) (2 shared connections)
-- [Memory Leak Prevention System - Implementation Summary](Memory_Leak_Prevention_System_-_Implementation_Summary.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [Room](Room.md) (3 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (1 shared connections)
+- [chat_nats_publisher.py](chat_nats_publisher.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_processing.py`
-- `server/tests/unit/app/test_game_tick_processing_async.py`
+- `server/tests/unit/utils/test_room_utils.py`
+- `server/utils/room_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (84%)
-- INFERRED: 13 (16%)
+- EXTRACTED: 75 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

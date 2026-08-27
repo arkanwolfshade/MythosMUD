@@ -1,24 +1,23 @@
 # Character Info Combat HP Update Delay
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **test_extract_occupant_names_none()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **test_extract_occupant_names_valid_names()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test extract_occupant_names() with valid names.** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **Persist Player HP Before Event Publish** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
+- **Character Info Combat HP Update Delay** (1 connections) — `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Relationships
 
-- [Responsive Design](Responsive_Design.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `investigations/sessions/2025-11-30_session-001_character-info-delay.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

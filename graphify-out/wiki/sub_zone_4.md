@@ -1,28 +1,25 @@
 # sub_zone
 
-> 7 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **1. Structured Concurrency: Entry Points and Task Management** (4 connections) — `.claude/rules/asyncio.md`
-- **asyncio Best Practices** (3 connections) — `.claude/rules/asyncio.md`
-- **2. Avoiding Blocking Operations** (2 connections) — `.claude/rules/asyncio.md`
-- **1.1. Top-Level Entry Point** (1 connections) — `.claude/rules/asyncio.md`
-- **1.2. Launching Concurrent Tasks** (1 connections) — `.claude/rules/asyncio.md`
-- **1.3. Grouping Tasks** (1 connections) — `.claude/rules/asyncio.md`
-- **2.1. CPU-Bound Work** (1 connections) — `.claude/rules/asyncio.md`
+- **sub_zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/asyncio.md`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

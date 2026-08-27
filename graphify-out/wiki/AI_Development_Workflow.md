@@ -1,11 +1,10 @@
 # AI Development Workflow
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **unit/validators/__init__.py** (1 connections) — `server/tests/unit/validators/__init__.py`
-- **Validators unit tests.** (1 connections) — `server/tests/unit/validators/__init__.py`
+- **AI Development Workflow** (0 connections) — `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `server/tests/unit/validators/__init__.py`
+- `docs/AI_DEVELOPMENT_WORKFLOW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

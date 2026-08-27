@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Dependency Upgrade Tasks** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
+- **apply_aggression_level_migration.ps1** (0 connections) — `scripts/apply_aggression_level_migration.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
+- `scripts/apply_aggression_level_migration.ps1`
 
 ## Audit Trail
 

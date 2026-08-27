@@ -1,39 +1,36 @@
 # process_room_files
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **schedule.schema.json** (8 connections) — `schemas/calendar/schedule.schema.json`
-- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
-- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$id** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **$schema** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **title** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **process_room_files()** (9 connections) — `scripts/standardize_room_names.py`
+- **standardize_room_names.py** (7 connections) — `scripts/standardize_room_names.py`
+- **load_room_file()** (4 connections) — `scripts/standardize_room_names.py`
+- **save_room_file()** (4 connections) — `scripts/standardize_room_names.py`
+- **standardize_filename()** (3 connections) — `scripts/standardize_room_names.py`
+- **standardize_room_id()** (3 connections) — `scripts/standardize_room_names.py`
+- **update_room_references()** (3 connections) — `scripts/standardize_room_names.py`
+- **Path** (3 connections)
+- **main()** (2 connections) — `scripts/standardize_room_names.py`
+- **Load a room file safely.** (1 connections) — `scripts/standardize_room_names.py`
+- **Save a room file safely.** (1 connections) — `scripts/standardize_room_names.py`
+- **Convert room ID to lowercase.** (1 connections) — `scripts/standardize_room_names.py`
+- **Convert filename to lowercase.** (1 connections) — `scripts/standardize_room_names.py`
+- **Update all room references in exits to use the new lowercase ID.** (1 connections) — `scripts/standardize_room_names.py`
+- **Process all room files to standardize names and IDs.** (1 connections) — `scripts/standardize_room_names.py`
 
 ## Relationships
 
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Alone_Against_the_Dark__2026-08-11.md) (1 shared connections)
-- [Critical Insights](Critical_Insights.md) (1 shared connections)
-- [2. Mythos Time Model Draft](2._Mythos_Time_Model_Draft.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `scripts/standardize_room_names.py`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

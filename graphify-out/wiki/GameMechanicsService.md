@@ -1,48 +1,55 @@
 # GameMechanicsService
 
-> 40 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **deprecated_patterns.py** (19 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **risky_operation()** (4 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **database** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_api_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_batch_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_error_handling()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_exception_handling()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_performance_logging()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **expensive_operation()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **process_item()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **process_request()** (3 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **.query()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_async_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_basic_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_database_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_logging_in_loops()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_logging_without_context()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_request_context()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_security_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **deprecated_websocket_logging()** (2 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **async_work()** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED database logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED API logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED WebSocket logging patterns - EXAMPLE ONLY.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- **Demonstrate DEPRECATED batch logging patterns.** (1 connections) — `docs/examples/logging/deprecated_patterns.py`
-- *... and 15 more nodes in this community*
+- **GameMechanicsService** (26 connections) — `server/game/mechanics.py`
+- **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
+- **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
+- **asyncio** (8 connections)
+- **test_apply_corruption_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_apply_lucidity_loss_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_damage_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_experience_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_gain_occult_knowledge_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **test_heal_player_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
+- **.apply_corruption()** (3 connections) — `server/game/mechanics.py`
+- **.apply_fear()** (3 connections) — `server/game/mechanics.py`
+- **.apply_lucidity_loss()** (3 connections) — `server/game/mechanics.py`
+- **.damage_player()** (3 connections) — `server/game/mechanics.py`
+- **.gain_experience()** (3 connections) — `server/game/mechanics.py`
+- **.gain_occult_knowledge()** (3 connections) — `server/game/mechanics.py`
+- **.heal_player()** (3 connections) — `server/game/mechanics.py`
+- **.__init__()** (3 connections) — `server/game/mechanics.py`
+- **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
+- **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
+- **fixture** (2 connections)
+- **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
+- **Damage a player's health.** (1 connections) — `server/game/mechanics.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [DatabaseError](DatabaseError.md) (8 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (2 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/deprecated_patterns.py`
+- `server/game/mechanics.py`
+- `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 67 (88%)
+- INFERRED: 9 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

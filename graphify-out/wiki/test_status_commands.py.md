@@ -1,53 +1,53 @@
 # test_status_commands.py
 
-> 78 nodes
+> 37 nodes
 
 ## Key Concepts
 
-- **test_command_processor.py** (41 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **CommandProcessor** (15 connections) — `server/utils/command_processor.py`
-- **command_processor()** (5 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.extract_command_data()** (5 connections) — `server/utils/command_processor.py`
-- **test_get_command_processor()** (4 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **._extract_attributes()** (4 connections) — `server/utils/command_processor.py`
-- **._is_combat_command()** (4 connections) — `server/utils/command_processor.py`
-- **.process_command_string()** (4 connections) — `server/utils/command_processor.py`
-- **test_process_command_string_pydantic_validation_error()** (3 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **.__init__()** (3 connections) — `server/utils/command_processor.py`
-- **Any** (3 connections)
-- **test_command_processor_initialization()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_attributes_missing_attribute()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_basic()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_combat_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_multiple_attributes()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_player_name()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_extract_command_data_with_target()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_key_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_none()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_runtime_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_success()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_type_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- **test_get_command_help_value_error()** (2 connections) — `server/tests/unit/utils/test_command_processor.py`
-- *... and 53 more nodes in this community*
+- **test_status_commands.py** (32 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **asyncio** (14 connections)
+- **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
+- **test_get_profession_info_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_no_app()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_player_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_combat_status_player_not_in_combat()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_player_dict_no_profession_id()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_profession_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_get_profession_info_with_profession()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_status_command_success()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_handle_whoami_command()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_build_base_status_lines()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **test_build_base_status_lines_in_combat()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Get profession information for a player. Args: player: Player object…** (1 connections) — `server/commands/status_commands.py`
+- **Unit tests for status command handlers. Tests handlers for status and whoami…** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_combat_status returns False when no combat service.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_combat_status returns False when no app.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_combat_status returns True when player is in combat.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **Test _get_combat_status returns False when player is not in combat.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (12 shared connections)
-- [lifecycle_manager.py](lifecycle_manager.py.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [status_commands.py](status_commands.py.md) (19 shared connections)
+- [test_status_commands_helpers.py](test_status_commands_helpers.py.md) (4 shared connections)
+- [_add_profession_lines](_add_profession_lines.md) (4 shared connections)
+- [AttributeError](AttributeError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_processor.py`
-- `server/utils/command_processor.py`
+- `server/commands/status_commands.py`
+- `server/tests/unit/commands/test_status_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 98 (96%)
-- INFERRED: 4 (4%)
+- EXTRACTED: 82 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

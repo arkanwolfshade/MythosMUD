@@ -1,27 +1,26 @@
 # Execution Steps
 
-> 18 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Gladiator Ring (Arena) Implementation Plan** (8 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **Todos (detailed)** (5 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Gladiator Ring (Arena) — Implementation Todos** (4 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **gladiator-ring-arena-implementation-todos.md** (2 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **gladiator_ring_arena_plan.md** (2 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **Phase 1: Schema and world data (Codebase Explorer for DML/schema pattern discovery) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 2: Tutorial exit and respawn (main agent)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 3: NPC startup — also spawn in arena (main agent) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Phase 4: Tests and validation (main agent / Test Suite Analyzer) — DONE** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Plan frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **Subagent usage** (1 connections) — `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- **1. Schema and data: zone, subzone, rooms, links** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **2. Tutorial exit and respawn** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **3. NPCs also spawn in arena** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **4. Tests and validation** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **Frontmatter todos (for Cursor plan file)** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **Implementation references** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
-- **Plan summary** (1 connections) — `docs/archive/plans/gladiator_ring_arena_plan.md`
+- **Execution Steps** (10 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Scenario 6: Admin Teleportation **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **scenario-06-admin-teleportation.md** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 1: Verify Admin Status** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 2: AW Teleports Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 3: Verify Ithaqua Sees Teleportation Message** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 4: Verify AW Sees Ithaqua Leave** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 5: Test Non-Admin Teleportation Attempt** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 6: AW Teleports Ithaqua Back** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 7: Verify Return Teleportation** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 8: Verify AW Sees Ithaqua Return** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Step 9: Test Invalid Teleportation Target** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Relationships
 
@@ -29,12 +28,11 @@
 
 ## Source Files
 
-- `docs/archive/plans/gladiator-ring-arena-implementation-todos.md`
-- `docs/archive/plans/gladiator_ring_arena_plan.md`
+- `e2e-tests/scenarios/scenario-06-admin-teleportation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

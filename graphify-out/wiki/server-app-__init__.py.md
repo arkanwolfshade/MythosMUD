@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMUD Worktree Workflow** (0 connections) — `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- **server/app/__init__.py** (0 connections) — `server/app/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-worktree-workflow/SKILL.md`
+- `server/app/__init__.py`
 
 ## Audit Trail
 

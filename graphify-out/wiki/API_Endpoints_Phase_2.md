@@ -1,31 +1,29 @@
 # API Endpoints (Phase 2)
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **_FakeMessageQueue** (4 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **_FakeRateLimiter** (4 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **_FakeRoomManager** (4 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.__init__()** (4 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.remove_player_messages()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.remove_player_data()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
-- **.remove_player_from_all_rooms()** (1 connections) — `server/tests/unit/realtime/test_connection_session_management.py`
+- **API Endpoints (Phase 2)** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Detailed File Migration Instructions** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Services (Phase 4)** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/containers.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/players.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/api/rooms.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/combat_service.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **`server/services/user_manager.py`** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [population_control.py](population_control.py.md) (4 shared connections)
+- [Persistence Layer Async Migration Plan](Persistence_Layer_Async_Migration_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_session_management.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

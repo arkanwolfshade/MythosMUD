@@ -1,51 +1,48 @@
 # Structured Logging with Structlog Best Practices
 
-> 27 nodes
+> 26 nodes
 
 ## Key Concepts
 
-- **TestEmoteDetection** (10 connections) — `server/tests/unit/commands/test_command_input.py`
-- **_is_predefined_emote()** (10 connections) — `server/command_handler/command_input.py`
-- **should_treat_as_emote()** (10 connections) — `server/command_handler/command_input.py`
-- **test_command_input.py** (9 connections) — `server/tests/unit/commands/test_command_input.py`
-- **_mock_request()** (6 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_false()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_handles_error()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_no_emote_service()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_true()** (4 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_is_predefined_emote_no_request()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_predefined_emote()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_system_command()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **.test_should_treat_as_emote_unknown_word()** (3 connections) — `server/tests/unit/commands/test_command_input.py`
-- **CommandExecutionRequest** (2 connections)
-- **Check if a command is a predefined emote alias. Args: command: The command to…** (1 connections) — `server/command_handler/command_input.py`
-- **Check if a single word command should be treated as an emote. This function…** (1 connections) — `server/command_handler/command_input.py`
-- **Unit tests for command input processing. Tests command normalization, cleaning,…** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test _is_predefined_emote() returns False when no request is available.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test _is_predefined_emote() returns False when app.state has no emote_service.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test _is_predefined_emote() handles errors from the emote service gracefully.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test should_treat_as_emote() returns False for system commands.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test should_treat_as_emote() returns False for unknown words.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test should_treat_as_emote() returns True for predefined emotes.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Build a mock request whose app.state.emote_service is the given value.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- **Test emote detection functions.** (1 connections) — `server/tests/unit/commands/test_command_input.py`
-- *... and 2 more nodes in this community*
+- **Structured Logging with Structlog Best Practices** (8 connections) — `.claude/rules/structlog.md`
+- **7. Tooling and Environment** (5 connections) — `.claude/rules/structlog.md`
+- **1. Code Organization and Structure** (4 connections) — `.claude/rules/structlog.md`
+- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/structlog.md`
+- **3. Performance Considerations** (3 connections) — `.claude/rules/structlog.md`
+- **4. Security Best Practices** (3 connections) — `.claude/rules/structlog.md`
+- **5. Testing Approaches** (3 connections) — `.claude/rules/structlog.md`
+- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/structlog.md`
+- **1.1. Directory Structure** (1 connections) — `.claude/rules/structlog.md`
+- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/structlog.md`
+- **1.3. Module Organization** (1 connections) — `.claude/rules/structlog.md`
+- **2.1. Design Patterns** (1 connections) — `.claude/rules/structlog.md`
+- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/structlog.md`
+- **2.3. Anti-patterns** (1 connections) — `.claude/rules/structlog.md`
+- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/structlog.md`
+- **3.2. Memory Management** (1 connections) — `.claude/rules/structlog.md`
+- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/structlog.md`
+- **4.2. Security Implementation** (1 connections) — `.claude/rules/structlog.md`
+- **5.1. Unit Testing** (1 connections) — `.claude/rules/structlog.md`
+- **5.2. Integration Testing** (1 connections) — `.claude/rules/structlog.md`
+- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/structlog.md`
+- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/structlog.md`
+- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/structlog.md`
+- **7.2. Build Configuration** (1 connections) — `.claude/rules/structlog.md`
+- **7.3. Deployment Best Practices** (1 connections) — `.claude/rules/structlog.md`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [TestRunner](TestRunner.md) (3 shared connections)
-- [test_connection_statistics.py](test_connection_statistics.py.md) (1 shared connections)
+- [log_with_context](log_with_context.md) (1 shared connections)
 
 ## Source Files
 
-- `server/command_handler/command_input.py`
-- `server/tests/unit/commands/test_command_input.py`
+- `.claude/rules/structlog.md`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 26 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

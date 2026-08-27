@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMUD Local Data Directory** (0 connections) — `data/local/README.md`
+- **Grype SCA exclude paths** (0 connections) — `.grype.yaml`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/local/README.md`
+- `.grype.yaml`
 
 ## Audit Trail
 

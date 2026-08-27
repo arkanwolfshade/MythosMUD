@@ -1,25 +1,26 @@
 # description
 
-> 4 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **multiplayer-browser-helpers.d.ts** (3 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **GameUiDiagnostics** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **OccupantsSnapshot** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
-- **PresenceEvent** (1 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- **description** (5 connections) — `schemas/intersection_schema.json`
+- **description** (1 connections) — `schemas/intersection_schema.json`
+- **maxLength** (1 connections) — `schemas/intersection_schema.json`
+- **minLength** (1 connections) — `schemas/intersection_schema.json`
+- **type** (1 connections) — `schemas/intersection_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/fixtures/multiplayer-browser-helpers.d.ts`
+- `schemas/intersection_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

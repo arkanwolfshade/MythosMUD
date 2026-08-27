@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Dual Connection Troubleshooting Guide** (0 connections) — `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- **apply_container_migration_to_test_db.ps1** (0 connections) — `scripts/apply_container_migration_to_test_db.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/DUAL_CONNECTION_TROUBLESHOOTING_GUIDE.md`
+- `scripts/apply_container_migration_to_test_db.ps1`
 
 ## Audit Trail
 

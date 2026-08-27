@@ -1,49 +1,39 @@
 # test_event_publisher_helpers.py
 
-> 19 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_cache_service.py** (22 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **NPCCacheService** (21 connections) — `server/caching/cache_service.py`
-- **asyncio** (10 connections)
-- **TestNPCCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_NpcDef** (5 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **_SpawnRule** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.npc_service()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_definitions_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_npc_definition_hit_and_miss()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_hit()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_invalidate_caches()** (4 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_definitions_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_get_spawn_rules_cache_miss()** (3 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.invalidate_npc_definitions()** (2 connections) — `server/caching/cache_service.py`
-- **.invalidate_spawn_rules()** (2 connections) — `server/caching/cache_service.py`
-- **Service for caching NPC definitions and spawn rules.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC definition caches.** (1 connections) — `server/caching/cache_service.py`
-- **Invalidate all NPC spawn rule caches.** (1 connections) — `server/caching/cache_service.py`
-- **Unit tests for server.caching.cache_service.** (1 connections) — `server/tests/unit/caching/test_cache_service.py`
+- **test_event_publisher_helpers.py** (10 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_create_event_message()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_async_persistence()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **fixture** (2 connections)
+- **Unit tests for event publisher helper functions. Tests the helper functions in…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _create_event_message() creates event message.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test get_next_sequence_number() increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test reset_sequence_number() resets to 0.** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
+- **Test _get_async_persistence() returns the injected persistence layer (#679:…** (1 connections) — `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Relationships
 
-- [required](required.md) (7 shared connections)
-- [.create_get_command](create_get_command.md) (7 shared connections)
-- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (5 shared connections)
-- [AGENTS.md](AGENTS.md.md) (5 shared connections)
-- [identify_critical_code.py](identify_critical_code.py.md) (4 shared connections)
-- [Room Pathing Validator Implementation Spec](Room_Pathing_Validator_Implementation_Spec.md) (2 shared connections)
-- [main](main.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [EventPublisher](EventPublisher.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `server/tests/unit/realtime/test_event_publisher_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 18 (95%)
+- INFERRED: 1 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

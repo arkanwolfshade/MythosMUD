@@ -1,34 +1,34 @@
 # PanelContextRuntime.tsx
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Improve Layout Systematically** (8 connections) — `.claude/skills/arrange/SKILL.md`
-- **Arrange Skill** (6 connections) — `.claude/skills/arrange/SKILL.md`
-- **Assess Current Layout** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Break Card Grid Monotony** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Choose the Right Layout Tool** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Create Visual Rhythm** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Establish a Spacing System** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Manage Depth & Elevation** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Optical Adjustments** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Plan Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Strengthen Visual Hierarchy** (1 connections) — `.claude/skills/arrange/SKILL.md`
-- **Verify Layout Improvements** (1 connections) — `.claude/skills/arrange/SKILL.md`
+- **PanelContextRuntime.tsx** (10 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelContextRuntime.test.tsx** (5 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- **PanelState** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelProvider()** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelContext** (2 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelContextType** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelLayout** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelPosition** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelProviderProps** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **PanelSize** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
+- **useRuntimePanelContext()** (1 connections) — `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
+- **defaultPanels** (1 connections) — `client/src/contexts/PanelContextRuntime.tsx`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/arrange/SKILL.md`
+- `client/src/contexts/PanelContextRuntime.tsx`
+- `client/src/contexts/__tests__/PanelContextRuntime.test.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

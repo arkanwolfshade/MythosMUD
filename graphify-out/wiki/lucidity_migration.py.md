@@ -1,32 +1,31 @@
 # lucidity_migration.py
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Dead Light and Other Dark Turns  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **dead-light-and-other-dark-turns/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Communities (2 total, 2 thin omitted)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- **lucidity_migration.py** (6 connections) — `server/scripts/lucidity_migration.py`
+- **migrate_lucidity_system()** (4 connections) — `server/scripts/lucidity_migration.py`
+- **migrate_multiple()** (4 connections) — `server/scripts/lucidity_migration.py`
+- **parse_args()** (3 connections) — `server/scripts/lucidity_migration.py`
+- **Path** (2 connections)
+- **Namespace** (1 connections)
+- **Schema migration for the MythosMUD lucidity system tables.** (1 connections) — `server/scripts/lucidity_migration.py`
+- **Run the lucidity migration across multiple database files.** (1 connections) — `server/scripts/lucidity_migration.py`
+- **Parse CLI arguments for the lucidity migration runner.** (1 connections) — `server/scripts/lucidity_migration.py`
+- **Apply lucidity schema migration to a SQLite database. The ritual crafts the new…** (1 connections) — `server/scripts/lucidity_migration.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/dead-light-and-other-dark-turns/GRAPH_REPORT.md`
+- `server/scripts/lucidity_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

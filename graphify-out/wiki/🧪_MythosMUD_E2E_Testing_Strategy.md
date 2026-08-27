@@ -4,45 +4,44 @@
 
 ## Key Concepts
 
-- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
-- **Any** (13 connections)
-- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
-- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
-- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
-- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
-- **Retrieve current room drops as a defensive copy for callers. Args: room_id: The…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Append an item stack to the room drop ledger. Args: room_id: The room receiving…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Remove quantity of a drop entry, returning the removed stack. Args: room_id:…** (1 connections) — `server/realtime/room_subscription_manager.py`
-- **Adjust quantity for an existing drop entry; removing entry when zero. Args:…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **🧪 MythosMUD E2E Testing Strategy** (10 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Plan** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **Implementation Timeline** (6 connections) — `docs/archive/PLANNING_e2e.md`
+- **E2E Testing Strategy** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 2: Core E2E Test Implementation** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 3: Advanced Testing Features** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Technical Specifications** (4 connections) — `docs/archive/PLANNING_e2e.md`
+- **Current State Analysis** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Phase 1: Infrastructure Consolidation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **Success Metrics** (3 connections) — `docs/archive/PLANNING_e2e.md`
+- **PLANNING_e2e.md** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.1 Unified Test Environment** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **1.2 Test Framework Architecture** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.1 Authentication Testing (Priority 1)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.2 Movement System Testing (Priority 2)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **2.3 Chat System Testing (Priority 3)** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.1 Performance & Reliability** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.2 Debugging & Failure Analysis** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **3.3 Test Data Management** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Client-Side Testing 🔄** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Conclusion** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **False Positive Prevention** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Immediate Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
+- **Long-term Goals** (1 connections) — `docs/archive/PLANNING_e2e.md`
 - *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (20 shared connections)
-- [test_look_room.py](test_look_room.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/room_subscription_manager.py`
+- `docs/archive/PLANNING_e2e.md`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

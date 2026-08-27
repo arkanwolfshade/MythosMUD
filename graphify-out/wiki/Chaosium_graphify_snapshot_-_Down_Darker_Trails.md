@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - Down Darker Trails
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Testing Strategy** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Integration Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Unit Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **User Acceptance Tests** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Chaosium graphify snapshot - Down Darker Trails** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **down-darker-trails/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
 
 ## Relationships
 
-- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

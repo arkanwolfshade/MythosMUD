@@ -4,49 +4,50 @@
 
 ## Key Concepts
 
-- **test_container_helpers_inventory_display.py** (19 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **get_container_data_for_inventory()** (10 connections) — `server/commands/container_helpers_inventory_display.py`
-- **match_container_to_slot()** (9 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_apply_container_component_to_slot()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
-- **update_equipped_with_container_info()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_equipped_matches_container_metadata()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_lock_state_as_str()** (5 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
-- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
-- **test_get_container_data_for_inventory_handles_error()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_get_container_data_for_inventory_success()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_matches_by_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_matches_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_equipped_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_lock_state_as_str_fallback()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_lock_state_as_str_with_value_attr()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_match_container_to_slot_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_match_container_to_slot_not_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_update_equipped_skips_missing_slot()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **test_update_equipped_with_container_info()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
-- **asyncio** (2 connections)
-- **InventoryStack** (1 connections)
-- **Player** (1 connections)
-- **Get container contents, capacities, and lock states for equipped containers.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
-- **Shallow-copy a wearable stack into a plain dict for equipped-view metadata.** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- **test_combat_death_handler.py** (31 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **asyncio** (11 connections)
+- **patch** (9 connections)
+- **fixture** (5 connections)
+- **handler()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **npc_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **player_target()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_service_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_skips_without_persistence()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_create_corpse_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_npc_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_player_death_events_broadcast_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_player_death_events_success()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_mortally_wounded()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_mortally_wounded_error()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_handle_target_state_player_death()** (3 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **combat()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **combat_service()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_log_room_subscribers()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_log_room_subscribers_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_publish_npc_death_event_error()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_publish_npc_death_event_success()** (2 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_resolve_connection_manager_from_service()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_resolve_connection_manager_missing_getter()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
+- **test_resolve_original_npc_id_missing_mapping()** (1 connections) — `server/tests/unit/services/test_combat_death_handler.py`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (11 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [required](required.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [CombatDeathHandler](CombatDeathHandler.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/container_helpers_inventory_display.py`
-- `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- `server/tests/unit/services/test_combat_death_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 60 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

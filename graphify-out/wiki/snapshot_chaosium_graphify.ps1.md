@@ -1,27 +1,26 @@
 # snapshot_chaosium_graphify.ps1
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **aliases** (4 connections) — `db/static/schemas/emotes.schema.json`
-- **items** (3 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **uniqueItems** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
-- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **snapshot_chaosium_graphify.ps1** (4 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Export-PackSnapshot()** (4 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-ChaosiumSlug()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-GraphCount()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
+- **Get-HonestyNote()** (2 connections) — `scripts/snapshot_chaosium_graphify.ps1`
 
 ## Relationships
 
-- [🎓 Best Practice Examples to Share](🎓_Best_Practice_Examples_to_Share.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/emotes.schema.json`
+- `scripts/snapshot_chaosium_graphify.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

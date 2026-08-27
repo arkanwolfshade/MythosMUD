@@ -1,29 +1,30 @@
 # items
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **test_run_make_stages.py** (7 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **_load_module()** (5 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_keep_going_requested()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_nonzero()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_ok()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_stage_failed_from_output_traceback()** (2 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **test_makefile_composites_use_fail_fast_runner()** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
-- **Tests for scripts/run_make_stages.py fail-fast helpers.** (1 connections) — `server/tests/unit/scripts/test_run_make_stages.py`
+- **items** (5 connections) — `db/static/schemas/holidays.schema.json`
+- **holidays** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **properties** (2 connections) — `db/static/schemas/holidays.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [bonus_tags](bonus_tags.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [holidays.schema.json](holidays.schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_run_make_stages.py`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

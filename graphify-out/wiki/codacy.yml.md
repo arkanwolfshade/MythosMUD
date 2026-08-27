@@ -1,24 +1,27 @@
 # .codacy.yml
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_kick_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **.codacy.yml** (2 connections) — `.codacy.yml`
+- **bandit.yml** (1 connections) — `bandit.yml`
+- **Codacy MCP Rules** (1 connections) — `.claude/rules/codacy.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.claude/rules/codacy.md`
+- `.codacy.yml`
+- `bandit.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

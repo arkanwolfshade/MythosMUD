@@ -1,23 +1,22 @@
 # fix_file
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Common Test Failure Categories** (6 connections) — `.cursor/commands/server-test-remediation.md`
-- **1. Database Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **2. Authentication Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **3. WebSocket Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **4. Game Logic Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **5. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **fix_file()** (4 connections) — `scripts/batch_fix_suppressions.py`
+- **main()** (3 connections) — `scripts/batch_fix_suppressions.py`
+- **batch_fix_suppressions.py** (2 connections) — `scripts/batch_fix_suppressions.py`
+- **Path** (2 connections)
+- **Fix suppressions in a file. Returns: (number_fixed, list of changes)** (1 connections) — `scripts/batch_fix_suppressions.py`
 
 ## Relationships
 
-- [Distill Skill](Distill_Skill.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `scripts/batch_fix_suppressions.py`
 
 ## Audit Trail
 

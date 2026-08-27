@@ -1,41 +1,50 @@
 # test_combat_persistence_handler_events.py
 
-> 16 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **test_follow_flow.py** (15 connections) — `server/tests/integration/test_follow_flow.py`
-- **fixture** (5 connections)
-- **event_bus()** (4 connections) — `server/tests/integration/test_follow_flow.py`
-- **follow_service()** (4 connections) — `server/tests/integration/test_follow_flow.py`
-- **test_follow_accept_then_move_propagates_then_restricted_exit_unfollows()** (4 connections) — `server/tests/integration/test_follow_flow.py`
-- **connection_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **movement_service()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **user_manager()** (3 connections) — `server/tests/integration/test_follow_flow.py`
-- **asyncio** (2 connections)
-- **Integration tests for follow feature. Flow: Player A requests follow B; B…** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Real EventBus for integration.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock MovementService; move_player returns True then we can set False for…** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock UserManager; not muted.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **Mock ConnectionManager (optional for this flow).** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **FollowService wired to real EventBus and mock MovementService.** (1 connections) — `server/tests/integration/test_follow_flow.py`
-- **A requests follow B; B accepts. B moves room_a -> room_b: A moves too. B moves…** (1 connections) — `server/tests/integration/test_follow_flow.py`
+- **test_combat_persistence_handler_events.py** (26 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **asyncio** (18 connections)
+- **persistence_handler()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_event_bus_publish_error()** (4 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **mock_combat_service()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_all_parameters_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_outer_exception()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_publish_error_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_correction_event_success_new()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_all_parameters()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_legacy_subject()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_nats_error()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_event_bus()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_no_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **test_publish_player_dp_update_event_impl_with_nats()** (3 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **fixture** (2 connections)
+- **Unit tests for combat persistence handler - event publishing. Tests DP update…** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- **Test _publish_player_dp_update_event_impl handles NATS errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_persistence_handler_events.py`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/integration/test_follow_flow.py`
+- `server/tests/unit/services/test_combat_persistence_handler_events.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (90%)
-- INFERRED: 3 (10%)
+- EXTRACTED: 66 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

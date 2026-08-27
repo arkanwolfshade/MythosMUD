@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **ftfy Unicode Normalization** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
-- **Sanitization Over Validation** (1 connections) — `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
+- **generate_schema_from_dev.sh script** (1 connections) — `scripts/generate_schema_from_dev.sh`
+- **generate_schema_from_dev.sh** (1 connections) — `scripts/generate_schema_from_dev.sh`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `docs/archive/SECURITY_SANITIZATION_ENHANCEMENT_PLANNING.md`
+- `scripts/generate_schema_from_dev.sh`
 
 ## Audit Trail
 

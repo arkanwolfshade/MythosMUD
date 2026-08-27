@@ -1,26 +1,25 @@
 # 📚 REFERENCES AND RESOURCES
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Implementation Plan** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Step 1: Update `.pylintrc` ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Step 2: Refactor Ruff C901 Violations** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Step 3: Document the Strategy** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Step 4: Verify Alignment** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **📚 REFERENCES AND RESOURCES** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Best Practice Documents** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **External Resources** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Investigation Reports** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [main](main.md) (1 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

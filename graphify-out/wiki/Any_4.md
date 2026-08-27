@@ -1,41 +1,44 @@
 # Any
 
-> 15 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_ascii_map_renderer_exits.py** (10 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetExitEntriesForRoom** (5 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **TestGetHorizontalExitCharViewportBounds** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **renderer()** (4 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_entries_for_valid_exits()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_skips_exit_with_missing_target()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_returns_none_when_next_x_at_or_past_viewport_right()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **fixture** (1 connections)
-- **Unit tests for AsciiMapRenderer exit character and exit resolution. Guards…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Tests for _get_exit_entries_for_room.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Valid exits for a room produce one entry with correct direction and coordinates.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Exits whose targets are missing are skipped when building exit entries.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Viewport bounds: return None when next cell is outside viewport.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Returns None when the next horizontal cell lies at or beyond the viewport's…** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Return a fresh AsciiMapRenderer instance for each test.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **Any** (11 connections)
+- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
+- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
+- **Determine if NPC should be included in room query results. Args: npc_id: The…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Scan active NPCs to find those in the target room. Args: active_npcs_dict:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Process NPC IDs and convert to occupant information. Args: npc_ids: List of NPC…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get NPC's current room ID from instance. Args: npc_instance: The NPC instance…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Validate NPC has room tracking and get room ID. Args: npc_id: The NPC ID…** (1 connections) — `server/realtime/npc_occupant_processor.py`
 
 ## Relationships
 
-- [properties](properties.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [main](main.md) (1 shared connections)
-- [_EventBusPublishPort](_EventBusPublishPort.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (12 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [RoomIDUtils](RoomIDUtils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- `server/realtime/npc_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 39 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,56 +1,57 @@
 # test_command_service.py
 
-> 61 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **NATSRetryHandler** (42 connections) — `server/realtime/nats_retry_handler.py`
-- **test_nats_retry_handler.py** (35 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **RetryableMessage** (13 connections) — `server/realtime/nats_retry_handler.py`
-- **asyncio** (13 connections)
-- **nats_retry_handler.py** (10 connections) — `server/realtime/nats_retry_handler.py`
-- **test_retry_async_calls_function()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_increments_attempt()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_waits_for_backoff()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_async_zero_delay()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_at_max()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_over_max()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_should_retry_under_max()** (5 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **.should_retry()** (4 connections) — `server/realtime/nats_retry_handler.py`
-- **test_get_config()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_all_retries_fail()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_different_errors()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_no_sleep_after_last_attempt()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_preserves_exception_type()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_after_retries()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_retry_with_backoff_success_first_attempt()** (4 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_base()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_capped()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_exponential()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_calculate_backoff_non_negative()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- **test_get_retry_stats()** (3 connections) — `server/tests/unit/realtime/test_nats_retry_handler.py`
-- *... and 36 more nodes in this community*
+- **test_command_service.py** (37 connections) — `server/tests/unit/commands/test_command_service.py`
+- **CommandService** (20 connections) — `server/commands/command_service.py`
+- **asyncio** (12 connections)
+- **._extract_parsed_fields()** (7 connections) — `server/commands/command_service.py`
+- **.process_command()** (6 connections) — `server/commands/command_service.py`
+- **._execute_command_handler()** (5 connections) — `server/commands/command_service.py`
+- **._parse_command_string()** (5 connections) — `server/commands/command_service.py`
+- **._prepare_command_data()** (5 connections) — `server/commands/command_service.py`
+- **Command** (5 connections)
+- **._fallback_parsed_fields()** (4 connections) — `server/commands/command_service.py`
+- **._log_parsed_command_inspection()** (4 connections) — `server/commands/command_service.py`
+- **command_service()** (4 connections) — `server/tests/unit/commands/test_command_service.py`
+- **._log_model_dump_result()** (3 connections) — `server/commands/command_service.py`
+- **.register_command_handler()** (3 connections) — `server/commands/command_service.py`
+- **mock_request()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **mock_user()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_returns_non_dict()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_execute_command_handler_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_no_handler()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_command_success()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_handler_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_logging_error()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- **test_process_validated_command_no_command_type()** (3 connections) — `server/tests/unit/commands/test_command_service.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [_optimize_payload](_optimize_payload.md) (8 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE](Phase_2-_High_Priority_Fixes_Week_2-3_-_PERFORMANCE.md) (6 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (3 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
-- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
-- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
+- [processing.py](processing.py.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_retry_handler.py`
-- `server/tests/unit/realtime/test_nats_retry_handler.py`
+- `server/commands/command_service.py`
+- `server/tests/unit/commands/test_command_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 112 (82%)
-- INFERRED: 24 (18%)
+- EXTRACTED: 127 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

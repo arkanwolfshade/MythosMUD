@@ -1,52 +1,48 @@
 # properties
 
-> 28 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **EnvironmentalContainerLoader** (18 connections) — `server/services/environmental_container_loader.py`
-- **test_environmental_container_loader.py** (17 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **.load_container_from_room_json()** (7 connections) — `server/services/environmental_container_loader.py`
-- **.migrate_room_container_to_postgresql()** (6 connections) — `server/services/environmental_container_loader.py`
-- **._parse_lock_state()** (4 connections) — `server/services/environmental_container_loader.py`
-- **.__init__()** (3 connections) — `server/services/environmental_container_loader.py`
-- **.load_containers_for_room()** (3 connections) — `server/services/environmental_container_loader.py`
-- **._validate_container_capacity()** (3 connections) — `server/services/environmental_container_loader.py`
-- **test_load_container_from_room_json_invalid_capacity()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_invalid_lock_state()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_success()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_containers_for_room_filters_environment()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_migrate_room_container_creates_new()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_migrate_room_container_existing()** (3 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **Any** (3 connections)
-- **asyncio** (3 connections)
-- **test_environmental_loader_requires_persistence()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_disabled()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **test_load_container_from_room_json_none_when_missing()** (2 connections) — `server/tests/unit/services/test_environmental_container_loader.py`
-- **ContainerComponent** (2 connections)
-- **UUID** (2 connections)
-- **ContainerLockState** (1 connections)
-- **migrate_room_container_to_postgresql.** (1 connections) — `server/services/environmental_container_loader.py`
-- **Load all environmental containers for a room from PostgreSQL. Args: room_id:…** (1 connections) — `server/services/environmental_container_loader.py`
-- **Service for loading environmental containers from JSON and PostgreSQL. Handles…** (1 connections) — `server/services/environmental_container_loader.py`
-- *... and 3 more nodes in this community*
+- **properties** (16 connections) — `schemas/items/item_prototype.schema.json`
+- **name** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **base_value** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **durability** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **stacking_rules** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **usage_restrictions** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minimum** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **integer** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **null** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (6 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [type](type.md) (4 shared connections)
+- [item_prototype.schema.json](item_prototype.schema.json.md) (1 shared connections)
+- [metadata](metadata.md) (1 shared connections)
+- [prototype_id](prototype_id.md) (1 shared connections)
+- [short_description](short_description.md) (1 shared connections)
+- [long_description](long_description.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [weight](weight.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/environmental_container_loader.py`
-- `server/tests/unit/services/test_environmental_container_loader.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (90%)
-- INFERRED: 6 (10%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

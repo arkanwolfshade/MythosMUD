@@ -1,35 +1,52 @@
 # Persistence Layer Async Migration Plan
 
-> 11 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **test_nats_event_bridge.py** (10 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **test_handle_nats_message_injects_remote_origin()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **test_publish_adds_origin_and_calls_nats()** (5 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **test_handle_nats_message_bad_payload_logs_warning()** (4 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **test_handle_nats_message_skips_own_origin()** (4 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **asyncio** (4 connections)
-- **Tests for NATS EventBus bridge - skip self-echo to prevent duplicate event…** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **NATS bridge must not inject events that originated from this instance (prevents…** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **NATS bridge must inject events from other instances.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **publish() serializes event and forwards to NATS with origin metadata.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
-- **Invalid payloads are ignored without injecting.** (1 connections) — `server/tests/unit/events/test_nats_event_bridge.py`
+- **Persistence Layer Async Migration Plan** (16 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Rollback Procedures** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Success Metrics** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Decision Points** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Migration Timeline** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Monitoring & Validation** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Aggressive Timeline (Focused Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Conservative Timeline (Gradual Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Emergency Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Individual File Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Metrics to Track** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Overall Migration Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-File Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Per-Phase Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Performance Validation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase 1: Foundation Complete ✅** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Phase Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **References** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **Total Migration Effort** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **When NOT to Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **When TO Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Relationships
 
-- [pylint.py](pylint.py.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (5 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (1 shared connections)
+- [Migration Roadmap](Migration_Roadmap.md) (1 shared connections)
+- [Migration Workflow (Per File)](Migration_Workflow_Per_File.md) (1 shared connections)
+- [Common Conversion Patterns](Common_Conversion_Patterns.md) (1 shared connections)
+- [API Endpoints (Phase 2)](API_Endpoints_Phase_2.md) (1 shared connections)
+- [Gotchas & Solutions](Gotchas_&_Solutions.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/events/test_nats_event_bridge.py`
+- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (75%)
-- INFERRED: 6 (25%)
+- EXTRACTED: 30 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

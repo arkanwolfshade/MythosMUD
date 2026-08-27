@@ -1,34 +1,28 @@
 # Container Contents Synchronization Bug
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **chat_logger()** (6 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **.__init__()** (4 connections) — `server/services/rate_limiter.py`
-- **temp_log_dir()** (3 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **fixture** (2 connections)
-- **Initialize the rate limiter with configuration-based limits.** (1 connections) — `server/services/rate_limiter.py`
-- **Create a temporary directory for chat logs.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
-- **Create a ChatLogger instance with temp directory.** (1 connections) — `server/tests/unit/services/test_chat_logger.py`
+- **Container Contents Synchronization Bug** (3 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **slot_type backpack Assignment** (2 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- **Dual Inventory Storage Architecture** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Inventory Slot Calculation Bug** (2 connections) — `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
+- **Fail-Fast Container Error Philosophy** (1 connections) — `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
 
 ## Relationships
 
-- [test_npc_combat_integration_service_npc_aggro.py](test_npc_combat_integration_service_npc_aggro.py.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [dependencies](dependencies.md) (1 shared connections)
-- [HallucinationFrequencyService](HallucinationFrequencyService.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/rate_limiter.py`
-- `server/tests/unit/services/test_chat_logger.py`
+- `investigations/remediation-plans/2025-01-27_container-sync-remediation.md`
+- `investigations/sessions/2025-01-27_session-001_inventory-slot-calculation-bug.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (75%)
-- INFERRED: 3 (25%)
+- EXTRACTED: 4 (80%)
+- INFERRED: 1 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

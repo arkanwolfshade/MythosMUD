@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_equip_wearable_container_creates_new()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_equip_wearable_container creates new container.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **room_validator/tests/__init__.py** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
+- **Test suite for the MythosMUD room validator. This module contains comprehensive…** (1 connections) — `tools/room_toolkit/room_validator/tests/__init__.py`
 
 ## Relationships
 
-- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `tools/room_toolkit/room_validator/tests/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

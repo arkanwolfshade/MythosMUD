@@ -1,46 +1,44 @@
 # Documentation Updates - ConnectionManager Refactoring
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **fix_fstring_logging.py** (11 connections) — `scripts/fix_fstring_logging.py`
-- **_create_replacement_for_fstring()** (8 connections) — `scripts/fix_fstring_logging.py`
-- **fix_fstring_logging_in_file()** (7 connections) — `scripts/fix_fstring_logging.py`
-- **Path** (5 connections)
-- **main()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_read_file_content()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_validate_file()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_write_file_if_changed()** (4 connections) — `scripts/fix_fstring_logging.py`
-- **_build_structured_params()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **_clean_message()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **create_structured_log_message()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **extract_variables_from_fstring()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **_handle_no_variables_case()** (3 connections) — `scripts/fix_fstring_logging.py`
-- **Match** (1 connections)
-- **Create replacement string for f-string logging call.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Write file if content has changed.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Fix f-string logging violations in a single file. Args: file_path: Path to the…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Main function to fix f-string logging violations.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Extract variable names from f-string content. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Create structured logging message and parameters. Args: fstring_content: The…** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Validate that file exists and is a Python file.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Read file content with error handling.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Handle case where f-string has no variables.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Build structured parameters list from variables.** (1 connections) — `scripts/fix_fstring_logging.py`
-- **Clean message by removing variable placeholders.** (1 connections) — `scripts/fix_fstring_logging.py`
+- **Documentation Updates - ConnectionManager Refactoring** (9 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documents Updated** (7 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Benefits of Documentation Updates** (5 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Files NOT Requiring Updates** (4 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Next Steps** (2 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **1. **Accurate Reference Material**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 1. `REAL_TIME_ARCHITECTURE.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 2. `CONNECTION_MANAGER_ARCHITECTURE.md` (NEW)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **2. **Reduced Confusion**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **3. **Better Onboarding**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 3. `WEBSOCKET_CODE_REVIEW.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 4. `DEVELOPMENT_AI.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **4. **Historical Record**** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 5. `REFACTORING_SUMMARY.md` (Created Earlier)** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **✅ 6. `.cursor/plans/connection-manager-refactor_b94299a2.plan.md`** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Documentation Structure** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Archive Documents** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Other Architecture Docs** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **ℹ️ Test Documentation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Optional Future Documentation Work** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **References** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
+- **Validation** (1 connections) — `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/fix_fstring_logging.py`
+- `docs/archive/DOCUMENTATION_UPDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

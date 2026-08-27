@@ -1,60 +1,51 @@
 # manual_dependency_analysis.py
 
-> 75 nodes
+> 82 nodes
 
 ## Key Concepts
 
-- **test_magic_service.py** (48 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **MagicService** (40 connections) — `server/game/magic/magic_service.py`
-- **UUID** (26 connections)
-- **CastingStateManager** (25 connections) — `server/game/magic/casting_state_manager.py`
-- **asyncio** (19 connections)
-- **test_casting_state_manager.py** (12 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **casting_state_manager.py** (11 connections) — `server/game/magic/casting_state_manager.py`
-- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **StartCastingTarget** (8 connections) — `server/game/magic/casting_state_manager.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_casting_state_manager.py`
-- **UUID** (8 connections)
-- **.start_casting()** (6 connections) — `server/game/magic/casting_state_manager.py`
-- **test_can_cast_spell_unknown_and_materials()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_material_consume_failure()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_check_casting_progress_completes()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_start_delayed_cast_in_combat()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_start_delayed_cast_value_error()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_can_cast_spell_paths()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_cast_spell_delayed()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_complete_casting_via_combat_queue()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_fail()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_interrupt_casting_luck_pass()** (5 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **fixture** (5 connections)
-- **.complete_casting()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- **.get_casting_state()** (4 connections) — `server/game/magic/casting_state_manager.py`
-- *... and 50 more nodes in this community*
+- **manual_dependency_analysis.py** (25 connections) — `scripts/manual_dependency_analysis.py`
+- **DependencyAnalyzer** (21 connections) — `scripts/dependency_analyzer.py`
+- **ManualDependencyAnalyzer** (20 connections) — `scripts/manual_dependency_analysis.py`
+- **DepInfo** (20 connections) — `scripts/utils/dependency_analysis_types.py`
+- **dependency_analyzer.py** (17 connections) — `scripts/dependency_analyzer.py`
+- **PriorityItem** (13 connections) — `scripts/utils/dependency_analysis_types.py`
+- **AnalysisSnapshot** (10 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_dependencies()** (10 connections) — `scripts/manual_dependency_analysis.py`
+- **categorize_update()** (10 connections) — `scripts/utils/dependency_risk.py`
+- **BreakingChange** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **.analyze_all_dependencies()** (9 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (9 connections) — `scripts/manual_dependency_analysis.py`
+- **dependency_analysis_types.py** (9 connections) — `scripts/utils/dependency_analysis_types.py`
+- **RiskAssessment** (8 connections) — `scripts/utils/dependency_analysis_types.py`
+- **UpdateStrategy** (7 connections) — `scripts/utils/dependency_analysis_types.py`
+- **._analyze_python_dependencies()** (7 connections) — `scripts/dependency_analyzer.py`
+- **.generate_report()** (7 connections) — `scripts/dependency_analyzer.py`
+- **assess_npm_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **assess_python_risk()** (7 connections) — `scripts/utils/dependency_risk.py`
+- **_dep_info_from_npm_row()** (6 connections) — `scripts/dependency_analyzer.py`
+- **._analyze_npm_dependencies()** (6 connections) — `scripts/dependency_analyzer.py`
+- **TypedDict** (6 connections)
+- **dependency_risk.py** (6 connections) — `scripts/utils/dependency_risk.py`
+- **._assess_risks()** (5 connections) — `scripts/dependency_analyzer.py`
+- **._determine_strategy()** (5 connections) — `scripts/dependency_analyzer.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (23 shared connections)
-- [Any](Any.md) (12 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (8 shared connections)
-- [test_metrics.py](test_metrics.py.md) (4 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
-- [migrate_rooms.py](migrate_rooms.py.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
+- [safe_run_static](safe_run_static.md) (4 shared connections)
 
 ## Source Files
 
-- `server/game/magic/casting_state_manager.py`
-- `server/game/magic/magic_service.py`
-- `server/tests/unit/game/magic/test_casting_state_manager.py`
-- `server/tests/unit/game/magic/test_magic_service.py`
+- `scripts/dependency_analyzer.py`
+- `scripts/manual_dependency_analysis.py`
+- `scripts/utils/dependency_analysis_types.py`
+- `scripts/utils/dependency_risk.py`
 
 ## Audit Trail
 
-- EXTRACTED: 188 (80%)
-- INFERRED: 46 (20%)
+- EXTRACTED: 175 (90%)
+- INFERRED: 20 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

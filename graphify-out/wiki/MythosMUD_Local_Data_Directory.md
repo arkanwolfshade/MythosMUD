@@ -1,23 +1,22 @@
 # MythosMUD Local Data Directory
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_spawn_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_spawn_command produces NPCCommand for npc spawn subcommand.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **MythosMUD Local Data Directory** (0 connections) — `data/local/README.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `data/local/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

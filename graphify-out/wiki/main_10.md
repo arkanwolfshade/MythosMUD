@@ -4,19 +4,19 @@
 
 ## Key Concepts
 
-- **Entries** (5 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **Summary (from Codacy UI snapshot)** (4 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **codacy_high_critical_baseline.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **Codacy High/Critical Baseline – MythosMUD** (2 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **codacy_high_critical_progress.md** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **Codacy High/Critical Remediation Progress** (2 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **Distribution notes** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **Example issue types** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **Top code patterns by issue count** (1 connections) — `docs/archive/investigations/codacy_high_critical_baseline.md`
-- **2026-02-24 — Wave 3 (Backend security) completed** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **2026-02-24 — Wave 4 (Frontend security) verified** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **2026-02-24 — Wave 5 (Complexity refactors)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
-- **2026-02-24 — Wave 6 (Metrics and hardening)** (1 connections) — `docs/archive/investigations/codacy_high_critical_progress.md`
+- **main()** (7 connections) — `scripts/arkham_rooms_summary.py`
+- **arkham_rooms_summary.py** (6 connections) — `scripts/arkham_rooms_summary.py`
+- **analyze_connectivity()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **generate_dot_file()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **load_room_data()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_detailed_statistics()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **print_room_listing()** (3 connections) — `scripts/arkham_rooms_summary.py`
+- **Print a detailed listing of all rooms by subzone.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Generate a DOT file for visualization with Graphviz.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Main function to analyze the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Analyze the connectivity of the rooms.** (1 connections) — `scripts/arkham_rooms_summary.py`
+- **Print detailed statistics about the room data.** (1 connections) — `scripts/arkham_rooms_summary.py`
 
 ## Relationships
 
@@ -24,12 +24,11 @@
 
 ## Source Files
 
-- `docs/archive/investigations/codacy_high_critical_baseline.md`
-- `docs/archive/investigations/codacy_high_critical_progress.md`
+- `scripts/arkham_rooms_summary.py`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,35 +1,32 @@
 # NPC Combat Start Race Condition
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **UnknownChannelStrategy** (9 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.get_strategy()** (6 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **test_unknown_channel_strategy_broadcast()** (4 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
-- **.__init__()** (2 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Strategy for unknown channel types.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Initialize unknown channel strategy. Args: channel_type: Unknown channel type** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Get strategy for channel type. Args: channel_type: Type of channel to get…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Test UnknownChannelStrategy.broadcast() handles unknown channel.** (1 connections) — `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- **NPC Combat Start Race Condition** (2 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **NPCs Incorrectly Marked is_alive False** (2 connections) — `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- **December 3 Final Investigation Summary** (2 connections) — `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- **Room Occupants Duplicates and Missing Player** (2 connections) — `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
+- **Redundant NPC Instance Lookup Failure** (1 connections) — `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- **Character Info Panel Missing Stats Field** (1 connections) — `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
 
 ## Relationships
 
-- [required](required.md) (4 shared connections)
-- [test_player_event_handlers_room.py](test_player_event_handlers_room.py.md) (3 shared connections)
-- [models/container.py](models-container.py.md) (2 shared connections)
-- [_make_mock_row](_make_mock_row.md) (1 shared connections)
-- [TestPostgresConnectionPool](TestPostgresConnectionPool.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
-- `server/tests/unit/realtime/test_channel_broadcasting_strategies.py`
+- `investigations/sessions/2025-11-30_session-001_npc-combat-start-failure.md`
+- `investigations/sessions/2025-11-30_session-002_npcs-not-displaying-occupants.md`
+- `investigations/sessions/2025-12-03_FINAL_SUMMARY.md`
+- `investigations/sessions/2025-12-03_session-001_character-info-panel.md`
+- `investigations/sessions/2025-12-03_session-002_room-occupants-display.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (78%)
-- INFERRED: 4 (22%)
+- EXTRACTED: 3 (60%)
+- INFERRED: 2 (40%)
 - AMBIGUOUS: 0 (0%)
 
 ---

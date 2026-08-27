@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Contributor Covenant Code of Conduct** (0 connections) — `CODE_OF_CONDUCT.md`
+- **Scenario 22 Administrative Summon** (0 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `CODE_OF_CONDUCT.md`
+- `e2e-tests/scenarios/scenario-22-summon-command.md`
 
 ## Audit Trail
 

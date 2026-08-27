@@ -1,59 +1,69 @@
 # TargetMatch
 
-> 75 nodes
+> 129 nodes
 
 ## Key Concepts
 
-- **test_player_disconnect_handlers.py** (35 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **player_disconnect_handlers.py** (28 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_collect_disconnect_keys()** (19 connections) — `server/realtime/player_disconnect_handlers.py`
-- **handle_player_disconnect_broadcast()** (17 connections) — `server/realtime/player_disconnect_handlers.py`
-- **age_off_disconnected_sessions()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_cleanup_player_references()** (11 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_remove_player_from_online_tracking()** (10 connections) — `server/realtime/player_disconnect_handlers.py`
-- **asyncio** (8 connections)
-- **UUID** (7 connections)
-- **_get_session_maps_for_age_off()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
-- **_purge_expired_sessions_from_maps()** (4 connections) — `server/realtime/player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_empty_player_name()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_player_name()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_no_room_found()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_no_player()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_room_player_left_called()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_handle_player_disconnect_broadcast_with_room()** (4 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **_session_ids_past_age_off()** (3 connections) — `server/realtime/player_disconnect_handlers.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_keeps_recent()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_missing_attrs_returns_zero()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_age_off_disconnected_sessions_removes_expired()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- **test_cleanup_player_references()** (3 connections) — `server/tests/unit/realtime/test_player_disconnect_handlers.py`
-- *... and 50 more nodes in this community*
+- **TargetMatch** (161 connections) — `server/schemas/shared/target_resolution.py`
+- **Spell** (136 connections) — `server/models/spell.py`
+- **test_spell_effects_heal.py** (29 connections) — `server/tests/unit/game/magic/test_spell_effects_heal.py`
+- **SpellTargetingService** (27 connections) — `server/game/magic/spell_targeting.py`
+- **run_heal_effect()** (26 connections) — `server/game/magic/spell_effects_heal.py`
+- **spell_targeting.py** (25 connections) — `server/game/magic/spell_targeting.py`
+- **spell_effects_status.py** (24 connections) — `server/game/magic/spell_effects_status.py`
+- **StatusEffectType** (18 connections) — `server/models/game.py`
+- **._dispatch_effect()** (15 connections) — `server/game/magic/spell_effects.py`
+- **asyncio** (12 connections)
+- **._execute_instant_or_delayed_cast()** (10 connections) — `server/game/magic/magic_service.py`
+- **_run_standard_heal_after_validation()** (10 connections) — `server/game/magic/spell_effects_heal.py`
+- **_apply_player_status_with_grace_check()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **run_status_effect()** (10 connections) — `server/game/magic/spell_effects_status.py`
+- **._get_spell_and_validate_target()** (9 connections) — `server/game/magic/magic_service.py`
+- **._start_delayed_cast()** (9 connections) — `server/game/magic/magic_service.py`
+- **._process_damage()** (9 connections) — `server/game/magic/spell_effects.py`
+- **_apply_status_effect_to_player()** (9 connections) — `server/game/magic/spell_effects_status.py`
+- **_handle_player_status_effect()** (9 connections) — `server/game/magic/spell_effects_status.py`
+- **.resolve_spell_target()** (9 connections) — `server/game/magic/spell_targeting.py`
+- **._add_spell_damage_threat_to_combat()** (8 connections) — `server/game/magic/spell_effects.py`
+- **._publish_npc_damage_and_death_events()** (8 connections) — `server/game/magic/spell_effects.py`
+- **UUID** (8 connections)
+- **Any** (8 connections)
+- **UUID** (8 connections)
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
-- [PrototypeRegistry](PrototypeRegistry.md) (9 shared connections)
-- [chatPanelRuntimeUtils.ts](chatPanelRuntimeUtils.ts.md) (9 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (2 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [SpellEffects](SpellEffects.md) (84 shared connections)
+- [SpellEffectType](SpellEffectType.md) (37 shared connections)
+- [_MagicServiceCore](_MagicServiceCore.md) (29 shared connections)
+- [get_username_from_user](get_username_from_user.md) (28 shared connections)
+- [spell_effects_support.py](spell_effects_support.py.md) (17 shared connections)
+- [test_magic_service.py](test_magic_service.py.md) (16 shared connections)
+- [run_flee_effect](run_flee_effect.md) (13 shared connections)
+- [PlayerService](PlayerService.md) (11 shared connections)
+- [SpellLearningService](SpellLearningService.md) (11 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (11 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (10 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (9 shared connections)
 
 ## Source Files
 
-- `server/realtime/player_disconnect_handlers.py`
-- `server/tests/unit/realtime/test_player_disconnect_handlers.py`
+- `server/commands/combat_taunt.py`
+- `server/game/magic/magic_service.py`
+- `server/game/magic/spell_effects.py`
+- `server/game/magic/spell_effects_heal.py`
+- `server/game/magic/spell_effects_status.py`
+- `server/game/magic/spell_targeting.py`
+- `server/models/game.py`
+- `server/models/spell.py`
+- `server/schemas/shared/target_resolution.py`
+- `server/tests/unit/game/magic/test_spell_effects_heal.py`
+- `server/tests/unit/schemas/test_target_resolution.py`
 
 ## Audit Trail
 
-- EXTRACTED: 158 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 553 (88%)
+- INFERRED: 77 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

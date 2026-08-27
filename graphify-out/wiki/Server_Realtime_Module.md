@@ -1,33 +1,29 @@
 # Server Realtime Module
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **optimized_validate_target_player()** (6 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_player_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_target_player_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_target_player_invalid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_target_player_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty player name.** (2 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid target player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating invalid target player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for target player fields. Args: value: The target player…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Server Realtime Module** (5 connections) — `server/realtime/README.md`
+- **ConnectionManager** (4 connections) — `server/realtime/README.md`
+- **NATS Message Handler** (2 connections) — `server/realtime/README.md`
+- **WebSocket API /api/ws** (2 connections) — `server/realtime/README.md`
+- **FastAPI** (1 connections) — `server/README.md`
+- **Message Validator** (1 connections) — `server/realtime/README.md`
+- **Room Broadcasts** (1 connections) — `server/realtime/README.md`
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (5 shared connections)
-- [overrides](overrides.md) (1 shared connections)
-- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `server/README.md`
+- `server/realtime/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

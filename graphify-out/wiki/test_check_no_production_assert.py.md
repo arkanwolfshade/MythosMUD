@@ -1,39 +1,37 @@
 # test_check_no_production_assert.py
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **asyncio** (24 connections)
-- **test_cleanup_empty_subzone_subscriptions()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_cleanup_empty_subzone_subscriptions_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_event_message()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_handle_player_attacked_event()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_subscribe_to_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_event_subjects_partial()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_error()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **test_unsubscribe_from_subzone_not_subscribed()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions cleans up empty subzones.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test subscribe_to_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_event_subjects handles partial success.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test cleanup_empty_subzone_subscriptions handles NATSError.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_player_attacked_event delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles not subscribed case.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test _handle_event_message delegates to event handler.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
-- **Test unsubscribe_from_subzone handles errors.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- **test_check_no_production_assert.py** (11 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **Path** (7 connections)
+- **_NoProductionAssertModule** (4 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **_load_checker()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_find_assert_line_numbers_detects_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_find_assert_line_numbers_empty_when_no_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_is_production_server_py_false_for_test_named_module()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_is_production_server_py_false_for_tests()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_is_production_server_py_true_for_commands()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_pre_commit_no_production_assert_hook_patterns_match_expected_paths()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_script_exits_0_on_test_file_with_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **test_script_exits_1_on_production_file_with_assert()** (2 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **Protocol** (1 connections)
+- **Tests for scripts/check_no_production_assert.py.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **Verify no-production-assert hook targets server code and excludes tests.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
+- **Public surface of check_no_production_assert loaded via importlib.** (1 connections) — `server/tests/unit/test_check_no_production_assert.py`
 
 ## Relationships
 
-- [](unnamed.md) (16 shared connections)
-- [Animate Skill](Animate_Skill.md) (8 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_subzone_events.py`
+- `server/tests/unit/test_check_no_production_assert.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,53 +1,51 @@
 # Async Audit Executive Summary
 
-> 32 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **test_player_related_models.py** (19 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **PlayerChannelPreferences** (15 connections) — `server/models/player.py`
-- **test_player_channel_preferences_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_table_name()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_channel_preferences_with_muted_channels()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_multiple_rooms()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_exploration_table_name()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_creation()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_defaults()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_repr()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_table_name()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **test_player_inventory_with_data()** (3 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Player channel preferences model for Advanced Chat Channels. Stores player…** (1 connections) — `server/models/player.py`
-- **Unit tests for Player-related SQLAlchemy models. Tests…** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerInventory __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration has correct table name.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration __repr__ method.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerChannelPreferences can be instantiated with required fields.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- **Test PlayerExploration can track multiple rooms for same player.** (1 connections) — `server/tests/unit/models/test_player_related_models.py`
-- *... and 7 more nodes in this community*
+- **Async Audit Executive Summary** (20 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Critical Findings** (5 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Alternative Approaches Considered** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Cost-Benefit Analysis** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Recommendations** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Next Steps** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Success Metrics** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Benefit** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Break-Even** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Contact** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Cost** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Decision Matrix** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Effort Breakdown** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **If Approved** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **If Deferred** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Immediate (This Week)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #1: Event Loop Blocking (CONFIRMED PERFORMANCE KILLER)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #2: F-String Logging (WIDESPREAD)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issue #3: Connection Pool Resource Leaks** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **🔴 Issues #4-6: Additional Critical Items** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Long-Term (Month 2)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option A: Do Nothing** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option B: Quick Hack (asyncio.to_thread everywhere)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Option C: Full Remediation (RECOMMENDED)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Phase 1 Success Criteria** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (15 shared connections)
-- [logger.ts](logger.ts.md) (2 shared connections)
-- [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
-- [mark_player_seen_impl](mark_player_seen_impl.md) (1 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (4 shared connections)
+- [Async Remediation Complete](Async_Remediation_Complete.md) (1 shared connections)
+- [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
+- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/player.py`
-- `server/tests/unit/models/test_player_related_models.py`
+- `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 50 (89%)
-- INFERRED: 6 (11%)
+- EXTRACTED: 36 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

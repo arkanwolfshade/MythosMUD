@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_remove_room_occupant()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
-- **Test remove_room_occupant() removes occupant.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager.py`
+- **test_create_pose_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_pose_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [enum](enum.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

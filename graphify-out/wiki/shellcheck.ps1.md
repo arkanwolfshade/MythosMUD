@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Git Submodule Setup for MythosMUD** (0 connections) — `docs/SUBMODULE_SETUP.md`
+- **shellcheck.ps1** (0 connections) — `scripts/shellcheck.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/SUBMODULE_SETUP.md`
+- `scripts/shellcheck.ps1`
 
 ## Audit Trail
 

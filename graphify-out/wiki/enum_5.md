@@ -1,33 +1,42 @@
 # enum
 
-> 9 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **test_utility_commands_whoami.py** (6 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **test_handle_whoami_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **asyncio** (3 connections)
-- **Unit tests for utility command handlers. Tests the whoami command functionality.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() returns player information.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
-- **Test handle_whoami_command() handles player not found.** (1 connections) — `server/tests/unit/commands/test_utility_commands_whoami.py`
+- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
+- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **LEGS** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAGICAL** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **MAIN_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_DROP** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **NO_SALE** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **OFF_HAND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **QUEST_ITEM** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **RING** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **SOULBOUND** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **TORSO** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [get_admin_auth_service](get_admin_auth_service.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
+- [type](type.md) (2 shared connections)
+- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_utility_commands_whoami.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (80%)
-- INFERRED: 3 (20%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

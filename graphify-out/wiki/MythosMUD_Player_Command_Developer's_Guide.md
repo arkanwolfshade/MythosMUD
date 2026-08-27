@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Vite HTML Entry** (0 connections) — `client/index.html`
+- **MythosMUD Player Command Developer's Guide** (0 connections) — `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/index.html`
+- `docs/PLAYER_COMMAND_DEVELOPER_GUIDE.md`
 
 ## Audit Trail
 

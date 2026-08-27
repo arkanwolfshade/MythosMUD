@@ -1,53 +1,56 @@
 # test_shutdown_sequence.py
 
-> 49 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **test_connection_statistics.py** (25 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **validate_player_presence_impl()** (11 connections) — `server/realtime/connection_statistics.py`
-- **get_online_player_by_display_name_impl()** (10 connections) — `server/realtime/connection_statistics.py`
-- **get_player_presence_info_impl()** (9 connections) — `server/realtime/connection_statistics.py`
-- **get_session_stats_impl()** (7 connections) — `server/realtime/connection_statistics.py`
-- **get_presence_statistics_impl()** (6 connections) — `server/realtime/connection_statistics.py`
-- **get_online_player_by_display_name_method()** (5 connections) — `server/realtime/connection_manager_methods.py`
-- **Any** (5 connections)
-- **test_get_online_player_by_display_name_impl_case_insensitive()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_online_player_by_display_name_impl_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_no_websockets()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_player_presence_info_impl_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_presence_statistics_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_presence_statistics_impl_no_players()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl_empty()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_get_session_stats_impl_empty_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_connection_count_mismatch()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_connections_but_not_online()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_consistent()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_error()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- **test_validate_player_presence_impl_online_but_no_connections()** (3 connections) — `server/tests/unit/realtime/test_connection_statistics.py`
-- *... and 24 more nodes in this community*
+- **test_shutdown_sequence.py** (27 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **shutdown_sequence.py** (17 connections) — `server/commands/shutdown_sequence.py`
+- **execute_shutdown_sequence()** (15 connections) — `server/commands/shutdown_sequence.py`
+- **_ShutdownApp** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_ShutdownAppState** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **shutdown_process_termination.py** (12 connections) — `server/commands/shutdown_process_termination.py`
+- **asyncio** (12 connections)
+- **test_shutdown_process_termination.py** (9 connections) — `server/tests/unit/commands/test_shutdown_process_termination.py`
+- **_persist_all_players()** (8 connections) — `server/commands/shutdown_sequence.py`
+- **Any** (8 connections)
+- **schedule_process_termination()** (7 connections) — `server/commands/shutdown_process_termination.py`
+- **_cancel_background_tasks()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **_despawn_all_npcs()** (7 connections) — `server/commands/shutdown_sequence.py`
+- **test_despawn_all_npcs_via_app_state_fallback()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_execute_shutdown_sequence_happy_path()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_persist_all_players_database_error_on_player()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **_cleanup_connection_manager()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_all_players()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_disconnect_nats_service()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **_stop_nats_message_handler()** (6 connections) — `server/commands/shutdown_sequence.py`
+- **test_cancel_background_tasks_timeout()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cancel_background_tasks_unregisters_shutdown_task()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_cleanup_connection_manager_missing()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_despawn_all_npcs_no_services()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- **test_disconnect_all_players_string_uuid()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (10 shared connections)
-- [test_message_handler_factory.py](test_message_handler_factory.py.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (3 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
+- [time.py](time.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager_methods.py`
-- `server/realtime/connection_statistics.py`
-- `server/tests/unit/realtime/test_connection_manager_methods.py`
-- `server/tests/unit/realtime/test_connection_statistics.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/commands/shutdown_sequence.py`
+- `server/tests/unit/commands/test_shutdown_process_termination.py`
+- `server/tests/unit/commands/test_shutdown_sequence.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 169 (98%)
+- INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

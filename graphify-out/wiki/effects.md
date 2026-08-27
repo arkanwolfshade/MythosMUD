@@ -1,25 +1,27 @@
 # effects
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **React Node Upgrade Plan** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
-- **React Node Upgrade Summary** (1 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
+- **effects** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/REACT_NODE_UPGRADE_SUMMARY.md`
-- `docs/archive/DEPENDENCY_UPGRADE_SPEC/react_node_upgrade_plan.md`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

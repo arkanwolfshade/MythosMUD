@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Black/Ruff Formatting Rule** (0 connections) — `.claude/rules/black.md`
+- **MythosMUD Deployment** (0 connections) — `docs/deployment.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/black.md`
+- `docs/deployment.md`
 
 ## Audit Trail
 

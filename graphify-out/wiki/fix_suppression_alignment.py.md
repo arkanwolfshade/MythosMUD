@@ -1,32 +1,31 @@
 # fix_suppression_alignment.py
 
-> 23 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Scenario 5: Chat Messages Between Players **[REQUIRES MULTI-PLAYER]**** (9 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Status** (2 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **scenario-05-chat-messages.md** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **✅ FIXES IMPLEMENTED - Ready for Testing** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 10: Complete Scenario and Proceed** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 1: Clean State - Unmute Ithaqua** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 2: Both Players in Same Room** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 3: AW Sends Chat Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 4: Verify Ithaqua Sees AW's Message** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 5: Ithaqua Replies** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 6: Verify AW Sees Ithaqua's Reply** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 7: Test Multiple Messages** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 8: Test Message Formatting** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Step 9: Test Message History** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Success Criteria Checklist** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- **fix_suppression_alignment.py** (10 connections) — `scripts/fix_suppression_alignment.py`
+- **parse_alignment_report()** (8 connections) — `scripts/fix_suppression_alignment.py`
+- **fix_file()** (7 connections) — `scripts/fix_suppression_alignment.py`
+- **_apply_fixes_to_line()** (6 connections) — `scripts/fix_suppression_alignment.py`
+- **Any** (5 connections)
+- **_group_fixes_by_line()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **main()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_missing_rules()** (4 connections) — `scripts/fix_suppression_alignment.py`
+- **add_pylint_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **add_ruff_suppression()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_file_line_pattern()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **_parse_issue_type_header()** (3 connections) — `scripts/fix_suppression_alignment.py`
+- **Path** (3 connections)
+- **Parse the alignment report to extract misaligned suppressions.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add ruff noqa comment to a line that has pylint disable.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Add pylint disable comment to a line that has noqa.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Group fixes by line number.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply all fixes for a single line.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Apply fixes to a file.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse issue type header (MISSING RUFF or MISSING PYLINT).** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse file:line pattern from a line. Returns (file, line) or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
+- **Parse missing rules from a line. Returns misaligned dict or None.** (1 connections) — `scripts/fix_suppression_alignment.py`
 
 ## Relationships
 
@@ -34,11 +33,11 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-05-chat-messages.md`
+- `scripts/fix_suppression_alignment.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 36 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,25 +1,25 @@
 # Bug Report Issue Template
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_MigrationArgs** (3 connections) — `server/scripts/migrate_combat_data.py`
-- **Protocol** (1 connections)
-- **argparse namespace for this script.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Bug Report Issue Template** (1 connections) — `.github/ISSUE_TEMPLATE/bug_report.yml`
+- **Feature Request Issue Template** (1 connections) — `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Relationships
 
-- [Communities (19 total, 4 thin omitted)](Communities_19_total,_4_thin_omitted.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/migrate_combat_data.py`
+- `.github/ISSUE_TEMPLATE/bug_report.yml`
+- `.github/ISSUE_TEMPLATE/feature_request.yml`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

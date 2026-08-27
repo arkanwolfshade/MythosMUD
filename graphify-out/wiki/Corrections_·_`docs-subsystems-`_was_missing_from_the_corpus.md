@@ -1,33 +1,28 @@
 # Corrections · `docs/subsystems/` was missing from the corpus
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **optimized_validate_alias_name()** (7 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_alias_name_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_alias_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating alias name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating alias name with hyphen (invalid - aliases don't allow hyphens).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Optimized validation for alias name fields. Args: value: The alias name to…** (1 connections) — `server/validators/optimized_security_validator.py`
+- **Corrections · `docs/subsystems/` was missing from the corpus** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **`docs/subsystems/` — 15 documents, 2,497 lines** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDING SHARPENED — the ADR-009 collision is real and now better characterised** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **FINDINGS WITHDRAWN** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **Open decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **The headline finding is REINFORCED, not weakened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
+- **What happened** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Relationships
 
-- [map/types.ts](map-types.ts.md) (5 shared connections)
-- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/CORRECTIONS-Corpus-Gap.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

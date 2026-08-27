@@ -1,33 +1,28 @@
 # Design ↔ Implementation Drift Audit
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **check_dangerous_characters()** (6 connections) — `server/validators/security_validator.py`
-- **get_dangerous_characters()** (5 connections) — `server/validators/security_validator.py`
-- **test_check_dangerous_characters_has_dangerous()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_check_dangerous_characters_no_dangerous()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_get_dangerous_characters()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test getting dangerous characters list.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test checking for dangerous characters when none present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Test checking for dangerous characters when present.** (1 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **Get the list of dangerous characters used in validation. Returns: List[str]:…** (1 connections) — `server/validators/security_validator.py`
-- **Check if text contains dangerous characters. Args: text: The text to check…** (1 connections) — `server/validators/security_validator.py`
+- **Design ↔ Implementation Drift Audit** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Headline finding · the design record was largely built from the code** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Correction · the "back-dated ADRs" evidence was wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Notes** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **P8 progress** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Rulings — all 8 complete** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
+- **Scope boundary** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
 
 ## Relationships
 
-- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [INDEX.md](INDEX.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
-- `server/validators/security_validator.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/INDEX.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

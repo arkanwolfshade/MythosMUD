@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Map Regression Tests Proposal** (0 connections) — `docs/testing/map-regression-tests.md`
+- **start_e2e_test.ps1** (0 connections) — `scripts/start_e2e_test.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/testing/map-regression-tests.md`
+- `scripts/start_e2e_test.ps1`
 
 ## Audit Trail
 

@@ -4,53 +4,44 @@
 
 ## Key Concepts
 
-- **e2e-bootstrap.ts** (21 connections) — `client/src/test/e2e-bootstrap.ts`
-- **collect-n-daisy-quest.spec.ts** (18 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **global-setup.ts** (17 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **loadE2eEnv()** (14 connections) — `client/src/test/e2e-bootstrap.ts`
-- **failBootstrap()** (11 connections) — `client/src/test/e2e-bootstrap.ts`
-- **globalSetup()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **verifyServerBootstrap()** (7 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **spawnOutputDetail()** (6 connections) — `client/src/test/e2e-bootstrap.ts`
-- **formatLoginFailure()** (5 connections) — `client/src/test/e2e-bootstrap.ts`
-- **runE2ePlayerRoomReset()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **runE2eSeed()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **verifyE2eUsersInDatabase()** (5 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **E2E_PROJECT_ROOT** (5 connections) — `client/src/test/e2e-bootstrap.ts`
-- **e2e-bootstrap.test.ts** (5 connections) — `client/src/test/e2e-bootstrap.test.ts`
-- **redactDatabaseUrl()** (4 connections) — `client/src/test/e2e-bootstrap.ts`
-- **runEnsureE2eDatabase()** (4 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **spawnMorgan()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **countProfessionsPayload()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
-- **parseE2eEnvContent()** (3 connections) — `client/src/test/e2e-bootstrap.ts`
-- **verifyClientAccessible()** (3 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **appendBootstrapFailureLog()** (2 connections) — `client/src/test/e2e-bootstrap.ts`
-- **fetchResponseBodyText()** (2 connections) — `client/tests/e2e/runtime/global-setup.ts`
-- **assertMorganVisible()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **resetDaisyQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- **resetCollectNQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **Test Pruning Candidates - Detailed List** (10 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Recommended Pruning Order** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Specific Test Removal Justifications** (5 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **High-Impact Consolidations** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Immediate Pruning Candidates (High Confidence)** (4 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category A: Infrastructure Tests Testing Framework Behavior** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category B: Coverage Tests Written for Metrics** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Total Impact Estimate** (3 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Category C: Model Property Tests** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Consolidation Candidates** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Coverage Impact Analysis** (2 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **1. Command Validation Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **2. Error Response Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **3. Permission Check Tests** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Aggressive Estimate (Full Optimization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Conclusion** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Conservative Estimate (Implement Phase A + Basic Parametrization)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/coverage/test_command_handler_coverage.py` (1,039 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/coverage/test_error_logging_coverage.py` (691 lines)** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/unit/infrastructure/test_dependency_injection.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **File: `server/tests/unit/infrastructure/test_lifespan.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Files: `server/tests/unit/models/test_*.py`** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 1: Testing Python Language Features** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 2: Testing Framework Behavior** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
+- **Pattern 3: Tests with No Real Assertions** (1 connections) — `docs/archive/TEST_PRUNING_CANDIDATES.md`
 - *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Design Critique](Design_Critique.md) (5 shared connections)
-- [CombatValidator](CombatValidator.md) (5 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (5 shared connections)
-- [NATSConfig](NATSConfig.md) (4 shared connections)
-- [test_command_processor.py](test_command_processor.py.md) (2 shared connections)
+- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
 
 ## Source Files
 
-- `@playwright/test`
-- `client/src/test/e2e-bootstrap.test.ts`
-- `client/src/test/e2e-bootstrap.ts`
-- `client/tests/e2e/runtime/global-setup.ts`
-- `client/tests/e2e/runtime/quest/collect-n-daisy-quest.spec.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `docs/archive/TEST_PRUNING_CANDIDATES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

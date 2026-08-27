@@ -1,23 +1,22 @@
 # fix_markdown_code_block_style.py
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **lint_sql_guardrails.py** (7 connections) — `scripts/lint_sql_guardrails.py`
-- **check_select_star()** (6 connections) — `scripts/lint_sql_guardrails.py`
-- **check_not_in_subquery()** (5 connections) — `scripts/lint_sql_guardrails.py`
-- **main()** (5 connections) — `scripts/lint_sql_guardrails.py`
-- **_strip_block_comments()** (4 connections) — `scripts/lint_sql_guardrails.py`
-- **_collect_sql_files()** (3 connections) — `scripts/lint_sql_guardrails.py`
-- **_strip_line_comment()** (3 connections) — `scripts/lint_sql_guardrails.py`
+- **fix_markdown_code_block_style.py** (6 connections) — `scripts/fix_markdown_code_block_style.py`
+- **fix_code_block_style()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
+- **fix_markdown_file()** (5 connections) — `scripts/fix_markdown_code_block_style.py`
+- **main()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
+- **parse_markdownlint_output()** (4 connections) — `scripts/fix_markdown_code_block_style.py`
+- **detect_code_language()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
+- **is_indented_code_line()** (3 connections) — `scripts/fix_markdown_code_block_style.py`
 - **Path** (3 connections)
-- **Lightweight guardrails for hand-maintained PostgreSQL SQL. Warns on: - select *…** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Return line with line comment removed (-- ...).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Return content with block comments /* ... */ removed (simple, no nested).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Warn on select * outside comments.** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Warn on 'not in (' when followed by a subquery (select).** (1 connections) — `scripts/lint_sql_guardrails.py`
-- **Run SQL guardrail checks and return 1 if any issues found, 0 otherwise.** (1 connections) — `scripts/lint_sql_guardrails.py`
+- **Parse markdownlint output to get files with MD046 issues.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Check if a line is part of an indented code block.** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Fix code block style in a single markdown file. Returns: (changed,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Try to detect the language of a code block from its content. Returns empty…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
+- **Convert indented code blocks to fenced code blocks. Returns: (new_content,…** (1 connections) — `scripts/fix_markdown_code_block_style.py`
 
 ## Relationships
 
@@ -25,11 +24,11 @@
 
 ## Source Files
 
-- `scripts/lint_sql_guardrails.py`
+- `scripts/fix_markdown_code_block_style.py`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (100%)
+- EXTRACTED: 19 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

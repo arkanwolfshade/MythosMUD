@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **RoomPanel.tsx** (2 connections) — `client/src/components/panels/RoomPanel.tsx`
-- **RoomPanelProps** (1 connections) — `client/src/components/panels/RoomPanel.tsx`
-- **RoomPanel()** (1 connections) — `client/src/components/panels/RoomPanel.tsx`
+- **Whisper NATS Subject Bug Fix** (2 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- **chat.whisper.player Subject Segment** (1 connections) — `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- **Whisper Work Completed and Remaining** (1 connections) — `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
 
 ## Relationships
 
@@ -14,7 +14,8 @@
 
 ## Source Files
 
-- `client/src/components/panels/RoomPanel.tsx`
+- `e2e-tests/WHISPER_FIX_PHASE_1_COMPLETE.md`
+- `e2e-tests/WORK_COMPLETED_AND_REMAINING.md`
 
 ## Audit Trail
 

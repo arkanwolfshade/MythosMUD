@@ -1,69 +1,57 @@
 # NATSMessageBroker
 
-> 58 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **systemHandlers.ts** (23 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **types/mythosTime.ts** (23 connections) — `client/src/types/mythosTime.ts`
-- **lucidityEventUtils.ts** (20 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **MythosTimeState** (18 connections) — `client/src/types/mythosTime.ts`
-- **HeaderBar.tsx** (17 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **systemHandlers.test.ts** (14 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- **utils/mythosTime.ts** (13 connections) — `client/src/utils/mythosTime.ts`
-- **MythosTimeHud.tsx** (12 connections) — `client/src/components/MythosTimeHud.tsx`
-- **useMythosTimeBootstrap.ts** (12 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **buildLucidityStatus()** (10 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **ActiveEffectDisplay** (8 connections) — `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- **formatMythosTime12Hour()** (8 connections) — `client/src/utils/mythosTime.ts`
-- **MythosTimePayload** (7 connections) — `client/src/types/mythosTime.ts`
-- **buildMythosTimeState()** (7 connections) — `client/src/utils/mythosTime.ts`
-- **mythosTime.test.ts** (7 connections) — `client/src/utils/__tests__/mythosTime.test.ts`
-- **handleMythosTimeUpdate()** (6 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **isMythosTimePayload()** (6 connections) — `client/src/types/mythosTime.ts`
-- **MythosTimeHud.test.tsx** (6 connections) — `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- **HeaderBar()** (5 connections) — `client/src/components/ui-v2/HeaderBar.tsx`
-- **useMythosTimeBootstrap()** (5 connections) — `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- **parseNumber()** (5 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **lucidityEventUtils.test.ts** (5 connections) — `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- **appendHourChime()** (4 connections) — `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- **resolveCurrentLucidity()** (4 connections) — `client/src/utils/lucidityEventUtils.ts`
-- **HeaderBar.test.tsx** (4 connections) — `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- *... and 33 more nodes in this community*
+- **NATSMessageBroker** (33 connections) — `server/infrastructure/nats_broker.py`
+- **PublishError** (11 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (7 connections) — `server/infrastructure/nats_broker.py`
+- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **._validate_publish_message()** (5 connections) — `server/infrastructure/nats_broker.py`
+- **Any** (5 connections)
+- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._validate_publish_subject()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_disconnect_async()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._perform_health_check()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **._reconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
+- **Exception raised when publishing message fails.** (1 connections) — `server/infrastructure/message_broker.py`
+- **Connect to NATS server. Returns: bool: True if connection successful, False…** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Check if connected to NATS and healthy. Returns: bool: True if connected and…** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Publish message to NATS subject.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Subscribe to NATS subject with message handler.** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Send request and wait for reply (request-reply pattern). Args: subject: NATS…** (1 connections) — `server/infrastructure/nats_broker.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [nats_exceptions.py](nats_exceptions.py.md) (16 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (16 shared connections)
-- [LogAggregator](LogAggregator.md) (6 shared connections)
-- [send_game_event](send_game_event.md) (5 shared connections)
-- [NPCCombatMemory](NPCCombatMemory.md) (5 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (3 shared connections)
-- [NPCBase](NPCBase.md) (3 shared connections)
-- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (2 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (2 shared connections)
-- [TypeScript Best Practices](TypeScript_Best_Practices.md) (2 shared connections)
+- [nats_broker.py](nats_broker.py.md) (15 shared connections)
+- [test_nats_broker.py](test_nats_broker.py.md) (6 shared connections)
+- [._error_callback](_error_callback.md) (2 shared connections)
+- [nats_broker](nats_broker.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
+- [test_nats_messages.py](test_nats_messages.py.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/MythosTimeHud.tsx`
-- `client/src/components/__tests__/MythosTimeHud.test.tsx`
-- `client/src/components/ui-v2/HeaderBar.tsx`
-- `client/src/components/ui-v2/__tests__/HeaderBar.test.tsx`
-- `client/src/components/ui-v2/eventHandlers/__tests__/systemHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/systemHandlers.ts`
-- `client/src/components/ui-v2/hooks/useMythosTimeBootstrap.ts`
-- `client/src/components/ui-v2/utils/stateUpdateUtils.ts`
-- `client/src/types/mythosTime.ts`
-- `client/src/utils/__tests__/lucidityEventUtils.test.ts`
-- `client/src/utils/__tests__/mythosTime.test.ts`
-- `client/src/utils/lucidityEventUtils.ts`
-- `client/src/utils/mythosTime.ts`
+- `server/infrastructure/message_broker.py`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 188 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (87%)
+- INFERRED: 11 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

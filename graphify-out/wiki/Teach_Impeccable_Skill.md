@@ -1,21 +1,20 @@
 # Teach Impeccable Skill
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **lint_container_get_instance.py** (6 connections) — `scripts/lint_container_get_instance.py`
-- **scan()** (5 connections) — `scripts/lint_container_get_instance.py`
-- **_collect_python_files()** (3 connections) — `scripts/lint_container_get_instance.py`
-- **_find_get_instance_lines()** (3 connections) — `scripts/lint_container_get_instance.py`
-- **main()** (3 connections) — `scripts/lint_container_get_instance.py`
-- **AllowlistEntry** (2 connections) — `scripts/lint_container_get_instance.py`
-- **Path** (1 connections)
-- **Guard against new `ApplicationContainer.get_instance()` service-location debt…** (1 connections) — `scripts/lint_container_get_instance.py`
-- **Return 1-based line numbers of real `ApplicationContainer.get_instance()`…** (1 connections) — `scripts/lint_container_get_instance.py`
-- **Scan server/ for ApplicationContainer.get_instance() calls. Returns…** (1 connections) — `scripts/lint_container_get_instance.py`
-- **Run the container-injection guard and return 1 if any file's get_instance()…** (1 connections) — `scripts/lint_container_get_instance.py`
-- **One file's confirmed get_instance() call-site count, and why it's there.** (1 connections) — `scripts/lint_container_get_instance.py`
+- **Teach Impeccable Skill** (7 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Skill** (3 connections) — `.cursor/skills/overdrive/SKILL.md`
+- **Polish Skill** (3 connections) — `.cursor/skills/polish/SKILL.md`
+- **Quieter Skill** (3 connections) — `.cursor/skills/quieter/SKILL.md`
+- **Onboard Skill** (2 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Optimize Skill** (2 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Typeset Skill** (2 connections) — `.cursor/skills/typeset/SKILL.md`
+- **Aha Moment Onboarding** (1 connections) — `.cursor/skills/onboard/SKILL.md`
+- **Core Web Vitals Performance** (1 connections) — `.cursor/skills/optimize/SKILL.md`
+- **Design Context Persistence (.impeccable.md)** (1 connections) — `.cursor/skills/teach-impeccable/SKILL.md`
+- **Overdrive Mode** (1 connections) — `.cursor/skills/overdrive/SKILL.md`
 
 ## Relationships
 
@@ -23,12 +22,18 @@
 
 ## Source Files
 
-- `scripts/lint_container_get_instance.py`
+- `.cursor/skills/onboard/SKILL.md`
+- `.cursor/skills/optimize/SKILL.md`
+- `.cursor/skills/overdrive/SKILL.md`
+- `.cursor/skills/polish/SKILL.md`
+- `.cursor/skills/quieter/SKILL.md`
+- `.cursor/skills/teach-impeccable/SKILL.md`
+- `.cursor/skills/typeset/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,13 +1,12 @@
 # Chaosium graphify snapshot - Berlin - The Wicked City
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Cthulhu Dark Ages - 3rd Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **Cthulhu Dark Ages - 3rd Edition.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Chaosium graphify snapshot - Berlin - The Wicked City** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **berlin-the-wicked-city/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/berlin-the-wicked-city/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

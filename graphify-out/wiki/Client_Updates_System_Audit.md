@@ -4,21 +4,22 @@
 
 ## Key Concepts
 
-- **8. Error Handling and Debugging** (3 connections) — `.cursor/commands/server-test-remediation.md`
-- **Common Debug Commands** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Test Debugging** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Client Updates System Audit** (2 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Option C Replacement Client Updates** (1 connections) — `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
+- **Architecture Review Plan** (1 connections) — `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
 
 ## Relationships
 
-- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
+- `.cursor/plans/client_updates_system_audit_628e3fef.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

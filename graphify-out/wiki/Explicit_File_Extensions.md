@@ -1,23 +1,22 @@
 # Explicit File Extensions
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_stand_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_stand_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Explicit File Extensions** (0 connections) — `.claude/rules/vite.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `.claude/rules/vite.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

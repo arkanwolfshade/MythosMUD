@@ -1,44 +1,42 @@
 # UUID
 
-> 15 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **handle_time_command()** (14 connections) — `server/commands/time_commands.py`
-- **test_time_commands.py** (9 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **asyncio** (5 connections)
-- **test_handle_time_command_holiday_service_error()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holiday_service()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_no_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_success()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **test_handle_time_command_with_holidays()** (4 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() includes active holidays.** (2 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Any** (1 connections)
-- **Handle the time command, exposing the current Mythos time and active holidays.** (1 connections) — `server/commands/time_commands.py`
-- **Unit tests for time command handlers. Tests the time command functionality.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles holiday service errors.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() handles missing holiday service.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
-- **Test handle_time_command() returns time information.** (1 connections) — `server/tests/unit/commands/test_time_commands.py`
+- **UUID** (8 connections)
+- **Any** (7 connections)
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (1 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (4 shared connections)
+- [asyncio](asyncio.md) (1 shared connections)
+- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
+- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
+- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/time_commands.py`
-- `server/tests/unit/commands/test_time_commands.py`
+- `server/realtime/channel_broadcasting_strategies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (94%)
-- INFERRED: 2 (6%)
+- EXTRACTED: 29 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

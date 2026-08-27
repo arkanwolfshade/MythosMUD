@@ -1,27 +1,31 @@
 # enum
 
-> 5 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **rename_used_to_is_active.py** (5 connections) — `server/scripts/rename_used_to_is_active.py`
-- **apply_migration()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **main()** (3 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/rename_used_to_is_active.py`
-- **Apply the migration to rename used back to is_active. Args: database_url:…** (1 connections) — `server/scripts/rename_used_to_is_active.py`
+- **enum** (7 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **zone_type** (4 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **city** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **countryside** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **desert** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **mountains** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **swamp** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
+- **tundra** (1 connections) — `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/scripts/rename_used_to_is_active.py`
+- `tools/room_toolkit/room_validator/schemas/zone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,56 +1,64 @@
 # MythosTickScheduler
 
-> 34 nodes
+> 96 nodes
 
 ## Key Concepts
 
-- **connection_cleanup_methods.py** (19 connections) — `server/realtime/connection_cleanup_methods.py`
-- **test_connection_cleanup_methods.py** (17 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **delegate_connection_cleaner()** (11 connections) — `server/realtime/connection_delegates.py`
-- **delegate_connection_cleaner_sync()** (9 connections) — `server/realtime/connection_delegates.py`
-- **cleanup_dead_connections_impl()** (8 connections) — `server/realtime/connection_cleanup_methods.py`
-- **check_and_cleanup_impl()** (7 connections) — `server/realtime/connection_cleanup_methods.py`
-- **cleanup_orphaned_data_impl()** (7 connections) — `server/realtime/connection_cleanup_methods.py`
-- **cleanup_ghost_players_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
-- **force_cleanup_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
-- **prune_stale_players_impl()** (6 connections) — `server/realtime/connection_cleanup_methods.py`
-- **Any** (6 connections)
-- **asyncio** (5 connections)
-- **test_check_and_cleanup_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_cleanup_dead_connections_default_when_cleaner_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_cleanup_dead_connections_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_cleanup_orphaned_data_impl_ages_sessions()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_force_cleanup_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_delegate_connection_cleaner_sync_none()** (3 connections) — `server/tests/unit/realtime/test_connection_delegates.py`
-- **manager()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_cleanup_ghost_players_impl_delegates()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **test_prune_stale_players_impl_delegates()** (2 connections) — `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- **UUID** (2 connections)
-- **fixture** (1 connections)
-- **Cleanup method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_cleanup_methods.py`
-- **Clean up dead connections for a specific player or all players.** (1 connections) — `server/realtime/connection_cleanup_methods.py`
-- *... and 9 more nodes in this community*
+- **MythosTickScheduler** (32 connections) — `server/time/tick_scheduler.py`
+- **MythosChronicle** (30 connections) — `server/time/time_service.py`
+- **test_tick_scheduler.py** (19 connections) — `server/tests/unit/time/test_tick_scheduler.py`
+- **tick_scheduler.py** (17 connections) — `server/time/tick_scheduler.py`
+- **datetime** (15 connections)
+- **_ensure_utc()** (13 connections) — `server/time/time_service.py`
+- **.get_calendar_components()** (10 connections) — `server/time/time_service.py`
+- **ChronicleState** (9 connections) — `server/time/time_service.py`
+- **.error()** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **.get_current_mythos_datetime()** (9 connections) — `server/time/time_service.py`
+- **asyncio** (9 connections)
+- **.get_daypart()** (8 connections) — `server/time/time_service.py`
+- **._load_state()** (8 connections) — `server/time/time_service.py`
+- **._persist_state()** (8 connections) — `server/time/time_service.py`
+- **time/__init__.py** (8 connections) — `server/time/__init__.py`
+- **.__init__()** (7 connections) — `server/time/tick_scheduler.py`
+- **.is_daytime()** (7 connections) — `server/time/time_service.py`
+- **.is_witching_hour()** (7 connections) — `server/time/time_service.py`
+- **.to_mythos_datetime()** (7 connections) — `server/time/time_service.py`
+- **._migrate_old_state_file()** (6 connections) — `server/time/time_service.py`
+- **.__init__()** (5 connections) — `server/config/models/app.py`
+- **._emit_pending_ticks()** (5 connections) — `server/time/tick_scheduler.py`
+- **._publish_tick()** (5 connections) — `server/time/tick_scheduler.py`
+- **._run()** (5 connections) — `server/time/tick_scheduler.py`
+- **._truncate_to_hour()** (5 connections) — `server/time/tick_scheduler.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [submitAuth.ts](submitAuth.ts.md) (6 shared connections)
-- [security.ts](security.ts.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [TargetMatch](TargetMatch.md) (3 shared connections)
-- [PhantomHostileService](PhantomHostileService.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (10 shared connections)
+- [test_time_bundle.py](test_time_bundle.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [TaskRegistry](TaskRegistry.md) (4 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
+- [time_event_consumer.py](time_event_consumer.py.md) (3 shared connections)
+- [EventBus](EventBus.md) (3 shared connections)
+- [HolidayService](HolidayService.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [get_config](get_config.md) (2 shared connections)
+- [ScheduleService](ScheduleService.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_cleanup_methods.py`
-- `server/realtime/connection_delegates.py`
-- `server/tests/unit/realtime/test_connection_cleanup_methods.py`
-- `server/tests/unit/realtime/test_connection_delegates.py`
+- `server/config/models/app.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- `server/tests/unit/time/test_tick_scheduler.py`
+- `server/time/__init__.py`
+- `server/time/tick_scheduler.py`
+- `server/time/time_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 203 (89%)
+- INFERRED: 26 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

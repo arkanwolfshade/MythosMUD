@@ -1,36 +1,43 @@
 # Asynchronous Code Audit - December 3, 2025
 
-> 12 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **_EventPersistence** (6 connections) — `server/realtime/event_publisher.py`
-- **_NatsPublish** (5 connections) — `server/realtime/event_publisher.py`
-- **.__init__()** (5 connections) — `server/realtime/event_publisher.py`
-- **_Named** (4 connections) — `server/realtime/event_publisher.py`
-- **.get_player_by_id()** (3 connections) — `server/realtime/event_publisher.py`
-- **Protocol** (3 connections)
-- **.get_room_by_id()** (2 connections) — `server/realtime/event_publisher.py`
-- **.is_connected()** (2 connections) — `server/realtime/event_publisher.py`
-- **UUID** (2 connections)
-- **.publish()** (1 connections) — `server/realtime/event_publisher.py`
-- **NATSSubjectManager** (1 connections)
-- **Initialize EventPublisher service. Args: nats_service: NATS service instance…** (1 connections) — `server/realtime/event_publisher.py`
+- **Asynchronous Code Audit - December 3, 2025** (14 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **🔍 TESTING STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **✍️ AUDIT CONCLUSION** (3 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **🎯 RISK ASSESSMENT** (3 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **ASYNC_AUDIT_2025-12-03.md** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **adjusts spectacles grimly** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Audit Status**: ✅**COMPLETE** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Blocking Risks** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **📞 ESCALATION MATRIX** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Executive Summary** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Non-Blocking Risks** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 1 Testing (Critical)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 2 Testing (Performance)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Phase 3 Testing (Polish)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [.load_container_from_room_json](load_container_from_room_json.md) (2 shared connections)
-- [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
+- [📊 METRICS AND SUCCESS CRITERIA](📊_METRICS_AND_SUCCESS_CRITERIA.md) (1 shared connections)
+- [📚 REFERENCES AND RESOURCES](📚_REFERENCES_AND_RESOURCES.md) (1 shared connections)
+- [🚀 DEPLOYMENT STRATEGY](🚀_DEPLOYMENT_STRATEGY.md) (1 shared connections)
+- [🔴 CRITICAL ISSUES](🔴_CRITICAL_ISSUES.md) (1 shared connections)
+- [🟡 HIGH PRIORITY ISSUES](🟡_HIGH_PRIORITY_ISSUES.md) (1 shared connections)
+- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
+- [✅ POSITIVE FINDINGS](✅_POSITIVE_FINDINGS.md) (1 shared connections)
+- [Phase 1: Critical Fixes (Week 1) - BLOCKING ISSUES](Phase_1-_Critical_Fixes_Week_1_-_BLOCKING_ISSUES.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/event_publisher.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (95%)
-- INFERRED: 1 (5%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

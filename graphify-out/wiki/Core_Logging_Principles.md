@@ -1,29 +1,27 @@
 # Core Logging Principles
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **P3 · config-api** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **P3 · config-api Findings** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **CONFORMS worth recording** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H11 · Config fail-fast is defeated at app construction, degrading to dev CORS** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H12 · The `/v1` prefix exists in no design document, and every ADR endpoint path is wrong** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **H13 · The API specification document specifies no API** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **Medium / Low** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
-- **Prior finding resolved** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- **Core Logging Principles** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **1. **Structured Logging**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2. **Context is Everything**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **3. **Security First**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **4. **Performance Aware**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **5. **Actionable Information**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- [Enhanced Logging Best Practices for MythosMUD](Enhanced_Logging_Best_Practices_for_MythosMUD.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Cluster-ConfigAPI.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

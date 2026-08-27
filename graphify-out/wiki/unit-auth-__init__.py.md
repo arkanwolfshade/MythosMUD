@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_player_skills_migration.py** (0 connections) — `scripts/apply_player_skills_migration.py`
+- **unit/auth/__init__.py** (0 connections) — `server/tests/unit/auth/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_player_skills_migration.py`
+- `server/tests/unit/auth/__init__.py`
 
 ## Audit Trail
 

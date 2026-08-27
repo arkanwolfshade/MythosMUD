@@ -1,27 +1,26 @@
 # 2025_11_21_convert_players_player_id_to_uuid.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **📚 Documentation Created** (6 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **1. Comprehensive Audit Report** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **2. Executive Summary** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **3. Developer Quick Reference** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **4. Migration Tracker** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
-- **5. Test Suite** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **2025_11_21_convert_players_player_id_to_uuid.py** (2 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from VARCHAR to UUID. PostgreSQL can directly cast…** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
+- **Convert players.player_id from UUID back to VARCHAR. This is a downgrade path,…** (1 connections) — `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Relationships
 
-- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- `server/alembic/versions/2025_11_21_convert_players_player_id_to_uuid.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

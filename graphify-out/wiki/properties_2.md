@@ -1,48 +1,42 @@
 # properties
 
-> 43 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.service()** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.mock_config()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_clear_scope_override_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_global()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_player()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_room()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_get_combat_configuration_for_scope_temporary()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_update_combat_configuration_invalid_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **fixture** (2 connections)
-- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 18 more nodes in this community*
+- **properties** (13 connections) — `schemas/room_schema.json`
+- **name** (5 connections) — `schemas/room_schema.json`
+- **field1** (2 connections) — `schemas/room_schema.json`
+- **field2** (2 connections) — `schemas/room_schema.json`
+- **field3** (2 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **maxLength** (1 connections) — `schemas/room_schema.json`
+- **minLength** (1 connections) — `schemas/room_schema.json`
+- **type** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [test_level_service.py](test_level_service.py.md) (7 shared connections)
+- [room_schema.json](room_schema.json.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
+- [rest_location](rest_location.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
+- [zone](zone.md) (1 shared connections)
+- [sub_zone](sub_zone.md) (1 shared connections)
+- [environment](environment.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 46 (92%)
-- INFERRED: 4 (8%)
+- EXTRACTED: 20 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

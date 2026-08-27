@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **MythosMUD Deployment** (0 connections) — `docs/deployment.md`
+- **fix_professions_flavor_text.py** (0 connections) — `scripts/fix_professions_flavor_text.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/deployment.md`
+- `scripts/fix_professions_flavor_text.py`
 
 ## Audit Trail
 

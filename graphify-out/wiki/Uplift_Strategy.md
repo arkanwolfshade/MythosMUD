@@ -1,50 +1,48 @@
 # Uplift Strategy
 
-> 42 nodes
+> 46 nodes
 
 ## Key Concepts
 
-- **test_event_publisher.py** (26 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **asyncio** (13 connections)
-- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_uses_metadata_tick_number()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **mock_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_entered_event_with_metadata()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **fixture** (3 connections)
-- **test_event_publisher_init()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_get_next_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **test_reset_sequence_number()** (2 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Unit tests for event publisher. Tests the EventPublisher class.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- **Test get_next_sequence_number() returns and increments sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
-- *... and 17 more nodes in this community*
+- **Uplift Strategy** (33 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Files to Update** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **AFTER** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Category D: API Endpoint Tests (App State)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Critical Discovery & Fix** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Files Affected** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **New Tests to Add** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1: Fix Failing Integration Tests (Week 1-2) 🚧 **IN PROGRESS**** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2: Modernize Unit Test Patterns (Week 3-4)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Modernize Test Patterns (Week 5)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: Add Container Integration Tests (Week 6)** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Success Criteria:**✅**ALL MET** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **0.1 Create Container Test Fixtures ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **0.2 Update conftest.py ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **1.1 Identify All Failing Tests ✅** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **1.2 Fix Integration Test Fixtures ✅ **INFRASTRUCTURE COMPLETE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.1 Categorize Unit Tests by Dependency Pattern** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.2 Update Category B: Service Layer Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.3 Update Category C: Infrastructure Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **2.4 Update Category D: API Tests** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **3.1 Adopt Modern pytest Patterns** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **3.2 Eliminate Global State Dependencies** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **3.3 Consolidate Duplicate Test Fixtures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **4.1 Test ApplicationContainer Itself** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **4.2 Test Dependency Injection** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [.load_container_from_room_json](load_container_from_room_json.md) (10 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_event_publisher.py`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 61 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

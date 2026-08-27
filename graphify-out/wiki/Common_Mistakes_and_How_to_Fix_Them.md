@@ -1,30 +1,27 @@
 # Common Mistakes and How to Fix Them
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **P5 · Adversarial Refutation** (7 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **P5 · Adversarial Refutation** (2 connections) — `data/MythosMUD-Obsidian/Design Audit-2026-08-18/P5-Refutation.md`
-- **DOWNGRADED · F2 — config fail-fast → dev CORS (High → Low/Medium)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **DOWNGRADED · F5 — raw SQL at three layers (High → Medium)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **DOWNGRADED & REFRAMED · F4 — "12 modules bypass the facade" (High → Low)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **SURVIVES · F1 — DLQ never prunes (High, effort S)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **SURVIVES · F3 — deprecated global still called (High) — and it is worse than stated** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- **What this pass changed** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
+- **Common Mistakes and How to Fix Them** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 1: Forgetting to Update Imports** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 2: Using Deprecated Context Parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 3: String Formatting in Log Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 4: Missing Context in Error Logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **Mistake 5: Wrong Log Levels** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- [Migration Guide: From Default Logging to Enhanced Logging](Migration_Guide-_From_Default_Logging_to_Enhanced_Logging.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P5-Refutation.md`
-- `data/MythosMUD-Obsidian/Design Audit-2026-08-18/P5-Refutation.md`
+- `docs/archive/LOGGING_BEST_PRACTICES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

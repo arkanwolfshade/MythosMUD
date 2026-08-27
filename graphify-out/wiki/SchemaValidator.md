@@ -1,55 +1,55 @@
 # SchemaValidator
 
-> 80 nodes
+> 85 nodes
 
 ## Key Concepts
 
-- **test_rescue_service.py** (33 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **rescue_service.py** (20 connections) — `server/services/rescue_service.py`
-- **asyncio** (17 connections)
-- **RescueService** (12 connections) — `server/services/rescue_service.py`
-- **fixture** (10 connections)
-- **.rescue()** (8 connections) — `server/services/rescue_service.py`
-- **Any** (7 connections)
-- **_load_rescue_participants()** (6 connections) — `server/services/rescue_service.py`
-- **.__init__()** (6 connections) — `server/services/rescue_service.py`
-- **_ensure_uuid()** (5 connections) — `server/services/rescue_service.py`
-- **._apply_rescue_adjustment()** (5 connections) — `server/services/rescue_service.py`
-- **_dispatch_rescue_events()** (4 connections) — `server/services/rescue_service.py`
-- **_maybe_await()** (4 connections) — `server/services/rescue_service.py`
-- **rescue_service()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_lucidity_record()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **test_rescue_no_persistence()** (4 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **_rescue_success_payload()** (3 connections) — `server/services/rescue_service.py`
-- **async_session_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **lucidity_service_factory()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_event_dispatcher()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_lucidity_service()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **mock_session()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_rescuer()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- **sample_target()** (3 connections) — `server/tests/unit/services/test_rescue_service.py`
-- *... and 55 more nodes in this community*
+- **SchemaValidator** (55 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **TestSchemaValidator** (28 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.validate()** (6 connections) — `tools/room_toolkit/room_validator/rules/base_rule.py`
+- **.validate_room()** (5 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **test_schema_validator.py** (5 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.get_exit_flags()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.__init__()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_subzone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_zone_config()** (4 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **Path** (4 connections)
+- **.is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.is_self_reference_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **._load_schema()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.validate_room_database()** (3 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **.test_get_exit_flags_missing_flags()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_flags_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_invalid_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_object_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_get_exit_target_string_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_invalid_schema_file()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_schema_file_not_found()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_custom_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- **.test_init_with_default_schema()** (3 connections) — `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (9 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (3 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [test_npc_service.py](test_npc_service.py.md) (2 shared connections)
+- [RoomLoader](RoomLoader.md) (12 shared connections)
+- [TestHierarchicalSchema](TestHierarchicalSchema.md) (3 shared connections)
+- [ValidationRule](ValidationRule.md) (2 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/rescue_service.py`
-- `server/tests/unit/services/test_rescue_service.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/rules/base_rule.py`
+- `tools/room_toolkit/room_validator/tests/test_schema_validator.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 138 (96%)
-- INFERRED: 6 (4%)
+- EXTRACTED: 130 (94%)
+- INFERRED: 9 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

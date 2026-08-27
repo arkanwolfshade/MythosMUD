@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **cursor-cli-agent.ps1** (0 connections) — `scripts/cursor-cli-agent.ps1`
+- **unit/models/__init__.py** (0 connections) — `server/tests/unit/models/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/cursor-cli-agent.ps1`
+- `server/tests/unit/models/__init__.py`
 
 ## Audit Trail
 

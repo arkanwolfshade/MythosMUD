@@ -1,26 +1,25 @@
 # Detailed Feature Comparison
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Implementation Phases** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 1: Core Separation** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 2: Enhanced Features** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 3: Polish and Optimization** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Phase 4: Testing and Refinement** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Detailed Feature Comparison** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Entry Points** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Primitives** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **Task Management** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

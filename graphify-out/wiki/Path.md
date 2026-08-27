@@ -4,49 +4,44 @@
 
 ## Key Concepts
 
-- **Changes by document** (16 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **DOCUMENTATION_AUDIT.md** (7 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **Documentation vs. Code Accuracy Audit Log** (4 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **ENHANCED_LOGGING_GUIDE.md** (3 connections) — `docs/LOGGING_BEST_PRACTICES.md`
-- **REAL_TIME_ARCHITECTURE.md** (3 connections) — `docs/realtime.md`
-- **Logging Quick Reference Pointer** (2 connections) — `docs/LOGGING_QUICK_REFERENCE.md`
-- **Quick Start E2E Tests Pointer** (2 connections) — `docs/QUICK_START_E2E_TESTS.md`
-- **Realtime Pointer** (2 connections) — `docs/realtime.md`
-- **Audit date** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **CLAUDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/COMMAND_MODELS_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONFIGURATION_FILES_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/CONTAINER_SYSTEM_API_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/DATABASE_ACCESS_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/E2E_TESTING_GUIDE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/EVENT_OWNERSHIP_MATRIX.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/LOGGING_QUICK_REFERENCE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/NATS_SUBJECT_PATTERNS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/QUICK_START_E2E_TESTS.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **docs/realtime.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **e2e-tests/MULTIPLAYER_TEST_RULES.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **server/README.md** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
-- **Summary** (1 connections) — `docs/archive/DOCUMENTATION_AUDIT.md`
+- **.fix_schema_issues()** (7 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Path** (7 connections)
+- **.create_backup()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.load_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.save_room_file()** (6 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._create_backup_if_requested()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_bidirectional_connections()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_fields()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.fix_self_references()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._save_fixed_room()** (5 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._find_room_file()** (4 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_exits()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **._fix_missing_optional_fields()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **.__init__()** (3 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix self-references by adding proper flags. Args: room_database: Complete room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Find the file for a room. Returns None if file doesn't exist.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create backup if requested.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing exits field. Returns True if fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing optional fields. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Initialize the room fixer. Args: base_path: Base directory for room files** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix missing fields based on errors. Returns True if any fixed.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Save fixed room if changes were made.** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Fix basic schema issues. Args: room_database: Complete room database…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Create a backup of a room file. Args: file_path: Path to the file to backup…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **Load a room file safely. Args: file_path: Path to the room file Returns: Room…** (1 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
 - *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [resolve_state](resolve_state.md) (1 shared connections)
-- [Migration 019 Verification Report](Migration_019_Verification_Report.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (13 shared connections)
 
 ## Source Files
 
-- `docs/LOGGING_BEST_PRACTICES.md`
-- `docs/LOGGING_QUICK_REFERENCE.md`
-- `docs/QUICK_START_E2E_TESTS.md`
-- `docs/archive/DOCUMENTATION_AUDIT.md`
-- `docs/realtime.md`
+- `tools/room_toolkit/room_validator/core/fixer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 48 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

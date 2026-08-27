@@ -1,31 +1,47 @@
 # emotes.schema.json
 
-> 10 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **subzone_with_override()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **zone_with_override_and_subzone_without()** (5 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **test_get_lucidity_rate_overrides_includes_subzone_row()** (4 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **test_get_lucidity_rate_overrides_includes_zone_and_excludes_null_subzone()** (4 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **async_sessionmaker** (4 connections)
-- **AsyncSession** (4 connections)
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
-- **A zone with special_rules set, and a subzone under it with special_rules NULL…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
-- **A zone with NO override, and a subzone under it WITH special_rules set. Yields…** (1 connections) — `server/tests/integration/test_lucidity_procedures.py`
+- **emotes.schema.json** (7 connections) — `db/static/schemas/emotes.schema.json`
+- **additionalProperties** (5 connections) — `db/static/schemas/emotes.schema.json`
+- **properties** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **required** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **aliases** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **emotes** (4 connections) — `db/static/schemas/emotes.schema.json`
+- **items** (3 connections) — `db/static/schemas/emotes.schema.json`
+- **other_message** (3 connections) — `db/static/schemas/emotes.schema.json`
+- **self_message** (3 connections) — `db/static/schemas/emotes.schema.json`
+- **properties** (2 connections) — `db/static/schemas/emotes.schema.json`
+- **required** (2 connections) — `db/static/schemas/emotes.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minProperties** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **$id** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **type** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **$schema** (1 connections) — `db/static/schemas/emotes.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/emotes.schema.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_lucidity_procedures.py`
+- `db/static/schemas/emotes.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 31 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

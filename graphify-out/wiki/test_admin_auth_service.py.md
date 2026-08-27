@@ -1,68 +1,55 @@
 # test_admin_auth_service.py
 
-> 48 nodes
+> 130 nodes
 
 ## Key Concepts
 
-- **RoomMapEditorRuntime.tsx** (41 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **RoomMapEditorRuntime.hooks.ts** (39 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditor()** (12 connections) — `client/src/components/map/RoomMapEditorRuntime.tsx`
-- **useRoomMapEditorModalHandlers()** (7 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditorAliases.test.ts** (7 connections) — `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
-- **RoomMapEditor.test.tsx** (6 connections) — `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- **useRoomMapEditorModals()** (5 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **RoomMapEditor.tsx** (5 connections) — `client/src/components/map/RoomMapEditor.tsx`
-- **directionConstants.test.ts** (5 connections) — `client/src/components/map/__tests__/directionConstants.test.ts`
-- **useRoomMapEditorData()** (4 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorEditing()** (4 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **MapEditToolbar.tsx** (4 connections) — `client/src/components/map/MapEditToolbar.tsx`
-- **RoomMapEditorCore.tsx** (4 connections) — `client/src/components/map/RoomMapEditorCore.tsx`
-- **RoomMapEditorFeature.tsx** (4 connections) — `client/src/components/map/RoomMapEditorFeature.tsx`
-- **RoomMapEditorImpl.tsx** (4 connections) — `client/src/components/map/RoomMapEditorImpl.tsx`
-- **RoomMapEditorScene.tsx** (4 connections) — `client/src/components/map/RoomMapEditorScene.tsx`
-- **MapEditToolbar()** (3 connections) — `client/src/components/map/MapEditToolbar.tsx`
-- **buildModalPreviewHandler()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorModalState()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **useRoomMapEditorSelection()** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **MAP_EDITOR_DIRECTIONS** (3 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **UseRoomMapDataOptions** (2 connections) — `client/src/components/map/hooks/useRoomMapData.ts`
-- **RoomMapEditorProps** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalCreateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- **buildModalUpdateEdgeHandler()** (2 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- *... and 23 more nodes in this community*
+- **test_admin_auth_service.py** (57 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **AdminAction** (34 connections) — `server/services/admin_auth_service.py`
+- **AdminRole** (25 connections) — `server/services/admin_auth_service.py`
+- **AdminAuthService** (19 connections) — `server/services/admin_auth_service.py`
+- **.validate_permission()** (11 connections) — `server/services/admin_auth_service.py`
+- **AdminSession** (6 connections) — `server/services/admin_auth_service.py`
+- **._update_session()** (6 connections) — `server/services/admin_auth_service.py`
+- **._has_permission()** (5 connections) — `server/services/admin_auth_service.py`
+- **._log_audit_event()** (5 connections) — `server/services/admin_auth_service.py`
+- **admin_auth_service()** (5 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **._check_rate_limit()** (4 connections) — `server/services/admin_auth_service.py`
+- **.get_user_role()** (4 connections) — `server/services/admin_auth_service.py`
+- **mock_user()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_admin_session_init()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_get_admin_auth_service()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_admin()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_admin_room_management()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_moderator()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_superuser()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **test_has_permission_viewer()** (4 connections) — `server/tests/unit/services/test_admin_auth_service.py`
+- **Request** (4 connections)
+- **.get_active_sessions()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_audit_log()** (3 connections) — `server/services/admin_auth_service.py`
+- **.get_user_id()** (3 connections) — `server/services/admin_auth_service.py`
+- *... and 105 more nodes in this community*
 
 ## Relationships
 
-- [test_rescue_service.py](test_rescue_service.py.md) (17 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (15 shared connections)
-- [Complexity Checking Alignment: Ruff C901 vs Pylint](Complexity_Checking_Alignment-_Ruff_C901_vs_Pylint.md) (3 shared connections)
-- [asyncio](asyncio.md) (2 shared connections)
-- [Async Persistence Migration Plan](Async_Persistence_Migration_Plan.md) (2 shared connections)
-- [TypeScript Best Practices](TypeScript_Best_Practices.md) (2 shared connections)
-- [compilerOptions](compilerOptions.md) (2 shared connections)
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
+- [User](User.md) (4 shared connections)
+- [RoomService](RoomService.md) (2 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/map/MapEditToolbar.tsx`
-- `client/src/components/map/RoomMapEditor.tsx`
-- `client/src/components/map/RoomMapEditorCore.tsx`
-- `client/src/components/map/RoomMapEditorFeature.tsx`
-- `client/src/components/map/RoomMapEditorImpl.tsx`
-- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
-- `client/src/components/map/RoomMapEditorRuntime.tsx`
-- `client/src/components/map/RoomMapEditorScene.tsx`
-- `client/src/components/map/__tests__/MapEditToolbar.test.tsx`
-- `client/src/components/map/__tests__/RoomMapEditor.test.tsx`
-- `client/src/components/map/__tests__/RoomMapEditorAliases.test.ts`
-- `client/src/components/map/__tests__/directionConstants.test.ts`
-- `client/src/components/map/__tests__/roomMapEditorTestSetup.tsx`
-- `client/src/components/map/hooks/useRoomMapData.ts`
+- `server/services/admin_auth_service.py`
+- `server/tests/unit/services/test_admin_auth_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 127 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 175 (81%)
+- INFERRED: 40 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

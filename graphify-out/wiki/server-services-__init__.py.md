@@ -1,51 +1,66 @@
 # server/services/__init__.py
 
-> 29 nodes
+> 131 nodes
 
 ## Key Concepts
 
-- **Async Remediation Final Report** (13 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📁 Files Modified (16 Total)** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **💰 ROI Summary** (4 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎭 Final Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🚀 Production Readiness** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **✅ Verification Results** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📊 What Was Accomplished** (3 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **✅ COMPLETE - ALL 48 INSTANCES MIGRATED** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Status**: ✅**REMEDIATION 100% COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎯 Success Criteria - Final Status** (2 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **48 Sync Persistence Call Instances** (2 connections) — `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- **All async anti-patterns have been exorcised from the codebase** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **All Targets Met** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **API/Commands (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Checklist** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Core Infrastructure (2 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **📚 Documentation Delivered** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **🎯 Final Metrics** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Investment** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Linting** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Phase 1: Critical Fixes (4 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Phase 2: Complete Migration (5 hours)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Recommended Next Steps** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Return** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- **Service Layer (12 files)** (1 connections) — `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
-- *... and 4 more nodes in this community*
+- **server/services/__init__.py** (42 connections) — `server/services/__init__.py`
+- **InventoryService** (37 connections) — `server/services/inventory_service.py`
+- **inventory_unequip_command.py** (33 connections) — `server/commands/inventory_unequip_command.py`
+- **inventory_service.py** (33 connections) — `server/services/inventory_service.py`
+- **equipment_service.py** (23 connections) — `server/services/equipment_service.py`
+- **test_equipment_service.py** (23 connections) — `server/tests/unit/services/test_equipment_service.py`
+- **SlotValidationError** (21 connections) — `server/services/equipment_service.py`
+- **inventory_mutation_guard.py** (21 connections) — `server/services/inventory_mutation_guard.py`
+- **test_inventory_service.py** (21 connections) — `server/tests/unit/services/test_inventory_service.py`
+- **InventoryCapacityError** (20 connections) — `server/services/inventory_service.py`
+- **EquipmentService** (18 connections) — `server/services/equipment_service.py`
+- **inventory_service_helpers.py** (16 connections) — `server/commands/inventory_service_helpers.py`
+- **EquipmentCapacityError** (11 connections) — `server/services/equipment_service.py`
+- **InventorySplitError** (11 connections) — `server/services/inventory_service.py`
+- **InventoryValidationError** (10 connections) — `server/services/inventory_service.py`
+- **.equip_from_inventory()** (10 connections) — `server/services/equipment_service.py`
+- **._clone_stack()** (9 connections) — `server/services/inventory_service.py`
+- **_ensure_shared_services_initialized()** (8 connections) — `server/commands/inventory_service_helpers.py`
+- **.unequip_to_inventory()** (8 connections) — `server/services/equipment_service.py`
+- **.add_stack()** (8 connections) — `server/services/inventory_service.py`
+- **.split_stack()** (8 connections) — `server/services/inventory_service.py`
+- **InventoryServiceError** (7 connections) — `server/services/inventory_service.py`
+- **._clone_with_quantity()** (7 connections) — `server/services/inventory_service.py`
+- **Any** (7 connections)
+- **EquipmentServiceError** (6 connections) — `server/services/equipment_service.py`
+- *... and 106 more nodes in this community*
 
 ## Relationships
 
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
-- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
-- [Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu 7th Edition - Keeper's Rulebook  (2026-08-11)](Graph_Report_-_C-_Users_arkan_Proton_Drive_arkanwolfshade_My_files_Chaosium_Call_of_Cthulhu_7th_Edition_-_Keeper's_Rulebook__2026-08-11.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (28 shared connections)
+- [inventory_equip_command.py](inventory_equip_command.py.md) (14 shared connections)
+- [handle_unequip_command](handle_unequip_command.md) (10 shared connections)
+- [ContainerService](ContainerService.md) (10 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (9 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (9 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (7 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (7 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (6 shared connections)
+- [equipment_helpers.py](equipment_helpers.py.md) (5 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_PERSISTENCE_MIGRATION_TRACKER.md`
-- `docs/archive/ASYNC_REMEDIATION_FINAL_REPORT.md`
+- `server/commands/inventory_service_helpers.py`
+- `server/commands/inventory_unequip_command.py`
+- `server/services/__init__.py`
+- `server/services/equipment_service.py`
+- `server/services/inventory_mutation_guard.py`
+- `server/services/inventory_service.py`
+- `server/tests/unit/services/test_equipment_service.py`
+- `server/tests/unit/services/test_inventory_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 354 (91%)
+- INFERRED: 37 (9%)
 - AMBIGUOUS: 0 (0%)
 
 ---

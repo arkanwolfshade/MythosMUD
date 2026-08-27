@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Docker Best Practices Rule** (0 connections) — `.cursor/rules/docker.md`
+- **Structured Logging Correct Patterns** (0 connections) — `docs/examples/logging/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/rules/docker.md`
+- `docs/examples/logging/README.md`
 
 ## Audit Trail
 

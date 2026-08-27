@@ -1,16 +1,14 @@
 # Local Channel System
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Server Realtime Module** (5 connections) — `server/realtime/README.md`
-- **ConnectionManager** (4 connections) — `server/realtime/README.md`
-- **NATS Message Handler** (2 connections) — `server/realtime/README.md`
-- **WebSocket API /api/ws** (2 connections) — `server/realtime/README.md`
-- **FastAPI** (1 connections) — `server/README.md`
-- **Message Validator** (1 connections) — `server/realtime/README.md`
-- **Room Broadcasts** (1 connections) — `server/realtime/README.md`
+- **Local Channel System** (3 connections) — `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- **Scenario 10 Local Channel Movement** (2 connections) — `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- **Local Channel Sub-Zone Routing** (1 connections) — `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- **Scenario 11 Local Channel Errors** (1 connections) — `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- **Scenario 12 Local Channel Integration** (1 connections) — `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Relationships
 
@@ -18,12 +16,15 @@
 
 ## Source Files
 
-- `server/README.md`
-- `server/realtime/README.md`
+- `e2e-tests/scenarios/scenario-08-local-channel-basic.md`
+- `e2e-tests/scenarios/scenario-09-local-channel-isolation.md`
+- `e2e-tests/scenarios/scenario-10-local-channel-movement.md`
+- `e2e-tests/scenarios/scenario-11-local-channel-errors.md`
+- `e2e-tests/scenarios/scenario-12-local-channel-integration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

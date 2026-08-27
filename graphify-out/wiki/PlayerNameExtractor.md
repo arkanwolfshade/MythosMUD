@@ -1,60 +1,55 @@
 # PlayerNameExtractor
 
-> 139 nodes
+> 162 nodes
 
 ## Key Concepts
 
-- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
-- **test_container_exception_handlers.py** (28 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
-- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
-- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
-- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
-- **create_error_context()** (17 connections) — `server/api/container_helpers.py`
-- **TestHandleTransferItemsExceptions** (12 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestHandleLootAllExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestHandleOpenContainerExceptions** (9 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **_raise_container_http()** (9 connections) — `server/api/container_exception_handlers.py`
-- **TestExceptionChaining** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestExceptionHandlerContext** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestExceptionHandlerLoggerCalls** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestHandleCloseContainerExceptions** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestHandleTransferItemsExceptionsEdgeCases** (7 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **_raise_unexpected_container_error()** (7 connections) — `server/api/container_exception_handlers.py`
-- **Exception** (6 connections)
-- **TestHandleCloseContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestHandleOpenContainerExceptionsEdgeCases** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestCreateErrorContext** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **UUID** (5 connections)
-- **Test handle_transfer_items_exceptions detects mutation token error.** (5 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **TestTransferItemsExceptionsMutationKeyword** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- **.test_handle_close_container_exceptions_chains_exception()** (4 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
-- *... and 114 more nodes in this community*
+- **PlayerNameExtractor** (104 connections) — `server/realtime/player_name_utils.py`
+- **TestPlayerNameExtractor** (62 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **Any** (14 connections)
+- **.extract_and_validate_player_name()** (8 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_not_uuid()** (8 connections) — `server/realtime/player_name_utils.py`
+- **UUID** (8 connections)
+- **._try_fallback_name_sources()** (7 connections) — `server/realtime/player_name_utils.py`
+- **._is_uuid_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name_string()** (6 connections) — `server/realtime/player_name_utils.py`
+- **.extract_player_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._is_valid_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._log_uuid_validation_failure()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_player_username()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._try_user_object_name()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._validate_name_basic()** (5 connections) — `server/realtime/player_name_utils.py`
+- **.validate_player_name_not_uuid()** (5 connections) — `server/realtime/player_name_utils.py`
+- **._check_uuid_string_matches()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._extract_initial_player_name()** (4 connections) — `server/realtime/player_name_utils.py`
+- **._get_name_from_user_object()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.is_valid_name_for_occupant()** (4 connections) — `server/realtime/player_name_utils.py`
+- **.test_extract_player_name_user_exception()** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **test_player_name_utils.py** (4 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- **._check_uuid_pattern_match()** (3 connections) — `server/realtime/player_name_utils.py`
+- **.__init__()** (3 connections) — `server/realtime/player_name_utils.py`
+- **.test_check_uuid_pattern_match_invalid()** (3 connections) — `server/tests/unit/realtime/test_player_name_utils.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (39 shared connections)
-- [ChatService](ChatService.md) (15 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (14 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (8 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
-- [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
-- [✅ Verified Already Implemented](✅_Verified_Already_Implemented.md) (1 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (16 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
+- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_exception_handlers.py`
-- `server/api/container_helpers.py`
-- `server/tests/unit/api/test_container_exception_handlers.py`
-- `server/tests/unit/api/test_container_helpers.py`
+- `server/realtime/player_name_utils.py`
+- `server/tests/unit/realtime/test_player_name_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 264 (84%)
-- INFERRED: 50 (16%)
+- EXTRACTED: 272 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

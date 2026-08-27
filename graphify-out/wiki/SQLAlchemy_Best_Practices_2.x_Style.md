@@ -1,40 +1,38 @@
 # SQLAlchemy Best Practices (2.x Style)
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_handle_special_command_routing_emote_conversion()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_invalid_expanded()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_no_alias_storage()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **.test_process_alias_expansion_unsafe_alias()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing returns error when alias storage…** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
-- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **SQLAlchemy Best Practices (2.x Style)** (6 connections) — `.claude/rules/sqlalchemy.md`
+- **4. Data Manipulation** (4 connections) — `.claude/rules/sqlalchemy.md`
+- **1. Code Organization and Data Modeling** (3 connections) — `.claude/rules/sqlalchemy.md`
+- **2. Session Management** (3 connections) — `.claude/rules/sqlalchemy.md`
+- **3. Querying and Optimization** (3 connections) — `.claude/rules/sqlalchemy.md`
+- **5. Migrations and Type Checking** (3 connections) — `.claude/rules/sqlalchemy.md`
+- **1.1 Declarative Models with Type Annotations** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **1.2 Mixins for Common Fields** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **2.1 Context Manager for Sessions** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **2.2 Explicit Transaction Blocks** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **3.1 Use `select()` for All Queries** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **3.2 Eager Loading Relationships** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **4.1 Adding and Updating Objects** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **4.2 Deleting Objects** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **4.3 Bulk Operations (Use Sparingly)** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **5.1 Alembic for Schema Evolution** (1 connections) — `.claude/rules/sqlalchemy.md`
+- **5.2 Static Type Checking** (1 connections) — `.claude/rules/sqlalchemy.md`
 
 ## Relationships
 
-- [test_connection_statistics.py](test_connection_statistics.py.md) (9 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_aliases.py`
+- `.claude/rules/sqlalchemy.md`
 
 ## Audit Trail
 
-- EXTRACTED: 32 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

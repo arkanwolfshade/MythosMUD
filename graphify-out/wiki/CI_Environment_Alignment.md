@@ -1,11 +1,10 @@
 # CI Environment Alignment
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **POSTGRES_SEARCH_PATH for invites schema** (1 connections) — `tools/invite_tools/README.md`
-- **run_invite_tools.ps1** (1 connections) — `tools/invite_tools/README.md`
+- **CI Environment Alignment** (0 connections) — `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `tools/invite_tools/README.md`
+- `docs/CI_ENVIRONMENT_ALIGNMENT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

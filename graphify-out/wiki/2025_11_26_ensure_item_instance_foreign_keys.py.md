@@ -1,27 +1,26 @@
 # 2025_11_26_ensure_item_instance_foreign_keys.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Common Mistakes and How to Fix Them** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Mistake 1: Forgetting to Update Imports** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Mistake 2: Using Deprecated Context Parameter** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Mistake 3: String Formatting in Log Messages** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Mistake 4: Missing Context in Error Logs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Mistake 5: Wrong Log Levels** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2025_11_26_ensure_item_instance_foreign_keys.py** (3 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **Ensure foreign key constraints exist for item_instances.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
+- **This migration only ensures constraints exist - no downgrade needed.** (1 connections) — `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Relationships
 
-- [system_commands.py](system_commands.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/alembic/versions/2025_11_26_ensure_item_instance_foreign_keys.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

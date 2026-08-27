@@ -1,36 +1,29 @@
 # 🔴 CRITICAL ISSUES
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **CombatEventPublisherProtocol** (7 connections) — `server/npc/combat_integration_protocols.py`
-- **NpcCombatServiceProtocol** (6 connections) — `server/npc/combat_integration_protocols.py`
-- **.publish_player_attacked()** (3 connections) — `server/npc/combat_integration_protocols.py`
-- **.handle_npc_attack_on_player()** (2 connections) — `server/npc/combat_integration_protocols.py`
-- **Protocol** (2 connections)
-- **Publish a PlayerAttackedEvent to the combat event stream.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Typed surface for npc_combat_service.handle_npc_attack_on_player.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Handle an NPC attack against a player via the main combat service.** (1 connections) — `server/npc/combat_integration_protocols.py`
-- **Combat event publisher (avoids importing CombatEventPublisher).** (1 connections) — `server/npc/combat_integration_protocols.py`
+- **🔴 CRITICAL ISSUES** (7 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **1. Synchronous Blocking Operations in Async Context (CONFIRMED PERFORMANCE ISSUE)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **2. asyncio.run() Called from Existing Event Loop Context** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **5. Blocking Operations in NATS Message Handlers** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **6. F-String Logging Destroying Structured Logging** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [.get_instance](get_instance.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [TestGracefulDegradation](TestGracefulDegradation.md) (1 shared connections)
-- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [GameConfig](GameConfig.md) (1 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration_protocols.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (88%)
-- INFERRED: 2 (12%)
+- EXTRACTED: 7 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

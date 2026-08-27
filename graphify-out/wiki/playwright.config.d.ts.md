@@ -1,23 +1,22 @@
 # playwright.config.d.ts
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_put_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_put_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/playwright.config.d.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

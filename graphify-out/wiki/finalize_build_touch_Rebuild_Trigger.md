@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Database Connection Pool Configuration** (0 connections) — `docs/DATABASE_POOL_CONFIGURATION.md`
+- **finalize_build_touch Rebuild Trigger** (0 connections) — `scripts/finalize_build_touch.txt`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/DATABASE_POOL_CONFIGURATION.md`
+- `scripts/finalize_build_touch.txt`
 
 ## Audit Trail
 

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **eslint.config.mjs** (0 connections) — `.codacy/tools-configs/eslint.config.mjs`
+- **Whisper Location Independence** (0 connections) — `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/tools-configs/eslint.config.mjs`
+- `e2e-tests/SCENARIO_16_WHISPER_MOVEMENT_RESULTS.md`
 
 ## Audit Trail
 

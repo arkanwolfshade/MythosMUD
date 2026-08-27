@@ -1,32 +1,28 @@
 # .on_enter_state
 
-> 11 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_exit_empty()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_load_state()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **_write_state_atomic()** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **.cursor/hooks/trigger_test_agent.py** (4 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Path** (3 connections)
-- **NoReturn** (1 connections)
-- **Print empty JSON and exit successfully (no followup).** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Load and validate edited-files state. Returns None if missing or invalid.** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Write state via a same-directory temp file + os.replace. See…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
-- **Entry point: read hook payload from stdin, check edited-files state, and…** (1 connections) — `.cursor/hooks/trigger_test_agent.py`
+- **.on_enter_state()** (4 connections) — `server/realtime/connection_state_machine.py`
+- **.get_stats()** (3 connections) — `server/realtime/connection_state_machine.py`
+- **Any** (2 connections)
+- **State** (2 connections)
+- **Called whenever state machine enters a new state. Logs state transitions for…** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Get connection statistics. Returns: Dictionary with connection metrics AI: For…** (1 connections) — `server/realtime/connection_state_machine.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/hooks/trigger_test_agent.py`
+- `server/realtime/connection_state_machine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

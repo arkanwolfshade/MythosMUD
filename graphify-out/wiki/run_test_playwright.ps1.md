@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Security: Environment Variables** (0 connections) — `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
+- **run_test_playwright.ps1** (0 connections) — `scripts/run_test_playwright.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
+- `scripts/run_test_playwright.ps1`
 
 ## Audit Trail
 

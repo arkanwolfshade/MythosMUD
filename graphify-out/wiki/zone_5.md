@@ -1,23 +1,25 @@
 # zone
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **domain/services/__init__.py** (1 connections) — `server/domain/services/__init__.py`
-- **Domain services for MythosMUD. Domain services contain business logic that…** (1 connections) — `server/domain/services/__init__.py`
+- **zone** (4 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/domain/services/__init__.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,30 +1,29 @@
 # useThemeContext.ts
 
-> 21 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **Communities (11 total, 0 thin omitted)** (12 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Pulp Cthulhu (7th edition Call of Cthulhu)  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 0 - "Pandora's Box / Pandora Handout 10"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 10 - "Chapter 6: Pulp Magic, Psychic Powers, and Weird S / Psychic Powers"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 1 - "Disintegrator device / Handout: Disintegrator 1"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 2 - "Chapter 1: The Pulps / Chapter 7: Running Pulp Games"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 3 - "Avoiding Certain Death / Call of Cthulhu 7th Edition"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 4 - "Cthulhu Mythos / Deep One"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 5 - "Seekers of Eternal Wisdom / Handout: Pandora's Box 12"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 6 - "Pandora Handout 9 / Hyperborea"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 7 - "Augmented Skills / Chapter 5: Pulp Sanity"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 8 - "Caduceus / Chapter 3: Pulp Organizations"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community 9 - "Chapter 2: Creating Pulp Heroes / Pulp Archetypes"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- **useThemeContext.ts** (15 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **ThemeContext.test.tsx** (11 connections) — `client/src/contexts/__tests__/ThemeContext.test.tsx`
+- **ThemeContext.tsx** (11 connections) — `client/src/contexts/ThemeContext.tsx`
+- **useTheme()** (9 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useAccessibilityPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useAnimationPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useColorSchemePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useCompactModePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useDebugInfoPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useFontSizePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **useThemePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
+- **ColorScheme** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **FontSize** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **Theme** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **ThemeContextType** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **ThemeProvider()** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **ThemeContext** (2 connections) — `client/src/contexts/ThemeContext.tsx`
+- **ThemeProviderProps** (1 connections) — `client/src/contexts/ThemeContext.tsx`
+- **UIPreferences** (1 connections) — `client/src/contexts/ThemeContext.tsx`
+- **defaultPreferences** (1 connections) — `client/src/contexts/ThemeContext.tsx`
 
 ## Relationships
 
@@ -32,11 +31,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/pulp-cthulhu-7th-edition-call-of-cthulhu/GRAPH_REPORT.md`
+- `client/src/contexts/ThemeContext.tsx`
+- `client/src/contexts/__tests__/ThemeContext.test.tsx`
+- `client/src/contexts/hooks/useThemeContext.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,28 @@
 # main
 
-> 12 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **Complexity Checking Alignment: Ruff C901 vs Pylint** (9 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Recommended Strategy** (4 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Current State Analysis** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Key Differences** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **1. Use Ruff for Cyclomatic Complexity ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **2. Suppress Pylint Complexity Metrics ✅** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **3. Align Inline Suppressions** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Conclusion** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example Comparison** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Executive Summary** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint R0911-R0915 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901 Findings** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **main()** (4 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **load_room_data()** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **generate_html_visualization_fixed.py** (3 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Main function to generate the HTML visualization.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
+- **Generate an HTML visualization of the room network.** (1 connections) — `scripts/generate_html_visualization_fixed.py`
 
 ## Relationships
 
-- [main](main.md) (3 shared connections)
-- [📚 REFERENCES AND RESOURCES](📚_REFERENCES_AND_RESOURCES.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `scripts/generate_html_visualization_fixed.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

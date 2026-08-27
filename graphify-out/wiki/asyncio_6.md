@@ -1,57 +1,38 @@
 # asyncio
 
-> 65 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **test_logout_commands.py** (43 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **logout_commands.py** (26 connections) — `server/commands/logout_commands.py`
-- **handle_logout_command()** (24 connections) — `server/commands/logout_commands.py`
-- **asyncio** (18 connections)
-- **_get_player_for_logout()** (13 connections) — `server/commands/logout_commands.py`
-- **handle_quit_command()** (13 connections) — `server/commands/logout_commands.py`
-- **Any** (13 connections)
-- **_clear_corrupted_cache_entry()** (12 connections) — `server/commands/logout_commands.py`
-- **_disconnect_player_connections()** (9 connections) — `server/commands/logout_commands.py`
-- **_prepare_player_for_logout()** (7 connections) — `server/commands/logout_commands.py`
-- **_update_and_save_player_last_active()** (7 connections) — `server/commands/logout_commands.py`
-- **_force_disconnect_player()** (4 connections) — `server/commands/logout_commands.py`
-- **_get_app_services()** (4 connections) — `server/commands/logout_commands.py`
-- **_resolve_disconnect_player_id()** (4 connections) — `server/commands/logout_commands.py`
-- **test_disconnect_player_connections_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_disconnect_player_connections_no_manager()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_disconnect_player_connections_success()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_corrupted_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_from_cache()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_from_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_persistence_error()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_get_player_for_logout_persistence_returns_coroutine()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_error_handling()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- **test_handle_logout_command_no_player()** (4 connections) — `server/tests/unit/commands/test_logout_commands.py`
-- *... and 40 more nodes in this community*
+- **asyncio** (7 connections)
+- **test_format_npc_stats_for_admin_no_npc_id()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_npc_stats_for_admin_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_no_npcs()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **test_try_lookup_npc_implicit_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC stats for admin successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting NPC stats for admin when NPC ID missing.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting single NPC result successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test formatting single NPC result with admin stats.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test trying implicit NPC lookup successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test trying implicit NPC lookup when no NPCs in room.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **Test trying implicit NPC lookup with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
 
 ## Relationships
 
-- [AttributeError](AttributeError.md) (20 shared connections)
-- [MPRegenerationService](MPRegenerationService.md) (8 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [Multi-Word Spell Name Parsing Failure](Multi-Word_Spell_Name_Parsing_Failure.md) (4 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (3 shared connections)
-- [CombatParticipant](CombatParticipant.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [look_npc.py](look_npc.py.md) (7 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (7 shared connections)
 
 ## Source Files
 
-- `server/commands/logout_commands.py`
-- `server/tests/unit/commands/test_logout_commands.py`
+- `server/tests/unit/commands/test_look_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

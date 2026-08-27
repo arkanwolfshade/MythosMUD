@@ -1,29 +1,26 @@
 # start_server.ps1
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **rate_limiter()** (5 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **mock_config()** (3 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **fixture** (2 connections)
-- **Create a mock config with chat rate limits.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
-- **Create a RateLimiter instance with mocked config.** (1 connections) — `server/tests/unit/services/test_rate_limiter.py`
+- **start_server.ps1** (3 connections) — `scripts/README.md`
+- **Default Server Port 54768** (1 connections) — `scripts/README.md`
+- **start_local.ps1** (1 connections) — `scripts/README.md`
+- **stop_server.ps1** (1 connections) — `scripts/README.md`
 
 ## Relationships
 
-- [test_message_filtering.py](test_message_filtering.py.md) (2 shared connections)
-- [dependencies](dependencies.md) (1 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_rate_limiter.py`
+- `scripts/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (88%)
-- INFERRED: 1 (12%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

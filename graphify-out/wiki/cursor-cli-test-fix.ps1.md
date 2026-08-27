@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Client Typography and Layout Enhancement Specification** (0 connections) — `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- **cursor-cli-test-fix.ps1** (0 connections) — `scripts/cursor-cli-test-fix.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CLIENT_TYPOGRAPHY_LAYOUT_SPEC.md`
+- `scripts/cursor-cli-test-fix.ps1`
 
 ## Audit Trail
 

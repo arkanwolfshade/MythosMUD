@@ -1,51 +1,48 @@
 # LogAnalyzer
 
-> 28 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
-- **Player** (8 connections)
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- **._get_current_position()** (5 connections) — `server/services/player_position_service.py`
-- **._load_player_stats()** (5 connections) — `server/services/player_position_service.py`
-- **._get_player_for_position_change()** (4 connections) — `server/services/player_position_service.py`
-- **._initial_response()** (4 connections) — `server/services/player_position_service.py`
-- **._update_connection_manager()** (4 connections) — `server/services/player_position_service.py`
-- **._update_player_position()** (4 connections) — `server/services/player_position_service.py`
-- **.save_player()** (4 connections) — `server/services/player_position_service.py`
-- **.ensure_default_aliases()** (3 connections) — `server/services/player_position_service.py`
-- **._validate_position()** (3 connections) — `server/services/player_position_service.py`
-- **.get_player_by_name()** (3 connections) — `server/services/player_position_service.py`
-- **TypedDict** (1 connections)
-- **Validate and normalize position.** (1 connections) — `server/services/player_position_service.py`
-- **Get player for position change. Returns: Tuple of (player, response_dict) if…** (1 connections) — `server/services/player_position_service.py`
-- **Copy player identity fields into the position-change response.** (1 connections) — `server/services/player_position_service.py`
-- **Load player stats, returning {} when loading fails.** (1 connections) — `server/services/player_position_service.py`
-- **Get current position from player stats.** (1 connections) — `server/services/player_position_service.py`
-- **Update player position in persistence.** (1 connections) — `server/services/player_position_service.py`
-- **Build the default unsuccessful position-change payload.** (1 connections) — `server/services/player_position_service.py`
-- **Mutate persistence and in-memory tracking to reflect the requested position.** (1 connections) — `server/services/player_position_service.py`
-- **Mirror posture changes into the live connection manager.** (1 connections) — `server/services/player_position_service.py`
-- **Result payload for a posture transition attempt.** (1 connections) — `server/services/player_position_service.py`
-- *... and 3 more nodes in this community*
+- **LogAnalyzer** (13 connections) — `scripts/analyze_error_logs.py`
+- **.analyze_error_patterns()** (9 connections) — `scripts/analyze_error_logs.py`
+- **._parse_log_file()** (6 connections) — `scripts/analyze_error_logs.py`
+- **Any** (6 connections)
+- **._categorize_error()** (4 connections) — `scripts/analyze_error_logs.py`
+- **.detect_error_trends()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._find_error_logs()** (4 connections) — `scripts/analyze_error_logs.py`
+- **.generate_error_report()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._generate_recommendations()** (4 connections) — `scripts/analyze_error_logs.py`
+- **._parse_log_line()** (4 connections) — `scripts/analyze_error_logs.py`
+- **main()** (4 connections) — `scripts/analyze_error_logs.py`
+- **Path** (4 connections)
+- **._extract_error_pattern()** (3 connections) — `scripts/analyze_error_logs.py`
+- **.__init__()** (3 connections) — `scripts/analyze_error_logs.py`
+- **analyze_error_logs.py** (2 connections) — `scripts/analyze_error_logs.py`
+- **Detect error trends over time. Returns trend analysis results.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Find all error log files in the directory.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Parse a log file and extract error information.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Parse a single log line and extract error information.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Extract a simplified error pattern from a message.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Comprehensive log analysis tool for MythosMUD error logs. This analyzer can…** (1 connections) — `scripts/analyze_error_logs.py`
+- **Categorize an error based on its content.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Generate recommendations based on analysis results.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Initialize the analyzer with a log directory.** (1 connections) — `scripts/analyze_error_logs.py`
+- **Main entry point for the log analysis script.** (1 connections) — `scripts/analyze_error_logs.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (10 shared connections)
-- [test_combat_integration_base.py](test_combat_integration_base.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/player_position_service.py`
+- `scripts/analyze_error_logs.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

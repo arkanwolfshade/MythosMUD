@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Pydantic Testing Patterns** (0 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
+- **start_monitoring.ps1** (0 connections) — `scripts/start_monitoring.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/TESTING_PYDANTIC_PATTERNS.md`
+- `scripts/start_monitoring.ps1`
 
 ## Audit Trail
 

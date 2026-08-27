@@ -4,44 +4,46 @@
 
 ## Key Concepts
 
-- **verify_linting_parity.py** (13 connections) — `scripts/verify_linting_parity.py`
-- **Suppression** (11 connections) — `scripts/verify_linting_parity.py`
-- **Path** (8 connections)
-- **check_alignment()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_pylint_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **_check_ruff_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **find_suppressions()** (7 connections) — `scripts/verify_linting_parity.py`
-- **main()** (6 connections) — `scripts/verify_linting_parity.py`
-- **_scan_files_for_suppressions()** (6 connections) — `scripts/verify_linting_parity.py`
-- **parse_pylint_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **parse_ruff_suppression()** (5 connections) — `scripts/verify_linting_parity.py`
-- **_write_detailed_report()** (5 connections) — `scripts/verify_linting_parity.py`
-- **Any** (5 connections)
-- **_has_pylint_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_has_ruff_equivalent()** (4 connections) — `scripts/verify_linting_parity.py`
-- **_print_misaligned_summary()** (4 connections) — `scripts/verify_linting_parity.py`
-- **Parse a ruff noqa comment. Pattern examples: - # noqa: E501,F401 - # noqa: E501…** (1 connections) — `scripts/verify_linting_parity.py`
-- **Find all suppressions in a file.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any ruff suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if any pylint suppression covers the given rules.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if pylint suppressions have ruff equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if ruff suppressions have pylint equivalents.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Check if suppressions are aligned between tools.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Scan all Python files in server directory for suppressions.** (1 connections) — `scripts/verify_linting_parity.py`
-- **Print summary of misaligned suppressions to console.** (1 connections) — `scripts/verify_linting_parity.py`
+- **test_quest_service_collect.py** (16 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_make_collect_quest_row()** (9 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_quest_service_with_persistence()** (8 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **_make_inventory_player()** (7 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **asyncio** (7 connections)
+- **test_collect_n_auto_complete_keeps_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_collect_n_seeds_progress_from_holdings()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_sync_collect_progress_nested_container()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_sync_collect_progress_updates_on_inventory_change()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_turn_in_collect_n_consumes_items()** (6 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_rejects_auto_complete_with_turn_in()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **test_start_quest_rejects_turn_in_without_entities()** (5 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **mock_def_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **mock_instance_repo()** (3 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **fixture** (2 connections)
+- **Unit tests for QuestService collect_n sync, auto-complete, and turn-in…** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **sync_collect_progress reflects increased and decreased holdings.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Nested inner_container items count toward collect_n progress.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Auto-complete collect_n quest does not consume inventory.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Mock QuestDefinitionRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Turn-in consumes required collect_n items before completion.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Validation rejects auto_complete true combined with turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Validation rejects non-auto-complete quest without turn_in_entities.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Mock QuestInstanceRepository.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
+- **Definition with collect_n goal.** (1 connections) — `server/tests/unit/game/test_quest_service_collect.py`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [QuestService](QuestService.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/verify_linting_parity.py`
+- `server/tests/unit/game/test_quest_service_collect.py`
 
 ## Audit Trail
 
-- EXTRACTED: 58 (100%)
+- EXTRACTED: 57 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

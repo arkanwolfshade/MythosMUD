@@ -1,38 +1,30 @@
 # schedule.schema.json
 
-> 17 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **RoomFilenameMigrator** (9 connections) — `scripts/migrate_room_filenames.py`
-- **.plan_migrations()** (6 connections) — `scripts/migrate_room_filenames.py`
-- **.discover_room_files()** (5 connections) — `scripts/migrate_room_filenames.py`
-- **.parse_old_filename()** (5 connections) — `scripts/migrate_room_filenames.py`
-- **.update_room_id()** (5 connections) — `scripts/migrate_room_filenames.py`
-- **.migrate()** (4 connections) — `scripts/migrate_room_filenames.py`
-- **Path** (4 connections)
-- **.__init__()** (3 connections) — `scripts/migrate_room_filenames.py`
-- **main()** (2 connections) — `scripts/migrate_room_filenames.py`
-- **migrate_room_filenames.py** (2 connections) — `scripts/migrate_room_filenames.py`
-- **Update the room ID in the JSON file to match new naming schema.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Execute the migration.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Handles migration of room filenames from old to new schema.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Initialize the migrator.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Parse old filename format to extract components.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Discover all room files that need migration.** (1 connections) — `scripts/migrate_room_filenames.py`
-- **Plan all file migrations without executing them.** (1 connections) — `scripts/migrate_room_filenames.py`
+- **schedule.schema.json** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **required** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **$id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **$schema** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **title** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **schedules** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [required](required.md) (1 shared connections)
+- [schedules](schedules.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/migrate_room_filenames.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

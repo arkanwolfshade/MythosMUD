@@ -5966,8 +5966,8 @@
   "server/coverage.json": {
     "mtime": 1775192600.6897647,
     "seen": 1787781232.6868665,
-    "ast_hash": "ceff82f70fc411d17837748562f7951f",
-    "semantic_hash": "ceff82f70fc411d17837748562f7951f"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "server/database.py": {
     "mtime": 1786571994.9020758,
@@ -12204,8 +12204,8 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1787787199.1312754,
-    "seen": 1787798691.5505266,
+    "mtime": 1787799114.378752,
+    "seen": 1787799141.0949605,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d"
   },
@@ -15574,12 +15574,6 @@
     "seen": 1787249678.6075976,
     "ast_hash": "575f801d8f1df46949086e8e2ca7cbc9",
     "semantic_hash": "575f801d8f1df46949086e8e2ca7cbc9"
-  },
-  "data/local/simple_room_graph.png": {
-    "mtime": 1775192606.0678165,
-    "seen": 1787249678.6075976,
-    "ast_hash": "9ac2ac5a620145013e8a39392bb9e335",
-    "semantic_hash": "9ac2ac5a620145013e8a39392bb9e335"
   },
   "client/src/__tests__/App.demo.test.tsx": {
     "mtime": 1781564103.8499823,
@@ -19242,10 +19236,10 @@
     "semantic_hash": "2f4fa02488b6fc250d942915bebb11f3"
   },
   ".codacy/tools-configs/eslint.config.mjs": {
-    "mtime": 1787787962.849652,
-    "seen": 1787798598.4158783,
-    "ast_hash": "ae845734d1adbcf82757ed46efa67899",
-    "semantic_hash": "ae845734d1adbcf82757ed46efa67899"
+    "mtime": 1787799100.548512,
+    "seen": 1787799140.9265242,
+    "ast_hash": "36e2dc52f1147055b88e9173ef86b599",
+    "semantic_hash": ""
   },
   ".codacy/wsl-bashrc-codacy.sh": {
     "mtime": 1775192600.2898412,
@@ -19260,46 +19254,34 @@
     "semantic_hash": "a3ae28c79135fc2e4badbe62d42bb4e8"
   },
   ".codacy/cli-config.yaml": {
-    "mtime": 1787787182.0928116,
-    "seen": 1787798598.5755117,
+    "mtime": 1787799098.4737477,
+    "seen": 1787799141.0949585,
     "ast_hash": "203ff582a9910dce987a7cf705ef71f9",
     "semantic_hash": "203ff582a9910dce987a7cf705ef71f9"
   },
-  ".codacy/generated/Lizard/lizard-filelist.txt": {
-    "mtime": 1787240697.8168125,
-    "seen": 1787249678.6065938,
-    "ast_hash": "a7a232f4bafa8280fe56648b65daba1e",
-    "semantic_hash": ""
-  },
   ".codacy/tools-configs/analysis_options.yaml": {
-    "mtime": 1787787185.3975904,
-    "seen": 1787798598.5755117,
+    "mtime": 1787799103.9927926,
+    "seen": 1787799141.0950184,
     "ast_hash": "36910684fda7b41b4891198f6301f08b",
     "semantic_hash": "36910684fda7b41b4891198f6301f08b"
   },
   ".codacy/tools-configs/languages-config.yaml": {
-    "mtime": 1787787198.772861,
-    "seen": 1787798598.5755117,
+    "mtime": 1787799114.0541313,
+    "seen": 1787799141.09502,
     "ast_hash": "cbe72bafe58616377844d94278c04f53",
     "semantic_hash": "cbe72bafe58616377844d94278c04f53"
   },
   ".codacy/tools-configs/lizard.yaml": {
-    "mtime": 1787787186.2075644,
-    "seen": 1787798691.5505266,
+    "mtime": 1787799104.4220479,
+    "seen": 1787799141.095022,
     "ast_hash": "fec2ac51c841c76acbf00d6bd6081ba0",
     "semantic_hash": "fec2ac51c841c76acbf00d6bd6081ba0"
   },
   ".codacy/tools-configs/semgrep.yaml": {
-    "mtime": 1787787195.088769,
-    "seen": 1787798691.5505266,
+    "mtime": 1787799110.5714989,
+    "seen": 1787799141.0950234,
     "ast_hash": "80625f6b393b5d5c540983baaa6c47fc",
     "semantic_hash": "80625f6b393b5d5c540983baaa6c47fc"
-  },
-  ".codacy/tools-configs/trivy.yaml": {
-    "mtime": 1787249445.1624916,
-    "seen": 1787249678.6065938,
-    "ast_hash": "874980c67e727321ebe7e1806daf29e8",
-    "semantic_hash": ""
   },
   ".playwright-mcp/combat-verification-screenshot.png": {
     "mtime": 1787286592.9422388,

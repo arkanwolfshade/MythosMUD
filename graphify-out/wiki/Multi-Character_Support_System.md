@@ -1,35 +1,42 @@
 # Multi-Character Support System
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Technical Implementation** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **1. Component Refactoring** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **2. Message Routing Logic** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **3. State Management** (3 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **4. Event Handling** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **ChatPanel.tsx Enhancements (New Chat Input Panel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Command Routing Logic** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **CommandPanel.tsx Simplifications** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **Current Logic (in CommandPanel)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **GameLogPanel.tsx (Renamed from ChatPanel.tsx)** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **New Logic Distribution** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **New State Structure** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **State Distribution** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Multi-Character Support System** (5 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 30 Case-Insensitive Name Uniqueness** (3 connections) — `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- **Scenario 38 Revised Character Creation** (3 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Skills Subsystem** (3 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 28 Multi-Character Creation** (2 connections) — `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- **Scenario 29 Character Soft Deletion** (2 connections) — `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- **Stats-Profession-Skills-Name Creation Flow** (2 connections) — `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- **Scenario 41 Skills After Creation** (2 connections) — `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
+- **Scenario 27 Character Selection** (1 connections) — `e2e-tests/scenarios/scenario-27-character-selection.md`
+- **Scenario 31 Administrative Set Stat** (1 connections) — `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- **Scenario 39 Skills New Tab** (1 connections) — `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- **Scenario 40 Skills Slash Command** (1 connections) — `e2e-tests/scenarios/scenario-40-skills-command.md`
 
 ## Relationships
 
-- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `e2e-tests/scenarios/scenario-27-character-selection.md`
+- `e2e-tests/scenarios/scenario-28-multi-character-creation.md`
+- `e2e-tests/scenarios/scenario-29-character-deletion.md`
+- `e2e-tests/scenarios/scenario-30-character-name-uniqueness.md`
+- `e2e-tests/scenarios/scenario-31-admin-set-stat-command.md`
+- `e2e-tests/scenarios/scenario-38-revised-character-creation.md`
+- `e2e-tests/scenarios/scenario-39-skills-new-tab.md`
+- `e2e-tests/scenarios/scenario-40-skills-command.md`
+- `e2e-tests/scenarios/scenario-41-skills-after-creation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 10 (77%)
+- INFERRED: 3 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

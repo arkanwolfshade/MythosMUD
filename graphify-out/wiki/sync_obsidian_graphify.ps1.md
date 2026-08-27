@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Per-Recipient Whisper Rate Limit** (0 connections) — `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- **sync_obsidian_graphify.ps1** (0 connections) — `scripts/sync_obsidian_graphify.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-15-whisper-rate-limiting.md`
+- `scripts/sync_obsidian_graphify.ps1`
 
 ## Audit Trail
 

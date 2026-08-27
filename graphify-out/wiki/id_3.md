@@ -1,20 +1,20 @@
 # id
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **._publish_attack_event()** (3 connections) — `server/npc/combat_integration.py`
-- **Publish NPC attack event to event bus.** (1 connections) — `server/npc/combat_integration.py`
+- **id** (3 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 

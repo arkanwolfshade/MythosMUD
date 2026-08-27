@@ -1,24 +1,26 @@
 # ._error_callback
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Down Darker Trails** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
-- **down-darker-trails/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- **._error_callback()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **._handle_error_async()** (4 connections) — `server/infrastructure/nats_broker.py`
+- **Exception** (2 connections)
+- **Handle NATS errors. AI: Runs as fire-and-forget async task to prevent blocking…** (1 connections) — `server/infrastructure/nats_broker.py`
+- **Async handler for NATS connection errors.** (1 connections) — `server/infrastructure/nats_broker.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NATSMessageBroker](NATSMessageBroker.md) (2 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/down-darker-trails/MANIFEST.md`
+- `server/infrastructure/nats_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

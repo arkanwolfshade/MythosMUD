@@ -1,42 +1,37 @@
 # 🟢 MEDIUM PRIORITY IMPROVEMENTS
 
-> 11 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **NATSMessageHandlerMixinBase** (15 connections) — `server/realtime/nats_message_handler_base.py`
-- **test_nats_message_handler_base.py** (7 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **_Handler** (5 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **test_subscribe_stub_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **test_unsubscribe_stub_returns_false()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **asyncio** (2 connections)
-- **._subscribe_to_subject()** (1 connections) — `server/realtime/nats_message_handler_base.py`
-- **._unsubscribe_from_subject()** (1 connections) — `server/realtime/nats_message_handler_base.py`
-- **Attrs/methods provided by NATSMessageHandler when mixed in.** (1 connections) — `server/realtime/nats_message_handler_base.py`
-- **Unit tests for NATSMessageHandlerMixinBase stubs.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
-- **Concrete subclass for testing mixin stubs.** (1 connections) — `server/tests/unit/realtime/test_nats_message_handler_base.py`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (15 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **15. Hardcoded Connection Pool Sizes** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **16. Deprecated asyncio.get_event_loop() Usage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **17. Inconsistent Error Handling Patterns** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **18. Memory Leak Risk in Metrics Collection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **19. Missing Message Acknowledgment in NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **20. Subject Naming Inconsistency** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **21. No Connection Health Monitoring** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Priority**: 🟢**MEDIUM** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [Argon2 Password Hashing Best Practices](Argon2_Password_Hashing_Best_Practices.md) (1 shared connections)
-- [test_map_helpers.py](test_map_helpers.py.md) (1 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (1 shared connections)
-- [gameStore.ts](gameStore.ts.md) (1 shared connections)
-- [CircuitBreaker](CircuitBreaker.md) (1 shared connections)
-- [test_command_service.py](test_command_service.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/nats_message_handler_base.py`
-- `server/tests/unit/realtime/test_nats_message_handler_base.py`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 21 (81%)
-- INFERRED: 5 (19%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

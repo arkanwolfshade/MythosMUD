@@ -1,47 +1,47 @@
 # FeedbackManager
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Structured Logging with Structlog Best Practices** (8 connections) — `.claude/rules/structlog.md`
-- **7. Tooling and Environment** (5 connections) — `.claude/rules/structlog.md`
-- **1. Code Organization and Structure** (4 connections) — `.claude/rules/structlog.md`
-- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/structlog.md`
-- **3. Performance Considerations** (3 connections) — `.claude/rules/structlog.md`
-- **4. Security Best Practices** (3 connections) — `.claude/rules/structlog.md`
-- **5. Testing Approaches** (3 connections) — `.claude/rules/structlog.md`
-- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/structlog.md`
-- **1.1. Directory Structure** (1 connections) — `.claude/rules/structlog.md`
-- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/structlog.md`
-- **1.3. Module Organization** (1 connections) — `.claude/rules/structlog.md`
-- **2.1. Design Patterns** (1 connections) — `.claude/rules/structlog.md`
-- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/structlog.md`
-- **2.3. Anti-patterns** (1 connections) — `.claude/rules/structlog.md`
-- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/structlog.md`
-- **3.2. Memory Management** (1 connections) — `.claude/rules/structlog.md`
-- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/structlog.md`
-- **4.2. Security Implementation** (1 connections) — `.claude/rules/structlog.md`
-- **5.1. Unit Testing** (1 connections) — `.claude/rules/structlog.md`
-- **5.2. Integration Testing** (1 connections) — `.claude/rules/structlog.md`
-- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/structlog.md`
-- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/structlog.md`
-- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/structlog.md`
-- **7.2. Build Configuration** (1 connections) — `.claude/rules/structlog.md`
-- **7.3. Deployment Best Practices** (1 connections) — `.claude/rules/structlog.md`
-- *... and 1 more nodes in this community*
+- **FeedbackManager** (21 connections) — `client/src/utils/feedbackManager.ts`
+- **useFeedbackManager()** (13 connections) — `client/src/utils/feedbackManager.ts`
+- **.saveFeedback()** (6 connections) — `client/src/utils/feedbackManager.ts`
+- **feedbackManager.ts** (5 connections) — `client/src/utils/feedbackManager.ts`
+- **.addFeedback()** (4 connections) — `client/src/utils/feedbackManager.ts`
+- **feedbackManager.test.ts** (4 connections) — `client/src/utils/__tests__/feedbackManager.test.ts`
+- **.clearFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.deleteFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.importFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **.updateFeedback()** (3 connections) — `client/src/utils/feedbackManager.ts`
+- **FeedbackData** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.constructor()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.exportFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.generateId()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getAllFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByComponent()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByType()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.getStats()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.loadFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **.searchFeedback()** (2 connections) — `client/src/utils/feedbackManager.ts`
+- **FeedbackStats** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedback()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByPriority()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getFeedbackByStatus()** (1 connections) — `client/src/utils/feedbackManager.ts`
+- **.getTrends()** (1 connections) — `client/src/utils/feedbackManager.ts`
 
 ## Relationships
 
-- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/rules/structlog.md`
+- `client/src/utils/__tests__/feedbackManager.test.ts`
+- `client/src/utils/feedbackManager.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 45 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

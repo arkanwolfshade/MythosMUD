@@ -1,16 +1,14 @@
 # DML Migrations
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Event-Sourced Projector** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Client Event Schema** (3 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **room_state Event** (2 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **Enter-Room Request/Response** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
-- **Critical State Handoffs** (2 connections) — `client/src/components/ui-v2/eventLog/HANDOFFS.md`
-- **game_state Event** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- **GameState** (1 connections) — `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
+- **DML Migrations** (4 connections) — `data/db/migrations/README.md`
+- **data/db/migrations/README.md** (1 connections) — `data/db/migrations/README.md`
+- **Dialogue definitions (#583)** (1 connections) — `data/db/migrations/README.md`
+- **Historical CSV files** (1 connections) — `data/db/migrations/README.md`
+- **Migration files** (1 connections) — `data/db/migrations/README.md`
 
 ## Relationships
 
@@ -18,12 +16,11 @@
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md`
-- `client/src/components/ui-v2/eventLog/HANDOFFS.md`
+- `data/db/migrations/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,46 @@
 # .cursor/hooks/record_edited_file.py
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Uvicorn ASGI Server Best Practices** (8 connections) — `.claude/rules/uvicorn.md`
-- **1. Code Organization and Structure** (4 connections) — `.claude/rules/uvicorn.md`
-- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/uvicorn.md`
-- **7. Tooling and Environment** (4 connections) — `.claude/rules/uvicorn.md`
-- **uvicorn.md** (3 connections) — `.claude/rules/uvicorn.md`
-- **3. Performance Considerations** (3 connections) — `.claude/rules/uvicorn.md`
-- **4. Security Best Practices** (3 connections) — `.claude/rules/uvicorn.md`
-- **5. Testing Approaches** (3 connections) — `.claude/rules/uvicorn.md`
-- **6. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/uvicorn.md`
-- **1.1. Directory Structure** (1 connections) — `.claude/rules/uvicorn.md`
-- **1.2. File Naming Conventions** (1 connections) — `.claude/rules/uvicorn.md`
-- **1.3. Module Organization** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.1. Design Patterns** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.2. Recommended Approaches** (1 connections) — `.claude/rules/uvicorn.md`
-- **2.3. Anti-patterns** (1 connections) — `.claude/rules/uvicorn.md`
-- **3.1. Optimization Techniques** (1 connections) — `.claude/rules/uvicorn.md`
-- **3.2. Memory Management** (1 connections) — `.claude/rules/uvicorn.md`
-- **4.1. Common Vulnerabilities** (1 connections) — `.claude/rules/uvicorn.md`
-- **4.2. Security Implementation** (1 connections) — `.claude/rules/uvicorn.md`
-- **5.1. Unit Testing** (1 connections) — `.claude/rules/uvicorn.md`
-- **5.2. Integration Testing** (1 connections) — `.claude/rules/uvicorn.md`
-- **6.1. Frequent Mistakes** (1 connections) — `.claude/rules/uvicorn.md`
-- **6.2. Debugging Strategies** (1 connections) — `.claude/rules/uvicorn.md`
-- **7.1. Recommended Development Tools** (1 connections) — `.claude/rules/uvicorn.md`
-- **7.2. Deployment Best Practices** (1 connections) — `.claude/rules/uvicorn.md`
-- *... and 1 more nodes in this community*
+- **.cursor/hooks/record_edited_file.py** (11 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_test_file()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **main()** (7 connections) — `.cursor/hooks/record_edited_file.py`
+- **_should_skip_recording()** (5 connections) — `.cursor/hooks/record_edited_file.py`
+- **Path** (5 connections)
+- **_is_client_test_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_payload()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_load_state()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_normalize_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_rel_path()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_write_state_atomic()** (4 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_agent_config_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **_is_server_test_path()** (3 connections) — `.cursor/hooks/record_edited_file.py`
+- **Any** (2 connections)
+- **Return True if we should not record (missing data or test file).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Entry point: read hook payload from stdin and record non-test edited files to…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Normalize path to forward slashes for consistent matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return workspace-relative path for pattern matching.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under server/tests/.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is in __tests__/ or has client test extension.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **True if path is under .claude/ or .cursor/ (agent/skill/rule/hook config, not…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Return True if the file should NOT trigger the test agent: a test file, or…** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load JSON payload from stdin; return None on failure (fail open).** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Load state from file; return empty dict on failure.** (1 connections) — `.cursor/hooks/record_edited_file.py`
+- **Write state via a same-directory temp file + os.replace so a concurrent…** (1 connections) — `.cursor/hooks/record_edited_file.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/rules/uvicorn.md`
+- `.cursor/hooks/record_edited_file.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

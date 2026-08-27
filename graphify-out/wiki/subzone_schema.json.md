@@ -1,41 +1,47 @@
 # subzone_schema.json
 
-> 20 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **Design Critique** (11 connections) — `.claude/skills/critique/SKILL.md`
-- **Generate Critique Report** (7 connections) — `.claude/skills/critique/SKILL.md`
-- **Critique Skill** (4 connections) — `.claude/skills/critique/SKILL.md`
-- **10. Microcopy & Voice** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **1. AI Slop Detection (CRITICAL)** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **2. Visual Hierarchy** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **3. Information Architecture** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **4. Emotional Resonance** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **5. Discoverability & Affordance** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **6. Composition & Balance** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **7. Typography as Communication** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **8. Color with Purpose** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **9. States & Edge Cases** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **Anti-Patterns Verdict** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **Minor Observations** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **Overall Impression** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **Priority Issues** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **Questions to Consider** (1 connections) — `.claude/skills/critique/SKILL.md`
-- **What's Working** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **subzone_schema.json** (7 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (6 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **special_rules** (5 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **enum** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **properties** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **access_requirements** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **lucidity_drain_rate** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **npc_spawn_modifier** (4 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **combat_modifier** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **exploration_bonus** (3 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **items** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **required** (2 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/critique/SKILL.md`
+- `tools/room_toolkit/room_validator/schemas/subzone_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 43 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

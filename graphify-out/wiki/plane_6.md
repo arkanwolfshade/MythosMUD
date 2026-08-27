@@ -1,23 +1,24 @@
 # plane
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **entities/__init__.py** (1 connections) — `server/domain/entities/__init__.py`
-- **Domain entities for MythosMUD. Entities are objects with identity and…** (1 connections) — `server/domain/entities/__init__.py`
+- **plane** (3 connections) — `db/static/schemas/room.schema.json`
+- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/domain/entities/__init__.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

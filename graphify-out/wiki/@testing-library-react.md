@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_profession_set_stat_requirements()** (3 connections) — `server/tests/unit/models/test_profession.py`
-- **Test set_stat_requirements stores dict as JSON string.** (1 connections) — `server/tests/unit/models/test_profession.py`
+- **@testing-library/react** (2 connections) — `client/package.json`
+- **@testing-library/react** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [docker Best Practices](docker_Best_Practices.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_profession.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

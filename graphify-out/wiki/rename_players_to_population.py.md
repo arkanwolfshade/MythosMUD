@@ -1,27 +1,26 @@
 # rename_players_to_population.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **✨ Key Achievements** (6 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **1. Modular Architecture** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **2. Async Foundation** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **3. Zero Breaking Changes** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **4. Comprehensive Documentation** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
-- **5. Quality Maintained** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **rename_players_to_population.py** (2 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **Rename columns from min_players/max_players to min_population/max_population.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
+- **Revert column names back to min_players/max_players.** (1 connections) — `server/alembic/versions/rename_players_to_population.py`
 
 ## Relationships
 
-- [SpellTargetingService](SpellTargetingService.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- `server/alembic/versions/rename_players_to_population.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

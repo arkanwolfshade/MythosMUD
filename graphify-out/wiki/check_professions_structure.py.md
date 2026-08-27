@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Test Refactoring Executive Summary** (0 connections) — `docs/archive/TEST_REFACTORING_SUMMARY.md`
+- **check_professions_structure.py** (0 connections) — `scripts/check_professions_structure.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_SUMMARY.md`
+- `scripts/check_professions_structure.py`
 
 ## Audit Trail
 

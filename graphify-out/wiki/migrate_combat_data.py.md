@@ -1,45 +1,54 @@
 # migrate_combat_data.py
 
-> 24 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **format_markdown_file()** (13 connections) — `scripts/format_markdown_files.py`
-- **format_markdown_files.py** (11 connections) — `scripts/format_markdown_files.py`
-- **main()** (4 connections) — `scripts/format_markdown_files.py`
-- **fix_blank_lines_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_bold_items_without_list_marker()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_checklist_items()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_checkmark_items()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_code_block_spacing()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_heading_trailing_colons()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_items_after_headings()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_plain_text_after_colons()** (3 connections) — `scripts/format_markdown_files.py`
-- **fix_url_formatting()** (3 connections) — `scripts/format_markdown_files.py`
-- **Path** (2 connections)
-- **Remove leading `-` from plain text items after lines ending with `:`.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from checklist items in certain contexts.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove trailing colons from headings.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from items that follow headings (not part of lists).** (1 connections) — `scripts/format_markdown_files.py`
-- **Add blank lines after headings when content follows.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from bold text that isn't part of a list.** (1 connections) — `scripts/format_markdown_files.py`
-- **Format a single markdown file. Returns: (changed, lines_modified): Whether file…** (1 connections) — `scripts/format_markdown_files.py`
-- **Main function to process all markdown files.** (1 connections) — `scripts/format_markdown_files.py`
-- **Remove leading `-` from checkmark/status items.** (1 connections) — `scripts/format_markdown_files.py`
-- **Add angle brackets around bare URLs in markdown.** (1 connections) — `scripts/format_markdown_files.py`
-- **Fix spacing in code blocks (e.g., `@#` -> ` @#`).** (1 connections) — `scripts/format_markdown_files.py`
+- **migrate_combat_data.py** (29 connections) — `server/scripts/migrate_combat_data.py`
+- **_migrate_one_npc()** (9 connections) — `server/scripts/migrate_combat_data.py`
+- **migrate_npc_combat_data()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **rollback_migration()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **_rollback_one_npc()** (7 connections) — `server/scripts/migrate_combat_data.py`
+- **main()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **validate_migration_results()** (6 connections) — `server/scripts/migrate_combat_data.py`
+- **MigrationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **RollbackResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **ValidationResults** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_record_npc_error()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_strip_combat_data_from_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **_validate_one_npc()** (5 connections) — `server/scripts/migrate_combat_data.py`
+- **AsyncSession** (5 connections)
+- **TypedDict** (3 connections)
+- **_npc_has_combat_data()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_npc_has_full_combat_data()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_omit_keys()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **_present_keys()** (2 connections) — `server/scripts/migrate_combat_data.py`
+- **Exception** (1 connections)
+- **Combat data migration script. This script adds default combat data to existing…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Migrate combat data for all NPC definitions. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Validate that migration was successful. Args: session: Database session…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Rollback combat data migration by removing combat fields. Args: session:…** (1 connections) — `server/scripts/migrate_combat_data.py`
+- **Main migration function.** (1 connections) — `server/scripts/migrate_combat_data.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [NPCDefinition](NPCDefinition.md) (7 shared connections)
+- [combat_schema.py](combat_schema.py.md) (4 shared connections)
+- [npc_database.py](npc_database.py.md) (3 shared connections)
+- [add_default_combat_data_to_stats](add_default_combat_data_to_stats.md) (2 shared connections)
+- [add_default_combat_data_to_config](add_default_combat_data_to_config.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [_MigrationArgs](_MigrationArgs.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/format_markdown_files.py`
+- `server/scripts/migrate_combat_data.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

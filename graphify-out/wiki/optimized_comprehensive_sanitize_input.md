@@ -1,30 +1,38 @@
 # optimized_comprehensive_sanitize_input
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Positive Findings ✅** (9 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **1. **Excellent Error Boundary Implementation**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **2. **Good Connection State Management**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **3. **Proper Async/Await Usage**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **4. **Subject Manager Pattern**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **5. **TLS Configuration Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **6. **Connection Pooling Implemented**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **7. **Message Acknowledgment Support**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
-- **8. **Async Mute Data Loading**** (1 connections) — `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- **optimized_comprehensive_sanitize_input()** (14 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_comprehensive_sanitize_input_normalizes_newlines()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive sanitization of empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive sanitization of normal text.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test that optimized comprehensive sanitization normalizes newlines to spaces.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized comprehensive input sanitization. Args: text: Raw input text to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (1 shared connections)
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (5 shared connections)
+- [optimized_sanitize_unicode_input](optimized_sanitize_unicode_input.md) (1 shared connections)
+- [optimized_strip_ansi_codes](optimized_strip_ansi_codes.md) (1 shared connections)
+- [optimized_validate_action_content](optimized_validate_action_content.md) (1 shared connections)
+- [optimized_validate_command_content](optimized_validate_command_content.md) (1 shared connections)
+- [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
+- [optimized_validate_reason_content](optimized_validate_reason_content.md) (1 shared connections)
+- [optimized_validate_security_comprehensive](optimized_validate_security_comprehensive.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_ANTI_PATTERNS_REVIEW_2026-01-13.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

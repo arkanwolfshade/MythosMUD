@@ -1,51 +1,46 @@
 # Migration Strategy
 
-> 27 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
-- **Test finding item in room drops by name.** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_empty()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_instance_number_zero()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_no_match()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **test_find_item_in_room_drops_by_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_by_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_instance_number_out_of_range()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_multiple_matches()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_room_drops_with_instance_number()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _find_item_in_room_drops() with instance number.** (3 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with instance number out of range.** (2 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test finding item in room drops with instance number.** (2 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Find an item in room drops by name or prototype_id. Args: room_drops: List of…** (1 connections) — `server/commands/look_item.py`
-- **Test _find_item_in_room_drops() finds item by name.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() returns None when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- **Test _find_item_in_room_drops() with empty list.** (1 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
-- *... and 2 more nodes in this community*
+- **Migration Strategy** (10 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **App.State to Dependency Injection Migration Plan** (9 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Current State Analysis** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Implementation Guidelines** (4 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **app.state_to_dependency_injection_migration_5749b0cc.plan.md** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Access Patterns** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Dependencies** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Dependency Injection Pattern** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Estimated Effort** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Overview** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 1: Extend ApplicationContainer (8-12 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 2: Create Dependency Injection Functions (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 3: Migrate Route Handlers and API Endpoints (12-16 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 4: Migrate Background Tasks and Game Tick Processing (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 5: Migrate Command Handlers (16-20 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 6: Migrate WebSocket and Real-time Handlers (8-10 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 7: Remove Dual Storage Pattern (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 8: Migrate Test Suite (20-30 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Phase 9: Cleanup and Documentation (4-6 hours)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Risk Mitigation** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Service Initialization Order** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Services Currently ONLY in app.state** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Services in BOTH container and app.state (duplicated)** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Success Criteria** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
+- **Testing Strategy** (1 connections) — `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
 
 ## Relationships
 
-- [ComprehensiveLoggingMiddleware](ComprehensiveLoggingMiddleware.md) (10 shared connections)
-- [NATS Anti-Patterns and Best Practices Review](NATS_Anti-Patterns_and_Best_Practices_Review.md) (8 shared connections)
-- [useStatsRollingActions.ts](useStatsRollingActions.ts.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/commands/look_item.py`
-- `server/tests/unit/commands/test_look_item.py`
-- `server/tests/unit/commands/test_look_item_helpers.py`
+- `.cursor/plans/app.state_to_dependency_injection_migration_5749b0cc.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 55 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

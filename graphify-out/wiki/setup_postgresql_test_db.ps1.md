@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **SQLAlchemy Async Best Practices** (0 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
+- **setup_postgresql_test_db.ps1** (0 connections) — `scripts/setup_postgresql_test_db.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
+- `scripts/setup_postgresql_test_db.ps1`
 
 ## Audit Trail
 

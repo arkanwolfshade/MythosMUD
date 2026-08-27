@@ -1,42 +1,45 @@
 # properties
 
-> 18 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **_StubPlayerRepo** (16 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **UUID** (6 connections)
-- **test_retry_retries_wrapped_connection_closed_then_succeeds()** (5 connections) — `server/tests/unit/utils/test_retry.py`
-- **.get_player_by_id()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_batch()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.soft_delete_player()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.update_player_last_active()** (2 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_active_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_name()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_player_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_by_user_id()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.get_players_in_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.list_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_player()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.save_players()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **.validate_and_fix_player_room()** (1 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **Retry decorator must not treat wrapped closed-connection as final on attempt 1.** (1 connections) — `server/tests/unit/utils/test_retry.py`
+- **properties** (11 connections) — `db/static/schemas/room.schema.json`
+- **null** (11 connections) — `db/static/schemas/room.schema.json`
+- **string** (11 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **down** (2 connections) — `db/static/schemas/room.schema.json`
+- **east** (2 connections) — `db/static/schemas/room.schema.json`
+- **north** (2 connections) — `db/static/schemas/room.schema.json`
+- **northeast** (2 connections) — `db/static/schemas/room.schema.json`
+- **northwest** (2 connections) — `db/static/schemas/room.schema.json`
+- **south** (2 connections) — `db/static/schemas/room.schema.json`
+- **southeast** (2 connections) — `db/static/schemas/room.schema.json`
+- **southwest** (2 connections) — `db/static/schemas/room.schema.json`
+- **up** (2 connections) — `db/static/schemas/room.schema.json`
+- **west** (2 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [test_realtime_bundle_nats.py](test_realtime_bundle_nats.py.md) (3 shared connections)
-- [Execution Steps](Execution_Steps.md) (3 shared connections)
+- [exits](exits.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_protocols.py`
-- `server/tests/unit/utils/test_retry.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,23 +1,22 @@
 # Dependency Upgrade Tasks
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_combat_command_target_too_long_with_mock()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command target too long warning path (line 163).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Dependency Upgrade Tasks** (0 connections) — `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/archive/DEPENDENCY_UPGRADE_SPEC/tasks.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

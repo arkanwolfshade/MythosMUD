@@ -1,54 +1,48 @@
 # FastAPI Code Review - Anti-Patterns and Best Practices
 
-> 41 nodes
+> 44 nodes
 
 ## Key Concepts
 
-- **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
-- **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **create_websocket_request_context()** (9 connections) — `server/realtime/request_context.py`
-- **Any** (7 connections)
-- **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
-- **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
-- **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **.get_persistence()** (3 connections) — `server/realtime/request_context.py`
-- **.__init__()** (3 connections) — `server/realtime/request_context.py`
-- **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
-- **.set_app_state_services()** (3 connections) — `server/realtime/request_context.py`
-- **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **Test WebSocketRequestContext.set_alias_storage().** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **Get the event bus from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Get the alias storage from the request context.** (1 connections) — `server/realtime/request_context.py`
-- *... and 16 more nodes in this community*
+- **FastAPI Code Review - Anti-Patterns and Best Practices** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Medium Priority Issues** (9 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Work Completed** (8 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Final Summary** (7 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Low Priority Issues** (5 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Critical Issues** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **Summary of Recommendations** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **FastAPI Code Review** (4 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **10. ℹ️ **Dependency Injection Pattern**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **11. ℹ️ **API Versioning** (OPTIONAL - NOT REQUIRED FOR WEBAPP)** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. ✅ **Inconsistent Response Models** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **1. Response Models (Critical Issue #1) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. Dependency Injection (Critical Issue #3) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **2. 🟡 **Fat Endpoints with Business Logic** - **IN PROGRESS**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. ✅ **Direct app.state Access Instead of Dependency Injection** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **3. Error Handling (Medium Issue #7) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. ⚠️ **Inconsistent Router Prefix Patterns**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **4. Type Hints (Medium Issue #6) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. ✅ **Monitoring Endpoints in main.py Instead of Router** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **5. Monitoring Endpoints (Medium Issue #5) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. ✅ **Missing Type Hints in Some Endpoints** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **6. Router Prefix Documentation (Medium Issue #4) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. Fat Endpoints Refactoring (Critical Issue #2) ✅** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **7. ✅ **Inconsistent Error Handling** - **RESOLVED**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- **8. ℹ️ **Service Layer Organization**** (1 connections) — `docs/archive/FASTAPI_CODE_REVIEW.md`
+- *... and 19 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (2 shared connections)
-- [Chat Panel](Chat_Panel.md) (1 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/request_context.py`
-- `server/tests/unit/realtime/test_request_context.py`
+- `docs/archive/FASTAPI_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 70 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 43 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

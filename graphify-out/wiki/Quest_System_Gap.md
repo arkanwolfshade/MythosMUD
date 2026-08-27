@@ -1,30 +1,29 @@
 # Quest System Gap
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **generate_unique_codes()** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invites.py** (5 connections) — `tools/invite_tools/generate_invites.py`
-- **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **main()** (3 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate a list of unique invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
-- **Generate invite codes and store them in the database.** (1 connections) — `tools/invite_tools/generate_invites.py`
+- **Quest System Gap** (2 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Quest System** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **Quest Subsystem Implementation** (2 connections) — `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
+- **MUD Subsystems Gap Analysis** (1 connections) — `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- **Player Skills and Profession Modifiers** (1 connections) — `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/invite_tools/generate_invites.py`
+- `.cursor/plans/mud_subsystems_gap_analysis_a72a4468.plan.md`
+- `.cursor/plans/player_skills_and_profession_modifiers_dff11b8d.plan.md`
+- `.cursor/plans/quest_subsystem_implementation_2c84306e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

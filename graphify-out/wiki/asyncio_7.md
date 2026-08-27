@@ -1,53 +1,52 @@
 # asyncio
 
-> 30 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **emit_loot_all_event()** (17 connections) — `server/api/container_events.py`
-- **.test_emit_loot_all_event_emission_error()** (8 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_all_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_calculates_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_success()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_zero_items_removed()** (7 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **asyncio** (7 connections)
-- **ConnectionManager** (7 connections)
-- **.test_emit_loot_all_event_no_connection_manager()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **.test_emit_loot_all_event_no_room_id()** (6 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **_diff_items_from_emit()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **mock_connection_manager()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **sample_container_component()** (5 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **UUID** (5 connections)
-- **ContainerComponent** (4 connections)
-- **_assert_warning_once()** (3 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **fixture** (3 connections)
-- **ContainerComponent** (1 connections)
-- **Emit WebSocket event for loot_all operation. Args: connection_manager:…** (1 connections) — `server/api/container_events.py`
-- **Test emit_loot_all_event handles emission errors gracefully.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Test emit_loot_all_event correctly calculates items_removed in diff.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Test emit_loot_all_event handles case when all items are removed.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Assert patched logger.warning was called once (typed for basedpyright).** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Test emit_loot_all_event handles case when no items are removed.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- **Extract diff['items'] from emit_container_updated await kwargs.** (1 connections) — `server/tests/unit/api/test_container_events_loot.py`
-- *... and 5 more nodes in this community*
+- **asyncio** (26 connections)
+- **test_determine_spawn_room_fallback_not_found()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_no_container()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_room_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_determine_spawn_room_with_sub_zone()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_no_prior_spawns_returns_empty()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_arena_npcs_skips_unknown_definition_id()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_npcs_on_startup_with_required_npcs()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_probability_attribute()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_no_spawn_room()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_optional_npcs_with_probability()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_spawn_failure()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **test_spawn_required_npcs_success()** (4 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() successfully spawns required NPCs.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_required_npcs() handles spawn failures.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() spawns based on probability.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses NPC's room_id when available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() uses sub_zone default when room_id not available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles missing spawn room.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _spawn_optional_npcs() handles NPCs without spawn_probability attribute.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() returns None when fallback room not found.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test _determine_spawn_room() handles no async_persistence available.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Arena pass is skipped when required/optional passes spawned nothing.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- **Test spawn_npcs_on_startup() processes startup spawning.** (1 connections) — `server/tests/unit/services/test_npc_startup_service.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (18 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (8 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (3 shared connections)
-- [test_inventory_helpers.py](test_inventory_helpers.py.md) (2 shared connections)
-- [PopulationStats](PopulationStats.md) (1 shared connections)
+- [test_npc_startup_service.py](test_npc_startup_service.py.md) (19 shared connections)
+- [NPCStartupService](NPCStartupService.md) (13 shared connections)
+- [_errors_len](_errors_len.md) (5 shared connections)
+- [test_determine_spawn_room_room_id_not_found](test_determine_spawn_room_room_id_not_found.md) (1 shared connections)
+- [test_spawn_npcs_on_startup_with_optional_npcs](test_spawn_npcs_on_startup_with_optional_npcs.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_events.py`
-- `server/tests/unit/api/test_container_events_loot.py`
+- `server/tests/unit/services/test_npc_startup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 52 (80%)
+- INFERRED: 13 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

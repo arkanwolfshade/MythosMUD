@@ -1,53 +1,42 @@
 # Persistence Layer Extraction - COMPLETE ✅
 
-> 30 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **ComprehensiveLoggingMiddleware** (15 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging.py** (11 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.__call__()** (8 connections) — `server/middleware/comprehensive_logging.py`
-- **.dispatch()** (7 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_error()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_start()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **._log_request_success_with_status()** (5 connections) — `server/middleware/comprehensive_logging.py`
-- **asyncio** (5 connections)
-- **test_comprehensive_logging_passes_non_http()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_reraises_exception()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_successful_request()** (4 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **Request** (4 connections)
-- **.__init__()** (3 connections) — `server/middleware/comprehensive_logging.py`
-- **test_comprehensive_logging_dispatch_error()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_comprehensive_logging_dispatch_success()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **test_log_request_start_long_auth_header()** (3 connections) — `server/tests/unit/middleware/test_comprehensive_logging.py`
-- **.default()** (2 connections) — `server/realtime/envelope.py`
-- **Any** (1 connections)
-- **ASGIApp** (1 connections)
-- **Exception** (1 connections)
-- **Receive** (1 connections)
-- **Scope** (1 connections)
-- **Send** (1 connections)
-- **Log request start information.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- **Log successful request completion.** (1 connections) — `server/middleware/comprehensive_logging.py`
-- *... and 5 more nodes in this community*
+- **Persistence Layer Extraction - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Next Steps** (5 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Migration Path for Callers** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Results** (3 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Cleanup** (2 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Architecture Changes** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Benefits** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **File Size Reduction** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Files Modified** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 1: Continue Using Sync Interface** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Option 2: Migrate to Async Interface (Recommended)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 2: API Endpoints (6 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 3: Real-time Handlers (8 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 4: Services (15 files)** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Phase 5-7: Game, NPC, and Test files** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Removed Deprecated Code** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Summary** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
+- **Validation** (1 connections) — `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (2 shared connections)
+- [Methods Extracted](Methods_Extracted.md) (1 shared connections)
 
 ## Source Files
 
-- `server/middleware/comprehensive_logging.py`
-- `server/realtime/envelope.py`
-- `server/tests/unit/middleware/test_comprehensive_logging.py`
+- `docs/archive/PERSISTENCE_EXTRACTION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (84%)
-- INFERRED: 9 (16%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,12 +1,11 @@
 # Test Suite Analyzer Agent
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Fixture Optimization Complete** (2 connections) — `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
-- **E2E Testing Setup Status** (1 connections) — `docs/archive/E2E_TESTING_SETUP_STATUS.md`
-- **Test Suite Post-Merge Refactoring** (1 connections) — `docs/archive/MERGE_REFACTORING_SUMMARY.md`
+- **Test Suite Analyzer Agent** (1 connections) — `.claude/agents/test-analyzer.md`
+- **CONTRIBUTING.md** (1 connections) — `CONTRIBUTING.md`
 
 ## Relationships
 
@@ -14,14 +13,13 @@
 
 ## Source Files
 
-- `docs/archive/E2E_TESTING_SETUP_STATUS.md`
-- `docs/archive/FIXTURE_OPTIMIZATION_COMPLETE.md`
-- `docs/archive/MERGE_REFACTORING_SUMMARY.md`
+- `.claude/agents/test-analyzer.md`
+- `CONTRIBUTING.md`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

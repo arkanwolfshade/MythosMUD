@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **get_project_root.py** (0 connections) — `scripts/get_project_root.py`
+- **Worktree Plan Metadata** (0 connections) — `.cursor/templates/worktree-plan-template.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/get_project_root.py`
+- `.cursor/templates/worktree-plan-template.md`
 
 ## Audit Trail
 

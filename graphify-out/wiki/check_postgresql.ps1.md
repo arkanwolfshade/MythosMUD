@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Legacy Test File Consolidation** (0 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- **check_postgresql.ps1** (0 connections) — `scripts/check_postgresql.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
+- `scripts/check_postgresql.ps1`
 
 ## Audit Trail
 

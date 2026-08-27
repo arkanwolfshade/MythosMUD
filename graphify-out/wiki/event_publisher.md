@@ -1,33 +1,30 @@
 # event_publisher
 
-> 10 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **MythosMUD Testing Strategy (Greenfield Suite)** (9 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **TESTING_GREENFIELD.md** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Coverage policy** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Fixtures/layout** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Isolation rules** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Logging and diagnostics** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Markers** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Mocking standards** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **Tiers and commands** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
-- **What to run when** (1 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **event_publisher()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_nats_service()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **mock_subject_manager()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **fixture** (3 connections)
+- **Create a mock NATS service.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create a mock subject manager.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Create an EventPublisher instance.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [event_publisher](event_publisher.md) (1 shared connections)
-- [.__call__](__call__.md) (1 shared connections)
+- [test_event_publisher.py](test_event_publisher.py.md) (3 shared connections)
+- [EventPublisher](EventPublisher.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/TESTING_GREENFIELD.md`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 9 (90%)
+- INFERRED: 1 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

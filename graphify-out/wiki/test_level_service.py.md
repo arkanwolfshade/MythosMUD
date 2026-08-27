@@ -1,54 +1,53 @@
 # test_level_service.py
 
-> 79 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **CombatConfiguration** (26 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationService** (18 connections) — `server/services/combat_configuration_service.py`
-- **combat_configuration_service.py** (17 connections) — `server/services/combat_configuration_service.py`
-- **TestCombatConfiguration** (16 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **test_combat_configuration_service.py** (9 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **CombatConfigurationScope** (8 connections) — `server/services/combat_configuration_service.py`
-- **.update_combat_configuration()** (8 connections) — `server/services/combat_configuration_service.py`
-- **CombatConfigurationError** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration_for_scope()** (7 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_configuration()** (7 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_settings_summary()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.validate_configuration()** (6 connections) — `server/services/combat_configuration_service.py`
-- **.from_dict()** (5 connections) — `server/services/combat_configuration_service.py`
-- **.is_combat_available()** (5 connections) — `server/services/combat_configuration_service.py`
-- **get_combat_config()** (5 connections) — `server/services/combat_configuration_service.py`
-- **Any** (5 connections)
-- **.clear_scope_override()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.get_active_overrides()** (4 connections) — `server/services/combat_configuration_service.py`
-- **.to_dict()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.get_combat_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.refresh_configuration()** (3 connections) — `server/services/combat_configuration_service.py`
-- **.test_from_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_custom_values()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_init_defaults()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- **.test_to_dict()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
-- *... and 54 more nodes in this community*
+- **test_level_service.py** (17 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_level_curve.py** (16 connections) — `server/tests/unit/game/test_level_curve.py`
+- **total_xp_for_level()** (15 connections) — `server/game/level_curve.py`
+- **level_from_total_xp()** (13 connections) — `server/game/level_curve.py`
+- **asyncio** (8 connections)
+- **xp_required_for_level()** (6 connections) — `server/game/level_curve.py`
+- **level_curve.py** (6 connections) — `server/game/level_curve.py`
+- **test_grant_xp_level_up_calls_hook()** (5 connections) — `server/tests/unit/game/test_level_service.py`
+- **.check_level_up()** (4 connections) — `server/game/level_service.py`
+- **.grant_xp()** (4 connections) — `server/game/level_service.py`
+- **test_level_from_total_xp_roundtrip()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_threshold_level_two()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_xp_required_for_level_marginal()** (4 connections) — `server/tests/unit/game/test_level_curve.py`
+- **level_service()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_increase_persists_and_returns_true()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_check_level_up_no_change_returns_false()** (4 connections) — `server/tests/unit/game/test_level_service.py`
+- **test_level_from_total_xp_negative()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_level_from_total_xp_zero()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_increases()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_one()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_total_xp_for_level_two_positive()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **test_xp_required_for_level_invalid()** (3 connections) — `server/tests/unit/game/test_level_curve.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- **sample_player()** (3 connections) — `server/tests/unit/game/test_level_service.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [properties](properties.md) (7 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [request_with_app_container](request_with_app_container.md) (3 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (2 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/combat_configuration_service.py`
-- `server/tests/unit/services/test_combat_configuration_service.py`
+- `server/game/level_curve.py`
+- `server/game/level_service.py`
+- `server/tests/unit/game/test_level_curve.py`
+- `server/tests/unit/game/test_level_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (96%)
-- INFERRED: 5 (4%)
+- EXTRACTED: 101 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,24 +1,22 @@
 # Codebase Explorer Agent
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_handle_container_overflow_room_id_empty_string()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles empty string room_id.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **Codebase Explorer Agent** (0 connections) — `.claude/agents/codebase-explorer.md`
 
 ## Relationships
 
-- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `.claude/agents/codebase-explorer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

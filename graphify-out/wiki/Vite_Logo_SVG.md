@@ -1,12 +1,11 @@
 # Vite Logo SVG
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Random Stats Generator Planning** (2 connections) — `docs/archive/PLANNING_stats.md`
-- **Pydantic Click Command Validation Integration** (1 connections) — `docs/archive/INTEGRATION_SUMMARY.md`
-- **Random Stats Generator Technical Plan** (1 connections) — `docs/archive/PLANNING_stats_generator.md`
+- **Vite Logo SVG** (1 connections) — `client/public/vite.svg`
+- **React Logo SVG** (1 connections) — `client/src/assets/react.svg`
 
 ## Relationships
 
@@ -14,14 +13,13 @@
 
 ## Source Files
 
-- `docs/archive/INTEGRATION_SUMMARY.md`
-- `docs/archive/PLANNING_stats.md`
-- `docs/archive/PLANNING_stats_generator.md`
+- `client/public/vite.svg`
+- `client/src/assets/react.svg`
 
 ## Audit Trail
 
 - EXTRACTED: 0 (0%)
-- INFERRED: 2 (100%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

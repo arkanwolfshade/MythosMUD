@@ -1,11 +1,10 @@
 # Semgrep Windows UTF-8 Fix
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **Verb+Object Button Labels** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
-- **UX Writing Reference** (1 connections) — `.cursor/skills/frontend-design/reference/ux-writing.md`
+- **Semgrep Windows UTF-8 Fix** (0 connections) — `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/ux-writing.md`
+- `docs/archive/SEMGREP_UNICODE_FIX.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

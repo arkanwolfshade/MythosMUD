@@ -4,11 +4,15 @@
 
 ## Key Concepts
 
-- **LogEntry** (0 connections)
+- **verify_schema_match.ps1** (0 connections) — `scripts/verify_schema_match.ps1`
 
 ## Relationships
 
 - No strong cross-community connections detected
+
+## Source Files
+
+- `scripts/verify_schema_match.ps1`
 
 ## Audit Trail
 

@@ -1,63 +1,51 @@
 # GameTickService
 
-> 56 nodes
+> 55 nodes
 
 ## Key Concepts
 
-- **CharacterNameScreen.tsx** (27 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentScreen.tsx** (24 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **appLazyScreens.tsx** (17 connections) — `client/src/mythosApp/appLazyScreens.tsx`
-- **SkillAssignmentScreen.helpers.tsx** (14 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **playerNameValidation.ts** (9 connections) — `client/src/utils/playerNameValidation.ts`
-- **MotdInterstitialScreen.tsx** (8 connections) — `client/src/components/MotdInterstitialScreen.tsx`
-- **MotdContent.tsx** (6 connections) — `client/src/components/MotdContent.tsx`
-- **CharacterNameScreen()** (5 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **SkillAssignmentScreen()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **useSkillAssignmentForm()** (4 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **validatePlayerName()** (4 connections) — `client/src/utils/playerNameValidation.ts`
-- **playerNameValidation.test.ts** (4 connections) — `client/src/utils/__tests__/playerNameValidation.test.ts`
-- **SkillsPayload** (3 connections) — `client/src/components/CharacterNameScreen.tsx`
-- **SkillAssignmentScreenProps** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **MotdContent()** (3 connections) — `client/src/components/MotdContent.tsx`
-- **loadSkillsCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderErrorState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderLoadingState()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderOccupationSlots()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderPersonalInterestSlots()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **renderSkillInstructions()** (3 connections) — `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- **useSkillCatalog()** (3 connections) — `client/src/components/SkillAssignmentScreen.tsx`
-- **PLAYER_NAME_MAX_LENGTH** (3 connections) — `client/src/utils/playerNameValidation.ts`
-- **PLAYER_NAME_MIN_LENGTH** (3 connections) — `client/src/utils/playerNameValidation.ts`
-- *... and 31 more nodes in this community*
+- **GameTickService** (30 connections) — `server/services/game_tick_service.py`
+- **TestGameTickService** (20 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **asyncio** (13 connections)
+- **test_game_tick_service.py** (6 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_already_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_start_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_not_running()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_success()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_stop_task_already_done()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_cancellation()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_exceptions()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_handles_publish_failure()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_increments_count()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_tick_loop_publishes_events()** (4 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_get_tick_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_custom_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_init_default_interval()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.test_reset_tick_count()** (3 connections) — `server/tests/unit/services/test_game_tick_service.py`
+- **.get_tick_count()** (2 connections) — `server/services/game_tick_service.py`
+- **.get_tick_interval()** (2 connections) — `server/services/game_tick_service.py`
+- **.__init__()** (2 connections) — `server/services/game_tick_service.py`
+- **.is_service_running()** (2 connections) — `server/services/game_tick_service.py`
+- *... and 30 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (5 shared connections)
-- [NPCCombatMemory](NPCCombatMemory.md) (4 shared connections)
-- [RoomNodeData](RoomNodeData.md) (2 shared connections)
-- [LogAggregator](LogAggregator.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (2 shared connections)
-- [test_chat_moderation.py](test_chat_moderation.py.md) (1 shared connections)
+- [get_global_tracked_manager](get_global_tracked_manager.md) (2 shared connections)
+- [.start](start.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/CharacterNameScreen.tsx`
-- `client/src/components/MotdContent.tsx`
-- `client/src/components/MotdInterstitialScreen.tsx`
-- `client/src/components/SkillAssignmentScreen.helpers.tsx`
-- `client/src/components/SkillAssignmentScreen.tsx`
-- `client/src/components/__tests__/MotdContent.test.tsx`
-- `client/src/components/__tests__/MotdInterstitialScreen.test.tsx`
-- `client/src/mythosApp/appLazyScreens.tsx`
-- `client/src/utils/__tests__/playerNameValidation.test.ts`
-- `client/src/utils/playerNameValidation.ts`
+- `server/services/game_tick_service.py`
+- `server/tests/unit/services/test_game_tick_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 120 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 88 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

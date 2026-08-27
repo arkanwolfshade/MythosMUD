@@ -1,34 +1,49 @@
 # Async Remediation Summary - December 3, 2025
 
-> 13 nodes
+> 67 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone against the Tide  (2026-08-11)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Communities (4 total, 2 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **alone-against-the-tide/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Community 0 - "Kingsport Setting"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Community 1 - "Solo Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- **Async Remediation Summary - December 3, 2025** (25 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🏆 Achievement Highlights** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🔧 Code Changes Made** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📚 Deliverables** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🚀 Deployment Readiness** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📞 Next Steps** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Performance Improvements** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **💡 Recommendations** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **💰 ROI Analysis** (4 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Audit Compliance Score** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎭 Closing Remarks** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎓 Key Learnings** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🚨 Risk Assessment** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎯 Success Criteria - Status** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📈 Success Metrics** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🎓 Technical Debt Reduced** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🧪 Test Coverage** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **🔍 Testing Strategy** (3 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📋 Remaining Work** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **📊 Remediation Results** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Short-Term (This Week)** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **Status**: ✅**REMEDIATION COMPLETE** (2 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **1. Fixed Event Loop Blocking in PassiveLucidityFluxService** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **2. Removed asyncio.run() from Exploration Service** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **3. Added Exception Handling for Database Engine Creation** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- *... and 42 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
+- [✅ Verified Already Implemented](✅_Verified_Already_Implemented.md) (1 shared connections)
+- [📚 Documentation Created](📚_Documentation_Created.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-tide/GRAPH_REPORT.md`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 70 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

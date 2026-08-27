@@ -1,28 +1,28 @@
 # Scenario 32 Disconnect Grace Period
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **add_fastapi_users_columns.py** (5 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **apply_migration()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **main()** (3 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Main entry point for the migration script.** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
-- **Apply the migration to add FastAPI Users columns. Args: database_url:…** (1 connections) — `server/scripts/add_fastapi_users_columns.py`
+- **Scenario 32 Disconnect Grace Period** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- **Linkdead Zombie State** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- **Scenario 33 Rest Command** (1 connections) — `e2e-tests/scenarios/scenario-33-rest-command.md`
+- **Scenario 35 Player Combat** (1 connections) — `e2e-tests/scenarios/scenario-35-player-combat.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/scripts/add_fastapi_users_columns.py`
+- `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
+- `e2e-tests/scenarios/scenario-33-rest-command.md`
+- `e2e-tests/scenarios/scenario-35-player-combat.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 2 (67%)
+- INFERRED: 1 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

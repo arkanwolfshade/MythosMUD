@@ -1,38 +1,36 @@
 # pytest Best Practices
 
-> 17 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pytest Best Practices** (7 connections) — `.claude/rules/pytest.md`
+- **2. Common Patterns & Anti-patterns** (5 connections) — `.claude/rules/pytest.md`
+- **1. Code Organization & Structure** (4 connections) — `.claude/rules/pytest.md`
+- **3. Performance Considerations** (2 connections) — `.claude/rules/pytest.md`
+- **1.1 Project Layout** (1 connections) — `.claude/rules/pytest.md`
+- **1.2 Test File Naming** (1 connections) — `.claude/rules/pytest.md`
+- **1.3 Test Naming Conventions** (1 connections) — `.claude/rules/pytest.md`
+- **2.1 Single Assert Per Test** (1 connections) — `.claude/rules/pytest.md`
+- **2.2 Fixtures for Setup/Teardown & Dependency Injection** (1 connections) — `.claude/rules/pytest.md`
+- **2.3 Parameterization** (1 connections) — `.claude/rules/pytest.md`
+- **2.4 Markers** (1 connections) — `.claude/rules/pytest.md`
+- **3.1 Keep Tests Fast** (1 connections) — `.claude/rules/pytest.md`
+- **4. Mocking Strategies** (1 connections) — `.claude/rules/pytest.md`
+- **5. Coverage Patterns** (1 connections) — `.claude/rules/pytest.md`
+- **6. Type Hints** (1 connections) — `.claude/rules/pytest.md`
 
 ## Relationships
 
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `.claude/rules/pytest.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 15 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

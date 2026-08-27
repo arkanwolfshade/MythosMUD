@@ -1,28 +1,27 @@
 # Execution Steps
 
-> 19 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **vite Best Practices** (6 connections) — `.claude/rules/vite.md`
-- **1. Code Organization and Structure** (4 connections) — `.claude/rules/vite.md`
-- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/vite.md`
-- **3. Performance Considerations** (4 connections) — `.claude/rules/vite.md`
-- **4. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/vite.md`
-- **5. Testing Approaches** (2 connections) — `.claude/rules/vite.md`
-- **vite.md** (1 connections) — `.claude/rules/vite.md`
-- **Audit Custom Plugins** (1 connections) — `.claude/rules/vite.md`
-- **Avoid Barrel Files** (1 connections) — `.claude/rules/vite.md`
-- **Embrace Native ES Modules** (1 connections) — `.claude/rules/vite.md`
-- **Incorrect Base Path for Deployment** (1 connections) — `.claude/rules/vite.md`
-- **Keep `vite.config.js` Minimal** (1 connections) — `.claude/rules/vite.md`
-- **Mismanaging `NODE_ENV` with API Usage** (1 connections) — `.claude/rules/vite.md`
-- **Optimize Browser Setup** (1 connections) — `.claude/rules/vite.md`
-- **Optimize with Dynamic Imports** (1 connections) — `.claude/rules/vite.md`
-- **Standardize on Vitest** (1 connections) — `.claude/rules/vite.md`
-- **Use Explicit File Extensions** (1 connections) — `.claude/rules/vite.md`
-- **Use `import.meta.env` for Environment Variables** (1 connections) — `.claude/rules/vite.md`
-- **Warm Up Critical Files** (1 connections) — `.claude/rules/vite.md`
+- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Scenario 7: Who Command **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **scenario-07-who-command.md** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 10: Verify Single Player Who List** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 1: AW Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 2: Verify AW Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 3: Verify Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 4: Ithaqua Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 5: Verify Ithaqua Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 6: Test Who Command After Movement** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 7: Verify Updated Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 8: Test Who Command Format** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Step 9: Test Who Command with Single Player** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
 
 ## Relationships
 
@@ -30,11 +29,11 @@
 
 ## Source Files
 
-- `.claude/rules/vite.md`
+- `e2e-tests/scenarios/scenario-07-who-command.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,54 +1,44 @@
 # test_lucidity_command_disruption.py
 
-> 22 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **asyncio** (38 connections)
-- **test_get_adjacent_rooms_null_exit()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_local_chat_scope()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_exits_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_info_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_lookup_explored_stable_ids_calls_procedure_and_binds_uuid_list()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_room_service_init_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_with_cache_false()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns False when player not in room.** (2 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() skips null exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_local_chat_scope() returns current room and adjacent rooms.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() returns empty list when room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_exits() returns exits dictionary.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_info() returns comprehensive room information.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test _lookup_explored_stable_ids() calls get_room_stable_ids_by_uuids with the…** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test RoomService initialization with cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **test_lucidity_command_disruption.py** (14 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **lucidity_command_disruption.py** (9 connections) — `server/services/lucidity_command_disruption.py`
+- **should_involuntary_flee()** (7 connections) — `server/services/lucidity_command_disruption.py`
+- **should_misfire_command()** (7 connections) — `server/services/lucidity_command_disruption.py`
+- **can_perform_action()** (4 connections) — `server/services/lucidity_command_disruption.py`
+- **get_misfire_message()** (4 connections) — `server/services/lucidity_command_disruption.py`
+- **test_should_involuntary_flee_deranged_high_damage()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_should_misfire_fractured_miss()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_should_misfire_fractured_roll()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **patch** (3 connections)
+- **test_can_perform_action()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_get_misfire_messages_by_tier()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_should_involuntary_flee_wrong_tier_or_low_damage()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_should_misfire_catatonic_always()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **test_should_misfire_ignores_simple_commands()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **Command disruption utilities for lucidity system. Implements command misfires…** (1 connections) — `server/services/lucidity_command_disruption.py`
+- **Check if a command should misfire based on tier and command type. Args:…** (1 connections) — `server/services/lucidity_command_disruption.py`
+- **Get the misfire message for a failed command. Args: command_type: Type of…** (1 connections) — `server/services/lucidity_command_disruption.py`
+- **Check if player should involuntarily flee. Args: tier: Current lucidity tier…** (1 connections) — `server/services/lucidity_command_disruption.py`
+- **Check if player can perform actions (motor lock check). Args: tier: Current…** (1 connections) — `server/services/lucidity_command_disruption.py`
+- **Unit tests for lucidity command disruption.** (1 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
 
 ## Relationships
 
-- [get_room_environment](get_room_environment.md) (11 shared connections)
-- [plane](plane.md) (3 shared connections)
-- [zone](zone.md) (2 shared connections)
-- [exits](exits.md) (2 shared connections)
-- [Movement Message Dual Panel Routing](Movement_Message_Dual_Panel_Routing.md) (2 shared connections)
-- [test_create_pickup_command](test_create_pickup_command.md) (1 shared connections)
-- [test_create_ground_command](test_create_ground_command.md) (1 shared connections)
-- [TestCheckRateLimit](TestCheckRateLimit.md) (1 shared connections)
-- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
-- [test_get_player_lucidity_tier_exception_in_processing](test_get_player_lucidity_tier_exception_in_processing.md) (1 shared connections)
-- [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
-- [test_apply_dampening_and_send_message_exception](test_apply_dampening_and_send_message_exception.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/services/lucidity_command_disruption.py`
+- `server/tests/unit/services/test_lucidity_command_disruption.py`
 
 ## Audit Trail
 
-- EXTRACTED: 60 (100%)
+- EXTRACTED: 39 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

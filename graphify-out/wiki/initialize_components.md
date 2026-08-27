@@ -1,33 +1,32 @@
 # initialize_components
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Dependency Upgrade** (6 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Dependency Upgrade Skill** (2 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **.pre-commit-config.yaml** (2 connections) — `.pre-commit-config.yaml`
-- **Before starting** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Rollback** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Upgrade procedure** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Verify** (1 connections) — `.claude/skills/deps-upgrade/SKILL.md`
-- **Pre-commit Best Practices** (1 connections) — `.claude/rules/pre-commit.md`
+- **initialize_components()** (9 connections) — `server/game/items/component_hooks.py`
+- **test_component_hooks.py** (6 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_empty_prototype()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_merges_overrides()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **test_initialize_components_records_prototype_components()** (2 connections) — `server/tests/unit/game/items/test_component_hooks.py`
+- **Any** (1 connections)
+- **Prepare component state metadata for a new item instance. This routine…** (1 connections) — `server/game/items/component_hooks.py`
+- **Unit tests for item component hooks.** (1 connections) — `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `.claude/rules/pre-commit.md`
-- `.claude/skills/deps-upgrade/SKILL.md`
-- `.pre-commit-config.yaml`
+- `server/game/items/component_hooks.py`
+- `server/tests/unit/game/items/test_component_hooks.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (75%)
-- INFERRED: 2 (25%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

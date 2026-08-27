@@ -1,29 +1,28 @@
 # Four-Level Room Hierarchy
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **1. CONVENTION Findings (260 findings)** (7 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.1 Missing Module Docstrings (C0114)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.2 Invalid Name (C0103)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.3 Too Many Lines in Module (C0302)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.4 Use Implicit Booleaness (C1805, C1804)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.5 Singleton Comparison (C0121)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **1.6 Missing Function Docstring (C0116)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **Four-Level Room Hierarchy** (2 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
+- **Hierarchical World Loader** (2 connections) — `docs/archive/ROOM_PLANNING.md`
+- **Room Hierarchy Implementation** (2 connections) — `docs/archive/ROOM_PLANNING.md`
+- **Environment Classification** (1 connections) — `docs/archive/ROOM_HIERARCHY_FRD.md`
+- **Environment Inheritance** (1 connections) — `docs/archive/ROOM_PLANNING.md`
 
 ## Relationships
 
-- [main](main.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- `docs/archive/ROOM_HIERARCHY_FRD.md`
+- `docs/archive/ROOM_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

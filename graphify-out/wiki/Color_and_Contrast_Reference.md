@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_handle_container_overflow_ground_container_error()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Test handle_container_overflow handles ground container creation error.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **OKLCH Color Space** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
+- **Color and Contrast Reference** (1 connections) — `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Relationships
 
-- [Phase 1: Core Separation](Phase_1-_Core_Separation.md) (1 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `.cursor/skills/frontend-design/reference/color-and-contrast.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

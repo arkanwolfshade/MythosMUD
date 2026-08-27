@@ -1,52 +1,60 @@
 # projectorRoom.ts
 
-> 47 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **PeriodicOrphanAuditor** (23 connections) — `server/app/memory_lifespan_coordinator.py`
-- **test_memory_lifespan_coordinator.py** (19 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **asyncio** (11 connections)
-- **create_lifespan_memory_service()** (5 connections) — `server/app/memory_lifespan_coordinator.py`
-- **._background_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **._do_full_cleanup_audit()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **.force_single_audit_cycle()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **.schedule_periodic_auditing()** (4 connections) — `server/app/memory_lifespan_coordinator.py`
-- **auditor()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_background_audit_cycle_cancelled()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_create_lifespan_memory_service()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_handles_errors()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_no_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_do_full_cleanup_audit_with_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_force_single_audit_cycle_no_orphans()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_force_single_audit_cycle_with_cleanup()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_already_running()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_init_failure()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_schedule_periodic_auditing_success()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **test_stop_audit_scheduler_cancels_task()** (4 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **.__init__()** (3 connections) — `server/app/memory_lifespan_coordinator.py`
-- **test_stop_audit_scheduler_not_running()** (3 connections) — `server/tests/unit/app/test_memory_lifespan_coordinator.py`
-- **.stop_audit_scheduler()** (2 connections) — `server/app/memory_lifespan_coordinator.py`
-- **Any** (1 connections)
-- **fixture** (1 connections)
-- *... and 22 more nodes in this community*
+- **projectorRoom.ts** (34 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **projectorHandlersMessages.ts** (27 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- **projectorHandlersState.ts** (24 connections) — `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- **projectorMessageUtils.ts** (12 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **roomMergeUtils.ts** (10 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **messageMapper.ts** (8 connections) — `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- **attachOccupants()** (7 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **coalesceCount()** (7 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **mergeRoomState()** (7 connections) — `client/src/components/ui-v2/utils/roomMergeUtils.ts`
+- **messageMapper.test.ts** (7 connections) — `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- **deriveRoomFromRoomOccupants()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomUpdate()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **roomWithOccupantsFromArrays()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **roomWithPreservedOccupants()** (6 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **createInitialRoomState()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **createMinimalRoomFromOccupantsEvent()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **handleStructuredOccupantsFormat()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **mergeTopLevelOccupants()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **preferOccupantList()** (5 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **appendMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **appendMovementMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **buildChatMessage()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- **createRoomUpdateWithPreservedOccupants()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromOccupantsWithoutExisting()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- **deriveRoomFromRoomState()** (4 connections) — `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [_container_data_to_dict](_container_data_to_dict.md) (3 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (19 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (7 shared connections)
+- [GameEvent](GameEvent.md) (7 shared connections)
+- [systemHandlers.ts](systemHandlers.ts.md) (5 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (4 shared connections)
+- [messageHandlers.ts](messageHandlers.ts.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/memory_lifespan_coordinator.py`
-- `server/tests/unit/app/test_memory_lifespan_coordinator.py`
+- `client/src/components/ui-v2/eventLog/__tests__/messageMapper.test.ts`
+- `client/src/components/ui-v2/eventLog/messageMapper.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersMessages.ts`
+- `client/src/components/ui-v2/eventLog/projectorHandlersState.ts`
+- `client/src/components/ui-v2/eventLog/projectorMessageUtils.ts`
+- `client/src/components/ui-v2/eventLog/projectorRoom.ts`
+- `client/src/components/ui-v2/utils/__tests__/roomMergeUtils.test.ts`
+- `client/src/components/ui-v2/utils/roomMergeUtils.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (85%)
-- INFERRED: 12 (15%)
+- EXTRACTED: 165 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

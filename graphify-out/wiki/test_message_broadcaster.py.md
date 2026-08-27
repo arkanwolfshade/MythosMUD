@@ -1,57 +1,50 @@
 # test_message_broadcaster.py
 
-> 40 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **subject_controller.py** (31 connections) — `server/api/admin/subject_controller.py`
-- **test_subject_controller.py** (22 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **register_pattern()** (11 connections) — `server/api/admin/subject_controller.py`
-- **validate_subject()** (11 connections) — `server/api/admin/subject_controller.py`
-- **get_patterns()** (9 connections) — `server/api/admin/subject_controller.py`
-- **get_subject_statistics()** (9 connections) — `server/api/admin/subject_controller.py`
-- **RegisterPatternRequest** (8 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectRequest** (7 connections) — `server/api/admin/subject_controller.py`
-- **_register_pattern_try()** (7 connections) — `server/api/admin/subject_controller.py`
-- **require_admin_user()** (7 connections) — `server/api/admin/subject_controller.py`
-- **_admin_user()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_register_pattern_invalid()** (7 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **BaseModel** (6 connections)
-- **asyncio** (6 connections)
-- **RegisterPatternResponse** (5 connections) — `server/api/admin/subject_controller.py`
-- **test_register_pattern_success()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_invalid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_validate_subject_valid()** (5 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **PatternsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **SubjectStatisticsResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **ValidateSubjectResponse** (4 connections) — `server/api/admin/subject_controller.py`
-- **test_get_patterns()** (4 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_get_subject_statistics()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_require_admin_user_allows_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- **test_require_admin_user_rejects_non_admin()** (3 connections) — `server/tests/unit/api/admin/test_subject_controller.py`
-- *... and 15 more nodes in this community*
+- **test_message_broadcaster.py** (23 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **asyncio** (15 connections)
+- **test_broadcast_global()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_global_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_room_event_error()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_batch_exception_falls_back()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_delivery_failure()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_empty()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_exclude_player()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_broadcast_to_room_with_uuid_exclude()** (3 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **test_message_broadcaster_init()** (2 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Unit tests for message broadcaster. Tests the MessageBroadcaster class.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() excludes specified player.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() when no players online.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_room_event() broadcasts room event.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() records invalid subscriber IDs.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_to_room() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- **Test broadcast_global() falls back when batch gather fails.** (1 connections) — `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [NPCSpawningService](NPCSpawningService.md) (9 shared connections)
-- [DatabaseManager](DatabaseManager.md) (7 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (5 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (1 shared connections)
-- [test_player_position_service.py](test_player_position_service.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [message_broadcaster](message_broadcaster.md) (3 shared connections)
+- [MessageBroadcaster](MessageBroadcaster.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/admin/subject_controller.py`
-- `server/tests/unit/api/admin/test_subject_controller.py`
+- `server/tests/unit/realtime/messaging/test_message_broadcaster.py`
 
 ## Audit Trail
 
-- EXTRACTED: 119 (95%)
-- INFERRED: 6 (5%)
+- EXTRACTED: 54 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

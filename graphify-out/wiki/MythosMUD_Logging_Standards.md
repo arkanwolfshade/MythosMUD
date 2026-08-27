@@ -1,32 +1,29 @@
 # MythosMUD Logging Standards
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **bench_cache.py** (6 connections) — `scripts/bench_cache.py`
-- **_FakePersistence** (5 connections) — `scripts/bench_cache.py`
-- **bench_room_cache()** (5 connections) — `scripts/bench_cache.py`
-- **.async_get_room()** (2 connections) — `scripts/bench_cache.py`
-- **main()** (2 connections) — `scripts/bench_cache.py`
-- **Any** (2 connections)
-- **.__init__()** (1 connections) — `scripts/bench_cache.py`
-- **Lightweight cache benchmark for CI artifacts. Measures miss vs. hit timings for…** (1 connections) — `scripts/bench_cache.py`
-- **Fake persistence layer providing async_get_room with simulated latency.** (1 connections) — `scripts/bench_cache.py`
+- **MythosMUD Logging Standards** (6 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Import** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Optional Helpers** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Structured Logging** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Summary** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
+- **Logging Standards Skill** (1 connections) — `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Relationships
 
-- [.create_get_command](create_get_command.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `scripts/bench_cache.py`
+- `.claude/skills/mythosmud-logging-standards/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

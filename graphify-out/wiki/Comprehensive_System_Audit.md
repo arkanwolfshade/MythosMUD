@@ -1,13 +1,12 @@
 # Comprehensive System Audit
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Container System** (3 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
-- **Scenario 23 Multi-User Container Looting** (1 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
-- **Scenario 24 Environmental Containers** (1 connections) — `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
-- **Scenario 26 Corpse Looting Grace Periods** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
+- **Comprehensive System Audit** (2 connections) — `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- **CI/CD Enhanced Logging Validation** (1 connections) — `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- **Database Migration Guide** (1 connections) — `docs/archive/DATABASE_MIGRATION.md`
 
 ## Relationships
 
@@ -15,14 +14,14 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
-- `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
-- `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
+- `docs/archive/CI_CD_LOGGING_VALIDATION.md`
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md`
+- `docs/archive/DATABASE_MIGRATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

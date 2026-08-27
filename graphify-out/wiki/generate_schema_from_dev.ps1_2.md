@@ -1,11 +1,10 @@
 # generate_schema_from_dev.ps1
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **CWE-209 Information Exposure** (1 connections) — `docs/archive/SECURITY_FIXES.md`
-- **Stack Trace Sanitization** (1 connections) — `docs/archive/SECURITY_FIXES.md`
+- **generate_schema_from_dev.ps1** (0 connections) — `db/README.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `docs/archive/SECURITY_FIXES.md`
+- `db/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,22 +1,21 @@
 # The Grand Grimoire of Cthulhu Mythos Magic (source summary)
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **global-teardown.ts** (4 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **globalTeardown()** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__dirname** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **__filename** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
-- **projectRoot** (1 connections) — `client/tests/e2e/runtime/global-teardown.ts`
+- **The Grand Grimoire of Cthulhu Mythos Magic (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **The Grand Grimoire of Cthulhu Mythos Magic.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/global-teardown.ts`
+- `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
 
 ## Audit Trail
 

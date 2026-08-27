@@ -1,23 +1,22 @@
 # R'lyeh
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_goto_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_goto_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **R'lyeh** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `data/MythosMUD-Obsidian/raw/sources/Geography & Major Locations.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

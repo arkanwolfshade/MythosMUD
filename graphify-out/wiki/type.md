@@ -1,39 +1,34 @@
 # type
 
-> 22 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Performance Profiler Subagent** (11 connections) — `.claude/agents/performance-profiler.md`
-- **Capabilities** (6 connections) — `.claude/agents/performance-profiler.md`
-- **Example Scenarios** (4 connections) — `.claude/agents/performance-profiler.md`
-- **Performance Monitoring** (4 connections) — `.claude/agents/performance-profiler.md`
-- **Database Performance** (2 connections) — `.claude/agents/performance-profiler.md`
-- **performance-profiler.md** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Bottleneck Identification** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Code Performance Review** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Database Query Optimization** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Enhanced Logging Integration** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Game Loop Performance** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Integration** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Log Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Memory Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Memory Leak Detection** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Memory Profiling** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Methodology** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Notes** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Output Format** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Performance Best Practices** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Purpose** (1 connections) — `.claude/agents/performance-profiler.md`
-- **Usage** (1 connections) — `.claude/agents/performance-profiler.md`
+- **type** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **flags** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **wear_slots** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **effect_components** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (2 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (4 shared connections)
+- [enum](enum.md) (2 shared connections)
 
 ## Source Files
 
-- `.claude/agents/performance-profiler.md`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 

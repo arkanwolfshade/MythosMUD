@@ -1,50 +1,51 @@
 # MemoryThresholdMonitor
 
-> 35 nodes
+> 47 nodes
 
 ## Key Concepts
 
-- **test_login_grace_period.py** (26 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **asyncio** (10 connections)
-- **test_cancel_login_grace_period_effect_based_clears_tracking()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_cancel_login_grace_period_not_active()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_grace_period_task_cancellation_cleanup()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_multiple_players_grace_periods()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_already_active()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_effect_based_adds_effect_and_sets_in_memory()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_start_login_grace_period_expires()** (4 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_no_start_time()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_get_login_grace_period_remaining_not_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_no_manager_attribute()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **test_is_player_in_login_grace_period_not_active()** (3 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test checking if player is in grace period when active.** (2 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
+- **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
+- **test_memory_cleanup_service.py** (22 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **asyncio** (9 connections)
+- **.get_memory_status_report()** (6 connections) — `server/app/memory_cleanup_service.py`
+- **test_task_four_spec_factory()** (5 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **.managed_task_cleanup()** (4 connections) — `server/app/memory_cleanup_service.py`
+- **monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_create_memory_cleanup_monitor()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_with_loop()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_memory_status_report()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_execution_failure()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_on_cooldown()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_skips_when_below_threshold()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_success()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_managed_task_cleanup_timeout()** (4 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **._flush_memory_indexes_cache()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._get_active_task_count()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **._get_current_memory_usage()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **.__init__()** (3 connections) — `server/app/memory_cleanup_service.py`
+- **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- **Any** (1 connections)
 - **fixture** (1 connections)
-- **Unit tests for login grace period functionality. Tests the core login grace…** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test cancelling grace period when not active (should not error).** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test checking grace period when manager lacks attribute.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test getting remaining time for active grace period.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- **Test getting remaining time when not in grace period.** (1 connections) — `server/tests/unit/realtime/test_login_grace_period.py`
-- *... and 10 more nodes in this community*
+- *... and 22 more nodes in this community*
 
 ## Relationships
 
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (22 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [get_global_tracked_manager](get_global_tracked_manager.md) (9 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_login_grace_period.py`
+- `server/app/memory_cleanup_service.py`
+- `server/tests/unit/app/test_memory_cleanup_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 71 (86%)
+- INFERRED: 12 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

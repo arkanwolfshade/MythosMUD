@@ -1,26 +1,25 @@
 # 🚀 DEPLOYMENT STRATEGY
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Code Quality Improvements** (5 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Documentation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Exception Handling** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Monitoring** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
-- **Validation** (1 connections) — `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- **🚀 DEPLOYMENT STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Monitoring Post-Deployment** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Pre-Deployment Checklist** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Rollback Plan** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- [Environment Contamination Audit Report](Environment_Contamination_Audit_Report.md) (1 shared connections)
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/NATS_COMPLETE_REMEDIATION_SUMMARY_2026-01-13.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

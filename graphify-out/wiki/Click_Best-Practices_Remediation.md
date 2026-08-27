@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Mythos Magic** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- **Click Best-Practices Remediation** (0 connections) — `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
+- `.cursor/plans/click_best-practices_remediation_ff0b0a95.plan.md`
 
 ## Audit Trail
 

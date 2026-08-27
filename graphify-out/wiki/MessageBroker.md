@@ -1,43 +1,43 @@
 # MessageBroker
 
-> 21 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_subscription_patterns.py** (14 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **get_event_subscription_patterns()** (10 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **test_get_chat_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_chat_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_chat_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_event_subscription_patterns_missing_pattern()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_subscription_pattern_multiple_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_subscription_pattern_no_params()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **test_get_subscription_pattern_single_param()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_event_subscription_patterns() returns event patterns.** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Get all event-related subscription patterns. Args: patterns: Dictionary of…** (1 connections) — `server/services/nats_subject_manager/subscription_patterns.py`
-- **Unit tests for NATS Subscription Patterns. Tests the subscription pattern…** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_event_subscription_patterns() handles missing patterns.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_chat_subscription_patterns() returns empty list when no chat patterns.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_subscription_pattern() replaces single parameter.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_subscription_pattern() replaces multiple parameters.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_subscription_pattern() returns pattern unchanged when no params.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_chat_subscription_patterns() returns chat patterns.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
-- **Test get_chat_subscription_patterns() handles missing patterns.** (1 connections) — `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- **MessageBroker** (11 connections) — `server/infrastructure/message_broker.py`
+- **.publish()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.request()** (3 connections) — `server/infrastructure/message_broker.py`
+- **.subscribe()** (3 connections) — `server/infrastructure/message_broker.py`
+- **server/infrastructure/__init__.py** (3 connections) — `server/infrastructure/__init__.py`
+- **.connect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.disconnect()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.is_connected()** (2 connections) — `server/infrastructure/message_broker.py`
+- **.unsubscribe()** (2 connections) — `server/infrastructure/message_broker.py`
+- **Any** (2 connections)
+- **Protocol** (1 connections)
+- **Infrastructure layer for MythosMUD. This package contains abstractions for…** (1 connections) — `server/infrastructure/__init__.py`
+- **Send a request and wait for a reply (request-reply pattern). Args: subject:…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Protocol defining the message broker interface. This abstract interface allows…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Connect to the message broker. Returns: bool: True if connection successful,…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Disconnect from the message broker. Closes all subscriptions and releases…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Check if connected to the message broker. Returns: bool: True if connected,…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Publish a message to a subject/topic. Args: subject: Subject/topic to publish…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Subscribe to a subject/topic with a message handler. Args: subject:…** (1 connections) — `server/infrastructure/message_broker.py`
+- **Unsubscribe from a subject/topic. Args: subscription_id: ID returned from…** (1 connections) — `server/infrastructure/message_broker.py`
 
 ## Relationships
 
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (14 shared connections)
+- [nats_broker.py](nats_broker.py.md) (2 shared connections)
+- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_subject_manager/subscription_patterns.py`
-- `server/tests/unit/services/nats_subject_manager/test_subscription_patterns.py`
+- `server/infrastructure/__init__.py`
+- `server/infrastructure/message_broker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 38 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

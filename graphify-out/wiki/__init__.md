@@ -1,52 +1,40 @@
 # .__init__
 
-> 34 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **test_equipment_helpers.py** (26 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **resolve_unequip_slot()** (14 connections) — `server/commands/equipment_helpers.py`
-- **resolve_equip_item_index()** (13 connections) — `server/commands/equipment_helpers.py`
-- **handle_wearable_container_on_equip()** (10 connections) — `server/commands/equipment_helpers.py`
-- **normalize_equipped_items()** (10 connections) — `server/commands/equipment_helpers.py`
-- **find_equipped_item_after_equip()** (9 connections) — `server/commands/equipment_helpers.py`
-- **_player()** (8 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_handle_wearable_container_on_equip_creates()** (4 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_handle_wearable_container_on_equip_no_inner()** (4 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **InventoryStack** (4 connections)
-- **_find_equipped_by_item_id()** (3 connections) — `server/commands/equipment_helpers.py`
-- **test_resolve_equip_by_index()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_equip_by_search_term()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_equip_index_out_of_range()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_equip_search_no_match()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_equip_usage()** (3 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **Player** (3 connections)
-- **_try_resolve_unequip_slot_key()** (2 connections) — `server/commands/equipment_helpers.py`
-- **_unequip_usage_missing_slot()** (2 connections) — `server/commands/equipment_helpers.py`
-- **test_find_equipped_item_after_equip_by_item_id()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_find_equipped_item_after_equip_preferred_slot()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_normalize_equipped_items()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_unequip_by_search()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_unequip_by_slot()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- **test_resolve_unequip_search_no_match()** (2 connections) — `server/tests/unit/commands/test_equipment_helpers.py`
-- *... and 9 more nodes in this community*
+- **.__init__()** (5 connections) — `server/models/invite.py`
+- **.is_alive()** (5 connections) — `server/npc/npc_base.py`
+- **.is_active()** (4 connections) — `server/models/game.py`
+- **_npc_alive_and_active()** (4 connections) — `server/npc/idle_movement.py`
+- **Any** (1 connections)
+- **setter** (1 connections)
+- **Check if the status effect is still active.** (1 connections) — `server/models/game.py`
+- **Initialize Invite with defaults.** (1 connections) — `server/models/invite.py`
+- **Return True if NPC is alive (determination_points > 0).** (1 connections) — `server/npc/npc_base.py`
+- **Allow backward-compatible assignment (npc.is_alive = False).** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (14 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (10 shared connections)
-- [rescue_commands.py](rescue_commands.py.md) (5 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [StatusEffect](StatusEffect.md) (1 shared connections)
+- [endpoints.py](endpoints.py.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [IdleMovementHandler](IdleMovementHandler.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/equipment_helpers.py`
-- `server/tests/unit/commands/test_equipment_helpers.py`
+- `server/models/game.py`
+- `server/models/invite.py`
+- `server/npc/idle_movement.py`
+- `server/npc/npc_base.py`
 
 ## Audit Trail
 
-- EXTRACTED: 91 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (73%)
+- INFERRED: 4 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

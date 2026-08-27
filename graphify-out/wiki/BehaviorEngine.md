@@ -1,53 +1,53 @@
 # BehaviorEngine
 
-> 27 nodes
+> 139 nodes
 
 ## Key Concepts
 
-- **test_connection_error_methods.py** (15 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **delegate_error_handler()** (12 connections) — `server/realtime/connection_delegates.py`
-- **connection_error_methods.py** (11 connections) — `server/realtime/connection_error_methods.py`
-- **detect_and_handle_error_state_impl()** (8 connections) — `server/realtime/connection_error_methods.py`
-- **handle_authentication_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **handle_security_violation_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **handle_websocket_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **recover_from_error_impl()** (7 connections) — `server/realtime/connection_error_methods.py`
-- **UUID** (6 connections)
-- **asyncio** (6 connections)
-- **Any** (5 connections)
-- **test_detect_and_handle_error_state_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_error_impl_returns_default_when_handler_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_authentication_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_security_violation_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_handle_websocket_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **test_recover_from_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **manager()** (2 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
-- **fixture** (1 connections)
-- **Generic delegate for error handler methods. Args: error_handler: Error handler…** (1 connections) — `server/realtime/connection_delegates.py`
-- **Error-handling method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle WebSocket-specific errors.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle authentication-related errors.** (1 connections) — `server/realtime/connection_error_methods.py`
-- **Handle security violations.** (1 connections) — `server/realtime/connection_error_methods.py`
-- *... and 2 more nodes in this community*
+- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
+- **test_behavior_engine.py** (55 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **Any** (12 connections)
+- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
+- **behavior_engine.py** (7 connections) — `server/npc/behavior_engine.py`
+- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **.execute_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **.get_applicable_rules()** (5 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_boolean_condition()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_equality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_inequality()** (4 connections) — `server/npc/behavior_engine.py`
+- **._evaluate_numeric_comparison()** (4 connections) — `server/npc/behavior_engine.py`
+- **.execute_action()** (4 connections) — `server/npc/behavior_engine.py`
+- **.add_rule()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_rules()** (3 connections) — `server/npc/behavior_engine.py`
+- **.register_action_handler()** (3 connections) — `server/npc/behavior_engine.py`
+- **.get_behavior_engine()** (3 connections) — `server/npc/npc_base.py`
+- **test_add_rule_handles_exception()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_missing_fields()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_replaces_existing()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_add_rule_success()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_behavior_engine_init()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_boolean_condition_false()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_boolean_condition_true()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **test_evaluate_boolean_condition_variable()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- *... and 114 more nodes in this community*
 
 ## Relationships
 
-- [security.ts](security.ts.md) (3 shared connections)
-- [submitAuth.ts](submitAuth.ts.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [NPCBase](NPCBase.md) (4 shared connections)
+- [time.py](time.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_delegates.py`
-- `server/realtime/connection_error_methods.py`
-- `server/tests/unit/realtime/test_connection_error_methods.py`
+- `server/npc/behavior_engine.py`
+- `server/npc/npc_base.py`
+- `server/tests/unit/npc/test_behavior_engine.py`
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 218 (100%)
+- INFERRED: 1 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

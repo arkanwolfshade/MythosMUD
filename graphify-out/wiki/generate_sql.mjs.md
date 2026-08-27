@@ -1,35 +1,38 @@
 # generate_sql.mjs
 
-> 10 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.is_security_sensitive()** (9 connections) — `server/validators/command_validator.py`
-- **test_command_validator_is_security_sensitive_admin()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_case_insensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_empty()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_is_security_sensitive_non_sensitive()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive detects admin commands.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive is case-insensitive.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive returns False for non-sensitive…** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.is_security_sensitive returns False for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Check if command requires audit logging. Identifies commands that should be…** (1 connections) — `server/validators/command_validator.py`
+- **generate_sql.mjs** (15 connections) — `scripts/static_data/generate_sql.mjs`
+- **main()** (7 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateRooms()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **v5()** (6 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateEmotes()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateHolidays()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateNpcSchedules()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **ql()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **readJson()** (5 connections) — `scripts/static_data/generate_sql.mjs`
+- **generateZoneConfigs()** (4 connections) — `scripts/static_data/generate_sql.mjs`
+- **walk()** (3 connections) — `scripts/static_data/generate_sql.mjs`
+- **ensureDir()** (2 connections) — `scripts/static_data/generate_sql.mjs`
+- **ajv** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__dirname** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **__filename** (1 connections) — `scripts/static_data/generate_sql.mjs`
+- **root** (1 connections) — `scripts/static_data/generate_sql.mjs`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (5 shared connections)
-- [subject_controller.py](subject_controller.py.md) (4 shared connections)
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `scripts/static_data/generate_sql.mjs`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (81%)
-- INFERRED: 4 (19%)
+- EXTRACTED: 34 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

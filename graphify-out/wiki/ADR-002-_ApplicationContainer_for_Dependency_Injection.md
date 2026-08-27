@@ -1,23 +1,26 @@
 # ADR-002: ApplicationContainer for Dependency Injection
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_validate_target_alive_dead()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_target_alive when target is dead.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ADR-002: ApplicationContainer for Dependency Injection** (2 connections) — `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
+- **Container Injection Audit** (2 connections) — `docs/CONTAINER_INJECTION_AUDIT.md`
+- **Database Access Patterns** (2 connections) — `docs/DATABASE_ACCESS_PATTERNS.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/CONTAINER_INJECTION_AUDIT.md`
+- `docs/DATABASE_ACCESS_PATTERNS.md`
+- `docs/architecture/decisions/ADR-002-application-container-dependency-injection.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

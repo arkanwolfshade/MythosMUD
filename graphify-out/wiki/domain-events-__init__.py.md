@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Room Subscription Timing Race** (1 connections) — `e2e-tests/scenarios/scenario-01-basic-connection.md`
-- **Connection Message Not Broadcast** (1 connections) — `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
+- **domain/events/__init__.py** (1 connections) — `server/domain/events/__init__.py`
+- **Domain events for MythosMUD. Domain events represent significant state changes…** (1 connections) — `server/domain/events/__init__.py`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `e2e-tests/TEST_RESULTS_scenario-01-rerun.md`
-- `e2e-tests/scenarios/scenario-01-basic-connection.md`
+- `server/domain/events/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

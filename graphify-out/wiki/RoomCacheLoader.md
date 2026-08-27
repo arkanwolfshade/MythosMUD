@@ -1,47 +1,50 @@
 # RoomCacheLoader
 
-> 24 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **compilerOptions** (19 connections) — `client/tsconfig.build.json`
-- **lib** (4 connections) — `client/tsconfig.build.json`
-- **tsconfig.build.json** (3 connections) — `client/tsconfig.build.json`
-- **include** (2 connections) — `client/tsconfig.build.json`
-- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.build.json`
-- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.build.json`
-- **jsx** (1 connections) — `client/tsconfig.build.json`
-- **module** (1 connections) — `client/tsconfig.build.json`
-- **moduleDetection** (1 connections) — `client/tsconfig.build.json`
-- **moduleResolution** (1 connections) — `client/tsconfig.build.json`
-- **noEmit** (1 connections) — `client/tsconfig.build.json`
-- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.build.json`
-- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.build.json`
-- **noUnusedLocals** (1 connections) — `client/tsconfig.build.json`
-- **noUnusedParameters** (1 connections) — `client/tsconfig.build.json`
-- **skipLibCheck** (1 connections) — `client/tsconfig.build.json`
-- **strict** (1 connections) — `client/tsconfig.build.json`
-- **target** (1 connections) — `client/tsconfig.build.json`
-- **tsBuildInfoFile** (1 connections) — `client/tsconfig.build.json`
-- **useDefineForClassFields** (1 connections) — `client/tsconfig.build.json`
-- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.build.json`
-- **DOM** (1 connections) — `client/tsconfig.build.json`
-- **ES2022** (1 connections) — `client/tsconfig.build.json`
-- **src** (1 connections) — `client/tsconfig.build.json`
+- **RoomCacheLoader** (24 connections) — `server/async_persistence_room_loader.py`
+- **Any** (11 connections)
+- **.load()** (9 connections) — `server/async_persistence_room_loader.py`
+- **._generate_room_id_from_zone_data()** (7 connections) — `server/async_persistence_room_loader.py`
+- **._process_combined_rows()** (6 connections) — `server/async_persistence_room_loader.py`
+- **._build_room_data_from_row()** (5 connections) — `server/async_persistence_room_loader.py`
+- **._process_exit_rows()** (5 connections) — `server/async_persistence_room_loader.py`
+- **._build_room_objects()** (4 connections) — `server/async_persistence_room_loader.py`
+- **._parse_zone_parts()** (4 connections) — `server/async_persistence_room_loader.py`
+- **._process_exits_for_room()** (4 connections) — `server/async_persistence_room_loader.py`
+- **._apply_rooms_to_cache()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._extract_exit_fields()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._handle_room_load_error()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._log_exit_debug()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._parse_exits_json()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._process_room_rows()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._query_rooms_with_exits_async()** (3 connections) — `server/async_persistence_room_loader.py`
+- **._resolve_exit_room_ids()** (3 connections) — `server/async_persistence_room_loader.py`
+- **.__init__()** (2 connections) — `server/async_persistence_room_loader.py`
+- **._log_room_cache_after_load()** (2 connections) — `server/async_persistence_room_loader.py`
+- **BaseException** (1 connections)
+- **Loads room data from the database and populates a room cache dict. Used by…** (1 connections) — `server/async_persistence_room_loader.py`
+- **Load rooms from PostgreSQL and update the room cache.** (1 connections) — `server/async_persistence_room_loader.py`
 
 ## Relationships
 
-- [Communities (11 total, 0 thin omitted)](Communities_11_total,_0_thin_omitted.md) (1 shared connections)
-- [ValidationRule](ValidationRule.md) (1 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [ExperienceRepository](ExperienceRepository.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
+- [test_world_loader.py](test_world_loader.py.md) (1 shared connections)
+- [get_async_session](get_async_session.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tsconfig.build.json`
+- `server/async_persistence_room_loader.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 57 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

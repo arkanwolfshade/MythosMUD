@@ -4,45 +4,52 @@
 
 ## Key Concepts
 
-- **Domain Model Anemic Anti-Pattern Audit** (10 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2. High Priority – Domain Logic in Services** (6 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3. Medium Priority – Partial Enrichment** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4. Low Priority – Acceptable Service Logic** (5 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **Anemic Domain Model Anti-Pattern** (4 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **DOMAIN_MODEL_ANEMIC_AUDIT.md** (2 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **1. Already Addressed (Prior Work)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.1 Player Death Service – DP Decay** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.2 Combat Turn Processor – “Can Act” Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.3 Combat HP Sync – Death Threshold Logic** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.4 Combat Persistence Handler – Same Patterns** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **2.5 Player Respawn Service – Stats Restoration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.1 Wearable Container Service – Capacity Checks** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.2 Inventory Service – Slot Capacity** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.3 NPC Combat Data Provider – Stats Extraction** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **3.4 Combat Event Handler / Publisher – DP in Events** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.1 Container Service** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.2 Combat Initialization** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.3 Combat Service, Combat Messaging Integration** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **4.4 NPC Instance Service, NPC Combat Integration Service (Done)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **5. Models Already Rich (No Action)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **6. Recommended Implementation Order** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **7. Services Reviewed (No Domain Logic to Move)** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **8. Summary Table** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
-- **Executive Summary** (1 connections) — `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- **PayloadOptimizer** (22 connections) — `server/realtime/payload_optimizer.py`
+- **test_payload_optimizer.py** (20 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
+- **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
+- **optimizer()** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **_CompareExplodes** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_size_returns_zero_on_serialization_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
+- **test_compress_payload_round_trip_metadata()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_detects_changes()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_empty_when_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_create_incremental_update_no_previous_returns_full()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_optimizer_returns_singleton()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_get_payload_size_returns_byte_length()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_compresses_large_payload()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_force_compression_when_beneficial()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **test_optimize_payload_returns_small_payload_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **.__eq__()** (1 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
+- **fixture** (1 connections)
+- **Payload optimization for WebSocket messages. This module provides utilities for…** (1 connections) — `server/realtime/payload_optimizer.py`
+- **Optimizes payloads for WebSocket transmission. Features: - Size limit…** (1 connections) — `server/realtime/payload_optimizer.py`
+- **Get the global payload optimizer instance.** (1 connections) — `server/realtime/payload_optimizer.py`
 - *... and 3 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [.optimize_payload](optimize_payload.md) (4 shared connections)
+- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [.send_message](send_message.md) (1 shared connections)
+- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/DOMAIN_MODEL_ANEMIC_AUDIT.md`
+- `server/realtime/payload_optimizer.py`
+- `server/tests/unit/realtime/test_payload_optimizer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 46 (81%)
+- INFERRED: 11 (19%)
 - AMBIGUOUS: 0 (0%)
 
 ---

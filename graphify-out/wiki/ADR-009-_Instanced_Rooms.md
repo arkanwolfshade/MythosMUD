@@ -1,23 +1,22 @@
 # ADR-009: Instanced Rooms
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_contains_suspicious_patterns_detected()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test _contains_suspicious_patterns detects suspicious patterns.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **ADR-009: Instanced Rooms** (0 connections) — `docs/architecture/decisions/ADR-009-instanced-rooms.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/architecture/decisions/ADR-009-instanced-rooms.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

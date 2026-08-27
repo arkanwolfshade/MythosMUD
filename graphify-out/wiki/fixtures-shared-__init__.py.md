@@ -1,46 +1,41 @@
 # fixtures/shared/__init__.py
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **NPCActionMessage** (12 connections) — `server/npc/threading_messages.py`
-- **threading_messages.py** (11 connections) — `server/npc/threading_messages.py`
-- **.from_dict()** (8 connections) — `server/npc/threading_messages.py`
-- **NPCActionType** (6 connections) — `server/npc/threading_messages.py`
-- **.from_json()** (4 connections) — `server/npc/threading_messages.py`
-- **.to_dict()** (3 connections) — `server/npc/threading_messages.py`
-- **.to_json()** (3 connections) — `server/npc/threading_messages.py`
-- **test_npc_action_message_json_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **test_npc_action_message_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **_float_field()** (2 connections) — `server/npc/threading_messages.py`
-- **_optional_int_field()** (2 connections) — `server/npc/threading_messages.py`
-- **_optional_str_field()** (2 connections) — `server/npc/threading_messages.py`
-- **test_npc_action_message_to_dict_uses_enum_value()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
-- **Enum** (2 connections)
-- **Convert message to JSON string.** (1 connections) — `server/npc/threading_messages.py`
-- **Create message from JSON string.** (1 connections) — `server/npc/threading_messages.py`
-- **Enumeration of NPC action types.** (1 connections) — `server/npc/threading_messages.py`
-- **Message structure for NPC actions. This class represents a single action that…** (1 connections) — `server/npc/threading_messages.py`
-- **Convert message to dictionary for serialization.** (1 connections) — `server/npc/threading_messages.py`
-- **Create message from dictionary.** (1 connections) — `server/npc/threading_messages.py`
+- **fixtures/shared/__init__.py** (7 connections) — `server/tests/fixtures/shared/__init__.py`
+- **StubPersistence** (6 connections) — `server/tests/fixtures/shared/__init__.py`
+- **stub_persistence()** (4 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Any** (4 connections)
+- **fake_clock()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_player_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **make_user_dict()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.add_player()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **.get_player_by_name()** (3 connections) — `server/tests/fixtures/shared/__init__.py`
+- **fixture** (2 connections)
+- **.__init__()** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Shared fixtures and builders for all test tiers.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a user dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Create a player dictionary for testing.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a monotonic counter for time-based tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Stub persistence layer for unit tests.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Get a player by name.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Add a player to the stub.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
+- **Provide a stub persistence layer.** (1 connections) — `server/tests/fixtures/shared/__init__.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
-- [player_service](player_service.md) (4 shared connections)
-- [enum](enum.md) (2 shared connections)
-- [test_nats_message_handler_subzone_events.py](test_nats_message_handler_subzone_events.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/threading_messages.py`
-- `server/tests/unit/npc/test_npc_threading_messages.py`
+- `server/tests/fixtures/shared/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (90%)
-- INFERRED: 4 (10%)
+- EXTRACTED: 24 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

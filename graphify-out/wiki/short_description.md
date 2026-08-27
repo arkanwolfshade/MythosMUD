@@ -1,23 +1,25 @@
 # short_description
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.handle_npc_death()** (2 connections) — `server/npc/combat_integration.py`
-- **Handle NPC death and related effects. Args: npc_id: ID of the dead NPC room_id:…** (1 connections) — `server/npc/combat_integration.py`
+- **short_description** (4 connections) — `schemas/items/item_prototype.schema.json`
+- **maxLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **minLength** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [test_movement_monitor.py](test_movement_monitor.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/npc/combat_integration.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

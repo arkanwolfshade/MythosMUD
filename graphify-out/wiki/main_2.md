@@ -1,40 +1,34 @@
 # main
 
-> 14 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **CacheService** (15 connections) — `server/caching/cache_service.py`
-- **TestCacheService** (9 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
-- **.preload_frequently_accessed_data()** (2 connections) — `server/caching/cache_service.py`
-- **.test_get_cache_stats_and_clear()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_with_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_init_without_npc_service()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_frequently_accessed_data()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_profession_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.test_preload_handles_room_failure()** (2 connections) — `server/tests/unit/caching/test_cache_service.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/cache_service.py`
-- **Main cache service that coordinates all caching operations. This service…** (1 connections) — `server/caching/cache_service.py`
-- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
-- **Preload frequently accessed data into caches. This method loads commonly used…** (1 connections) — `server/caching/cache_service.py`
+- **main()** (6 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **visualize_arkham_rooms_simple.py** (5 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Graph** (2 connections)
+- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
+- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms_simple.py`
 
 ## Relationships
 
-- [required](required.md) (2 shared connections)
-- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (2 shared connections)
-- [populate_npc_sample_data.py](populate_npc_sample_data.py.md) (2 shared connections)
-- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/cache_service.py`
-- `server/tests/unit/caching/test_cache_service.py`
+- `scripts/visualize_arkham_rooms_simple.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

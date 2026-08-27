@@ -1,53 +1,58 @@
 # .state
 
-> 34 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **roomHandlers.ts** (41 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **roomHandlers.test.ts** (12 connections) — `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- **handleGameState()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleRoomUpdate()** (7 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleRoomOccupants()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleStructuredOccupantsFormat()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **resolveOccupantsForRoomUpdate()** (5 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createRoomUpdateWithPreservedOccupants()** (4 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **mergeTopLevelOccupants()** (4 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalNpcs()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getFinalPlayers()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getRoomDataFromEvent()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **getValueOrDefault()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **handleOccupantsWithoutCurrentRoom()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **hasOccupantData()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **normalizeOccupantArrays()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **npcsForRoomUpdate()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **resolveGameStatePlayer()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **roomWithNormalizedOccupants()** (3 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **buildGameStateResult()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **calculateOccupantCount()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createInitialRoomState()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **createMinimalRoomFromOccupantsEvent()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **extractGraceAndFollowFields()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- **extractRoomMetadata()** (2 connections) — `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
-- *... and 9 more nodes in this community*
+- **.state()** (37 connections) — `server/realtime/connection_state_machine.py`
+- **.app()** (33 connections) — `server/commands/look_helpers.py`
+- **_websocket_unified_command_result()** (11 connections) — `server/realtime/websocket_handler_commands.py`
+- **handle_explore_command()** (9 connections) — `server/commands/exploration_commands.py`
+- **_get_ground_services()** (6 connections) — `server/commands/rescue_commands.py`
+- **test_exploration_commands.py** (6 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **_app_state_container_service()** (5 connections) — `server/commands/container_helpers_inventory_ops.py`
+- **test_handle_explore_command()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **test_handle_explore_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **asyncio** (2 connections)
+- **Any** (1 connections)
+- **Handle exploration requests by returning a simple message. This lightweight…** (1 connections) — `server/commands/exploration_commands.py`
+- **FastAPI/Starlette application (or duck-typed equivalent).** (1 connections) — `server/commands/look_helpers.py`
+- **Get persistence and registry from request. Returns (persistence, registry).** (1 connections) — `server/commands/rescue_commands.py`
+- **Current FSM state as a single State. Uses python-statemachine 3.x configuration…** (1 connections) — `server/realtime/connection_state_machine.py`
+- **Build request context, run process_command_unified, attach room_state when…** (1 connections) — `server/realtime/websocket_handler_commands.py`
+- **Unit tests for exploration command handlers. Tests the exploration command…** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() explores area.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
+- **Test handle_explore_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Relationships
 
-- [NPCCombatMemory](NPCCombatMemory.md) (4 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (4 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (3 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [Feature Requirements Document: Random Stats Generator](Feature_Requirements_Document-_Random_Stats_Generator.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [real_time.py](real_time.py.md) (4 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (4 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (4 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (4 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (3 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (3 shared connections)
+- [GameStateProvider](GameStateProvider.md) (3 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (2 shared connections)
+- [combat_loader.py](combat_loader.py.md) (2 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui-v2/eventHandlers/__tests__/roomHandlers.test.ts`
-- `client/src/components/ui-v2/eventHandlers/roomHandlers.ts`
+- `server/commands/container_helpers_inventory_ops.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/look_helpers.py`
+- `server/commands/rescue_commands.py`
+- `server/realtime/connection_state_machine.py`
+- `server/realtime/websocket_handler_commands.py`
+- `server/tests/unit/commands/test_exploration_commands.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (36%)
+- INFERRED: 65 (64%)
 - AMBIGUOUS: 0 (0%)
 
 ---

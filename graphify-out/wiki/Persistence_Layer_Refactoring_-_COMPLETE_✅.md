@@ -1,50 +1,49 @@
 # Persistence Layer Refactoring - COMPLETE ✅
 
-> 34 nodes
+> 27 nodes
 
 ## Key Concepts
 
-- **test_command_base.py** (24 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_instantiation()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_model_config()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_rejects_extra_fields()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_base_command_slots()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_admin_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_combat_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_communication_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_exploration_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_inventory_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_look()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_contains_magic_commands()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_command_type_enum_string_comparison()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_all_directions()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_inheritance()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_string_comparison()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **test_direction_enum_values()** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains LOOK.** (3 connections) — `server/tests/unit/models/test_command_base.py`
-- **Unit tests for base command models and enums. Tests the Direction and…** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum contains magic commands.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test CommandType enum values can be compared to strings.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test BaseCommand can be instantiated (though it's abstract).** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test BaseCommand rejects unknown fields (extra='forbid').** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- **Test BaseCommand has correct model configuration.** (1 connections) — `server/tests/unit/models/test_command_base.py`
-- *... and 9 more nodes in this community*
+- **Persistence Layer Refactoring - COMPLETE ✅** (12 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📊 Final Metrics** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎓 Lessons Learned** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🔍 Validation Results** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🚀 What's Now Possible** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📈 Benefits** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🏗️ What Was Built** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Backward Compatibility** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Code Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎉 Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Directory Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Documentation Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📚 Documentation Index** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Existing Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For Gradual Migration** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **For New Code** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Future (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Immediate (Available Now)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Import Structure** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Linting** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **🎯 Mission Accomplished** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **📝 Next Steps (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Recommendations** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Repository Breakdown** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- **Tests** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (17 shared connections)
-- [TestCombatConfigurationService](TestCombatConfigurationService.md) (5 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [PERSISTENCE_REFACTORING_COMPLETE.md](PERSISTENCE_REFACTORING_COMPLETE.md.md) (1 shared connections)
+- [✨ Key Achievements](✨_Key_Achievements.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/models/test_command_base.py`
+- `docs/archive/PERSISTENCE_REFACTORING_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (76%)
-- INFERRED: 14 (24%)
+- EXTRACTED: 28 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

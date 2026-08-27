@@ -1,56 +1,48 @@
 # TestCombatConfigurationService
 
-> 42 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **Direction** (28 connections) — `server/models/command_base.py`
-- **test_command_exploration.py** (22 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **LookCommand** (18 connections) — `server/models/command_exploration.py`
-- **GoCommand** (14 connections) — `server/models/command_exploration.py`
-- **command_exploration.py** (10 connections) — `server/models/command_exploration.py`
-- **.validate_direction()** (4 connections) — `server/models/command_exploration.py`
-- **.validate_direction()** (4 connections) — `server/models/command_exploration.py`
-- **test_go_command_all_directions()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_required_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_valid()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_direction()** (4 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_missing_direction()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_go_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_default_values()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_instance_number_validation_min()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_invalid()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_validate_direction_none()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_instance_number()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_look_in()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **test_look_command_with_target()** (3 connections) — `server/tests/unit/models/test_command_exploration.py`
-- **StrEnum** (2 connections)
-- **field_validator** (2 connections)
-- **Validate direction is one of the allowed values.** (2 connections) — `server/models/command_exploration.py`
-- **Test LookCommand can be created with a target.** (2 connections) — `server/tests/unit/models/test_command_exploration.py`
-- *... and 17 more nodes in this community*
+- **TestCombatConfigurationService** (26 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.service()** (4 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.mock_config()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_configuration_custom()** (3 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_all_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_scope_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_clear_scope_override_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_active_overrides()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_caching()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_global()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_player()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_room()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_get_combat_configuration_for_scope_temporary()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_init()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_is_combat_available()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_is_combat_available_with_override()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration_global_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_update_combat_configuration_invalid_raises()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **.test_validate_configuration()** (2 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **fixture** (2 connections)
+- **Test suite for CombatConfigurationService class.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Create a mock config object.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- **Create a CombatConfigurationService instance for testing.** (1 connections) — `server/tests/unit/services/test_combat_configuration_service.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (18 shared connections)
-- [Persistence Layer Refactoring - COMPLETE ✅](Persistence_Layer_Refactoring_-_COMPLETE_✅.md) (5 shared connections)
-- [.change_position](change_position.md) (3 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (3 shared connections)
-- [sub_zone](sub_zone.md) (1 shared connections)
-- [admin_teleport_commands.py](admin_teleport_commands.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [CombatConfiguration](CombatConfiguration.md) (7 shared connections)
 
 ## Source Files
 
-- `server/models/command_base.py`
-- `server/models/command_exploration.py`
-- `server/tests/unit/models/test_command_exploration.py`
+- `server/tests/unit/services/test_combat_configuration_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (82%)
-- INFERRED: 18 (18%)
+- EXTRACTED: 46 (92%)
+- INFERRED: 4 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

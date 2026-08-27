@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **Future Enhancements** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Advanced Features** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Document metadata** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Integration Opportunities** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Call of Cthulhu Investigator Handbook 7th Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **Call of Cthulhu Investigator Handbook 7th Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Investigator Handbook 7th Edition.md`
 
 ## Audit Trail
 

@@ -1,29 +1,27 @@
 # Implementation Details
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **C2 · REVISED — procedures-only is binding** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **The rule** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **C2 Revised Ruling** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **Consequence for enforcement (#618)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **Consequence for the code — migration backlog** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **Consequence for the documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **Known bounded exception** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
-- **Status** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- **Implementation Details** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Examples** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CircuitBreaker Manager** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Database Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Enhanced CircuitBreaker Class** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **NATS Operations** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/C2-Revised-Ruling.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

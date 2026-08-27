@@ -1,16 +1,14 @@
 # MythosMUD COPPA Checklist
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Git Workflow** (6 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Git Workflow Skill** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Branching** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Commit messages** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **History hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
-- **Repository hygiene** (1 connections) — `.claude/skills/git-workflow/SKILL.md`
+- **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Relationships
 
@@ -18,11 +16,11 @@
 
 ## Source Files
 
-- `.claude/skills/git-workflow/SKILL.md`
+- `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

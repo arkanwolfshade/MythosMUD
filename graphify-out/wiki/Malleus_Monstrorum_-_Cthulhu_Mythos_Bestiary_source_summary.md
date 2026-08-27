@@ -1,22 +1,21 @@
 # Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **MythosLoginForm.tsx** (4 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginFormProps** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginActions()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **LoginInputs()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
-- **MythosLoginForm()** (1 connections) — `client/src/mythosApp/MythosLoginForm.tsx`
+- **Malleus Monstrorum - Cthulhu Mythos Bestiary (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **Malleus Monstrorum - Cthulhu Mythos Bestiary.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/mythosApp/MythosLoginForm.tsx`
+- `data/MythosMUD-Obsidian/wiki/sources/Malleus Monstrorum - Cthulhu Mythos Bestiary.md`
 
 ## Audit Trail
 

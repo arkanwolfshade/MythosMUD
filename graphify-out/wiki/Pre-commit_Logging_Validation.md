@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **playwright.config.d.ts** (0 connections) — `client/playwright.config.d.ts`
+- **Pre-commit Logging Validation** (0 connections) — `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/playwright.config.d.ts`
+- `docs/PRE_COMMIT_LOGGING_VALIDATION.md`
 
 ## Audit Trail
 

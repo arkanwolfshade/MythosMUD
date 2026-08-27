@@ -1,37 +1,36 @@
 # Skill: Create a New Worktree for a Task
 
-> 16 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Improve Copy Systematically** (10 connections) — `.claude/skills/clarify/SKILL.md`
-- **Clarify Skill** (7 connections) — `.claude/skills/clarify/SKILL.md`
-- **Apply Clarity Principles** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Assess Current Copy** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Button & CTA Text** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Confirmation Dialogs** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Empty States** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Error Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Form Labels & Instructions** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Help Text & Tooltips** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Loading States** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Navigation & Wayfinding** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Plan Copy Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Success Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
-- **Verify Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Skill: Create a New Worktree for a Task** (8 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **MythosMUD Worktree Workflow** (7 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Canonical Layout (Summary)** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Preconditions and Safety** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Skill: Clean Up a Completed or Stale Worktree** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 1 — Gather Task Metadata** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 2 — Derive Names and Paths** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 3 — Ensure Canonical Repo Context** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 4 — Fetch and Validate Base Branch** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 5 — Create the Worktree** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 6 — Open the Worktree in Cursor** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Step 7 — Create a Task Plan in the New Worktree** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Weekly Maintenance Pattern** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **When to Use** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
+- **Worktree Workflow Skill** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/clarify/SKILL.md`
+- `.claude/skills/mythosmud-worktree-workflow/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

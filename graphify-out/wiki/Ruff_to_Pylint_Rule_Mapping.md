@@ -1,44 +1,33 @@
 # Ruff to Pylint Rule Mapping
 
-> 23 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **ContainerRepository and ItemRepository: Review and Full Async Migration Plan** (10 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **4. Full Async Migration Plan** (6 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1. Review Summary** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **3. Migration Options** (4 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2. Scope of Migration** (3 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.1 Current Architecture** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.2 Impact of Current Wrappers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **1.3 Recommendation** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2.1 Functions to Migrate** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **2.2 Callers** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **5. File Checklist** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **6. Risks and Mitigations** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **7. Success Criteria** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **8. Phase 1 Audit Results (Completed)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **9. Implementation Status** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option A: SQLAlchemy Async (Recommended)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option B: asyncpg Raw** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Option C: Keep Wrappers, Add Sync Connection Pool** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 1: Preparation (no behavior change)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 2: Async implementation (container)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 3: Async implementation (item)** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 4: Cleanup** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
-- **Phase 5: Verification** (1 connections) — `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- **Ruff to Pylint Rule Mapping** (9 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Global Ignores (pyproject.toml)** (3 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Complexity Checking** (2 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **B008 - Function calls in argument defaults** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **C901 - Too complex (PRIMARY COMPLEXITY CHECKER)** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Category Mappings** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **E501 - Line too long** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Next Steps** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Purpose** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with No Direct Pylint Equivalent** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
+- **Rules with Partial Pylint Equivalents** (1 connections) — `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Relationships
 
-- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [`docs/**/*` files: Multiple rules](`docs-__-_`_files-_Multiple_rules.md) (1 shared connections)
+- [Unique Pylint Findings Analysis](Unique_Pylint_Findings_Analysis.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CONTAINER_ITEM_REPOSITORY_ASYNC_MIGRATION_PLAN.md`
+- `docs/archive/LINTING_RUFF_PYLINT_MAPPING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

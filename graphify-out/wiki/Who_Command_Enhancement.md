@@ -1,25 +1,25 @@
 # Who Command Enhancement
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **test_asyncio_run_guardrails.py** (3 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **test_no_asyncio_run_in_server_library_code()** (2 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **Test that server library code does not use asyncio.run() (AnyIO best practice).…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
-- **Assert server/ has no asyncio.run() in library code (use anyio.run() at entry…** (1 connections) — `server/tests/unit/test_asyncio_run_guardrails.py`
+- **Who Command Enhancement** (2 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Name Filtering** (1 connections) — `docs/archive/WHO_COMMAND_FRD.md`
+- **Who Command Implementation Tasks** (1 connections) — `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/test_asyncio_run_guardrails.py`
+- `docs/archive/WHO_COMMAND_FRD.md`
+- `docs/archive/WHO_COMMAND_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

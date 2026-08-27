@@ -1,45 +1,52 @@
 # MythosMUD Test Suite Modernization Plan
 
-> 23 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **Persistence Layer Refactoring Summary** (11 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Files Created/Modified** (4 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Backward Compatibility** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Benefits Achieved** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Metrics** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Strategy** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Validation** (3 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Code Organization** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Conservative Approach** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Created** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Existing Code (Unchanged)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Future Benefits (Post-Migration)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Immediate Benefits (Phase 1)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Linting Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Path (Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Migration Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Modified** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **New Async Code (Opt-In)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Next Steps (Entirely Optional)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Summary** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Tests Status** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
-- **Unchanged (By Design)** (1 connections) — `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- **MythosMUD Test Suite Modernization Plan** (18 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendices** (10 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Backward Compatibility Strategy** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Implementation Approach Decision** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Testing Requirements** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Decision Framework: Uplift vs Greenfield Rewrite** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Next Steps** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **References** (4 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Executive Summary** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Risk Mitigation** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Success Metrics** (3 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Quick Start: Minimal Viable Uplift** (2 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Alternative: **GREENFIELD REWRITE**** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix A: Test File Inventory** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix B: Direct app.state Access Locations** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Appendix C: Fixture Audit** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Cons** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Consolidation Opportunities** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current Fixture Categories** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Current State** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Goal** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Greenfield Only If** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **High Priority (Integration Tests)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Immediate (This Session)** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Key Files** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [MockPersistence](MockPersistence.md) (1 shared connections)
+- [TEST_AUDIT_EXECUTIVE_SUMMARY.md](TEST_AUDIT_EXECUTIVE_SUMMARY.md.md) (1 shared connections)
+- [Test Modernization Checklist](Test_Modernization_Checklist.md) (1 shared connections)
+- [Uplift Strategy](Uplift_Strategy.md) (1 shared connections)
+- [Test Suite Analysis](Test_Suite_Analysis.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [Modern Testing Patterns](Modern_Testing_Patterns.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_REFACTORING_SUMMARY.md`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (100%)
+- EXTRACTED: 58 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,51 +1,62 @@
 # real_time.py
 
-> 49 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **CoordinateGenerator** (25 connections) — `server/services/coordinate_generator.py`
-- **test_coordinate_generator.py** (19 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
-- **Any** (8 connections)
-- **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
-- **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
-- **asyncio** (6 connections)
-- **._build_adjacency_list()** (5 connections) — `server/services/coordinate_generator.py`
-- **._assign_coordinates_bfs()** (4 connections) — `server/services/coordinate_generator.py`
-- **._find_origin_room()** (4 connections) — `server/services/coordinate_generator.py`
-- **._rooms_query_and_pattern()** (4 connections) — `server/services/coordinate_generator.py`
-- **._attach_room_exits()** (3 connections) — `server/services/coordinate_generator.py`
-- **._detect_coordinate_conflicts()** (3 connections) — `server/services/coordinate_generator.py`
-- **._get_next_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **.__init__()** (3 connections) — `server/services/coordinate_generator.py`
-- **._reverse_direction()** (3 connections) — `server/services/coordinate_generator.py`
-- **._room_dict_from_row()** (3 connections) — `server/services/coordinate_generator.py`
-- **._store_coordinates()** (3 connections) — `server/services/coordinate_generator.py`
-- **generator()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_store_coordinates_noop_on_empty()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_store_coordinates_persists_values()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_store_coordinates_sends_one_bulk_call_with_full_payload()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_coordinates_for_zone_empty_data()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_coordinates_for_zone_stores_results()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_for_subzone_positions_linked_rooms()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- *... and 24 more nodes in this community*
+- **real_time.py** (39 connections) — `server/api/real_time.py`
+- **test_real_time_helpers.py** (38 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **asyncio** (20 connections)
+- **_resolve_player_id()** (14 connections) — `server/api/real_time.py`
+- **handle_new_game_session()** (12 connections) — `server/api/real_time.py`
+- **websocket_endpoint()** (11 connections) — `server/api/real_time.py`
+- **_ensure_connection_manager()** (10 connections) — `server/api/real_time.py`
+- **get_player_connections()** (10 connections) — `server/api/real_time.py`
+- **_parse_websocket_token()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_path_or_token()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_token()** (10 connections) — `server/api/real_time.py`
+- **websocket_endpoint_route()** (10 connections) — `server/api/real_time.py`
+- **_resolve_player_id_from_test()** (9 connections) — `server/api/real_time.py`
+- **_validate_websocket_connection_manager()** (9 connections) — `server/api/real_time.py`
+- **Any** (9 connections)
+- **WebSocket** (9 connections)
+- **get_connection_statistics()** (8 connections) — `server/api/real_time.py`
+- **UUID** (8 connections)
+- **SessionStatistics** (7 connections) — `server/schemas/realtime/presence_data.py`
+- **NewGameSessionResponse** (7 connections) — `server/schemas/realtime/realtime.py`
+- **_resolve_connection_manager_from_state()** (7 connections) — `server/api/real_time.py`
+- **_validate_and_accept_websocket()** (7 connections) — `server/api/real_time.py`
+- **_invoke_handle_websocket_connection()** (6 connections) — `server/api/real_time.py`
+- **test_get_connection_statistics()** (6 connections) — `server/tests/unit/api/test_real_time_helpers.py`
+- **_extract_bearer_token()** (5 connections) — `server/api/real_time.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [realtime/realtime.py](realtime-realtime.py.md) (18 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [.state](state.md) (4 shared connections)
+- [create_access_token](create_access_token.md) (3 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (3 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [_ConnectionManagerUtilsModule](_ConnectionManagerUtilsModule.md) (2 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/coordinate_generator.py`
-- `server/tests/unit/services/test_coordinate_generator.py`
+- `server/api/real_time.py`
+- `server/schemas/realtime/presence_data.py`
+- `server/schemas/realtime/realtime.py`
+- `server/tests/unit/api/test_real_time_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 79 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 227 (93%)
+- INFERRED: 16 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

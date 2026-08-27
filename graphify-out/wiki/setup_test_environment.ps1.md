@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Structured Concurrency Patterns** (0 connections) — `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- **setup_test_environment.ps1** (0 connections) — `scripts/setup_test_environment.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/STRUCTURED_CONCURRENCY_PATTERNS.md`
+- `scripts/setup_test_environment.ps1`
 
 ## Audit Trail
 

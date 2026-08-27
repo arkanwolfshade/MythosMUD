@@ -1,57 +1,48 @@
 # retry.py
 
-> 36 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **required** (8 connections) — `db/static/schemas/room.schema.json`
-- **required** (8 connections) — `schemas/intersection_schema.json`
-- **required** (8 connections) — `schemas/room_schema.json`
-- **required** (8 connections) — `schemas/unified_room_schema.json`
-- **required** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **description** (6 connections) — `schemas/room_schema.json`
-- **required** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **sub_zone** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **exits** (1 connections) — `db/static/schemas/room.schema.json`
-- **id** (1 connections) — `db/static/schemas/room.schema.json`
-- **name** (1 connections) — `db/static/schemas/room.schema.json`
-- **plane** (1 connections) — `db/static/schemas/room.schema.json`
-- **zone** (1 connections) — `db/static/schemas/room.schema.json`
-- **plane** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **zone** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
-- **exits** (1 connections) — `schemas/intersection_schema.json`
-- **id** (1 connections) — `schemas/intersection_schema.json`
-- **name** (1 connections) — `schemas/intersection_schema.json`
-- **plane** (1 connections) — `schemas/intersection_schema.json`
-- **zone** (1 connections) — `schemas/intersection_schema.json`
-- **exits** (1 connections) — `schemas/room_schema.json`
-- **id** (1 connections) — `schemas/room_schema.json`
-- **name** (1 connections) — `schemas/room_schema.json`
-- **plane** (1 connections) — `schemas/room_schema.json`
-- **zone** (1 connections) — `schemas/room_schema.json`
-- *... and 11 more nodes in this community*
+- **retry.py** (19 connections) — `server/utils/retry.py`
+- **is_transient_error()** (13 connections) — `server/utils/retry.py`
+- **Exception** (9 connections)
+- **_create_async_wrapper()** (4 connections) — `server/utils/retry.py`
+- **_create_sync_wrapper()** (4 connections) — `server/utils/retry.py`
+- **_is_psycopg2_transient()** (4 connections) — `server/utils/retry.py`
+- **_is_wrapped_transient_message()** (4 connections) — `server/utils/retry.py`
+- **_should_retry_error()** (4 connections) — `server/utils/retry.py`
+- **_is_asyncpg_transient()** (3 connections) — `server/utils/retry.py`
+- **_log_retry_attempt()** (2 connections) — `server/utils/retry.py`
+- **_log_retry_failure()** (2 connections) — `server/utils/retry.py`
+- **Any** (2 connections)
+- **Retry utilities for transient database errors. This module provides retry…** (1 connections) — `server/utils/retry.py`
+- **Determine if an error should be retried.** (1 connections) — `server/utils/retry.py`
+- **Create async wrapper function with retry logic.** (1 connections) — `server/utils/retry.py`
+- **Create sync wrapper function with retry logic.** (1 connections) — `server/utils/retry.py`
+- **Return True if error is an asyncpg transient error.** (1 connections) — `server/utils/retry.py`
+- **Return True if error is a psycopg2 transient error…** (1 connections) — `server/utils/retry.py`
+- **True when a domain wrapper (DatabaseError) embeds a transient DB failure in its…** (1 connections) — `server/utils/retry.py`
+- **Check if an error is a transient database error that should be retried. Args:…** (1 connections) — `server/utils/retry.py`
 
 ## Relationships
 
-- [test_admin_commands_helpers.py](test_admin_commands_helpers.py.md) (1 shared connections)
-- [coerce_int](coerce_int.md) (1 shared connections)
-- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (1 shared connections)
-- [command_result_text](command_result_text.md) (1 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (1 shared connections)
-- [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (1 shared connections)
+- [test_retry.py](test_retry.py.md) (6 shared connections)
+- [_iter_exception_chain](_iter_exception_chain.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [retry_with_backoff](retry_with_backoff.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [_calculate_retry_delay](_calculate_retry_delay.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
-- `schemas/intersection_schema.json`
-- `schemas/room_schema.json`
-- `schemas/unified_room_schema.json`
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- `server/utils/retry.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

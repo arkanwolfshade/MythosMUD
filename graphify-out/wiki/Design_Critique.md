@@ -1,48 +1,41 @@
 # Design Critique
 
-> 21 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **executeCommandWithoutRecovery()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
-- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureArmitagePresent()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **listArmitageIds()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **assertCollectNJournalComplete()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **escapeRegExp()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **summonAndPickupCollectItems()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **turnInCollectNQuest()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **despawnArmitage()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **askCollectNQuest()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **despawnQuestGiverInstances()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **ensureAdminInFoyer()** (4 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **abandonCollectNQuest()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **assertQuestGiverVisible()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **DIALOGUE** (1 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- **COLLECT_N** (1 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **Design Critique** (11 connections) — `.claude/skills/critique/SKILL.md`
+- **Generate Critique Report** (7 connections) — `.claude/skills/critique/SKILL.md`
+- **Critique Skill** (4 connections) — `.claude/skills/critique/SKILL.md`
+- **10. Microcopy & Voice** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **1. AI Slop Detection (CRITICAL)** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **2. Visual Hierarchy** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **3. Information Architecture** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **4. Emotional Resonance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **5. Discoverability & Affordance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **6. Composition & Balance** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **7. Typography as Communication** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **8. Color with Purpose** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **9. States & Edge Cases** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Anti-Patterns Verdict** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Minor Observations** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Overall Impression** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Priority Issues** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **Questions to Consider** (1 connections) — `.claude/skills/critique/SKILL.md`
+- **What's Working** (1 connections) — `.claude/skills/critique/SKILL.md`
 
 ## Relationships
 
-- [CombatValidator](CombatValidator.md) (26 shared connections)
-- [test_command_processor.py](test_command_processor.py.md) (22 shared connections)
-- [quality_fragmentation_ai_guardrails.py](quality_fragmentation_ai_guardrails.py.md) (17 shared connections)
-- [Test Pruning Candidates - Detailed List](Test_Pruning_Candidates_-_Detailed_List.md) (5 shared connections)
-- [NATSConfig](NATSConfig.md) (2 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
-- `client/tests/e2e/runtime/fixtures/auth.ts`
-- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- `.claude/skills/critique/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
+- EXTRACTED: 20 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

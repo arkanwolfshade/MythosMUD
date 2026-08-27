@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **clean_logs.ps1** (0 connections) — `scripts/clean_logs.ps1`
+- **tests/unit/__init__.py** (0 connections) — `server/tests/unit/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/clean_logs.ps1`
+- `server/tests/unit/__init__.py`
 
 ## Audit Trail
 

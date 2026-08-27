@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **load_seed_data_safe.ps1** (0 connections) — `scripts/load_seed_data_safe.ps1`
+- **core/fixer.py** (0 connections) — `tools/room_toolkit/room_validator/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/load_seed_data_safe.ps1`
+- `tools/room_toolkit/room_validator/README.md`
 
 ## Audit Trail
 

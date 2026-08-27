@@ -1,23 +1,22 @@
 # Mythos Magic
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_command_factory_has_create_methods()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test CommandFactory has create_* methods for commands.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Mythos Magic** (0 connections) — `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `data/MythosMUD-Obsidian/raw/sources/MythosMUD worldbuilding.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

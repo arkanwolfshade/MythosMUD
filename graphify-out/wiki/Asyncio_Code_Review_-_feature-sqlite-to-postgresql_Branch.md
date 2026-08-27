@@ -1,44 +1,42 @@
 # Asyncio Code Review - feature/sqlite-to-postgresql Branch
 
-> 23 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **MUD Disconnect Grace Period & Rest Command: Industry Comparison** (15 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Gap Analysis** (10 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Industry Practices** (10 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Our Plan** (10 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **10. Grace Period Persistence** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **1. Disconnect Grace Period Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **2. Auto-Attack During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **3. Grace Period Visibility & Messaging** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **4. Rest/Quit Command During Combat** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **5. Rest Command Countdown Duration** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **6. Rest Location (Inn/Hotel) Behavior** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **7. Reconnection During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **8. Grace Period After Intentional Disconnect** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **9. Command Blocking During Grace Period** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Recommendations Summary** (4 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **11. Missing Features from Other MUDs** (2 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **disconnect_grace_period_comparison.md** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Executive Summary** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Features We're NOT Implementing (but exist elsewhere)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **High Priority Decisions** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Low Priority (Future Considerations)** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Medium Priority Enhancements** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
-- **Questions for Discussion** (1 connections) — `.cursor/plans/disconnect_grace_period_comparison.md`
+- **Asyncio Code Review - feature/sqlite-to-postgresql Branch** (9 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🔴 CRITICAL ISSUES** (5 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🟢 MEDIUM PRIORITY IMPROVEMENTS** (3 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **1. Blocking Synchronous Operations in Async Methods** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **2. asyncio.run() Called from Context with Existing Event Loop** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **3. Connection Pool Resource Leak Risk** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **4. Missing Exception Handling in Pool Creation** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **5. Event Loop Change Detection May Not Handle All Cases** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **6. Synchronous Database Operations in Async Context** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **7. Missing Transaction Management in Batch Operations** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **8. Connection Pool Size Configuration** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **9. F-String SQL Queries (Minor Security Concern)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Executive Summary** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Immediate Actions (Critical)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Long-term (Medium Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **✅ POSITIVE FINDINGS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **📚 REFERENCES** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **Short-term (High Priority)** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
+- **🔍 TESTING RECOMMENDATIONS** (1 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/disconnect_grace_period_comparison.md`
+- `docs/archive/ASYNCIO_CODE_REVIEW.md`
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 21 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

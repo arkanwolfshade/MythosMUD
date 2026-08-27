@@ -1,42 +1,42 @@
 # room_validator/tests/conftest.py
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **fixture** (5 connections)
-- **mock_persistence()** (4 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_app()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_player()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **mock_request()** (3 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_player_by_name()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.get_room_by_id()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__setattr__()** (2 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock FastAPI app.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock request.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock persistence layer with async methods.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock async method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Mock method that uses configured mock.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Allow setting get_player_by_name and get_room_by_id to mocks.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock persistence layer.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock connection manager.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **Create a mock player.** (1 connections) — `server/tests/unit/commands/test_rest_command.py`
+- **room_validator/tests/conftest.py** (10 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **fixture** (8 connections)
+- **temp_rooms_dir()** (4 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **dead_end_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **invalid_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_new_exit_format()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **room_with_self_reference()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_data()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **sample_room_database()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **unreachable_room()** (3 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Pytest configuration and fixtures for room validator tests. Provides test data…** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room database for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Invalid room data for testing error conditions.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data using the new object format for exits.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with self-reference exit.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Create a temporary directory with test room files.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data with no exits (dead end).** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Room data that would be unreachable from the starting room.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
+- **Sample room data for testing.** (1 connections) — `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Relationships
 
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (6 shared connections)
+- [RoomLoader](RoomLoader.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_rest_command.py`
+- `tools/room_toolkit/room_validator/tests/conftest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 26 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

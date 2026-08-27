@@ -1,28 +1,26 @@
 # verify_tutorial_migrations.ps1
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **wearable_service()** (4 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **fixture** (2 connections)
-- **Create mock persistence layer.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
-- **Create WearableContainerService instance.** (1 connections) — `server/tests/unit/services/test_wearable_container_service.py`
+- **verify_tutorial_migrations.ps1** (3 connections) — `scripts/verify_tutorial_migrations.ps1`
+- **Write-ColorOutput()** (3 connections) — `scripts/verify_tutorial_migrations.ps1`
+- **Test-Migration08()** (2 connections) — `scripts/verify_tutorial_migrations.ps1`
+- **Test-Migration12()** (2 connections) — `scripts/verify_tutorial_migrations.ps1`
 
 ## Relationships
 
-- [asyncio](asyncio.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_wearable_container_service.py`
+- `scripts/verify_tutorial_migrations.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (86%)
-- INFERRED: 1 (14%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

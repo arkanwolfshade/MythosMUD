@@ -1,30 +1,32 @@
 # optimized_validate_command_content
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **Phase 2: High Priority Fixes (Week 2-3) - PERFORMANCE** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.1: Add Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.2: Complete Async Persistence Migration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.3: Optimize Database Flush Operations** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.4: Load Only Active Players** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.5: Use NATS Connection Pool by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.6: Add TLS Configuration** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.7: Improve Event Loop Change Detection** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Task 2.8: Review Transaction Error Handling** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **optimized_validate_command_content()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_command_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid command content.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating command content with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for command content fields. Args: value: The command…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [test_websocket_handler_validation.py](test_websocket_handler_validation.py.md) (1 shared connections)
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (4 shared connections)
+- [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

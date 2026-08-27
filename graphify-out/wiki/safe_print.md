@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Keeper Tips** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
-- **call-of-cthulhu-keeper-tips/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- **safe_print()** (2 connections) — `scripts/markdownlint.py`
+- **markdownlint.py** (1 connections) — `scripts/markdownlint.py`
+- **Print text, handling Unicode encoding errors on Windows.** (1 connections) — `scripts/markdownlint.py`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-keeper-tips/MANIFEST.md`
+- `scripts/markdownlint.py`
 
 ## Audit Trail
 

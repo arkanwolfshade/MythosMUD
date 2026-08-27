@@ -1,17 +1,15 @@
 # Enhanced Logging System Implementation Guide
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **validate.mjs** (7 connections) — `scripts/static_data/validate.mjs`
-- **validateFile()** (3 connections) — `scripts/static_data/validate.mjs`
-- **loadJson()** (2 connections) — `scripts/static_data/validate.mjs`
-- **main()** (2 connections) — `scripts/static_data/validate.mjs`
-- **ajv** (1 connections) — `scripts/static_data/validate.mjs`
-- **__dirname** (1 connections) — `scripts/static_data/validate.mjs`
-- **__filename** (1 connections) — `scripts/static_data/validate.mjs`
-- **root** (1 connections) — `scripts/static_data/validate.mjs`
+- **Enhanced Logging System Implementation Guide** (4 connections) — `docs/ENHANCED_LOGGING_GUIDE.md`
+- **MythosMUD Development Environment Setup** (2 connections) — `docs/DEVELOPMENT.md`
+- **MythosMUD AI Agent Development Guide** (2 connections) — `docs/DEVELOPMENT_AI.md`
+- **Error Handling Guide** (2 connections) — `docs/ERROR_HANDLING_GUIDE.md`
+- **E2E Testing Guide** (1 connections) — `docs/E2E_TESTING_GUIDE.md`
+- **Error Logging Implementation Guide** (1 connections) — `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
 
 ## Relationships
 
@@ -19,12 +17,17 @@
 
 ## Source Files
 
-- `scripts/static_data/validate.mjs`
+- `docs/DEVELOPMENT.md`
+- `docs/DEVELOPMENT_AI.md`
+- `docs/E2E_TESTING_GUIDE.md`
+- `docs/ENHANCED_LOGGING_GUIDE.md`
+- `docs/ERROR_HANDLING_GUIDE.md`
+- `docs/ERROR_LOGGING_IMPLEMENTATION_GUIDE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (50%)
+- INFERRED: 3 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

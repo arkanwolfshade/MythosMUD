@@ -1,23 +1,22 @@
 # datetime.utcnow Deprecation Fix
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_combat_state_edge_case_return_true()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_state fallback return (edge case coverage).** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **datetime.utcnow Deprecation Fix** (0 connections) — `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/archive/DATETIME_FIX_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

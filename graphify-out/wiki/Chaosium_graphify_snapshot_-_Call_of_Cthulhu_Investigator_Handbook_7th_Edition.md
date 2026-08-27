@@ -1,13 +1,12 @@
 # Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Down Darker Trails (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Down Darker Trails.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

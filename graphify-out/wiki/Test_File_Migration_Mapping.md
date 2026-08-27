@@ -1,27 +1,27 @@
 # Test File Migration Mapping
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **TestGetContainerService** (4 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_get_container_service_returns_service()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_container_service function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test get_container_service returns ContainerService instance.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Test File Migration Mapping** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
+- **Test Suite Hierarchical Migration** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- **Test Suite Refactoring Deliverables** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (2 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
+- `docs/archive/TEST_MIGRATION_MAPPING.md`
+- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

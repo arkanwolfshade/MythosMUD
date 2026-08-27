@@ -1,18 +1,16 @@
 # MythosMUD Test Writing
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **_filter_lines()** (5 connections) — `scripts/filter_static_dml.py`
-- **filter_static_dml.py** (4 connections) — `scripts/filter_static_dml.py`
-- **main()** (3 connections) — `scripts/filter_static_dml.py`
-- **_skip_sequence_set_block()** (3 connections) — `scripts/filter_static_dml.py`
-- **_skip_table_data_block()** (3 connections) — `scripts/filter_static_dml.py`
-- **Skip a TABLE DATA block (COPY ... \\.). Return index after the block.** (1 connections) — `scripts/filter_static_dml.py`
-- **Skip a SEQUENCE SET block (setval + trailing blank lines). Return index after…** (1 connections) — `scripts/filter_static_dml.py`
-- **Filter out TABLE DATA and SEQUENCE SET blocks for excluded tables/sequences.** (1 connections) — `scripts/filter_static_dml.py`
-- **Read export DML, drop COPY/SEQUENCE blocks for runtime tables, write back.** (1 connections) — `scripts/filter_static_dml.py`
+- **MythosMUD Test Writing** (6 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Coverage** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **How to Run Tests** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Rules** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **Where Tests Live** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **MythosMUD Test Writing Skill** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
 
 ## Relationships
 
@@ -20,11 +18,11 @@
 
 ## Source Files
 
-- `scripts/filter_static_dml.py`
+- `.claude/skills/mythosmud-test-writing/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

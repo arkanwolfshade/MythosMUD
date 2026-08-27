@@ -4,35 +4,31 @@
 
 ## Key Concepts
 
-- **Unique Pylint Findings Analysis** (8 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Summary of Recommendations** (4 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4. WARNINGS Findings (5 findings)** (3 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Linting Complexity Alignment** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **2. ERROR Findings (33 findings)** (2 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **2.1 No Name in Module (E0611)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.1 Unused Variable (W0612)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **4.2 Unused Argument (W0613)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Configure Ruff to Catch (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Executive Summary** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Fix Manually (Small subset)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Next Steps** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Suppress in `.pylintrc` (Majority of findings)** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **main()** (7 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_markdownlint_errors.py** (6 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md001_heading_increment()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md013_line_length()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md041_first_line_heading()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **fix_md051_link_fragments()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **parse_errors()** (3 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD001: Heading levels should only increment by one level at a time.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Parse markdownlint output file and extract errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD013: Line length issues by wrapping long lines.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD051: Link fragments should be valid.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Main function to fix markdownlint errors.** (1 connections) — `scripts/fix_markdownlint_errors.py`
+- **Fix MD041: First line should be a top-level heading.** (1 connections) — `scripts/fix_markdownlint_errors.py`
 
 ## Relationships
 
-- [💡 Key Improvements](💡_Key_Improvements.md) (1 shared connections)
-- [Four-Level Room Hierarchy](Four-Level_Room_Hierarchy.md) (1 shared connections)
-- [main](main.md) (1 shared connections)
-- [websocket_integration.py](websocket_integration.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- `scripts/fix_markdownlint_errors.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

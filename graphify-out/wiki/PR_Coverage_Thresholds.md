@@ -1,24 +1,23 @@
 # PR Coverage Thresholds
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **fixture** (1 connections)
-- **Async persistence mock with player/room lookups wired for handler tests.** (1 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **PR Coverage Thresholds** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
+- **Pull Request Template** (1 connections) — `.github/PULL_REQUEST_TEMPLATE.md`
 
 ## Relationships
 
-- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_combat_handler.py`
+- `.github/PULL_REQUEST_TEMPLATE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

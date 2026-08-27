@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **player_respawned Event Payload Gap** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
-- **Posture Desync After Respawn** (1 connections) — `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- **server/game/magic/__init__.py** (1 connections) — `server/game/magic/__init__.py`
+- **Magic and spellcasting system for MythosMUD. This package contains the core…** (1 connections) — `server/game/magic/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-28_session-001_posture-desync-after-respawn.md`
+- `server/game/magic/__init__.py`
 
 ## Audit Trail
 

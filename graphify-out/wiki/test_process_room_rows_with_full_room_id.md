@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_server_config_validate_port_invalid_high()** (2 connections) — `server/tests/unit/config/test_config_models.py`
-- **Test ServerConfig port validation with port too high.** (1 connections) — `server/tests/unit/config/test_config_models.py`
+- **test_process_room_rows_with_full_room_id()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with stable_id that already contains full hierarchical…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [click Best Practices](click_Best_Practices.md) (1 shared connections)
+- [test_async_persistence_room_loading.py](test_async_persistence_room_loading.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/config/test_config_models.py`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 

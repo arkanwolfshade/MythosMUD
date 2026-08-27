@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Scenario 22 Administrative Summon** (0 connections) — `e2e-tests/scenarios/scenario-22-summon-command.md`
+- **temp_generate_unit_test_invites.py** (0 connections) — `scripts/temp_generate_unit_test_invites.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-22-summon-command.md`
+- `scripts/temp_generate_unit_test_invites.py`
 
 ## Audit Trail
 

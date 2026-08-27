@@ -1,43 +1,49 @@
 # test_nats_message_handler_chat.py
 
-> 18 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **RoomRepository** (14 connections) — `server/persistence/repositories/room_repository.py`
-- **test_room_repository.py** (7 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **.__init__()** (3 connections) — `server/persistence/repositories/room_repository.py`
-- **.get_room_by_id()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.list_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_room()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **.save_rooms()** (2 connections) — `server/persistence/repositories/room_repository.py`
-- **test_get_room_by_id_from_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_list_rooms_returns_cache_values()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_save_room_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **test_save_rooms_updates_cache()** (2 connections) — `server/tests/unit/persistence/test_room_repository.py`
-- **Repository for room persistence operations. Handles room caching and retrieval.…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Initialize the room repository. Args: room_cache: Shared room cache dictionary** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Get a room by ID from cache. Args: room_id: Room identifier Returns: Room |…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **List all cached rooms. Returns: list[Room]: List of all rooms Note: This is…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save a room to the cache. Args: room: Room object to save Note: Rooms are…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Save multiple rooms to the cache. Args: rooms: List of room objects to save…** (1 connections) — `server/persistence/repositories/room_repository.py`
-- **Unit tests for RoomRepository.** (1 connections) — `server/tests/unit/persistence/test_room_repository.py`
+- **test_nats_message_handler_chat.py** (41 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **asyncio** (16 connections)
+- **test_broadcast_to_room_with_filtering_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_echo_message_to_sender_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_broadcast_by_channel_type_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_echo_message_to_sender_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_default()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_exception_in_processing()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_get_player_lucidity_tier_with_uuid()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_process_message_with_retry_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_send_messages_to_players_with_tags()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_build_chat_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_build_chat_event_includes_speaker_kind()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_convert_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_convert_ids_to_uuids_none_target()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_convert_ids_to_uuids_uuid_objects()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_extract_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- **test_extract_chat_message_fields_system_target_id()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [TaskRegistry](TaskRegistry.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (4 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/persistence/repositories/room_repository.py`
-- `server/tests/unit/persistence/test_room_repository.py`
+- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 94 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

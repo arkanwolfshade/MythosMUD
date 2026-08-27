@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Pylint E0611 No Name in Module** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
-- **Pylint Convention Suppressions** (1 connections) — `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- **schemas/__init__.py** (1 connections) — `schemas/__init__.py`
+- **Shared JSON schemas for MythosMUD room validation. This package contains JSON…** (1 connections) — `schemas/__init__.py`
 
 ## Relationships
 
@@ -13,12 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/LINTING_PYLINT_UNIQUE_FINDINGS.md`
+- `schemas/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

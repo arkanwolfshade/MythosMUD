@@ -1,32 +1,29 @@
 # worktree-plan-template.md
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **._attack_target_impl()** (6 connections) — `server/npc/aggressive_mob_npc.py`
-- **.attack_target()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **._attack_via_combat_integration()** (4 connections) — `server/npc/aggressive_mob_npc.py`
-- **._get_attack_damage()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **._handle_attack_target()** (3 connections) — `server/npc/aggressive_mob_npc.py`
-- **Resolve attack_damage from behavior config with robust typing.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Try to handle the attack via combat integration. Returns: True/False if…** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Internal implementation for attacking a target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Attack a specific target.** (1 connections) — `server/npc/aggressive_mob_npc.py`
-- **Handle attacking target action.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **worktree-plan-template.md** (7 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Cleanup Checklist** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Context** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Design Notes** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Metadata** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Plan / Todos** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Risks and Edge Cases** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Testing** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
 
 ## Relationships
 
-- [handle_command](handle_command.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
+- `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

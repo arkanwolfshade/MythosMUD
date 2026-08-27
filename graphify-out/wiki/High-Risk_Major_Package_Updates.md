@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Panel Layout Libraries Spec** (1 connections) — `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- **Client Architecture Improvements Plan** (1 connections) — `docs/archive/PLANNING_client_architecture_improvements.md`
+- **High-Risk Major Package Updates** (1 connections) — `scripts/dependency_upgrade_report.md`
+- **pytest-asyncio Major Upgrade** (1 connections) — `scripts/dependency_upgrade_report.md`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/PANEL_LAYOUT_LIBRARIES_SPEC.md`
-- `docs/archive/PLANNING_client_architecture_improvements.md`
+- `scripts/dependency_upgrade_report.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

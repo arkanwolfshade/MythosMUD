@@ -1,29 +1,28 @@
 # static_data/package.json
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **useThemeContext.ts** (15 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **ThemeContext.test.tsx** (11 connections) — `client/src/contexts/__tests__/ThemeContext.test.tsx`
-- **ThemeContext.tsx** (11 connections) — `client/src/contexts/ThemeContext.tsx`
-- **useTheme()** (9 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useAccessibilityPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useAnimationPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useColorSchemePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useCompactModePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useDebugInfoPreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useFontSizePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **useThemePreference()** (3 connections) — `client/src/contexts/hooks/useThemeContext.ts`
-- **ColorScheme** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **FontSize** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **Theme** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **ThemeContextType** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **ThemeProvider()** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **ThemeContext** (2 connections) — `client/src/contexts/ThemeContext.tsx`
-- **ThemeProviderProps** (1 connections) — `client/src/contexts/ThemeContext.tsx`
-- **UIPreferences** (1 connections) — `client/src/contexts/ThemeContext.tsx`
-- **defaultPreferences** (1 connections) — `client/src/contexts/ThemeContext.tsx`
+- **static_data/package.json** (8 connections) — `scripts/static_data/package.json`
+- **dependencies** (4 connections) — `scripts/static_data/package.json`
+- **scripts** (4 connections) — `scripts/static_data/package.json`
+- **ajv** (2 connections) — `scripts/static_data/package.json`
+- **ajv-formats** (2 connections) — `scripts/static_data/package.json`
+- **uuid** (2 connections) — `scripts/static_data/package.json`
+- **overrides** (2 connections) — `scripts/static_data/package.json`
+- **description** (1 connections) — `scripts/static_data/package.json`
+- **name** (1 connections) — `scripts/static_data/package.json`
+- **fast-uri** (1 connections) — `scripts/static_data/package.json`
+- **private** (1 connections) — `scripts/static_data/package.json`
+- **build** (1 connections) — `scripts/static_data/package.json`
+- **generate-sql** (1 connections) — `scripts/static_data/package.json`
+- **validate** (1 connections) — `scripts/static_data/package.json`
+- **type** (1 connections) — `scripts/static_data/package.json`
+- **version** (1 connections) — `scripts/static_data/package.json`
+- **ajv** (1 connections) — `scripts/static_data/package.json`
+- **ajv-formats** (1 connections) — `scripts/static_data/package.json`
+- **uuid** (1 connections) — `scripts/static_data/package.json`
 
 ## Relationships
 
@@ -31,13 +30,11 @@
 
 ## Source Files
 
-- `client/src/contexts/ThemeContext.tsx`
-- `client/src/contexts/__tests__/ThemeContext.test.tsx`
-- `client/src/contexts/hooks/useThemeContext.ts`
+- `scripts/static_data/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

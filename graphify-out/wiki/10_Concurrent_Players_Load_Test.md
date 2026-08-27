@@ -1,31 +1,26 @@
 # 10 Concurrent Players Load Test
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
-- **_coerce_stack()** (3 connections) — `server/utils/room_renderer.py`
-- **Room rendering utilities for MythosMUD. Provides helpers for formatting room…** (1 connections) — `server/utils/room_renderer.py`
-- **Normalize stack fields for presentation.** (1 connections) — `server/utils/room_renderer.py`
+- **10 Concurrent Players Load Test** (2 connections) — `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
+- **who Command Unawaited Coroutine Bug** (1 connections) — `e2e-tests/load-tests/load_test_analysis.md`
+- **Load Test Suite** (1 connections) — `e2e-tests/load-tests/README.md`
 
 ## Relationships
 
-- [The Toolkit](The_Toolkit.md) (3 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
-- [test_manager.py](test_manager.py.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [GridLayoutManager.tsx](GridLayoutManager.tsx.md) (1 shared connections)
-- [ExplorationService](ExplorationService.md) (1 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/utils/room_renderer.py`
+- `e2e-tests/load-tests/LOAD_TEST_EXECUTION_GUIDE.md`
+- `e2e-tests/load-tests/README.md`
+- `e2e-tests/load-tests/load_test_analysis.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

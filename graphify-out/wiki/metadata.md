@@ -1,29 +1,24 @@
 # metadata
 
-> 8 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **SampleModel** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_serialization()** (4 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **OtherModel** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **test_memory_profiler_measure_model_deserialization()** (3 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **BaseModel** (2 connections)
-- **Test MemoryProfiler.measure_model_serialization() returns stats.** (2 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Test Pydantic model for memory profiling tests.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
-- **Second model for compare_models_memory_usage.** (1 connections) — `server/tests/unit/utils/test_memory_profiler.py`
+- **metadata** (3 connections) — `schemas/items/item_prototype.schema.json`
+- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
 
 ## Relationships
 
-- [TrackedTaskManager](TrackedTaskManager.md) (6 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_memory_profiler.py`
+- `schemas/items/item_prototype.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

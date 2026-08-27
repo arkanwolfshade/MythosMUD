@@ -1,32 +1,28 @@
 # schedules
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **.extract_command_name()** (5 connections) — `server/validators/command_validator.py`
-- **test_command_validator_extract_command_name()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_extract_command_name_empty()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_extract_command_name_with_slash()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name extracts command name.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name handles slash prefix.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.extract_command_name returns None for empty command.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Extract the base command name from a command string. Handles various formats: -…** (1 connections) — `server/validators/command_validator.py`
+- **schedules** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **properties** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **items** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **$ref** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (4 shared connections)
-- [subject_controller.py](subject_controller.py.md) (3 shared connections)
+- [schedule.schema.json](schedule.schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (79%)
-- INFERRED: 3 (21%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

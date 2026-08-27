@@ -1,12 +1,11 @@
 # CWE-209 Information Exposure
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **parse_lint_findings()** (2 connections) — `scripts/parse_lint_findings.py`
-- **parse_lint_findings.py** (1 connections) — `scripts/parse_lint_findings.py`
-- **Parse C901 complexity findings from lint output.** (1 connections) — `scripts/parse_lint_findings.py`
+- **CWE-209 Information Exposure** (1 connections) — `docs/archive/SECURITY_FIXES.md`
+- **Stack Trace Sanitization** (1 connections) — `docs/archive/SECURITY_FIXES.md`
 
 ## Relationships
 
@@ -14,11 +13,11 @@
 
 ## Source Files
 
-- `scripts/parse_lint_findings.py`
+- `docs/archive/SECURITY_FIXES.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

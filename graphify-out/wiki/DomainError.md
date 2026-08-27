@@ -1,15 +1,14 @@
 # DomainError
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Real-Time Communication (WebSocket)** (5 connections) — `docs/archive/realtime.md`
-- **realtime.md** (1 connections) — `docs/archive/realtime.md`
-- **Authentication and Token in URL** (1 connections) — `docs/archive/realtime.md`
-- **Connection Grace Periods** (1 connections) — `docs/archive/realtime.md`
-- **Deprecated Endpoints** (1 connections) — `docs/archive/realtime.md`
-- **Production: HTTPS and WSS** (1 connections) — `docs/archive/realtime.md`
+- **DomainError** (3 connections) — `server/domain/exceptions/__init__.py`
+- **exceptions/__init__.py** (2 connections) — `server/domain/exceptions/__init__.py`
+- **Exception** (1 connections)
+- **Domain-specific exceptions for MythosMUD. These exceptions represent business…** (1 connections) — `server/domain/exceptions/__init__.py`
+- **Base exception for all domain errors.** (1 connections) — `server/domain/exceptions/__init__.py`
 
 ## Relationships
 
@@ -17,11 +16,11 @@
 
 ## Source Files
 
-- `docs/archive/realtime.md`
+- `server/domain/exceptions/__init__.py`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

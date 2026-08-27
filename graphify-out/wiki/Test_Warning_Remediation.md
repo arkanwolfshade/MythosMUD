@@ -1,13 +1,12 @@
 # Test Warning Remediation
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Vite Best-Practices Remediation** (2 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Vitest Best-Practices Remediation** (2 connections) — `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
-- **import.meta.env (Vite)** (1 connections) — `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- **Test Suite Improvement** (1 connections) — `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
+- **Test Warning Remediation** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
+- **datetime.utcnow Deprecation Fix** (1 connections) — `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
 
 ## Relationships
 
@@ -15,14 +14,14 @@
 
 ## Source Files
 
-- `.cursor/plans/test_suite_improvement_f5a4acf1.plan.md`
-- `.cursor/plans/vite_best-practices_remediation_abfe0fbe.plan.md`
-- `.cursor/plans/vitest_best-practices_remediation_f589ee02.plan.md`
+- `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
+- `docs/archive/WARNING_REMEDIATION_PLAN.md`
+- `docs/archive/early-logging-initialization.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (33%)
-- INFERRED: 2 (67%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

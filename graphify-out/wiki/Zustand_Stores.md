@@ -1,23 +1,22 @@
 # Zustand Stores
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_unmute_global_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unmute_global_command delegates to moderation factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Zustand Stores** (0 connections) — `client/README.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/README.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

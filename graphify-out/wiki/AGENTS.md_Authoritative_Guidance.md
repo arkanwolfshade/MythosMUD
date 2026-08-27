@@ -1,24 +1,23 @@
 # AGENTS.md Authoritative Guidance
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/room_id_utils.py`
-- **Any** (1 connections)
-- **Initialize room ID utilities. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/room_id_utils.py`
+- **AGENTS.md Authoritative Guidance** (1 connections) — `.github/copilot-instructions.md`
+- **GitHub Copilot Instructions Router** (1 connections) — `.github/copilot-instructions.md`
 
 ## Relationships
 
-- [spell_effects_support.py](spell_effects_support.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/room_id_utils.py`
+- `.github/copilot-instructions.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

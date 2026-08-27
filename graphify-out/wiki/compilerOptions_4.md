@@ -1,43 +1,47 @@
 # compilerOptions
 
-> 22 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **The Toolkit** (8 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Overdrive Skill** (6 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Assess What "Extraordinary" Means Here** (5 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Implement with Discipline** (4 connections) — `.claude/skills/overdrive/SKILL.md`
-- **MANDATORY PREPARATION** (3 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Animate complex properties** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **For data-heavy interfaces** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **For functional UI** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **For performance-critical UI** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **For visual/marketing surfaces** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Interact with the device** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Iterate with Browser Automation** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Make data feel alive** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Make transitions feel cinematic** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Performance rules** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Polish is the difference** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Progressive enhancement is non-negotiable** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Propose Before Building** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Push performance boundaries** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Render beyond CSS** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Tie animation to scroll position** (1 connections) — `.claude/skills/overdrive/SKILL.md`
-- **Verify the Result** (1 connections) — `.claude/skills/overdrive/SKILL.md`
+- **compilerOptions** (19 connections) — `client/tsconfig.build.json`
+- **exclude** (8 connections) — `client/tsconfig.build.json`
+- **lib** (4 connections) — `client/tsconfig.build.json`
+- **tsconfig.build.json** (3 connections) — `client/tsconfig.build.json`
+- **include** (2 connections) — `client/tsconfig.build.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.build.json`
+- **erasableSyntaxOnly** (1 connections) — `client/tsconfig.build.json`
+- **jsx** (1 connections) — `client/tsconfig.build.json`
+- **module** (1 connections) — `client/tsconfig.build.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.build.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.build.json`
+- **noEmit** (1 connections) — `client/tsconfig.build.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.build.json`
+- **noUncheckedSideEffectImports** (1 connections) — `client/tsconfig.build.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.build.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.build.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.build.json`
+- **strict** (1 connections) — `client/tsconfig.build.json`
+- **target** (1 connections) — `client/tsconfig.build.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.build.json`
+- **useDefineForClassFields** (1 connections) — `client/tsconfig.build.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.build.json`
+- **DOM** (1 connections) — `client/tsconfig.build.json`
+- **DOM.Iterable** (1 connections) — `client/tsconfig.build.json`
+- **ES2022** (1 connections) — `client/tsconfig.build.json`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `.claude/skills/overdrive/SKILL.md`
+- `client/tsconfig.build.json`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

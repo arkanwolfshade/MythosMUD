@@ -1,52 +1,50 @@
 # PhantomHostileService
 
-> 48 nodes
+> 34 nodes
 
 ## Key Concepts
 
-- **test_connection_cleaner.py** (27 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **CleanupContext** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **fixture** (8 connections)
-- **asyncio** (6 connections)
-- **connection_cleaner()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_check_and_cleanup()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_check_and_cleanup_skips_when_not_due()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_cleanup_dead_websocket()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_has_websocket_connection()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_memory_monitor()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_message_queue()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_rate_limiter()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_dead_connections()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_orphaned_data()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_orphaned_data_closes_stale_websocket()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_force_cleanup()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_stale_prune_max_age_local()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_ghost_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_cleanup_ghost_players_removes_offline_room_members()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_connection_cleaner_init()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players_not_stale()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- **test_prune_stale_players_with_websockets()** (2 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 23 more nodes in this community*
+- **PhantomHostileService** (18 connections) — `server/services/phantom_hostile_service.py`
+- **UUID** (6 connections)
+- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
+- **.find_phantom_by_name_in_room()** (5 connections) — `server/services/phantom_hostile_service.py`
+- **.get_active_phantoms()** (4 connections) — `server/services/phantom_hostile_service.py`
+- **.clear_all_phantoms()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.generate_phantom_name()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.get_phantom_data()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **.remove_phantom()** (3 connections) — `server/services/phantom_hostile_service.py`
+- **test_phantom_create_track_remove_clear()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **test_phantom_generate_name()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **test_phantom_get_data_and_find_by_name_in_room()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **test_phantom_remove_clears_phantom_data()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **test_phantom_should_spawn_deranged()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **test_phantom_should_spawn_fractured()** (3 connections) — `server/tests/unit/services/test_hallucination_services.py`
+- **Any** (3 connections)
+- **.__init__()** (2 connections) — `server/services/phantom_hostile_service.py`
+- **.should_spawn_phantom_hostile()** (2 connections) — `server/services/phantom_hostile_service.py`
+- **Return the full data dict for one phantom, or None if it's gone (#625).** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Find one of the player's active phantoms by (case-insensitive) name, scoped to…** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Remove a phantom hostile from tracking. Args: player_id: Player UUID…** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Get list of active phantom IDs for a player. Args: player_id: Player UUID…** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Clear all phantom hostiles for a player. Args: player_id: Player UUID** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Service for managing phantom hostile spawns for hallucinations. NOTE: This is a…** (1 connections) — `server/services/phantom_hostile_service.py`
+- **Initialize the phantom hostile service.** (1 connections) — `server/services/phantom_hostile_service.py`
+- *... and 9 more nodes in this community*
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_hallucination_services.py](test_hallucination_services.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/connection_cleaner.py`
-- `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- `server/services/phantom_hostile_service.py`
+- `server/tests/unit/services/test_hallucination_services.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 50 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

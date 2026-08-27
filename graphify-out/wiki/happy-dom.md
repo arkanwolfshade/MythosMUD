@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_process_room_rows_zone_without_slash()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
-- **Test _process_room_rows handles zone_stable_id without slash.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **happy-dom** (2 connections) — `client/package.json`
+- **happy-dom** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- `client/package.json`
 
 ## Audit Trail
 

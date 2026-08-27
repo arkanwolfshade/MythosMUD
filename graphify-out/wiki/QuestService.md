@@ -1,52 +1,61 @@
 # QuestService
 
-> 72 nodes
+> 76 nodes
 
 ## Key Concepts
 
-- **UUID** (41 connections)
-- **._track_player_disconnected()** (6 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket()** (5 connections) — `server/realtime/connection_manager.py`
-- **._check_and_process_disconnect()** (4 connections) — `server/realtime/connection_manager.py`
-- **.check_connection_health()** (4 connections) — `server/realtime/connection_manager.py`
-- **.force_disconnect_player()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_game_session()** (4 connections) — `server/realtime/connection_manager.py`
-- **.broadcast_to_room()** (3 connections) — `server/realtime/connection_manager.py`
-- **.check_rate_limit()** (3 connections) — `server/realtime/connection_manager.py`
-- **.cleanup_dead_connections()** (3 connections) — `server/realtime/connection_manager.py`
-- **._cleanup_dead_websocket()** (3 connections) — `server/realtime/connection_manager.py`
-- **.detect_and_handle_error_state()** (3 connections) — `server/realtime/connection_manager.py`
-- **.disconnect_websocket_connection()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_connection_count()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_message_delivery_stats()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_pending_messages()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_presence_info()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_session()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_player_websocket_connection_id()** (3 connections) — `server/realtime/connection_manager.py`
-- **.get_rate_limit_info()** (3 connections) — `server/realtime/connection_manager.py`
-- **.handle_authentication_error()** (3 connections) — `server/realtime/connection_manager.py`
-- **.handle_new_login()** (3 connections) — `server/realtime/connection_manager.py`
-- **.handle_security_violation()** (3 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (3 connections) — `server/realtime/connection_manager.py`
-- **.has_websocket_connection()** (3 connections) — `server/realtime/connection_manager.py`
-- *... and 47 more nodes in this community*
+- **QuestService** (79 connections) — `server/game/quest/quest_service.py`
+- **Any** (27 connections)
+- **UUID** (26 connections)
+- **QuestDefinitionSchema** (18 connections) — `server/schemas/quest/quest.py`
+- **_parse_definition()** (13 connections) — `server/game/quest/quest_service.py`
+- **._apply_activity_progress()** (13 connections) — `server/game/quest/quest_service.py`
+- **._sync_collect_for_instance()** (13 connections) — `server/game/quest/quest_service.py`
+- **._complete_instance()** (11 connections) — `server/game/quest/quest_service.py`
+- **.turn_in()** (11 connections) — `server/game/quest/quest_service.py`
+- **.start_quest()** (10 connections) — `server/game/quest/quest_service.py`
+- **._turn_in_validation_error()** (10 connections) — `server/game/quest/quest_service.py`
+- **._consume_collect_n_items()** (9 connections) — `server/game/quest/quest_service.py`
+- **._start_quest_validation_error()** (9 connections) — `server/game/quest/quest_service.py`
+- **.sync_collect_progress()** (9 connections) — `server/game/quest/quest_service.py`
+- **._apply_item_reward()** (8 connections) — `server/game/quest/quest_service.py`
+- **._apply_rewards()** (8 connections) — `server/game/quest/quest_service.py`
+- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
+- **_goals_met()** (7 connections) — `server/game/quest/quest_service.py`
+- **.abandon()** (7 connections) — `server/game/quest/quest_service.py`
+- **._check_prerequisites()** (7 connections) — `server/game/quest/quest_service.py`
+- **._turn_in_inventory_full_error()** (7 connections) — `server/game/quest/quest_service.py`
+- **_has_collect_n_goals()** (6 connections) — `server/game/quest/quest_service.py`
+- **._load_player_for_collect()** (6 connections) — `server/game/quest/quest_service.py`
+- **.start_quest_by_trigger()** (6 connections) — `server/game/quest/quest_service.py`
+- **.turn_in_at_entity()** (6 connections) — `server/game/quest/quest_service.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [PopulationStats](PopulationStats.md) (34 shared connections)
-- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (5 shared connections)
-- [FeatureFlagService](FeatureFlagService.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [📞 Next Steps](📞_Next_Steps.md) (1 shared connections)
+- [test_quest_service.py](test_quest_service.py.md) (29 shared connections)
+- [quest_service.py](quest_service.py.md) (24 shared connections)
+- [pytest.md](pytest.md.md) (9 shared connections)
+- [test_quest_service_collect.py](test_quest_service_collect.py.md) (4 shared connections)
+- [get_player_quests](get_player_quests.md) (4 shared connections)
+- [quest_commands.py](quest_commands.py.md) (3 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
+- [.__post_init__](__post_init__.md) (2 shared connections)
+- [collect_inventory.py](collect_inventory.py.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [quest_service](quest_service.md) (1 shared connections)
+- [players.py](players.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/connection_manager.py`
+- `server/game/quest/quest_service.py`
+- `server/schemas/quest/quest.py`
+- `server/tests/unit/game/test_quest_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 116 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 226 (87%)
+- INFERRED: 33 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

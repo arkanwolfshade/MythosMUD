@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_arena_migration.ps1** (0 connections) — `scripts/apply_arena_migration.ps1`
+- **apply_player_id_uuid_migration.ps1** (0 connections) — `server/scripts/apply_player_id_uuid_migration.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_arena_migration.ps1`
+- `server/scripts/apply_player_id_uuid_migration.ps1`
 
 ## Audit Trail
 

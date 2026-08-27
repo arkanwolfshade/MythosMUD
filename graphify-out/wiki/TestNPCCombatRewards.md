@@ -33,8 +33,7 @@
 
 ## Relationships
 
-- [command_service.py](command_service.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 

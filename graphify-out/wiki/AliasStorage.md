@@ -1,70 +1,78 @@
 # AliasStorage
 
-> 281 nodes
+> 450 nodes
 
 ## Key Concepts
 
-- **HolidayService** (43 connections) — `server/services/holiday_service.py`
-- **HolidayCollection** (35 connections) — `server/schemas/calendar/calendar.py`
-- **api/game.py** (29 connections) — `server/api/game.py`
-- **TestHolidayService** (27 connections) — `server/tests/unit/services/test_holiday_service.py`
-- **HolidayEntry** (24 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleEntry** (23 connections) — `server/schemas/calendar/calendar.py`
-- **test_calendar_schemas.py** (23 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_game.py** (21 connections) — `server/tests/unit/api/test_game.py`
-- **validate_calendar.py** (18 connections) — `scripts/validate_calendar.py`
-- **get_mythos_time()** (15 connections) — `server/api/game.py`
-- **broadcast_message()** (14 connections) — `server/api/game.py`
-- **TestGetMythosTime** (11 connections) — `server/tests/unit/api/test_game.py`
-- **calendar/__init__.py** (11 connections) — `server/schemas/calendar/__init__.py`
-- **ScheduleCollection** (10 connections) — `server/schemas/calendar/calendar.py`
-- **calendar/calendar.py** (10 connections) — `server/schemas/calendar/calendar.py`
-- **test_project_paths.py** (10 connections) — `server/tests/unit/utils/test_project_paths.py`
-- **run_validation()** (9 connections) — `scripts/validate_calendar.py`
-- **normalize_environment()** (9 connections) — `server/utils/project_paths.py`
-- **BroadcastMessageResponse** (8 connections) — `server/schemas/game/game.py`
-- **GameStatusResponse** (8 connections) — `server/schemas/game/game.py`
-- **MythosTimeResponse** (8 connections) — `server/schemas/game/game.py`
-- **get_game_status()** (8 connections) — `server/api/game.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **.get_upcoming_holidays()** (8 connections) — `server/services/holiday_service.py`
-- *... and 256 more nodes in this community*
+- **AliasStorage** (264 connections) — `server/alias_storage.py`
+- **command_service.py** (108 connections) — `server/commands/command_service.py`
+- **alias_storage.py** (75 connections) — `server/alias_storage.py`
+- **Alias** (70 connections) — `server/models/alias.py`
+- **test_alias_storage.py** (68 connections) — `server/tests/unit/test_alias_storage.py`
+- **admin_summon_command.py** (35 connections) — `server/commands/admin_summon_command.py`
+- **admin_commands.py** (33 connections) — `server/commands/admin_commands.py`
+- **test_alias_commands.py** (31 connections) — `server/tests/unit/commands/test_alias_commands.py`
+- **test_alias.py** (30 connections) — `server/tests/unit/models/test_alias.py`
+- **server/commands/__init__.py** (29 connections) — `server/commands/__init__.py`
+- **inventory_commands.py** (28 connections) — `server/commands/inventory_commands.py`
+- **time_service.py** (27 connections) — `server/time/time_service.py`
+- **get_mythos_chronicle()** (26 connections) — `server/time/time_service.py`
+- **handle_alias_command()** (24 connections) — `server/commands/alias_commands.py`
+- **asyncio** (23 connections)
+- **game_tick_corpses.py** (21 connections) — `server/app/game_tick_corpses.py`
+- **test_inventory_commands.py** (21 connections) — `server/tests/unit/commands/test_inventory_commands.py`
+- **handle_get_command()** (16 connections) — `server/commands/inventory_get_command.py`
+- **skills_commands.py** (16 connections) — `server/commands/skills_commands.py`
+- **alias_commands.py** (15 connections) — `server/commands/alias_commands.py`
+- **handle_drop_command()** (14 connections) — `server/commands/inventory_drop_command.py`
+- **asyncio** (14 connections)
+- **handle_admin_command()** (13 connections) — `server/commands/admin_commands.py`
+- **handle_summon_command()** (13 connections) — `server/commands/admin_summon_command.py`
+- **handle_inventory_command()** (13 connections) — `server/commands/inventory_commands.py`
+- *... and 425 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (19 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (16 shared connections)
-- [maps.py](maps.py.md) (11 shared connections)
-- [CommandService](CommandService.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (4 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (3 shared connections)
-- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [test_player_position_service.py](test_player_position_service.py.md) (2 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (32 shared connections)
+- [get_logger](get_logger.md) (29 shared connections)
+- [get_username_from_user](get_username_from_user.md) (28 shared connections)
+- [rescue_commands.py](rescue_commands.py.md) (26 shared connections)
+- [inventory_pickup_command.py](inventory_pickup_command.py.md) (25 shared connections)
+- [command_result_text](command_result_text.md) (19 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (19 shared connections)
+- [test_admin_summon_command.py](test_admin_summon_command.py.md) (18 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (16 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (16 shared connections)
+- [test_lucidity_recovery_commands.py](test_lucidity_recovery_commands.py.md) (14 shared connections)
+- [admin_mute_commands.py](admin_mute_commands.py.md) (13 shared connections)
 
 ## Source Files
 
-- `scripts/validate_calendar.py`
-- `server/api/game.py`
-- `server/schemas/calendar/__init__.py`
-- `server/schemas/calendar/calendar.py`
-- `server/schemas/game/__init__.py`
-- `server/schemas/game/game.py`
-- `server/services/holiday_service.py`
-- `server/tests/unit/api/test_game.py`
-- `server/tests/unit/schemas/test_calendar_schemas.py`
-- `server/tests/unit/services/test_holiday_service.py`
-- `server/tests/unit/utils/test_project_paths.py`
-- `server/utils/project_paths.py`
+- `server/alias_storage.py`
+- `server/app/game_tick_corpses.py`
+- `server/commands/__init__.py`
+- `server/commands/admin_commands.py`
+- `server/commands/admin_summon_command.py`
+- `server/commands/alias_commands.py`
+- `server/commands/combat_handler.py`
+- `server/commands/command_service.py`
+- `server/commands/communication_commands_support.py`
+- `server/commands/exploration_commands.py`
+- `server/commands/help_commands.py`
+- `server/commands/inventory_commands.py`
+- `server/commands/inventory_drop_command.py`
+- `server/commands/inventory_get_command.py`
+- `server/commands/position_commands.py`
+- `server/commands/skills_commands.py`
+- `server/commands/system_commands.py`
+- `server/commands/time_commands.py`
+- `server/models/alias.py`
+- `server/realtime/request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 548 (99%)
-- INFERRED: 7 (1%)
+- EXTRACTED: 1161 (86%)
+- INFERRED: 182 (14%)
 - AMBIGUOUS: 0 (0%)
 
 ---

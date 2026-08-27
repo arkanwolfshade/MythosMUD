@@ -1,34 +1,47 @@
 # alias_schema.json
 
-> 12 nodes
+> 52 nodes
 
 ## Key Concepts
 
-- **load_motd()** (8 connections) — `server/utils/motd_loader.py`
-- **test_motd_loader.py** (7 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_empty_file()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_not_exists()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **test_load_motd_file_read_error()** (3 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Unit tests for motd_loader utilities. Tests the MOTD loading functions.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() loads MOTD from file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() returns default when file doesn't exist.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles file read errors.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Test load_motd() handles empty file.** (1 connections) — `server/tests/unit/utils/test_motd_loader.py`
-- **Load the Message of the Day from the configured file. Returns: str: The MOTD…** (1 connections) — `server/utils/motd_loader.py`
+- **alias_schema.json** (9 connections) — `schemas/alias_schema.json`
+- **properties** (7 connections) — `schemas/alias_schema.json`
+- **alias** (6 connections) — `schemas/alias_schema.json`
+- **command** (6 connections) — `schemas/alias_schema.json`
+- **name** (6 connections) — `schemas/alias_schema.json`
+- **version** (5 connections) — `schemas/alias_schema.json`
+- **aliases** (4 connections) — `schemas/alias_schema.json`
+- **created_at** (4 connections) — `schemas/alias_schema.json`
+- **id** (4 connections) — `schemas/alias_schema.json`
+- **updated_at** (4 connections) — `schemas/alias_schema.json`
+- **required** (3 connections) — `schemas/alias_schema.json`
+- **properties** (3 connections) — `schemas/alias_schema.json`
+- **required** (3 connections) — `schemas/alias_schema.json`
+- **items** (2 connections) — `schemas/alias_schema.json`
+- **$defs** (2 connections) — `schemas/alias_schema.json`
+- **additionalProperties** (1 connections) — `schemas/alias_schema.json`
+- **additionalProperties** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- **description** (1 connections) — `schemas/alias_schema.json`
+- **maxLength** (1 connections) — `schemas/alias_schema.json`
+- **minLength** (1 connections) — `schemas/alias_schema.json`
+- **type** (1 connections) — `schemas/alias_schema.json`
+- *... and 27 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
+- [RoomLoader](RoomLoader.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_motd_loader.py`
-- `server/utils/motd_loader.py`
+- `schemas/alias_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 53 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

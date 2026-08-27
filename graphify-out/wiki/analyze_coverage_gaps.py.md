@@ -1,39 +1,37 @@
 # analyze_coverage_gaps.py
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **CacheManager** (12 connections) — `server/caching/lru_cache.py`
-- **.create_cache()** (4 connections) — `server/caching/lru_cache.py`
-- **.get_cache()** (4 connections) — `server/caching/lru_cache.py`
-- **Any** (4 connections)
-- **.get_all_stats()** (3 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (3 connections) — `server/caching/lru_cache.py`
-- **._initialize_default_caches()** (3 connections) — `server/caching/lru_cache.py`
-- **.delete_cache()** (2 connections) — `server/caching/lru_cache.py`
-- **.clear_all_caches()** (1 connections) — `server/caching/lru_cache.py`
-- **.get_cache_names()** (1 connections) — `server/caching/lru_cache.py`
-- **Centralized cache manager for MythosMUD server. Manages multiple LRU caches for…** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize the cache manager.** (1 connections) — `server/caching/lru_cache.py`
-- **Initialize default caches with appropriate configurations.** (1 connections) — `server/caching/lru_cache.py`
-- **Get a cache by name. Args: name: The name of the cache Returns: The cache…** (1 connections) — `server/caching/lru_cache.py`
-- **Create a new cache. Args: name: The name of the cache max_size: Maximum number…** (1 connections) — `server/caching/lru_cache.py`
-- **Delete a cache. Args: name: The name of the cache to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
-- **Get statistics for all caches. Returns: Dictionary mapping cache names to their…** (1 connections) — `server/caching/lru_cache.py`
+- **generate_status_doc()** (7 connections) — `scripts/analyze_coverage_gaps.py`
+- **analyze_coverage_gaps.py** (7 connections) — `scripts/analyze_coverage_gaps.py`
+- **main()** (5 connections) — `scripts/analyze_coverage_gaps.py`
+- **parse_coverage_xml()** (5 connections) — `scripts/analyze_coverage_gaps.py`
+- **Any** (5 connections)
+- **categorize_files()** (4 connections) — `scripts/analyze_coverage_gaps.py`
+- **_write_critical_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
+- **_write_normal_below_section()** (4 connections) — `scripts/analyze_coverage_gaps.py`
+- **_write_priority_recommendations()** (4 connections) — `scripts/analyze_coverage_gaps.py`
+- **Path** (3 connections)
+- **Categorize files into critical below threshold, normal below threshold, and…** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Write critical files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Write normal files below threshold section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Write priority recommendations section.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Generate coverage status markdown document.** (1 connections) — `scripts/analyze_coverage_gaps.py`
+- **Parse coverage.xml and return detailed file coverage information.** (1 connections) — `scripts/analyze_coverage_gaps.py`
 
 ## Relationships
 
-- [required](required.md) (5 shared connections)
-- [.create_get_command](create_get_command.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `scripts/analyze_coverage_gaps.py`
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

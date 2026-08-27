@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu 7th Edition - Keeper's Rulebook** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
-- **call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- **check_postgresql.sh** (2 connections) — `scripts/check_postgresql.sh`
+- **PGPASSWORD** (1 connections) — `scripts/check_postgresql.sh`
+- **check_postgresql.sh script** (1 connections) — `scripts/check_postgresql.sh`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-7th-edition-keeper-s-rulebook/MANIFEST.md`
+- `scripts/check_postgresql.sh`
 
 ## Audit Trail
 

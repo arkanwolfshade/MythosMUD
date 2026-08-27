@@ -1,11 +1,10 @@
 # Dual Connection System Tasks
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **4pt Spacing System** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
-- **Spatial Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/spatial-design.md`
+- **Dual Connection System Tasks** (0 connections) — `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/spatial-design.md`
+- `docs/archive/DUAL_CONNECTION_SYSTEM_TASKS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

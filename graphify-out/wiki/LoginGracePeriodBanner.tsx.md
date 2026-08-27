@@ -1,13 +1,12 @@
 # LoginGracePeriodBanner.tsx
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **A Cold Fire Within (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **A Cold Fire Within.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- **LoginGracePeriodBanner.tsx** (2 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- **LoginGracePeriodBannerProps** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
+- **LoginGracePeriodBanner** (1 connections) — `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/A Cold Fire Within.md`
+- `client/src/components/ui-v2/LoginGracePeriodBanner.tsx`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

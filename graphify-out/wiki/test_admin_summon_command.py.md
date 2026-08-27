@@ -1,57 +1,58 @@
 # test_admin_summon_command.py
 
-> 50 nodes
+> 49 nodes
 
 ## Key Concepts
 
-- **MessageFilteringHelper** (25 connections) — `server/realtime/message_filtering.py`
-- **test_message_filtering_helpers.py** (11 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **.check_player_mute_status()** (6 connections) — `server/realtime/message_filtering.py`
-- **.filter_target_players()** (6 connections) — `server/realtime/message_filtering.py`
-- **.is_player_in_room()** (6 connections) — `server/realtime/message_filtering.py`
-- **message_filtering_helper()** (4 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **Any** (4 connections)
-- **.compare_canonical_rooms()** (3 connections) — `server/realtime/message_filtering.py`
-- **.extract_chat_event_info()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_online_players()** (3 connections) — `server/realtime/message_filtering.py`
-- **.get_player_room_from_persistence()** (3 connections) — `server/realtime/message_filtering.py`
-- **._get_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
-- **.__init__()** (3 connections) — `server/realtime/message_filtering.py`
-- **.is_player_muted_by_receiver()** (3 connections) — `server/realtime/message_filtering.py`
-- **.is_player_muted_by_receiver_with_user_manager()** (3 connections) — `server/realtime/message_filtering.py`
-- **.should_apply_mute_check()** (3 connections) — `server/realtime/message_filtering.py`
-- **._is_player_muted_by_receiver()** (3 connections) — `server/realtime/nats_message_handler_broadcast.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **.collect_room_targets()** (2 connections) — `server/realtime/message_filtering.py`
-- **.preload_receiver_mute_data()** (2 connections) — `server/realtime/message_filtering.py`
-- **test_compare_canonical_rooms()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_extract_chat_event_info()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_get_player_room_from_online_players_not_found()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- **test_should_apply_mute_check()** (2 connections) — `server/tests/unit/realtime/test_message_filtering_helpers.py`
-- *... and 25 more nodes in this community*
+- **test_admin_summon_command.py** (34 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **_resolve_summon_context()** (15 connections) — `server/commands/admin_summon_command.py`
+- **asyncio** (13 connections)
+- **_complete_summon()** (10 connections) — `server/commands/admin_summon_command.py`
+- **_parse_summon_command_data()** (10 connections) — `server/commands/admin_summon_command.py`
+- **Any** (10 connections)
+- **_broadcast_and_log_summon_success()** (8 connections) — `server/commands/admin_summon_command.py`
+- **_validate_summon_prerequisites()** (8 connections) — `server/commands/admin_summon_command.py`
+- **_create_summon_item_instance()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_persist_summoned_item()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_summon_npc_stub_response()** (6 connections) — `server/commands/admin_summon_command.py`
+- **_log_summon_success()** (5 connections) — `server/commands/admin_summon_command.py`
+- **test_complete_summon_factory_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_swallows_db_error()** (4 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_broadcast_and_log_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_no_instance_without_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_complete_summon_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_create_summon_item_instance_factory_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_context_none()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_parse_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_handle_summon_command_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_persist_summoned_item_success()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_permission_denied()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- **test_resolve_summon_context_player_error()** (3 connections) — `server/tests/unit/commands/test_admin_summon_command.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (4 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
-- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (1 shared connections)
-- [🟢 MEDIUM PRIORITY IMPROVEMENTS](🟢_MEDIUM_PRIORITY_IMPROVEMENTS.md) (1 shared connections)
-- [verify_npc_occupants.py](verify_npc_occupants.py.md) (1 shared connections)
-- [apply_migration](apply_migration.md) (1 shared connections)
-- [test_lint_raw_sql_in_python.py](test_lint_raw_sql_in_python.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (18 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [.state](state.md) (2 shared connections)
+- [build_event](build_event.md) (1 shared connections)
+- [validate_admin_permission](validate_admin_permission.md) (1 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (1 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_filtering.py`
-- `server/realtime/nats_message_handler_broadcast.py`
-- `server/tests/unit/realtime/test_message_filtering_helpers.py`
+- `server/commands/admin_summon_command.py`
+- `server/tests/unit/commands/test_admin_summon_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 68 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 119 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

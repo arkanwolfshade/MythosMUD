@@ -1,23 +1,22 @@
 # Vite HTML Entry
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_ground_command delegates to exploration factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Vite HTML Entry** (0 connections) — `client/index.html`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/index.html`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

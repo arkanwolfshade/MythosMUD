@@ -1,63 +1,59 @@
 # NPCOccupantProcessor
 
-> 73 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **MonitoringDashboard** (34 connections) — `server/monitoring/monitoring_dashboard.py`
-- **monitoring_dashboard.py** (24 connections) — `server/monitoring/monitoring_dashboard.py`
-- **get_monitoring_dashboard()** (19 connections) — `server/monitoring/monitoring_dashboard.py`
-- **test_monitoring_dashboard.py** (17 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **Alert** (12 connections) — `server/monitoring/monitoring_dashboard.py`
-- **PerformanceStats** (12 connections) — `server/monitoring/performance_monitor.py`
-- **.get_system_health()** (11 connections) — `server/monitoring/monitoring_dashboard.py`
-- **_dashboard()** (11 connections) — `server/tests/unit/monitoring/test_monitoring_dashboard.py`
-- **server/monitoring/__init__.py** (11 connections) — `server/monitoring/__init__.py`
-- **LogAggregationStats** (10 connections) — `server/structured_logging/log_aggregator.py`
-- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
-- **.record_custom_alert()** (8 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._generate_recommendations()** (7 connections) — `server/monitoring/monitoring_dashboard.py`
-- **SystemHealth** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.check_alerts()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_monitoring_summary()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
-- **Any** (6 connections)
-- **MonitoringSummary** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.export_monitoring_data()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_durability_anomaly()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_registry_failure()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.record_summon_quantity_spike()** (5 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._calculate_performance_score()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- **.get_alert_history()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- **._get_memory_leak_metrics()** (4 connections) — `server/monitoring/monitoring_dashboard.py`
-- *... and 48 more nodes in this community*
+- **NPCOccupantProcessor** (31 connections) — `server/realtime/npc_occupant_processor.py`
+- **test_npc_occupant_processor.py** (18 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **.__init__()** (9 connections) — `server/realtime/room_occupant_manager.py`
+- **npc_occupant_processor.py** (9 connections) — `server/realtime/npc_occupant_processor.py`
+- **room_id_utils.py** (6 connections) — `server/realtime/room_id_utils.py`
+- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
+- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
+- **processor()** (4 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_fallback_to_room()** (3 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_for_room_uses_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_query_npcs_handles_exception()** (3 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **asyncio** (3 connections)
+- **test_filter_fallback_npcs_dead()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_lifecycle_manager_no_active_npcs()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_lifecycle_manager_unavailable()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_get_npc_room_id_prefers_current_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_process_npcs_for_occupants()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_scan_active_npcs_for_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_should_include_npc_dead()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **test_should_include_npc_matching_room()** (2 connections) — `server/tests/unit/realtime/test_npc_occupant_processor.py`
+- **fixture** (1 connections)
+- **NPC occupant processing utilities. This module handles querying and processing…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Processes NPC occupants for rooms.** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Get lifecycle manager for filtering fallback NPCs. Returns: Lifecycle manager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [TestMonitoringEndpoints](TestMonitoringEndpoints.md) (9 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (6 shared connections)
-- [debrief_command.py](debrief_command.py.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [Profession](Profession.md) (4 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
-- [verify_enhanced_logging_compliance.py](verify_enhanced_logging_compliance.py.md) (3 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [authenticated.ts](authenticated.ts.md) (2 shared connections)
-- [Coverage Improvement Summary - Plan 2 Execution](Coverage_Improvement_Summary_-_Plan_2_Execution.md) (1 shared connections)
+- [Any](Any.md) (12 shared connections)
+- [RoomIDUtils](RoomIDUtils.md) (7 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [is_player_in_grace_period](is_player_in_grace_period.md) (1 shared connections)
+- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/monitoring/__init__.py`
-- `server/monitoring/monitoring_dashboard.py`
-- `server/monitoring/performance_monitor.py`
-- `server/structured_logging/log_aggregator.py`
-- `server/tests/unit/monitoring/test_monitoring_dashboard.py`
+- `server/realtime/npc_occupant_processor.py`
+- `server/realtime/room_id_utils.py`
+- `server/realtime/room_occupant_manager.py`
+- `server/tests/unit/realtime/test_npc_occupant_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 171 (92%)
-- INFERRED: 14 (8%)
+- EXTRACTED: 67 (83%)
+- INFERRED: 14 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

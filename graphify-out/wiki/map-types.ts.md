@@ -1,59 +1,66 @@
 # map/types.ts
 
-> 31 nodes
+> 36 nodes
 
 ## Key Concepts
 
-- **test_optimized_security_validator.py** (82 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **optimized_validate_message_content()** (19 connections) — `server/validators/optimized_security_validator.py`
-- **test_optimized_validate_message_content_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_data_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_event_handler()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_format_string()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_injection_pattern()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_javascript_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_logging()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_logging_warning()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_path_traversal()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_python_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_sql_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **test_optimized_validate_message_content_xss()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with injection pattern.** (2 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Unit tests for optimized security validation utilities. Tests the optimized…** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with dangerous characters.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with XSS pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with path traversal pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with javascript: URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with event handler.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with data URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test validating message with Python injection.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- *... and 6 more nodes in this community*
+- **map/types.ts** (36 connections) — `client/src/components/map/types.ts`
+- **RoomNodeData** (33 connections) — `client/src/components/map/types.ts`
+- **ExitEdgeData** (22 connections) — `client/src/components/map/types.ts`
+- **saveMapChanges.ts** (22 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **useMapEditing.ts** (20 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **getVersionedApiBaseUrl()** (18 connections) — `client/src/utils/config.ts`
+- **saveEdgeChanges()** (9 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveMapChanges.test.ts** (9 connections) — `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- **resolveRoomsApiUrl()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveMapChanges()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveRoomUpdates()** (7 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **useMapEditing()** (6 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **useRoomMapEditorEditing()** (6 connections) — `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- **MapEditingChanges** (5 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **readErrorDetail()** (5 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **saveNodePositions()** (5 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **useMapEditing.test.ts** (5 connections) — `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- **createExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **deleteExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **updateExit()** (4 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- **HistoryEntry** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **UseMapEditingOptions** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **UseMapEditingResult** (3 connections) — `client/src/components/map/hooks/useMapEditing.ts`
+- **RoomMapData** (3 connections) — `client/src/components/map/utils/mapUtils.ts`
+- **buildJsonHeaders()** (3 connections) — `client/src/components/map/utils/saveMapChanges.ts`
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
-- [seed_e2e_users.py](seed_e2e_users.py.md) (10 shared connections)
-- [overrides](overrides.md) (10 shared connections)
-- [DecodeLiabilitiesFn](DecodeLiabilitiesFn.md) (9 shared connections)
-- [validate.mjs](validate.mjs.md) (5 shared connections)
-- [Corrections · `docs/subsystems/` was missing from the corpus](Corrections_·_`docs-subsystems-`_was_missing_from_the_corpus.md) (5 shared connections)
-- [Server Realtime Module](Server_Realtime_Module.md) (5 shared connections)
-- [TestValidateCommandBasics](TestValidateCommandBasics.md) (4 shared connections)
-- [intersection_schema.json](intersection_schema.json.md) (4 shared connections)
-- [integration](integration.md) (4 shared connections)
-- [mock_player](mock_player.md) (4 shared connections)
-- [room_schema.json](room_schema.json.md) (4 shared connections)
-- [CORSConfigDict](CORSConfigDict.md) (4 shared connections)
+- [RoomMapEditorRuntime.tsx](RoomMapEditorRuntime.tsx.md) (17 shared connections)
+- [edgeModalLogic.ts](edgeModalLogic.ts.md) (16 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (15 shared connections)
+- [map/config.ts](map-config.ts.md) (14 shared connections)
+- [utils/layout.ts](utils-layout.ts.md) (10 shared connections)
+- [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (6 shared connections)
+- [utils/config.ts](utils-config.ts.md) (4 shared connections)
+- [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
+- [maps.ts](maps.ts.md) (2 shared connections)
+- [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_optimized_security_validator.py`
-- `server/validators/optimized_security_validator.py`
+- `client/src/components/map/RoomMapEditorRuntime.hooks.ts`
+- `client/src/components/map/hooks/__tests__/useMapEditing.test.ts`
+- `client/src/components/map/hooks/useMapEditing.ts`
+- `client/src/components/map/hooks/useMapLayout.ts`
+- `client/src/components/map/types.ts`
+- `client/src/components/map/utils/__tests__/layout.test-fixtures.ts`
+- `client/src/components/map/utils/__tests__/saveMapChanges.test.ts`
+- `client/src/components/map/utils/mapUtils.ts`
+- `client/src/components/map/utils/saveMapChanges.ts`
+- `client/src/utils/config.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (100%)
+- EXTRACTED: 177 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

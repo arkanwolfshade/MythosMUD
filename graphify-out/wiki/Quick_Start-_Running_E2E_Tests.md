@@ -1,43 +1,37 @@
 # Quick Start: Running E2E Tests
 
-> 18 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **Migration 019 Ready for Deployment** (10 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Files Ready** (4 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **MIGRATION_019_VERIFICATION.md** (4 connections) — `docs/archive/MIGRATION_019_VERIFICATION.md`
-- **Migration 019 Complete Summary** (4 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Quick Start** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **What Changed** (3 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **019_postgresql_anti_patterns_fixes.sql** (3 connections) — `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- **Application Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Database Schema** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Documentation** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Implementation Complete** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Migration Script** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Next Action** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Python Code** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Risk Level: **MEDIUM** ⚠️** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Test the Migration** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Testing Checklist** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- **Verify Python Models** (1 connections) — `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
+- **Quick Start: Running E2E Tests** (10 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Troubleshooting** (5 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 1: Start the E2E Test Server** (3 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Expected Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Method A: Use the E2E startup script (Simplest)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Method B: Manual startup (More control)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Next Actions** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Prerequisites ✅** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: "element(s) not found" errors** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Login failed (500)** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Server won't start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Problem: Tests timeout waiting for elements** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 2: Wait for Server to Start** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Step 3: Run the E2E Tests** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Test Credentials** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **Viewing Test Results** (1 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
 
 ## Relationships
 
-- [._initialize_item_services](_initialize_item_services.md) (2 shared connections)
-- [required](required.md) (1 shared connections)
-- [compilerOptions](compilerOptions.md) (1 shared connections)
+- [mythos_e2e Database](mythos_e2e_Database.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/MIGRATION_019_COMPLETE_SUMMARY.md`
-- `docs/archive/MIGRATION_019_READY_FOR_DEPLOYMENT.md`
-- `docs/archive/MIGRATION_019_VERIFICATION.md`
+- `docs/archive/QUICK_START_E2E_TESTS.md`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

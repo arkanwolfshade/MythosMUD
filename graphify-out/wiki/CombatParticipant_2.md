@@ -2,7 +2,7 @@
 
 > God node · 195 connections · `server/models/combat.py`
 
-**Community:** [test_combat_service.py](test_combat_service.py.md)
+**Community:** [CombatParticipant](CombatParticipant.md)
 
 ## Connections by Relation
 
@@ -29,29 +29,29 @@
 - test_resolve_npc_target_broadcasts_when_aggro_switches() `EXTRACTED`
 
 ### contains
-- models/combat.py `EXTRACTED`
+- [models/combat.py](models-combat.py.md) `EXTRACTED`
 
 ### imports
-- combat_service.py `EXTRACTED`
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) `EXTRACTED`
+- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- test_combat_service_modules.py `EXTRACTED`
 - test_combat.py `EXTRACTED`
 - test_combat_turn_processor.py `EXTRACTED`
 - [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) `EXTRACTED`
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) `EXTRACTED`
+- test_combat_attack_handler.py `EXTRACTED`
 - [test_combat_service.py](test_combat_service.py.md) `EXTRACTED`
+- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - test_combat_flee_handler.py `EXTRACTED`
-- [combat_service_npc.py](combat_service_npc.py.md) `EXTRACTED`
+- combat_service_npc.py `EXTRACTED`
 - [test_combat_death_handler.py](test_combat_death_handler.py.md) `EXTRACTED`
 - test_combat_service_npc_helpers.py `EXTRACTED`
 - [test_flee_command.py](test_flee_command.py.md) `EXTRACTED`
 - test_spell_targeting.py `EXTRACTED`
 - [test_aggro_threat.py](test_aggro_threat.py.md) `EXTRACTED`
 - aggro_threat.py `EXTRACTED`
+- combat_service_attack.py `EXTRACTED`
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) `EXTRACTED`
 - test_damage_grace_period.py `EXTRACTED`
-- [combat_taunt.py](combat_taunt.py.md) `EXTRACTED`
 - spell_targeting.py `EXTRACTED`
-- combat_service_attack.py `EXTRACTED`
 
 ### method
 - .is_alive() `EXTRACTED`
@@ -67,23 +67,23 @@
 - update_aggro() `EXTRACTED`
 - add_damage_threat() `EXTRACTED`
 - add_heal_threat() `EXTRACTED`
-- ._execute_spell_action() `EXTRACTED`
 - _validate_taunt_context() `EXTRACTED`
+- ._execute_spell_action() `EXTRACTED`
+- _apply_taunt_and_maybe_broadcast() `EXTRACTED`
 - _check_involuntary_flee_with_session() `EXTRACTED`
+- finalize_attack_result() `EXTRACTED`
 - _weapon_damage_from_equipped_player() `EXTRACTED`
 - _resolve_npc_target() `EXTRACTED`
-- finalize_attack_result() `EXTRACTED`
 - process_npc_turn() `EXTRACTED`
 - process_player_turn() `EXTRACTED`
 - ._execute_queued_action() `EXTRACTED`
-- _apply_taunt_and_maybe_broadcast() `EXTRACTED`
+- _resolve_taunt_combat_and_participant() `EXTRACTED`
+- ._apply_damage() `EXTRACTED`
+- ._create_corpse_on_death() `EXTRACTED`
 - ._publish_attack_events() `EXTRACTED`
+- check_involuntary_flee() `EXTRACTED`
 - apply_damage_and_check_involuntary_flee() `EXTRACTED`
 - validate_melee_location() `EXTRACTED`
-- validate_melee_or_end_combat() `EXTRACTED`
-- resolve_player_attack_damage() `EXTRACTED`
-- _resolve_taunt_combat_and_participant() `EXTRACTED`
-- .validate_and_get_combat_participants() `EXTRACTED`
 
 ---
 

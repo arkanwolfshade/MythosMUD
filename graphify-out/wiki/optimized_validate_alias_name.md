@@ -1,36 +1,34 @@
 # optimized_validate_alias_name
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **CI Workflow** (5 connections) — `.github/workflows/ci.yml`
-- **CI Python Backend Job** (4 connections) — `.github/workflows/ci.yml`
-- **Codacy Coverage Finalize Job** (3 connections) — `.github/workflows/ci.yml`
-- **mythosmud_data Private Submodule Checkout** (3 connections) — `.github/workflows/ci.yml`
-- **CodeQL Test Credential Exclusions** (2 connections) — `.github/codeql/codeql-config.yml`
-- **CI React Client Job** (2 connections) — `.github/workflows/ci.yml`
-- **step-security Harden Runner** (2 connections) — `.github/workflows/ci.yml`
-- **CodeQL Configuration** (2 connections) — `.github/codeql/codeql-config.yml`
-- **CodeQL Workflow** (2 connections) — `.github/workflows/codeql.yml`
-- **OpenSSF Scorecard Workflow** (2 connections) — `.github/workflows/scorecards.yml`
-- **mythos_unit CI Database Bootstrap** (1 connections) — `.github/workflows/ci.yml`
+- **optimized_validate_alias_name()** (7 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_alias_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_alias_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid alias name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating alias name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating alias name with hyphen (invalid - aliases don't allow hyphens).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for alias name fields. Args: value: The alias name to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `.github/codeql/codeql-config.yml`
-- `.github/workflows/ci.yml`
-- `.github/workflows/codeql.yml`
-- `.github/workflows/scorecards.yml`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (79%)
-- INFERRED: 3 (21%)
+- EXTRACTED: 15 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

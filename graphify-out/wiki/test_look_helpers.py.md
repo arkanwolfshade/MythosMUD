@@ -1,67 +1,57 @@
 # test_look_helpers.py
 
-> 96 nodes
+> 107 nodes
 
 ## Key Concepts
 
-- **CorpseOverlay.tsx** (25 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- **containerStore.ts** (24 connections) — `client/src/stores/containerStore.ts`
-- **ContainerSplitPaneView.tsx** (23 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- **useContainerSplitPane.ts** (20 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **ContainerKeyboardAccessibility.test.tsx** (15 connections) — `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
-- **MythosPanel.tsx** (14 connections) — `client/src/components/ui/MythosPanel.tsx`
-- **ContainerSplitPane.tsx** (13 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
-- **useContainerStore** (11 connections) — `client/src/stores/containerStore.ts`
-- **ContainerComponent** (10 connections) — `client/src/stores/containerStore.ts`
-- **BackpackTab.test.tsx** (10 connections) — `client/src/components/containers/__tests__/BackpackTab.test.tsx`
-- **InventoryStack** (9 connections) — `client/src/stores/containerStore.ts`
-- **useContainerSplitPane()** (9 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **corpseOverlayUtils.ts** (9 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **ContainerDragAndDrop.test.tsx** (9 connections) — `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
-- **CorpseOverlay()** (7 connections) — `client/src/components/containers/CorpseOverlay.tsx`
-- **MythosPanel()** (7 connections) — `client/src/components/ui/MythosPanel.tsx`
-- **ContainerSplitPane.test.tsx** (7 connections) — `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
-- **CorpseOverlay.test.tsx** (7 connections) — `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
-- **getCorpseTiming()** (6 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **ContainerSplitPane()** (5 connections) — `client/src/components/containers/ContainerSplitPane.tsx`
-- **useContainerDragHandlers()** (5 connections) — `client/src/components/containers/useContainerSplitPane.ts`
-- **containerStore.test.ts** (5 connections) — `client/src/stores/__tests__/containerStore.test.ts`
-- **formatTimeRemaining()** (4 connections) — `client/src/components/containers/corpseOverlayUtils.ts`
-- **ContainerItemRow()** (3 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- **ContainerSplitPaneView()** (3 connections) — `client/src/components/containers/ContainerSplitPaneView.tsx`
-- *... and 71 more nodes in this community*
+- **test_look_helpers.py** (31 connections) — `server/tests/unit/commands/test_look_helpers.py`
+- **look_helpers.py** (24 connections) — `server/commands/look_helpers.py`
+- **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
+- **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
+- **LookRequest** (15 connections) — `server/commands/look_helpers.py`
+- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
+- **_is_direction()** (11 connections) — `server/commands/look_helpers.py`
+- **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
+- **_get_wearable_container_service()** (10 connections) — `server/commands/look_helpers.py`
+- **Protocol** (5 connections)
+- **_EquippedPlayer** (4 connections) — `server/commands/look_helpers.py`
+- **_stat_number()** (3 connections) — `server/commands/look_helpers.py`
+- **test_get_health_label_critical()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_health_label_healthy()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_health_label_mortally_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_health_label_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_lucidity_label_disturbed_medium()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_lucidity_label_lucid()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_lucidity_label_mad()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_lucidity_label_mad_negative()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_lucidity_label_unstable()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_visible_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- **test_is_direction()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
+- *... and 82 more nodes in this community*
 
 ## Relationships
 
-- [NPCBase](NPCBase.md) (14 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (9 shared connections)
-- [LogAggregator](LogAggregator.md) (3 shared connections)
-- [handle_read_command](handle_read_command.md) (2 shared connections)
-- [test_delete_container_success](test_delete_container_success.md) (2 shared connections)
-- [TypeScript Best Practices](TypeScript_Best_Practices.md) (2 shared connections)
+- [look_command.py](look_command.py.md) (9 shared connections)
+- [test_look_player.py](test_look_player.py.md) (7 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (6 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [.state](state.md) (1 shared connections)
+- [test_look_container.py](test_look_container.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/containers/ContainerSplitPane.tsx`
-- `client/src/components/containers/ContainerSplitPaneView.tsx`
-- `client/src/components/containers/CorpseOverlay.tsx`
-- `client/src/components/containers/__tests__/BackpackTab.test.tsx`
-- `client/src/components/containers/__tests__/ContainerDragAndDrop.test.tsx`
-- `client/src/components/containers/__tests__/ContainerKeyboardAccessibility.test.tsx`
-- `client/src/components/containers/__tests__/ContainerSplitPane.test.tsx`
-- `client/src/components/containers/__tests__/CorpseOverlay.test.tsx`
-- `client/src/components/containers/corpseOverlayUtils.ts`
-- `client/src/components/containers/useContainerSplitPane.ts`
-- `client/src/components/ui/MythosPanel.test.tsx`
-- `client/src/components/ui/MythosPanel.tsx`
-- `client/src/stores/__tests__/containerStore.test.ts`
-- `client/src/stores/containerStore.ts`
-- `client/src/utils/apiTypeGuards.ts`
+- `server/commands/look_helpers.py`
+- `server/tests/unit/commands/test_look_helpers.py`
+- `server/tests/unit/commands/test_look_helpers_functions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 197 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 186 (96%)
+- INFERRED: 8 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,53 +1,57 @@
 # test_container_helpers_inventory_display.py
 
-> 29 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **PickupTestWiring** (19 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **test_inventory_commands_pickup.py** (18 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **inventory_commands_test_support.py** (10 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **test_handle_pickup_command()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_inventory_capacity_error()** (8 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_persist_failure_restores_drop_and_inventory()** (7 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **asyncio** (7 connections)
-- **sample_floor_item_stack()** (6 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **_pickup_with_persist_patch()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_invalid_index()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_no_room_manager()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_no_target()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **test_handle_pickup_command_search_term_not_found()** (6 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **inventory_has_named_item()** (5 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **Test handle_pickup_command() handles missing target.** (2 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **.__init__()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **.set_floor_stack()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **.set_listed_drops()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **.set_player_inventory()** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **Shared helpers for inventory command unit tests.** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **True if inv is a sequence of dict rows containing item_name == name.** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **Single sword stack as returned by list_room_drops / take_room_drop.** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **Standard app.state wiring for handle_pickup_command tests (typed mock surface…** (1 connections) — `server/tests/unit/commands/inventory_commands_test_support.py`
-- **Unit tests for handle_pickup_command (split from test_inventory_commands for…** (1 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- **Test handle_pickup_command() handles invalid index.** (1 connections) — `server/tests/unit/commands/test_inventory_commands_pickup.py`
-- *... and 4 more nodes in this community*
+- **test_container_helpers_inventory_display.py** (19 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **container_helpers_inventory_display.py** (18 connections) — `server/commands/container_helpers_inventory_display.py`
+- **get_container_data_for_inventory()** (10 connections) — `server/commands/container_helpers_inventory_display.py`
+- **match_container_to_slot()** (9 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_apply_container_component_to_slot()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
+- **update_equipped_with_container_info()** (7 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_equipped_matches_container_metadata()** (6 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_lock_state_as_str()** (5 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_inventory_stack_to_display_dict()** (4 connections) — `server/commands/container_helpers_inventory_display.py`
+- **_component_metadata()** (3 connections) — `server/commands/container_helpers_inventory_display.py`
+- **test_get_container_data_for_inventory_handles_error()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_get_container_data_for_inventory_success()** (3 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_equipped_matches_by_id()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_equipped_matches_by_name()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_equipped_no_match()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_lock_state_as_str_fallback()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_lock_state_as_str_with_value_attr()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_match_container_to_slot_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_match_container_to_slot_not_found()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_update_equipped_skips_missing_slot()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **test_update_equipped_with_container_info()** (2 connections) — `server/tests/unit/commands/test_container_helpers_inventory_display.py`
+- **asyncio** (2 connections)
+- **InventoryStack** (1 connections)
+- **Player** (1 connections)
+- **Container display helpers for inventory UI (wearable contents, slot matching).** (1 connections) — `server/commands/container_helpers_inventory_display.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [GameLogPanel.tsx](GameLogPanel.tsx.md) (12 shared connections)
-- [ContainerComponent](ContainerComponent.md) (6 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (6 shared connections)
-- [api/player_effects.py](api-player_effects.py.md) (3 shared connections)
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (1 shared connections)
+- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [LRUCache](LRUCache.md) (1 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [models/player.py](models-player.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/inventory_commands_test_support.py`
-- `server/tests/unit/commands/test_inventory_commands_pickup.py`
+- `server/commands/container_helpers_inventory_display.py`
+- `server/tests/unit/commands/test_container_helpers_inventory_display.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (88%)
-- INFERRED: 10 (12%)
+- EXTRACTED: 66 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

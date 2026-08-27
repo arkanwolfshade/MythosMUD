@@ -1,28 +1,25 @@
 # Architecture Overview
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **Scenario 32 Disconnect Grace Period** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Linkdead Zombie State** (2 connections) — `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- **Scenario 33 Rest Command** (1 connections) — `e2e-tests/scenarios/scenario-33-rest-command.md`
-- **Scenario 35 Player Combat** (1 connections) — `e2e-tests/scenarios/scenario-35-player-combat.md`
+- **Architecture Overview** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CircuitBreaker States** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Integration Points** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [CircuitBreaker Implementation Planning Document](CircuitBreaker_Implementation_Planning_Document.md) (1 shared connections)
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-32-disconnect-grace-period.md`
-- `e2e-tests/scenarios/scenario-33-rest-command.md`
-- `e2e-tests/scenarios/scenario-35-player-combat.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (67%)
-- INFERRED: 1 (33%)
+- EXTRACTED: 3 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

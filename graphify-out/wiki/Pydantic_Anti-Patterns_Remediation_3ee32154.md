@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Migration 019** (0 connections) — `db/migrations/019_postgresql_anti_patterns_fixes.sql`
+- **Pydantic Anti-Patterns Remediation (3ee32154)** (0 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `db/migrations/019_postgresql_anti_patterns_fixes.sql`
+- `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
 
 ## Audit Trail
 

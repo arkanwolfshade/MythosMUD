@@ -1,27 +1,26 @@
 # 2026_02_18_add_player_skills_table.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Log Levels and Usage** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **CRITICAL** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **DEBUG** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **ERROR** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **INFO** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **WARNING** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **2026_02_18_add_player_skills_table.py** (2 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Create player_skills table if not exists (matches db/migrations/025).** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
+- **Drop player_skills table.** (1 connections) — `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/alembic/versions/2026_02_18_add_player_skills_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

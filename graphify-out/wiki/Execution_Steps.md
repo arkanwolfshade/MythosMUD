@@ -4,52 +4,45 @@
 
 ## Key Concepts
 
-- **test_auth_rate_limit.py** (26 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **auth_rate_limit.py** (18 connections) — `server/middleware/auth_rate_limit.py`
-- **auth_client_key()** (11 connections) — `server/middleware/auth_rate_limit.py`
-- **auth_rate_limit_response()** (11 connections) — `server/middleware/auth_rate_limit.py`
-- **assert_auth_rate_limit_paths_registered()** (9 connections) — `server/middleware/auth_rate_limit.py`
-- **_post_request()** (9 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **is_auth_rate_limited_path()** (5 connections) — `server/middleware/auth_rate_limit.py`
-- **test_auth_client_key_rejects_non_ip_xff()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_uses_xff_when_trusted()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **_collect_post_paths()** (3 connections) — `server/middleware/auth_rate_limit.py`
-- **test_assert_auth_rate_limit_paths_registered_ok()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_ignores_xff_by_default()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_client_key_uses_ip()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_rate_limit_response_maps_rate_limit_error()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_auth_rate_limit_response_skips_other_paths()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **Protocol** (3 connections)
-- **_HasPrefix** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_HasRoutes** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_IncludedRouterLike** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_auth_bucket()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_canonical_ip()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_join_route_path()** (2 connections) — `server/middleware/auth_rate_limit.py`
-- **_ok_post()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_assert_auth_rate_limit_paths_registered_missing()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
-- **test_create_app_auth_rate_limit_paths_match()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **Execution Steps** (18 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Scenario 25: Wearable Container Management **[REQUIRES MULTI-PLAYER]**** (11 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🤖 MANDATORY AI EXECUTION CONTRACT 🤖** (5 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Status** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Testing Approach Rationale** (2 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **scenario-25-container-wearable-management.md** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Cleanup** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **CONFIRMATION CHECKLIST** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **EXECUTION AFFIRMATION (Type this before proceeding)** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **🛑 EXECUTION ENDS HERE - DO NOT PROCEED FURTHER** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Expected Results** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Scenario Completion Verification** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ SCENARIO FILE CREATED** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 1 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 1 of 8: Setup - Player Connected** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 2 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 2 of 8: Check Inventory for Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 3 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **STEP 3 of 8: Equip Wearable Container** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
+- **✅ Step 4 Completion Checklist** (1 connections) — `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
 - *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [Commands](Commands.md) (4 shared connections)
-- [Test Coverage Summary: Disconnect Grace Period & Rest Command](Test_Coverage_Summary-_Disconnect_Grace_Period_&_Rest_Command.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [GameClientV2.tsx](GameClientV2.tsx.md) (2 shared connections)
-- [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/middleware/auth_rate_limit.py`
-- `server/tests/unit/middleware/test_auth_rate_limit.py`
+- `e2e-tests/scenarios/scenario-25-container-wearable-management.md`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

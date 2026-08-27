@@ -1,53 +1,57 @@
 # ExperienceRepository
 
-> 34 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **DialogueService** (18 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueTree** (11 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **._present_node()** (10 connections) — `server/game/dialogue/dialogue_service.py`
-- **.choose_option()** (9 connections) — `server/game/dialogue/dialogue_service.py`
-- **UUID** (8 connections)
-- **.clear_cursor()** (7 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueNode** (6 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **.get_cursor()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **._load_tree_or_fade()** (6 connections) — `server/game/dialogue/dialogue_service.py`
-- **dialogue_tree.py** (6 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **schemas/dialogue/__init__.py** (6 connections) — `server/schemas/dialogue/__init__.py`
-- **._player_key()** (5 connections) — `server/game/dialogue/dialogue_service.py`
-- **.start_with_npc()** (5 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueCursor** (4 connections) — `server/game/dialogue/dialogue_service.py`
-- **DialogueOption** (4 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **._invalid_option_message()** (4 connections) — `server/game/dialogue/dialogue_service.py`
-- **.validate_graph()** (3 connections) — `server/schemas/dialogue/dialogue_tree.py`
-- **BaseModel** (3 connections)
-- **model_validator** (1 connections)
-- **Load and validate a dialogue tree, or clear cursor and return fade text.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Return an error string if option_index is out of range for node.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Advance from the current cursor by 1-based option index. Returns…** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Set cursor and build prompt for node_id.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Active conversation position for one player.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- **Load dialogue trees and track per-player session cursors.** (1 connections) — `server/game/dialogue/dialogue_service.py`
-- *... and 9 more nodes in this community*
+- **ExperienceRepository** (25 connections) — `server/persistence/repositories/experience_repository.py`
+- **test_experience_repository.py** (17 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **.__init__()** (13 connections) — `server/async_persistence.py`
+- **asyncio** (10 connections)
+- **.gain_experience()** (5 connections) — `server/persistence/repositories/experience_repository.py`
+- **test_update_player_stat_field_db_error()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_player_not_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_negative_amount()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_publishes_event()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_gain_experience_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_invalid_delta_type()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_invalid_name()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_stat_field_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_negative_delta()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **test_update_player_xp_success()** (3 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
+- **Player** (1 connections)
+- **fixture** (1 connections)
+- **Initialize the async persistence layer. This facade delegates to focused async…** (1 connections) — `server/async_persistence.py`
+- **Repository for player experience and stats persistence operations. Handles XP…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Award experience points to a player atomically. Args: player: Player to award…** (1 connections) — `server/persistence/repositories/experience_repository.py`
+- **Unit tests for ExperienceRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_experience_repository.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (13 shared connections)
-- [test_rooms_api.py](test_rooms_api.py.md) (3 shared connections)
-- [apply_communication_dampening](apply_communication_dampening.md) (3 shared connections)
-- [useGameTerminal.ts](useGameTerminal.ts.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (13 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (2 shared connections)
+- [ContainerData](ContainerData.md) (1 shared connections)
+- [ContainerRepository](ContainerRepository.md) (1 shared connections)
+- [item_instance_persistence_async.py](item_instance_persistence_async.py.md) (1 shared connections)
+- [player_effect_repository.py](player_effect_repository.py.md) (1 shared connections)
+- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
+- [RoomRepository](RoomRepository.md) (1 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/dialogue/dialogue_service.py`
-- `server/schemas/dialogue/__init__.py`
-- `server/schemas/dialogue/dialogue_tree.py`
+- `server/async_persistence.py`
+- `server/persistence/repositories/experience_repository.py`
+- `server/tests/unit/persistence/repositories/test_experience_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 56 (80%)
+- INFERRED: 14 (20%)
 - AMBIGUOUS: 0 (0%)
 
 ---

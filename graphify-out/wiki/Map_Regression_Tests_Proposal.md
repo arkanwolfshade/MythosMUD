@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Grype Local vs Trivy Codacy SCA** (0 connections) — `.codacy/README.md`
+- **Map Regression Tests Proposal** (0 connections) — `docs/testing/map-regression-tests.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/README.md`
+- `docs/testing/map-regression-tests.md`
 
 ## Audit Trail
 

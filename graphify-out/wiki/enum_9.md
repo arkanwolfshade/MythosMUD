@@ -1,48 +1,33 @@
 # enum
 
-> 35 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **enum** (21 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **flags** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **wear_slots** (4 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **effect_components** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **tags** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **items** (3 connections) — `schemas/items/item_prototype.schema.json`
-- **minLength** (2 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **uniqueItems** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **ACCESSORY** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **AMULET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **BELT** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **CURSED** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **FEET** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **GLOW** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HANDS** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **HEAD** (1 connections) — `schemas/items/item_prototype.schema.json`
-- *... and 10 more nodes in this community*
+- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (4 shared connections)
-- [Dependency Upgrade Strategy Specification](Dependency_Upgrade_Strategy_Specification.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

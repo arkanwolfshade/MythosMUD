@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **hadolint.ps1** (0 connections) — `scripts/hadolint.ps1`
+- **tailwindcss** (0 connections) — `tailwindcss`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/hadolint.ps1`
+- `tailwindcss`
 
 ## Audit Trail
 

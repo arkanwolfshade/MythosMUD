@@ -1,16 +1,14 @@
 # Lucidity Tiers
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Aggro and Threat System Implementation Plan** (6 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **aggro-threat-implementation-plan.md** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Constants (locked)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Integration with NPC static data (behavior_config / npc_type)** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Key Modules and Files** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **References** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
-- **Status** (1 connections) — `docs/archive/aggro-threat-implementation-plan.md`
+- **Lucidity Tiers** (4 connections) — `docs/archive/lucidity-system.md`
+- **Lucidity System (LCD)** (3 connections) — `docs/archive/lucidity-system.md`
+- **Phantom Hostiles** (2 connections) — `docs/archive/phantom-hostile-requirements.md`
+- **Reversed Compass Directions** (2 connections) — `docs/archive/reversed-compass-directions-requirements.md`
+- **Catatonic Rescue Window** (1 connections) — `docs/archive/lucidity-system.md`
 
 ## Relationships
 
@@ -18,7 +16,9 @@
 
 ## Source Files
 
-- `docs/archive/aggro-threat-implementation-plan.md`
+- `docs/archive/lucidity-system.md`
+- `docs/archive/phantom-hostile-requirements.md`
+- `docs/archive/reversed-compass-directions-requirements.md`
 
 ## Audit Trail
 

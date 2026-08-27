@@ -1,31 +1,38 @@
 # test_container_persistence_sql_injection.py
 
-> 7 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
-- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
-- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **test_container_persistence_sql_injection.py** (7 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **TestContainerPersistenceSQLInjection** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **_create_mock_container_row()** (6 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_safe_column_names()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_sql_injection_in_metadata()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_uses_parameterized_queries()** (4 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **.test_update_container_sql_injection_in_lock_state()** (3 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **UUID** (2 connections)
+- **Tests for SQL injection protection in container persistence operations. These…** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that update_container uses parameterized queries, not string concatenation.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that column names are hardcoded, not from user input.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Create a complete mock container row with all required columns.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test SQL injection protection in container persistence.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that SQL injection in lock_state is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
+- **Test that SQL injection in metadata_json is prevented.** (1 connections) — `server/tests/unit/test_container_persistence_sql_injection.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (6 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
-- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
-- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- `server/tests/unit/test_container_persistence_sql_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (67%)
-- INFERRED: 2 (33%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

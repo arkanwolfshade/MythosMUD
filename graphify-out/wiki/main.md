@@ -1,33 +1,34 @@
 # main
 
-> 10 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **TestHorizontalExitCharBetween** (7 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_bidirectional_returns_em_dash()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_no_exit_returns_none()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_east_returns_gt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **.test_one_way_west_returns_lt()** (3 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Tests for _horizontal_exit_char_between (em dash, >, <).** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **Bidirectional horizontal exit between two rooms uses an em dash.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **One-way east exit renders as a greater-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **One-way west exit renders as a less-than sign.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
-- **When there are no horizontal exits, the helper returns None.** (1 connections) — `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
+- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
+- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
+- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
+- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
+- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
+- **Graph** (2 connections)
+- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
 
 ## Relationships
 
-- [properties](properties.md) (5 shared connections)
-- [Any](Any.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/services/test_ascii_map_renderer_exits.py`
+- `scripts/visualize_arkham_rooms.py`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (93%)
-- INFERRED: 1 (7%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

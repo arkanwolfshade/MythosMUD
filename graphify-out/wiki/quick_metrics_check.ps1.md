@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Room Environment Reference** (0 connections) — `docs/ROOM_ENVIRONMENT_REFERENCE.md`
+- **quick_metrics_check.ps1** (0 connections) — `scripts/quick_metrics_check.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/ROOM_ENVIRONMENT_REFERENCE.md`
+- `scripts/quick_metrics_check.ps1`
 
 ## Audit Trail
 

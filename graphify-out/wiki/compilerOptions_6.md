@@ -1,29 +1,35 @@
 # compilerOptions
 
-> 20 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **Lizard Complexity Analysis Findings** (7 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **🔴 CRITICAL: Functions Exceeding Threshold (CCN > 10)** (5 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **📋 Recommended Action Plan** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **🎯 Refactoring Patterns** (4 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **🟡 WARNING: Functions Near Threshold (CCN 9-10)** (3 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **LIZARD_COMPLEXITY_FINDINGS.md** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **1. `create_app` - CCN: 22** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **2. `_load_rooms_with_coordinates` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **3. `_parse_websocket_token` - CCN: 12** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **4. `_ensure_coordinates_generated` - CCN: 11** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Functions with CCN = 10** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Functions with CCN = 9** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **✅ Next Steps** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Pattern 1: Extract Exception Handling** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Pattern 2: Extract Configuration Logic** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Pattern 3: Extract Data Processing** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Phase 1: Critical Functions (CCN > 10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Phase 2: High-Priority Near-Threshold (CCN 9-10)** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **Phase 3: Monitoring** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
-- **📊 Summary Statistics** (1 connections) — `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- **compilerOptions** (17 connections) — `client/tsconfig.node.json`
+- **include** (8 connections) — `client/tsconfig.node.json`
+- **tsconfig.node.json** (3 connections) — `client/tsconfig.node.json`
+- **lib** (2 connections) — `client/tsconfig.node.json`
+- **types** (2 connections) — `client/tsconfig.node.json`
+- **allowImportingTsExtensions** (1 connections) — `client/tsconfig.node.json`
+- **composite** (1 connections) — `client/tsconfig.node.json`
+- **emitDeclarationOnly** (1 connections) — `client/tsconfig.node.json`
+- **module** (1 connections) — `client/tsconfig.node.json`
+- **moduleDetection** (1 connections) — `client/tsconfig.node.json`
+- **moduleResolution** (1 connections) — `client/tsconfig.node.json`
+- **noFallthroughCasesInSwitch** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedLocals** (1 connections) — `client/tsconfig.node.json`
+- **noUnusedParameters** (1 connections) — `client/tsconfig.node.json`
+- **skipLibCheck** (1 connections) — `client/tsconfig.node.json`
+- **strict** (1 connections) — `client/tsconfig.node.json`
+- **target** (1 connections) — `client/tsconfig.node.json`
+- **tsBuildInfoFile** (1 connections) — `client/tsconfig.node.json`
+- **verbatimModuleSyntax** (1 connections) — `client/tsconfig.node.json`
+- **exclude** (1 connections) — `client/tsconfig.node.json`
+- **ES2020** (1 connections) — `client/tsconfig.node.json`
+- **node** (1 connections) — `client/tsconfig.node.json`
+- **playwright.config.ts** (1 connections) — `client/tsconfig.node.json`
+- **vite.userConfig.ts** (1 connections) — `client/tsconfig.node.json`
+- **tests/e2e/playwright.runtime.config.ts** (1 connections) — `client/tsconfig.node.json`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -31,11 +37,11 @@
 
 ## Source Files
 
-- `docs/archive/LIZARD_COMPLEXITY_FINDINGS.md`
+- `client/tsconfig.node.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 28 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,27 @@
 # Phase 5: Strategic Additions (Week 5)
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **migrate_file()** (5 connections) — `scripts/migrate_async_persistence.py`
-- **MigrationResult** (4 connections) — `scripts/migrate_async_persistence.py`
-- **main()** (3 connections) — `scripts/migrate_async_persistence.py`
-- **migrate_async_persistence.py** (3 connections) — `scripts/migrate_async_persistence.py`
-- **Path** (2 connections)
-- **NamedTuple** (1 connections)
-- **Result of a file migration.** (1 connections) — `scripts/migrate_async_persistence.py`
-- **Migrate a single file to use async persistence patterns. Args: file_path: Path…** (1 connections) — `scripts/migrate_async_persistence.py`
+- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Test Suite Optimization Roadmap](Test_Suite_Optimization_Roadmap.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/migrate_async_persistence.py`
+- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

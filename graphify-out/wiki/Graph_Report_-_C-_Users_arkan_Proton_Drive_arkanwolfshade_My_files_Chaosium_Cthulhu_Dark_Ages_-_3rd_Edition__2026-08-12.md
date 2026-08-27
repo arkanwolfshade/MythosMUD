@@ -1,22 +1,21 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Cthulhu Dark Ages - 3rd Edition  (2026-08-12)
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **Mypy Remediation** (8 connections) — `.cursor/commands/mypy-remediation.md`
-- **Fix patterns by tier** (5 connections) — `.cursor/commands/mypy-remediation.md`
-- **mypy-remediation.md** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔴 Critical — import and name errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Entry point** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Error code table** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Fix-verify loop** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟡 High — type errors** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🔵 Low — type precision** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **🟢 Medium — type refinement** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Never** (1 connections) — `.cursor/commands/mypy-remediation.md`
-- **Priority** (1 connections) — `.cursor/commands/mypy-remediation.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Cthulhu Dark Ages - 3rd Edition  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Communities (8 total, 7 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Community 0 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -24,11 +23,11 @@
 
 ## Source Files
 
-- `.cursor/commands/mypy-remediation.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

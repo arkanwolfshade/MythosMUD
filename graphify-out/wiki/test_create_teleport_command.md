@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_take_room_drop_zero_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test take_room_drop() handles zero quantity gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_create_teleport_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_teleport_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [server/main.py](server-main.py.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

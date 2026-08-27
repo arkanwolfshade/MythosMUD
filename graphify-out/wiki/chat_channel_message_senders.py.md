@@ -1,55 +1,54 @@
 # chat_channel_message_senders.py
 
-> 52 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **test_admin_commands_helpers.py** (21 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_admin_teleport_utils.py** (19 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **broadcast_teleport_effects()** (17 connections) — `server/commands/admin_teleport_utils.py`
-- **notify_player_of_teleport()** (17 connections) — `server/commands/admin_teleport_utils.py`
-- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
-- **get_online_player_by_display_name()** (15 connections) — `server/commands/admin_teleport_utils.py`
-- **admin_teleport_utils.py** (14 connections) — `server/commands/admin_teleport_utils.py`
-- **asyncio** (10 connections)
-- **test_broadcast_teleport_effects_no_broadcast_method()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **asyncio** (4 connections)
-- **test_broadcast_teleport_effects()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_goto_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_teleport_departure_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_create_teleport_effect_message_unknown_type()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_found()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_get_online_player_by_display_name_no_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_notify_player_of_teleport_custom_message()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
-- **test_broadcast_teleport_effects_handles_error()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_broadcast_teleport_effects_success()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- **test_create_teleport_effect_message()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
-- *... and 27 more nodes in this community*
+- **chat_channel_message_senders.py** (40 connections) — `server/game/chat_channel_message_senders.py`
+- **ChatSendServices** (20 connections) — `server/game/chat_channel_message_senders.py`
+- **send_whisper_message()** (17 connections) — `server/game/chat_channel_message_senders.py`
+- **send_system_message()** (16 connections) — `server/game/chat_channel_message_senders.py`
+- **send_global_message()** (14 connections) — `server/game/chat_channel_message_senders.py`
+- **send_party_message()** (11 connections) — `server/game/chat_channel_message_senders.py`
+- **ChatResult** (10 connections)
+- **ChatPlayerView** (9 connections) — `server/game/chat_channel_message_senders.py`
+- **_publish_chat_or_unavailable()** (9 connections) — `server/game/chat_channel_message_senders.py`
+- **WhisperTracker** (8 connections) — `server/game/chat_channel_message_senders.py`
+- **_log_and_store_whisper_message()** (8 connections) — `server/game/chat_channel_message_senders.py`
+- **_authorize_global_sender()** (7 connections) — `server/game/chat_channel_message_senders.py`
+- **_log_and_store_system_message()** (7 connections) — `server/game/chat_channel_message_senders.py`
+- **normalize_player_id()** (7 connections) — `server/game/chat_channel_message_senders.py`
+- **ChatMessage** (7 connections)
+- **_append_channel_history()** (6 connections) — `server/game/chat_channel_message_senders.py`
+- **UUID** (6 connections)
+- **_authorize_system_sender()** (5 connections) — `server/game/chat_channel_message_senders.py`
+- **_load_whisper_participants()** (5 connections) — `server/game/chat_channel_message_senders.py`
+- **check_global_level_requirement()** (5 connections) — `server/game/chat_validation_helpers.py`
+- **validate_global_message()** (5 connections) — `server/game/chat_validation_helpers.py`
+- **.get_player_by_id()** (3 connections) — `server/game/chat_channel_message_senders.py`
+- **_system_message_input_error()** (3 connections) — `server/game/chat_channel_message_senders.py`
+- **_whisper_message_input_error()** (3 connections) — `server/game/chat_channel_message_senders.py`
+- **.store_sender()** (2 connections) — `server/game/chat_channel_message_senders.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (13 shared connections)
-- [ConnectionCleaner](ConnectionCleaner.md) (9 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (31 shared connections)
+- [ChatMessage](ChatMessage.md) (20 shared connections)
+- [ChatService](ChatService.md) (3 shared connections)
+- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [chat_nats_publisher.py](chat_nats_publisher.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_teleport_utils.py`
-- `server/tests/unit/commands/test_admin_commands_helpers.py`
-- `server/tests/unit/commands/test_admin_teleport_utils.py`
+- `server/game/chat_channel_message_senders.py`
+- `server/game/chat_validation_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 146 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

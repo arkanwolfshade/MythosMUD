@@ -1,31 +1,31 @@
 # monitoring_service
 
-> 9 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **🟡 HIGH PRIORITY ISSUES** (9 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **10. Loading All Players Instead of Active Only** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **11. NATS Connection Pool Not Used by Default** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **12. No TLS Configuration for NATS** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **13. Event Loop Change Detection Edge Cases** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **14. Missing Transaction Rollback on Critical Failures** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **7. Missing Room Lookup Caching** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **8. Incomplete Migration to Async Persistence** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **9. Multiple Database Flushes Before Commit** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **monitoring_service()** (4 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **fixture** (4 connections)
+- **mock_combat_config()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_feature_flags()** (3 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **mock_config()** (2 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create mock feature flags.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create mock combat config.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
+- **Create CombatMonitoringService instance with mocked dependencies.** (1 connections) — `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Relationships
 
-- [.get_professions](get_professions.md) (1 shared connections)
+- [test_combat_monitoring_service.py](test_combat_monitoring_service.py.md) (4 shared connections)
+- [CombatMonitoringService](CombatMonitoringService.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `server/tests/unit/services/test_combat_monitoring_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

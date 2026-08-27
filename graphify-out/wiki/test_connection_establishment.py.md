@@ -1,58 +1,62 @@
 # test_connection_establishment.py
 
-> 62 nodes
+> 77 nodes
 
 ## Key Concepts
 
-- **PlayerRespawnService** (30 connections) — `server/services/player_respawn_service.py`
+- **test_connection_establishment.py** (59 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **connection_establishment.py** (42 connections) — `server/realtime/connection_establishment.py`
+- **ConnectionMetadata** (30 connections) — `server/realtime/connection_models.py`
+- **_EstablishmentConnectionManager** (25 connections) — `server/realtime/connection_establishment.py`
 - **UUID** (16 connections)
-- **._prepare_sanitarium_respawn()** (13 connections) — `server/services/player_respawn_service.py`
-- **._apply_sanitarium_liability_update()** (11 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player()** (9 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_delirium()** (8 connections) — `server/services/player_respawn_service.py`
-- **.respawn_player_from_sanitarium()** (8 connections) — `server/services/player_respawn_service.py`
-- **Player** (8 connections)
-- **._prepare_delirium_respawn()** (7 connections) — `server/services/player_respawn_service.py`
-- **._publish_standard_respawn_event()** (7 connections) — `server/services/player_respawn_service.py`
-- **_utc_now()** (7 connections) — `server/services/player_respawn_service.py`
-- **AsyncSession** (7 connections)
-- **decode_liabilities()** (6 connections) — `server/services/lucidity_helpers.py`
-- **._clear_respawn_combat_state()** (6 connections) — `server/services/player_respawn_service.py`
-- **_PlayerCombatClearing** (5 connections) — `server/services/player_respawn_service.py`
-- **_RespawnEventPublisher** (5 connections) — `server/services/player_respawn_service.py`
-- **encode_liabilities()** (5 connections) — `server/services/lucidity_helpers.py`
-- **._apply_standard_respawn_state()** (5 connections) — `server/services/player_respawn_service.py`
-- **._can_move_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
-- **.get_respawn_room()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_delirium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_sanitarium_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **._log_standard_respawn()** (5 connections) — `server/services/player_respawn_service.py`
-- **.move_player_to_limbo()** (5 connections) — `server/services/player_respawn_service.py`
-- **._publish_delirium_respawn_event()** (5 connections) — `server/services/player_respawn_service.py`
-- *... and 37 more nodes in this community*
+- **connection_models.py** (13 connections) — `server/realtime/connection_models.py`
+- **_meta()** (12 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_find_dead_connections()** (11 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_dead_connections()** (10 connections) — `server/realtime/connection_establishment.py`
+- **_bind_accepted_websocket()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_cleanup_failed_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_register_new_connection()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_connection_metadata()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_setup_session_tracking()** (9 connections) — `server/realtime/connection_establishment.py`
+- **_update_player_connection_list()** (9 connections) — `server/realtime/connection_establishment.py`
+- **test_connection_models.py** (9 connections) — `server/tests/unit/realtime/test_connection_models.py`
+- **test_cleanup_failed_connection_success()** (8 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_remove_dead_connection()** (8 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_remove_dead_connection()** (7 connections) — `server/realtime/connection_establishment.py`
+- **test_cleanup_dead_connections_with_dead()** (7 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **_reconcile_prior_session()** (6 connections) — `server/realtime/connection_establishment.py`
+- **test_cleanup_failed_connection_none()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_find_dead_connections_not_in_active()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_remove_dead_connection_not_present()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **test_setup_connection_metadata()** (5 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- *... and 52 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (15 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [look_command.py](look_command.py.md) (3 shared connections)
-- [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
-- [Structured Error Logging](Structured_Error_Logging.md) (2 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (1 shared connections)
-- [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
+- [_as_mgr](_as_mgr.md) (66 shared connections)
+- [_track_player_presence](_track_player_presence.md) (22 shared connections)
+- [connection_manager.py](connection_manager.py.md) (22 shared connections)
+- [test_connection_session_management.py](test_connection_session_management.py.md) (10 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
+- [_FakeEstablishmentManager](_FakeEstablishmentManager.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (2 shared connections)
+- [time.py](time.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
+- [models/player.py](models-player.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_helpers.py`
-- `server/services/player_respawn_service.py`
-- `server/tests/unit/services/test_player_respawn_service.py`
+- `server/realtime/connection_establishment.py`
+- `server/realtime/connection_models.py`
+- `server/tests/unit/realtime/test_connection_establishment.py`
+- `server/tests/unit/realtime/test_connection_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 135 (94%)
-- INFERRED: 8 (6%)
+- EXTRACTED: 276 (96%)
+- INFERRED: 12 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

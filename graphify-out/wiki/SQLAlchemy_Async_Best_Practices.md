@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **vitest-jest-dom.d.ts** (0 connections) — `client/src/test/vitest-jest-dom.d.ts`
+- **SQLAlchemy Async Best Practices** (0 connections) — `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/src/test/vitest-jest-dom.d.ts`
+- `docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md`
 
 ## Audit Trail
 

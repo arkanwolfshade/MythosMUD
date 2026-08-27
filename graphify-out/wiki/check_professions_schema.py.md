@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Test Migration Validation** (0 connections) — `docs/archive/TEST_REFACTORING_STATUS.md`
+- **check_professions_schema.py** (0 connections) — `scripts/check_professions_schema.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/TEST_REFACTORING_STATUS.md`
+- `scripts/check_professions_schema.py`
 
 ## Audit Trail
 

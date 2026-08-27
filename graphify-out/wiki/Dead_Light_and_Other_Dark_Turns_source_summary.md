@@ -4,18 +4,18 @@
 
 ## Key Concepts
 
-- **Monitoring and Alerting** (4 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Alerting Rules** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Health Checks** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
-- **Metrics to Monitor** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Dead Light and Other Dark Turns (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **Dead Light and Other Dark Turns.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
 
 ## Audit Trail
 

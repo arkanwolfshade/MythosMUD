@@ -1,35 +1,33 @@
 # test_monitoring_init.py
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **_utc_now()** (8 connections) — `server/models/lucidity.py`
-- **test_lucidity_utils.py** (7 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_different_times()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_naive_datetime()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **test_utc_now_returns_utc_time()** (3 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **datetime** (2 connections)
-- **Return naive UTC timestamps for PostgreSQL TIMESTAMP WITHOUT TIME ZONE…** (1 connections) — `server/models/lucidity.py`
-- **Unit tests for lucidity model utility functions. Tests the _utc_now utility…** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns a datetime object.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns naive datetime (tzinfo=None).** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns time close to current UTC time.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
-- **Test _utc_now returns different times on subsequent calls.** (1 connections) — `server/tests/unit/models/test_lucidity_utils.py`
+- **test_monitoring_init.py** (7 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_eager_imports()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_direct_call()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_dashboard_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_lazy_performance_symbols()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **test_monitoring_getattr_unknown_raises()** (2 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unit tests for server.monitoring lazy __getattr__ re-exports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Exception tracker symbols import without triggering numpy lazy paths.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves MonitoringDashboard and get_monitoring_dashboard.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **__getattr__ resolves PerformanceStats and get_performance_monitor.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Unknown attribute names raise AttributeError.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
+- **Direct __getattr__ covers both branch returns for dashboard imports.** (1 connections) — `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
-- `server/tests/unit/models/test_lucidity_utils.py`
+- `server/tests/unit/monitoring/test_monitoring_init.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

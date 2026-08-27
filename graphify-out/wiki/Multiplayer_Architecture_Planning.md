@@ -1,19 +1,17 @@
 # Multiplayer Architecture Planning
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestMinimapExplorationInvestigationDoc** (5 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_describes_uuid_vs_stable_id_mismatch()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_doc_explains_impact_on_non_admin_users()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **.test_investigation_doc_exists()** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **test_minimap_exploration_documentation.py** (2 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Guardrails for minimap / exploration documentation. Ensures the investigation…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Content checks for the minimap explored-rooms investigation document.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **The session document must remain present for traceability.** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must state that explored room identifiers are UUIDs, not…** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
-- **Documentation must tie the bug to non-admin minimap behavior (not only admins).** (1 connections) — `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- **Multiplayer Architecture Planning** (3 connections) — `docs/archive/PLANNING_multiplayer.md`
+- **NATS Service** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Chat System Implementation Plan** (2 connections) — `docs/archive/PLANNING_chat_system.md`
+- **Planning Completion Summary** (2 connections) — `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- **Redis to NATS Migration Plan** (2 connections) — `docs/archive/PLANNING_redis_to_nats_migration.md`
+- **Performance Optimization Summary** (1 connections) — `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- **Alias System Implementation Plan** (1 connections) — `docs/archive/PLANNING_aliases.md`
+- **Movement System Planning** (1 connections) — `docs/archive/PLANNING_movement_system.md`
 
 ## Relationships
 
@@ -21,12 +19,18 @@
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_minimap_exploration_documentation.py`
+- `docs/archive/PERFORMANCE_OPTIMIZATION_SUMMARY.md`
+- `docs/archive/PLANNING_COMPLETION_SUMMARY.md`
+- `docs/archive/PLANNING_aliases.md`
+- `docs/archive/PLANNING_chat_system.md`
+- `docs/archive/PLANNING_movement_system.md`
+- `docs/archive/PLANNING_multiplayer.md`
+- `docs/archive/PLANNING_redis_to_nats_migration.md`
 
 ## Audit Trail
 
-- EXTRACTED: 9 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (14%)
+- INFERRED: 6 (86%)
 - AMBIGUOUS: 0 (0%)
 
 ---

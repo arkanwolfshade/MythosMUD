@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Codebase Explorer Agent** (0 connections) — `.claude/agents/codebase-explorer.md`
+- **Configuration Files Reference** (0 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/codebase-explorer.md`
+- `docs/CONFIGURATION_FILES_REFERENCE.md`
 
 ## Audit Trail
 

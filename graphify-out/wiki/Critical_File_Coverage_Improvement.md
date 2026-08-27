@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Chaosium Ingest Pipeline** (1 connections) — `data/MythosMUD-Obsidian/AGENTS.md`
-- **MythosMUD LLM Wiki (Obsidian)** (1 connections) — `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
+- **Critical File Coverage Improvement** (1 connections) — `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- **Dead Code Analysis and Removal** (1 connections) — `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Relationships
 
@@ -13,13 +13,13 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-llm-wiki/SKILL.md`
-- `data/MythosMUD-Obsidian/AGENTS.md`
+- `.cursor/plans/critical_file_coverage_improvement_0129c9ac.plan.md`
+- `.cursor/plans/dead_code_analysis_and_removal_746bc5c1.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 1 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

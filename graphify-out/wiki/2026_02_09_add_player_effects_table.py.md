@@ -1,27 +1,26 @@
 # 2026_02_09_add_player_effects_table.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Enhanced Logging Features** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Correlation IDs** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Exception Tracking** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **MDC (Mapped Diagnostic Context)** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Performance Monitoring** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **Security Sanitization** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2026_02_09_add_player_effects_table.py** (3 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Create player_effects table and indexes (ADR-009 effects system).** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
+- **Drop player_effects table and indexes.** (1 connections) — `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/alembic/versions/2026_02_09_add_player_effects_table.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,16 +1,14 @@
 # AI PR Reviewer Instructions
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **MythosMUD Test Writing** (6 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Coverage** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **How to Run Tests** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Rules** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **Where Tests Live** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
-- **MythosMUD Test Writing Skill** (1 connections) — `.claude/skills/mythosmud-test-writing/SKILL.md`
+- **AI PR Reviewer Instructions** (4 connections) — `.codacy/instructions/review.md`
+- **COPPA and Security Review Mandates** (1 connections) — `.codacy/instructions/review.md`
+- **Review Coverage Thresholds** (1 connections) — `.codacy/instructions/review.md`
+- **player_id UUID Type Rule** (1 connections) — `.codacy/instructions/review.md`
+- **Server Authority Review Rule** (1 connections) — `.codacy/instructions/review.md`
 
 ## Relationships
 
@@ -18,11 +16,11 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-test-writing/SKILL.md`
+- `.codacy/instructions/review.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,29 +1,27 @@
 # Common Test Failure Categories
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **worktree-plan-template.md** (7 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Cleanup Checklist** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Context** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Design Notes** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Metadata** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Plan / Todos** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Risks and Edge Cases** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
-- **Testing** (1 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Common Test Failure Categories** (6 connections) — `.cursor/commands/server-test-remediation.md`
+- **1. Database Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **2. Authentication Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **3. WebSocket Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **4. Game Logic Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **5. Integration Test Failures** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Test Server Remediation Prompt - Cursor Executable Version](Test_Server_Remediation_Prompt_-_Cursor_Executable_Version.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

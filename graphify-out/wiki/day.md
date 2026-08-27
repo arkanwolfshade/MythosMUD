@@ -1,24 +1,26 @@
 # day
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **httpOnly Cookie Token Storage** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
-- **Zustand State Management** (1 connections) — `docs/archive/client_architecture_improvements_tasks.md`
+- **day** (4 connections) — `db/static/schemas/holidays.schema.json`
+- **maximum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **minimum** (1 connections) — `db/static/schemas/holidays.schema.json`
+- **type** (1 connections) — `db/static/schemas/holidays.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/client_architecture_improvements_tasks.md`
+- `db/static/schemas/holidays.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

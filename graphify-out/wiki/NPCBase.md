@@ -1,78 +1,65 @@
 # NPCBase
 
-> 176 nodes
+> 163 nodes
 
 ## Key Concepts
 
-- **ChatHistoryPanel.tsx** (40 connections) — `client/src/components/ui-v2/panels/ChatHistoryPanel.tsx`
-- **EldritchIcon.tsx** (36 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **MythosIcons** (33 connections) — `client/src/components/ui/MythosIcons.ts`
-- **EldritchIcon()** (29 connections) — `client/src/components/ui/EldritchIcon.tsx`
-- **ChatPanelRuntimeViewParts.tsx** (29 connections) — `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- **channels.ts** (26 connections) — `client/src/config/channels.ts`
-- **ChatPanelMessagesLog.tsx** (21 connections) — `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- **ansiToHtml.ts** (21 connections) — `client/src/utils/ansiToHtml.ts`
-- **TerminalButton.tsx** (20 connections) — `client/src/components/ui/TerminalButton.tsx`
-- **EldritchEffectsDemo.tsx** (19 connections) — `client/src/components/EldritchEffectsDemo.tsx`
-- **FeedbackForm.tsx** (19 connections) — `client/src/components/ui/FeedbackForm.tsx`
-- **TerminalButton** (19 connections) — `client/src/components/ui/TerminalButton.tsx`
-- **GameInfoPanel.tsx** (17 connections) — `client/src/components/ui-v2/panels/GameInfoPanel.tsx`
-- **ansiToHtmlWithBreaks()** (16 connections) — `client/src/utils/ansiToHtml.ts`
-- **GameLogMessagesList.tsx** (16 connections) — `client/src/components/panels/GameLogMessagesList.tsx`
-- **ChannelSelector.tsx** (16 connections) — `client/src/components/ui/ChannelSelector.tsx`
-- **SafeHtml.tsx** (14 connections) — `client/src/components/common/SafeHtml.tsx`
-- **ChatMessage.tsx** (14 connections) — `client/src/components/panels/chat/ChatMessage.tsx`
-- **ChatPanelRefactoredView.tsx** (14 connections) — `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- **CommandInputPanel.tsx** (13 connections) — `client/src/components/ui-v2/panels/CommandInputPanel.tsx`
-- **BackpackTab.tsx** (12 connections) — `client/src/components/containers/BackpackTab.tsx`
-- **SafeHtml()** (10 connections) — `client/src/components/common/SafeHtml.tsx`
-- **chatPanelHistorySearch.tsx** (10 connections) — `client/src/components/panels/chatPanelHistorySearch.tsx`
-- **ExpandedPanelHeader.tsx** (10 connections) — `client/src/components/ui-v2/PanelSystem/ExpandedPanelHeader.tsx`
-- **eldritchEffectsDemoData.ts** (9 connections) — `client/src/components/eldritchEffectsDemoData.ts`
-- *... and 151 more nodes in this community*
+- **NPCBase** (79 connections) — `server/npc/npc_base.py`
+- **NPCSpawningService** (66 connections) — `server/npc/spawning_service.py`
+- **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
+- **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
+- **spawning_request_execution.py** (21 connections) — `server/npc/spawning_request_execution.py`
+- **NPCSpawnRequest** (19 connections) — `server/npc/spawning_models.py`
+- **spawn_npc_from_request()** (18 connections) — `server/npc/spawning_request_execution.py`
+- **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **SimpleNPCDefinition** (16 connections) — `server/npc/spawning_models.py`
+- **create_npc_instance()** (16 connections) — `server/npc/spawning_instance_factory.py`
+- **NPCSpawnResult** (15 connections) — `server/npc/spawning_models.py`
+- **spawning_models.py** (13 connections) — `server/npc/spawning_models.py`
+- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
+- **_instantiate_by_type()** (10 connections) — `server/npc/spawning_instance_factory.py`
+- **_build_aggressive()** (8 connections) — `server/npc/spawning_instance_factory.py`
+- **_spawn_success()** (8 connections) — `server/npc/spawning_request_execution.py`
+- **.__init__()** (7 connections) — `server/npc/spawning_service.py`
+- **_build_passive()** (6 connections) — `server/npc/spawning_instance_factory.py`
+- **_build_shopkeeper()** (6 connections) — `server/npc/spawning_instance_factory.py`
+- **_room_from_persistence()** (6 connections) — `server/npc/spawning_request_execution.py`
+- **._create_npc_instance()** (6 connections) — `server/npc/spawning_service.py`
+- **._spawn_npc_from_request()** (6 connections) — `server/npc/spawning_service.py`
+- **._handle_npc_death()** (5 connections) — `server/npc/npc_base.py`
+- **.move_to_room()** (5 connections) — `server/npc/npc_base.py`
+- *... and 138 more nodes in this community*
 
 ## Relationships
 
-- [test_player_death_service.py](test_player_death_service.py.md) (27 shared connections)
-- [api/monitoring.py](api-monitoring.py.md) (19 shared connections)
-- [test_look_helpers.py](test_look_helpers.py.md) (14 shared connections)
-- [PlayerRespawnEventHandler](PlayerRespawnEventHandler.md) (14 shared connections)
-- [TestRoomDataFixer](TestRoomDataFixer.md) (14 shared connections)
-- [handle_read_command](handle_read_command.md) (11 shared connections)
-- [Phase 2 Async Persistence Migration - Status Update](Phase_2_Async_Persistence_Migration_-_Status_Update.md) (10 shared connections)
-- [nats_exceptions.py](nats_exceptions.py.md) (8 shared connections)
-- [test_active_lucidity_service.py](test_active_lucidity_service.py.md) (6 shared connections)
-- [WebSocket Code Review - Branch: feature/sqlite-to-postgresql](WebSocket_Code_Review_-_Branch-_feature-sqlite-to-postgresql.md) (4 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (4 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (3 shared connections)
+- [NPCDefinition](NPCDefinition.md) (31 shared connections)
+- [time.py](time.py.md) (28 shared connections)
+- [EventBus](EventBus.md) (28 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (17 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (12 shared connections)
+- [event_types.py](event_types.py.md) (12 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (7 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (5 shared connections)
+- [BehaviorEngine](BehaviorEngine.md) (4 shared connections)
+- [AggressiveMobNPC](AggressiveMobNPC.md) (3 shared connections)
 
 ## Source Files
 
-- `client/src/components/EldritchEffectsDemo.test.tsx`
-- `client/src/components/EldritchEffectsDemo.tsx`
-- `client/src/components/common/SafeHtml.tsx`
-- `client/src/components/common/__tests__/SafeHtml.test.tsx`
-- `client/src/components/containers/BackpackTab.tsx`
-- `client/src/components/eldritchEffectsDemoData.ts`
-- `client/src/components/panels/ChatExportDialog.tsx`
-- `client/src/components/panels/ChatPanelMessagesLog.tsx`
-- `client/src/components/panels/ChatPanelRefactoredToolbar.tsx`
-- `client/src/components/panels/ChatPanelRefactoredView.tsx`
-- `client/src/components/panels/ChatPanelRuntimeViewParts.tsx`
-- `client/src/components/panels/GameLogMessagesList.tsx`
-- `client/src/components/panels/chat/ChannelActivityIndicators.tsx`
-- `client/src/components/panels/chat/ChannelSelectorSection.tsx`
-- `client/src/components/panels/chat/ChatHeader.tsx`
-- `client/src/components/panels/chat/ChatHistoryToggle.tsx`
-- `client/src/components/panels/chat/ChatMessage.tsx`
-- `client/src/components/panels/chat/ChatMessagesList.tsx`
-- `client/src/components/panels/chat/ChatStatistics.tsx`
-- `client/src/components/panels/chat/__tests__/ChatHeader.test.tsx`
+- `server/npc/behaviors.py`
+- `server/npc/npc_base.py`
+- `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
+- `server/npc/spawning_service.py`
+- `server/tests/unit/npc/test_spawning_modules.py`
 
 ## Audit Trail
 
-- EXTRACTED: 506 (100%)
-- INFERRED: 1 (0%)
+- EXTRACTED: 418 (88%)
+- INFERRED: 57 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

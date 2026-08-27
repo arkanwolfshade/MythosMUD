@@ -1,35 +1,26 @@
 # apply_migration
 
-> 10 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.validate_expanded_command()** (8 connections) — `server/validators/command_validator.py`
-- **test_command_validator_validate_expanded_command_inherits_content_validation()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_length_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_valid()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **test_command_validator_validate_expanded_command_within_limit()** (4 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command returns True for valid expanded…** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command inherits content validation.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command enforces expanded length limit.** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Test CommandValidator.validate_expanded_command allows commands within expanded…** (1 connections) — `server/tests/unit/validators/test_command_validator.py`
-- **Validate command after alias expansion. Uses stricter length limits since…** (1 connections) — `server/validators/command_validator.py`
+- **apply_migration()** (3 connections) — `scripts/apply_players_migration.py`
+- **main()** (2 connections) — `scripts/apply_players_migration.py`
+- **apply_players_migration.py** (2 connections) — `scripts/apply_players_migration.py`
+- **Apply migration to a single database.** (1 connections) — `scripts/apply_players_migration.py`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (6 shared connections)
-- [subject_controller.py](subject_controller.py.md) (4 shared connections)
-- [RoomRepository](RoomRepository.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_command_validator.py`
-- `server/validators/command_validator.py`
+- `scripts/apply_players_migration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (80%)
-- INFERRED: 4 (20%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,52 +1,51 @@
 # test_player_service_mutations.py
 
-> 60 nodes
+> 62 nodes
 
 ## Key Concepts
 
-- **PlayerGuidFormatter** (31 connections) — `server/structured_logging/player_guid_formatter.py`
-- **test_player_guid_formatter.py** (25 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **_player_service_mock()** (11 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **player_guid_formatter.py** (5 connections) — `server/structured_logging/player_guid_formatter.py`
-- **.format()** (4 connections) — `server/structured_logging/player_guid_formatter.py`
-- **formatter()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_at_end()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_at_start()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_in_middle()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_guid_with_hyphens()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_multiple_guids()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_player_service_error()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_different_log_levels()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_guid_player_found()** (4 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **._convert_player_guids()** (3 connections) — `server/structured_logging/player_guid_formatter.py`
-- **mock_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_empty_message()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_invalid_guid_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_message_with_special_characters()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_no_guids()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_format_with_guid_no_player_service()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_player_guid_formatter_init()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_player_guid_formatter_init_with_format()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_case_insensitive()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- **test_uuid_pattern_matching()** (3 connections) — `server/tests/unit/structured_logging/test_player_guid_formatter.py`
-- *... and 35 more nodes in this community*
+- **test_player_service_mutations.py** (35 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **asyncio** (27 connections)
+- **player_service()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_persistence_fails()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_persistence_fails()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_wrong_user()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **mock_persistence()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_corruption()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_fear()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_damage_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_delete_player_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_gain_occult_knowledge()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_get_user_characters()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- *... and 37 more nodes in this community*
 
 ## Relationships
 
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (2 shared connections)
-- [CombatConfiguration](CombatConfiguration.md) (2 shared connections)
-- [SkillAssignmentScreen.tsx](SkillAssignmentScreen.tsx.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (12 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/structured_logging/player_guid_formatter.py`
-- `server/tests/unit/structured_logging/test_player_guid_formatter.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 78 (81%)
-- INFERRED: 18 (19%)
+- EXTRACTED: 93 (88%)
+- INFERRED: 13 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

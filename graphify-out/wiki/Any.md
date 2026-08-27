@@ -1,70 +1,49 @@
 # Any
 
-> 136 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **SpellEffects** (55 connections) — `server/game/magic/spell_effects.py`
-- **magic_service.py** (48 connections) — `server/game/magic/magic_service.py`
-- **lifespan_magic.py** (36 connections) — `server/app/lifespan_magic.py`
-- **PlayerSpellRepository** (35 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **SpellRegistry** (32 connections) — `server/game/magic/spell_registry.py`
-- **test_damage_grace_period.py** (28 connections) — `server/tests/unit/services/test_damage_grace_period.py`
-- **magic.py** (21 connections) — `server/container/bundles/magic.py`
-- **SpellEffectsDeps** (20 connections) — `server/game/magic/spell_effects.py`
-- **MPRegenerationService** (18 connections) — `server/game/magic/mp_regeneration_service.py`
-- **spell_registry.py** (16 connections) — `server/game/magic/spell_registry.py`
-- **SpellRepository** (15 connections) — `server/persistence/repositories/spell_repository.py`
-- **SpellCostsService** (14 connections) — `server/game/magic/spell_costs.py`
-- **_create_registry_and_targeting()** (14 connections) — `server/container/bundles/magic.py`
-- **initialize_magic_services()** (13 connections) — `server/app/lifespan_magic.py`
-- **_initialize_magic_service()** (11 connections) — `server/app/lifespan_magic.py`
-- **.__init__()** (11 connections) — `server/game/magic/magic_service.py`
-- **MagicServiceOptionalDeps** (10 connections) — `server/game/magic/magic_service.py`
-- **_initialize_spell_effects()** (10 connections) — `server/app/lifespan_magic.py`
-- **_initialize_spell_targeting_service()** (9 connections) — `server/app/lifespan_magic.py`
-- **_create_learning_mp_regen_and_magic()** (9 connections) — `server/container/bundles/magic.py`
-- **FastAPI** (9 connections)
-- **_initialize_spell_learning_service()** (8 connections) — `server/app/lifespan_magic.py`
-- **MagicBundle** (7 connections) — `server/container/bundles/magic.py`
-- **.combat_service()** (7 connections) — `server/game/magic/spell_effects.py`
-- **test_negative_status_effect_blocked_during_grace_period()** (7 connections) — `server/tests/unit/services/test_damage_grace_period.py`
-- *... and 111 more nodes in this community*
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
+- **Any** (13 connections)
+- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
+- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
+- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **Retrieve current room drops as a defensive copy for callers. Args: room_id: The…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Append an item stack to the room drop ledger. Args: room_id: The room receiving…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Remove quantity of a drop entry, returning the removed stack. Args: room_id:…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Adjust quantity for an existing drop entry; removing entry when zero. Args:…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (36 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (33 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (30 shared connections)
-- [fixtures/auth.ts](fixtures-auth.ts.md) (18 shared connections)
-- [test_combat_cleanup_handler.py](test_combat_cleanup_handler.py.md) (14 shared connections)
-- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (12 shared connections)
-- [test_metrics.py](test_metrics.py.md) (11 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [debugLogger](debugLogger.md) (9 shared connections)
-- [WebSocketMessageValidator](WebSocketMessageValidator.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (6 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (6 shared connections)
+- [connection_manager.py](connection_manager.py.md) (20 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan_magic.py`
-- `server/container/bundles/magic.py`
-- `server/game/magic/magic_service.py`
-- `server/game/magic/mp_regeneration_service.py`
-- `server/game/magic/spell_costs.py`
-- `server/game/magic/spell_effects.py`
-- `server/game/magic/spell_learning_service.py`
-- `server/game/magic/spell_registry.py`
-- `server/persistence/repositories/player_spell_repository.py`
-- `server/persistence/repositories/spell_repository.py`
-- `server/tests/unit/game/magic/test_spell_effects.py`
-- `server/tests/unit/services/test_damage_grace_period.py`
+- `server/realtime/room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 412 (85%)
-- INFERRED: 73 (15%)
+- EXTRACTED: 73 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

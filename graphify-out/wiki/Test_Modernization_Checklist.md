@@ -1,29 +1,27 @@
 # Test Modernization Checklist
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **pyrightconfig.json** (6 connections) — `pyrightconfig.json`
-- **extraPaths** (2 connections) — `pyrightconfig.json`
-- **extends** (1 connections) — `pyrightconfig.json`
-- **pythonVersion** (1 connections) — `pyrightconfig.json`
-- **venv** (1 connections) — `pyrightconfig.json`
-- **venvPath** (1 connections) — `pyrightconfig.json`
-- **.** (1 connections) — `pyrightconfig.json`
-- **./pyproject.toml** (1 connections) — `pyrightconfig.json`
+- **Test Modernization Checklist** (6 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 0: Foundation** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 1: Fix Failures** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 2: Modernize Units** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 3: Pattern Updates** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
+- **Phase 4: New Coverage** (1 connections) — `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [MythosMUD Test Suite Modernization Plan](MythosMUD_Test_Suite_Modernization_Plan.md) (1 shared connections)
 
 ## Source Files
 
-- `pyrightconfig.json`
+- `docs/archive/TEST_MODERNIZATION_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

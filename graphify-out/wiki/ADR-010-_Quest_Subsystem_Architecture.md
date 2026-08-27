@@ -1,12 +1,10 @@
 # ADR-010: Quest Subsystem Architecture
 
-> 3 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **Dependency Review Workflow** (2 connections) — `.github/workflows/dependency-review.yml`
-- **UV Lock Dependency Snapshot Gate** (1 connections) — `.github/workflows/dependency-review.yml`
-- **Dependabot Dependency Updates** (1 connections) — `.github/dependabot.yml`
+- **ADR-010: Quest Subsystem Architecture** (0 connections) — `docs/architecture/decisions/ADR-010-quest-subsystem.md`
 
 ## Relationships
 
@@ -14,13 +12,12 @@
 
 ## Source Files
 
-- `.github/dependabot.yml`
-- `.github/workflows/dependency-review.yml`
+- `docs/architecture/decisions/ADR-010-quest-subsystem.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

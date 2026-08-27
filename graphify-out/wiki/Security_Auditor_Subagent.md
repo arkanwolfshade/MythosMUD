@@ -1,47 +1,44 @@
 # Security Auditor Subagent
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_room_subscription_manager_npcs.py** (14 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **subscription_manager()** (4 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_room_occupants_fallback_npcs()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_room_occupants_with_npcs()** (3 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_add_npc_to_occupants()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_filter_fallback_npcs()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_filter_fallback_npcs_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager_error()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_get_npc_name_from_lifecycle_manager_not_found()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **test_query_npcs_from_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **asyncio** (2 connections)
-- **fixture** (1 connections)
-- **Unit tests for room subscription manager NPC helpers. Tests NPC-related helpers…** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test get_room_occupants() includes NPCs from lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test get_room_occupants() falls back to room.get_npcs() when lifecycle manager…** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Create a RoomSubscriptionManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager gets NPC name.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager returns ID when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _get_npc_name_from_lifecycle_manager handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _add_npc_to_occupants adds NPC to list.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _query_npcs_from_lifecycle_manager queries NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _filter_fallback_npcs filters dead NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
-- **Test _filter_fallback_npcs handles errors gracefully.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- **Security Auditor Subagent** (11 connections) — `.claude/agents/security-auditor.md`
+- **Capabilities** (6 connections) — `.claude/agents/security-auditor.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/security-auditor.md`
+- **Security Requirements** (3 connections) — `.claude/agents/security-auditor.md`
+- **security-auditor.md** (1 connections) — `.claude/agents/security-auditor.md`
+- **Authentication & Authorization** (1 connections) — `.claude/agents/security-auditor.md`
+- **Authentication Security Review** (1 connections) — `.claude/agents/security-auditor.md`
+- **COPPA Compliance** (1 connections) — `.claude/agents/security-auditor.md`
+- **COPPA Compliance (Critical)** (1 connections) — `.claude/agents/security-auditor.md`
+- **COPPA Compliance Verification** (1 connections) — `.claude/agents/security-auditor.md`
+- **Input Validation** (1 connections) — `.claude/agents/security-auditor.md`
+- **Input Validation Review** (1 connections) — `.claude/agents/security-auditor.md`
+- **Integration** (1 connections) — `.claude/agents/security-auditor.md`
+- **Methodology** (1 connections) — `.claude/agents/security-auditor.md`
+- **Notes** (1 connections) — `.claude/agents/security-auditor.md`
+- **Output Format** (1 connections) — `.claude/agents/security-auditor.md`
+- **Purpose** (1 connections) — `.claude/agents/security-auditor.md`
+- **Security Best Practices** (1 connections) — `.claude/agents/security-auditor.md`
+- **Security Headers & Configuration** (1 connections) — `.claude/agents/security-auditor.md`
+- **Security Implementation Standards** (1 connections) — `.claude/agents/security-auditor.md`
+- **Usage** (1 connections) — `.claude/agents/security-auditor.md`
+- **Vulnerability Scanning** (1 connections) — `.claude/agents/security-auditor.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_npcs.py`
+- `.claude/agents/security-auditor.md`
 
 ## Audit Trail
 
-- EXTRACTED: 27 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 21 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

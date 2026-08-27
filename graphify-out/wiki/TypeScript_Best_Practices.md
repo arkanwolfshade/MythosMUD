@@ -1,58 +1,40 @@
 # TypeScript Best Practices
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **utils/config.ts** (28 connections) — `client/src/utils/config.ts`
-- **API_V1_BASE** (18 connections) — `client/src/utils/config.ts`
-- **mythosAppViewModel.ts** (15 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **getVersionedApiBaseUrl()** (14 connections) — `client/src/utils/config.ts`
-- **MythosAppViewModel** (11 connections) — `client/src/mythosApp/mythosAppViewModel.ts`
-- **AppCreationFlowViews.tsx** (10 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **AppRootViews.tsx** (6 connections) — `client/src/mythosApp/AppRootViews.tsx`
-- **AppCreationFlowViews()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **creationShell()** (5 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **config.test.ts** (5 connections) — `client/src/utils/__tests__/config.test.ts`
-- **startLoginGracePeriod.ts** (4 connections) — `client/src/mythosApp/startLoginGracePeriod.ts`
-- **renderNameStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderProfessionStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderSkillsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **renderStatsStep()** (3 connections) — `client/src/mythosApp/AppCreationFlowViews.tsx`
-- **getApiBaseUrl()** (3 connections) — `client/src/utils/config.ts`
-- **AppDemoView.tsx** (3 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **API_BASE_URL** (2 connections) — `client/src/utils/config.ts`
-- **AppDemoView()** (1 connections) — `client/src/mythosApp/AppDemoView.tsx`
-- **AppRootViews()** (1 connections) — `client/src/mythosApp/AppRootViews.tsx`
+- **TypeScript Best Practices** (8 connections) — `.claude/rules/typescript.md`
+- **2. Define Clear Type Contracts** (3 connections) — `.claude/rules/typescript.md`
+- **3. Avoid `any` and Prefer `unknown` for Untyped Data** (3 connections) — `.claude/rules/typescript.md`
+- **4. Implement Robust Runtime Type Validation (Type Guards)** (3 connections) — `.claude/rules/typescript.md`
+- **5. Prefer Union Types over Traditional Enums** (3 connections) — `.claude/rules/typescript.md`
+- **7. Enforce Consistent Code Organization** (3 connections) — `.claude/rules/typescript.md`
+- **typescript.md** (1 connections) — `.claude/rules/typescript.md`
+- **1. Enable Strict Mode in `tsconfig.json`** (1 connections) — `.claude/rules/typescript.md`
+- **6. Use Generics for Reusable Components/Functions** (1 connections) — `.claude/rules/typescript.md`
+- **❌ BAD: Numeric Enums** (1 connections) — `.claude/rules/typescript.md`
+- **❌ BAD: Using `any`** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Custom Type Guards for Complex Objects** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Interfaces for Object Shapes & Classes** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Named Exports (No Default Exports)** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Organized Imports** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: String Literal Unions or `const enum`** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Type Aliases for Complex Types & Unions** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: `typeof` for Primitives** (1 connections) — `.claude/rules/typescript.md`
+- **✅ GOOD: Using `unknown` (and Type Guards)** (1 connections) — `.claude/rules/typescript.md`
 
 ## Relationships
 
-- [test_websocket_helpers.py](test_websocket_helpers.py.md) (11 shared connections)
-- [test_item.py](test_item.py.md) (11 shared connections)
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (6 shared connections)
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (6 shared connections)
-- [Chat Panel Separation Implementation Tasks](Chat_Panel_Separation_Implementation_Tasks.md) (4 shared connections)
-- [Execution Steps](Execution_Steps.md) (3 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
-- [test_websocket_handler_coverage_gaps.py](test_websocket_handler_coverage_gaps.py.md) (3 shared connections)
-- [test_command_processing.py](test_command_processing.py.md) (3 shared connections)
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) (2 shared connections)
-- [test_rescue_service.py](test_rescue_service.py.md) (2 shared connections)
-- [mapUtils.ts](mapUtils.ts.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/mythosApp/AppCreationFlowViews.tsx`
-- `client/src/mythosApp/AppDemoView.tsx`
-- `client/src/mythosApp/AppRootViews.tsx`
-- `client/src/mythosApp/mythosAppViewModel.ts`
-- `client/src/mythosApp/startLoginGracePeriod.ts`
-- `client/src/utils/__tests__/config.test.ts`
-- `client/src/utils/config.ts`
+- `.claude/rules/typescript.md`
 
 ## Audit Trail
 
-- EXTRACTED: 104 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

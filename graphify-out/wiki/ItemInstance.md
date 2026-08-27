@@ -1,40 +1,34 @@
 # ItemInstance
 
-> 16 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **WebSocket** (8 connections)
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (5 connections) — `server/realtime/message_handler_factory.py`
-- **.handle()** (4 connections) — `server/realtime/message_handler_factory.py`
-- **Handle a specific message type. Args: websocket: The WebSocket connection…** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle command message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle chat message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle ping message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle follow_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle party_invite_response message type.** (1 connections) — `server/realtime/message_handler_factory.py`
-- **Handle client_error_report message type.** (1 connections) — `server/realtime/message_handler_factory.py`
+- **ItemInstance** (9 connections) — `server/game/items/item_instance.py`
+- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
+- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
+- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
+- **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
+- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
+- **Any** (1 connections)
+- **Item instance model for runtime item representation. This module defines the…** (1 connections) — `server/game/items/item_instance.py`
+- **Runtime representation of an item created from a prototype.** (1 connections) — `server/game/items/item_instance.py`
+- **Convert the instance into an inventory stack payload understood by legacy…** (1 connections) — `server/game/items/item_instance.py`
+- **Unit tests for ItemInstance model.** (1 connections) — `server/tests/unit/game/test_item_instance.py`
 
 ## Relationships
 
-- [player_combat_service_support.py](player_combat_service_support.py.md) (9 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (5 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (5 shared connections)
 
 ## Source Files
 
-- `server/realtime/message_handler_factory.py`
+- `server/game/items/item_instance.py`
+- `server/tests/unit/game/test_item_instance.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 17 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

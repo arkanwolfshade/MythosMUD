@@ -1,43 +1,62 @@
 # .__post_init__
 
-> 17 nodes
+> 61 nodes
 
 ## Key Concepts
 
-- **.to_dict()** (8 connections) — `server/models/room.py`
-- **.__init__()** (5 connections) — `server/models/room.py`
-- **.get_containers()** (4 connections) — `server/models/room.py`
-- **.get_occupant_count()** (4 connections) — `server/models/room.py`
-- **.get_npcs()** (3 connections) — `server/models/room.py`
-- **.get_objects()** (3 connections) — `server/models/room.py`
-- **.is_empty()** (3 connections) — `server/models/room.py`
-- **.npc_left()** (3 connections) — `server/models/room.py`
-- **Any** (3 connections)
-- **Remove an NPC from the room and trigger event. Args: npc_id: The ID of the NPC…** (1 connections) — `server/models/room.py`
-- **Get list of object IDs currently in the room. Returns: List of object IDs in…** (1 connections) — `server/models/room.py`
-- **Get list of NPC IDs currently in the room. Returns: List of NPC IDs in the room** (1 connections) — `server/models/room.py`
-- **Get the total number of occupants in the room. Returns: Total count of players,…** (1 connections) — `server/models/room.py`
-- **Check if the room has no occupants. Returns: True if the room is empty, False…** (1 connections) — `server/models/room.py`
-- **Get list of containers in this room. Returns: List of container data…** (1 connections) — `server/models/room.py`
-- **Convert the room to a dictionary representation. Returns: Dictionary containing…** (1 connections) — `server/models/room.py`
-- **Initialize a Room from JSON data. Args: room_data: Dictionary containing room…** (1 connections) — `server/models/room.py`
+- **.__post_init__()** (21 connections) — `server/events/event_types.py`
+- **test_lifespan_event_subscriptions.py** (17 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **RoomOccupantsRefreshRequested** (14 connections) — `server/events/event_types.py`
+- **lifespan_event_subscriptions.py** (14 connections) — `server/app/lifespan_event_subscriptions.py`
+- **QuestCompleted** (13 connections) — `server/events/event_types.py`
+- **subscribe_quest_events()** (13 connections) — `server/app/lifespan_event_subscriptions.py`
+- **subscribe_room_occupants_refresh()** (11 connections) — `server/app/lifespan_event_subscriptions.py`
+- **test_quest_log_updated_event_envelope_shape()** (6 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **asyncio** (5 connections)
+- **._handle_npc_entered_room()** (4 connections) — `server/npc/lifecycle_manager.py`
+- **test_quest_completed_invalid_player_id_logs_warning()** (4 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_quest_completed_missing_services_skips_push()** (4 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **test_subscribe_room_occupants_refresh_broadcasts_on_event()** (4 connections) — `server/tests/unit/app/test_lifespan_event_subscriptions.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- **.__post_init__()** (3 connections) — `server/events/event_types.py`
+- *... and 36 more nodes in this community*
 
 ## Relationships
 
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (8 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
-- [NPC Occupants Verification Summary](NPC_Occupants_Verification_Summary.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (9 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (5 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (5 shared connections)
+- [build_event](build_event.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [time.py](time.py.md) (3 shared connections)
+- [QuestService](QuestService.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [test_quest_events.py](test_quest_events.py.md) (2 shared connections)
+- [Room](Room.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/room.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/events/event_types.py`
+- `server/npc/lifecycle_manager.py`
+- `server/tests/unit/app/test_lifespan_event_subscriptions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 128 (93%)
+- INFERRED: 9 (7%)
 - AMBIGUOUS: 0 (0%)
 
 ---

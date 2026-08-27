@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **lazyLoading.test.tsx** (0 connections) — `client/src/components/map/__tests__/lazyLoading.test.tsx`
+- **Security: Environment Variables** (0 connections) — `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `client/src/components/map/__tests__/lazyLoading.test.tsx`
+- `docs/SECURITY_ENVIRONMENT_VARIABLES.md`
 
 ## Audit Trail
 

@@ -1,39 +1,37 @@
 # Codebase Explorer Subagent
 
-> 18 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **.check_bidirectional_connections()** (6 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.build_graph()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_exit_target()** (5 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_dead_ends()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.find_self_references()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **.generate_minimap_graph()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_opposite_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._get_room_zone()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **._is_one_way_exit()** (3 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get the opposite direction for bidirectional checking.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms with no exits (dead ends). Args: room_database: Dictionary mapping…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Find rooms that reference themselves in exits. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Generate minimap graph data for visualization. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Build adjacency graph from room database. Args: room_database: Dictionary…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Get target room ID from exit data.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check if exit is marked as one-way.** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Extract zone and sub_zone from room data. Args: room_id: Room identifier…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
-- **Check for bidirectional connections between rooms, accounting for zone…** (1 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **Codebase Explorer Subagent** (10 connections) — `.claude/agents/codebase-explorer.md`
+- **Capabilities** (5 connections) — `.claude/agents/codebase-explorer.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/codebase-explorer.md`
+- **Architecture Analysis** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **Dependency Research** (2 connections) — `.claude/agents/codebase-explorer.md`
+- **codebase-explorer.md** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Best Practices** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Finding All Implementations** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Integration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Methodology** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Notes** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Output Format** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Parallel Exploration** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Pattern Discovery** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Purpose** (1 connections) — `.claude/agents/codebase-explorer.md`
+- **Usage** (1 connections) — `.claude/agents/codebase-explorer.md`
 
 ## Relationships
 
-- [SpellEffectType](SpellEffectType.md) (9 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/core/path_validator.py`
+- `.claude/agents/codebase-explorer.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

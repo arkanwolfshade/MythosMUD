@@ -1,51 +1,62 @@
 # executeCommand
 
-> 42 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **CorpseLifecycleService** (21 connections) — `server/services/corpse_lifecycle_service.py`
-- **ContainerComponent** (9 connections)
-- **._require_corpse_container()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **_get_enum_value()** (8 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpse()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **.create_corpse_on_death()** (7 connections) — `server/services/corpse_lifecycle_service.py`
-- **UUID** (7 connections)
-- **.get_decayed_corpses_in_room()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **._persist_corpse()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **_filter_container_data()** (6 connections) — `server/services/corpse_lifecycle_service.py`
-- **._build_corpse_component()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.can_access_corpse()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **.get_all_decayed_corpses()** (5 connections) — `server/services/corpse_lifecycle_service.py`
-- **Any** (5 connections)
-- **.cleanup_all_decayed_corpses()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.cleanup_decayed_corpses_in_room()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **.is_corpse_decayed()** (4 connections) — `server/services/corpse_lifecycle_service.py`
-- **corpse_service()** (4 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **._grace_period_allows_others()** (3 connections) — `server/services/corpse_lifecycle_service.py`
-- **.__init__()** (3 connections) — `server/services/corpse_lifecycle_service.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_corpse_lifecycle_service_init_no_persistence()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_enum_value_enum()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **test_get_enum_value_string()** (3 connections) — `server/tests/unit/services/test_corpse_lifecycle_service.py`
-- **fixture** (2 connections)
-- *... and 17 more nodes in this community*
+- **executeCommand()** (85 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **ensurePlayableConnection()** (36 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **whisper-movement.spec.ts** (35 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **collect-n-quest.spec.ts** (28 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **ensureStanding()** (26 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
+- **executeCommandWithoutRecovery()** (17 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **dialogue-trees.spec.ts** (17 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **ensureArmitagePresent()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **listArmitageIds()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **attemptEastHop()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **lookAndWaitForUi()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **moveAwToEasternHallway()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **sendCrossRoomWhisper()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **whisperUntilSenderAck()** (5 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **assertCollectNJournalComplete()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **escapeRegExp()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **summonAndPickupCollectItems()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **turnInCollectNQuest()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- **nudgeStandBothPlayers()** (4 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- **deliverWhisperAcrossRooms()** (4 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **hopEastUntilHallway()** (4 connections) — `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- **despawnArmitage()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- **loginAdminPlayable()** (4 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (11 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [NPCEnteredRoom](NPCEnteredRoom.md) (3 shared connections)
+- [waitForMessage](waitForMessage.md) (89 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (34 shared connections)
+- [player.ts](player.ts.md) (30 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (17 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (9 shared connections)
 
 ## Source Files
 
-- `server/services/corpse_lifecycle_service.py`
-- `server/tests/unit/services/test_corpse_lifecycle_service.py`
+- `client/tests/e2e/runtime/commands/who-command.spec.ts`
+- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-movement.spec.ts`
+- `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
+- `client/tests/e2e/runtime/fixtures/auth.ts`
+- `client/tests/e2e/runtime/fixtures/player.ts`
+- `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 87 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 288 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

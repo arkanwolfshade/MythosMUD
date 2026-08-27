@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_procedures.ps1** (0 connections) — `scripts/apply_procedures.ps1`
+- **unit/commands/__init__.py** (0 connections) — `server/tests/unit/commands/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_procedures.ps1`
+- `server/tests/unit/commands/__init__.py`
 
 ## Audit Trail
 

@@ -1,40 +1,38 @@
 # properties
 
-> 19 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Delight Techniques** (9 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Skill** (7 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Principles** (5 connections) — `.claude/skills/delight/SKILL.md`
-- **Appropriate to Context** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Assess Delight Opportunities** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Celebration Moments** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Compound Over Time** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Delight Amplifies, Never Blocks** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Easter Eggs & Hidden Delights** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Illustrations & Visual Personality** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Implementation Patterns** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Loading & Waiting States** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Micro-interactions & Animation** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Personality in Copy** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Satisfying Interactions** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Sound Design** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Surprise and Discovery** (1 connections) — `.claude/skills/delight/SKILL.md`
-- **Verify Delight Quality** (1 connections) — `.claude/skills/delight/SKILL.md`
+- **properties** (7 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **exits** (5 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **down** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **east** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **north** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **south** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **up** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **west** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **additionalProperties** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **oneOf** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/delight/SKILL.md`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

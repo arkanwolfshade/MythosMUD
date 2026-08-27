@@ -1,65 +1,60 @@
 # ChatService
 
-> 128 nodes
+> 145 nodes
 
 ## Key Concepts
 
-- **container_endpoints_basic.py** (64 connections) — `server/api/container_endpoints_basic.py`
-- **test_container_helpers.py** (44 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **api/container_helpers.py** (43 connections) — `server/api/container_helpers.py`
-- **test_containers.py** (29 connections) — `server/tests/unit/api/test_containers.py`
-- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
-- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
-- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
-- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
-- **asyncio** (17 connections)
-- **get_container_service()** (16 connections) — `server/api/container_helpers.py`
-- **OpenContainerRequest** (13 connections) — `server/api/container_models.py`
-- **_convert_container_dict_to_container_data()** (12 connections) — `server/api/container_endpoints_basic.py`
-- **get_async_persistence()** (12 connections) — `server/dependencies.py`
-- **TestOpenContainer** (11 connections) — `server/tests/unit/api/test_containers.py`
-- **TestTransferItems** (11 connections) — `server/tests/unit/api/test_containers.py`
-- **execute_transfer()** (11 connections) — `server/api/container_helpers.py`
-- **Request** (11 connections)
-- **CloseContainerRequest** (10 connections) — `server/api/container_models.py`
-- **_build_container_data_from_dict()** (10 connections) — `server/api/container_endpoints_basic.py`
-- **apply_rate_limiting_for_close_container()** (10 connections) — `server/api/container_helpers.py`
-- **apply_rate_limiting_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
-- **apply_rate_limiting_for_open_container()** (10 connections) — `server/api/container_helpers.py`
-- **apply_rate_limiting_for_transfer()** (10 connections) — `server/api/container_helpers.py`
-- **validate_user_for_close_container()** (10 connections) — `server/api/container_helpers.py`
-- **validate_user_for_loot_all()** (10 connections) — `server/api/container_helpers.py`
-- *... and 103 more nodes in this community*
+- **ChatService** (97 connections) — `server/game/chat_service.py`
+- **test_chat_service.py** (44 connections) — `server/tests/unit/game/test_chat_service.py`
+- **UUID** (28 connections)
+- **asyncio** (22 connections)
+- **.send_say_message()** (11 connections) — `server/game/chat_service.py`
+- **.send_emote_message()** (10 connections) — `server/game/chat_service.py`
+- **_publish_room_chat()** (6 connections) — `server/game/chat_service.py`
+- **._chat_send_services()** (5 connections) — `server/game/chat_service.py`
+- **._normalize_player_id()** (5 connections) — `server/game/chat_service.py`
+- **.send_global_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_system_message()** (4 connections) — `server/game/chat_service.py`
+- **.send_whisper_message()** (4 connections) — `server/game/chat_service.py`
+- **test_get_last_whisper_sender()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_last_whisper_sender_none()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_emote_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_global_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_local_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_empty()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_player_not_found()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_rate_limited()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- **test_send_party_message_success()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
+- *... and 120 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (34 shared connections)
-- [test_nats_service.py](test_nats_service.py.md) (19 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (16 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (15 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (15 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (15 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (15 shared connections)
-- [ContainerComponent](ContainerComponent.md) (12 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (10 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
-- [_handle_admin_set_stat_command](_handle_admin_set_stat_command.md) (9 shared connections)
-- [P7 · Rulings — complete](P7_·_Rulings_—_complete.md) (6 shared connections)
+- [chat_service.py](chat_service.py.md) (19 shared connections)
+- [ChatMessage](ChatMessage.md) (10 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (3 shared connections)
+- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (3 shared connections)
+- [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/examples/logging/fastapi_integration.py`
-- `server/api/container_endpoints_basic.py`
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/dependencies.py`
-- `server/tests/unit/api/test_container_helpers.py`
-- `server/tests/unit/api/test_containers.py`
+- `server/game/chat_service.py`
+- `server/tests/unit/game/test_chat_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 471 (96%)
-- INFERRED: 21 (4%)
+- EXTRACTED: 245 (87%)
+- INFERRED: 38 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,49 +1,44 @@
 # Performance Profiler Subagent
 
-> 24 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **ContainerTransferFromMixin** (18 connections) — `server/services/container_service_transfer_from.py`
-- **._execute_transfer_from_container()** (12 connections) — `server/services/container_service_transfer_from.py`
-- **._finalize_loot_all()** (10 connections) — `server/services/container_service_transfer_from.py`
-- **._persist_and_audit_transfer_from_container()** (9 connections) — `server/services/container_service_transfer_from.py`
-- **UUID** (9 connections)
-- **._add_item_to_player_inventory()** (8 connections) — `server/services/container_service_transfer_from.py`
-- **._loot_items_until_full()** (8 connections) — `server/services/container_service_transfer_from.py`
-- **InventoryStack** (8 connections)
-- **.loot_all()** (7 connections) — `server/services/container_service_transfer_from.py`
-- **._remove_item_from_container()** (7 connections) — `server/services/container_service_transfer_from.py`
-- **.transfer_from_container()** (7 connections) — `server/services/container_service_transfer_from.py`
-- **ContainerComponent** (5 connections)
-- **._prepare_transfer_item()** (4 connections) — `server/services/container_service_transfer_from.py`
-- **Player** (4 connections)
-- **Persist container changes and log audit trail.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Mutation-guarded body: remove stack, add to player, persist, audit.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Transfer items from container to player inventory.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Transfer each container stack until capacity error; returns updated state.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Reload container, audit loot-all, and build response payload.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Loot all eligible items from a container (requires open mutation token).** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Transfer items from containers and loot-all.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Prepare item for transfer, handling quantity and slot_type.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Remove item from container items list.** (1 connections) — `server/services/container_service_transfer_from.py`
-- **Add item to player inventory using InventoryService.** (1 connections) — `server/services/container_service_transfer_from.py`
+- **Performance Profiler Subagent** (11 connections) — `.claude/agents/performance-profiler.md`
+- **Capabilities** (6 connections) — `.claude/agents/performance-profiler.md`
+- **Example Scenarios** (4 connections) — `.claude/agents/performance-profiler.md`
+- **Performance Monitoring** (4 connections) — `.claude/agents/performance-profiler.md`
+- **Database Performance** (2 connections) — `.claude/agents/performance-profiler.md`
+- **performance-profiler.md** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Bottleneck Identification** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Code Performance Review** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Database Query Optimization** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Enhanced Logging Integration** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Game Loop Performance** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Integration** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Log Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Analysis** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Leak Detection** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Memory Profiling** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Methodology** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Notes** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Output Format** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Performance Best Practices** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Purpose** (1 connections) — `.claude/agents/performance-profiler.md`
+- **Usage** (1 connections) — `.claude/agents/performance-profiler.md`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (16 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/container_service_transfer_from.py`
+- `.claude/agents/performance-profiler.md`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (93%)
-- INFERRED: 5 (7%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

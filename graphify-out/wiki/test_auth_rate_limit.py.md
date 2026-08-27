@@ -1,51 +1,57 @@
 # test_auth_rate_limit.py
 
-> 30 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **test_room_occupant_manager.py** (17 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **asyncio** (9 connections)
-- **occupant_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_get_players_error()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **mock_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_error()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_persistence()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_no_room()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_success()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_ensure_player()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_get_room_occupants_with_players_and_npcs()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_room_occupant_manager_init()** (3 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **test_separate_occupants_by_type_empty_list()** (2 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **fixture** (2 connections)
-- **Unit tests for room occupant manager. Tests the RoomOccupantManager class for…** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants with ensure_player_included.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns both players and NPCs.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants handles get_players error.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test separate_occupants_by_type with empty list.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create mock connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Create RoomOccupantManager instance.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test RoomOccupantManager initialization.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- **Test get_room_occupants returns empty when no connection manager.** (1 connections) — `server/tests/unit/realtime/test_room_occupant_manager.py`
-- *... and 5 more nodes in this community*
+- **test_auth_rate_limit.py** (27 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **auth_client_key()** (11 connections) — `server/middleware/auth_rate_limit.py`
+- **auth_rate_limit_response()** (11 connections) — `server/middleware/auth_rate_limit.py`
+- **_post_request()** (9 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **is_auth_rate_limited_path()** (5 connections) — `server/middleware/auth_rate_limit.py`
+- **test_auth_client_key_rejects_non_ip_xff()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_auth_client_key_uses_xff_when_trusted()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_auth_rate_limit_response_maps_rate_limit_error()** (4 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_assert_auth_rate_limit_paths_registered_ok()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_auth_client_key_ignores_xff_by_default()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_auth_client_key_uses_ip()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_auth_rate_limit_response_skips_other_paths()** (3 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **_auth_bucket()** (2 connections) — `server/middleware/auth_rate_limit.py`
+- **_ok_post()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_create_app_auth_rate_limit_paths_match()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **test_is_auth_rate_limited_path()** (2 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
+- **Request** (2 connections)
+- **MonkeyPatch** (2 connections)
+- **Request** (1 connections)
+- **Return 429 when an auth POST exceeds the limiter; otherwise None.** (1 connections) — `server/middleware/auth_rate_limit.py`
+- **Return True if path is an unauthenticated auth POST covered by the limiter.** (1 connections) — `server/middleware/auth_rate_limit.py`
+- **Key the limiter by client IP. Default uses the TCP peer (request.client.host).…** (1 connections) — `server/middleware/auth_rate_limit.py`
+- **Unit tests for auth HTTP rate limiting.** (1 connections) — `server/tests/unit/middleware/test_auth_rate_limit.py`
 
 ## Relationships
 
-- [run-vitest.js](run-vitest.js.md) (3 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [spell_effects_support.py](spell_effects_support.py.md) (1 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (8 shared connections)
+- [RateLimiter](RateLimiter.md) (4 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [create_app](create_app.md) (2 shared connections)
+- [.format](format.md) (1 shared connections)
+- [ErrorType](ErrorType.md) (1 shared connections)
+- [AuthRateLimitMiddleware](AuthRateLimitMiddleware.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_occupant_manager.py`
+- `server/middleware/auth_rate_limit.py`
+- `server/tests/unit/middleware/test_auth_rate_limit.py`
 
 ## Audit Trail
 
-- EXTRACTED: 41 (93%)
-- INFERRED: 3 (7%)
+- EXTRACTED: 63 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

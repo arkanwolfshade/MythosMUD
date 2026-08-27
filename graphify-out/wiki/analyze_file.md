@@ -1,21 +1,20 @@
 # analyze_file
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Cthulhu Dark Ages - 3rd Edition  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Communities (8 total, 7 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Community 0 - "Character Sheets"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- **analyze_file()** (5 connections) — `scripts/analyze_comments.py`
+- **analyze_comments.py** (4 connections) — `scripts/analyze_comments.py`
+- **extract_function_and_class_names()** (3 connections) — `scripts/analyze_comments.py`
+- **main()** (3 connections) — `scripts/analyze_comments.py`
+- **check_comment_references_nonexistent_code()** (2 connections) — `scripts/analyze_comments.py`
+- **Path** (2 connections)
+- **Any** (1 connections)
+- **Analyze a single file for comment issues. Args: file_path: Path to file to…** (1 connections) — `scripts/analyze_comments.py`
+- **Main entry point for comment analysis.** (1 connections) — `scripts/analyze_comments.py`
+- **Extract function and class names from a Python file. Args: file_path: Path to…** (1 connections) — `scripts/analyze_comments.py`
+- **Check if a comment references a function or class that doesn't exist. Args:…** (1 connections) — `scripts/analyze_comments.py`
 
 ## Relationships
 
@@ -23,11 +22,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/cthulhu-dark-ages-3rd-edition/GRAPH_REPORT.md`
+- `scripts/analyze_comments.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

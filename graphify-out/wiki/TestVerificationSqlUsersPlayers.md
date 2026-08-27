@@ -1,48 +1,42 @@
 # TestVerificationSqlUsersPlayers
 
-> 21 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **test_command_factories_inventory_helpers.py** (23 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_index()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_invalid_quantity()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_get_command_with_from()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_inventory_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_with_index()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_pickup_command_with_quantity()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_name()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_unequip_command_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_unequip_command() with slot.** (2 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Unit tests for inventory command factory helper functions. Tests the helper…** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_inventory_command() creates InventoryCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() with numeric index.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() with quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() raises error for invalid quantity.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_pickup_command() raises error for invalid index.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() creates GetCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_get_command() handles optional 'from' keyword.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_equip_command() with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- **TestVerificationSqlUsersPlayers** (6 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **TestNpcNameConstraintScript** (5 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **test_postgres_sql_scripts.py** (3 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_no_sqlite_pragma()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_npc_constraint_script_uses_postgresql_constraint()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_file_exists()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_references_users_and_players()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_explicit_joins()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **.test_verification_sql_uses_live_tables_only()** (2 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **PostgreSQL-focused tests for verification and maintenance SQL scripts.…** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for db/verification/users_players.sql alignment with current schema.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL file must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must not reference staging tables or select obsolete columns.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must use explicit join syntax for multi-table queries.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Verification SQL must reference users and players tables.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Tests for server/scripts/add_npc_name_constraint.sql (PostgreSQL-only).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **NPC name constraint script must exist.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must not contain SQLite-specific pragma.** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
+- **Script must use PostgreSQL constraint (CHECK or ALTER TABLE).** (1 connections) — `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Relationships
 
-- [test_connection_error_methods.py](test_connection_error_methods.py.md) (18 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [_should_include_npc](_should_include_npc.md) (4 shared connections)
-- [logging_file_categories.py](logging_file_categories.py.md) (2 shared connections)
-- [.get_original_string_id](get_original_string_id.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
+- `server/tests/unit/infrastructure/test_postgres_sql_scripts.py`
 
 ## Audit Trail
 
-- EXTRACTED: 43 (78%)
-- INFERRED: 12 (22%)
+- EXTRACTED: 19 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

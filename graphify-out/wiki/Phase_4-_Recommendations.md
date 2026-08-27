@@ -1,47 +1,46 @@
 # Phase 4: Recommendations
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
-- **Uvicorn/ASGI Code Review - feature/sqlite-to-postgresql Branch** (10 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **✅ POSITIVE FINDINGS** (5 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🔴 CRITICAL ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟡 HIGH PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **🟢 MEDIUM PRIORITY ISSUES** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📋 RECOMMENDATIONS SUMMARY** (4 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Deprecated `asyncio.get_event_loop()` Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **1. Proper Connection Pool Management** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. Good Error Handling Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **2. SQL Injection Risk in Field Name Construction** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Async/Await Usage** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **3. Connection Pool Cleanup Verification** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Blocking Operations in Async Context** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **4. Security Considerations** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **5. Event Loop Change Detection Complexity** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **6. Missing Error Context in Some Exception Handlers** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **7. F-String SQL Construction (Even with Constants)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **8. Inconsistent Async/Sync Patterns** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **9. Missing Type Hints in Some Areas** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **CONCLUSION** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Executive Summary** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Immediate Actions (Before Production)** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Long-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **📚 REFERENCES** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- **Short-term Improvements** (1 connections) — `docs/archive/UVICORN_CODE_REVIEW.md`
-- *... and 1 more nodes in this community*
+- **Phase 4: Recommendations** (17 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **3. Parametrize Repetitive Tests (Save ~1 minute, Reduce ~300 tests)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.1 Pruning Candidates (750 tests, ~5 minutes savings)** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.2 Consolidation Opportunities** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.3 Coverage Gap Identification** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4.4 Optimization Recommendations** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **5. Add Critical Integration Tests for New Architecture** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Files to Remove/Drastically Reduce** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Files to Review** (2 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **1. Prune Infrastructure Tests (Save ~3 minutes, Remove ~350 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **2. Consolidate Coverage Tests (Save ~1 minute, Reduce ~60 tests)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **4. Migrate Model Tests to Property-Based Testing** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **6. Continuous Test Quality Review** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **7. Test Performance Optimization** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Critical Code Lacking Tests** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Example Consolidation** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Example Low-Value Pattern** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **HIGH-PRIORITY PRUNE (454 tests, ~3 minutes)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Immediate Actions (High ROI)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Long-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **LOW-PRIORITY PRUNE (100+ tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **MEDIUM-PRIORITY PRUNE (88 tests, ~1 minute)** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Medium-Term Actions** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Parametrization Opportunities** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
+- **Specific Patterns to Remove** (1 connections) — `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Relationships
 
-- [Test Suite Analysis](Test_Suite_Analysis.md) (1 shared connections)
+- [Test Suite Quality Audit Report](Test_Suite_Quality_Audit_Report.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/UVICORN_CODE_REVIEW.md`
+- `docs/archive/TEST_QUALITY_AUDIT_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 25 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

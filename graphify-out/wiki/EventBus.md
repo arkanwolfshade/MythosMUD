@@ -1,59 +1,65 @@
 # EventBus
 
-> 89 nodes
+> 193 nodes
 
 ## Key Concepts
 
-- **test_look_player.py** (33 connections) — `server/tests/unit/commands/test_look_player.py`
-- **look_player.py** (26 connections) — `server/commands/look_player.py`
-- **_format_player_look_display()** (22 connections) — `server/commands/look_player.py`
-- **_select_target_player()** (17 connections) — `server/commands/look_player.py`
-- **asyncio** (13 connections)
-- **test_look_player_helpers.py** (12 connections) — `server/tests/unit/commands/test_look_player_helpers.py`
-- **_handle_player_look()** (11 connections) — `server/commands/look_player.py`
-- **_try_lookup_player_implicit()** (10 connections) — `server/commands/look_player.py`
-- **_find_matching_players()** (9 connections) — `server/commands/look_player.py`
-- **_get_players_in_room()** (9 connections) — `server/commands/look_player.py`
-- **Any** (8 connections)
-- **_apply_grace_period_labels()** (6 connections) — `server/commands/look_player.py`
-- **_player_id_uuid()** (4 connections) — `server/commands/look_player.py`
-- **test_find_matching_players_no_match()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_find_matching_players_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_empty()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_invalid_uuid()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_non_iterable()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_get_players_in_room_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_success()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_handle_player_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_try_lookup_player_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- **test_try_lookup_player_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_player.py`
-- *... and 64 more nodes in this community*
+- **EventBus** (210 connections) — `server/events/event_bus.py`
+- **BaseEvent** (96 connections) — `server/events/event_types.py`
+- **test_event_bus.py** (60 connections) — `server/tests/unit/events/test_event_bus.py`
+- **asyncio** (28 connections)
+- **test_event_bus_lifecycle.py** (25 connections) — `server/tests/unit/events/test_event_bus_lifecycle.py`
+- **MockEventClass** (19 connections) — `server/tests/unit/events/test_event_bus.py`
+- **asyncio** (11 connections)
+- **test_handle_event_async_async_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_sync_subscriber_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_no_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_task_result_async_with_error()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_inject_queue_full_and_invalid()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_queue_depth_grows_when_consumer_blocked()** (6 connections) — `server/tests/unit/events/test_event_bus.py`
+- **._publish_in_test_mode()** (5 connections) — `server/events/event_bus_processing.py`
+- **test_async_subscriber_error_isolation()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_inject_dispatches_to_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_multiple_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_event_bus_publish_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_handle_event_async_no_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_multiple_services_subscribe_same_events_integration()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_service_shutdown_removes_subscribers()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **test_shutdown_cleans_up_service_subscriptions()** (5 connections) — `server/tests/unit/events/test_event_bus.py`
+- **SubscriberLifecycleMetrics** (4 connections) — `server/events/event_bus.py`
+- **SubscriberStats** (4 connections) — `server/events/event_bus.py`
+- *... and 168 more nodes in this community*
 
 ## Relationships
 
-- [NPCCombatUUIDMapping](NPCCombatUUIDMapping.md) (7 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (6 shared connections)
-- [.claude/hooks/record_edited_file.py](claude-hooks-record_edited_file.py.md) (4 shared connections)
-- [character-cleanup.ts](character-cleanup.ts.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
-- [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
-- [test_manager.py](test_manager.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (29 shared connections)
+- [NPCBase](NPCBase.md) (28 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (19 shared connections)
+- [time.py](time.py.md) (15 shared connections)
+- [Room](Room.md) (12 shared connections)
+- [DistributedEventBus](DistributedEventBus.md) (11 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (10 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (10 shared connections)
+- [PartyService](PartyService.md) (7 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (6 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (6 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (4 shared connections)
 
 ## Source Files
 
-- `server/commands/look_player.py`
-- `server/tests/unit/commands/test_look_player.py`
-- `server/tests/unit/commands/test_look_player_helpers.py`
-- `server/tests/unit/realtime/test_visual_indicator.py`
+- `server/events/event_bus.py`
+- `server/events/event_bus_processing.py`
+- `server/events/event_types.py`
+- `server/realtime/connection_manager.py`
+- `server/services/player_respawn_service.py`
+- `server/tests/unit/events/test_event_bus.py`
+- `server/tests/unit/events/test_event_bus_lifecycle.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 424 (78%)
+- INFERRED: 123 (22%)
 - AMBIGUOUS: 0 (0%)
 
 ---

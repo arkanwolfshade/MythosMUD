@@ -1,63 +1,61 @@
 # test_metrics_endpoints.py
 
-> 78 nodes
+> 84 nodes
 
 ## Key Concepts
 
-- **TargetResolutionResult** (34 connections) — `server/schemas/shared/target_resolution.py`
-- **test_follow_commands.py** (24 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **follow_commands.py** (18 connections) — `server/commands/follow_commands.py`
-- **handle_follow_command()** (17 connections) — `server/commands/follow_commands.py`
-- **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
-- **asyncio** (13 connections)
-- **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
-- **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_self_rejected()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **_get_container()** (7 connections) — `server/commands/follow_commands.py`
-- **test_handle_follow_no_such_player_or_npc()** (7 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_persistence()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_no_target()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_follow_player_not_in_game()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_following_display()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_success()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **test_handle_unfollow_was_not_following()** (6 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Any** (6 connections)
-- **TargetMetadata** (5 connections) — `server/schemas/shared/target_metadata.py`
-- **_load_follow_context()** (5 connections) — `server/commands/follow_commands.py`
-- **_resolve_follow_target()** (4 connections) — `server/commands/follow_commands.py`
-- *... and 53 more nodes in this community*
+- **test_metrics_endpoints.py** (39 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **api/metrics.py** (31 connections) — `server/api/metrics.py`
+- **replay_dlq_message()** (14 connections) — `server/api/metrics.py`
+- **_admin_user()** (14 connections) — `server/tests/unit/api/test_metrics_endpoints.py`
+- **asyncio** (14 connections)
+- **metrics/metrics.py** (13 connections) — `server/schemas/metrics/metrics.py`
+- **delete_dlq_message()** (11 connections) — `server/api/metrics.py`
+- **get_metrics()** (11 connections) — `server/api/metrics.py`
+- **reset_circuit_breaker()** (11 connections) — `server/api/metrics.py`
+- **DLQReplayResponse** (10 connections) — `server/schemas/metrics/metrics.py`
+- **get_dlq_messages()** (10 connections) — `server/api/metrics.py`
+- **get_metrics_summary()** (10 connections) — `server/api/metrics.py`
+- **_load_dlq_message()** (10 connections) — `server/api/metrics.py`
+- **StatusMessageResponse** (9 connections) — `server/schemas/metrics/metrics.py`
+- **reset_metrics()** (9 connections) — `server/api/metrics.py`
+- **verify_admin_access()** (9 connections) — `server/api/metrics.py`
+- **Any** (9 connections)
+- **metrics/__init__.py** (9 connections) — `server/schemas/metrics/__init__.py`
+- **DLQMessagesResponse** (8 connections) — `server/schemas/metrics/metrics.py`
+- **MetricsSummaryResponse** (8 connections) — `server/schemas/metrics/metrics.py`
+- **_handle_replay_error()** (8 connections) — `server/api/metrics.py`
+- **Request** (8 connections)
+- **MetricsResponse** (7 connections) — `server/schemas/metrics/metrics.py`
+- **_replay_message_safely()** (7 connections) — `server/api/metrics.py`
+- **metrics_data.py** (7 connections) — `server/schemas/metrics/metrics_data.py`
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (16 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (8 shared connections)
-- [NATSError](NATSError.md) (8 shared connections)
-- [pytest.md](pytest.md.md) (7 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (6 shared connections)
-- [CombatParticipant](CombatParticipant.md) (4 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (3 shared connections)
-- [Pre-commit Hooks Best Practices](Pre-commit_Hooks_Best_Practices.md) (2 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (25 shared connections)
+- [User](User.md) (14 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [test_users.py](test_users.py.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [MetricsCollector](MetricsCollector.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/follow_commands.py`
-- `server/schemas/shared/target_metadata.py`
-- `server/schemas/shared/target_resolution.py`
-- `server/tests/unit/commands/test_follow_commands.py`
-- `server/tests/unit/schemas/test_target_resolution.py`
+- `server/api/metrics.py`
+- `server/schemas/metrics/__init__.py`
+- `server/schemas/metrics/metrics.py`
+- `server/schemas/metrics/metrics_data.py`
+- `server/tests/unit/api/test_metrics_endpoints.py`
 
 ## Audit Trail
 
-- EXTRACTED: 191 (93%)
-- INFERRED: 14 (7%)
+- EXTRACTED: 241 (96%)
+- INFERRED: 11 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

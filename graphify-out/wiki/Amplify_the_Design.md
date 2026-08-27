@@ -1,36 +1,33 @@
 # Amplify the Design
 
-> 14 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **test_persistence_container_persistence.py** (9 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_dict()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_empty_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_invalid_json()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_list()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_none()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **test_parse_jsonb_column_string()** (2 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Unit tests for persistence.container_persistence module. This module tests the…** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing None JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing dict JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing empty string JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing list JSONB column.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
-- **Test parsing invalid JSON string.** (1 connections) — `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- **Amplify the Design** (7 connections) — `.claude/skills/bolder/SKILL.md`
+- **Bolder Skill** (6 connections) — `.claude/skills/bolder/SKILL.md`
+- **Assess Current State** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Color Intensification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Composition Boldness** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Motion & Animation** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Plan Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Spatial Drama** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Typography Amplification** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Verify Quality** (1 connections) — `.claude/skills/bolder/SKILL.md`
+- **Visual Effects** (1 connections) — `.claude/skills/bolder/SKILL.md`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_persistence_container_persistence.py`
+- `.claude/skills/bolder/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

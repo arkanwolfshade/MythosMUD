@@ -1,36 +1,38 @@
 # Test Server Remediation Prompt - Cursor Executable Version
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Does Love Forgive_  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Communities (4 total, 1 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **does-love-forgive/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 1 - "Anna Konrad; Lucas Reston"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community 2 - "Does Love Forgive"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- **Test Server Remediation Prompt - Cursor Executable Version** (17 connections) — `.cursor/commands/server-test-remediation.md`
+- **server-test-remediation.md** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Best Practices** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **COMPLETION VERIFICATION** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **CRITICAL "DO NOT" INSTRUCTIONS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **CRITICAL: EXECUTION REQUIREMENTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **DECISION TREE - START HERE** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **ERROR HANDLING PROTOCOL** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **MANDATORY PROGRESS TRACKING** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **MANDATORY VERIFICATION CHECKPOINTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Project Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Success Criteria** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **TOOL USAGE EXAMPLES** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Troubleshooting** (1 connections) — `.cursor/commands/server-test-remediation.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [REQUIRED TOOL USAGE PATTERN](REQUIRED_TOOL_USAGE_PATTERN.md) (1 shared connections)
+- [Step-by-Step Remediation Process](Step-by-Step_Remediation_Process.md) (1 shared connections)
+- [FAILURE PATTERN RECOGNITION](FAILURE_PATTERN_RECOGNITION.md) (1 shared connections)
+- [Common Test Failure Categories](Common_Test_Failure_Categories.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/does-love-forgive/GRAPH_REPORT.md`
+- `.cursor/commands/server-test-remediation.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

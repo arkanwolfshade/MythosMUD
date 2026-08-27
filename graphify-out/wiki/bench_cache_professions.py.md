@@ -1,33 +1,33 @@
 # bench_cache_professions.py
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **Refine the Design** (6 connections) — `.claude/skills/quieter/SKILL.md`
-- **Quieter Skill** (6 connections) — `.claude/skills/quieter/SKILL.md`
-- **Assess Current State** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Color Refinement** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Composition Refinement** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Motion Reduction** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Plan Refinement** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Simplification** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Verify Quality** (1 connections) — `.claude/skills/quieter/SKILL.md`
-- **Visual Weight Reduction** (1 connections) — `.claude/skills/quieter/SKILL.md`
+- **bench_cache_professions.py** (7 connections) — `scripts/bench_cache_professions.py`
+- **bench_profession_cache()** (5 connections) — `scripts/bench_cache_professions.py`
+- **_FakePersistence** (4 connections) — `scripts/bench_cache_professions.py`
+- **_get_empty_dict()** (4 connections) — `scripts/bench_cache_professions.py`
+- **.get_all_professions()** (3 connections) — `scripts/bench_cache_professions.py`
+- **Any** (3 connections)
+- **main()** (2 connections) — `scripts/bench_cache_professions.py`
+- **.__init__()** (1 connections) — `scripts/bench_cache_professions.py`
+- **Professions cache micro-benchmark for CI artifacts. Measures miss vs. hit…** (1 connections) — `scripts/bench_cache_professions.py`
+- **Helper function to return empty dict for mock methods.** (1 connections) — `scripts/bench_cache_professions.py`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- [ProfessionCacheService](ProfessionCacheService.md) (2 shared connections)
+- [time.py](time.py.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/quieter/SKILL.md`
+- `scripts/bench_cache_professions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 16 (94%)
+- INFERRED: 1 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

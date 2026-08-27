@@ -1,37 +1,59 @@
 # test_command_factories.py
 
-> 14 nodes
+> 91 nodes
 
 ## Key Concepts
 
-- **Spatial Design** (10 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Visual Hierarchy** (4 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Spacing Systems** (3 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Grid Systems** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Optical Adjustments** (2 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Cards Are Not Required** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Container Queries** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Depth & Elevation** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Hierarchy Through Multiple Dimensions** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Name Tokens Semantically** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **The Self-Adjusting Grid** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **The Squint Test** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Touch Targets vs Visual Size** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
-- **Use 4pt Base, Not 8pt** (1 connections) — `.claude/skills/frontend-design/reference/spatial-design.md`
+- **test_command_factories.py** (60 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **factory()** (4 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_create_existing_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_create_nonexistent_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_has_create_methods()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_command_factory_init()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_add_admin_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_alias_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_cast_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_channel_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_drop_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_emote_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_equip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_get_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_go_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_goto_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_ground_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_help_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_kick_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_lie_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_local_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_logout_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_me_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_mute_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **test_create_mutes_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
-- [compilerOptions](compilerOptions.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
+- [test_create_sit_command](test_create_sit_command.md) (1 shared connections)
+- [test_create_unequip_command](test_create_unequip_command.md) (1 shared connections)
+- [test_create_mute_global_command](test_create_mute_global_command.md) (1 shared connections)
+- [test_create_admin_command](test_create_admin_command.md) (1 shared connections)
+- [test_create_punch_command](test_create_punch_command.md) (1 shared connections)
+- [test_create_aliases_command](test_create_aliases_command.md) (1 shared connections)
+- [test_create_teleport_command](test_create_teleport_command.md) (1 shared connections)
+- [test_create_spell_command](test_create_spell_command.md) (1 shared connections)
+- [test_create_learn_command](test_create_learn_command.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/frontend-design/reference/spatial-design.md`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 105 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

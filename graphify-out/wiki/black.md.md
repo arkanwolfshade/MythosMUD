@@ -1,12 +1,11 @@
 # black.md
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test Warning Remediation** (2 connections) — `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- **Early Logging Initialization** (1 connections) — `docs/archive/early-logging-initialization.plan.md`
-- **datetime.utcnow Deprecation Fix** (1 connections) — `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
+- **black.md** (1 connections) — `.claude/rules/black.md`
+- **Not Black — this repo uses Ruff** (1 connections) — `.claude/rules/black.md`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/WARNING_FIXES_SESSION_SUMMARY.md`
-- `docs/archive/WARNING_REMEDIATION_PLAN.md`
-- `docs/archive/early-logging-initialization.plan.md`
+- `.claude/rules/black.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

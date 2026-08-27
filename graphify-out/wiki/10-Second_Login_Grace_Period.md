@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **playwright.runtime.config.ts** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
-- **PARALLEL_WORKERS** (1 connections) — `client/tests/e2e/playwright.runtime.config.ts`
+- **10-Second Login Grace Period** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
+- **Login Grace Period Implementation** (1 connections) — `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `client/tests/e2e/playwright.runtime.config.ts`
+- `.cursor/plans/login_grace_period_implementation_32b067c4.plan.md`
 
 ## Audit Trail
 

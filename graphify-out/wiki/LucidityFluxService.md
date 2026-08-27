@@ -1,51 +1,55 @@
 # LucidityFluxService
 
-> 81 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **test_nats_broker.py** (57 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **asyncio** (35 connections)
-- **test_connect_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_connect_with_tls_enabled_passes_tls_options()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_error_handling()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_request_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_subscribe_not_connected()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_unsubscribe_failure()** (4 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_connect_already_connected()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_connect_sets_callbacks()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_connect_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_connect_with_user_password()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_handles_unsubscribe_error()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_no_client()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnect_unsubscribes_all()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_disconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_error_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_json_serialization()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_publish_success()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- **test_reconnected_callback()** (3 connections) — `server/tests/unit/infrastructure/test_nats_broker.py`
-- *... and 56 more nodes in this community*
+- **LucidityFluxService** (32 connections) — `server/services/passive_lucidity_flux/service.py`
+- **.process_tick()** (15 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._process_single_player()** (10 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Player** (10 connections)
+- **PlayerFluxCtx** (7 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._evaluate_players_tick()** (7 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._build_room_cache()** (6 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._companion_modifier()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._count_companion_tiers()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._get_room_cached()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._load_players()** (5 connections) — `server/services/passive_lucidity_flux/service.py`
+- **AsyncSession** (5 connections)
+- **._commit_flux_adjustments()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._load_lucidity_records()** (4 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_adaptive_resistance()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._apply_residual()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._emit_telemetry()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **.get_flux_runtime_status()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._prune_trackers()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **._should_process_tick()** (2 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Build room cache for all players.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Process a single player's passive flux.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Evaluate passive LCD flux for the current tick.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Snapshot of scheduler state for ops and tests.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- **Get room from cache or fetch from database with TTL management.** (1 connections) — `server/services/passive_lucidity_flux/service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [gen_arena_migration_sql.py](gen_arena_migration_sql.py.md) (20 shared connections)
-- [description](description.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (1 shared connections)
+- [._resolve_context_async](_resolve_context_async.md) (12 shared connections)
+- [models/player.py](models-player.py.md) (9 shared connections)
+- [._filter_active_players](_filter_active_players.md) (7 shared connections)
+- [PassiveFluxContext](PassiveFluxContext.md) (4 shared connections)
+- [test_passive_lucidity_flux_service.py](test_passive_lucidity_flux_service.py.md) (2 shared connections)
+- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (1 shared connections)
+- [FakeHallucinationService](FakeHallucinationService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/infrastructure/test_nats_broker.py`
+- `server/services/passive_lucidity_flux/service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 128 (92%)
-- INFERRED: 11 (8%)
+- EXTRACTED: 84 (94%)
+- INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

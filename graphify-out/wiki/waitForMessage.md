@@ -1,61 +1,71 @@
 # waitForMessage
 
-> 75 nodes
+> 74 nodes
 
 ## Key Concepts
 
-- **test_combat_flee_helpers.py** (28 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **combat_flee.py** (22 connections) — `server/commands/combat_flee.py`
-- **_FleeCommandHandlerLike** (16 connections) — `server/commands/combat_flee.py`
-- **_resolve_flee_preconditions()** (15 connections) — `server/commands/combat_flee.py`
-- **_validate_flee_combat_and_room()** (12 connections) — `server/commands/combat_flee.py`
-- **FleePreconditionError** (10 connections) — `server/commands/combat_helpers.py`
-- **_PlayerForFlee** (8 connections) — `server/commands/combat_flee.py`
-- **_ensure_flee_standing()** (8 connections) — `server/commands/combat_flee.py`
-- **_get_flee_player_uuid()** (8 connections) — `server/commands/combat_flee.py`
-- **run_handle_flee_command()** (8 connections) — `server/commands/combat_flee.py`
-- **AppWithState** (7 connections) — `server/commands/combat_app_protocols.py`
-- **_get_flee_room_id()** (7 connections) — `server/commands/combat_flee.py`
-- **combat_helpers.py** (7 connections) — `server/commands/combat_helpers.py`
-- **test_validate_flee_combat_and_room_success()** (6 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **combat_app_protocols.py** (6 connections) — `server/commands/combat_app_protocols.py`
-- **asyncio** (6 connections)
-- **test_resolve_flee_preconditions_player_error()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_movement_service()** (5 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **_PlayerPositionServiceLike** (4 connections) — `server/commands/combat_flee.py`
-- **_participant()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_already_standing()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_ensure_flee_standing_when_sitting()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **test_validate_flee_combat_and_room_no_combat_service()** (4 connections) — `server/tests/unit/commands/test_combat_flee_helpers.py`
-- **UUID** (4 connections)
-- **.check_and_interrupt_rest()** (3 connections) — `server/commands/combat_flee.py`
-- *... and 50 more nodes in this community*
+- **waitForMessage()** (54 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **multiplayer.ts** (54 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **ensurePlayerInGame()** (51 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **cleanupMultiPlayerContexts()** (41 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **createMultiPlayerContexts()** (41 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **waitForAllPlayersInGame()** (37 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **getMessages()** (27 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
+- **multiplayer-ready.ts** (27 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **local-channel-basic.spec.ts** (23 connections) — `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- **local-channel-movement.spec.ts** (22 connections) — `client/tests/e2e/runtime/movement/local-channel-movement.spec.ts`
+- **ensureMultiplayerCoLocated()** (21 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **waitForCrossPlayerMessage()** (21 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **getPlayerMessages()** (20 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **chat-messages.spec.ts** (20 connections) — `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- **local-channel-integration.spec.ts** (20 connections) — `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
+- **movement-between-rooms.spec.ts** (19 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
+- **PlayerContext** (18 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
+- **admin-teleportation.spec.ts** (18 connections) — `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
+- **party-commands.spec.ts** (18 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
+- **prepareReceiverForInboundMessages()** (16 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **whisper-basic.spec.ts** (16 connections) — `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- **waitForLookReflectedInUi()** (15 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-colocated.ts`
+- **whisper-integration.spec.ts** (15 connections) — `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- **basic-connection.spec.ts** (15 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- **local-channel-errors.spec.ts** (14 connections) — `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
+- *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (4 shared connections)
-- [NATSService](NATSService.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [test_dependency_analysis.py](test_dependency_analysis.py.md) (2 shared connections)
-- [test_combat_service.py](test_combat_service.py.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [analyze_log_file](analyze_log_file.md) (2 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (1 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (1 shared connections)
+- [executeCommand](executeCommand.md) (89 shared connections)
+- [fixtures/auth.ts](fixtures-auth.ts.md) (64 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (48 shared connections)
+- [player.ts](player.ts.md) (43 shared connections)
+- [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (3 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_app_protocols.py`
-- `server/commands/combat_flee.py`
-- `server/commands/combat_helpers.py`
-- `server/tests/unit/commands/test_combat_flee_helpers.py`
+- `client/tests/e2e/runtime/accessibility/logout-accessibility.spec.ts`
+- `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
+- `client/tests/e2e/runtime/admin/summon-command.spec.ts`
+- `client/tests/e2e/runtime/admin/whisper-logging.spec.ts`
+- `client/tests/e2e/runtime/commands/disconnect-grace-period.spec.ts`
+- `client/tests/e2e/runtime/commands/rest-command.spec.ts`
+- `client/tests/e2e/runtime/commands/who-command.spec.ts`
+- `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/local-channel-integration.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
+- `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
+- `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
+- `client/tests/e2e/runtime/connection/clean-game-state.spec.ts`
+- `client/tests/e2e/runtime/connection/new-game-session.spec.ts`
+- `client/tests/e2e/runtime/containers/container-corpse-looting.spec.ts`
+- `client/tests/e2e/runtime/containers/container-environmental-interactions.spec.ts`
+- `client/tests/e2e/runtime/containers/container-multi-user-looting.spec.ts`
+- `client/tests/e2e/runtime/containers/container-wearable-management.spec.ts`
+- `client/tests/e2e/runtime/error-handling/local-channel-errors.spec.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 149 (96%)
-- INFERRED: 7 (4%)
+- EXTRACTED: 570 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

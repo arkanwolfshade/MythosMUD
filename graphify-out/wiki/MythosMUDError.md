@@ -1,64 +1,53 @@
 # MythosMUDError
 
-> 157 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **CombatService** (165 connections) — `server/services/combat_service.py`
-- **combat_service.py** (74 connections) — `server/services/combat_service.py`
-- **combat_service_attack.py** (25 connections) — `server/services/combat_service_attack.py`
-- **CombatResult** (22 connections) — `server/models/combat.py`
-- **UUID** (20 connections)
-- **CombatDeathHandler** (18 connections) — `server/services/combat_death_handler.py`
-- **finalize_attack_result()** (10 connections) — `server/services/combat_service_attack.py`
-- **.__init__()** (10 connections) — `server/services/combat_service.py`
-- **apply_damage_and_check_involuntary_flee()** (9 connections) — `server/services/combat_service_attack.py`
-- **validate_melee_location()** (9 connections) — `server/services/combat_service_attack.py`
-- **validate_melee_or_end_combat()** (9 connections) — `server/services/combat_service_attack.py`
-- **test_combat_service_npc_in_combat.py** (9 connections) — `server/tests/unit/services/test_combat_service_npc_in_combat.py`
-- **process_attack()** (7 connections) — `server/services/combat_service_attack.py`
-- **queue_combat_action()** (7 connections) — `server/services/combat_service_attack.py`
-- **get_combat_service()** (7 connections) — `server/services/combat_service_state.py`
-- **._handle_player_death_events()** (6 connections) — `server/services/combat_death_handler.py`
-- **_effective_room_for_melee()** (6 connections) — `server/services/combat_service_attack.py`
-- **.finalize_attack_result()** (6 connections) — `server/services/combat_service.py`
-- **.validate_melee_or_end_combat()** (6 connections) — `server/services/combat_service.py`
-- **UUID** (6 connections)
-- **combat_service_state.py** (6 connections) — `server/services/combat_service_state.py`
-- **.handle_target_state_changes()** (5 connections) — `server/services/combat_death_handler.py`
-- **_melee_location_fail_reason()** (5 connections) — `server/services/combat_service_attack.py`
-- **.apply_attack_damage()** (5 connections) — `server/services/combat_service.py`
-- **.apply_damage_and_check_involuntary_flee()** (5 connections) — `server/services/combat_service.py`
-- *... and 132 more nodes in this community*
+- **MythosMUDError** (53 connections) — `server/exceptions.py`
+- **test_mythosmud_error()** (4 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **test_mythos_mud_error_initialization()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_mythos_mud_error_to_dict()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **test_mythos_mud_error_with_context()** (4 connections) — `server/tests/unit/test_exceptions.py`
+- **.to_dict()** (3 connections) — `server/exceptions.py`
+- **test_mythos_mud_error_with_details()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **test_mythos_mud_error_with_user_friendly()** (3 connections) — `server/tests/unit/test_exceptions.py`
+- **._log_error()** (2 connections) — `server/exceptions.py`
+- **Log the error with structured context.** (1 connections) — `server/exceptions.py`
+- **Convert error to dictionary for API responses.** (1 connections) — `server/exceptions.py`
+- **Base exception for all MythosMUD errors. Provides structured error handling…** (1 connections) — `server/exceptions.py`
+- **Test MythosMUDError can be instantiated.** (1 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
+- **Test MythosMUDError with custom context.** (1 connections) — `server/tests/unit/test_exceptions.py`
+- **Test MythosMUDError with additional details.** (1 connections) — `server/tests/unit/test_exceptions.py`
+- **Test MythosMUDError with user-friendly message.** (1 connections) — `server/tests/unit/test_exceptions.py`
+- **Test MythosMUDError.to_dict() conversion.** (1 connections) — `server/tests/unit/test_exceptions.py`
+- **Test MythosMUDError initialization.** (1 connections) — `server/tests/unit/test_exceptions.py`
 
 ## Relationships
 
-- [User](User.md) (31 shared connections)
-- [NATSService](NATSService.md) (27 shared connections)
-- [test_combat_service.py](test_combat_service.py.md) (25 shared connections)
-- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (22 shared connections)
-- [.get_instance](get_instance.md) (19 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (19 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (15 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (13 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (13 shared connections)
-- [ChatMessage](ChatMessage.md) (9 shared connections)
-- [PydanticErrorHandler](PydanticErrorHandler.md) (6 shared connections)
-- [Any](Any.md) (6 shared connections)
+- [test_exceptions.py](test_exceptions.py.md) (8 shared connections)
+- [ErrorType](ErrorType.md) (7 shared connections)
+- [ValidationError](ValidationError.md) (7 shared connections)
+- [test_exceptions_comprehensive.py](test_exceptions_comprehensive.py.md) (6 shared connections)
+- [ErrorContext](ErrorContext.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (3 shared connections)
+- [TestCombatMessagingService](TestCombatMessagingService.md) (2 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (2 shared connections)
+- [ContainerComponent](ContainerComponent.md) (2 shared connections)
+- [test_wearable_container_service.py](test_wearable_container_service.py.md) (2 shared connections)
+- [error_handling_middleware.py](error_handling_middleware.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/combat.py`
-- `server/services/combat_death_handler.py`
-- `server/services/combat_service.py`
-- `server/services/combat_service_attack.py`
-- `server/services/combat_service_state.py`
-- `server/tests/unit/services/test_combat_service_npc_in_combat.py`
+- `server/exceptions.py`
+- `server/tests/unit/test_exceptions.py`
+- `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 406 (84%)
-- INFERRED: 76 (16%)
+- EXTRACTED: 68 (94%)
+- INFERRED: 4 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

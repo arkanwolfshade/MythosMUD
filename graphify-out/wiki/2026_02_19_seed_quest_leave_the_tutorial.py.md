@@ -1,27 +1,26 @@
 # 2026_02_19_seed_quest_leave_the_tutorial.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Completed Fixes ✅** (6 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **1. Fixed Synchronous Operation in WebSocket Helpers** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **2. Standardized Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **3. Added Message Validation to NATSMessageBroker** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **4. Improved Batch Flush Error Recovery** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
-- **5. Improved Connection Pool Error Handling** (1 connections) — `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **2026_02_19_seed_quest_leave_the_tutorial.py** (2 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Insert leave_the_tutorial quest and quest_offers row.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
+- **Remove seed quest and its offer.** (1 connections) — `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Relationships
 
-- [Technical Implementation](Technical_Implementation.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/NATS_REMEDIATION_SUMMARY_2026-01-13.md`
+- `server/alembic/versions/2026_02_19_seed_quest_leave_the_tutorial.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

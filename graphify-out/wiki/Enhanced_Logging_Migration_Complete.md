@@ -1,26 +1,27 @@
 # Enhanced Logging Migration Complete
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **duration_hours** (4 connections) — `schemas/calendar/holiday.schema.json`
-- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
-- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **Enhanced Logging Migration Complete** (2 connections) — `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
+- **Enhanced Logging Implementation Complete** (1 connections) — `docs/archive/IMPLEMENTATION_COMPLETE.md`
+- **Enhanced Logging Implementation Summary** (1 connections) — `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
 
 ## Relationships
 
-- [jackson_linter.py](jackson_linter.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `schemas/calendar/holiday.schema.json`
+- `docs/archive/IMPLEMENTATION_COMPLETE.md`
+- `docs/archive/LOGGING_IMPLEMENTATION_SUMMARY.md`
+- `docs/archive/LOGGING_MIGRATION_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 0 (0%)
+- INFERRED: 2 (100%)
 - AMBIGUOUS: 0 (0%)
 
 ---

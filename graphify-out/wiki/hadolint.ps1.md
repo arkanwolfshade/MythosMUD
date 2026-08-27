@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **GitHub Actions Runner Parity Container** (0 connections) — `docs/GHA_RUNNER_CONTAINER.md`
+- **hadolint.ps1** (0 connections) — `scripts/hadolint.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/GHA_RUNNER_CONTAINER.md`
+- `scripts/hadolint.ps1`
 
 ## Audit Trail
 

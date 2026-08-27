@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Pydantic Anti-Patterns Remediation (3ee32154)** (0 connections) — `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- **Persistence Repositories Overview** (0 connections) — `server/persistence/repositories/README.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.cursor/plans/pydantic_anti-patterns_remediation_3ee32154.plan.md`
+- `server/persistence/repositories/README.md`
 
 ## Audit Trail
 

@@ -1,23 +1,25 @@
 # day
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
-- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **day** (4 connections) — `schemas/calendar/holiday.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/plans/requests_best_practices_remediation_plan.md`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

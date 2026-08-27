@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
-- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **persistence/utils/__init__.py** (1 connections) — `server/persistence/utils/__init__.py`
+- **Utility modules for persistence layer.** (1 connections) — `server/persistence/utils/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- `server/persistence/utils/__init__.py`
 
 ## Audit Trail
 

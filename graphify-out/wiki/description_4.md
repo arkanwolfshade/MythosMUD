@@ -1,24 +1,26 @@
 # description
 
-> 3 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Dead Light and Other Dark Turns.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- **description** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/Dead Light and Other Dark Turns.md`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

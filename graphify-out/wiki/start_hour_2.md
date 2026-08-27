@@ -1,24 +1,25 @@
 # start_hour
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **container_test_client Fixture** (1 connections) — `docs/archive/fixture-optimization-plan.md`
-- **Class-Scoped Container Fixture** (1 connections) — `docs/archive/fixture-optimization-summary.md`
+- **start_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/fixture-optimization-plan.md`
-- `docs/archive/fixture-optimization-summary.md`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

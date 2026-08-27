@@ -1,60 +1,57 @@
 # ItemPrototypeModel
 
-> 40 nodes
+> 33 nodes
 
 ## Key Concepts
 
-- **CombatCommandHandler** (45 connections) — `server/commands/combat_handler.py`
-- **.__init__()** (9 connections) — `server/commands/combat_handler.py`
-- **.handle_attack_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.handle_taunt_command()** (5 connections) — `server/commands/combat_handler.py`
-- **.combat_service()** (4 connections) — `server/commands/combat_handler.py`
-- **.extract_combat_command_data()** (4 connections) — `server/commands/combat_handler.py`
-- **.handle_flee_command()** (4 connections) — `server/commands/combat_handler.py`
-- **test_combat_command_handler_extras_optional()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **Any** (4 connections)
-- **.get_npc_instance()** (3 connections) — `server/commands/combat_handler.py`
-- **.get_room_data()** (3 connections) — `server/commands/combat_handler.py`
-- **.movement_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.player_position_service()** (3 connections) — `server/commands/combat_handler.py`
-- **.room_forbids_combat()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_combat_action()** (3 connections) — `server/commands/combat_handler.py`
-- **.validate_target_name()** (3 connections) — `server/commands/combat_handler.py`
-- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **AliasStorage** (3 connections)
-- **PlayerCombatService** (1 connections)
-- **Combat service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Movement service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Player position service for command modules.** (1 connections) — `server/commands/combat_handler.py`
-- **Extract command type and target name from command_data. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **Validate that target name is provided. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- **True if the room has no_combat attribute set. Public API.** (1 connections) — `server/commands/combat_handler.py`
-- *... and 15 more nodes in this community*
+- **ItemPrototypeModel** (39 connections) — `server/game/items/models.py`
+- **test_item_prototype_models.py** (15 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **items/models.py** (11 connections) — `server/game/items/models.py`
+- **_valid_payload()** (9 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **field_validator** (5 connections)
+- **.validate_effect_components()** (3 connections) — `server/game/items/models.py`
+- **.validate_flags()** (3 connections) — `server/game/items/models.py`
+- **.validate_item_type()** (3 connections) — `server/game/items/models.py`
+- **.validate_tags()** (3 connections) — `server/game/items/models.py`
+- **.validate_wear_slots()** (3 connections) — `server/game/items/models.py`
+- **.all()** (3 connections) — `server/game/items/prototype_registry.py`
+- **.find_by_tag()** (3 connections) — `server/game/items/prototype_registry.py`
+- **test_item_prototype_accepts_valid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_accepts_valid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_normalizes_effect_components_and_tags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_empty_effect_components()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_flags()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_item_type()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_rejects_invalid_wear_slots()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **test_item_prototype_valid_minimal()** (3 connections) — `server/tests/unit/game/items/test_item_prototype_models.py`
+- **constants.py** (3 connections) — `server/game/items/constants.py`
+- **BaseModel** (1 connections)
+- **Constants supporting item prototype validation. These enumerations anchor the…** (1 connections) — `server/game/items/constants.py`
+- **Pydantic models for item prototype validation. This module defines the…** (1 connections) — `server/game/items/models.py`
+- **Validate and normalize effect components. Args: value: The list of effect…** (1 connections) — `server/game/items/models.py`
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [test_dependency_analysis.py](test_dependency_analysis.py.md) (8 shared connections)
-- [test_container_query_helpers_async.py](test_container_query_helpers_async.py.md) (6 shared connections)
-- [establish_websocket_connection](establish_websocket_connection.md) (4 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (4 shared connections)
-- [Test Value Distribution Chart](Test_Value_Distribution_Chart.md) (3 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (3 shared connections)
-- [MythosMUDError](MythosMUDError.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [PopulationStats](PopulationStats.md) (2 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (13 shared connections)
+- [PrototypeRegistry](PrototypeRegistry.md) (8 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/tests/unit/commands/test_combat_handler.py`
+- `server/game/items/constants.py`
+- `server/game/items/models.py`
+- `server/game/items/prototype_registry.py`
+- `server/tests/unit/game/items/test_item_prototype_models.py`
 
 ## Audit Trail
 
-- EXTRACTED: 74 (83%)
-- INFERRED: 15 (17%)
+- EXTRACTED: 67 (79%)
+- INFERRED: 18 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

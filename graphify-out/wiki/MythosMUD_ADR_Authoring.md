@@ -1,18 +1,16 @@
 # MythosMUD ADR Authoring
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **analyze_idle_memory_samples.py** (6 connections) — `scripts/analyze_idle_memory_samples.py`
-- **JsonSample** (4 connections) — `scripts/analyze_idle_memory_samples.py`
-- **analyze()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_append_slope_rows()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
-- **main()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
-- **_slope_per_hour()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
-- **Path** (2 connections)
-- **Analyze idle memory JSONL samples (warmup + measurement windows).** (1 connections) — `scripts/analyze_idle_memory_samples.py`
-- **JSONL row with numeric fields used for slope analysis.** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **MythosMUD ADR Authoring** (6 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Index Update** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Location** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Reference** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Structure** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **Template** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
+- **ADR Authoring Skill** (1 connections) — `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Relationships
 
@@ -20,11 +18,11 @@
 
 ## Source Files
 
-- `scripts/analyze_idle_memory_samples.py`
+- `.claude/skills/mythosmud-adr-authoring/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

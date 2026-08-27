@@ -1,27 +1,26 @@
 # fix_file
 
-> 18 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **Execution Steps** (11 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Scenario 7: Who Command **[REQUIRES MULTI-PLAYER]**** (5 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Prerequisites** (3 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **scenario-07-who-command.md** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **BEFORE EXECUTING THIS SCENARIO, YOU MUST VERIFY** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **⚠️ FAILURE TO VERIFY THESE PREREQUISITES = COMPLETE SCENARIO FAILURE** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Overview** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 10: Verify Single Player Who List** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 1: AW Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 2: Verify AW Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 3: Verify Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 4: Ithaqua Uses Who Command** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 5: Verify Ithaqua Sees Both Players** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 6: Test Who Command After Movement** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 7: Verify Updated Location Information** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 8: Test Who Command Format** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Step 9: Test Who Command with Single Player** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
-- **Test Configuration** (1 connections) — `e2e-tests/scenarios/scenario-07-who-command.md`
+- **fix_file()** (10 connections) — `scripts/fix_markdownlint.py`
+- **fix_markdownlint.py** (8 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_fences()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_headings()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_blanks_around_lists()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_fence_language()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_line_length()** (3 connections) — `scripts/fix_markdownlint.py`
+- **fix_trailing_punctuation_in_headings()** (3 connections) — `scripts/fix_markdownlint.py`
+- **main()** (3 connections) — `scripts/fix_markdownlint.py`
+- **Path** (2 connections)
+- **Add language tags to fenced code blocks without them.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Break long lines at word boundaries.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after headings.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Remove trailing punctuation from headings.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Fix markdownlint issues in a file.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after lists.** (1 connections) — `scripts/fix_markdownlint.py`
+- **Add blank lines before and after fenced code blocks.** (1 connections) — `scripts/fix_markdownlint.py`
 
 ## Relationships
 
@@ -29,11 +28,11 @@
 
 ## Source Files
 
-- `e2e-tests/scenarios/scenario-07-who-command.md`
+- `scripts/fix_markdownlint.py`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

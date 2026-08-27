@@ -1,52 +1,51 @@
 # test_inventory_mutation_guard.py
 
-> 43 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **_handle_admin_set_stat_command()** (32 connections) — `server/commands/admin_setstat_command.py`
-- **test_admin_setstat_command.py** (22 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **asyncio** (18 connections)
-- **test_handle_admin_set_stat_command_logging()** (5 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_case_insensitive_stat_names()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_dp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_invalid_stat_name()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_invalid_value()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_stat_name()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_target_player()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_missing_value()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_mp_above_maximum()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_app_context()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_player_service()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_no_user_manager()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_non_admin_denied()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_success_all_stat_types()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_success_str()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_target_player_not_found()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **test_handle_admin_set_stat_command_value_out_of_range()** (4 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **_validate_set_stat_inputs()** (3 connections) — `server/commands/admin_setstat_command.py`
-- **Test DP above maximum (warn but allow).** (2 connections) — `server/tests/unit/commands/test_admin_setstat_command.py`
-- **patch** (1 connections)
-- **Validate stat name and value inputs.** (1 connections) — `server/commands/admin_setstat_command.py`
-- *... and 18 more nodes in this community*
+- **test_inventory_mutation_guard.py** (18 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **guard()** (4 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **asyncio** (4 connections)
+- **test_acquire_async_different_players_same_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_duplicate_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_with_unique_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_async_without_token()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init_custom_params()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_duplicate()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_mutation_decision_init()** (3 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_different_players_same_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_duplicate_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_with_unique_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_acquire_without_token()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **test_inventory_mutation_guard_init()** (2 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **fixture** (1 connections)
+- **Unit tests for inventory mutation guard - core functionality. Tests…** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async without token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async with unique token allows mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async with duplicate token suppresses mutation.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test acquire_async allows same token for different players.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Create an InventoryMutationGuard instance.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test MutationDecision for duplicate.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- **Test InventoryMutationGuard initialization.** (1 connections) — `server/tests/unit/services/test_inventory_mutation_guard.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (11 shared connections)
-- [test_wearable_container_service.py](test_wearable_container_service.py.md) (1 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
+- [ContainerService](ContainerService.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/admin_setstat_command.py`
-- `server/tests/unit/commands/test_admin_setstat_command.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 92 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 39 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,37 +1,33 @@
 # Chat Panel
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **command_request_app_state()** (11 connections) — `server/command_handler/command_execution_request.py`
-- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **test_command_request_app_state_missing_app_or_state_returns_none()** (3 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **CommandExecutionRequest** (1 connections)
-- **Return app.state for HTTP Request or WebSocketRequestContext (duck-typed).…** (1 connections) — `server/command_handler/command_execution_request.py`
-- **Returns app.state for HTTP/FastAPI-style request objects.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Returns app.state for WebSocketRequestContext.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
-- **Gracefully returns None when app or state is absent.** (1 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
+- **Chat Panel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
+- **Game Log Panel** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
+- **Chat Message Routing Bug Fix** (2 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
+- **Chat Message Type Categorization Bug** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
+- **Commands Panel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
+- **Room Description Routing Bug Fix** (1 connections) — `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
+- **Bug Prevention Testing Strategy** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (2 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [MemoryProfiler](MemoryProfiler.md) (1 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
-- [FastAPI Code Review - Anti-Patterns and Best Practices](FastAPI_Code_Review_-_Anti-Patterns_and_Best_Practices.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/command_handler/command_execution_request.py`
-- `server/tests/unit/command_handler/test_command_execution_request.py`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
+- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
+- `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
+- `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
+- `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (84%)
-- INFERRED: 3 (16%)
+- EXTRACTED: 5 (83%)
+- INFERRED: 1 (17%)
 - AMBIGUOUS: 0 (0%)
 
 ---

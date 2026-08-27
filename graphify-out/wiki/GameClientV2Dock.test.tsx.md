@@ -1,40 +1,54 @@
 # GameClientV2Dock.test.tsx
 
-> 17 nodes
+> 32 nodes
 
 ## Key Concepts
 
-- **commandStore.ts** (17 connections) — `client/src/stores/commandStore.ts`
-- **createCommandQueueAndAliasActions()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createCommandStoreSlice()** (4 connections) — `client/src/stores/commandStore.ts`
-- **createInitialState()** (3 connections) — `client/src/stores/commandStore.ts`
-- **useCommandStore** (3 connections) — `client/src/stores/commandStore.ts`
-- **computeNavigateHistoryState()** (2 connections) — `client/src/stores/commandStore.ts`
-- **findMatchingTriggersInState()** (2 connections) — `client/src/stores/commandStore.ts`
-- **commandStore.test.ts** (2 connections) — `client/src/stores/__tests__/commandStore.test.ts`
-- **CommandActions** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandAlias** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandHistoryEntry** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandSelectors** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandState** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStore** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStoreGet** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandStoreSet** (1 connections) — `client/src/stores/commandStore.ts`
-- **CommandTrigger** (1 connections) — `client/src/stores/commandStore.ts`
+- **GameClientV2Dock.test.tsx** (13 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **@testing-library/jest-dom/vitest** (10 connections) — `client/tsconfig.test.json`
+- **include** (8 connections) — `client/tsconfig.test.json`
+- **tsconfig.test.json** (5 connections) — `client/tsconfig.test.json`
+- **types** (5 connections) — `client/tsconfig.test.json`
+- **mockPanelRecord()** (4 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **ProfessionSelectionScreen.test.tsx** (4 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
+- **mockUsePanelManagerValue()** (3 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **compilerOptions** (3 connections) — `client/tsconfig.test.json`
+- **mockPanelRecordCore()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockPanelRecordFlags()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockUsePanelManagerNoops()** (2 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **mockDefaultPanelLayout()** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **fetchSpy** (1 connections) — `client/src/components/ProfessionSelectionScreen.test.tsx`
+- **chatHistoryLayoutIdentity** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **chatHistoryLayoutState** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **defaultChatHistoryLayoutKey** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **dockTest** (1 connections) — `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- **noEmit** (1 connections) — `client/tsconfig.test.json`
+- **exclude** (1 connections) — `client/tsconfig.test.json`
+- **extends** (1 connections) — `client/tsconfig.test.json`
+- **node** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.spec.ts** (1 connections) — `client/tsconfig.test.json`
+- **src/**/*.spec.tsx** (1 connections) — `client/tsconfig.test.json`
+- **src/test/**/*** (1 connections) — `client/tsconfig.test.json`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
-- [stateNormalization.ts](stateNormalization.ts.md) (2 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (5 shared connections)
+- [Profession](Profession.md) (3 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (1 shared connections)
+- [setup.ts](setup.ts.md) (1 shared connections)
+- [App.tsx](App.tsx.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/stores/__tests__/commandStore.test.ts`
-- `client/src/stores/commandStore.ts`
+- `client/src/components/ProfessionSelectionScreen.test.tsx`
+- `client/src/components/ui-v2/__tests__/GameClientV2Dock.test.tsx`
+- `client/tsconfig.test.json`
 
 ## Audit Trail
 
-- EXTRACTED: 23 (96%)
-- INFERRED: 1 (4%)
+- EXTRACTED: 46 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

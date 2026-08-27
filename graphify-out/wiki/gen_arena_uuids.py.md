@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Playwright CLI Automation** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
-- **E2E Scenario Conversion** (1 connections) — `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- **gen_arena_uuids.py** (1 connections) — `scripts/gen_arena_uuids.py`
+- **Generate deterministic UUIDs for arena zone, subzone, 121 rooms. One-off script.** (1 connections) — `scripts/gen_arena_uuids.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `docs/archive/SCENARIO_CONVERSION_GUIDE.md`
+- `scripts/gen_arena_uuids.py`
 
 ## Audit Trail
 

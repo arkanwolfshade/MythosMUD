@@ -1,56 +1,52 @@
 # NPCCombatUUIDMapping
 
-> 106 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **test_look_helpers.py** (31 connections) — `server/tests/unit/commands/test_look_helpers.py`
-- **look_helpers.py** (24 connections) — `server/commands/look_helpers.py`
-- **test_look_helpers_functions.py** (23 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **_get_health_label()** (17 connections) — `server/commands/look_helpers.py`
-- **_get_lucidity_label()** (17 connections) — `server/commands/look_helpers.py`
-- **_get_visible_equipment()** (11 connections) — `server/commands/look_helpers.py`
-- **_parse_instance_number()** (11 connections) — `server/commands/look_helpers.py`
-- **_get_wearable_container_service()** (10 connections) — `server/commands/look_helpers.py`
-- **LookRequest** (9 connections) — `server/commands/look_helpers.py`
-- **_is_direction()** (9 connections) — `server/commands/look_helpers.py`
-- **Protocol** (5 connections)
-- **_EquippedPlayer** (4 connections) — `server/commands/look_helpers.py`
-- **_stat_number()** (3 connections) — `server/commands/look_helpers.py`
-- **test_get_health_label_critical()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_health_label_healthy()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_health_label_mortally_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_health_label_wounded()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_lucidity_label_disturbed_medium()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_lucidity_label_lucid()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_lucidity_label_mad()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_lucidity_label_mad_negative()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_lucidity_label_unstable()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_visible_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_get_visible_equipment_no_equipment()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- **test_is_direction()** (3 connections) — `server/tests/unit/commands/test_look_helpers_functions.py`
-- *... and 81 more nodes in this community*
+- **NPCCombatUUIDMapping** (38 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **TestNPCCombatUUIDMapping** (22 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **UUID** (7 connections)
+- **.convert_to_uuid()** (4 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **test_npc_combat_uuid_mapping.py** (4 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.get_uuid_mapping()** (3 connections) — `server/services/npc_combat_integration_service.py`
+- **.get_original_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_uuid_for_string_id()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.get_xp_value()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.is_valid_uuid()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_string_id_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.store_xp_mapping()** (3 connections) — `server/services/npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_string_id()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_convert_to_uuid_from_uuid_string()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_original_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_uuid_for_string_id_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_xp_value_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_get_xp_value_not_found()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_init()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_invalid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_is_valid_uuid_valid()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_large_xp_value()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- **.test_multiple_mappings()** (3 connections) — `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [EventBus](EventBus.md) (7 shared connections)
-- [ClientLogger](ClientLogger.md) (5 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [errorHandler.ts](errorHandler.ts.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (1 shared connections)
-- [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [_NPCCombatIntegrationValidationDeps](_NPCCombatIntegrationValidationDeps.md) (2 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
 
 ## Source Files
 
-- `server/commands/look_helpers.py`
-- `server/tests/unit/commands/test_look_helpers.py`
-- `server/tests/unit/commands/test_look_helpers_functions.py`
+- `server/services/npc_combat_integration_service.py`
+- `server/services/npc_combat_uuid_mapping.py`
+- `server/tests/unit/services/test_npc_combat_uuid_mapping.py`
 
 ## Audit Trail
 
-- EXTRACTED: 183 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 95 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

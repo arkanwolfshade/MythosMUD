@@ -1,22 +1,21 @@
 # Doors to Darkness (source summary)
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **PostgreSQL database names (MythosMUD)** (4 connections) — `.claude/rules/database.md`
-- **database.md** (1 connections) — `.claude/rules/database.md`
-- **CRITICAL: Which databases may be reset** (1 connections) — `.claude/rules/database.md`
-- **Database placement (production vs test)** (1 connections) — `.claude/rules/database.md`
-- **Enforcement** (1 connections) — `.claude/rules/database.md`
+- **Doors to Darkness (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **Doors to Darkness.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/rules/database.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Doors to Darkness.md`
 
 ## Audit Trail
 

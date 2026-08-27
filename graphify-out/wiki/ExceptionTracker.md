@@ -1,60 +1,65 @@
 # ExceptionTracker
 
-> 90 nodes
+> 117 nodes
 
 ## Key Concepts
 
-- **test_websocket_handler_core.py** (43 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **asyncio** (28 connections)
-- **process_websocket_command()** (19 connections) — `server/realtime/websocket_handler_commands.py`
-- **handle_chat_message()** (17 connections) — `server/realtime/websocket_handler.py`
-- **send_system_message()** (13 connections) — `server/realtime/websocket_handler.py`
-- **handle_websocket_message()** (11 connections) — `server/realtime/websocket_handler.py`
-- **test_websocket_handler_system_message.py** (9 connections) — `server/tests/unit/realtime/test_websocket_handler_system_message.py`
-- **test_handle_chat_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_empty_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_single_word_no_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_whitespace_only()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_game_command_with_provided_args()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_generic_exception_should_break()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_chat()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_handle_websocket_message_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_aliases_dir()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_in_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_app_state()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_no_player()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_process_websocket_command_type_error()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- **test_send_error_response()** (4 connections) — `server/tests/unit/realtime/test_websocket_handler_core.py`
-- *... and 65 more nodes in this community*
+- **ExceptionTracker** (30 connections) — `server/monitoring/exception_tracker.py`
+- **fastapi_integration.py** (28 connections) — `docs/examples/logging/fastapi_integration.py`
+- **monitoring_dashboard.py** (26 connections) — `server/monitoring/monitoring_dashboard.py`
+- **websocket_integration.py** (23 connections) — `docs/examples/logging/websocket_integration.py`
+- **exception_tracker.py** (21 connections) — `server/monitoring/exception_tracker.py`
+- **track_exception()** (15 connections) — `server/monitoring/exception_tracker.py`
+- **test_exception_tracker.py** (13 connections) — `server/tests/unit/monitoring/test_exception_tracker.py`
+- **ExceptionRecord** (12 connections) — `server/monitoring/exception_tracker.py`
+- **get_exception_tracker()** (12 connections) — `server/monitoring/exception_tracker.py`
+- **server/monitoring/__init__.py** (11 connections) — `server/monitoring/__init__.py`
+- **ExceptionStats** (10 connections) — `server/monitoring/exception_tracker.py`
+- **PerformanceStats** (10 connections) — `server/monitoring/performance_monitor.py`
+- **.track_exception()** (8 connections) — `server/monitoring/exception_tracker.py`
+- **__getattr__()** (8 connections) — `server/monitoring/__init__.py`
+- **update_player_background_task()** (7 connections) — `docs/examples/logging/fastapi_integration.py`
+- **handle_websocket_message()** (7 connections) — `docs/examples/logging/websocket_integration.py`
+- **Exception** (7 connections)
+- **ExceptionTrackInput** (6 connections) — `server/monitoring/exception_tracker.py`
+- **MonitoringSummary** (6 connections) — `server/monitoring/monitoring_dashboard.py`
+- **._create_and_store_record()** (6 connections) — `server/monitoring/exception_tracker.py`
+- **track_exception_with_context()** (6 connections) — `server/monitoring/exception_tracker.py`
+- **update_player_background()** (5 connections) — `docs/examples/logging/fastapi_integration.py`
+- **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
+- **._log_tracked_exception()** (5 connections) — `server/monitoring/exception_tracker.py`
+- **Any** (5 connections)
+- *... and 92 more nodes in this community*
 
 ## Relationships
 
-- [test_goto_helpers.py](test_goto_helpers.py.md) (15 shared connections)
-- [CatatoniaRegistry](CatatoniaRegistry.md) (8 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (7 shared connections)
-- [canonical_room_id_impl](canonical_room_id_impl.md) (7 shared connections)
-- [App.tsx](App.tsx.md) (6 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (2 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [PerformanceMonitor](PerformanceMonitor.md) (17 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (12 shared connections)
+- [http_exception_handler](http_exception_handler.md) (10 shared connections)
+- [log_with_context](log_with_context.md) (7 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (4 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [testing_examples.py](testing_examples.py.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/websocket_handler.py`
-- `server/realtime/websocket_handler_commands.py`
-- `server/tests/unit/realtime/test_websocket_handler_core.py`
-- `server/tests/unit/realtime/test_websocket_handler_system_message.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `docs/examples/logging/websocket_integration.py`
+- `server/monitoring/__init__.py`
+- `server/monitoring/exception_tracker.py`
+- `server/monitoring/monitoring_dashboard.py`
+- `server/monitoring/performance_monitor.py`
+- `server/tests/unit/monitoring/test_exception_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 174 (92%)
-- INFERRED: 16 (8%)
+- EXTRACTED: 256 (94%)
+- INFERRED: 17 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

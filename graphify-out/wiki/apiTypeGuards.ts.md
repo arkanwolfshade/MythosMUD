@@ -4,44 +4,50 @@
 
 ## Key Concepts
 
-- **verify_enhanced_logging_compliance.py** (14 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **LoggingComplianceChecker** (12 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Path** (10 connections)
-- **check_file()** (8 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **main()** (7 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Call()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_violations_report()** (6 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_check_all_files()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_violations_for_file()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_read_and_parse()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_run_regex_checks()** (5 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_find_python_files()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_deprecated_context_param()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_fstring_logging()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **._check_getlogger_call()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_should_skip_file()** (4 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **Call** (4 connections)
-- **_group_violations_by_type()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Assign()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_Import()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.visit_ImportFrom()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_compliance_success()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **_print_fix_instructions()** (3 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **.__init__()** (2 connections) — `scripts/verify_enhanced_logging_compliance.py`
-- **AST** (2 connections)
+- **apiTypeGuards.ts** (70 connections) — `client/src/utils/apiTypeGuards.ts`
+- **apiTypeGuards.test.ts** (15 connections) — `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- **isObject()** (13 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isString()** (12 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertServerCharacterResponseArray()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isNumber()** (9 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponse()** (8 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfo()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isLoginResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isServerCharacterResponseArray()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isStatsRollResponse()** (7 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfession()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isRefreshTokenResponse()** (6 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **assertStatsRollResponse()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasSharedCharacterRecordCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isCharacterInfoArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isMechanicalEffect()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfessionArray()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isProfessionCoreFields()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **isStatRequirement()** (5 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasOptionalString()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasServerCharacterCoreFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
+- **hasServerCharacterIdentifierFields()** (4 connections) — `client/src/utils/apiTypeGuards.ts`
 - *... and 22 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [deleteCharacterFlow.ts](deleteCharacterFlow.ts.md) (19 shared connections)
+- [Profession](Profession.md) (8 shared connections)
+- [maps.ts](maps.ts.md) (6 shared connections)
+- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (4 shared connections)
+- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (3 shared connections)
+- [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (2 shared connections)
 
 ## Source Files
 
-- `scripts/verify_enhanced_logging_compliance.py`
+- `client/src/utils/__tests__/apiTypeGuards.test.ts`
+- `client/src/utils/apiTypeGuards.ts`
 
 ## Audit Trail
 
-- EXTRACTED: 76 (100%)
+- EXTRACTED: 166 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

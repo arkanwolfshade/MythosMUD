@@ -1,49 +1,40 @@
 # logging_file_categories.py
 
-> 22 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **.create_equip_command()** (16 connections) — `server/utils/command_factories_inventory.py`
-- **test_create_equip_command_empty_search_term()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_negative()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_zero()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_no_args()** (5 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_with_name_and_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **test_create_equip_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_index_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_inferred_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **test_create_equip_command_search_term_with_slot()** (4 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **_normalize_equip_slot_tokens()** (3 connections) — `server/utils/command_factories_inventory.py`
-- **Test create_equip_command() with item name and inferred slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- **Test create_equip_command() raises error when index is zero.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error when index is negative.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() handles index with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() handles search term with slot.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error when search term is empty.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() infers slot from known slots.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() creates EquipCommand.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Test create_equip_command() raises error with no args.** (1 connections) — `server/tests/unit/utils/test_command_factories_inventory.py`
-- **Create equip command.** (1 connections) — `server/utils/command_factories_inventory.py`
-- **Normalize multi-word slot tokens (e.g. 'main hand' -> 'main_hand'); reduces…** (1 connections) — `server/utils/command_factories_inventory.py`
+- **logging_file_categories.py** (11 connections) — `server/structured_logging/logging_file_categories.py`
+- **load_player_guid_formatter_class()** (10 connections) — `server/structured_logging/logging_utilities.py`
+- **create_handler_for_category()** (9 connections) — `server/structured_logging/logging_file_categories.py`
+- **create_formatter()** (8 connections) — `server/structured_logging/logging_file_categories.py`
+- **Formatter** (1 connections)
+- **_PlayerGuidFormatterType** (1 connections)
+- **Path** (1 connections)
+- **RotatingFileHandler** (1 connections)
+- **Logger-name categories and per-category file handlers for enhanced logging. The…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Create formatter (with or without PlayerGuidFormatter).** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **# NOTE: When async logging is enabled, this filter is added to the QueueHandler,** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Create handler for a log category with graceful error handling. If handler…** (1 connections) — `server/structured_logging/logging_file_categories.py`
+- **Return PlayerGuidFormatter without a static import from caller modules. Import-…** (1 connections) — `server/structured_logging/logging_utilities.py`
 
 ## Relationships
 
-- [test_connection_error_methods.py](test_connection_error_methods.py.md) (18 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (7 shared connections)
-- [TestVerificationSqlUsersPlayers](TestVerificationSqlUsersPlayers.md) (2 shared connections)
-- [devDependencies](devDependencies.md) (1 shared connections)
+- [logging_file_setup.py](logging_file_setup.py.md) (8 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (4 shared connections)
+- [test_logging_handlers.py](test_logging_handlers.py.md) (3 shared connections)
+- [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories_inventory.py`
-- `server/tests/unit/utils/test_command_factories_inventory_helpers.py`
-- `server/utils/command_factories_inventory.py`
+- `server/structured_logging/logging_file_categories.py`
+- `server/structured_logging/logging_utilities.py`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (73%)
-- INFERRED: 13 (27%)
+- EXTRACTED: 31 (94%)
+- INFERRED: 2 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

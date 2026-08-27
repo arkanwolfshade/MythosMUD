@@ -1,49 +1,56 @@
 # test_admin_commands_helpers.py
 
-> 30 nodes
+> 50 nodes
 
 ## Key Concepts
 
-- **properties** (10 connections) — `db/static/schemas/room.schema.json`
-- **room.schema.json** (7 connections) — `db/static/schemas/room.schema.json`
-- **attributes** (3 connections) — `db/static/schemas/room.schema.json`
-- **description** (3 connections) — `db/static/schemas/room.schema.json`
-- **id** (3 connections) — `db/static/schemas/room.schema.json`
-- **name** (3 connections) — `db/static/schemas/room.schema.json`
-- **plane** (3 connections) — `db/static/schemas/room.schema.json`
-- **sub_zone** (3 connections) — `db/static/schemas/room.schema.json`
-- **zone** (3 connections) — `db/static/schemas/room.schema.json`
-- **environment** (2 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **$id** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- **type** (1 connections) — `db/static/schemas/room.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/room.schema.json`
-- **minLength** (1 connections) — `db/static/schemas/room.schema.json`
-- *... and 5 more nodes in this community*
+- **test_admin_commands_helpers.py** (21 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_admin_teleport_utils.py** (19 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **broadcast_teleport_effects()** (17 connections) — `server/commands/admin_teleport_utils.py`
+- **notify_player_of_teleport()** (17 connections) — `server/commands/admin_teleport_utils.py`
+- **create_teleport_effect_message()** (16 connections) — `server/commands/admin_teleport_utils.py`
+- **get_online_player_by_display_name()** (15 connections) — `server/commands/admin_teleport_utils.py`
+- **asyncio** (10 connections)
+- **test_broadcast_teleport_effects_no_broadcast_method()** (4 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **asyncio** (4 connections)
+- **test_broadcast_teleport_effects()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_goto_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_goto_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_goto_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_teleport_arrival()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_teleport_arrival_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_teleport_departure()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_teleport_departure_with_direction()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_create_teleport_effect_message_unknown_type()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_get_online_player_by_display_name_found()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_get_online_player_by_display_name_no_manager()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_notify_player_of_teleport_custom_message()** (3 connections) — `server/tests/unit/commands/test_admin_commands_helpers.py`
+- **test_broadcast_teleport_effects_handles_error()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **test_broadcast_teleport_effects_success()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **test_create_teleport_effect_message()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- **test_get_online_player_found()** (3 connections) — `server/tests/unit/commands/test_admin_teleport_utils.py`
+- *... and 25 more nodes in this community*
 
 ## Relationships
 
-- [retry.py](retry.py.md) (1 shared connections)
-- [RateLimiter](RateLimiter.md) (1 shared connections)
+- [test_admin_setlucidity_command.py](test_admin_setlucidity_command.py.md) (10 shared connections)
+- [test_goto_helpers.py](test_goto_helpers.py.md) (8 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [build_event](build_event.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 
 ## Source Files
 
-- `db/static/schemas/room.schema.json`
+- `server/commands/admin_teleport_utils.py`
+- `server/tests/unit/commands/test_admin_commands_helpers.py`
+- `server/tests/unit/commands/test_admin_teleport_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 120 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

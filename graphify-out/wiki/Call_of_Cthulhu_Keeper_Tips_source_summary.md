@@ -1,29 +1,26 @@
 # Call of Cthulhu Keeper Tips (source summary)
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestValidateUserForCloseContainer** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_close_container_no_user()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **.test_validate_user_for_close_container_success()** (3 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_close_container function.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_close_container passes with valid user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
-- **Test validate_user_for_close_container raises exception for None user.** (1 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **Call of Cthulhu Keeper Tips (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Call of Cthulhu Keeper Tips.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (3 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_container_helpers.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Keeper Tips.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

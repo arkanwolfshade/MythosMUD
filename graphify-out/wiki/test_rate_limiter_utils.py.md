@@ -1,59 +1,56 @@
 # test_rate_limiter_utils.py
 
-> 70 nodes
+> 43 nodes
 
 ## Key Concepts
 
-- **test_security_validator.py** (102 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_normalizes_newlines()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_preserves_tabs()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_removes_control_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_removes_null_bytes()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_comprehensive_sanitize_input_removes_zero_width_chars()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_sanitize_unicode_input_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_sanitize_unicode_input_mojibake()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_sanitize_unicode_input_none()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_sanitize_unicode_input_normal_text()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_strip_ansi_codes_color_codes()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_strip_ansi_codes_cursor_movement()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_strip_ansi_codes_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_strip_ansi_codes_no_ansi()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_action_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_action_content_normal()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_action_content_rejects_html_tags()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_action_content_rejects_injection_patterns()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_command_content_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_command_content_rejects_injection()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_command_content_valid()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_help_topic_empty()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- **test_validate_help_topic_rejects_invalid_format()** (3 connections) — `server/tests/unit/validators/test_security_validator.py`
-- *... and 45 more nodes in this community*
+- **test_rate_limiter_utils.py** (27 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **utils/rate_limiter.py** (13 connections) — `server/utils/rate_limiter.py`
+- **auth_login_rate_limit_settings()** (7 connections) — `server/utils/rate_limiter.py`
+- **test_enforce_rate_limit_includes_retry_after()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_raises_when_exceeded()** (3 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **_positive_int_env()** (3 connections) — `server/utils/rate_limiter.py`
+- **test_auth_login_limiter_matches_settings()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_auth_login_rate_limit_settings_defaults()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_auth_login_rate_limit_settings_from_env()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_character_creation_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_different_users()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_exceeds_limit()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_first_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_multiple_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_check_rate_limit_removes_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_enforce_rate_limit_allows_request()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_reset_time()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_calculates_retry_after()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_filters_old_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_no_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_get_rate_limit_info_with_requests()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_rate_limiter_initialization()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **test_stats_roll_limiter_initialized()** (2 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Unit tests for rate limiting utilities. Tests the simple in-memory rate limiter…** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- **Test get_rate_limit_info returns correct info with requests.** (1 connections) — `server/tests/unit/utils/test_rate_limiter_utils.py`
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [WebSocketRequestContext](WebSocketRequestContext.md) (31 shared connections)
-- [ChatChannelLoggerMixin](ChatChannelLoggerMixin.md) (12 shared connections)
-- [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (11 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (9 shared connections)
-- [_occupation_slots_9](_occupation_slots_9.md) (7 shared connections)
-- [Design ↔ Implementation Drift Audit](Design_↔_Implementation_Drift_Audit.md) (5 shared connections)
-- [_parse_set_stat_args](_parse_set_stat_args.md) (5 shared connections)
-- [_utc_now](_utc_now.md) (5 shared connections)
-- [test_lucidity_service.py](test_lucidity_service.py.md) (5 shared connections)
-- [.filter](filter.md) (4 shared connections)
-- [holidays.schema.json](holidays.schema.json.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (5 shared connections)
+- [RateLimiter](RateLimiter.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [time.py](time.py.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
+- [auth_rate_limit.py](auth_rate_limit.py.md) (1 shared connections)
+- [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_security_validator.py`
+- `server/tests/unit/utils/test_rate_limiter_utils.py`
+- `server/utils/rate_limiter.py`
 
 ## Audit Trail
 
-- EXTRACTED: 170 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 61 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,28 +1,25 @@
 # 📊 METRICS AND SUCCESS CRITERIA
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **Lucidity Tiers** (4 connections) — `docs/archive/lucidity-system.md`
-- **Lucidity System (LCD)** (3 connections) — `docs/archive/lucidity-system.md`
-- **Phantom Hostiles** (2 connections) — `docs/archive/phantom-hostile-requirements.md`
-- **Reversed Compass Directions** (2 connections) — `docs/archive/reversed-compass-directions-requirements.md`
-- **Catatonic Rescue Window** (1 connections) — `docs/archive/lucidity-system.md`
+- **📊 METRICS AND SUCCESS CRITERIA** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Code Quality Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Performance Metrics** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Test Coverage** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Asynchronous Code Audit - December 3, 2025](Asynchronous_Code_Audit_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/lucidity-system.md`
-- `docs/archive/phantom-hostile-requirements.md`
-- `docs/archive/reversed-compass-directions-requirements.md`
+- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,34 +1,29 @@
 # lock_state
 
-> 13 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **.validate_combat_command()** (7 connections) — `server/validators/combat_validator.py`
-- **._is_rate_limited()** (4 connections) — `server/validators/combat_validator.py`
-- **Any** (4 connections)
-- **._contains_suspicious_patterns()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_status_message()** (3 connections) — `server/validators/combat_validator.py`
-- **.__init__()** (3 connections) — `server/validators/combat_validator.py`
-- **._is_valid_target_name()** (3 connections) — `server/validators/combat_validator.py`
-- **Initialize the combat validator. Args: party_service: Optional PartyService for…** (1 connections) — `server/validators/combat_validator.py`
-- **Validate a combat command with thematic error messages. Args: command_data: The…** (1 connections) — `server/validators/combat_validator.py`
-- **Check if target name is valid.** (1 connections) — `server/validators/combat_validator.py`
-- **Check for suspicious patterns in target name.** (1 connections) — `server/validators/combat_validator.py`
-- **Check if player is rate limited.** (1 connections) — `server/validators/combat_validator.py`
-- **Get a thematic combat status message.** (1 connections) — `server/validators/combat_validator.py`
+- **lock_state** (5 connections) — `schemas/unified_room_schema.json`
+- **enum** (4 connections) — `schemas/unified_room_schema.json`
+- **default** (1 connections) — `schemas/unified_room_schema.json`
+- **description** (1 connections) — `schemas/unified_room_schema.json`
+- **type** (1 connections) — `schemas/unified_room_schema.json`
+- **locked** (1 connections) — `schemas/unified_room_schema.json`
+- **sealed** (1 connections) — `schemas/unified_room_schema.json`
+- **unlocked** (1 connections) — `schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [MinimapRenderer](MinimapRenderer.md) (7 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/validators/combat_validator.py`
+- `schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 8 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

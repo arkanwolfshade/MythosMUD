@@ -1,54 +1,30 @@
 # required
 
-> 36 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **LRUCache** (29 connections) — `server/caching/lru_cache.py`
-- **K** (7 connections)
-- **.get_or_set()** (6 connections) — `server/caching/lru_cache.py`
-- **.put()** (6 connections) — `server/caching/lru_cache.py`
-- **.get()** (5 connections) — `server/caching/lru_cache.py`
-- **.items()** (5 connections) — `server/caching/lru_cache.py`
-- **V** (5 connections)
-- **.get_stats()** (4 connections) — `server/caching/lru_cache.py`
-- **.__contains__()** (3 connections) — `server/caching/lru_cache.py`
-- **.delete()** (3 connections) — `server/caching/lru_cache.py`
-- **._evict_expired_entries()** (3 connections) — `server/caching/lru_cache.py`
-- **.keys()** (3 connections) — `server/caching/lru_cache.py`
-- **.__len__()** (3 connections) — `server/caching/lru_cache.py`
-- **.__repr__()** (3 connections) — `server/caching/lru_cache.py`
-- **.size()** (3 connections) — `server/caching/lru_cache.py`
-- **.values()** (3 connections) — `server/caching/lru_cache.py`
-- **.clear()** (2 connections) — `server/caching/lru_cache.py`
-- **.__init__()** (2 connections) — `server/caching/lru_cache.py`
-- **.is_full()** (2 connections) — `server/caching/lru_cache.py`
-- **Put an item into the cache. Args: key: The key to store value: The value to…** (1 connections) — `server/caching/lru_cache.py`
-- **Delete an item from the cache. Args: key: The key to delete Returns: True if…** (1 connections) — `server/caching/lru_cache.py`
-- **Clear all items from the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Get the current number of items in the cache.** (1 connections) — `server/caching/lru_cache.py`
-- **Check if the cache is at maximum capacity.** (1 connections) — `server/caching/lru_cache.py`
-- **Get cache statistics. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/lru_cache.py`
-- *... and 11 more nodes in this community*
+- **required** (8 connections) — `schemas/room_schema.json`
+- **description** (1 connections) — `schemas/room_schema.json`
+- **exits** (1 connections) — `schemas/room_schema.json`
+- **id** (1 connections) — `schemas/room_schema.json`
+- **name** (1 connections) — `schemas/room_schema.json`
+- **plane** (1 connections) — `schemas/room_schema.json`
+- **sub_zone** (1 connections) — `schemas/room_schema.json`
+- **zone** (1 connections) — `schemas/room_schema.json`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (4 shared connections)
-- [analyze_coverage_gaps.py](analyze_coverage_gaps.py.md) (3 shared connections)
-- [required](required.md) (3 shared connections)
-- [test_event_publisher_helpers.py](test_event_publisher_helpers.py.md) (1 shared connections)
-- [identify_critical_code.py](identify_critical_code.py.md) (1 shared connections)
-- [.create_get_command](create_get_command.md) (1 shared connections)
-- [test_combat_death_handler.py](test_combat_death_handler.py.md) (1 shared connections)
+- [room_schema.json](room_schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `server/caching/lru_cache.py`
+- `schemas/room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 57 (89%)
-- INFERRED: 7 (11%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

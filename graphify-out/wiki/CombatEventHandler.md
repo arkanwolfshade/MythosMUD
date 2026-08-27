@@ -1,58 +1,57 @@
 # CombatEventHandler
 
-> 46 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **login_user()** (34 connections) — `server/auth/endpoints.py`
-- **LoginRequest** (21 connections) — `server/auth/endpoints.py`
-- **test_endpoints_login.py** (18 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **asyncio** (11 connections)
-- **test_endpoints_login_profession.py** (10 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **_get_user_characters()** (6 connections) — `server/auth/endpoints.py`
-- **test_login_user_player_no_profession_id()** (5 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_error()** (5 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_none()** (5 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_profession_lookup_success()** (5 connections) — `server/tests/unit/auth/test_endpoints_login_profession.py`
-- **test_login_user_authenticate_raises_exception()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_authenticate_returns_none()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_generic_exception()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_http_exception_re_raised()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_id_mismatch()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_invalid_credentials()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_no_email()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_not_found()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_shutdown_pending()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_success()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **test_login_user_with_characters()** (5 connections) — `server/tests/unit/auth/test_endpoints_login.py`
-- **get_async_session** (5 connections)
-- **asyncio** (4 connections)
-- **CharacterInfo** (1 connections)
-- **get_container** (1 connections)
-- *... and 21 more nodes in this community*
+- **CombatEventHandler** (30 connections) — `server/services/combat_event_handler.py`
+- **test_combat_event_handler.py** (20 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **_participant()** (13 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **asyncio** (9 connections)
+- **.handle_attack_events_and_xp()** (7 connections) — `server/services/combat_event_handler.py`
+- **test_handle_attack_events_and_xp_phantom_target_no_xp()** (5 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_skips_phantom_attacker()** (5 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_skips_phantom_target()** (5 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **.award_xp_to_player()** (4 connections) — `server/services/combat_event_handler.py`
+- **._calculate_xp_reward()** (4 connections) — `server/services/combat_event_handler.py`
+- **.publish_combat_ended_event()** (4 connections) — `server/services/combat_event_handler.py`
+- **._resolve_participant_display_name()** (4 connections) — `server/services/combat_event_handler.py`
+- **test_award_xp_to_player()** (4 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_handle_attack_events_and_xp_npc_death()** (4 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_no_publisher()** (4 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_attack_events_player_target()** (4 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **UUID** (4 connections)
+- **.__init__()** (3 connections) — `server/services/combat_event_handler.py`
+- **test_calculate_xp_reward_default()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_publish_combat_ended_event()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_fallback()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_npc_from_lifecycle()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **test_resolve_participant_display_name_player()** (3 connections) — `server/tests/unit/services/test_combat_event_handler.py`
+- **Any** (1 connections)
+- **Publish attack events and calculate XP reward. Args: current_participant:…** (1 connections) — `server/services/combat_event_handler.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [test_combat_service_modules.py](test_combat_service_modules.py.md) (17 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [maps.py](maps.py.md) (2 shared connections)
-- [test_security_validator.py](test_security_validator.py.md) (1 shared connections)
-- [container_persistence.py](container_persistence.py.md) (1 shared connections)
-- [FakeHallucinationService](FakeHallucinationService.md) (1 shared connections)
-- [test_lint_raw_sql_in_python.py](test_lint_raw_sql_in_python.py.md) (1 shared connections)
-- [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (11 shared connections)
+- [CombatParticipant](CombatParticipant.md) (5 shared connections)
+- [models/combat.py](models-combat.py.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [CombatDeathHandler](CombatDeathHandler.md) (1 shared connections)
+- [combat_service.py](combat_service.py.md) (1 shared connections)
+- [NATSError](NATSError.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/endpoints.py`
-- `server/tests/unit/auth/test_endpoints_login.py`
-- `server/tests/unit/auth/test_endpoints_login_profession.py`
+- `server/services/combat_event_handler.py`
+- `server/tests/unit/services/test_combat_event_handler.py`
 
 ## Audit Trail
 
-- EXTRACTED: 99 (85%)
-- INFERRED: 18 (15%)
+- EXTRACTED: 78 (84%)
+- INFERRED: 15 (16%)
 - AMBIGUOUS: 0 (0%)
 
 ---

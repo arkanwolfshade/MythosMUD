@@ -1,44 +1,40 @@
 # test_spell_repository.py
 
-> 20 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **Any** (8 connections)
-- **PlayerServiceProtocol** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
-- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_mute_status()** (4 connections) — `server/game/chat_moderation.py`
-- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_by_id()** (3 connections) — `server/game/chat_moderation.py`
-- **.resolve_player_name()** (3 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
-- **datetime** (2 connections)
-- **Protocol** (2 connections)
-- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
-- **Resolve player name to player object.** (1 connections) — `server/game/chat_moderation.py`
-- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
-- **Format mute duration text with remaining time or expiration status.** (1 connections) — `server/game/chat_moderation.py`
-- **Format a single mute entry for display.** (1 connections) — `server/game/chat_moderation.py`
-- **Format a section of mutes (personal or global) for display.** (1 connections) — `server/game/chat_moderation.py`
-- **Get comprehensive mute status for a player. Args: player_id: Player ID to get…** (1 connections) — `server/game/chat_moderation.py`
+- **test_spell_repository.py** (15 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **_row_to_spell_dict()** (7 connections) — `server/persistence/repositories/spell_repository.py`
+- **.get_all_spells()** (6 connections) — `server/persistence/repositories/spell_repository.py`
+- **_mock_session()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_all_spells()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_spell_by_id_found()** (4 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **asyncio** (4 connections)
+- **_spell_row()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_all_spells_db_error()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **test_get_spell_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **Any** (3 connections)
+- **test_row_to_spell_dict_maps_fields()** (2 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
+- **Map procedure result row to spell dict.** (1 connections) — `server/persistence/repositories/spell_repository.py`
+- **Get all spells from the database. Returns: list[dict]: List of all spell…** (1 connections) — `server/persistence/repositories/spell_repository.py`
+- **Unit tests for SpellRepository.** (1 connections) — `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Relationships
 
-- [Phase 3, Task 3.2: NATS Subject Manager Usage Review](Phase_3,_Task_3.2-_NATS_Subject_Manager_Usage_Review.md) (8 shared connections)
-- [test_player_repository_room.py](test_player_repository_room.py.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (9 shared connections)
+- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_moderation.py`
+- `server/persistence/repositories/spell_repository.py`
+- `server/tests/unit/persistence/repositories/test_spell_repository.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 36 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

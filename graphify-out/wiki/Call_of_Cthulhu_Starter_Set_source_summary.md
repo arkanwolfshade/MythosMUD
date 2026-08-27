@@ -1,28 +1,25 @@
 # Call of Cthulhu Starter Set (source summary)
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestCheckRateLimit** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_allowed()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_rate_limit_blocked()** (3 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns None when allowed.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_rate_limit returns result when blocked.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Call of Cthulhu Starter Set (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Call of Cthulhu Starter Set.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Relationships
 
-- [test_connection_statistics.py](test_connection_statistics.py.md) (2 shared connections)
-- [test_message_handlers.py](test_message_handlers.py.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Call of Cthulhu Starter Set.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,38 +1,34 @@
 # Distill Skill
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Test Server Remediation Prompt - Cursor Executable Version** (17 connections) — `.cursor/commands/server-test-remediation.md`
-- **server-test-remediation.md** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Best Practices** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **COMPLETION VERIFICATION** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **CRITICAL "DO NOT" INSTRUCTIONS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **CRITICAL: EXECUTION REQUIREMENTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **DECISION TREE - START HERE** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **ERROR HANDLING PROTOCOL** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **MANDATORY PROGRESS TRACKING** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **MANDATORY VERIFICATION CHECKPOINTS** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Project Test Configuration** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Success Criteria** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **TOOL USAGE EXAMPLES** (1 connections) — `.cursor/commands/server-test-remediation.md`
-- **Troubleshooting** (1 connections) — `.cursor/commands/server-test-remediation.md`
+- **Simplify the Design** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Distill Skill** (7 connections) — `.claude/skills/distill/SKILL.md`
+- **Assess Current State** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Code Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Content Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Document Removed Complexity** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Information Architecture** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Interaction Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Layout Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Plan Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Verify Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
+- **Visual Simplification** (1 connections) — `.claude/skills/distill/SKILL.md`
 
 ## Relationships
 
-- [run_bug_prevention_tests.ps1](run_bug_prevention_tests.ps1.md) (1 shared connections)
-- [Test Suite Stall After Performance Comparison](Test_Suite_Stall_After_Performance_Comparison.md) (1 shared connections)
-- [run_make_stages.py](run_make_stages.py.md) (1 shared connections)
-- [fix_file](fix_file.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `.cursor/commands/server-test-remediation.md`
+- `.claude/skills/distill/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

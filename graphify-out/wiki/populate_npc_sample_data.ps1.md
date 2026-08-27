@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Real-Time Architecture** (0 connections) — `docs/REAL_TIME_ARCHITECTURE.md`
+- **populate_npc_sample_data.ps1** (0 connections) — `scripts/populate_npc_sample_data.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/REAL_TIME_ARCHITECTURE.md`
+- `scripts/populate_npc_sample_data.ps1`
 
 ## Audit Trail
 

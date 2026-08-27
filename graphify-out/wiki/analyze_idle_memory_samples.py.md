@@ -1,20 +1,18 @@
 # analyze_idle_memory_samples.py
 
-> 11 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu_ The Coloring Book  (2026-08-12)** (9 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Communities (1 total, 0 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Community 0 - "Mythos Subjects"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- **analyze_idle_memory_samples.py** (6 connections) — `scripts/analyze_idle_memory_samples.py`
+- **JsonSample** (4 connections) — `scripts/analyze_idle_memory_samples.py`
+- **analyze()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_append_slope_rows()** (4 connections) — `scripts/analyze_idle_memory_samples.py`
+- **main()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
+- **_slope_per_hour()** (3 connections) — `scripts/analyze_idle_memory_samples.py`
+- **Path** (2 connections)
+- **Analyze idle memory JSONL samples (warmup + measurement windows).** (1 connections) — `scripts/analyze_idle_memory_samples.py`
+- **JSONL row with numeric fields used for slope analysis.** (1 connections) — `scripts/analyze_idle_memory_samples.py`
 
 ## Relationships
 
@@ -22,11 +20,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/GRAPH_REPORT.md`
+- `scripts/analyze_idle_memory_samples.py`
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

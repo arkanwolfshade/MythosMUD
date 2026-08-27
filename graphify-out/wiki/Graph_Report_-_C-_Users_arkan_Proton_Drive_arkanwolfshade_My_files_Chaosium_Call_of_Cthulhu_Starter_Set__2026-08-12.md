@@ -1,27 +1,26 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)
 
-> 18 nodes
+> 17 nodes
 
 ## Key Concepts
 
-- **2. Type Hinting Best Practices** (7 connections) — `.claude/rules/mypy.md`
-- **mypy Best Practices** (6 connections) — `.claude/rules/mypy.md`
-- **1. Configuration & Integration** (4 connections) — `.claude/rules/mypy.md`
-- **3. Managing Type Errors** (3 connections) — `.claude/rules/mypy.md`
-- **mypy.md** (1 connections) — `.claude/rules/mypy.md`
-- **1.1. Centralized Configuration** (1 connections) — `.claude/rules/mypy.md`
-- **1.2. CI/CD & Pre-commit Hooks** (1 connections) — `.claude/rules/mypy.md`
-- **1.3. Incremental Adoption** (1 connections) — `.claude/rules/mypy.md`
-- **2.1. Prefer `object` over `Any`** (1 connections) — `.claude/rules/mypy.md`
-- **2.2. Use `TypeAlias` for Type Aliases** (1 connections) — `.claude/rules/mypy.md`
-- **2.3. Concrete vs. Abstract Types** (1 connections) — `.claude/rules/mypy.md`
-- **2.4. Shorthand Union Syntax** (1 connections) — `.claude/rules/mypy.md`
-- **2.5. Built-in Generics** (1 connections) — `.claude/rules/mypy.md`
-- **2.6. Protocols for Structural Typing** (1 connections) — `.claude/rules/mypy.md`
-- **3.1. Specific `# type: ignore`** (1 connections) — `.claude/rules/mypy.md`
-- **3.2. Strict Mode for New Code** (1 connections) — `.claude/rules/mypy.md`
-- **4. Performance Considerations** (1 connections) — `.claude/rules/mypy.md`
-- **5. Third-Party Libraries** (1 connections) — `.claude/rules/mypy.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Call of Cthulhu Starter Set  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Communities (9 total, 4 thin omitted)** (6 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **call-of-cthulhu-starter-set/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 0 - "De Vermiis Mysteriis; Dust of Ibn-Ghazi"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 1 - "Character Creation"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 2 - "Alone Against the Flame"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 3 - "Cover Art"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community 4 - "Azathoth; Banishment Chant (Latin)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -29,11 +28,11 @@
 
 ## Source Files
 
-- `.claude/rules/mypy.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-starter-set/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,48 +1,50 @@
 # PlayerPreferencesService
 
-> 30 nodes
+> 29 nodes
 
 ## Key Concepts
 
-- **test_lint_container_get_instance.py** (18 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **_load_script()** (16 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **_LintContainerGetInstanceModule** (6 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_baseline_allowlist_matches_current_codebase()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_count_exceeding_allowlist_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_count_under_allowlist_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_does_not_flag_docstring_prose_mentioning_the_pattern()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_does_not_flag_unrelated_get_instance_call()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_drift_immune_to_unrelated_line_shift()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_stale_entry_for_fully_migrated_file_is_reported()** (3 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_allowlist_entries_are_suppressed_and_counted()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_does_not_flag_comment_mentioning_the_pattern()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_flags_call_inside_a_method()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_flags_multiple_calls_on_separate_lines()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_flags_real_get_instance_call()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_new_unallowlisted_site_is_reported()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_unparsable_file_returns_no_hits_rather_than_raising()** (2 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **._find_get_instance_lines()** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **.scan()** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **test_script_exists()** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **Protocol** (1 connections)
-- **Unit tests for scripts/lint_container_get_instance.py. Verifies the detection…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **A file with more get_instance() calls than its allowlist entry expects fails --…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **A file with fewer get_instance() calls than its allowlist entry expects fails…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- **An allowlist entry for a file with zero remaining hits (fully migrated) must…** (1 connections) — `server/tests/unit/scripts/test_lint_container_get_instance.py`
-- *... and 5 more nodes in this community*
+- **PlayerPreferencesService** (19 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_player_id()** (11 connections) — `server/services/player_preferences_service.py`
+- **UUID** (10 connections)
+- **Any** (8 connections)
+- **AsyncSession** (8 connections)
+- **.create_player_preferences()** (7 connections) — `server/services/player_preferences_service.py`
+- **.is_channel_muted()** (7 connections) — `server/services/player_preferences_service.py`
+- **.mute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.unmute_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.update_default_channel()** (7 connections) — `server/services/player_preferences_service.py`
+- **.delete_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_muted_channels()** (6 connections) — `server/services/player_preferences_service.py`
+- **.get_player_preferences()** (6 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_channel()** (6 connections) — `server/services/player_preferences_service.py`
+- **.__init__()** (2 connections) — `server/services/player_preferences_service.py`
+- **._is_valid_json_array()** (2 connections) — `server/services/player_preferences_service.py`
+- **Get preferences for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Update a player's default channel. Args: session: Database session player_id:…** (1 connections) — `server/services/player_preferences_service.py`
+- **Mute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Unmute a channel for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- **Service for managing player channel preferences. This service handles: - Player…** (1 connections) — `server/services/player_preferences_service.py`
+- **Get list of muted channels for a player. Args: session: Database session…** (1 connections) — `server/services/player_preferences_service.py`
+- **Check if a specific channel is muted for a player. Args: session: Database…** (1 connections) — `server/services/player_preferences_service.py`
+- **Initialize the PlayerPreferencesService. Note: This service now uses PostgreSQL…** (1 connections) — `server/services/player_preferences_service.py`
+- **Delete preferences for a player. Args: session: Database session player_id: The…** (1 connections) — `server/services/player_preferences_service.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [models/player.py](models-player.py.md) (4 shared connections)
+- [get_async_session](get_async_session.md) (2 shared connections)
+- [test_player_preferences_service.py](test_player_preferences_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/scripts/test_lint_container_get_instance.py`
+- `server/services/player_preferences_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 68 (97%)
+- INFERRED: 2 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

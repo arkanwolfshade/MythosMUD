@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - A Cold Fire Within** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **a-cold-fire-within/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- **Cursor Rules as Canonical Config** (2 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **Cursor-Centric AI Config** (1 connections) — `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- **GitHub Worktrees Cursor Setup** (1 connections) — `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Relationships
 
@@ -14,12 +14,13 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/a-cold-fire-within/MANIFEST.md`
+- `.cursor/plans/cursor-centric_ai_config_6e46bf3d.plan.md`
+- `.cursor/plans/github_worktrees_cursor_setup_ab66558e.plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 1 (50%)
+- INFERRED: 1 (50%)
 - AMBIGUOUS: 0 (0%)
 
 ---

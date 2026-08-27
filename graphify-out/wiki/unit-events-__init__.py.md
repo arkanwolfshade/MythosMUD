@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **check_professions_schema.py** (0 connections) — `scripts/check_professions_schema.py`
+- **unit/events/__init__.py** (0 connections) — `server/tests/unit/events/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/check_professions_schema.py`
+- `server/tests/unit/events/__init__.py`
 
 ## Audit Trail
 

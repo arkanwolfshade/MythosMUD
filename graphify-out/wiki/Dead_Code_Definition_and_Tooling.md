@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Security Auditor Agent** (0 connections) — `.claude/agents/security-auditor.md`
+- **Dead Code Definition and Tooling** (0 connections) — `docs/dead-code.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/agents/security-auditor.md`
+- `docs/dead-code.md`
 
 ## Audit Trail
 

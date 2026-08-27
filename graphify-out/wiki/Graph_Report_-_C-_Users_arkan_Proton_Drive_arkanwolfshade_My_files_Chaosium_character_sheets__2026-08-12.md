@@ -1,35 +1,33 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\character_sheets  (2026-08-12)
 
-> 13 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **SessionManager** (12 connections) — `client/src/utils/security.ts`
-- **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
-- **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
-- **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.constructor()** (2 connections) — `client/src/utils/security.ts`
-- **.createSession()** (2 connections) — `client/src/utils/security.ts`
-- **.expireSession()** (2 connections) — `client/src/utils/security.ts`
-- **.generateSessionId()** (2 connections) — `client/src/utils/security.ts`
-- **SessionManagerTestHooks** (1 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
-- **.destroy()** (1 connections) — `client/src/utils/security.ts`
-- **.isSessionValid()** (1 connections) — `client/src/utils/security.ts`
-- **.refreshSession()** (1 connections) — `client/src/utils/security.ts`
-- **.removeSession()** (1 connections) — `client/src/utils/security.ts`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\character_sheets  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Communities (3 total, 2 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **character-sheets/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Community 0 - "Player Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [test_admin_teleport_commands.py](test_admin_teleport_commands.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `client/src/utils/__tests__/sessionManager.test.ts`
-- `client/src/utils/security.ts`
+- `data/MythosMUD-Obsidian/raw/chaosium/character-sheets/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 11 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

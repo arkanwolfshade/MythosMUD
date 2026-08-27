@@ -1,32 +1,31 @@
 # Second NPC Combat And Linkdead Findings
 
-> 9 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **TestCheckAllCommandBlocks** (6 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_casting()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_catatonia()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_grace_period()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **.test_check_all_command_blocks_no_blocks()** (4 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for catatonia.** (2 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks function.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns block result for casting.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
-- **Test _check_all_command_blocks returns None when no blocks.** (1 connections) — `server/tests/unit/commands/test_command_validation.py`
+- **Second NPC Combat And Linkdead Findings** (4 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Combat Start Missing Await get_player_by_name** (2 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **XP Award async_get_player Missing Method** (2 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Coroutine Object Has No current_room_id** (1 connections) — `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- **get_player_by_id vs async_get_player Mismatch** (1 connections) — `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- **Linkdead WebSocket Grace Period** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
+- **Stale Queued Attack Target Validation** (1 connections) — `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Relationships
 
-- [test_message_handlers.py](test_message_handlers.py.md) (5 shared connections)
-- [test_connection_statistics.py](test_connection_statistics.py.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/commands/test_command_validation.py`
+- `investigations/sessions/2025-12-08_session-combat-start-failure.md`
+- `investigations/sessions/2025-12-14_session-002_xp-award-error-investigation.md`
+- `investigations/sessions/2026-02-04_combat-second-npc-and-linkdead-findings.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 4 (67%)
+- INFERRED: 2 (33%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,49 +1,47 @@
 # NPCActionMessage
 
-> 22 nodes
+> 20 nodes
 
 ## Key Concepts
 
-- **handle_teach_command()** (19 connections) — `server/commands/teach_command.py`
-- **test_teach_command.py** (14 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **asyncio** (9 connections)
-- **_resolve_npc_teacher()** (4 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_learn_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_no_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_not_npc_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_success_with_corruption()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_target_resolution_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Any** (4 connections)
-- **patch** (4 connections)
-- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
-- **_get_teach_services()** (3 connections) — `server/commands/teach_command.py`
-- **test_handle_teach_command_no_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **test_handle_teach_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Handle /teach command for learning spells from NPCs. Usage: /teach <npc_name>…** (1 connections) — `server/commands/teach_command.py`
-- **Unit tests for teach command handlers. Tests the teach command functionality.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() teaches spell to player.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() handles missing target.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Test handle_teach_command() handles missing persistence.** (1 connections) — `server/tests/unit/commands/test_teach_command.py`
+- **NPCActionMessage** (12 connections) — `server/npc/threading_messages.py`
+- **threading_messages.py** (11 connections) — `server/npc/threading_messages.py`
+- **.from_dict()** (8 connections) — `server/npc/threading_messages.py`
+- **NPCActionType** (6 connections) — `server/npc/threading_messages.py`
+- **.from_json()** (4 connections) — `server/npc/threading_messages.py`
+- **.to_dict()** (3 connections) — `server/npc/threading_messages.py`
+- **.to_json()** (3 connections) — `server/npc/threading_messages.py`
+- **test_npc_action_message_json_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **test_npc_action_message_round_trip()** (3 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **_float_field()** (2 connections) — `server/npc/threading_messages.py`
+- **_optional_int_field()** (2 connections) — `server/npc/threading_messages.py`
+- **_optional_str_field()** (2 connections) — `server/npc/threading_messages.py`
+- **test_npc_action_message_to_dict_uses_enum_value()** (2 connections) — `server/tests/unit/npc/test_npc_threading_messages.py`
+- **Enum** (2 connections)
+- **Convert message to JSON string.** (1 connections) — `server/npc/threading_messages.py`
+- **Create message from JSON string.** (1 connections) — `server/npc/threading_messages.py`
+- **Enumeration of NPC action types.** (1 connections) — `server/npc/threading_messages.py`
+- **Message structure for NPC actions. This class represents a single action that…** (1 connections) — `server/npc/threading_messages.py`
+- **Convert message to dictionary for serialization.** (1 connections) — `server/npc/threading_messages.py`
+- **Create message from dictionary.** (1 connections) — `server/npc/threading_messages.py`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [CombatParticipant](CombatParticipant.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [time.py](time.py.md) (4 shared connections)
+- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (4 shared connections)
+- [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/teach_command.py`
-- `server/tests/unit/commands/test_teach_command.py`
+- `server/npc/threading_messages.py`
+- `server/tests/unit/npc/test_npc_threading_messages.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 37 (90%)
+- INFERRED: 4 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

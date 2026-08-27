@@ -1,53 +1,40 @@
 # properties
 
-> 37 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **PayloadOptimizer** (22 connections) — `server/realtime/payload_optimizer.py`
-- **test_payload_optimizer.py** (20 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **get_payload_optimizer()** (9 connections) — `server/realtime/payload_optimizer.py`
-- **payload_optimizer.py** (6 connections) — `server/realtime/payload_optimizer.py`
-- **.optimize_payload()** (5 connections) — `server/realtime/payload_optimizer.py`
-- **.compress_payload()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **.get_payload_size()** (4 connections) — `server/realtime/payload_optimizer.py`
-- **optimizer()** (4 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **Any** (4 connections)
-- **_CompareExplodes** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **.create_incremental_update()** (3 connections) — `server/realtime/payload_optimizer.py`
-- **test_create_incremental_update_fallback_on_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_size_returns_zero_on_serialization_error()** (3 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **.__init__()** (2 connections) — `server/realtime/payload_optimizer.py`
-- **test_compress_payload_round_trip_metadata()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_detects_changes()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_empty_when_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_create_incremental_update_no_previous_returns_full()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_optimizer_returns_singleton()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_get_payload_size_returns_byte_length()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_compresses_large_payload()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_force_compression_when_beneficial()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_raises_when_compressed_still_too_large()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_raises_when_uncompressible_and_oversized()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- **test_optimize_payload_returns_small_payload_unchanged()** (2 connections) — `server/tests/unit/realtime/test_payload_optimizer.py`
-- *... and 12 more nodes in this community*
+- **properties** (12 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **id** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field1** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field2** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **field3** (2 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **pattern** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [setup_jwt_secret](setup_jwt_secret.md) (2 shared connections)
-- [edgeModalLogic.ts](edgeModalLogic.ts.md) (1 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [room_hierarchy_schema.json](room_hierarchy_schema.json.md) (1 shared connections)
+- [name](name.md) (1 shared connections)
+- [description](description.md) (1 shared connections)
+- [zone](zone.md) (1 shared connections)
+- [plane](plane.md) (1 shared connections)
+- [sub_zone](sub_zone.md) (1 shared connections)
+- [enum](enum.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/payload_optimizer.py`
-- `server/tests/unit/realtime/test_payload_optimizer.py`
+- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (84%)
-- INFERRED: 11 (16%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

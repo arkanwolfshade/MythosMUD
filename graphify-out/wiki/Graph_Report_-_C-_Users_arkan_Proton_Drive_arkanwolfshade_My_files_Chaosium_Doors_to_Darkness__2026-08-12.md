@@ -1,23 +1,22 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)
 
-> 14 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Malleus Monstrorum - Cthulhu Mythos Bestiary  (2026-08-12)** (10 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Communities (3 total, 0 thin omitted)** (4 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 0 - "Call of Cthulhu Stat Block; Chaosium Inc."** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 1 - "Mythos Elements"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community 2 - "Mythos Elements (2)"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
-- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Doors to Darkness  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Communities (17 total, 16 thin omitted)** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **doors-to-darkness/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Community 0 - "Scenario Handouts"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
 
 ## Relationships
 
@@ -25,11 +24,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/malleus-monstrorum-cthulhu-mythos-bestiary/GRAPH_REPORT.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/doors-to-darkness/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

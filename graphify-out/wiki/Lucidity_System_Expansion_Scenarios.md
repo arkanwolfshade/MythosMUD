@@ -1,26 +1,27 @@
 # Lucidity System Expansion Scenarios
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.get_emote_aliases()** (3 connections) — `server/persistence/repositories/emote_repository.py`
-- **.get_emotes()** (3 connections) — `server/persistence/repositories/emote_repository.py`
-- **Any** (2 connections)
-- **Get all predefined emotes from the database. Returns: list[dict]: Rows with…** (1 connections) — `server/persistence/repositories/emote_repository.py`
-- **Get all emote aliases joined to their owning emote's stable_id. Returns:…** (1 connections) — `server/persistence/repositories/emote_repository.py`
+- **Lucidity System Expansion Scenarios** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- **Catatonia Grounding Ritual Scenario** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **player_lucidity Ledger** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- **Sanitarium Failover Escalation** (2 connections) — `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/persistence/repositories/emote_repository.py`
+- `e2e-tests/scenarios/lucidity-system-expansion/README.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-01-catatonia-grounding.md`
+- `e2e-tests/scenarios/lucidity-system-expansion/scenario-02-sanitarium-failover.md`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

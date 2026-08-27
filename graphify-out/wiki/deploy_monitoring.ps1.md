@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Configuration Files Reference** (0 connections) — `docs/CONFIGURATION_FILES_REFERENCE.md`
+- **deploy_monitoring.ps1** (0 connections) — `scripts/deploy_monitoring.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/CONFIGURATION_FILES_REFERENCE.md`
+- `scripts/deploy_monitoring.ps1`
 
 ## Audit Trail
 

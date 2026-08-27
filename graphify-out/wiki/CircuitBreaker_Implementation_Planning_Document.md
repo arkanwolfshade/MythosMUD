@@ -1,33 +1,38 @@
 # CircuitBreaker Implementation Planning Document
 
-> 12 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **TRACK C · The interactive review — 8 decisions** (12 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C1 · What are the ADRs *for*?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C2 · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C3 · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C4 · Is `APPLICATION_CONTAINER_ANALYSIS.md` restored or left archived?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C5 · Four doc↔doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C6 · Contract drift from one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C7 · Closed-but-not-built — six features** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C8 · Undocumented systems worth an ADR** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **C9 · The effects ADR and its number collision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **Caveats carried into review** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
-- **Deliberately not findings** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- **CircuitBreaker Implementation Planning Document** (14 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Rollback Plan** (3 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Configuration Schema** (2 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Dependencies** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Gradual Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Immediate Rollback** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Objectives** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Overview** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Server Configuration** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
+- **Timeline** (1 connections) — `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Relationships
 
-- [MythosMUD Full-Stack Feature Skill](MythosMUD_Full-Stack_Feature_Skill.md) (1 shared connections)
+- [Architecture Overview](Architecture_Overview.md) (1 shared connections)
+- [Implementation Details](Implementation_Details.md) (1 shared connections)
+- [Implementation Phases](Implementation_Phases.md) (1 shared connections)
+- [Testing Strategy](Testing_Strategy.md) (1 shared connections)
+- [Monitoring and Alerting](Monitoring_and_Alerting.md) (1 shared connections)
+- [Success Criteria](Success_Criteria.md) (1 shared connections)
+- [Future Enhancements](Future_Enhancements.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Queue.md`
+- `docs/archive/CIRCUIT_BREAKER_IMPLEMENTATION_PLANNING.md`
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 17 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

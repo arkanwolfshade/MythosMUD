@@ -1,29 +1,25 @@
 # Alone Against the Frost (source summary)
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **add_default_combat_data_to_stats()** (9 connections) — `server/schemas/combat/combat_schema.py`
-- **test_add_default_combat_data_to_stats()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **test_add_default_combat_data_to_stats_preserves_existing()** (3 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Add default combat data to base_stats if not present. Args: stats: Base stats…** (1 connections) — `server/schemas/combat/combat_schema.py`
-- **Test add_default_combat_data_to_stats() preserves existing values.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
-- **Test add_default_combat_data_to_stats() adds defaults.** (1 connections) — `server/tests/unit/schemas/test_combat_schema.py`
+- **Alone Against the Frost (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Alone Against the Frost.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Relationships
 
-- [HealthService](HealthService.md) (6 shared connections)
-- [Communities (19 total, 4 thin omitted)](Communities_19_total,_4_thin_omitted.md) (2 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/combat/combat_schema.py`
-- `server/tests/unit/schemas/test_combat_schema.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Alone Against the Frost.md`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

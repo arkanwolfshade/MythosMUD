@@ -1,64 +1,62 @@
 # server/dependencies.py
 
-> 166 nodes
+> 204 nodes
 
 ## Key Concepts
 
-- **Stats** (73 connections) — `server/models/game.py`
-- **StatusEffect** (31 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **Player** (26 connections) — `server/models/game.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_game_status_effect.py** (15 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **AttributeType** (8 connections) — `server/models/game.py`
-- **PlayerUpdate** (8 connections) — `server/schemas/players/player.py`
-- **BaseModel** (5 connections)
-- **WeaponStats** (4 connections) — `server/models/game.py`
-- **test_player_add_item_existing()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_add_status_effect()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_false()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_can_carry_weight_true()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_get_active_status_effects_all_active()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_insufficient_quantity()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_removes_when_zero()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_item_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_remove_status_effect_success()** (4 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_create_custom_stats()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_read()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **test_player_read_defaults()** (4 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **.add_item()** (3 connections) — `server/models/game.py`
-- *... and 141 more nodes in this community*
+- **server/dependencies.py** (107 connections) — `server/dependencies.py`
+- **test_dependencies.py** (62 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **get_container()** (40 connections) — `server/dependencies.py`
+- **Request** (28 connections)
+- **test_dependency_injection.py** (20 connections) — `server/tests/unit/test_dependency_injection.py`
+- **LevelService** (13 connections) — `server/game/level_service.py`
+- **get_player_service()** (13 connections) — `server/dependencies.py`
+- **get_async_persistence()** (12 connections) — `server/dependencies.py`
+- **get_room_service()** (11 connections) — `server/dependencies.py`
+- **get_profession_service()** (10 connections) — `server/dependencies.py`
+- **get_connection_manager()** (9 connections) — `server/dependencies.py`
+- **get_player_service_for_testing()** (9 connections) — `server/dependencies.py`
+- **get_combat_service()** (8 connections) — `server/dependencies.py`
+- **get_nats_message_handler()** (8 connections) — `server/dependencies.py`
+- **get_catatonia_registry()** (7 connections) — `server/dependencies.py`
+- **get_chat_service()** (7 connections) — `server/dependencies.py`
+- **get_exploration_service()** (7 connections) — `server/dependencies.py`
+- **get_magic_service()** (7 connections) — `server/dependencies.py`
+- **get_mp_regeneration_service()** (7 connections) — `server/dependencies.py`
+- **get_mythos_time_consumer()** (7 connections) — `server/dependencies.py`
+- **get_npc_lifecycle_manager()** (7 connections) — `server/dependencies.py`
+- **get_npc_population_controller()** (7 connections) — `server/dependencies.py`
+- **get_npc_spawning_service()** (7 connections) — `server/dependencies.py`
+- **get_passive_lucidity_flux_service()** (7 connections) — `server/dependencies.py`
+- **get_player_combat_service()** (7 connections) — `server/dependencies.py`
+- *... and 179 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (41 shared connections)
-- [ContainerComponent](ContainerComponent.md) (16 shared connections)
-- [extract_player_name](extract_player_name.md) (7 shared connections)
-- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (7 shared connections)
-- [Async Code Review - Post Phase 2 Migration](Async_Code_Review_-_Post_Phase_2_Migration.md) (6 shared connections)
-- [test_inventory_display_helpers.py](test_inventory_display_helpers.py.md) (3 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
-- [bench_cache.py](bench_cache.py.md) (2 shared connections)
-- [Dark Young of Shub-Niggurath.md](Dark_Young_of_Shub-Niggurath.md.md) (2 shared connections)
-- [SkillService](SkillService.md) (2 shared connections)
-- [MythosMUD Commit Messages](MythosMUD_Commit_Messages.md) (1 shared connections)
-- [maps.py](maps.py.md) (1 shared connections)
+- [PlayerService](PlayerService.md) (9 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (9 shared connections)
+- [RoomService](RoomService.md) (8 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (6 shared connections)
+- [roll_character_stats](roll_character_stats.md) (6 shared connections)
+- [test_level_service.py](test_level_service.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (4 shared connections)
+- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [Stats](Stats.md) (4 shared connections)
+- [TestGetMagicService](TestGetMagicService.md) (3 shared connections)
 
 ## Source Files
 
-- `server/models/game.py`
-- `server/schemas/players/player.py`
-- `server/tests/unit/models/test_game_player.py`
-- `server/tests/unit/models/test_game_stats_methods.py`
-- `server/tests/unit/models/test_game_status_effect.py`
-- `server/tests/unit/schemas/test_player_schemas.py`
+- `server/dependencies.py`
+- `server/game/level_service.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
+- `server/tests/unit/test_dependency_injection.py`
 
 ## Audit Trail
 
-- EXTRACTED: 325 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 478 (98%)
+- INFERRED: 8 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,26 +1,25 @@
 # Core Architectural Differences
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **UI/UX Considerations** (5 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **1. Visual Distinction** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **2. Panel Positioning** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **3. Responsive Design** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
-- **4. Accessibility** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- **Core Architectural Differences** (4 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **1. **Structured Concurrency**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **2. **Backend Abstraction**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
+- **3. **API Design Philosophy**** (1 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Relationships
 
-- [worktree-manager.ps1](worktree-manager.ps1.md) (1 shared connections)
+- [AnyIO vs Asyncio: High-Level Comparison and Decision Guide](AnyIO_vs_Asyncio-_High-Level_Comparison_and_Decision_Guide.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_SPEC.md`
+- `docs/archive/anyio_vs_asyncio_comparison.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

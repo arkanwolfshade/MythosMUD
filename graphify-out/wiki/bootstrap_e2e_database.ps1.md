@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Two-Day Holiday Cap** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
-- **Walpurgis Regional Overlap** (1 connections) — `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- **bootstrap_e2e_database.ps1** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
+- **Invoke-Step()** (1 connections) — `scripts/bootstrap_e2e_database.ps1`
 
 ## Relationships
 
@@ -13,12 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/MYTHOS_HOLIDAY_CANDIDATES.md`
+- `scripts/bootstrap_e2e_database.ps1`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

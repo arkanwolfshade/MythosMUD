@@ -1,23 +1,22 @@
 # Admin Teleport Feature
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_get_combat_death_message()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test get_combat_death_message returns death message.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **Admin Teleport Feature** (0 connections) — `docs/archive/ADMIN_TELEPORT_FRD.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/archive/ADMIN_TELEPORT_FRD.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,65 +1,72 @@
 # build_event
 
-> 95 nodes
+> 227 nodes
 
 ## Key Concepts
 
-- **AttributeError** (44 connections)
+- **build_event()** (111 connections) — `server/realtime/envelope.py`
 - **test_websocket_room_updates.py** (35 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **websocket_room_updates.py** (26 connections) — `server/realtime/websocket_room_updates.py`
+- **websocket_room_updates.py** (32 connections) — `server/realtime/websocket_room_updates.py`
+- **envelope.py** (29 connections) — `server/realtime/envelope.py`
+- **test_envelope.py** (29 connections) — `server/tests/unit/realtime/test_envelope.py`
+- **broadcast_room_update()** (24 connections) — `server/realtime/websocket_room_updates.py`
 - **asyncio** (24 connections)
-- **broadcast_room_update()** (23 connections) — `server/realtime/websocket_room_updates.py`
-- **get_player_occupants()** (11 connections) — `server/realtime/websocket_room_updates.py`
-- **build_room_update_event()** (10 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_from_lifecycle_manager()** (10 connections) — `server/realtime/websocket_room_updates.py`
-- **get_npc_occupants_fallback()** (8 connections) — `server/realtime/websocket_room_updates.py`
-- **connection_manager_from_running_app()** (7 connections) — `server/realtime/running_app.py`
-- **update_player_room_subscription()** (7 connections) — `server/realtime/websocket_room_updates.py`
-- **test_websocket_room_updates_build_event.py** (7 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_fallback_npc_method()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_npc_occupants_from_lifecycle_manager_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_get_player_occupants_handles_exception()** (5 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **running_app.py** (5 connections) — `server/realtime/running_app.py`
-- **_resolve_room_with_fallback()** (4 connections) — `server/realtime/websocket_room_updates.py`
-- **test_build_room_update_event()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- **test_broadcast_room_update_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_no_persistence()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_room_not_found()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_broadcast_room_update_success()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- **test_build_room_update_event_with_drops()** (4 connections) — `server/tests/unit/realtime/test_websocket_room_updates.py`
-- *... and 70 more nodes in this community*
+- **websocket_handler_connection.py** (19 connections) — `server/realtime/websocket_handler_connection.py`
+- **clone_room_drops()** (17 connections) — `server/utils/room_renderer.py`
+- **test_room_renderer_functions.py** (14 connections) — `server/tests/unit/utils/test_room_renderer_functions.py`
+- **build_room_update_event()** (13 connections) — `server/realtime/websocket_room_updates.py`
+- **CombatMessagingIntegration** (12 connections) — `server/services/combat_messaging/integration.py`
+- **get_player_occupants()** (12 connections) — `server/realtime/websocket_room_updates.py`
+- **log_room_broadcast_result()** (12 connections) — `server/services/combat_messaging/base.py`
+- **build_room_drop_summary()** (12 connections) — `server/utils/room_renderer.py`
+- **combat_messaging/base.py** (12 connections) — `server/services/combat_messaging/base.py`
+- **CombatBroadcastMixin** (11 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **get_npc_occupants_from_lifecycle_manager()** (11 connections) — `server/realtime/websocket_room_updates.py`
+- **PlayerBroadcastMixin** (10 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **combat_broadcasts.py** (10 connections) — `server/services/combat_messaging/combat_broadcasts.py`
+- **player_broadcasts.py** (10 connections) — `server/services/combat_messaging/player_broadcasts.py`
+- **room_renderer.py** (10 connections) — `server/utils/room_renderer.py`
+- **get_npc_occupants_fallback()** (9 connections) — `server/realtime/websocket_room_updates.py`
+- **integration.py** (9 connections) — `server/services/combat_messaging/integration.py`
+- **UUIDEncoder** (8 connections) — `server/realtime/envelope.py`
+- *... and 202 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (6 shared connections)
-- [CombatAuditLogger](CombatAuditLogger.md) (5 shared connections)
-- [test_goto_helpers.py](test_goto_helpers.py.md) (3 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (3 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [NPCMovementIntegration](NPCMovementIntegration.md) (2 shared connections)
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (2 shared connections)
-- [test_logging_handlers.py](test_logging_handlers.py.md) (2 shared connections)
-- [test_error_logging.py](test_error_logging.py.md) (2 shared connections)
-- [test_status_commands.py](test_status_commands.py.md) (2 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (2 shared connections)
+- [test_room_renderer.py](test_room_renderer.py.md) (20 shared connections)
+- [get_logger](get_logger.md) (16 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (11 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (8 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (7 shared connections)
+- [test_websocket_helpers.py](test_websocket_helpers.py.md) (6 shared connections)
+- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (5 shared connections)
+- [EventHandler](EventHandler.md) (5 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (5 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [ConnectionManager](ConnectionManager.md) (5 shared connections)
+- [.__post_init__](__post_init__.md) (4 shared connections)
 
 ## Source Files
 
-- `server/realtime/running_app.py`
+- `server/realtime/envelope.py`
+- `server/realtime/player_event_handlers_state.py`
+- `server/realtime/websocket_handler_connection.py`
 - `server/realtime/websocket_room_updates.py`
-- `server/tests/unit/commands/test_command_service.py`
+- `server/services/combat_messaging/__init__.py`
+- `server/services/combat_messaging/base.py`
+- `server/services/combat_messaging/combat_broadcasts.py`
+- `server/services/combat_messaging/integration.py`
+- `server/services/combat_messaging/player_broadcasts.py`
+- `server/tests/unit/realtime/test_envelope.py`
 - `server/tests/unit/realtime/test_websocket_room_updates.py`
 - `server/tests/unit/realtime/test_websocket_room_updates_build_event.py`
-- `server/tests/unit/services/test_room_sync_service.py`
-- `server/tests/unit/utils/test_command_processor.py`
+- `server/tests/unit/utils/test_room_renderer_functions.py`
+- `server/utils/room_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 192 (81%)
-- INFERRED: 44 (19%)
+- EXTRACTED: 568 (97%)
+- INFERRED: 15 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

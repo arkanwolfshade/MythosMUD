@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Players API Code Coverage Plan** (0 connections) — `docs/archive/PLANNING_code_coverage.md`
+- **apply_magic_system_migration.ps1** (0 connections) — `scripts/apply_magic_system_migration.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/archive/PLANNING_code_coverage.md`
+- `scripts/apply_magic_system_migration.ps1`
 
 ## Audit Trail
 

@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Session Loss On Peer Tab Closure** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
-- **E2E Multiplayer Playbook Findings** (1 connections) — `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
+- **server/tests/__init__.py** (1 connections) — `server/tests/__init__.py`
+- **MythosMUD server test suite.** (1 connections) — `server/tests/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `investigations/sessions/2025-11-21_e2e-multiplayer-playbook-findings.md`
+- `server/tests/__init__.py`
 
 ## Audit Trail
 

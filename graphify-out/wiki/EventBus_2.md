@@ -1,8 +1,8 @@
 # EventBus
 
-> God node · 208 connections · `server/events/event_bus.py`
+> God node · 210 connections · `server/events/event_bus.py`
 
-**Community:** [NPCLifecycleManager](NPCLifecycleManager.md)
+**Community:** [EventBus](EventBus.md)
 
 ## Connections by Relation
 
@@ -11,11 +11,11 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
+- ._publish_player_dp_correction_event() `EXTRACTED`
 - ._init_persistence_and_event_bus() `EXTRACTED`
 - integration() `EXTRACTED`
 - test_spawning_service_npc_room_event_handlers() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- ._publish_player_dp_correction_event() `EXTRACTED`
 - event_bus() `EXTRACTED`
 - event_bus() `EXTRACTED`
 - event_bus() `EXTRACTED`
@@ -33,25 +33,25 @@
 
 ### imports
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
-- combat_service.py `EXTRACTED`
-- [test_population_control.py](test_population_control.py.md) `EXTRACTED`
+- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- async_persistence.py `EXTRACTED`
+- test_population_control.py `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
 - test_npc_instance_service.py `EXTRACTED`
 - npc_combat_integration_service.py `EXTRACTED`
-- [lifecycle_manager.py](lifecycle_manager.py.md) `EXTRACTED`
+- lifecycle_manager.py `EXTRACTED`
+- combat_handler.py `EXTRACTED`
 - test_npc_combat_integration_class.py `EXTRACTED`
 - npc_base.py `EXTRACTED`
-- [population_control.py](population_control.py.md) `EXTRACTED`
+- population_control.py `EXTRACTED`
 - test_spawning_modules.py `EXTRACTED`
 - spawning_service.py `EXTRACTED`
-- combat_handler.py `EXTRACTED`
+- memory_monitor.py `EXTRACTED`
 - event_handler.py `EXTRACTED`
 - movement_service.py `EXTRACTED`
-- memory_monitor.py `EXTRACTED`
 - chat_npc_system.py `EXTRACTED`
 - models/room.py `EXTRACTED`
 - npc_instance_service.py `EXTRACTED`
-- event_reaction_system.py `EXTRACTED`
 
 ### inherits
 - [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`
@@ -81,8 +81,9 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
 - subscribe_npc_spoke_to_chat() `EXTRACTED`
+- .__init__() `EXTRACTED`
+- .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
@@ -96,29 +97,28 @@
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
 - .__init__() `EXTRACTED`
-- .__init__() `EXTRACTED`
 
 ### uses
 - [CombatService](CombatService.md) `INFERRED`
+- BaseEvent `INFERRED`
 - [NPCLifecycleManager](NPCLifecycleManager.md) `INFERRED`
-- [NPCSpawningService](NPCSpawningService.md) `INFERRED`
+- NPCSpawningService `INFERRED`
 - NPCPopulationController `INFERRED`
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
 - FollowService `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`
-- NPCInstanceService `INFERRED`
 - MythosTimeEventConsumer `INFERRED`
+- NPCInstanceService `INFERRED`
 - create_npc_instance() `INFERRED`
+- initialize_npc_instance_service() `INFERRED`
 - _LifecycleManagerForDeath `INFERRED`
 - _instantiate_by_type() `INFERRED`
-- initialize_npc_instance_service() `INFERRED`
 - _build_aggressive() `INFERRED`
 - _build_passive() `INFERRED`
 - _build_shopkeeper() `INFERRED`
-- party_events() `INFERRED`
-- party_service() `INFERRED`
-- test_event_bus_inject_dispatches_to_subscribers() `INFERRED`
+- test_handle_event_async_async_subscriber_error() `INFERRED`
+- test_handle_event_async_sync_subscriber_error() `INFERRED`
 
 ---
 

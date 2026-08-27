@@ -1,34 +1,26 @@
 # main
 
-> 12 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **What They Measure** (6 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Ruff C901: McCabe Cyclomatic Complexity** (5 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Pylint Complexity Metrics (R0911-R0915)** (3 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Configuration** (2 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Example** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0911: Too Many Return Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0912: Too Many Branches** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0913: Too Many Arguments** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0914: Too Many Local Variables** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **R0915: Too Many Statements** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **What It Measures** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
-- **Why It's Useful** (1 connections) — `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- **main()** (3 connections) — `scripts/e2e_reset_collect_n_quest.py`
+- **_reset_collect_n_quest()** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
+- **e2e_reset_collect_n_quest.py** (2 connections) — `scripts/e2e_reset_collect_n_quest.py`
+- **Entry point: ensure collect_n quest seed and clear instances via anyio.** (1 connections) — `scripts/e2e_reset_collect_n_quest.py`
 
 ## Relationships
 
-- [main](main.md) (2 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/LINTING_COMPLEXITY_ALIGNMENT.md`
+- `scripts/e2e_reset_collect_n_quest.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

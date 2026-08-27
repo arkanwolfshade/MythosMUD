@@ -1,11 +1,10 @@
 # Dual Command Processing Architecture
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **Mobile-First Responsive Design** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
-- **Responsive Design Reference** (1 connections) — `.cursor/skills/frontend-design/reference/responsive-design.md`
+- **Dual Command Processing Architecture** (0 connections) — `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/frontend-design/reference/responsive-design.md`
+- `docs/archive/PLANNING_unified_command_handler.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

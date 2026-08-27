@@ -1,25 +1,28 @@
 # holiday
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **README.md** (1 connections) — `README.md`
-- **TESTING.md** (1 connections) — `TESTING.md`
+- **holiday** (5 connections) — `schemas/calendar/holiday.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/holiday.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/holiday.schema.json`
+- **type** (1 connections) — `schemas/calendar/holiday.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [holiday.schema.json](holiday.schema.json.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `README.md`
-- `TESTING.md`
+- `schemas/calendar/holiday.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 6 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

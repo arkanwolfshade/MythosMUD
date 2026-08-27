@@ -1,64 +1,57 @@
 # test_container_persistence_extended_crud.py
 
-> 100 nodes
+> 53 nodes
 
 ## Key Concepts
 
-- **is_player_in_login_grace_period()** (43 connections) — `server/realtime/login_grace_period.py`
-- **login_grace_period.py** (43 connections) — `server/realtime/login_grace_period.py`
-- **start_login_grace_period()** (42 connections) — `server/realtime/login_grace_period.py`
-- **test_login_grace_period_visual_indicator.py** (29 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_login_grace_period_flow.py** (22 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **get_login_grace_period_remaining()** (19 connections) — `server/realtime/login_grace_period.py`
-- **FakeGraceManager** (13 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **cancel_login_grace_period()** (13 connections) — `server/realtime/login_grace_period.py`
-- **UUID** (13 connections)
-- **test_combat_grace_period.py** (12 connections) — `server/tests/unit/commands/test_combat_grace_period.py`
-- **_as_grace()** (9 connections) — `server/realtime/login_grace_period.py`
-- **asyncio** (9 connections)
-- **handle_login_grace_period_expiration()** (8 connections) — `server/realtime/login_grace_period.py`
-- **asyncio** (8 connections)
-- **._get_login_grace_period_status()** (7 connections) — `server/realtime/integration/game_state_provider.py`
-- **_grace_period_task()** (7 connections) — `server/realtime/login_grace_period.py`
-- **_remove_from_grace_period_tracking()** (7 connections) — `server/realtime/login_grace_period.py`
-- **test_effect_based_grace_start_then_tick_expiration_clears_in_memory()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_can_be_cancelled()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_grace_period_expires_after_duration()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_multiple_players_independent_grace_periods()** (7 connections) — `server/tests/integration/test_login_grace_period_flow.py`
-- **test_both_linkdead_and_warded_indicators()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **test_warded_indicator_removed_after_expiration()** (7 connections) — `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
-- **Protocol** (7 connections)
-- **_trigger_room_occupants_update()** (6 connections) — `server/realtime/login_grace_period.py`
-- *... and 75 more nodes in this community*
+- **test_container_persistence_extended_crud.py** (42 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **ContainerCreateParams** (20 connections) — `server/persistence/container_create_params.py`
+- **create_container()** (19 connections) — `server/persistence/container_persistence.py`
+- **test_create_container_uuid_string_conversion()** (6 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_success()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_entity_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_room_id_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_decayed_containers_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_database_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_create_container_wraps_psycopg2_error()** (4 connections) — `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
+- **test_delete_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_delete_container_uuid_string_conversion()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_container_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_entity_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_room_id_empty()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_containers_by_room_id_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_decayed_containers_none_time()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_get_decayed_containers_success()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_no_updates()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- **test_update_container_not_found()** (3 connections) — `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- *... and 28 more nodes in this community*
 
 ## Relationships
 
-- [MemoryThresholdMonitor](MemoryThresholdMonitor.md) (22 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (12 shared connections)
-- [.claude/hooks/record_edited_file.py](claude-hooks-record_edited_file.py.md) (9 shared connections)
-- [login_grace_period.py](login_grace_period.py.md) (8 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (7 shared connections)
-- [EventBus](EventBus.md) (6 shared connections)
-- [Any](Any.md) (6 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (5 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
-- [extract_player_name](extract_player_name.md) (3 shared connections)
-- [generate_invites.py](generate_invites.py.md) (3 shared connections)
-- [NATSService](NATSService.md) (3 shared connections)
+- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) (27 shared connections)
+- [ContainerData](ContainerData.md) (22 shared connections)
+- [DatabaseError](DatabaseError.md) (11 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
+- [ContainerRepository](ContainerRepository.md) (4 shared connections)
+- [container_query_helpers_async.py](container_query_helpers_async.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/integration/game_state_provider.py`
-- `server/realtime/login_grace_period.py`
-- `server/tests/integration/test_login_grace_period_flow.py`
-- `server/tests/unit/commands/test_combat_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period.py`
-- `server/tests/unit/realtime/test_login_grace_period_visual_indicator.py`
+- `server/persistence/container_create_params.py`
+- `server/persistence/container_persistence.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_crud.py`
+- `server/tests/unit/persistence/test_container_persistence_extended_row_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 312 (95%)
-- INFERRED: 15 (5%)
+- EXTRACTED: 118 (90%)
+- INFERRED: 13 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

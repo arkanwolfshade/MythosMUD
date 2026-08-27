@@ -1,26 +1,27 @@
 # Container System
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **_EventBusPublishPort** (4 connections) — `server/realtime/event_handlers.py`
-- **.publish()** (2 connections) — `server/realtime/event_handlers.py`
-- **Protocol** (1 connections)
-- **Minimal surface for publishing domain events from ConnectionManager.event_bus.** (1 connections) — `server/realtime/event_handlers.py`
-- **Publish a single event to the in-process bus.** (1 connections) — `server/realtime/event_handlers.py`
+- **Container System** (3 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- **Scenario 23 Multi-User Container Looting** (1 connections) — `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- **Scenario 24 Environmental Containers** (1 connections) — `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
+- **Scenario 26 Corpse Looting Grace Periods** (1 connections) — `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
 
 ## Relationships
 
-- [test_websocket_handler_validation_errors.py](test_websocket_handler_validation_errors.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/realtime/event_handlers.py`
+- `e2e-tests/scenarios/scenario-23-container-multi-user-looting.md`
+- `e2e-tests/scenarios/scenario-24-container-environmental-interactions.md`
+- `e2e-tests/scenarios/scenario-26-container-corpse-looting.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 3 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

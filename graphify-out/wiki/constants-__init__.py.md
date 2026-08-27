@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **Playwright MCP Timing Limitation** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
-- **Whisper Rate Limit Sliding Window** (1 connections) — `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- **constants/__init__.py** (1 connections) — `server/constants/__init__.py`
+- **Project-wide constants packages.** (1 connections) — `server/constants/__init__.py`
 
 ## Relationships
 
@@ -13,7 +13,7 @@
 
 ## Source Files
 
-- `e2e-tests/SCENARIO_15_TEST_LIMITATION.md`
+- `server/constants/__init__.py`
 
 ## Audit Trail
 

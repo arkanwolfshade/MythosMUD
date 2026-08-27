@@ -1,16 +1,14 @@
 # Magic and Spellcasting System
 
-> 7 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Chat Panel** (4 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Game Log Panel** (2 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Chat Message Routing Bug Fix** (2 connections) — `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- **Chat Message Type Categorization Bug** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
-- **Commands Panel** (1 connections) — `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- **Room Description Routing Bug Fix** (1 connections) — `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
-- **Bug Prevention Testing Strategy** (1 connections) — `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
+- **Magic and Spellcasting System** (3 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Effects System Reference** (2 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **EffectList Pattern** (1 connections) — `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- **Magic Points MP** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
+- **Spell Registry** (1 connections) — `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Relationships
 
@@ -18,16 +16,13 @@
 
 ## Source Files
 
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DEBUG_PLANNING.md`
-- `docs/archive/ADVANCED_CHAT_CHANNELS_SPEC/CHAT_PANEL_SEPARATION_DOCUMENTATION.md`
-- `docs/archive/BUG_FIX_CHAT_MESSAGE_ROUTING.md`
-- `docs/archive/BUG_FIX_ROOM_DESCRIPTION_ROUTING.md`
-- `docs/archive/BUG_PREVENTION_TESTING_STRATEGY.md`
+- `docs/archive/EFFECTS_SYSTEM_REFERENCE.md`
+- `docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (83%)
-- INFERRED: 1 (17%)
+- EXTRACTED: 3 (75%)
+- INFERRED: 1 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---

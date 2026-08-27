@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **MythosMUD Obsidian Index** (1 connections) — `data/MythosMUD-Obsidian/index.md`
-- **MythosMUD Obsidian README** (1 connections) — `data/MythosMUD-Obsidian/README.md`
+- **Unused requests Dependency** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
+- **Requests Best Practices Remediation** (1 connections) — `.cursor/plans/requests_best_practices_remediation_plan.md`
 
 ## Relationships
 
@@ -13,13 +13,12 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/README.md`
-- `data/MythosMUD-Obsidian/index.md`
+- `.cursor/plans/requests_best_practices_remediation_plan.md`
 
 ## Audit Trail
 
-- EXTRACTED: 0 (0%)
-- INFERRED: 1 (100%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

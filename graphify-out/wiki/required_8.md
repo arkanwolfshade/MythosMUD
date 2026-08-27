@@ -1,41 +1,34 @@
 # required
 
-> 20 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **required** (15 connections) — `schemas/items/item_prototype.schema.json`
-- **item_prototype.schema.json** (6 connections) — `schemas/items/item_prototype.schema.json`
-- **additionalProperties** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **$schema** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **title** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **base_value** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **effect_components** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **flags** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **item_type** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **long_description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **metadata** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **prototype_id** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **short_description** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **stacking_rules** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **tags** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **usage_restrictions** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **wear_slots** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **weight** (1 connections) — `schemas/items/item_prototype.schema.json`
-- **name** (1 connections) — `schemas/items/item_prototype.schema.json`
+- **required** (8 connections) — `schemas/calendar/schedule.schema.json`
+- **scheduleEntry** (5 connections) — `schemas/calendar/schedule.schema.json`
+- **$defs** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **additionalProperties** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **applies_to** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **start_hour** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- [Critical Coverage Gaps](Critical_Coverage_Gaps.md) (1 shared connections)
+- [schedule.schema.json](schedule.schema.json.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/items/item_prototype.schema.json`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 20 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

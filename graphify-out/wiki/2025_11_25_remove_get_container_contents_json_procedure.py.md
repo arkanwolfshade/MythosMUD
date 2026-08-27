@@ -1,27 +1,26 @@
 # 2025_11_25_remove_get_container_contents_json_procedure.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Core Logging Principles** (6 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **1. **Structured Logging**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **2. **Context is Everything**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **3. **Security First**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **4. **Performance Aware**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
-- **5. **Actionable Information**** (1 connections) — `docs/archive/LOGGING_BEST_PRACTICES.md`
+- **2025_11_25_remove_get_container_contents_json_procedure.py** (3 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **downgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **Remove deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
+- **Restore deprecated stored procedure.** (1 connections) — `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
 
 ## Relationships
 
-- [safe_run_static](safe_run_static.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/LOGGING_BEST_PRACTICES.md`
+- `server/alembic/versions/2025_11_25_remove_get_container_contents_json_procedure.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

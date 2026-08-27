@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Explicit File Extensions** (0 connections) — `.claude/rules/vite.md`
+- **NATS Manual Acknowledgment Guide** (0 connections) — `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/rules/vite.md`
+- `docs/NATS_MANUAL_ACKNOWLEDGMENT_GUIDE.md`
 
 ## Audit Trail
 

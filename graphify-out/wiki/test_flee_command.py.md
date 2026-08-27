@@ -1,48 +1,54 @@
 # test_flee_command.py
 
-> 53 nodes
+> 39 nodes
 
 ## Key Concepts
 
-- **✅ Phase 2 Async Persistence Migration - COMPLETE** (18 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **💡 Key Improvements** (6 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📚 Changes by Category** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🚀 Deployment Readiness** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎓 Lessons Learned** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🚦 Next Steps** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **✅ Verification Results** (4 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎯 Async Compliance Score** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🔧 Changes Summary** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🎭 Closing Remarks** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📊 Final Results** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **📈 Performance Impact** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Status**: ✅**PHASE 2 COMPLETE - READY FOR TESTING** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🧪 Testing Status** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **🏆 Achievement Summary** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **1. Eliminated Event Loop Blocking** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **2. Consistent Async Patterns** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **3. Proper Error Handling** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **4. Resource Management** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **5. Performance Optimization** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Additional Files Updated** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Adjusts spectacles with profound satisfaction** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **After Migration** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Async Compliance** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **Automated Tests** (1 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- *... and 28 more nodes in this community*
+- **test_flee_command.py** (29 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **FleeHandlerDeps** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_request_with_persistence()** (10 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_no_exits_returns_no_escape()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_roll_fails_returns_failure_and_uses_action()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_roll_succeeds_returns_success()** (9 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **handler()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_make_participant()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_standing_player_id()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_not_in_combat_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_flee_not_standing_forces_stand_and_returns_message()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **test_get_combat_command_handler_includes_flee()** (6 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **asyncio** (5 connections)
+- **flee_handler_deps()** (4 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_FleeCmdAppState** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderContainer** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **standing_player()** (3 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **fixture** (3 connections)
+- **UUID** (3 connections)
+- **_FleeCmdApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_FleeCmdRequest** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderApp** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **_GetCombatHandlerLoaderAppState** (2 connections) — `server/tests/unit/commands/test_flee_command.py`
+- **TypedDict** (1 connections)
+- **Unit tests for /flee command (handle_flee_command).** (1 connections) — `server/tests/unit/commands/test_flee_command.py`
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [ApplicationContainer Structure Analysis and Domain-Specific Split Proposal](ApplicationContainer_Structure_Analysis_and_Domain-Specific_Split_Proposal.md) (1 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (6 shared connections)
+- [CombatInstance](CombatInstance.md) (4 shared connections)
+- [combat_loader.py](combat_loader.py.md) (3 shared connections)
+- [CombatParticipant](CombatParticipant.md) (2 shared connections)
+- [models/combat.py](models-combat.py.md) (2 shared connections)
+- [models/player.py](models-player.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
+- `server/tests/unit/commands/test_flee_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 53 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 88 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

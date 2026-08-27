@@ -1,38 +1,40 @@
 # Decisions required
 
-> 16 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **test_instance_manager.py** (16 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_create_instance_raises_when_no_templates()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_destroy_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_exit_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_first_room_id()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_none_for_non_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **test_get_room_by_id_returns_room_when_in_instance()** (2 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Unit tests for InstanceManager. Tests instance creation, destruction, room…** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_exit_room_id returns fixed exit room.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns None for non-instance room IDs.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_room_by_id returns room when room is in an instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance creates instance with cloned rooms.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test create_instance raises when no template rooms found.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test destroy_instance removes instance from store.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **Test get_first_room_id returns first room of instance.** (1 connections) — `server/tests/unit/game/test_instance_manager.py`
+- **Decisions required** (8 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **P3 · Findings Verified Directly** (6 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **P3-Verified-Direct.md** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **P6 · Review Clusters (draft — P4 findings still to fold in)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Proposed for bulk confirmation (mechanical, no judgement needed)** (4 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **P6-Review-Clusters.md** (2 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **F-D3 · Inbound links to archived documents — DEVIATED (7 instances, one root cause)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D5 · The DI system's architecture doc is archived, not live — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-D6 · `docs/DEVELOPMENT_AI.md` is not valid text — DEVIATED** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V1 · Sync PersistenceLayer removal — CONFORMS (reverses a P0 row)** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **F-V2 · sqlite3 imports survive in migration scripts — STALE** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- **A · Hard-coded metrics in documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **B · Migration scaffolding that outlived its migration** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **C · Broken links to archived documents** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **D · The design record was built from the code** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **E · Who owns query construction?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **F · Layer boundaries: enforce or amend?** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **G · Doc ↔ doc contradictions** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **H · Contract/path drift, rooted in one unrecorded decision** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **I · Undocumented systems** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **J · Operational defects — recommend removing from this audit entirely** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
+- **Not findings — recorded so they are not re-litigated** (1 connections) — `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Relationships
 
-- [applies_to](applies_to.md) (3 shared connections)
-- [🎯 Async Remediation - Final Report](🎯_Async_Remediation_-_Final_Report.md) (1 shared connections)
-- [._get_room_uuid_by_stable_id](_get_room_uuid_by_stable_id.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [INDEX.md](INDEX.md.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_instance_manager.py`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P3-Verified-Direct.md`
+- `data/MythosMUD-Obsidian/Design Audit 2026-08-18/P6-Review-Clusters.md`
 
 ## Audit Trail
 

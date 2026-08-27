@@ -1,64 +1,61 @@
 # npc_database.py
 
-> 86 nodes
+> 91 nodes
 
 ## Key Concepts
 
-- **test_player_event_handlers_state.py** (34 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **PlayerDPUpdated** (33 connections) — `server/events/event_types.py`
-- **PlayerXPAwardEvent** (30 connections) — `server/services/player_combat_service.py`
-- **player_event_handlers_state.py** (23 connections) — `server/realtime/player_event_handlers_state.py`
-- **asyncio** (19 connections)
-- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
-- **PlayerStateEventHandler** (14 connections) — `server/realtime/player_event_handlers_state.py`
-- **_dispatch_player_dp_updated_payload()** (11 connections) — `server/realtime/player_event_handlers_state.py`
-- **_send_player_death_notification()** (8 connections) — `server/realtime/player_event_handlers_state.py`
-- **_player_snapshot_for_dp()** (6 connections) — `server/realtime/player_event_handlers_state.py`
-- **.__init__()** (5 connections) — `server/realtime/player_event_handlers_state.py`
-- **_dp_player_update_payload()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_died()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_dp_updated()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **.handle_player_xp_awarded()** (4 connections) — `server/realtime/player_event_handlers_state.py`
-- **mock_utils()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **player_state_event_handler()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_no_get_stats()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_player_not_found()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_dp_updated_success()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_error_handling()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_no_connection_manager()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- **test_handle_player_xp_awarded_player_no_current_room_id()** (4 connections) — `server/tests/unit/realtime/test_player_event_handlers_state.py`
-- *... and 61 more nodes in this community*
+- **npc_database.py** (29 connections) — `server/npc_database.py`
+- **get_npc_session()** (24 connections) — `server/npc_database.py`
+- **test_npc_database.py** (23 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **patch** (20 connections)
+- **get_npc_engine()** (14 connections) — `server/npc_database.py`
+- **init_npc_db()** (11 connections) — `server/npc_database.py`
+- **_initialize_npc_database()** (11 connections) — `server/npc_database.py`
+- **get_npc_database_path()** (10 connections) — `server/npc_database.py`
+- **close_npc_db()** (9 connections) — `server/npc_database.py`
+- **asyncio** (9 connections)
+- **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **get_npc_session_maker()** (8 connections) — `server/npc_database.py`
+- **ensure_npc_database_directory()** (6 connections) — `server/npc_database.py`
+- **.test_close_npc_db_disposes_engine()** (6 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestCloseNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestGetNPCDatabasePath** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestInitNpcDb** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **TestNPCSession** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **reset_npc_database()** (5 connections) — `server/npc_database.py`
+- **.test_close_npc_db_handles_closed_loop()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_close_npc_db_handles_no_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_engine_recreates_on_loop_change()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_raises_on_none_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_init_npc_db_success()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- **.test_get_npc_session_inits_db_for_unit_test()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
+- *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (19 shared connections)
-- [InventoryCommandFactory](InventoryCommandFactory.md) (12 shared connections)
-- [MovementService](MovementService.md) (6 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (6 shared connections)
-- [test_spell_effects.py](test_spell_effects.py.md) (6 shared connections)
-- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
-- [PopulationStats](PopulationStats.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (3 shared connections)
-- [SessionManager](SessionManager.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (3 shared connections)
-- [ChatLogger](ChatLogger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (12 shared connections)
+- [ValidationError](ValidationError.md) (8 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (5 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
+- [migrate_combat_data.py](migrate_combat_data.py.md) (3 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (3 shared connections)
+- [NPCStartupService](NPCStartupService.md) (3 shared connections)
+- [get_config](get_config.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/event_types.py`
-- `server/realtime/player_event_handlers.py`
-- `server/realtime/player_event_handlers_state.py`
-- `server/realtime/player_event_handlers_utils.py`
-- `server/services/player_combat_service.py`
-- `server/tests/unit/realtime/test_player_event_handlers_state.py`
+- `server/container/bundles/core.py`
+- `server/npc_database.py`
+- `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 198 (88%)
-- INFERRED: 26 (12%)
+- EXTRACTED: 203 (97%)
+- INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,25 +1,24 @@
 # Chaosium graphify snapshot - S. Petersen's Field Guide to Lovecraftian Horrors
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **🔍 TESTING STRATEGY** (4 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 1 Testing (Critical)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 2 Testing (Performance)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
-- **Phase 3 Testing (Polish)** (1 connections) — `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- **Chaosium graphify snapshot - S. Petersen's Field Guide to Lovecraftian Horrors** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- **s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
 
 ## Relationships
 
-- [.get_professions](get_professions.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/ASYNC_AUDIT_2025-12-03.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/s-petersen-s-field-guide-to-lovecraftian-horrors/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

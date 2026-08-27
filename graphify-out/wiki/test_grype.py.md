@@ -1,27 +1,26 @@
 # test_grype.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **Phase 5: Strategic Additions (Week 5)** (6 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.1: Add MessageBroker Integration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.2: Add ApplicationContainer Lifecycle Tests (2 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.3: Add Database Migration Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.4: Add WebSocket Edge Case Tests (4 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
-- **Task 5.5: Add Error Recovery Tests (3 hours)** (1 connections) — `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- **test_grype.py** (4 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_config_excludes_e2e_harness_paths()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_grype_script_defines_repo_root_next_to_makefile()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **test_makefile_codacy_tools_does_not_invoke_grype()** (1 connections) — `server/tests/unit/scripts/test_grype.py`
+- **Regression tests for scripts/grype.py project-root anchoring and scan config.** (1 connections) — `server/tests/unit/scripts/test_grype.py`
 
 ## Relationships
 
-- [CoordinateGenerator](CoordinateGenerator.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/TEST_OPTIMIZATION_ROADMAP.md`
+- `server/tests/unit/scripts/test_grype.py`
 
 ## Audit Trail
 
-- EXTRACTED: 6 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

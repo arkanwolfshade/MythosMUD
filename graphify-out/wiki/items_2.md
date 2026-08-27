@@ -4,24 +4,27 @@
 
 ## Key Concepts
 
-- **Extract Skill** (5 connections) — `.claude/skills/extract/SKILL.md`
-- **Discover** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Document** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Extract & Enrich** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Migrate** (1 connections) — `.claude/skills/extract/SKILL.md`
-- **Plan Extraction** (1 connections) — `.claude/skills/extract/SKILL.md`
+- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [npc_schedules.schema.json](npc_schedules.schema.json.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
+- [required](required.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/extract/SKILL.md`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 5 (100%)
+- EXTRACTED: 9 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

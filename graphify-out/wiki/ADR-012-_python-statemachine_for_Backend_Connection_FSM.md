@@ -4,48 +4,46 @@
 
 ## Key Concepts
 
-- **Persistence Layer Async Migration Plan** (16 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Rollback Procedures** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Success Metrics** (4 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Decision Points** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Migration Timeline** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Monitoring & Validation** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Testing Strategy** (3 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Aggressive Timeline (Focused Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Conclusion** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Conservative Timeline (Gradual Migration)** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Emergency Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Individual File Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Metrics to Track** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Overall Migration Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-File Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-File Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Per-Phase Metrics** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Performance Validation** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase 1: Foundation Complete ✅** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Phase Rollback** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **References** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Regression Testing** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **Total Migration Effort** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **When NOT to Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
-- **When TO Migrate** (1 connections) — `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- **ADR-012: python-statemachine for Backend Connection FSM** (13 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **ADR-012-python-statemachine-backend.md** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **4. Considered Options** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **7. Consequences** (4 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **6. Implementation Details** (3 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **10. Related ADRs** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **11. Changelog** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **1. Overview** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **2. Context and Problem Statement** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **3. Decision Drivers** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **5. Decision Outcome** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **8. Validation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **9. References** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Integration with NATS Service** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Negative** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Neutral** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 1: python-statemachine** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 2: transitions** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Option 3: Manual Implementation** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **Positive** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **State Machine Definition** (1 connections) — `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- **ADR-011: XState for Frontend Connection State Machine** (1 connections) — `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
+- **ADR-013: Pydantic BaseSettings for Configuration Management** (1 connections) — `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- **ADR-014: Circuit Breaker + Dead Letter Queue for NATS Error Boundaries** (1 connections) — `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
 
 ## Relationships
 
-- [required](required.md) (1 shared connections)
-- [test_async_persistence_room_cache.py](test_async_persistence_room_cache.py.md) (1 shared connections)
-- [Phase 1: Quick Wins (Week 1)](Phase_1-_Quick_Wins_Week_1.md) (1 shared connections)
-- [test_create_channel_command](test_create_channel_command.md) (1 shared connections)
-- [Backward Compatibility Strategy](Backward_Compatibility_Strategy.md) (1 shared connections)
-- [🔧 Code Changes Made](🔧_Code_Changes_Made.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+- `docs/architecture/decisions/ADR-011-xstate-frontend-fsm.md`
+- `docs/architecture/decisions/ADR-012-python-statemachine-backend.md`
+- `docs/architecture/decisions/ADR-013-pydantic-configuration.md`
+- `docs/architecture/decisions/ADR-014-nats-error-boundaries.md`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 24 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

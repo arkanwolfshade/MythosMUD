@@ -1,25 +1,23 @@
 # Missing Hourly Clock Chimes
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **_FakeClientState** (3 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (2 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
-- **.__init__()** (1 connections) — `server/tests/unit/realtime/test_connection_establishment.py`
+- **mythos_time_update Daypart-Only Messages** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
+- **Missing Hourly Clock Chimes** (1 connections) — `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Relationships
 
-- [test_go_command.py](test_go_command.py.md) (1 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_connection_establishment.py`
+- `investigations/sessions/2025-01-XX_session-hourly-clock-chimes-missing.md`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,36 +1,45 @@
 # optimized_validate_player_name
 
-> 14 nodes
+> 22 nodes
 
 ## Key Concepts
 
-- **Fix patterns by tier** (5 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Mypy Remediation** (5 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Mypy Remediation Reference** (4 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Mypy Remediation Skill** (2 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **🔴 Critical — import and name errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Debugging when a fix doesn't take** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Error code table** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🟡 High — type errors** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🔵 Low — type precision** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **🟢 Medium — type refinement** (1 connections) — `.claude/skills/mypy-remediation/reference.md`
-- **Entry point** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Fix-verify loop** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Never** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
-- **Priority** (1 connections) — `.claude/skills/mypy-remediation/SKILL.md`
+- **optimized_validate_player_name()** (13 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_player_name_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_rejects_spaces()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_special_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_starts_with_number()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_too_long()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_too_short()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_hyphen()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_numbers()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_player_name_with_underscore()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating empty player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name below min length.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name above max length.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with spaces.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating valid player name.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with underscore.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with hyphen.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with numbers.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name starting with number (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating player name with special characters (invalid).** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized validation for player name fields. Args: value: The player name to…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mypy-remediation/SKILL.md`
-- `.claude/skills/mypy-remediation/reference.md`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 13 (100%)
+- EXTRACTED: 33 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

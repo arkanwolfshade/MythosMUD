@@ -1,59 +1,50 @@
 # gen_arena_migration_sql.py
 
-> 56 nodes
+> 58 nodes
 
 ## Key Concepts
 
-- **NATSMessageBroker** (33 connections) — `server/infrastructure/nats_broker.py`
-- **nats_broker.py** (21 connections) — `server/infrastructure/nats_broker.py`
-- **MessageBrokerError** (13 connections) — `server/infrastructure/message_broker.py`
-- **PublishError** (11 connections) — `server/infrastructure/message_broker.py`
-- **message_broker.py** (11 connections) — `server/infrastructure/message_broker.py`
-- **RequestError** (9 connections) — `server/infrastructure/message_broker.py`
-- **SubscribeError** (9 connections) — `server/infrastructure/message_broker.py`
-- **MessageBrokerConnectionError** (8 connections) — `server/infrastructure/message_broker.py`
-- **UnsubscribeError** (8 connections) — `server/infrastructure/message_broker.py`
-- **.publish()** (7 connections) — `server/infrastructure/nats_broker.py`
-- **.connect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.disconnect()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.__init__()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.is_connected()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.request()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._start_health_monitoring()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **.subscribe()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **._validate_publish_message()** (5 connections) — `server/infrastructure/nats_broker.py`
-- **Any** (5 connections)
-- **._configure_tls()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._handle_reconnect_async()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._health_check_loop()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **.unsubscribe()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._validate_publish_subject()** (4 connections) — `server/infrastructure/nats_broker.py`
-- **._disconnected_callback()** (3 connections) — `server/infrastructure/nats_broker.py`
-- *... and 31 more nodes in this community*
+- **gen_arena_migration_sql.py** (14 connections) — `scripts/gen_arena_migration_sql.py`
+- **gen_arena_dml.py** (13 connections) — `scripts/gen_arena_dml.py`
+- **strip_arena_from_dml.py** (10 connections) — `scripts/strip_arena_from_dml.py`
+- **generate_migration()** (8 connections) — `scripts/gen_arena_migration_sql.py`
+- **should_skip_line()** (8 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_row()** (7 connections) — `scripts/gen_arena_dml.py`
+- **main()** (7 connections) — `scripts/gen_arena_dml.py`
+- **gen_room_links()** (6 connections) — `scripts/gen_arena_dml.py`
+- **sql_escape()** (6 connections) — `scripts/gen_arena_migration_sql.py`
+- **strip_arena_from_file()** (6 connections) — `scripts/strip_arena_from_dml.py`
+- **gen_room_link_id()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_subzone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_config_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **gen_zone_row()** (5 connections) — `scripts/gen_arena_dml.py`
+- **emit_room_links_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_rooms_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_subzone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **emit_zone_insert()** (5 connections) — `scripts/gen_arena_migration_sql.py`
+- **room_stable_id()** (4 connections) — `scripts/gen_arena_dml.py`
+- **emit_zone_config_insert()** (4 connections) — `scripts/gen_arena_migration_sql.py`
+- **all_room_rows()** (3 connections) — `scripts/gen_arena_dml.py`
+- **main()** (3 connections) — `scripts/gen_arena_migration_sql.py`
+- **get_copy_section()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- **is_arena_room_link_line()** (3 connections) — `scripts/strip_arena_from_dml.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [LucidityFluxService](LucidityFluxService.md) (20 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [Scenario Group Execution](Scenario_Group_Execution.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (2 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (2 shared connections)
-- [Protocol](Protocol.md) (2 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (2 shared connections)
-- [description](description.md) (1 shared connections)
-- [player_combat_service_support.py](player_combat_service_support.py.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/infrastructure/message_broker.py`
-- `server/infrastructure/nats_broker.py`
+- `scripts/gen_arena_dml.py`
+- `scripts/gen_arena_migration_sql.py`
+- `scripts/strip_arena_from_dml.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (87%)
-- INFERRED: 18 (13%)
+- EXTRACTED: 95 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

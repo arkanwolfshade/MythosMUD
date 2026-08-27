@@ -4,21 +4,20 @@
 
 ## Key Concepts
 
-- **test_evaluate_equality_string()** (3 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **Test _evaluate_equality() handles string values.** (1 connections) — `server/tests/unit/npc/test_behavior_engine.py`
+- **@vitejs/plugin-react** (2 connections) — `client/package.json`
+- **@vitejs/plugin-react** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- [test_player_spell_repository.py](test_player_spell_repository.py.md) (1 shared connections)
-- [Any](Any.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/npc/test_behavior_engine.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

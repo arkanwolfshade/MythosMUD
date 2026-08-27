@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Persistence Repository Architecture** (0 connections) — `docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
+- **load_seed_data.ps1** (0 connections) — `scripts/load_seed_data.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
+- `scripts/load_seed_data.ps1`
 
 ## Audit Trail
 

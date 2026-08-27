@@ -1,32 +1,34 @@
 # optimized_validate_security_comprehensive
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_and_apply_map_migrations.py** (6 connections) — `scripts/check_and_apply_map_migrations.py`
-- **apply_migration_013()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **apply_migration_014()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_migration_013()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **check_migration_014()** (3 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Main function to check and apply migrations.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Check if migration 013 (map_x/map_y columns) has been applied.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Check if migration 014 (player_exploration table) has been applied.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Apply migration 013: Add map_x and map_y columns.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
-- **Apply migration 014: Create player_exploration table.** (1 connections) — `scripts/check_and_apply_map_migrations.py`
+- **optimized_validate_security_comprehensive()** (8 connections) — `server/validators/optimized_security_validator.py`
+- **test_optimized_validate_security_comprehensive_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_security_comprehensive_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_security_comprehensive_injection()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **test_optimized_validate_security_comprehensive_valid()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive security validation of empty string.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive security validation of valid text.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive security validation with dangerous characters.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test comprehensive security validation with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Optimized comprehensive security validation entry point. Args: value: The value…** (1 connections) — `server/validators/optimized_security_validator.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (5 shared connections)
+- [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/check_and_apply_map_migrations.py`
+- `server/tests/unit/validators/test_optimized_security_validator.py`
+- `server/validators/optimized_security_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 15 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

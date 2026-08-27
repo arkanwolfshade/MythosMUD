@@ -1,24 +1,26 @@
 # name
 
-> 2 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **test_validate_player_in_room_with_cache_true()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns True when player in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **name** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **maxLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **minLength** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
-- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
-- [get_room_environment](get_room_environment.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

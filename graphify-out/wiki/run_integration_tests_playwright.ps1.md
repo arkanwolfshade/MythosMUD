@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Item System Observability Runbook** (0 connections) — `docs/runbooks/item_system_observability.md`
+- **run_integration_tests_playwright.ps1** (0 connections) — `scripts/run_integration_tests_playwright.ps1`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `docs/runbooks/item_system_observability.md`
+- `scripts/run_integration_tests_playwright.ps1`
 
 ## Audit Trail
 

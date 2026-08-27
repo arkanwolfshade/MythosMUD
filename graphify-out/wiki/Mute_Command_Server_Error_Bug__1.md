@@ -1,24 +1,23 @@
 # Mute Command Server Error (Bug #1)
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/game/player_creation_service.py`
-- **Any** (1 connections)
-- **Initialize with persistence layer, schema converter, and optional instance…** (1 connections) — `server/game/player_creation_service.py`
+- **Mute Command Server Error (Bug #1)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
+- **Teleport Command Server Error (Bug #3)** (1 connections) — `e2e-tests/BUGS_FOUND.md`
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/game/player_creation_service.py`
+- `e2e-tests/BUGS_FOUND.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 1 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

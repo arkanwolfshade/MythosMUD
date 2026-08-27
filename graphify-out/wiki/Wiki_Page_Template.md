@@ -1,23 +1,22 @@
 # Wiki Page Template
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_spells_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_spells_command delegates to utility factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Wiki Page Template** (0 connections) — `data/MythosMUD-Obsidian/_templates/wiki-page.md`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `data/MythosMUD-Obsidian/_templates/wiki-page.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

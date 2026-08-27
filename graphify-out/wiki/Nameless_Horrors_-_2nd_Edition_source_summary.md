@@ -1,29 +1,25 @@
 # Nameless Horrors - 2nd Edition (source summary)
 
-> 7 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **useGridLayout.ts** (6 connections) — `client/src/hooks/useGridLayout.ts`
-- **useGridLayout()** (2 connections) — `client/src/hooks/useGridLayout.ts`
-- **useGridLayout.test.ts** (2 connections) — `client/src/hooks/__tests__/useGridLayout.test.ts`
-- **PanelState** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **UseGridLayoutReturn** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **layoutConfig** (1 connections) — `client/src/hooks/useGridLayout.ts`
-- **STORAGE_KEYS** (1 connections) — `client/src/hooks/useGridLayout.ts`
+- **Nameless Horrors - 2nd Edition (source summary)** (4 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **External live graph** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
+- **Key extractions pages** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/hooks/__tests__/useGridLayout.test.ts`
-- `client/src/hooks/useGridLayout.ts`
+- `data/MythosMUD-Obsidian/wiki/sources/Nameless Horrors - 2nd Edition.md`
 
 ## Audit Trail
 
-- EXTRACTED: 7 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

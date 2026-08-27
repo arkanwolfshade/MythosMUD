@@ -1,47 +1,39 @@
 # Audit Coverage Boundary — 2026-08 Design Audit
 
-> 27 nodes
+> 18 nodes
 
 ## Key Concepts
 
-- **Communities (19 total, 4 thin omitted)** (16 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\The Malleus Monstrorum Keeper Deck  (2026-08-12)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Ambiguous Edges - Review These** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 0 - "Yog-Sothoth Keeper Decks"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 10 - "Tsathoggua Formless Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 11 - "Ygolonac and Xiclotl"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 12 - "Nyogtha Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 13 - "Hastur Spawn"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 14 - "Fthagghua Fire Vampires"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 1 - "Abhoth Shub-Niggurath"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 2 - "Independent Races"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 3 - "Mind Control Spells"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 4 - "Cthulhu Dagon Hydra"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 5 - "Cult Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 6 - "Deep One Family"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 7 - "Hastur and Ithaqua"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 8 - "Abhoth Atlach-Nacha"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community 9 - "Shoggoth Mind Magic"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
-- *... and 2 more nodes in this community*
+- **Audit Coverage Boundary — 2026-08 Design Audit** (10 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4. Coverage ledger** (9 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **1. Purpose** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **2. Scope for the immediate next step: verifying #625–#628** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **3. Enumeration method** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.1 Documents — the audited 29, recovered from the audit's own claim registers** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.2 Documents — the residual 74, conservative default** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.3 Code — method fact, not a directory checklist** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.4 `docs/subsystems/` — staleness, not conformance** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.5 Security — a boundary issue #639 does not mention** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.6 Questions never asked** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.7 Verification debt — irrecoverable, must be re-run wholesale** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **4.8 Unmerged remediation — the audit's own output was never verified against `main`** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **5. Close rule** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **6. Deferred register — no phase in the 618–639 ranking** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **7. Explicitly out of scope** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **8. Follow-up** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
+- **AI READING INSTRUCTION** (1 connections) — `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [ADR-020: WebSocket Authentication and CSRF](ADR-020-_WebSocket_Authentication_and_CSRF.md) (1 shared connections)
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/the-malleus-monstrorum-keeper-deck/GRAPH_REPORT.md`
+- `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

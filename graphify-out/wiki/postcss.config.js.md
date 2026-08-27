@@ -1,23 +1,22 @@
 # postcss.config.js
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_create_unequip_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
-- **Test create_unequip_command delegates to inventory factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **postcss.config.js** (0 connections) — `client/postcss.config.js`
 
 ## Relationships
 
-- [properties](properties.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/utils/test_command_factories.py`
+- `client/postcss.config.js`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

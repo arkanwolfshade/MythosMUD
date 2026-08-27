@@ -1,22 +1,21 @@
 # Down Darker Trails (source summary)
 
-> 5 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **MythosMUD COPPA Checklist** (4 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Checklist** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Implementation** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **Reference** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
-- **COPPA Checklist Skill** (1 connections) — `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- **Down Darker Trails (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Down Darker Trails.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/mythosmud-coppa-checklist/SKILL.md`
+- `data/MythosMUD-Obsidian/wiki/sources/Down Darker Trails.md`
 
 ## Audit Trail
 

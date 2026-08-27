@@ -1,43 +1,50 @@
 # npc_combat_grace.py
 
-> 12 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **get_current_tick()** (11 connections) — `server/app/game_tick_counter.py`
-- **game_tick_counter.py** (9 connections) — `server/app/game_tick_counter.py`
-- **reset_current_tick()** (5 connections) — `server/app/game_tick_counter.py`
-- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **set_current_tick()** (3 connections) — `server/app/game_tick_counter.py`
-- **Shared game tick counter. Kept in a leaf module so combat services can read the…** (1 connections) — `server/app/game_tick_counter.py`
-- **Get the current game tick.** (1 connections) — `server/app/game_tick_counter.py`
-- **Set the current game tick (game tick loop).** (1 connections) — `server/app/game_tick_counter.py`
-- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_counter.py`
-- **Test get_current_tick returns the current tick value.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **Test reset_current_tick resets the tick counter.** (1 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **npc_combat_grace.py** (15 connections) — `server/services/npc_combat_grace.py`
+- **is_npc_attack_on_player_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **is_player_attack_blocked_by_login_grace_period()** (10 connections) — `server/services/npc_combat_grace.py`
+- **test_npc_combat_grace.py** (9 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **_connection_manager_from_config_app()** (8 connections) — `server/services/npc_combat_grace.py`
+- **get_app_instance()** (5 connections) — `server/config/__init__.py`
+- **test_npc_attack_blocked_when_target_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_npc_attack_fail_open_without_app()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_blocked_when_in_grace_period()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_on_invalid_uuid()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **test_player_attack_fail_open_without_connection_manager()** (2 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
+- **UUID** (2 connections)
+- **ConnectionManager** (1 connections)
+- **Return the runtime app instance attached during lifespan startup. This provides…** (1 connections) — `server/config/__init__.py`
+- **Login grace-period checks for NPC combat integration (extracted to keep service…** (1 connections) — `server/services/npc_combat_grace.py`
+- **Resolve connection_manager from the public config app accessor. Uses getattr on…** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if the player should not attack (in login grace period). Fail-open on…** (1 connections) — `server/services/npc_combat_grace.py`
+- **True if NPC attack on this player should be blocked (player in login grace…** (1 connections) — `server/services/npc_combat_grace.py`
+- **Unit tests for npc_combat_grace login grace checks.** (1 connections) — `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Relationships
 
-- [test_logging_handlers.py](test_logging_handlers.py.md) (4 shared connections)
-- [Any](Any.md) (2 shared connections)
-- [Memory Leak Prevention System - Implementation Summary](Memory_Leak_Prevention_System_-_Implementation_Summary.md) (2 shared connections)
-- [test_metrics.py](test_metrics.py.md) (1 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
-- [test_container_persistence_extended_crud.py](test_container_persistence_extended_crud.py.md) (1 shared connections)
-- [RoomInfoPanel.tsx](RoomInfoPanel.tsx.md) (1 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (4 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [get_config](get_config.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
+- [CombatDeathHandler](CombatDeathHandler.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_counter.py`
-- `server/tests/unit/app/test_game_tick_processing.py`
+- `server/config/__init__.py`
+- `server/services/npc_combat_grace.py`
+- `server/tests/unit/services/test_npc_combat_grace.py`
 
 ## Audit Trail
 
-- EXTRACTED: 22 (79%)
-- INFERRED: 6 (21%)
+- EXTRACTED: 45 (96%)
+- INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,34 +1,30 @@
 # Motion Design
 
-> 11 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **ItemInstance** (9 connections) — `server/game/items/item_instance.py`
-- **item_instance.py** (5 connections) — `server/game/items/item_instance.py`
-- **test_item_instance.py** (5 connections) — `server/tests/unit/game/test_item_instance.py`
-- **.to_inventory_stack()** (3 connections) — `server/game/items/item_instance.py`
-- **test_item_instance_to_inventory_stack_includes_optional_fields()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **test_item_instance_to_inventory_stack_minimal()** (2 connections) — `server/tests/unit/game/test_item_instance.py`
-- **Any** (1 connections)
-- **Item instance model for runtime item representation. This module defines the…** (1 connections) — `server/game/items/item_instance.py`
-- **Runtime representation of an item created from a prototype.** (1 connections) — `server/game/items/item_instance.py`
-- **Convert the instance into an inventory stack payload understood by legacy…** (1 connections) — `server/game/items/item_instance.py`
-- **Unit tests for ItemInstance model.** (1 connections) — `server/tests/unit/game/test_item_instance.py`
+- **Motion Design** (8 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Duration: The 100/300/500 Rule** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Easing: Pick the Right Curve** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Perceived Performance** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Performance** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Reduced Motion** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **Staggered Animations** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
+- **The Only Two Properties You Should Animate** (1 connections) — `.claude/skills/frontend-design/reference/motion-design.md`
 
 ## Relationships
 
-- [authenticated.ts](authenticated.ts.md) (5 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/items/item_instance.py`
-- `server/tests/unit/game/test_item_instance.py`
+- `.claude/skills/frontend-design/reference/motion-design.md`
 
 ## Audit Trail
 
-- EXTRACTED: 17 (94%)
-- INFERRED: 1 (6%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

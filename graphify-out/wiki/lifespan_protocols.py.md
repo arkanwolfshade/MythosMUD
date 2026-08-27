@@ -1,62 +1,61 @@
 # lifespan_protocols.py
 
-> 48 nodes
+> 66 nodes
 
 ## Key Concepts
 
-- **LootAllRequest** (58 connections) — `server/api/container_models.py`
-- **ContainerService** (34 connections) — `server/services/container_service.py`
-- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **transfer_all_items_from_container()** (21 connections) — `server/api/container_helpers.py`
-- **get_container_and_player_for_loot_all()** (17 connections) — `server/api/container_helpers.py`
-- **TestTransferAllItemsFromContainer** (16 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **lifespan_protocols.py** (30 connections) — `server/app/lifespan_protocols.py`
+- **test_lifespan_shutdown.py** (27 connections) — `server/tests/unit/app/test_lifespan_shutdown.py`
+- **lifespan_shutdown.py** (24 connections) — `server/app/lifespan_shutdown.py`
+- **shutdown_services()** (14 connections) — `server/app/lifespan_shutdown.py`
 - **asyncio** (14 connections)
-- **TestGetContainerAndPlayerForLootAll** (10 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_capacity_error()** (7 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_empty_items()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_item_without_quantity()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_multiple_items()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_partial_success()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_result_missing_container()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_result_missing_inventory()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_success()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_transfer_error()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_transfer_all_items_from_container_updates_from_result()** (6 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_get_container_and_player_for_loot_all_container_not_found()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_get_container_and_player_for_loot_all_player_no_inventory()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_get_container_and_player_for_loot_all_player_not_found()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **.test_get_container_and_player_for_loot_all_success()** (5 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **mock_persistence()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **mock_request()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- **mock_user()** (3 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
-- *... and 23 more nodes in this community*
+- **_resolve_service()** (10 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_connection_manager()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_nats_handler()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_task_registry()** (9 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (9 connections)
+- **lifespan_connection_manager()** (8 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_event_bus()** (8 connections) — `server/app/lifespan_shutdown.py`
+- **FastAPI** (8 connections)
+- **lifespan_event_bus()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_memory_monitor()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_nats_handler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_task_registry()** (7 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_tick_scheduler()** (7 connections) — `server/app/lifespan_protocols.py`
+- **_shutdown_mythos_chronicle()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_shutdown_mythos_tick_scheduler()** (7 connections) — `server/app/lifespan_shutdown.py`
+- **_resolve_container_field()** (6 connections) — `server/app/lifespan_protocols.py`
+- **_container_attr()** (5 connections) — `server/app/lifespan_protocols.py`
+- **lifespan_container()** (5 connections) — `server/app/lifespan_protocols.py`
+- **FastAPI** (5 connections)
+- **_legacy_container_attr()** (4 connections) — `server/app/lifespan_protocols.py`
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (42 shared connections)
-- [ChatService](ChatService.md) (15 shared connections)
-- [asyncio](asyncio.md) (8 shared connections)
-- [ContainerComponent](ContainerComponent.md) (7 shared connections)
-- [P7 · Rulings — complete](P7_·_Rulings_—_complete.md) (3 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (3 shared connections)
-- [NATSServicePoolMixin](NATSServicePoolMixin.md) (3 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (11 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (5 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
+- [TaskRegistry](TaskRegistry.md) (3 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [.disconnect](disconnect.md) (2 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
-- [Performance Profiler Subagent](Performance_Profiler_Subagent.md) (1 shared connections)
-- [Test File Migration Mapping](Test_File_Migration_Mapping.md) (1 shared connections)
+- [ConnectionManager](ConnectionManager.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/api/container_helpers.py`
-- `server/api/container_models.py`
-- `server/services/container_service.py`
-- `server/tests/unit/api/test_container_helpers_loot.py`
+- `server/app/lifespan_protocols.py`
+- `server/app/lifespan_shutdown.py`
+- `server/tests/unit/app/test_lifespan_shutdown.py`
 
 ## Audit Trail
 
-- EXTRACTED: 177 (87%)
-- INFERRED: 26 (13%)
+- EXTRACTED: 185 (99%)
+- INFERRED: 1 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

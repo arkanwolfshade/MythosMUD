@@ -1,23 +1,22 @@
 # API OpenAPI/Swagger Specification
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **test_validate_combat_command_exception_handling()** (2 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Test validate_combat_command handles exceptions gracefully.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
+- **API OpenAPI/Swagger Specification** (0 connections) — `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 
 ## Relationships
 
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
+- `docs/architecture/API_OPENAPI_SPECIFICATION.md`
 
 ## Audit Trail
 
-- EXTRACTED: 2 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

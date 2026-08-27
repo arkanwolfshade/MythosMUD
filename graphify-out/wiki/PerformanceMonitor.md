@@ -1,54 +1,61 @@
 # PerformanceMonitor
 
-> 56 nodes
+> 63 nodes
 
 ## Key Concepts
 
-- **test_health.py** (29 connections) — `server/tests/unit/models/test_health.py`
-- **HealthStatus** (22 connections) — `server/models/health.py`
-- **health.py** (15 connections) — `server/models/health.py`
-- **DatabaseComponent** (12 connections) — `server/models/health.py`
-- **ServerComponent** (12 connections) — `server/models/health.py`
-- **ConnectionsComponent** (11 connections) — `server/models/health.py`
-- **HealthResponse** (10 connections) — `server/models/health.py`
-- **HealthComponents** (9 connections) — `server/models/health.py`
-- **HealthErrorResponse** (8 connections) — `server/models/health.py`
-- **test_health_response_creation()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_default_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_response_with_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_components_creation()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_components_rejects_extra_fields()** (7 connections) — `server/tests/unit/models/test_health.py`
-- **BaseModel** (6 connections)
-- **test_connections_component_creation()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_connections_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_database_component_creation()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_database_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_database_component_without_last_query_time()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_server_component_creation()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_server_component_frozen()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_server_component_rejects_extra_fields()** (4 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_error_response_creation()** (3 connections) — `server/tests/unit/models/test_health.py`
-- **test_health_error_response_frozen()** (3 connections) — `server/tests/unit/models/test_health.py`
-- *... and 31 more nodes in this community*
+- **PerformanceMonitor** (35 connections) — `server/monitoring/performance_monitor.py`
+- **performance_monitor.py** (24 connections) — `server/monitoring/performance_monitor.py`
+- **measure_performance()** (20 connections) — `server/monitoring/performance_monitor.py`
+- **test_performance_monitor.py** (19 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **get_performance_monitor()** (16 connections) — `server/monitoring/performance_monitor.py`
+- **PerformanceMetric** (9 connections) — `server/monitoring/performance_monitor.py`
+- **.__init__()** (6 connections) — `server/monitoring/monitoring_dashboard.py`
+- **.record_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **record_performance_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **reset_performance_metrics()** (6 connections) — `server/monitoring/performance_monitor.py`
+- **get_performance_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **peek_performance_monitor()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **.get_operation_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **ExportMetrics** (4 connections) — `server/monitoring/performance_monitor.py`
+- **._evict_operation_stats()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.get_all_stats()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **.get_recent_metrics()** (4 connections) — `server/monitoring/performance_monitor.py`
+- **test_module_level_helpers_use_global_monitor()** (4 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
+- **RecentMetricExport** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.add_alert_callback()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.get_failed_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.get_slow_operations()** (3 connections) — `server/monitoring/performance_monitor.py`
+- **.__init__()** (3 connections) — `server/monitoring/performance_monitor.py`
+- *... and 38 more nodes in this community*
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [bench_cache.py](bench_cache.py.md) (4 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (3 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (1 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (1 shared connections)
+- [ExceptionTracker](ExceptionTracker.md) (17 shared connections)
+- [testing_examples.py](testing_examples.py.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [http_exception_handler](http_exception_handler.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [models/player.py](models-player.py.md) (2 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [log_with_context](log_with_context.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [lucidity_trigger_handlers.py](lucidity_trigger_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/models/health.py`
-- `server/tests/unit/models/test_health.py`
+- `server/monitoring/monitoring_dashboard.py`
+- `server/monitoring/performance_monitor.py`
+- `server/tests/unit/monitoring/test_performance_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 114 (87%)
-- INFERRED: 17 (13%)
+- EXTRACTED: 147 (95%)
+- INFERRED: 7 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

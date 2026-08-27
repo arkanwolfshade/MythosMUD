@@ -1,29 +1,27 @@
 # _run_dialogue_ddl
 
-> 8 nodes
+> 6 nodes
 
 ## Key Concepts
 
-- **holiday_row()** (4 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **npc_schedule_row()** (4 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **test_get_calendar_holidays_includes_the_new_row()** (4 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **test_get_calendar_npc_schedules_includes_the_new_row()** (4 connections) — `server/tests/integration/test_calendar_procedures.py`
-- **async_sessionmaker** (4 connections)
-- **AsyncSession** (4 connections)
-- **asyncio** (2 connections)
-- **fixture** (2 connections)
+- **_run_dialogue_ddl()** (4 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **main()** (3 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **apply_dialogue_migrations_to_dev.py** (2 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **cursor** (1 connections)
+- **Create dialogue_definitions table if missing in the given schema.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
+- **Connect via DATABASE_URL and ensure dialogue_definitions exists.** (1 connections) — `scripts/apply_dialogue_migrations_to_dev.py`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/tests/integration/test_calendar_procedures.py`
+- `scripts/apply_dialogue_migrations_to_dev.py`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 6 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

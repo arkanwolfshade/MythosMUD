@@ -1,60 +1,53 @@
 # ChatModeration
 
-> 36 nodes
+> 83 nodes
 
 ## Key Concepts
 
-- **nats_service.py** (34 connections) — `server/services/nats_service.py`
-- **JsonMap** (9 connections)
-- **_NatsListenerClient** (5 connections) — `server/services/nats_service.py`
-- **NatsMessageCallback** (5 connections) — `server/services/nats_service.py`
-- **nats_metrics.py** (5 connections) — `server/services/nats_metrics.py`
-- **_NatsSubscription** (4 connections) — `server/services/nats_service.py`
-- **._acknowledge_message()** (4 connections) — `server/services/nats_service.py`
-- **._call_callback()** (4 connections) — `server/services/nats_service.py`
-- **._decode_message_data()** (4 connections) — `server/services/nats_service.py`
-- **.get_connection_stats()** (4 connections) — `server/services/nats_service.py`
-- **.publish()** (4 connections) — `server/services/nats_service.py`
-- **.request()** (4 connections) — `server/services/nats_service.py`
-- **.subscribe()** (4 connections) — `server/services/nats_service.py`
-- **Msg** (4 connections)
-- **Protocol** (4 connections)
-- **_NatsSubscribeFn** (3 connections) — `server/services/nats_service.py`
-- **_as_json_map()** (3 connections) — `server/services/nats_service.py`
-- **._negatively_acknowledge_message()** (3 connections) — `server/services/nats_service.py`
-- **.__call__()** (3 connections) — `server/services/nats_service.py`
-- **.__call__()** (2 connections) — `server/services/nats_service.py`
-- **.add_disconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_error_listener()** (1 connections) — `server/services/nats_service.py`
-- **.add_reconnect_listener()** (1 connections) — `server/services/nats_service.py`
-- **.drain()** (1 connections) — `server/services/nats_service.py`
-- **.unsubscribe()** (1 connections) — `server/services/nats_service.py`
-- *... and 11 more nodes in this community*
+- **ChatModeration** (27 connections) — `server/game/chat_moderation.py`
+- **UserManagerProtocol** (20 connections) — `server/game/chat_moderation.py`
+- **normalize_player_id()** (18 connections) — `server/game/chat_moderation.py`
+- **UUID** (17 connections)
+- **chat_moderation.py** (11 connections) — `server/game/chat_moderation.py`
+- **Any** (8 connections)
+- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
+- **._format_mute_entry()** (5 connections) — `server/game/chat_moderation.py`
+- **._format_mute_section()** (5 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
+- **.add_admin()** (4 connections) — `server/game/chat_moderation.py`
+- **._format_mute_duration()** (4 connections) — `server/game/chat_moderation.py`
+- **.get_mute_status()** (4 connections) — `server/game/chat_moderation.py`
+- **.is_admin()** (4 connections) — `server/game/chat_moderation.py`
+- **.is_channel_muted()** (4 connections) — `server/game/chat_moderation.py`
+- **.is_globally_muted()** (4 connections) — `server/game/chat_moderation.py`
+- **.is_player_muted()** (4 connections) — `server/game/chat_moderation.py`
+- **.mute_channel()** (4 connections) — `server/game/chat_moderation.py`
+- **.mute_global()** (4 connections) — `server/game/chat_moderation.py`
+- **.mute_player()** (4 connections) — `server/game/chat_moderation.py`
+- **.remove_admin()** (4 connections) — `server/game/chat_moderation.py`
+- **.unmute_channel()** (4 connections) — `server/game/chat_moderation.py`
+- **.unmute_global()** (4 connections) — `server/game/chat_moderation.py`
+- **.unmute_player()** (4 connections) — `server/game/chat_moderation.py`
+- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
+- *... and 58 more nodes in this community*
 
 ## Relationships
 
-- [PrototypeRegistryError](PrototypeRegistryError.md) (12 shared connections)
-- [test_aggro_threat.py](test_aggro_threat.py.md) (7 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (5 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (4 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (2 shared connections)
-- [RateLimiter](RateLimiter.md) (2 shared connections)
-- [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (1 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [.get_instance](get_instance.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
+- [test_chat_moderation.py](test_chat_moderation.py.md) (5 shared connections)
+- [chat_service.py](chat_service.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [ChatPoseManager](ChatPoseManager.md) (1 shared connections)
+- [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_metrics.py`
-- `server/services/nats_service.py`
+- `server/game/chat_moderation.py`
+- `server/tests/unit/game/test_chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 85 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 134 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

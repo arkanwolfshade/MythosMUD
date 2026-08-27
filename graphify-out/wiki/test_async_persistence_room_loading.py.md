@@ -1,35 +1,43 @@
 # test_async_persistence_room_loading.py
 
-> 11 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **AnyIO Code Review - Anti-Patterns and Issues** (7 connections) — `docs/archive/anyio_code_review.md`
-- **Migration Priority** (4 connections) — `docs/archive/anyio_code_review.md`
-- **anyio_code_review.md** (2 connections) — `docs/archive/anyio_code_review.md`
-- **anyio_vs_asyncio_comparison.md** (2 connections) — `docs/archive/anyio_vs_asyncio_comparison.md`
-- **Executive Summary** (1 connections) — `docs/archive/anyio_code_review.md`
-- **High Priority (Entry Points)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Low Priority (Complex Refactoring)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Medium Priority (Core Primitives)** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Notes** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Recommendations** (1 connections) — `docs/archive/anyio_code_review.md`
-- **Testing Considerations** (1 connections) — `docs/archive/anyio_code_review.md`
+- **test_async_persistence_room_loading.py** (30 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_build_room_objects_debug_logging()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_load_room_cache_success()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_exit_rows_with_full_room_ids()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **test_process_room_rows_zone_single_part()** (2 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Unit tests for async persistence layer: process_room_rows, process_exit_rows,…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_exit_rows with stable_ids that already contain full hierarchical…** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _build_room_objects logs debug info for specific room.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _load_room_cache successfully loads rooms.** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
+- **Test _process_room_rows with zone_stable_id that has only one part (no slash).** (1 connections) — `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Relationships
 
-- [enum](enum.md) (1 shared connections)
-- [Summary: Test Quality Metrics](Summary-_Test_Quality_Metrics.md) (1 shared connections)
+- [asyncio](asyncio.md) (6 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [test_process_exit_rows_with_partial_room_ids](test_process_exit_rows_with_partial_room_ids.md) (1 shared connections)
+- [test_process_exit_rows_debug_logging](test_process_exit_rows_debug_logging.md) (1 shared connections)
+- [test_build_room_objects_success](test_build_room_objects_success.md) (1 shared connections)
+- [test_process_room_rows_with_full_room_id](test_process_room_rows_with_full_room_id.md) (1 shared connections)
+- [test_build_room_objects_with_non_dict_attributes](test_build_room_objects_with_non_dict_attributes.md) (1 shared connections)
+- [test_load_room_cache_with_rooms_logs_sample_ids](test_load_room_cache_with_rooms_logs_sample_ids.md) (1 shared connections)
+- [test_process_room_rows_empty_list](test_process_room_rows_empty_list.md) (1 shared connections)
+- [test_process_exit_rows_empty_list](test_process_exit_rows_empty_list.md) (1 shared connections)
+- [test_process_exit_rows_multiple_exits_same_room](test_process_exit_rows_multiple_exits_same_room.md) (1 shared connections)
 
 ## Source Files
 
-- `docs/archive/anyio_code_review.md`
-- `docs/archive/anyio_vs_asyncio_comparison.md`
+- `server/tests/unit/infrastructure/test_async_persistence_room_loading.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (92%)
-- INFERRED: 1 (8%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

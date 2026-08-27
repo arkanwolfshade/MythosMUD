@@ -1,15 +1,14 @@
 # 2026_02_26_add_arena_zone_type.py
 
-> 6 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **NPC Startup Duplication Analysis** (4 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Population Controller** (2 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Lifecycle Manager** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Startup Service** (1 connections) — `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
-- **NPC Duplication Bug Fix Plan** (1 connections) — `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- **NPC Population Field Rename** (1 connections) — `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
+- **downgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **upgrade()** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **2026_02_26_add_arena_zone_type.py** (2 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Allow zone_type 'arena' in zones CHECK.** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
+- **Remove 'arena' from zones.zone_type CHECK (fails if arena zone exists).** (1 connections) — `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Relationships
 
@@ -17,14 +16,12 @@
 
 ## Source Files
 
-- `docs/archive/NPC_DUPLICATION_BUG_FIX_PLAN.md`
-- `docs/archive/NPC_POPULATION_FIELD_RENAME.md`
-- `docs/archive/NPC_STARTUP_DUPLICATION_ANALYSIS.md`
+- `server/alembic/versions/2026_02_26_add_arena_zone_type.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (60%)
-- INFERRED: 2 (40%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

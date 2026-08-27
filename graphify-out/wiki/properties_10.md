@@ -1,37 +1,38 @@
 # properties
 
-> 15 nodes
+> 13 nodes
 
 ## Key Concepts
 
-- **RoomInfo.tsx** (14 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomInfo.test.tsx** (10 connections) — `client/src/components/ui/__tests__/RoomInfo.test.tsx`
-- **useRoomInfo()** (8 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **DebugInfo()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomDescription()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomEntities()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomExits()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomLocation()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomName()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomOccupants()** (3 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **CompleteRoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomInfo()** (2 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomInfoContextType** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomInfoProps** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
-- **RoomInfoContext** (1 connections) — `client/src/components/ui/RoomInfo.tsx`
+- **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
+- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **category** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **name** (3 connections) — `schemas/calendar/schedule.schema.json`
+- **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [days](days.md) (2 shared connections)
+- [required](required.md) (1 shared connections)
+- [start_hour](start_hour.md) (1 shared connections)
+- [end_hour](end_hour.md) (1 shared connections)
+- [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files
 
-- `client/src/components/ui/RoomInfo.tsx`
-- `client/src/components/ui/__tests__/RoomInfo.test.tsx`
+- `schemas/calendar/schedule.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 30 (100%)
+- EXTRACTED: 18 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

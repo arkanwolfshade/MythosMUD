@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **apply_dialogue_migration.ps1** (0 connections) — `scripts/apply_dialogue_migration.ps1`
+- **tests/integration/__init__.py** (0 connections) — `server/tests/integration/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/apply_dialogue_migration.ps1`
+- `server/tests/integration/__init__.py`
 
 ## Audit Trail
 

@@ -1,40 +1,35 @@
 # Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
-- **npc_schedules.schema.json** (7 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **items** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **schedules** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **properties** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **required** (2 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **required** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **schedules** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$id** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **additionalProperties** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **$schema** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **title** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
-- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **Graph Report - C:\Users\arkan\Proton Drive\arkanwolfshade\My files\Chaosium\Alone Against the Dark  (2026-08-11)** (11 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Communities (6 total, 4 thin omitted)** (3 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **alone-against-the-dark/GRAPH_REPORT.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community 0 - "Solo Investigators"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community 1 - "Design & Authorship"** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Community Hubs (Navigation)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Corpus Check** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **God Nodes (most connected - your core abstractions)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Hyperedges (group relationships)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Import Cycles** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Knowledge Gaps** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Suggested Questions** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Summary** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
+- **Surprising Connections (you probably didn't know these)** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
 
 ## Relationships
 
-- [collect-n-quest.spec.ts](collect-n-quest.spec.ts.md) (1 shared connections)
-- [Critical Insights](Critical_Insights.md) (1 shared connections)
-- [_StubPlayerRepo](_StubPlayerRepo.md) (1 shared connections)
-- [process_room_files](process_room_files.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `db/static/schemas/npc_schedules.schema.json`
-- `schemas/calendar/schedule.schema.json`
+- `data/MythosMUD-Obsidian/raw/chaosium/alone-against-the-dark/GRAPH_REPORT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 13 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

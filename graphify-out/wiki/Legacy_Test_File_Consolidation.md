@@ -1,11 +1,10 @@
 # Legacy Test File Consolidation
 
-> 2 nodes
+> 1 nodes
 
 ## Key Concepts
 
-- **get_logger Structured Logging** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
-- **MythosMUD Logging Standards Skill** (1 connections) — `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- **Legacy Test File Consolidation** (0 connections) — `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
 
 ## Relationships
 
@@ -13,11 +12,11 @@
 
 ## Source Files
 
-- `.cursor/skills/mythosmud-logging-standards/SKILL.md`
+- `docs/archive/TEST_REFACTORING_PROJECT_COMPLETE.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (100%)
+- EXTRACTED: 0 (0%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

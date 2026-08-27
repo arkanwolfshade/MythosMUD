@@ -4,48 +4,45 @@
 
 ## Key Concepts
 
-- **CombatValidator** (23 connections) — `server/validators/combat_validator.py`
-- **._get_random_error_message()** (8 connections) — `server/validators/combat_validator.py`
-- **combat_validator()** (4 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_different_party_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_no_party_service_allows()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **test_validate_can_attack_target_same_party_blocks()** (3 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **.validate_attack_strength()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_can_attack_target()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_combat_state()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_alive()** (3 connections) — `server/validators/combat_validator.py`
-- **.validate_target_exists()** (3 connections) — `server/validators/combat_validator.py`
-- **.get_combat_death_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_help_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_result_message()** (2 connections) — `server/validators/combat_validator.py`
-- **.get_combat_victory_message()** (2 connections) — `server/validators/combat_validator.py`
-- **fixture** (1 connections)
-- **Create a CombatValidator instance.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When party_service is None, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When both players are in same party, validate_can_attack_target blocks attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **When players are not in same party, validate_can_attack_target allows attack.** (1 connections) — `server/tests/unit/validators/test_combat_validator.py`
-- **Enhanced combat command validator with thematic error messages. Provides…** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that attacker is allowed to attack target (e.g. not same party). Hook…** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target exists with thematic error messages. Args: target_name:…** (1 connections) — `server/validators/combat_validator.py`
-- **Validate that a target is alive with thematic error messages. Args:…** (1 connections) — `server/validators/combat_validator.py`
-- **Validate combat state with thematic error messages. Args: is_in_combat: Whether…** (1 connections) — `server/validators/combat_validator.py`
+- **MinimapRenderer** (17 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._create_grid_map()** (6 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._assign_coordinates()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_ascii_map()** (5 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._generate_color_legend()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_color()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.get_street_name()** (4 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._draw_connection()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._get_next_coordinates()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_connectivity_stats()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.render_json_summary()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **._reverse_direction()** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **minimap_renderer.py** (3 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Any** (3 connections)
+- **.get_street_acronym()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **.__init__()** (2 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Mini-map renderer for room connectivity visualization. This module provides…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Renders room connectivity graphs in various visual formats. Implements the…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Extract street acronym from room ID. Args: room_id: Full room ID (e.g.,…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Extract street name from room ID. Args: room_id: Full room ID Returns: Street…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Get color code for a street. Args: room_id: Full room ID Returns: ANSI color…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Render the mini-map as ASCII art with grid-based visualization. Args:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Initialize the mini-map renderer.** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Create a grid-based map visualization. Args: nodes: List of room nodes edges:…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
+- **Assign grid coordinates to rooms based on connectivity. Args: nodes: List of…** (1 connections) — `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 - *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [lock_state](lock_state.md) (7 shared connections)
-- [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (5 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
+- [RoomLoader](RoomLoader.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/validators/test_combat_validator.py`
-- `server/validators/combat_validator.py`
+- `tools/room_toolkit/room_validator/core/minimap_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 44 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

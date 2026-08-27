@@ -1,35 +1,37 @@
 # mythos_e2e Database
 
-> 13 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **test_room_environment_parity.py** (7 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **_environment_enum_from_schema()** (5 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **_environment_options_from_room_edit_modal()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **test_room_edit_modal_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **test_room_hierarchy_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **test_unified_room_schema_matches_canonical_environments()** (3 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **Path** (1 connections)
-- **Parity test for the room environment enum (#623). Guards against the exact…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **Return the `environment` property's `enum` values from a room JSON schema.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **Return the non-empty `value`s of RoomEditModal.tsx's ENVIRONMENT_OPTIONS…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **room_hierarchy_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **unified_room_schema.json's environment enum must equal ROOM_ENVIRONMENTS.** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
-- **RoomEditModal.tsx's dropdown options must equal ROOM_ENVIRONMENTS (ignoring the…** (1 connections) — `server/tests/unit/test_room_environment_parity.py`
+- **mythos_e2e Database** (6 connections) — `client/tests/e2e/README.md`
+- **QUICK_START_E2E_TESTS.md** (4 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **pytest Markers unit integration e2e slow serial** (3 connections) — `docs/archive/TESTING_GREENFIELD.md`
+- **Playwright Runtime E2E Suite** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **seed_e2e_users.py** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **start_e2e_test.ps1** (2 connections) — `docs/archive/QUICK_START_E2E_TESTS.md`
+- **ArkanWolfshade E2E Account** (1 connections) — `client/tests/e2e/README.md`
+- **Ithaqua E2E Account** (1 connections) — `client/tests/e2e/README.md`
+- **Post-Scenario Cleanup** (1 connections) — `e2e-tests/CLEANUP.md`
 
 ## Relationships
 
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [Quick Start: Running E2E Tests](Quick_Start-_Running_E2E_Tests.md) (1 shared connections)
+- [E2E Tests Playwright](E2E_Tests_Playwright.md) (1 shared connections)
+- [Test Timing Analysis - Optimization Targets](Test_Timing_Analysis_-_Optimization_Targets.md) (1 shared connections)
+- [MythosMUD Testing Strategy (Greenfield Suite)](MythosMUD_Testing_Strategy_Greenfield_Suite.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_room_environment_parity.py`
+- `client/tests/e2e/README.md`
+- `docs/archive/QUICK_START_E2E_TESTS.md`
+- `docs/archive/TESTING_GREENFIELD.md`
+- `e2e-tests/CLEANUP.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (92%)
+- INFERRED: 1 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

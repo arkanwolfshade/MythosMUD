@@ -1,45 +1,42 @@
 # get_npc_name_from_instance
 
-> 21 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **test_lucidity_command_disruption.py** (14 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **lucidity_command_disruption.py** (9 connections) — `server/services/lucidity_command_disruption.py`
-- **should_involuntary_flee()** (7 connections) — `server/services/lucidity_command_disruption.py`
-- **should_misfire_command()** (7 connections) — `server/services/lucidity_command_disruption.py`
-- **can_perform_action()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **get_misfire_message()** (4 connections) — `server/services/lucidity_command_disruption.py`
-- **test_should_involuntary_flee_deranged_high_damage()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_fractured_miss()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_fractured_roll()** (3 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **patch** (3 connections)
-- **test_can_perform_action()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_get_misfire_messages_by_tier()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_involuntary_flee_wrong_tier_or_low_damage()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_catatonic_always()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **test_should_misfire_ignores_simple_commands()** (2 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
-- **Command disruption utilities for lucidity system. Implements command misfires…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Check if a command should misfire based on tier and command type. Args:…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Get the misfire message for a failed command. Args: command_type: Type of…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Check if player should involuntarily flee. Args: tier: Current lucidity tier…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Check if player can perform actions (motor lock check). Args: tier: Current…** (1 connections) — `server/services/lucidity_command_disruption.py`
-- **Unit tests for lucidity command disruption.** (1 connections) — `server/tests/unit/services/test_lucidity_command_disruption.py`
+- **get_npc_name_from_instance()** (11 connections) — `server/realtime/connection_utils.py`
+- **test_connection_utils.py** (9 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_handles_exception()** (4 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_lifecycle_manager()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_name()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_no_service()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_not_found()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **test_get_npc_name_from_instance_success()** (3 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Get NPC name from the actual NPC instance, preserving original case from…** (1 connections) — `server/realtime/connection_utils.py`
+- **Unit tests for connection utils. Tests the connection_utils module functions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns NPC name when found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when NPC not found.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when NPC has no name.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when service not available.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() returns None when no lifecycle manager.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
+- **Test get_npc_name_from_instance() handles exceptions.** (1 connections) — `server/tests/unit/realtime/test_connection_utils.py`
 
 ## Relationships
 
-- [User](User.md) (3 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/lucidity_command_disruption.py`
-- `server/tests/unit/services/test_lucidity_command_disruption.py`
+- `server/realtime/connection_utils.py`
+- `server/tests/unit/realtime/test_connection_utils.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 24 (92%)
+- INFERRED: 2 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

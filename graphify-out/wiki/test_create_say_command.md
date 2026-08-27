@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_add_room_drop_invalid_quantity()** (2 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
-- **Test add_room_drop() raises error for invalid quantity.** (1 connections) — `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- **test_create_say_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_say_command delegates to communication factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [server/main.py](server-main.py.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_room_subscription_manager_drops.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

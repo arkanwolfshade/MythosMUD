@@ -1,62 +1,59 @@
 # test_aggro_threat.py
 
-> 109 nodes
+> 88 nodes
 
 ## Key Concepts
 
-- **test_nats_service.py** (63 connections) — `server/tests/unit/services/test_nats_service.py`
-- **NATSMetrics** (33 connections) — `server/services/nats_metrics.py`
-- **asyncio** (23 connections)
-- **NATSUnsubscribeError** (14 connections) — `server/services/nats_exceptions.py`
-- **NATSRequestError** (11 connections) — `server/services/nats_exceptions.py`
-- **test_nats_service_init_with_config()** (6 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_no_available_connections()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_not_initialized()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_timeout()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_connected()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_subscribe_not_running()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_error()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_unsubscribe_not_found()** (5 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_circuit_breaker_opens()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_failure()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_state_machine_blocked()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_connect_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_flushes_batch()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_handles_drain_error()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_disconnect_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_is_connected_true()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_publish_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- **test_request_success()** (4 connections) — `server/tests/unit/services/test_nats_service.py`
-- *... and 84 more nodes in this community*
+- **test_aggro_threat.py** (29 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **aggro_threat.py** (28 connections) — `server/services/aggro_threat.py`
+- **update_aggro()** (24 connections) — `server/services/aggro_threat.py`
+- **_make_combat()** (23 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **add_damage_threat()** (20 connections) — `server/services/aggro_threat.py`
+- **get_or_create_hate_list()** (19 connections) — `server/services/aggro_threat.py`
+- **add_heal_threat()** (14 connections) — `server/services/aggro_threat.py`
+- **test_aggro_flow.py** (14 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_participant()** (13 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **apply_taunt()** (12 connections) — `server/services/aggro_threat.py`
+- **UUID** (11 connections)
+- **_make_participant()** (9 connections) — `server/tests/integration/test_aggro_flow.py`
+- **_make_combat()** (8 connections) — `server/tests/integration/test_aggro_flow.py`
+- **apply_stealth_wipe()** (7 connections) — `server/services/aggro_threat.py`
+- **_get_aggro_config()** (7 connections) — `server/services/aggro_threat.py`
+- **on_player_entered_stealth()** (7 connections) — `server/services/aggro_threat.py`
+- **test_aggro_healer_overpull_switches_target()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_nightgaunt_like_damage_and_heal_threat()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_passive_mob_no_damage_threat_taunt_switches()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_stealth_wipe_switches_to_next()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_taunt_from_next_room_no_effect()** (7 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_aggro_tank_swap_taunt_sequence()** (6 connections) — `server/tests/integration/test_aggro_flow.py`
+- **test_on_player_entered_stealth_wipes_from_all_npcs()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_excludes_dead_from_candidate()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- **test_update_aggro_one_entity_sets_target()** (6 connections) — `server/tests/unit/services/test_aggro_threat.py`
+- *... and 63 more nodes in this community*
 
 ## Relationships
 
-- [PrototypeRegistryError](PrototypeRegistryError.md) (42 shared connections)
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (10 shared connections)
-- [ChatModeration](ChatModeration.md) (7 shared connections)
-- [NATSService](NATSService.md) (3 shared connections)
-- [RateLimiter](RateLimiter.md) (3 shared connections)
-- [test_command_inventory.py](test_command_inventory.py.md) (2 shared connections)
-- [server/services/nats_subject_manager/__init__.py](server-services-nats_subject_manager-__init__.py.md) (1 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
-- [test_command_parser_helpers.py](test_command_parser_helpers.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
+- [CombatInstance](CombatInstance.md) (12 shared connections)
+- [CombatParticipant](CombatParticipant.md) (10 shared connections)
+- [models/combat.py](models-combat.py.md) (8 shared connections)
+- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (7 shared connections)
+- [combat_service.py](combat_service.py.md) (6 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
+- [SpellEffects](SpellEffects.md) (3 shared connections)
+- [get_config](get_config.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/nats_exceptions.py`
-- `server/services/nats_metrics.py`
-- `server/services/nats_service.py`
-- `server/tests/unit/services/test_nats_service.py`
+- `server/services/aggro_threat.py`
+- `server/tests/integration/test_aggro_flow.py`
+- `server/tests/unit/services/test_aggro_threat.py`
 
 ## Audit Trail
 
-- EXTRACTED: 185 (82%)
-- INFERRED: 41 (18%)
+- EXTRACTED: 250 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

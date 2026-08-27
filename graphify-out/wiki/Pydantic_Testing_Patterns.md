@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Manually Managed codacy.yaml** (0 connections) — `.codacy/README.md`
+- **Pydantic Testing Patterns** (0 connections) — `docs/TESTING_PYDANTIC_PATTERNS.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.codacy/README.md`
+- `docs/TESTING_PYDANTIC_PATTERNS.md`
 
 ## Audit Trail
 

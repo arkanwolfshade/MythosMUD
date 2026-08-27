@@ -4,16 +4,16 @@
 
 ## Key Concepts
 
-- **test_is_player_disconnecting_no_disconnecting_players_attr()** (2 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
-- **Test is_player_disconnecting() handles missing disconnecting_players attribute.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- **test_create_punch_command()** (2 connections) — `server/tests/unit/utils/test_command_factories.py`
+- **Test create_punch_command delegates to combat factory.** (1 connections) — `server/tests/unit/utils/test_command_factories.py`
 
 ## Relationships
 
-- [Responsive Design](Responsive_Design.md) (1 shared connections)
+- [test_command_factories.py](test_command_factories.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_utils.py`
+- `server/tests/unit/utils/test_command_factories.py`
 
 ## Audit Trail
 

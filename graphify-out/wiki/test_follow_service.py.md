@@ -1,50 +1,68 @@
 # test_follow_service.py
 
-> 74 nodes
+> 168 nodes
 
 ## Key Concepts
 
-- **test_nats_message_handler_chat.py** (41 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **asyncio** (16 connections)
-- **test_broadcast_to_room_with_filtering_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_echo_message_to_sender_exception()** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **Test _validate_chat_message_fields raises TypeError for invalid types.** (4 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_apply_dampening_and_send_message_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_apply_dampening_and_send_message_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_apply_dampening_and_send_message_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_broadcast_by_channel_type_exception()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_echo_message_to_sender_success()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier_default()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier_exception_in_processing()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_get_player_lucidity_tier_with_uuid()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_process_message_with_retry_failure()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_blocked()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_invalid_player_id()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_no_original_content()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_send_messages_to_players_with_tags()** (3 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_build_chat_event()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_build_chat_event_includes_speaker_kind()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_convert_ids_to_uuids()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_convert_ids_to_uuids_none_target()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_convert_ids_to_uuids_uuid_objects()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- **test_extract_chat_message_fields()** (2 connections) — `server/tests/unit/realtime/test_nats_message_handler_chat.py`
-- *... and 49 more nodes in this community*
+- **test_follow_service.py** (48 connections) — `server/tests/unit/game/test_follow_service.py`
+- **NPCEnteredRoom** (46 connections) — `server/events/event_types.py`
+- **FollowService** (39 connections) — `server/game/follow_service.py`
+- **follow_service.py** (26 connections) — `server/game/follow_service.py`
+- **asyncio** (20 connections)
+- **_str_id()** (15 connections) — `server/game/follow_service.py`
+- **test_follow_flow.py** (15 connections) — `server/tests/integration/test_follow_flow.py`
+- **._init_movement_layer()** (11 connections) — `server/container/bundles/game.py`
+- **.request_follow()** (10 connections) — `server/game/follow_service.py`
+- **UUID** (10 connections)
+- **._send_follow_state_to_player()** (9 connections) — `server/game/follow_service.py`
+- **._send_result_to_player()** (9 connections) — `server/game/follow_service.py`
+- **assert_event_envelope()** (9 connections) — `server/tests/unit/realtime/envelope_assertions.py`
+- **._handle_npc_follower_move()** (8 connections) — `server/game/follow_service.py`
+- **._handle_player_follower_move()** (8 connections) — `server/game/follow_service.py`
+- **.__init__()** (8 connections) — `server/game/follow_service.py`
+- **.unfollow()** (8 connections) — `server/game/follow_service.py`
+- **Any** (8 connections)
+- **.accept_follow()** (7 connections) — `server/game/follow_service.py`
+- **.decline_follow()** (7 connections) — `server/game/follow_service.py`
+- **._expire_pending_requests()** (7 connections) — `server/game/follow_service.py`
+- **._schedule_coro()** (7 connections) — `server/game/follow_service.py`
+- **.get_followers()** (6 connections) — `server/game/follow_service.py`
+- **.get_following_display()** (6 connections) — `server/game/follow_service.py`
+- **._on_player_entered_room()** (6 connections) — `server/game/follow_service.py`
+- *... and 143 more nodes in this community*
 
 ## Relationships
 
-- [test_connection_disconnection.py](test_connection_disconnection.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (11 shared connections)
+- [time.py](time.py.md) (11 shared connections)
+- [PlayerLeftRoom](PlayerLeftRoom.md) (6 shared connections)
+- [test_npc_event_handlers.py](test_npc_event_handlers.py.md) (6 shared connections)
+- [EventBus](EventBus.md) (6 shared connections)
+- [NPCBase](NPCBase.md) (5 shared connections)
+- [Room](Room.md) (5 shared connections)
+- [.__post_init__](__post_init__.md) (5 shared connections)
+- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (5 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [PlayerPositionService](PlayerPositionService.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_nats_message_handler_chat.py`
+- `server/container/bundles/game.py`
+- `server/events/event_types.py`
+- `server/game/follow_service.py`
+- `server/npc/movement_integration.py`
+- `server/npc/spawning_service.py`
+- `server/realtime/event_handler.py`
+- `server/tests/integration/test_follow_flow.py`
+- `server/tests/unit/game/test_follow_service.py`
+- `server/tests/unit/npc/test_population_control.py`
+- `server/tests/unit/realtime/envelope_assertions.py`
 
 ## Audit Trail
 
-- EXTRACTED: 94 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 342 (92%)
+- INFERRED: 30 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

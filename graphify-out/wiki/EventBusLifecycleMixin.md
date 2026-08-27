@@ -1,54 +1,49 @@
 # EventBusLifecycleMixin
 
-> 50 nodes
+> 30 nodes
 
 ## Key Concepts
 
-- **test_shutdown_sequence.py** (27 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **shutdown_sequence.py** (17 connections) — `server/commands/shutdown_sequence.py`
-- **execute_shutdown_sequence()** (15 connections) — `server/commands/shutdown_sequence.py`
-- **_ShutdownApp** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **_ShutdownAppState** (13 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **asyncio** (12 connections)
-- **_persist_all_players()** (8 connections) — `server/commands/shutdown_sequence.py`
-- **Any** (8 connections)
-- **schedule_process_termination()** (7 connections) — `server/commands/shutdown_process_termination.py`
-- **_cancel_background_tasks()** (7 connections) — `server/commands/shutdown_sequence.py`
-- **_despawn_all_npcs()** (7 connections) — `server/commands/shutdown_sequence.py`
-- **test_despawn_all_npcs_via_app_state_fallback()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_execute_shutdown_sequence_happy_path()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_persist_all_players_database_error_on_player()** (7 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **_cleanup_connection_manager()** (6 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_all_players()** (6 connections) — `server/commands/shutdown_sequence.py`
-- **_disconnect_nats_service()** (6 connections) — `server/commands/shutdown_sequence.py`
-- **_stop_nats_message_handler()** (6 connections) — `server/commands/shutdown_sequence.py`
-- **test_cancel_background_tasks_timeout()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_cancel_background_tasks_unregisters_shutdown_task()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_cleanup_connection_manager_missing()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_despawn_all_npcs_no_services()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_disconnect_all_players_string_uuid()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_disconnect_nats_service_os_error()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- **test_persist_all_players_no_connection_manager()** (6 connections) — `server/tests/unit/commands/test_shutdown_sequence.py`
-- *... and 25 more nodes in this community*
+- **EventBusLifecycleMixin** (18 connections) — `server/events/event_bus_lifecycle.py`
+- **._cancel_task_quietly()** (7 connections) — `server/events/event_bus_lifecycle.py`
+- **._stop_processing()** (7 connections) — `server/events/event_bus_lifecycle.py`
+- **.shutdown()** (6 connections) — `server/events/event_bus_lifecycle.py`
+- **._abandon_pending_tasks()** (5 connections) — `server/events/event_bus_lifecycle.py`
+- **._cancel_and_wait_for_active_tasks()** (5 connections) — `server/events/event_bus_lifecycle.py`
+- **._cancel_active_tasks_best_effort()** (4 connections) — `server/events/event_bus_lifecycle.py`
+- **._warn_shutdown_error()** (4 connections) — `server/events/event_bus_lifecycle.py`
+- **._cancel_processing_task()** (3 connections) — `server/events/event_bus_lifecycle.py`
+- **._cleanup_tracked_subscriptions()** (3 connections) — `server/events/event_bus_lifecycle.py`
+- **.__del__()** (3 connections) — `server/events/event_bus_lifecycle.py`
+- **._finalize_shutdown()** (3 connections) — `server/events/event_bus_lifecycle.py`
+- **._signal_shutdown()** (3 connections) — `server/events/event_bus_lifecycle.py`
+- **._ensure_async_processing()** (2 connections) — `server/events/event_bus_lifecycle.py`
+- **Task** (2 connections)
+- **Exception** (1 connections)
+- **Cancel leftover tasks after the grace wait, then give them a short drain.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Cancel all active tasks and wait for graceful shutdown.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Finalize shutdown by clearing tasks and logging.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Stop pure async event processing gracefully.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Unsubscribe every tracked service. No-op when none are registered.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Log a non-fatal shutdown error without letting logging fail the process.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Shutdown the pure asyncio event bus with proper grace period coordination. This…** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Mixin: on-demand processing start, graceful stop, and destruction.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- **Cancel subscriber tasks if a loop is still running; always clear the set.** (1 connections) — `server/events/event_bus_lifecycle.py`
+- *... and 5 more nodes in this community*
 
 ## Relationships
 
-- [generate_invites_db.py](generate_invites_db.py.md) (6 shared connections)
-- [ContainerComponent](ContainerComponent.md) (4 shared connections)
-- [format_markdown_file](format_markdown_file.md) (3 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/shutdown_process_termination.py`
-- `server/commands/shutdown_sequence.py`
-- `server/tests/unit/commands/test_shutdown_sequence.py`
+- `server/events/event_bus_lifecycle.py`
 
 ## Audit Trail
 
-- EXTRACTED: 134 (98%)
-- INFERRED: 3 (2%)
+- EXTRACTED: 47 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **Worktree Task Plan Template** (0 connections) — `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- **Persistence Repository Architecture** (0 connections) — `docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `.claude/skills/mythosmud-worktree-workflow/worktree-plan-template.md`
+- `docs/PERSISTENCE_REPOSITORY_ARCHITECTURE.md`
 
 ## Audit Trail
 

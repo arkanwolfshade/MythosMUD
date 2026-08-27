@@ -1,24 +1,25 @@
 # exits
 
-> 2 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **test_validate_exit_exists_no_exits()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_exit_exists() returns False when room has no exits.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **exits** (4 connections) — `db/static/schemas/room.schema.json`
+- **type** (3 connections) — `db/static/schemas/room.schema.json`
+- **additionalProperties** (2 connections) — `db/static/schemas/room.schema.json`
+- **type** (1 connections) — `db/static/schemas/room.schema.json`
 
 ## Relationships
 
-- [test_lucidity_command_disruption.py](test_lucidity_command_disruption.py.md) (1 shared connections)
-- [get_room_environment](get_room_environment.md) (1 shared connections)
+- [properties](properties.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `db/static/schemas/room.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 7 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

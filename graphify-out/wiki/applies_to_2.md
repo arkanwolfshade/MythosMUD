@@ -1,39 +1,33 @@
 # applies_to
 
-> 18 nodes
+> 9 nodes
 
 ## Key Concepts
 
-- **Polish Systematically** (13 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Skill** (6 connections) — `.claude/skills/polish/SKILL.md`
-- **Code Quality** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Color & Contrast** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Content & Copy** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Edge Cases & Error States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Final Verification** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Forms & Inputs** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Icons & Images** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Interaction States** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Micro-interactions & Transitions** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Performance** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Polish Checklist** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Pre-Polish Assessment** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Responsiveness** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Typography Refinement** (1 connections) — `.claude/skills/polish/SKILL.md`
-- **Visual Alignment & Spacing** (1 connections) — `.claude/skills/polish/SKILL.md`
+- **applies_to** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (4 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **items** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minLength** (3 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [fix_markdown_blanks_around_lists.py](fix_markdown_blanks_around_lists.py.md) (1 shared connections)
+- [days](days.md) (1 shared connections)
+- [effects](effects.md) (1 shared connections)
+- [items](items.md) (1 shared connections)
+- [properties](properties.md) (1 shared connections)
 
 ## Source Files
 
-- `.claude/skills/polish/SKILL.md`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

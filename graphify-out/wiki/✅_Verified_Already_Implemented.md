@@ -1,35 +1,30 @@
 # ✅ Verified Already Implemented
 
-> 10 nodes
+> 8 nodes
 
 ## Key Concepts
 
-- **TestHelperFunctions** (10 connections) — `server/tests/unit/api/test_containers.py`
-- **.test_create_error_context()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **.test_get_container_service_from_request()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **.test_get_container_service_raises_without_args()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **.test_get_container_service_with_persistence()** (3 connections) — `server/tests/unit/api/test_containers.py`
-- **Test get_container_service() with provided persistence.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Test get_container_service() gets persistence from request.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Test get_container_service() raises when persistence not provided.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Test helper functions.** (1 connections) — `server/tests/unit/api/test_containers.py`
-- **Test create_error_context() creates context.** (1 connections) — `server/tests/unit/api/test_containers.py`
+- **✅ Verified Already Implemented** (8 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **10. TLS Configuration** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **4. Connection Pool Cleanup** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **5. Mute Data Caching** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **6. F-String Logging** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **7. Database Flush Operations** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **8. Active Player Filtering** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
+- **9. NATS Connection Pooling** (1 connections) — `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Relationships
 
-- [ChatService](ChatService.md) (6 shared connections)
-- [NPCSpawningService](NPCSpawningService.md) (1 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (1 shared connections)
-- [PlayerNameExtractor](PlayerNameExtractor.md) (1 shared connections)
+- [Async Remediation Summary - December 3, 2025](Async_Remediation_Summary_-_December_3,_2025.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/api/test_containers.py`
+- `docs/archive/ASYNC_REMEDIATION_SUMMARY_2025-12-03.md`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (89%)
-- INFERRED: 2 (11%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

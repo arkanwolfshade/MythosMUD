@@ -1,12 +1,11 @@
 # LLM Wiki Pattern.md
 
-> 3 nodes
+> 2 nodes
 
 ## Key Concepts
 
-- **Test File Migration Mapping** (2 connections) — `docs/archive/TEST_MIGRATION_MAPPING.md`
-- **Test Suite Hierarchical Migration** (1 connections) — `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- **Test Suite Refactoring Deliverables** (1 connections) — `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- **LLM Wiki Pattern.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
+- **LLM Wiki Pattern** (1 connections) — `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Relationships
 
@@ -14,14 +13,12 @@
 
 ## Source Files
 
-- `docs/archive/TEST_MIGRATION_COMPLETION_REPORT.md`
-- `docs/archive/TEST_MIGRATION_MAPPING.md`
-- `docs/archive/TEST_REFACTORING_DELIVERABLES.md`
+- `data/MythosMUD-Obsidian/wiki/concepts/LLM Wiki Pattern.md`
 
 ## Audit Trail
 
-- EXTRACTED: 1 (50%)
-- INFERRED: 1 (50%)
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

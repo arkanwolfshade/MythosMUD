@@ -1,55 +1,78 @@
 # LoggedHTTPException
 
-> 31 nodes
+> 338 nodes
 
 ## Key Concepts
 
-- **run_flee_effect()** (25 connections) — `server/game/magic/spell_effect_flee.py`
-- **spell_effect_flee.py** (18 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_spell_effect_flee.py** (18 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **Any** (10 connections)
-- **_flee_effect_validate_room_exits()** (7 connections) — `server/game/magic/spell_effect_flee.py`
-- **_player_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_services_available()** (6 connections) — `server/game/magic/spell_effect_flee.py`
-- **asyncio** (6 connections)
-- **_flee_effect_failure_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_not_in_combat_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_success_response()** (4 connections) — `server/game/magic/spell_effect_flee.py`
-- **test_run_flee_effect_invalid_target_type()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_invalid_uuid()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_not_in_combat()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_room_error()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_services_unavailable()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_run_flee_effect_success_and_failure()** (4 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **_flee_effect_invalid_target_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_invalid_target_type_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_room_error_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **_flee_effect_services_unavailable_response()** (3 connections) — `server/game/magic/spell_effect_flee.py`
-- **.get_room_by_id()** (3 connections) — `server/game/magic/spell_effects.py`
-- **test_flee_effect_services_available()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **test_flee_effect_validate_room_exits()** (2 connections) — `server/tests/unit/game/magic/test_spell_effect_flee.py`
-- **UUID** (2 connections)
-- *... and 6 more nodes in this community*
+- **LoggedHTTPException** (360 connections) — `server/exceptions.py`
+- **fastapi.md** (118 connections) — `.claude/rules/fastapi.md`
+- **server/schemas/__init__.py** (70 connections) — `server/schemas/__init__.py`
+- **models/user.py** (63 connections) — `server/models/user.py`
+- **get_admin_auth_service()** (44 connections) — `server/services/admin_auth_service.py`
+- **validate_admin_permission()** (37 connections) — `server/api/admin/npc_router_core.py`
+- **npc_instances_api.py** (29 connections) — `server/api/admin/npc_instances_api.py`
+- **api/game.py** (29 connections) — `server/api/game.py`
+- **test_container_exception_handlers.py** (28 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **npc_population_api.py** (25 connections) — `server/api/admin/npc_population_api.py`
+- **npc_spawn_rules_api.py** (25 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **admin_auth_service.py** (25 connections) — `server/services/admin_auth_service.py`
+- **npc_admin_mgmt_api.py** (23 connections) — `server/api/admin/npc_admin_mgmt_api.py`
+- **test_npc_instances_api.py** (22 connections) — `server/tests/unit/api/test_npc_instances_api.py`
+- **test_game.py** (21 connections) — `server/tests/unit/api/test_game.py`
+- **skills.py** (19 connections) — `server/api/skills.py`
+- **auth/dependencies.py** (19 connections) — `server/auth/dependencies.py`
+- **test_npc_spawn_rules_api.py** (18 connections) — `server/tests/unit/api/test_npc_spawn_rules_api.py`
+- **npc_router_core.py** (17 connections) — `server/api/admin/npc_router_core.py`
+- **schemas/admin/__init__.py** (16 connections) — `server/schemas/admin/__init__.py`
+- **npc_admin.py** (16 connections) — `server/schemas/admin/npc_admin.py`
+- **spawn_npc_instance()** (15 connections) — `server/api/admin/npc_instances_api.py`
+- **create_npc_spawn_rule()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- **get_npc_spawn_rules()** (15 connections) — `server/api/admin/npc_spawn_rules_api.py`
+- *... and 313 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager_methods.py](connection_manager_methods.py.md) (12 shared connections)
-- [User](User.md) (3 shared connections)
-- [extract_player_name](extract_player_name.md) (3 shared connections)
-- [NATSError](NATSError.md) (2 shared connections)
-- [Any](Any.md) (1 shared connections)
-- [ContainerComponent](ContainerComponent.md) (1 shared connections)
+- [User](User.md) (70 shared connections)
+- [handle_transfer_items_exceptions](handle_transfer_items_exceptions.md) (53 shared connections)
+- [container_endpoints_basic.py](container_endpoints_basic.py.md) (48 shared connections)
+- [test_npc_definitions_api.py](test_npc_definitions_api.py.md) (44 shared connections)
+- [endpoints.py](endpoints.py.md) (42 shared connections)
+- [players.py](players.py.md) (32 shared connections)
+- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (25 shared connections)
+- [test_metrics_endpoints.py](test_metrics_endpoints.py.md) (25 shared connections)
+- [DatabaseError](DatabaseError.md) (23 shared connections)
+- [RoomService](RoomService.md) (22 shared connections)
+- [api/monitoring.py](api-monitoring.py.md) (21 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (19 shared connections)
 
 ## Source Files
 
-- `server/game/magic/spell_effect_flee.py`
-- `server/game/magic/spell_effects.py`
-- `server/tests/unit/game/magic/test_spell_effect_flee.py`
+- `.claude/rules/fastapi.md`
+- `server/api/admin/npc.py`
+- `server/api/admin/npc_admin_mgmt_api.py`
+- `server/api/admin/npc_instances_api.py`
+- `server/api/admin/npc_population_api.py`
+- `server/api/admin/npc_router_core.py`
+- `server/api/admin/npc_schemas.py`
+- `server/api/admin/npc_spawn_rules_api.py`
+- `server/api/game.py`
+- `server/api/player_helpers.py`
+- `server/api/skills.py`
+- `server/auth/dependencies.py`
+- `server/exceptions.py`
+- `server/models/user.py`
+- `server/schemas/__init__.py`
+- `server/schemas/admin/__init__.py`
+- `server/schemas/admin/admin_data.py`
+- `server/schemas/admin/npc_admin.py`
+- `server/schemas/game/__init__.py`
+- `server/schemas/game/game.py`
 
 ## Audit Trail
 
-- EXTRACTED: 90 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 1315 (89%)
+- INFERRED: 158 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,33 +1,35 @@
 # client/package.json
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
-- **main()** (6 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_arkham_rooms.py** (5 connections) — `scripts/visualize_arkham_rooms.py`
-- **create_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **visualize_graph()** (4 connections) — `scripts/visualize_arkham_rooms.py`
-- **load_room_data()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **print_statistics()** (3 connections) — `scripts/visualize_arkham_rooms.py`
-- **Graph** (2 connections)
-- **Print statistics about the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Main function to generate the visualization.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Load all room and intersection data from the zone directory.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a NetworkX graph from the room data.** (1 connections) — `scripts/visualize_arkham_rooms.py`
-- **Create a visual representation of the graph.** (1 connections) — `scripts/visualize_arkham_rooms.py`
+- **client/package.json** (10 connections) — `client/package.json`
+- **engines** (2 connections) — `client/package.json`
+- **optionalDependencies** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **argon2** (2 connections) — `client/package.json`
+- **node** (1 connections) — `client/package.json`
+- **name** (1 connections) — `client/package.json`
+- **private** (1 connections) — `client/package.json`
+- **type** (1 connections) — `client/package.json`
+- **version** (1 connections) — `client/package.json`
 
 ## Relationships
 
-- No strong cross-community connections detected
+- [dependencies](dependencies.md) (1 shared connections)
+- [devDependencies](devDependencies.md) (1 shared connections)
+- [scripts](scripts.md) (1 shared connections)
+- [overrides](overrides.md) (1 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 
-- `scripts/visualize_arkham_rooms.py`
+- `client/package.json`
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

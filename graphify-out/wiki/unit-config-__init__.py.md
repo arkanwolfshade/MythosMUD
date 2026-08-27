@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- **check_postgresql.ps1** (0 connections) — `scripts/check_postgresql.ps1`
+- **unit/config/__init__.py** (0 connections) — `server/tests/unit/config/__init__.py`
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- `scripts/check_postgresql.ps1`
+- `server/tests/unit/config/__init__.py`
 
 ## Audit Trail
 

@@ -1,29 +1,26 @@
 # Cthulhu Dark Ages - 3rd Edition (source summary)
 
-> 6 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **TestGetStatsGenerator** (5 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_stats_generator()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_stats_generator_stateless()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_stats_generator() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_stats_generator() returns StatsGenerator instance.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_stats_generator() returns stateless instance.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **Cthulhu Dark Ages - 3rd Edition (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Cthulhu Dark Ages - 3rd Edition.md** (2 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
+- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
 
 ## Relationships
 
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
-- [UpgradeImplementationPlan](UpgradeImplementationPlan.md) (1 shared connections)
+- [Chaosium CoC Catalog.md](Chaosium_CoC_Catalog.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_dependency_injection.py`
+- `data/MythosMUD-Obsidian/wiki/sources/Cthulhu Dark Ages - 3rd Edition.md`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 4 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

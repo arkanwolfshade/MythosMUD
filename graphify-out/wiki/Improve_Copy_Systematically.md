@@ -1,39 +1,37 @@
 # Improve Copy Systematically
 
-> 17 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **rules** (8 connections) — `client/knip.json`
-- **knip.json** (7 connections) — `client/knip.json`
-- **ignoreBinaries** (3 connections) — `client/knip.json`
-- **project** (3 connections) — `client/knip.json`
-- **binaries** (1 connections) — `client/knip.json`
-- **dependencies** (1 connections) — `client/knip.json`
-- **devDependencies** (1 connections) — `client/knip.json`
-- **exports** (1 connections) — `client/knip.json`
-- **files** (1 connections) — `client/knip.json`
-- **types** (1 connections) — `client/knip.json`
-- **unlisted** (1 connections) — `client/knip.json`
-- **$schema** (1 connections) — `client/knip.json`
-- **treatConfigHintsAsErrors** (1 connections) — `client/knip.json`
-- **pwsh** (1 connections) — `client/knip.json`
-- **src/**/*.{ts,tsx,js,jsx}** (1 connections) — `client/knip.json`
-- **tests/**/*.ts** (1 connections) — `client/knip.json`
-- **uv** (1 connections) — `client/knip.json`
+- **Improve Copy Systematically** (10 connections) — `.claude/skills/clarify/SKILL.md`
+- **Clarify Skill** (7 connections) — `.claude/skills/clarify/SKILL.md`
+- **Apply Clarity Principles** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Assess Current Copy** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Button & CTA Text** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Confirmation Dialogs** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Empty States** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Error Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Form Labels & Instructions** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Help Text & Tooltips** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Loading States** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **MANDATORY PREPARATION** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Navigation & Wayfinding** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Plan Copy Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Success Messages** (1 connections) — `.claude/skills/clarify/SKILL.md`
+- **Verify Improvements** (1 connections) — `.claude/skills/clarify/SKILL.md`
 
 ## Relationships
 
-- [Authoritative Environment DML](Authoritative_Environment_DML.md) (1 shared connections)
-- [TestPathValidator](TestPathValidator.md) (1 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
-- `client/knip.json`
+- `.claude/skills/clarify/SKILL.md`
 
 ## Audit Trail
 
-- EXTRACTED: 18 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

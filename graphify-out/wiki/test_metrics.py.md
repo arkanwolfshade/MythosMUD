@@ -1,59 +1,50 @@
 # test_metrics.py
 
-> 62 nodes
+> 56 nodes
 
 ## Key Concepts
 
-- **_MagicServiceCore** (44 connections) — `server/game/magic/magic_service.py`
-- **UUID** (21 connections)
-- **JsonMap** (12 connections)
-- **.can_cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **.cast_spell()** (10 connections) — `server/game/magic/magic_service.py`
-- **._execute_instant_or_delayed_cast()** (10 connections) — `server/game/magic/magic_service.py`
-- **._get_spell_and_validate_target()** (9 connections) — `server/game/magic/magic_service.py`
-- **._start_delayed_cast()** (9 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll()** (7 connections) — `server/game/magic/magic_service.py`
-- **._casting_roll_or_fail_result()** (7 connections) — `server/game/magic/magic_service.py`
-- **._get_player_and_normalized_stats()** (7 connections) — `server/game/magic/magic_service.py`
-- **._handle_instant_cast()** (7 connections) — `server/game/magic/magic_service.py`
-- **._validate_spell_casting()** (7 connections) — `server/game/magic/magic_service.py`
-- **_stat_int()** (7 connections) — `server/game/magic/magic_service.py`
-- **._consume_materials_if_required()** (6 connections) — `server/game/magic/magic_service.py`
-- **._perform_luck_check()** (6 connections) — `server/game/magic/magic_service.py`
-- **._send_spell_completion_message()** (6 connections) — `server/game/magic/magic_service.py`
-- **_StatsPlayer** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_already_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_lucidity_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_materials_available()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_mp_sufficient()** (5 connections) — `server/game/magic/magic_service.py`
-- **._check_player_knows_spell()** (5 connections) — `server/game/magic/magic_service.py`
-- **.interrupt_casting()** (5 connections) — `server/game/magic/magic_service.py`
-- **._player_persistence()** (5 connections) — `server/game/magic/magic_service.py`
-- *... and 37 more nodes in this community*
+- **test_metrics.py** (28 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **._calculate_percentile()** (6 connections) — `server/services/nats_subject_manager/metrics.py`
+- **.get_metrics()** (4 connections) — `server/services/nats_subject_manager/metrics.py`
+- **metrics()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_empty()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_multiple_values()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_calculate_percentile_single_value()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_subject_manager_metrics_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_build_times_maxlen()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_get_metrics_calculates_percentiles()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_get_metrics_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_get_metrics_with_data()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_build_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_error_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_error_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_error_unknown()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_error_validation_error()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_cache_hit()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_failure()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_multiple()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_stores_times()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- **test_record_validation_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_metrics.py`
+- *... and 31 more nodes in this community*
 
 ## Relationships
 
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (16 shared connections)
-- [Any](Any.md) (11 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
-- [manual_dependency_analysis.py](manual_dependency_analysis.py.md) (4 shared connections)
-- [websocket_helpers.py](websocket_helpers.py.md) (1 shared connections)
-- [migrate_rooms.py](migrate_rooms.py.md) (1 shared connections)
-- [generate_invites_db.py](generate_invites_db.py.md) (1 shared connections)
-- [debugLogger](debugLogger.md) (1 shared connections)
-- [MythosMUDError](MythosMUDError.md) (1 shared connections)
-- [PlayerStatsConfig](PlayerStatsConfig.md) (1 shared connections)
-- [npc_combat_grace.py](npc_combat_grace.py.md) (1 shared connections)
-- [NPCDefinition](NPCDefinition.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (6 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/magic/magic_service.py`
+- `server/services/nats_subject_manager/metrics.py`
+- `server/tests/unit/services/nats_subject_manager/test_metrics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 154 (93%)
-- INFERRED: 12 (7%)
+- EXTRACTED: 64 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

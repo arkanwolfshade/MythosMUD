@@ -1,57 +1,69 @@
 # RoomLoader
 
-> 102 nodes
+> 116 nodes
 
 ## Key Concepts
 
-- **test_npc_instance_service.py** (54 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **asyncio** (23 connections)
-- **NPCInstanceService** (22 connections) — `server/services/npc_instance_service.py`
-- **initialize_npc_instance_service()** (10 connections) — `server/services/npc_instance_service.py`
-- **Any** (8 connections)
-- **fixture** (8 connections)
-- **._extract_zone_from_room_id()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_population_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.get_zone_stats()** (4 connections) — `server/services/npc_instance_service.py`
-- **.spawn_npc_instance()** (4 connections) — `server/services/npc_instance_service.py`
-- **mock_event_bus()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **mock_lifecycle_manager()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **mock_population_controller()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **mock_spawning_service()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **npc_instance_service()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_get_npc_instances_get_stats_exception()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_initialize_npc_instance_service()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **test_npc_instance_service_init()** (4 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **.despawn_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_instances()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_npc_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.get_system_stats()** (3 connections) — `server/services/npc_instance_service.py`
-- **.move_npc_instance()** (3 connections) — `server/services/npc_instance_service.py`
-- **sample_lifecycle_record()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- **sample_npc_definition()** (3 connections) — `server/tests/unit/services/test_npc_instance_service.py`
-- *... and 77 more nodes in this community*
+- **RoomLoader** (58 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **PathValidator** (27 connections) — `tools/room_toolkit/room_validator/core/path_validator.py`
+- **room_validator/validator.py** (22 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **RoomFixer** (20 connections) — `tools/room_toolkit/room_validator/core/fixer.py`
+- **TestRoomLoader** (19 connections) — `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- **main()** (19 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **temp_dir()** (12 connections) — `server/tests/unit/structured_logging/test_logging_utilities.py`
+- **TestValidatorComponents** (11 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **core/__init__.py** (11 connections) — `tools/room_toolkit/room_validator/core/__init__.py`
+- **_initialize_validator_components()** (9 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **test_validator_integration.py** (9 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **TestValidatorEdgeCases** (8 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **schema_validator.py** (8 connections) — `tools/room_toolkit/room_validator/core/schema_validator.py`
+- **_validate_config_files()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_validate_room_connectivity()** (7 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **Any** (7 connections)
+- **.test_full_validation_pipeline()** (6 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **_apply_automatic_fixes()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_generate_minimap()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_load_and_filter_rooms()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **_report_results()** (6 connections) — `tools/room_toolkit/room_validator/validator.py`
+- **reporter.py** (6 connections) — `tools/room_toolkit/room_validator/core/reporter.py`
+- **room_loader.py** (6 connections) — `tools/room_toolkit/room_validator/core/room_loader.py`
+- **.test_room_with_nonexistent_exit_targets()** (5 connections) — `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- **_collect_parsing_errors()** (5 connections) — `tools/room_toolkit/room_validator/validator.py`
+- *... and 91 more nodes in this community*
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (9 shared connections)
-- [test_look_room.py](test_look_room.py.md) (5 shared connections)
-- [test_combat_attack_handler.py](test_combat_attack_handler.py.md) (5 shared connections)
-- [CombatService](CombatService.md) (4 shared connections)
-- [Invite](Invite.md) (4 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
-- [ContainerComponent](ContainerComponent.md) (3 shared connections)
-- [mock_connection_manager](mock_connection_manager.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
+- [.load_room_data](load_room_data.md) (18 shared connections)
+- [Path](Path.md) (13 shared connections)
+- [Reporter](Reporter.md) (12 shared connections)
+- [SchemaValidator](SchemaValidator.md) (12 shared connections)
+- [.check_bidirectional_connections](check_bidirectional_connections.md) (9 shared connections)
+- [TestValidatorIntegration](TestValidatorIntegration.md) (7 shared connections)
+- [TestPathValidator](TestPathValidator.md) (3 shared connections)
+- [MinimapRenderer](MinimapRenderer.md) (3 shared connections)
+- [test_logging_utilities.py](test_logging_utilities.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [room_validator/tests/conftest.py](room_validator-tests-conftest.py.md) (1 shared connections)
+- [alias_schema.json](alias_schema.json.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/npc_instance_service.py`
-- `server/tests/unit/services/test_npc_instance_service.py`
+- `.claude/rules/click.md`
+- `server/tests/unit/structured_logging/test_logging_utilities.py`
+- `tools/room_toolkit/room_validator/core/__init__.py`
+- `tools/room_toolkit/room_validator/core/fixer.py`
+- `tools/room_toolkit/room_validator/core/path_validator.py`
+- `tools/room_toolkit/room_validator/core/reporter.py`
+- `tools/room_toolkit/room_validator/core/room_loader.py`
+- `tools/room_toolkit/room_validator/core/schema_validator.py`
+- `tools/room_toolkit/room_validator/tests/test_room_loader.py`
+- `tools/room_toolkit/room_validator/tests/test_validator_integration.py`
+- `tools/room_toolkit/room_validator/validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 165 (92%)
-- INFERRED: 15 (8%)
+- EXTRACTED: 243 (88%)
+- INFERRED: 34 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

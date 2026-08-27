@@ -1,13 +1,12 @@
 # Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book
 
-> 4 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **The Grand Grimoire of Cthulhu Mythos Magic (source summary)** (3 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **The Grand Grimoire of Cthulhu Mythos Magic.md** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **For MythosMUD design** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
-- **Links** (1 connections) — `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- **Chaosium graphify snapshot - Call of Cthulhu_ The Coloring Book** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **call-of-cthulhu-the-coloring-book/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
+- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
 
 ## Relationships
 
@@ -15,11 +14,11 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/wiki/sources/The Grand Grimoire of Cthulhu Mythos Magic.md`
+- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-the-coloring-book/MANIFEST.md`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 2 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

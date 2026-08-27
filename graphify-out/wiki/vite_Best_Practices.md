@@ -1,46 +1,41 @@
 # vite Best Practices
 
-> 20 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **DatabaseComponent** (9 connections)
-- **HealthComponents** (9 connections)
-- **ConnectionsComponent** (8 connections)
-- **ServerComponent** (8 connections)
-- **test_determine_overall_status_degraded()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_healthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_determine_overall_status_unhealthy()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_no_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_generate_alerts_with_alerts()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **test_get_health_status_version_fallback()** (6 connections) — `server/tests/unit/services/test_health_service.py`
-- **.generate_alerts()** (4 connections) — `server/services/health_service.py`
-- **.get_database_component_health_async()** (4 connections) — `server/services/health_service.py`
-- **Get database component health status (async version with actual validation).** (1 connections) — `server/services/health_service.py`
-- **Generate alerts based on component health.** (1 connections) — `server/services/health_service.py`
-- **Test generate_alerts returns empty list when all healthy.** (1 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test generate_alerts returns alerts when components are unhealthy.** (1 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test determine_overall_status returns healthy when all components healthy.** (1 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test determine_overall_status returns degraded when any component degraded.** (1 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test determine_overall_status returns unhealthy when any component unhealthy.** (1 connections) — `server/tests/unit/services/test_health_service.py`
-- **Test get_health_status handles version lookup failure.** (1 connections) — `server/tests/unit/services/test_health_service.py`
+- **vite Best Practices** (6 connections) — `.claude/rules/vite.md`
+- **1. Code Organization and Structure** (4 connections) — `.claude/rules/vite.md`
+- **2. Common Patterns and Anti-patterns** (4 connections) — `.claude/rules/vite.md`
+- **3. Performance Considerations** (4 connections) — `.claude/rules/vite.md`
+- **4. Common Pitfalls and Gotchas** (3 connections) — `.claude/rules/vite.md`
+- **5. Testing Approaches** (2 connections) — `.claude/rules/vite.md`
+- **vite.md** (1 connections) — `.claude/rules/vite.md`
+- **Audit Custom Plugins** (1 connections) — `.claude/rules/vite.md`
+- **Avoid Barrel Files** (1 connections) — `.claude/rules/vite.md`
+- **Embrace Native ES Modules** (1 connections) — `.claude/rules/vite.md`
+- **Incorrect Base Path for Deployment** (1 connections) — `.claude/rules/vite.md`
+- **Keep `vite.config.js` Minimal** (1 connections) — `.claude/rules/vite.md`
+- **Mismanaging `NODE_ENV` with API Usage** (1 connections) — `.claude/rules/vite.md`
+- **Optimize Browser Setup** (1 connections) — `.claude/rules/vite.md`
+- **Optimize with Dynamic Imports** (1 connections) — `.claude/rules/vite.md`
+- **Standardize on Vitest** (1 connections) — `.claude/rules/vite.md`
+- **Use Explicit File Extensions** (1 connections) — `.claude/rules/vite.md`
+- **Use `import.meta.env` for Environment Variables** (1 connections) — `.claude/rules/vite.md`
+- **Warm Up Critical Files** (1 connections) — `.claude/rules/vite.md`
 
 ## Relationships
 
-- [NPCStartupService](NPCStartupService.md) (9 shared connections)
-- [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (7 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (3 shared connections)
-- [inventory_equip_command.py](inventory_equip_command.py.md) (1 shared connections)
+- No strong cross-community connections detected
 
 ## Source Files
 
-- `server/services/health_service.py`
-- `server/tests/unit/services/test_health_service.py`
+- `.claude/rules/vite.md`
 
 ## Audit Trail
 
-- EXTRACTED: 26 (49%)
-- INFERRED: 27 (51%)
+- EXTRACTED: 18 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

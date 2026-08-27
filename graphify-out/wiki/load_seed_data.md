@@ -4,9 +4,9 @@
 
 ## Key Concepts
 
-- **Chaosium graphify snapshot - Call of Cthulhu Investigator Handbook 7th Edition** (2 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
-- **call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
-- **Honesty notes** (1 connections) — `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- **load_seed_data()** (2 connections) — `scripts/load_seed_via_asyncpg.py`
+- **load_seed_via_asyncpg.py** (1 connections) — `scripts/load_seed_via_asyncpg.py`
+- **Load all seed data files.** (1 connections) — `scripts/load_seed_via_asyncpg.py`
 
 ## Relationships
 
@@ -14,7 +14,7 @@
 
 ## Source Files
 
-- `data/MythosMUD-Obsidian/raw/chaosium/call-of-cthulhu-investigator-handbook-7th-edition/MANIFEST.md`
+- `scripts/load_seed_via_asyncpg.py`
 
 ## Audit Trail
 
