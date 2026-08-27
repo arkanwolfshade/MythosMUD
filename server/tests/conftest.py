@@ -191,17 +191,7 @@ def _test_file_in_category(file_path: str, category: str) -> bool:
     return f"/{category}/" in file_path or f"\\{category}\\" in file_path
 
 
-def _set_xdist_loadgroup_nodeid(item: pytest.Item, group: str) -> None:
-    """Append @group to pytest Item nodeid for xdist --dist loadgroup scheduling.
-
-    pytest.Item.nodeid is read-only; xdist loadgroup keys off _nodeid on the
-    controller before workers fork. No public API exists for this assignment.
-    """
-    grouped_nodeid = f"{item.nodeid}@{group}"
-    item._nodeid = grouped_nodeid  # pylint: disable=protected-access  # pyright: ignore[reportPrivateUsage]  # Reason: pytest Item has no public API for nodeid; required for xdist loadgroup
-
-
-def _apply_path_based_markers(item: pytest.Item, use_loadgroup: bool) -> None:
+def _apply_path_based_markers(item: pytest.Item) -> None:
     """Apply unit/integration/e2e markers (and xdist grouping) from the test file path."""
     file_path = str(item.fspath)
     if _test_file_in_category(file_path, "unit"):
@@ -211,18 +201,15 @@ def _apply_path_based_markers(item: pytest.Item, use_loadgroup: bool) -> None:
         item.add_marker(pytest.mark.integration)
         # Mark integration tests as serial to avoid event loop conflicts in parallel execution
         item.add_marker(pytest.mark.serial)
-        # Run all integration tests in the same xdist worker to avoid shared DB truncation races
+        # Documents intent; not load-bearing under --dist worksteal (see pytest.ini). Kept so
+        # re-enabling a loadgroup-family scheduler later is a one-line revert, not a rediscovery.
         item.add_marker(pytest.mark.xdist_group(name="integration"))
-        # Controller-side nodeid suffix so loadgroup scheduler groups these tests (worker-side
-        # modifyitems runs too late for the scheduler).
-        if use_loadgroup:
-            _set_xdist_loadgroup_nodeid(item, "integration")
         return
     if _test_file_in_category(file_path, "e2e"):
         item.add_marker(pytest.mark.e2e)
 
 
-def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:  # noqa: ARG001  # Reason: Pytest hook signature requires config parameter even if unused  # pylint: disable=unused-argument  # Reason: Pytest hook signature requires config parameter even if unused
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     """
     Auto-mark tests based on their file path.
 
@@ -230,13 +217,11 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     Tests in integration/ get @pytest.mark.integration (and serial for xdist safety)
     Tests in e2e/ get @pytest.mark.e2e
 
-    When using pytest-xdist with --dist loadgroup, the scheduler (controller) uses nodeids
-    to group tests. We must append @group to nodeid in the controller so the scheduler
-    sees the group; otherwise integration tests would be distributed across workers and
-    shared DB truncation would cause FK violations.
-    Suppressed lint warnings: ARG001 (ruff unused argument), unused-argument (pylint).
+    Integration tests never actually run under -n (see run_integration_tests_playwright.ps1's
+    -n 1), so no xdist grouping mechanism is needed here; the xdist_group marker above is
+    informational only. No `config` parameter: pluggy only passes the hookspec args a hookimpl
+    actually declares, and this hook no longer reads it (previously used to detect
+    --dist loadgroup).
     """
-    dist: str = cast(str, getattr(config.option, "dist", "no"))
-    use_loadgroup = dist == "loadgroup"
     for item in items:
-        _apply_path_based_markers(item, use_loadgroup)
+        _apply_path_based_markers(item)
