@@ -18,6 +18,13 @@ export { getInitialGameState };
 /**
  * Project a single event onto previous state. Pure function; no refs or side effects.
  */
+/** Server appends these to a display name (player_occupant_processor.py); strip before matching self. */
+const GRACE_INDICATOR_SUFFIX = /\s*\((?:linkdead|warded)\)/gi;
+
+function stripGraceIndicators(displayName: string): string {
+  return displayName.replace(GRACE_INDICATOR_SUFFIX, '').trim();
+}
+
 /** Keep connected self in room.players so Occupants never looks empty after settle. */
 function ensureSelfListedInRoomPlayers(state: GameState): GameState {
   const name = state.player?.name?.trim();
@@ -26,7 +33,7 @@ function ensureSelfListedInRoomPlayers(state: GameState): GameState {
     return state;
   }
   const players = room.players ?? [];
-  if (players.some(p => p.toLowerCase() === name.toLowerCase())) {
+  if (players.some(p => stripGraceIndicators(p).toLowerCase() === name.toLowerCase())) {
     return state;
   }
   const nextPlayers = [...players, name];
