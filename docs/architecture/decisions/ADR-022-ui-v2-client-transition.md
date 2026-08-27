@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.2.0** · MythosMUD · 2026-08-26
+**Version 1.3.0** · MythosMUD · 2026-08-26
 
 ---
 
@@ -80,7 +80,10 @@ materially false premise, and the first citing a nonexistent document.
 extension-inclusive imports (`from '../components/X.tsx'`) — from the production entry
 (`index.html` → `main.tsx`), following imports to closure. A module reachable only from its own
 test file, or only from another module that is itself only test-reachable, is **orphaned**, not
-live.
+live. A reference whose result is discarded — `void expr;`, a subscription whose value no
+downstream code ever reads, an import used only inside a discarded expression — does not make the
+referenced module live either: reachable-and-inert is still orphaned. (Found by #692; see the
+cluster-3 `[NOTE]` below.)
 
 **Stub exemption:** a module kept alive by tests alone is not orphaned if it carries an explicit
 comment naming it a stub for future implementation *and* references a GitHub Issue tracking that
@@ -124,13 +127,36 @@ stub-exempted**: each is tracked in its own decide-then-port issue
 [#709](https://github.com/arkanwolfshade/MythosMUD/issues/709)) rather than adding four more
 permanent exceptions to the knip gate #694 is meant to enforce.
 
+**[NOTE]**
+Cluster 3's own removal PR (#692) found the issue's 6-file list was accurate — the first cluster
+with no undercount, after both #690 and #691 had scope gaps. `ui-v2` has no container/inventory UI
+at all, but the capability stayed playable via `server/commands/`'s existing `get`/`put`/`drop`/
+`equip`/`inventory`/`look <container>` text commands, so — like #691's four gaps — it was **deleted,
+not stub-exempted**, and tracked in a single decide-then-port issue
+([#711](https://github.com/arkanwolfshade/MythosMUD/issues/711)) rather than three, since a
+backpack tab, a transfer pane, and a corpse overlay are one product decision. This PR also found a
+cascade orphan of a different shape than #691's: `src/stores/containerStore.ts` (275 lines, plus a
+529-line test) had exactly one non-test importer left, and that importer only ever discarded the
+subscription's result —
+`void useContainerStore(s => s.openContainer)` and five siblings, dead since `#447`. This is what
+the §6 inert-reference clause above now rules out explicitly. A client-wide audit swept all 18
+`void <expr>;` statements outside this file; the other 12 are the idiomatic discarded-floating-
+promise pattern (`void fetchMinimap()` and similar) — real, live calls. All 6 inert anchors were
+isolated to this one file, so **#694's knip gate is trustworthy**: nothing else in the client is
+hiding behind a fake reference. `CorpseOverlay.tsx`'s sole use of `OpenContainerApiResponse` /
+`isOpenContainerApiResponse` in `src/utils/apiTypeGuards.ts` was removed too — knip's `exports`
+rule is `"off"`, so dead exports like these are invisible to today's gate; broader dead-export
+cleanup is left to #694. All four Playwright specs under `tests/e2e/runtime/containers/` passed
+unmodified — they were already command-driven with no GUI assertions, independently confirming the
+text-command-reachable premise the deletion rests on.
+
 **Removal clusters** (one issue each, filed alongside this ADR):
 
 | Cluster | Files | Contents | Issue |
 | --- | --- | --- | --- |
 | Top-level demo/test + legacy GameTerminal | 26 | `*Test.tsx`/`*.helper` demo components, `CommandPanelTest.*` family, `DraggablePanel*` family, `GameTerminal`/`GameTerminalContainer`/`GameTerminalPresentation` | [#690](https://github.com/arkanwolfshade/MythosMUD/issues/690) |
 | `panels/` chat & game-log family | 42 | `ChatPanel*`, `GameLogPanel*`, `PlayerPanel`, `RoomPanel`, `ConnectionPanel`, `MonitoringPanel`, `panels/chat/*`, plus 7 `chatPanel*` satellite modules found during removal | [#691](https://github.com/arkanwolfshade/MythosMUD/issues/691) |
-| `containers/` | 6 | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*` | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
+| `containers/` | 6, plus the `containerStore.ts` cascade | `BackpackTab`, `ContainerSplitPane*`, `CorpseOverlay*`; cascade: `stores/containerStore.ts` + its test | [#692](https://github.com/arkanwolfshade/MythosMUD/issues/692) |
 | `ui/` misc + stray singletons | 14 | `ui/` leftovers (`StyleGuide*`, `FeedbackForm`, `RoomInfo`, …), `map/AsciiMapEditor.tsx`, `layout/GridLayoutManager.tsx`, `health/IncapacitatedBanner.tsx`, `lucidity/*` | [#693](https://github.com/arkanwolfshade/MythosMUD/issues/693) |
 
 Each cluster issue carries its own per-file list, an export-signature comparison against its
@@ -161,3 +187,4 @@ what proves the retirement finished — not this ADR.
 | 1.0.0 | 2026-08-26 | Initial version. Records the ui-v2 transition decision and the legacy retirement plan for #637. |
 | 1.1.0 | 2026-08-26 | #690 carved `MythosTimeHud.tsx` out of cluster 1 (real behaviour gap, no `ui-v2` equivalent; tracked in #699). Counts corrected: 81 orphaned / 74 live; cluster 1 is 26 files. |
 | 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
+| 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |

@@ -136,17 +136,6 @@ vi.mock('../../utils/logger', () => ({
   },
 }));
 
-vi.mock('../../stores/containerStore', () => ({
-  useContainerStore: () => ({
-    openContainer: vi.fn(),
-    closeContainer: vi.fn(),
-    updateContainer: vi.fn(),
-    handleContainerDecayed: vi.fn(),
-    getContainer: vi.fn(),
-    isContainerOpen: vi.fn(),
-  }),
-}));
-
 vi.mock('./utils/messageUtils', () => ({
   sanitizeChatMessageForState: (msg: unknown) => msg,
 }));
