@@ -1,6 +1,6 @@
 # ADR-022: ui-v2 Client Transition and Legacy Retirement
 
-**Version 1.4.0** · MythosMUD · 2026-08-27
+**Version 1.5.0** · MythosMUD · 2026-08-27
 
 ---
 
@@ -66,12 +66,14 @@ materially false premise, and the first citing a nonexistent document.
 
 **[SPEC]**
 
-- Positive: the live architecture is on record; the orphaned surface has an inventory and named
-  owners (§6); a CI gate (§6) prevents silent re-accumulation once the sequence completes.
-- Negative: this ADR was a plan, not a cleanup, until the cluster issues landed. As of #693, all
-  four removal clusters (#690-#693) have merged — the 82-of-155 orphan count this ADR opened with
-  is now retired. What remains is #694: proving the retirement finished by removing knip's
-  `continue-on-error: true` gate exception.
+- Positive: the live architecture is on record; the orphaned surface had an inventory and named
+  owners (§6); as of #694, a real CI gate (§6) prevents silent re-accumulation — `npm run knip`
+  failing the build is no longer advisory.
+- Negative: the 82-of-155 orphan count this ADR opened with is fully retired (#690-#693), and the
+  gate enforces (#694). What remains is backlog, not retirement work: nine open decide-then-port
+  product decisions (#699, #706-#709, #711, #713-#715) for capabilities the retirement found had no
+  live client, and #718 to triage the 94 unused-export/unused-type findings knip's `exports`/`types`
+  rules would surface if enabled (still `"off"` — see §6's gate-condition close-out).
 - Neutral: no runtime behavior changes in the PR that introduces this ADR.
 
 ## 6. Retirement Plan
@@ -211,6 +213,30 @@ remove this"*), so even the enabled knip rules cannot fail CI today. The **final
 four cluster issues) removes that line. `npm run knip` returning clean with the gate enforcing is
 what proves the retirement finished — not this ADR.
 
+**[NOTE]**
+`#694` landed the gate. Its own `npm run knip` baseline (13 unused files + 1 unused devDependency)
+was traced file-by-file rather than deleted wholesale: 12 were genuinely dead (3 legacy `#691`
+residue, a closed `PanelContainerShared`/`PanelContainerViews`/`usePanelContainerBody` trio last
+used before PR `#611`, a dead 2-line `usePanelManager.ts` re-export shim, a `testAnsi.ts` dev-scratch
+script, two dead Playwright e2e fixtures, and a diverged tool-artifact duplicate of
+`useMythosAppState.ts`); one, `LoginGracePeriodBanner.tsx`, was dead but **superseded, not
+regressed** — the same login-grace-period state already renders live as a `HeaderBar` active-effect
+badge (`deriveActiveEffectsForHeader`), so unlike `#693`'s rescue/hallucination banners no tracking
+issue was needed. The 13th finding, `multiplayer-browser-helpers.d.ts`, was a **false positive** —
+genuinely imported via `import type`, which knip's file-usage tracing didn't credit through a `.d.ts`
+companion — suppressed by name in `knip.json`'s new `ignore` list rather than deleted. The unused
+`@testing-library/user-event` devDependency was removed, same "own the cascade" precedent as `#693`'s
+`react-resizable`.
+
+`exports`/`types` remain `"off"`. A planning-time non-destructive check (`npx knip --exports`)
+suggested flipping them was free, but that check couldn't actually override rules the config sets
+`"off"` — CLI `--include` only adds issue types on top of what's already enabled, it doesn't force
+one on. Flipping the config for real surfaced **94 findings** (44 unused exports, 50 unused exported
+types — mostly the classic knip `types`-rule noise pattern: the same type name re-exported from
+several files, e.g. `RoomMapEditorProps` in 5 files). That is real triage work distinct in kind from
+this gate issue, filed separately as
+[#718](https://github.com/arkanwolfshade/MythosMUD/issues/718) rather than folded into `#694`.
+
 ## 7. Related ADRs
 
 **[SPEC]**
@@ -229,3 +255,4 @@ what proves the retirement finished — not this ADR.
 | 1.2.0 | 2026-08-26 | #691 found cluster 2 undercounted by 7 satellite modules (42 files, not 35) and a second `src/utils/` scope gap outside the original scanned tree. Four real behaviour gaps deleted (not carved out) and tracked in #706-#709. |
 | 1.3.0 | 2026-08-26 | #692's 6-file cluster-3 count was accurate. Added an inert-reference clause to §6's "live" definition after finding `containerStore.ts` kept alive only by discarded `void` subscriptions; deleted the store and its test as a cascade orphan. Container/inventory UI gap deleted, not carved out, and tracked in one issue (#711) rather than three. |
 | 1.4.0 | 2026-08-27 | #693's 14-file cluster-4 count was accurate. Generalized §6's liveness definition to one principle (input-to-output path) after finding a producer-side inertness distinct from 1.3.0's consumer-side case: `rescueState`/`hallucinationFeed` were read but never fed by a real producer. Deleted both pipelines and their contract; ported `AsciiMapEditor`'s coordinate-recalculation action into `RoomMapEditor` rather than dropping it. Three status-banner gaps tracked in #713-#715. All four removal clusters now landed; only #694 (the gate) remains. |
+| 1.5.0 | 2026-08-27 | #694 removed CI's `continue-on-error` exception — the knip gate now enforces. Its own 14-finding baseline resolved: 12 genuinely dead files deleted, one (`LoginGracePeriodBanner.tsx`) deleted as superseded by a live `HeaderBar` effect (no tracking issue needed), one false positive suppressed by name, one unused devDependency removed. `exports`/`types` stay `"off"`: flipping them for real (not the flawed CLI check used during planning) surfaces 94 findings, triaged separately in #718. Retirement sequence from #637 complete; #718 and the nine open decide-then-port issues are independent backlog. |
