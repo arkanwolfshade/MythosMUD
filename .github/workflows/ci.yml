@@ -308,7 +308,20 @@ jobs:
           # (QueueListener/root logger teardown in forked process -- see run_test_ci.py's own
           # comment on the same module). Without this deselect, this step hangs indefinitely
           # instead of failing. See #668.
-          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n auto --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1 || true)
+          # `|| true` on its own would also swallow a pytest INTERNALERROR crash (rc 3) the same
+          # way #668 documented for the coverage run -- this step only wants to tolerate ordinary
+          # test pass/fail (rc 0/1) so it can still count warnings from a red run. set +e/-e
+          # captures the real exit code instead of letting `-e` (bash's GH Actions default) abort
+          # the step outright. See #666.
+          set +e
+          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n auto --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1)
+          PYTEST_RC=$?
+          set -e
+          if [ "$PYTEST_RC" -gt 1 ]; then
+            echo "ERROR: pytest exited $PYTEST_RC (not a normal pass/fail) -- likely a crash, not a warning count to report"
+            echo "$WARNING_OUTPUT" | tail -80
+            exit "$PYTEST_RC"
+          fi
           WARNING_COUNT=$(echo "$WARNING_OUTPUT" | grep -oP '\d+ warnings' | grep -oP '\d+' | tail -1 || echo "0")
           if [ -z "$WARNING_COUNT" ]; then
             WARNING_COUNT=0
