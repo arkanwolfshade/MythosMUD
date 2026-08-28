@@ -1,6 +1,6 @@
 # Audit Coverage Boundary — 2026-08 Design Audit
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -204,7 +204,7 @@ anywhere else. #632's closure is a fix, not coverage.
 
 | Surface | Excluded because | Risk if wrong | Status | Closed by |
 |---|---|---|---|---|
-| Code-to-documentation coverage sweep (enumerate the codebase, ask "what has no design record") | never run — undocumented systems surfaced only when an intent artifact happened to point at one | the undocumented-systems list is a sample, not an inventory | NOT EXAMINED | — |
+| Code-to-documentation coverage sweep (enumerate the codebase, ask "what has no design record") | — | swept `server/`+`client/`+`db/` at directory granularity (44 packages after pre-pass exclusions) against the full 109-doc corpus (drifted from the 103 recorded in §3 — see `#648` comment). 10 Documented, 2 Provisional (`docs/subsystems/`-only), 32 Undocumented. 10 largest/highest-risk gaps filed individually, 22 small/low-risk gaps batched into one register issue. | SWEPT, 32 gaps (10 filed + 22 batched) | `#648` comment, `#736`–`#746` |
 | Systematic pairwise document contradiction sweep | never run — the four contradictions found were noticed incidentally while verifying other claims | unknown further contradictions | NOT EXAMINED | — |
 
 ### 4.7 Verification debt — irrecoverable, must be re-run wholesale
