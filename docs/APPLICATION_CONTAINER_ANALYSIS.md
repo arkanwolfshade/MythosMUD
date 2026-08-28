@@ -1,8 +1,23 @@
 # ApplicationContainer Structure Analysis and Domain-Specific Split Proposal
 
-**Document Version:** 1.1
-**Date:** January 2026
+**Version 1.2.0** · MythosMUD · 2026-08-28
+
+---
+
+## AI READING INSTRUCTION
+
+Read `[SPEC]` and `[BUG]` blocks for authoritative facts.
+Read `[NOTE]` only if additional context is needed.
+`[?]` blocks are unverified — treat with lower confidence.
+
+---
+
 **Status:** Implemented (Phase 1 and Phase 2 complete)
+**Date:** 2026-01 (original analysis)
+**Provenance:** Authored after implementation. Restored from `docs/archive/` to `docs/` on 2026-08-28: ADR-002
+§4 and §7, `architecture/decisions/README.md` §4, and `BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md` §2 and §7
+all cite this document as authoritative, so it is not archival. Treat its description as derived from the
+implementation rather than as a design that preceded it.
 **Purpose:** Analyze the ApplicationContainer and document the domain-specific container split per the Architecture Review Plan.
 
 ## Current state (architecture-cleanup)
@@ -11,7 +26,7 @@ The container is implemented as a **package**: `server/container/`. The orchestr
 
 ## 1. Executive Summary
 
-`ApplicationContainer` was originally a single-file ~1,251-line dependency injection container that manages 50+ service attributes and 15 initialization phases. The architecture review plan recommends splitting it into domain-specific containers to improve maintainability, testability, and clarity. This document analyzes the current structure and proposes a split that preserves the existing public API and singleton behavior while organizing initialization and ownership by domain.
+`ApplicationContainer` was originally a single large monolithic dependency injection container that manages 50+ service attributes and 15 initialization phases. The architecture review plan recommends splitting it into domain-specific containers to improve maintainability, testability, and clarity. This document analyzes the current structure and proposes a split that preserves the existing public API and singleton behavior while organizing initialization and ownership by domain.
 
 ## 2. Current Structure Analysis
 
@@ -197,7 +212,7 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 
 1. Helper methods moved to `server/container/utils.py` (`decode_json_column`, `normalize_path_from_url_or_path`). ApplicationContainer delegates. **Done**
 2. Keep `get_instance()`, `set_instance()`, `reset_instance()`, `get_service()`, `is_initialized`, and state flags in ApplicationContainer. **Done**
-3. ApplicationContainer ~219 lines (target 200-300). **Done**
+3. ApplicationContainer reduced to an orchestrator (`server/container/main.py`). Line counts are deliberately not recorded here — they rot on every commit; measure the file directly. **Done**
 
 ### Phase 3: (Optional) Extract service factories
 
@@ -211,8 +226,8 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 
 ## 6. Success Criteria
 
-- ApplicationContainer file size reduced from ~1,251 lines to ~200-350 lines (orchestration only).
-- Each domain bundle in a single file of ~100-250 lines with a clear, documented responsibility.
+- ApplicationContainer file size reduced to orchestration-only responsibilities.
+- Each domain bundle in a single file with a clear, documented responsibility.
 - Initialization order and dependency graph documented and enforced by bundle init order.
 - All existing tests pass without modification.
 - No change to consumer-facing API or lifespan wiring.
@@ -222,3 +237,13 @@ Initialization order: Core → Realtime → Game → Monitoring → Combat → N
 - Architecture Review Plan: `.cursor/plans/architecture_review_plan_7bcbc812.plan.md`
 - ApplicationContainer implementation: `server/container/` (main.py and bundles/)
 - Dependency injection and lifespan: `server/app/lifespan.py`, `server/app/lifespan_startup.py`
+
+## 8. Changelog
+
+**[SPEC]**
+
+| Version | Date | Change |
+| --- | --- | --- |
+| 1.0.0 | 2026-01 | Original analysis and split proposal |
+| 1.1.0 | 2026-07-30 (archived) | Archived to `docs/archive/` during the HADS conversion sweep |
+| 1.2.0 | 2026-08-28 | Restored to `docs/` per the 2026-08 design/implementation audit (four live documents cite it as authoritative); converted to HADS structure; recorded provenance; removed stale line-count figures (#722) |

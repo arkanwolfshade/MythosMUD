@@ -1,6 +1,6 @@
 # E2E Testing Guide
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -714,7 +714,7 @@ test("should log user actions correctly", async () => {
 [Playwright Documentation](https://playwright.dev/docs/intro)
 
 - [MCP Scenario Documentation](../e2e-tests/MULTIPLAYER_TEST_RULES.md)
-- [Scenario Conversion Guide](./SCENARIO_CONVERSION_GUIDE.md)
+- [Scenario Conversion Guide](./archive/SCENARIO_CONVERSION_GUIDE.md)
 - [Test Data Constants](../client/tests/e2e/runtime/fixtures/test-data.ts)
 
 ## 15. Changelog
@@ -724,3 +724,4 @@ test("should log user actions correctly", async () => {
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken Scenario Conversion Guide link, now in `docs/archive/` (#722) |

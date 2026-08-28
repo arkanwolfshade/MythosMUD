@@ -1,6 +1,6 @@
 # Database Access Patterns
 
-**Version 1.1.0** · MythosMUD · 2026-08-25
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -346,10 +346,10 @@ from SQL injection but represent an anti-pattern.
 ## 13. References
 
 **[SPEC]**
-[SQLAlchemy Best Practices](./.cursor/rules/sqlalchemy.mdc)
+[SQLAlchemy Best Practices](../.cursor/rules/sqlalchemy.mdc)
 
-- [SQLAlchemy Async Best Practices](./docs/SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
-- [SQLAlchemy Code Review](./docs/SQLALCHEMY_CODE_REVIEW.md)
+- [SQLAlchemy Async Best Practices](./SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
+- [SQLAlchemy Code Review](./archive/SQLALCHEMY_CODE_REVIEW.md)
 
 ---
 
@@ -365,3 +365,4 @@ prefer the ORM for new work, lest you summon the N+1 query demon."*
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-25 | AsyncPersistenceLayer example (§3) split into constructed-by-container (inject) vs sanctioned-service-location cases, per ADR-002 v1.1.0's rule (#636) -- the prior single example taught the anti-pattern as the default |
+| 1.2.0 | 2026-08-28 | Fix three broken §13 reference links (wrong depth, wrong archive target) (#722) |

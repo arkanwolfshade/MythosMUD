@@ -1,6 +1,6 @@
 # Respawn Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -52,13 +52,12 @@ flowchart LR
 
 **Components:**
 
-- **PlayerRespawnWrapper**: [server/game/player_respawn_wrapper.py](server/game/player_respawn_wrapper.py) –
+- **PlayerRespawnWrapper**: [server/game/player_respawn_wrapper.py](../../server/game/player_respawn_wrapper.py) –
   respawn_player_by_user_id(user_id, session, respawn_service, persistence): Load all active
   players for user; find dead (is_dead() or current_room_id == LIMBO_ROOM_ID); call respawn_service
   to respawn; return player and room data. Multi-character: finds dead player(s) among user's
   characters.
-- **PlayerRespawnService**: [server/services/player_respawn_service.py](server/services/
-  player_respawn_service.py) – Core respawn logic: set respawn room, restore DP (or default),
+- **PlayerRespawnService**: [server/services/player_respawn_service.py](../../server/services/player_respawn_service.py) – Core respawn logic: set respawn room, restore DP (or default),
   persist, return room data. LIMBO_ROOM_ID constant for "in limbo" check.
 - **Death detection**: Player.is_dead() (e.g. get_stats().current_dp <= -10); or in limbo room
   (handles persistence race or restart).
@@ -127,8 +126,7 @@ flowchart LR
   move; verify save_player is called.
 
 See also [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md),
-[SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [ADR-009](../architecture/decisions/
-ADR-009-instanced-rooms.md) (no_death).
+[SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [ADR-009](../architecture/decisions/ADR-009-instanced-rooms.md) (no_death).
 
 ## 8. Related docs
 
@@ -143,3 +141,4 @@ ADR-009-instanced-rooms.md) (no_death).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix ADR-009 link broken across a line wrap; fix two broken §4 component links (wrong depth) (#722) |

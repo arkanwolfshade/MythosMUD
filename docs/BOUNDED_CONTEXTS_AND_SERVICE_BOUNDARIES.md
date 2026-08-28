@@ -1,6 +1,6 @@
 # Bounded Contexts and Service Boundaries
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -93,7 +93,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 **Contracts:**
 
 - **EventBus → WebSocket:** RealTimeEventHandler subscribes to domain events and sends typed WebSocket messages (e.g. `player_entered`, `player_left`, `combat_event`). See EVENT_OWNERSHIP_MATRIX.md.
-- **NATS → WebSocket:** NATSMessageHandler subscribes to `chat.*`, `combat.{room_id}` and forwards to WebSocket.
+- **NATS → WebSocket:** NATSMessageHandler subscribes to `chat.*`, `combat.attack.{room_id}` and forwards to WebSocket.
 
 ---
 
@@ -199,7 +199,7 @@ Bounded contexts are logical boundaries within which a particular model and voca
 
 **Inbound:** Depends on Core (persistence), Game (player_service, user_manager), Realtime (nats_service).
 
-**Outbound:** Publishes to NATS (`chat.say.{room_id}`, `chat.whisper.{player_id}`). NATSMessageHandler delivers to WebSocket.
+**Outbound:** Publishes to NATS (`chat.say.room.{room_id}`, `chat.whisper.player.{target_id}`). NATSMessageHandler delivers to WebSocket.
 
 **Contracts:**
 
@@ -267,7 +267,13 @@ Core
 1. **Single owner:** Each service belongs to exactly one bounded context.
 2. **Cross-context access:** Use published interfaces (e.g. PlayerService, RoomService) rather than reaching into another context’s internals.
 3. **Events:** Domain events are the preferred way to notify other contexts; see EVENT_OWNERSHIP_MATRIX.md for canonical ownership.
-4. **Persistence:** All persistence goes through Core (async_persistence and repositories); no context bypasses the persistence layer.
+4. **Persistence:** Persistence is owned by Core. Where `AsyncPersistenceLayer` exposes a repository, contexts
+   go through the facade rather than constructing repositories themselves.
+   **Known limitation:** the facade does not currently cover the spell, skill, dialogue or quest repositories.
+   Those are constructed by the container and injected directly into their services (see
+   `server/container/bundles/game.py` and `bundles/magic.py`), which is the intended wiring for them — not a
+   boundary violation. The earlier absolute form of this rule ("no context bypasses the persistence layer")
+   was not true of the code and contradicted ADR-001, which records the same limitation accurately.
 5. **Realtime delivery:** Only Realtime context sends WebSocket messages; other contexts publish events or NATS messages, and Realtime (or NATS handler) delivers to clients. **Exception (#634):** Combat calls `ConnectionManager.broadcast_to_room()`/`send_personal_message()` directly from `combat_messaging` for low-latency in-room delivery, *in addition to* publishing the same events to NATS via CombatEventPublisher. This is permitted under rule 3 — `broadcast_to_room` is Realtime's own published interface, not reaching into Realtime's internals — and is a deliberate latency/ordering tradeoff (see EVENT_OWNERSHIP_MATRIX.md §4), not a violation to fix.
 
 ## 7. References
@@ -286,3 +292,4 @@ Core
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken `APPLICATION_CONTAINER_ANALYSIS.md` links (restored to `docs/` per audit ruling C4); correct the persistence rule (facade coverage is incomplete by design, not bypassed); correct chat/combat NATS subject forms (#722) |

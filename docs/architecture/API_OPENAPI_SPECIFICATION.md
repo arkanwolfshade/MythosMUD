@@ -1,6 +1,6 @@
 # API OpenAPI/Swagger Specification
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -27,13 +27,13 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 MythosMUD exposes a REST API and WebSocket interface for the Cthulhu Mythos-themed MUD client. This document describes how API contracts are documented and how to use the OpenAPI specification.
 
-### 1.1 OpenAPI Specification
+### 2.1 OpenAPI Specification
 
 - **Format:** OpenAPI 3.1.0
 - **Location:** `docs/openapi/openapi.json`
 - **Source of truth:** Generated from the FastAPI application at runtime.
 
-### 1.2 Interactive Documentation
+### 2.2 Interactive Documentation
 
 When the server is running:
 
@@ -66,7 +66,29 @@ make openapi-spec
 
 ---
 
-## 4. API Tag Organization
+## 4. API Versioning
+
+**[SPEC]**
+
+**All routes are mounted under a `/v1` prefix.** `_register_v1_routers` (`server/app/factory.py`) builds
+`APIRouter(prefix="/v1")` and mounts every router onto it, so every path in `openapi.json` begins with
+`/v1`. Routers that additionally declare their own `/api` prefix therefore resolve under `/v1/api/...`.
+
+Worked examples:
+
+| Router surface | Effective path |
+| --- | --- |
+| Quest log | `GET /v1/api/players/{player_id}/quests` |
+| Metrics | `GET /v1/metrics` (no `/api` segment) |
+| Session replacement | `POST /v1/api/connections/{player_id}/session` |
+| WebSocket | `/v1/api/ws` |
+
+**[NOTE]**
+This scheme was previously recorded in no design document, which caused several ADRs and FRDs to state
+paths that would not resolve against the running server. When adding or citing an endpoint, take
+`docs/openapi/openapi.json` as the authority for the effective path.
+
+## 5. API Tag Organization
 
 **[SPEC]**
 Endpoints are grouped by tag in the specification. This table is generated from the tags routes
@@ -101,7 +123,7 @@ actually declare — do not hand-edit the rows between the markers below; edit `
 
 ---
 
-## 5. Service Interfaces (Internal)
+## 6. Service Interfaces (Internal)
 
 **[SPEC]**
 API routes call into **service layer** components. Service boundaries and contracts are documented in:
@@ -114,11 +136,11 @@ The OpenAPI spec documents the **HTTP/WebSocket contracts** (request/response sh
 
 ---
 
-## 6. Using the Specification
+## 7. Using the Specification
 
 **[SPEC]**
 
-### 5.1 Client Generation
+### 7.1 Client Generation
 
 Use the OpenAPI spec to generate typed API clients:
 
@@ -130,19 +152,19 @@ npx @openapitools/openapi-generator-cli generate \
   -o client/src/api/generated
 ```
 
-### 5.2 Contract Testing
+### 7.2 Contract Testing
 
 - Validate that the running server's `/openapi.json` matches the committed spec.
 - Use tools like Dredd or Schemathesis for contract testing.
 
-### 5.3 CI/CD
+### 7.3 CI/CD
 
 - Add a CI step to regenerate the spec and fail if it differs from the committed file (detects undocumented API changes).
 - Or regenerate on each release and commit the updated spec.
 
 ---
 
-## 7. Related Documentation
+## 8. Related Documentation
 
 **[SPEC]**
 
@@ -153,10 +175,11 @@ npx @openapitools/openapi-generator-cli generate \
 | [EVENT_OWNERSHIP_MATRIX.md](../EVENT_OWNERSHIP_MATRIX.md) | Event flow, EventBus vs NATS, WebSocket delivery |
 | [ADR-007-fastapi-async-await.md](decisions/ADR-007-fastapi-async-await.md) | FastAPI and async backend rationale |
 
-## 8. Changelog
+## 9. Changelog
 
 **[SPEC]**
 
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record the /v1 versioning scheme (audit finding C6: the prefix governs all 96 routes and appeared in no design document); renumber sections (#722) |

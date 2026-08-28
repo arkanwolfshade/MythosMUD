@@ -1,6 +1,6 @@
 # Persistence Repository Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -43,7 +43,7 @@ no legacy sync code.
          ▼                               ▼
 ┌─────────────────────┐       ┌──────────────────────┐
 │  Async Repositories │       │  ApplicationContainer (server/container/) │
-│  (1,185+ lines)     │       │  (Dependency Injection)│
+│  (see §4)            │       │  (Dependency Injection)│
 ├─────────────────────┤       ├──────────────────────┤
 │• PlayerRepository   │       │• async_persistence    │
 │• HealthRepository   │       │  (AsyncPersistenceLayer)│
@@ -66,7 +66,7 @@ no legacy sync code.
 
 **[SPEC]**
 
-### 1. PlayerRepository (400 lines)
+### 1. PlayerRepository
 
 **Purpose**: Player CRUD and query operations
 
@@ -96,7 +96,7 @@ no legacy sync code.
 - Room cache (for validation)
 - EventBus (optional, for player events)
 
-### 2. RoomRepository (60 lines)
+### 2. RoomRepository
 
 **Purpose**: Room caching and retrieval
 
@@ -115,7 +115,7 @@ no legacy sync code.
 
 - Shared room cache dictionary
 
-### 3. HealthRepository (200 lines)
+### 3. HealthRepository
 
 **Purpose**: Player health management
 
@@ -138,7 +138,7 @@ no legacy sync code.
 
 **Design Pattern**: Atomic updates using PostgreSQL JSONB operations
 
-### 4. ExperienceRepository (230 lines)
+### 4. ExperienceRepository
 
 **Purpose**: Player XP and stat management
 
@@ -161,7 +161,7 @@ no legacy sync code.
 
 **Security**: Whitelist-based field validation prevents SQL injection
 
-### 5. ProfessionRepository (90 lines)
+### 5. ProfessionRepository
 
 **Purpose**: Profession queries
 
@@ -177,7 +177,7 @@ no legacy sync code.
 
 **Dependencies**: None
 
-### 6. ContainerRepository (110 lines)
+### 6. ContainerRepository
 
 **Purpose**: Container CRUD operations
 
@@ -203,7 +203,7 @@ no legacy sync code.
 
 **Note**: Uses `asyncio.to_thread()` to wrap sync functions
 
-### 7. ItemRepository (95 lines)
+### 7. ItemRepository
 
 **Purpose**: Item instance operations
 
@@ -224,6 +224,30 @@ no legacy sync code.
 - Uses `item_instance_persistence.py` functions directly via sync connections
 
 **Note**: Uses `asyncio.to_thread()` to wrap sync functions
+
+### 8. Additional repositories
+
+**[SPEC]**
+The seven sections above were the original repository set. The layer has since grown; the following also
+live in `server/persistence/repositories/` and are equally part of it:
+
+| Repository | Domain |
+| --- | --- |
+| `EmoteRepository` | Emote/pose logging |
+| `PlayerEffectRepository` | Tick-based player status effects (see [ADR-019](architecture/decisions/ADR-019-player-effects-system.md)) |
+| `PlayerSkillRepository`, `SkillRepository`, `SkillUseLogRepository` | Skills catalog, per-character values, and use logging |
+| `PlayerSpellRepository`, `SpellRepository` | Spell catalog and per-character known spells |
+| `DialogueDefinitionRepository` | NPC dialogue trees |
+| `QuestDefinitionRepository`, `QuestInstanceRepository` | Quest definitions and per-character state (see [ADR-010](architecture/decisions/ADR-010-quest-subsystem.md)) |
+
+`PlayerRepository` is additionally split across `player_repository_save.py`, `player_repository_room.py`
+and `player_repository_mappers.py`.
+
+**[NOTE]**
+The spell, skill, dialogue and quest repositories are **not exposed on `AsyncPersistenceLayer`**. They are
+constructed by the container and injected directly into their services (see `server/container/bundles/game.py`
+and `bundles/magic.py`). That is the intended wiring for them, not a boundary violation — see the
+persistence rule in [BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md](BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md).
 
 ## 5. Usage Examples
 
@@ -411,7 +435,7 @@ WHERE player_id = :player_id
 
 **Migration Guide**: `docs/PERSISTENCE_ASYNC_MIGRATION_GUIDE.md`
 
-**Migration Plan**: `docs/PERSISTENCE_ASYNC_MIGRATION_PLAN.md`
+**Migration Plan**: `docs/archive/PERSISTENCE_ASYNC_MIGRATION_PLAN.md` (archived)
 
 **Summary**: `archive/PERSISTENCE_REFACTORING_SUMMARY.md`
 
@@ -422,3 +446,4 @@ WHERE player_id = :player_id
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Remove stale per-repository and diagram line counts; add §4.8 documenting the 9 repositories added since the original set (including `EmoteRepository`); fix broken migration-plan link, now in `docs/archive/` (#722) |

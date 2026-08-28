@@ -1,6 +1,6 @@
 # Aggro and Threat System Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -124,7 +124,7 @@ The following were decided and are fixed for implementation:
 **[SPEC]**
 
 - ADR-016: Aggro and Threat Management System
-- [Aggro and Threat Implementation Plan](aggro-threat-implementation-plan.md) – implementation summary and key files
+- [Aggro and Threat Implementation Plan](../archive/aggro-threat-implementation-plan.md) – implementation summary and key files
 - Context and comparison (Diku/ROM vs LPMud, modern MUDs, social aggro): see discussion that led to this design.
 
 ## 12. Changelog
@@ -134,3 +134,4 @@ The following were decided and are fixed for implementation:
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken implementation-plan link, now in `docs/archive/` (#722) |

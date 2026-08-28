@@ -1,6 +1,6 @@
 # =��� MythosMUD G�� AI Agent Development Guide
 
-**Version 1.1.0** · MythosMUD · 2026-07-30
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -189,9 +189,9 @@ When generating code, AI agents MUST ensure:
 
 ### **Logging Documentation References**
 
-**Complete Guide**: [LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md)
+**Complete Guide**: [LOGGING_BEST_PRACTICES.md](LOGGING_BEST_PRACTICES.md)
 
-**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](docs/LOGGING_QUICK_REFERENCE.md)
+**Quick Reference**: [LOGGING_QUICK_REFERENCE.md](LOGGING_QUICK_REFERENCE.md)
 
 **Migration Guide**: Included in LOGGING_BEST_PRACTICES.md
 
@@ -1190,5 +1190,6 @@ knowledge we seek to implement must be both powerful and safe for all users.
 
 | Version | Date | Change |
 | --- | --- | --- |
+| 1.2.0 | 2026-08-28 | Fix two broken logging-doc links (wrong depth) (#722) |
 | 1.1.0 | 2026-08-03 | Scrub SQLite leftovers to PostgreSQL truth |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |

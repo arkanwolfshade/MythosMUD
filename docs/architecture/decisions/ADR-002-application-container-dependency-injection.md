@@ -1,6 +1,6 @@
 # ADR-002: ApplicationContainer for Dependency Injection
 
-**Version 1.2.0** · MythosMUD · 2026-08-28
+**Version 1.3.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -61,7 +61,7 @@ dependency in. The rule that governs which is which:
 
 1. **Continue with global singletons** - Rejected: testing and maintainability suffer
 2. **Third-party DI framework (e.g., dependency-injector, injector)** - Rejected: ApplicationContainer provides sufficient control; avoids extra dependency; custom phases (e.g., warm room cache before starting real-time) are explicit
-3. **Domain-specific sub-containers** - Implemented as internal bundles with flattened attributes; see [APPLICATION_CONTAINER_ANALYSIS.md](../../archive/APPLICATION_CONTAINER_ANALYSIS.md)
+3. **Domain-specific sub-containers** - Implemented as internal bundles with flattened attributes; see [APPLICATION_CONTAINER_ANALYSIS.md](../../APPLICATION_CONTAINER_ANALYSIS.md)
 
 ## 5. Consequences
 
@@ -82,7 +82,7 @@ dependency in. The rule that governs which is which:
 
 **[SPEC]**
 
-- [ApplicationContainer Analysis](../../archive/APPLICATION_CONTAINER_ANALYSIS.md)
+- [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
 - [Container Injection Audit](../../CONTAINER_INJECTION_AUDIT.md) (#636)
 
@@ -95,3 +95,4 @@ dependency in. The rule that governs which is which:
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-25 | Added the injection-vs-service-location rule (§3) and the measured debt count (§5); rule was implicit in the original decision but never written down, so #636's classification work had nothing to classify against |
 | 1.2.0 | 2026-08-28 | Record provenance (post-hoc authorship); resolve the bare `APPLICATION_CONTAINER_ANALYSIS.md` reference to a link, correcting its target to `docs/archive/` where the file now lives (#721) |
+| 1.3.0 | 2026-08-28 | Repoint the `APPLICATION_CONTAINER_ANALYSIS.md` link at `docs/`: the file was restored there per audit ruling C4 — four live documents cite it as authoritative, so it is not archival (#722) |

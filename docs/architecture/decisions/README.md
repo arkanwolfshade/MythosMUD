@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -70,9 +70,9 @@ Each ADR follows this structure:
 
 **[SPEC]**
 
-- [Architecture Review Plan](../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md)
+- [Architecture Review Plan](../../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
-- [ApplicationContainer Analysis](../../archive/APPLICATION_CONTAINER_ANALYSIS.md)
+- [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
 - [Event Ownership Matrix](../../EVENT_OWNERSHIP_MATRIX.md)
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
 - [Aggro and Threat System Design](../aggro-threat-system.md)
@@ -85,3 +85,4 @@ Each ADR follows this structure:
 | ------- | ---------- | ----------------------------------------------------------------------------- |
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                            |
 | 1.1.0   | 2026-08-28 | Document the Provenance field; fix broken `APPLICATION_CONTAINER_ANALYSIS.md` link (ADR-001–017 backfill, #721) |
+| 1.2.0   | 2026-08-28 | Repoint the `APPLICATION_CONTAINER_ANALYSIS.md` link at `docs/`: the file was restored there per audit ruling C4 — four live documents cite it as authoritative, so it is not archival; fix broken Architecture Review Plan link (wrong depth) (#722) |

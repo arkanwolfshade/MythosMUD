@@ -1,6 +1,6 @@
 # MythosMUD Development Environment Setup
 
-**Version 1.1.0** · MythosMUD · 2026-08-03
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -501,7 +501,7 @@ curl http://localhost:54768/game/status
 
 **[SPEC]**
 
-- Read [PLANNING.md](PLANNING.md) for project architecture and priorities
+- Read [PLANNING.md](../PLANNING.md) for project architecture and priorities
 - Check [GitHub Issues](https://github.com/arkanwolfshade/MythosMUD/issues) for current development priorities
 - Review security requirements and COPPA compliance guidelines
 - Contributors: [CONTRIBUTING.md](../CONTRIBUTING.md)
@@ -540,5 +540,6 @@ forces we seek to understand."_
 
 | Version | Date       | Change                                                                        |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 1.2.0   | 2026-08-28 | Fix broken `PLANNING.md` link (wrong depth) (#722)                            |
 | 1.1.0   | 2026-08-03 | Fact-fix PostgreSQL/env/ports/Make; move agent rules to pointer; fix encoding |
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                            |
