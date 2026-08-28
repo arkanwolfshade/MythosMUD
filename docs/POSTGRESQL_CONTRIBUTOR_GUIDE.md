@@ -1,6 +1,6 @@
 # PostgreSQL Standards for Contributors
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -67,7 +67,7 @@ rationale, see [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc).
 **[SPEC]**
 
 - Full rules: [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc)
-- Audit report: [docs/POSTGRESQL_AUDIT_REPORT_2026.md](POSTGRESQL_AUDIT_REPORT_2026.md)
+- Audit report: [docs/POSTGRESQL_AUDIT_REPORT_2026.md](archive/POSTGRESQL_AUDIT_REPORT_2026.md)
 
 ## 8. Changelog
 
@@ -76,3 +76,4 @@ rationale, see [.cursor/rules/postgresql.mdc](../.cursor/rules/postgresql.mdc).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken audit report link, now in `docs/archive/` (#722) |

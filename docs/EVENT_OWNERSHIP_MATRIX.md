@@ -1,6 +1,6 @@
 # Event Ownership Matrix
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -80,10 +80,10 @@ NATS subject-based messages for inter-service communication:
 
 | Subject Pattern                        | Publisher             | Purpose                       | Subscribers      |
 | --------------------------------------- | --------------------- | ------------------------------ | ---------------- |
-| `chat.say.{room_id}`                    | ChatService           | Room-based chat                | Players in room  |
-| `chat.whisper.{player_id}`              | ChatService           | Private messages               | Target player    |
+| `chat.say.room.{room_id}`               | ChatService           | Room-based chat                | Players in room  |
+| `chat.whisper.player.{target_id}`       | ChatService           | Private messages               | Target player    |
 | `chat.global`                           | ChatService (planned) | Server-wide chat                | All players      |
-| `chat.local.{subzone}`                  | ChatService (planned) | Sub-zone chat                   | Players in sub-zone |
+| `chat.local.subzone.{subzone}`          | ChatService (planned) | Sub-zone chat                   | Players in sub-zone |
 | `combat.started.{room_id}`              | CombatEventPublisher  | Combat begins                   | Players in room  |
 | `combat.ended.{room_id}`                | CombatEventPublisher  | Combat ends                     | Players in room  |
 | `combat.attack.{room_id}`               | CombatEventPublisher  | Player attacks (any target)     | Players in room  |
@@ -308,7 +308,7 @@ This document represents the audit results.
 - `server/realtime/event_handler.py` - Event → Message transformation
 - `server/realtime/connection_manager.py` - WebSocket message delivery
 - `server/realtime/nats_message_handler.py` - NATS → Client messages
-- `docs/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation
+- `docs/archive/COMPREHENSIVE_SYSTEM_AUDIT.md` - Original issue documentation (archived)
 
 ## 10. Changelog
 
@@ -318,3 +318,4 @@ This document represents the audit results.
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-20 | #634: corrected the false claim that combat events flow through EventBus (they never have); documented the actual dual NATS + direct-broadcast delivery path as intentional; added 4 new NATS subjects (`combat.player_died`, `combat.player_mortally_wounded`, `combat.target_switch`, `combat.dp_decay`) and removed 3 dead ones (`combat.turn`, `combat.timeout`, `combat.npc_action`) |
+| 1.2.0 | 2026-08-28 | Fix §3's stale chat NATS subject forms (`chat.say.room`, `chat.whisper.player`, `chat.local.subzone`); fix broken `COMPREHENSIVE_SYSTEM_AUDIT.md` link, now in `docs/archive/` (#722) |

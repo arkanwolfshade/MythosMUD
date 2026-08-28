@@ -3,6 +3,7 @@
 # Validate: python scripts/hads/validate.py --manifest docs/hads.manifest
 CONTRIBUTING.md
 docs/AI_DEVELOPMENT_WORKFLOW.md
+docs/APPLICATION_CONTAINER_ANALYSIS.md
 docs/architecture/aggro-threat-system.md
 docs/architecture/API_OPENAPI_SPECIFICATION.md
 docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md
