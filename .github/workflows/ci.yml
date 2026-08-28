@@ -313,8 +313,13 @@ jobs:
           # test pass/fail (rc 0/1) so it can still count warnings from a red run. set +e/-e
           # captures the real exit code instead of letting `-e` (bash's GH Actions default) abort
           # the step outright. See #666.
+          # -n 0: this step is CI-gating (a real INTERNALERROR now fails it, per the rc>1 check
+          # below), so it goes serial for the same reason run_test_ci.py's coverage run does --
+          # pytest-xdist's worker restart/shutdown protocol produces false "worker crashed"
+          # reports under -n auto (workers exit cleanly -- Exit Status: 0, no OS-level fault --
+          # yet get reported as crashed), an unresolved xdist/execnet gap. See #724.
           set +e
-          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n auto --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1)
+          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n 0 --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1)
           PYTEST_RC=$?
           set -e
           if [ "$PYTEST_RC" -gt 1 ]; then
