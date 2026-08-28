@@ -510,18 +510,50 @@ BEGIN
 END;
 $$;
 
--- mark_invite_used: mark an invite inactive and record which user consumed it. Returns true if
--- the invite row was found and updated.
-CREATE OR REPLACE FUNCTION :schema_name.mark_invite_used(p_invite_code text, p_used_by_user_id UUID) -- noqa: PRS
+-- reserve_invite / capture_invite: auth-and-capture pair for invite-only registration (#733),
+-- mirroring a payment auth hold. Both calls MUST run in the same caller transaction/session:
+--
+--   reserve_invite  (AUTH)    - takes a row lock on the invite and reports whether it is
+--                                currently claimable, without consuming it. The lock is held
+--                                until the caller's transaction ends, so no other session can
+--                                also reserve or capture the same code until then.
+--   capture_invite  (CAPTURE) - finalizes a reservation: marks the invite inactive and records
+--                                the consuming user. Safe to call only after a successful
+--                                reserve_invite() in the same transaction.
+--
+-- If the caller's work between reserve and capture fails (e.g. duplicate username) and the
+-- transaction rolls back, the row lock releases and the invite is left untouched - an implicit
+-- void, the same way an unrouted auth hold expires. No separate void procedure is needed.
+CREATE OR REPLACE FUNCTION :schema_name.reserve_invite(p_invite_code text) -- noqa: PRS
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_is_active boolean;
+BEGIN
+    SELECT is_active INTO v_is_active
+    FROM invites
+    WHERE invite_code = p_invite_code
+    FOR UPDATE;
+
+    RETURN COALESCE(v_is_active, false);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION :schema_name.capture_invite(p_invite_code text, p_used_by_user_id UUID) -- noqa: PRS
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 AS $$
 DECLARE
     v_updated integer;
 BEGIN
+    -- is_active = true here is defense-in-depth, not the primary guard - reserve_invite's row
+    -- lock is what makes this race-free. It still protects a caller that (incorrectly) calls
+    -- capture_invite() without a preceding reserve_invite() in the same transaction.
     UPDATE invites
     SET is_active = false, used_by_user_id = p_used_by_user_id
-    WHERE invite_code = p_invite_code;
+    WHERE invite_code = p_invite_code
+      AND is_active = true;
     GET DIAGNOSTICS v_updated = ROW_COUNT;
     RETURN v_updated > 0;
 END;

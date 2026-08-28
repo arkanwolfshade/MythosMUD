@@ -99,16 +99,49 @@ async def test_validate_invite_success(mock_session):
 
 @pytest.mark.asyncio
 async def test_use_invite(mock_session):
+    """use_invite reserves, captures, commits, then re-fetches the row (3 execute() calls)."""
     invite = MagicMock(spec=Invite)
-    invite.is_valid.return_value = True
-    result = MagicMock()
-    result.scalar_one_or_none.return_value = invite
-    mock_session.execute = AsyncMock(return_value=result)
+    reserve_result = MagicMock()
+    reserve_result.scalar_one.return_value = True
+    capture_result = MagicMock()
+    capture_result.scalar_one.return_value = True
+    fetch_result = MagicMock()
+    fetch_result.scalar_one.return_value = invite
+    mock_session.execute = AsyncMock(side_effect=[reserve_result, capture_result, fetch_result])
     user_id = uuid.uuid4()
     manager = InviteManager(mock_session)
     used = await manager.use_invite("GOOD", user_id)
-    invite.use_invite.assert_called_once_with(str(user_id))
+    assert mock_session.execute.await_count == 3
+    mock_session.commit.assert_awaited_once()
     assert used is invite
+
+
+@pytest.mark.asyncio
+async def test_use_invite_reserve_rejected(mock_session):
+    """A code that isn't reservable (unknown/already used) is rejected before any capture attempt."""
+    reserve_result = MagicMock()
+    reserve_result.scalar_one.return_value = False
+    mock_session.execute = AsyncMock(return_value=reserve_result)
+    manager = InviteManager(mock_session)
+    with pytest.raises(LoggedHTTPException) as exc:
+        await manager.use_invite("GONE", uuid.uuid4())
+    assert exc.value.status_code == 400
+    mock_session.commit.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_use_invite_capture_rejected(mock_session):
+    """Defense-in-depth: a capture that returns false after a successful reserve still rejects."""
+    reserve_result = MagicMock()
+    reserve_result.scalar_one.return_value = True
+    capture_result = MagicMock()
+    capture_result.scalar_one.return_value = False
+    mock_session.execute = AsyncMock(side_effect=[reserve_result, capture_result])
+    manager = InviteManager(mock_session)
+    with pytest.raises(LoggedHTTPException) as exc:
+        await manager.use_invite("GOOD", uuid.uuid4())
+    assert exc.value.status_code == 400
+    mock_session.commit.assert_not_awaited()
 
 
 @pytest.mark.asyncio

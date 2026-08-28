@@ -38,6 +38,7 @@ def mock_session():
     # override this to return the user; see server/auth/endpoints.py.
     session.get = AsyncMock()
     session.add = MagicMock()
+    session.flush = AsyncMock()
     session.commit = AsyncMock()
     session.refresh = AsyncMock()
     return session

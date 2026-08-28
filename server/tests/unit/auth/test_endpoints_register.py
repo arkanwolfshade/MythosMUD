@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from server.auth.endpoints import UserCreate, register_user
 from server.exceptions import LoggedHTTPException
@@ -15,12 +15,20 @@ from server.models.user import User
 # pylint: disable=redefined-outer-name  # Reason: pytest fixture parameter names match fixture names
 
 
+def _mock_invite_manager() -> MagicMock:
+    """A MagicMock invite manager whose validate_invite awaits to a truthy invite."""
+    manager = MagicMock()
+    manager.validate_invite = AsyncMock(return_value=MagicMock())
+    return manager
+
+
 @pytest.mark.asyncio
 async def test_register_user_shutdown_pending(mock_request: MagicMock, mock_session: MagicMock):
     """Test registration when server is shutting down."""
     user_create = UserCreate(
         username="testuser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
     mock_invite_manager = MagicMock()
@@ -44,6 +52,7 @@ async def test_register_user_duplicate_username(mock_request: MagicMock, mock_se
     user_create = UserCreate(
         username="existing_user",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
     # Mock existing user
@@ -63,7 +72,7 @@ async def test_register_user_duplicate_username(mock_request: MagicMock, mock_se
     result_mock.scalar_one_or_none = MagicMock(return_value=existing_user)
     mock_session.execute = AsyncMock(return_value=result_mock)
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with pytest.raises(LoggedHTTPException) as exc_info:
@@ -84,6 +93,7 @@ async def test_register_user_integrity_error(mock_request: MagicMock, mock_sessi
     user_create = UserCreate(
         username="testuser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
     # Mock IntegrityError
@@ -98,7 +108,7 @@ async def test_register_user_integrity_error(mock_request: MagicMock, mock_sessi
     add: MagicMock = MagicMock(side_effect=integrity_error)
     mock_session.add = add
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
@@ -115,25 +125,28 @@ async def test_register_user_integrity_error(mock_request: MagicMock, mock_sessi
 
 @pytest.mark.asyncio
 async def test_register_user_success(mock_request: MagicMock, mock_session: MagicMock):
-    """Test successful user registration."""
+    """Test successful user registration, including the atomic invite claim."""
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
         invite_code="valid_invite",
     )
 
-    # Create mock invite manager with properly configured AsyncMock
     mock_invite = MagicMock()
     mock_invite_manager = MagicMock()
     validate_invite_mock = AsyncMock(return_value=mock_invite)
     mock_invite_manager.validate_invite = validate_invite_mock
 
-    # Mock session.execute to return None (no existing user)
     from sqlalchemy.engine import Result
 
-    result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=None)
-    execute_mock = AsyncMock(return_value=result_mock)
+    # execute() call order: reserve_invite (AUTH), username-existence lookup, capture_invite (CAPTURE).
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=True)
+    lookup_result = MagicMock(spec=Result)
+    lookup_result.scalar_one_or_none = MagicMock(return_value=None)
+    claim_result = MagicMock(spec=Result)
+    claim_result.scalar_one = MagicMock(return_value=True)
+    execute_mock = AsyncMock(side_effect=[reserve_result, lookup_result, claim_result])
     mock_session.execute = execute_mock
 
     # Mock user creation - register_user creates User directly, not via UserManager
@@ -148,8 +161,6 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
     )
     new_user.created_at = datetime.now(UTC).replace(tzinfo=None)
     new_user.updated_at = datetime.now(UTC).replace(tzinfo=None)
-    refresh_mock = AsyncMock()
-    mock_session.refresh = refresh_mock
 
     # Mock async_persistence with properly configured AsyncMocks
     mock_async_persistence = MagicMock()
@@ -157,10 +168,6 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
     get_profession_mock = AsyncMock(return_value=None)
     mock_async_persistence.get_active_players_by_user_id = get_players_mock
     mock_async_persistence.get_profession_by_id = get_profession_mock
-
-    # Ensure commit mock is properly configured
-    commit_mock = AsyncMock()
-    mock_session.commit = commit_mock
 
     with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
         with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
@@ -170,7 +177,7 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     # register_user creates User directly, so we need to mock session.add to set the user
                     def mock_add(_user: object) -> None:
-                        # Simulate user being added and committed
+                        # Simulate user being added (id populated by flush())
                         # Parameter prefixed with _ to indicate intentionally unused
                         pass
 
@@ -185,9 +192,10 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
 
                     # Verify async mocks were called (this ensures they're properly awaited)
                     validate_invite_mock.assert_awaited_once()
-                    execute_mock.assert_awaited()
-                    commit_mock.assert_awaited()
-                    refresh_mock.assert_awaited()
+                    assert execute_mock.await_count == 3
+                    mock_session.flush.assert_awaited_once()
+                    mock_session.commit.assert_awaited()
+                    mock_session.refresh.assert_awaited()
 
                     assert response.access_token == "test_token"
                     assert isinstance(response.user_id, str)
@@ -195,24 +203,30 @@ async def test_register_user_success(mock_request: MagicMock, mock_session: Magi
 
 @pytest.mark.asyncio
 async def test_register_user_no_email(mock_request: MagicMock, mock_session: MagicMock):
-    """Test registration without email (should generate one)."""
+    """Test registration without email (should generate one).
 
+    Previously this test constructed invite_code=None and asserted success - it was live proof
+    of #733's bypass. It now requires a valid invite code (the bypass itself is asserted against
+    separately in test_register_user_invite_code_missing); its actual purpose, auto-generated
+    email, is preserved below.
+    """
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
-        invite_code=None,
+        invite_code="valid_invite",
     )
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
-    # Mock session.execute to return None (no existing user)
     from sqlalchemy.engine import Result
 
-    result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=None)
-    mock_session.execute = AsyncMock(return_value=result_mock)
-
-    mock_session.refresh = AsyncMock()
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=True)
+    lookup_result = MagicMock(spec=Result)
+    lookup_result.scalar_one_or_none = MagicMock(return_value=None)
+    claim_result = MagicMock(spec=Result)
+    claim_result.scalar_one = MagicMock(return_value=True)
+    mock_session.execute = AsyncMock(side_effect=[reserve_result, lookup_result, claim_result])
 
     # Mock async_persistence
     mock_async_persistence = MagicMock()
@@ -274,9 +288,10 @@ async def test_register_user_email_constraint_violation(mock_request: MagicMock,
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     # Mock IntegrityError with email constraint
     orig_exception = Exception("duplicate key value violates unique constraint users_email_key")
@@ -305,9 +320,8 @@ async def test_register_user_email_constraint_violation(mock_request: MagicMock,
 
 
 @pytest.mark.asyncio
-async def test_register_user_invite_marking_success(mock_request: MagicMock, mock_session: MagicMock):
-    """Test registration with successful invite marking."""
-
+async def test_register_user_invite_claim_success(mock_request: MagicMock, mock_session: MagicMock):
+    """Test registration where the invite claim (mark_invite_used) succeeds."""
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
@@ -320,20 +334,15 @@ async def test_register_user_invite_marking_success(mock_request: MagicMock, moc
 
     from sqlalchemy.engine import Result
 
-    result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=None)
-
-    # Mock session.execute to return result for user lookup, then success for invite update
-    mock_execute_result = MagicMock()
-    execute: AsyncMock = AsyncMock(
-        side_effect=[
-            result_mock,  # First call for user lookup
-            mock_execute_result,  # Second call for invite update
-        ]
-    )
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=True)
+    lookup_result = MagicMock(spec=Result)
+    lookup_result.scalar_one_or_none = MagicMock(return_value=None)
+    claim_result = MagicMock(spec=Result)
+    claim_result.scalar_one = MagicMock(return_value=True)
+    execute = AsyncMock(side_effect=[reserve_result, lookup_result, claim_result])
     mock_session.execute = execute
 
-    # Mock async_persistence
     mock_async_persistence = MagicMock()
     mock_async_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
 
@@ -344,8 +353,6 @@ async def test_register_user_invite_marking_success(mock_request: MagicMock, moc
             ):
                 with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
                     mock_session.add = MagicMock()
-                    mock_session.commit = AsyncMock()
-                    mock_session.refresh = AsyncMock()
 
                     response = await register_user(
                         user_create=user_create,
@@ -355,14 +362,19 @@ async def test_register_user_invite_marking_success(mock_request: MagicMock, moc
                     )
 
                     assert response.access_token == "test_token"
-                    # Verify invite update was attempted
-                    assert execute.call_count >= 2
+                    # Verify the claim (mark_invite_used) was attempted
+                    assert execute.call_count == 3
+                    mock_session.commit.assert_awaited()
 
 
 @pytest.mark.asyncio
-async def test_register_user_invite_marking_failure(mock_request: MagicMock, mock_session: MagicMock):
-    """Test registration when invite marking fails (should still succeed)."""
+async def test_register_user_capture_rejected_rolls_back(mock_request: MagicMock, mock_session: MagicMock):
+    """Test registration when capture_invite returns False after a successful reserve.
 
+    Defense-in-depth path: with _reserve_invite's lock held, this should be unreachable in
+    practice, but it must still reject (400) and not commit the user if the contract is ever
+    violated, rather than silently succeeding.
+    """
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
@@ -375,20 +387,14 @@ async def test_register_user_invite_marking_failure(mock_request: MagicMock, moc
 
     from sqlalchemy.engine import Result
 
-    result_mock = MagicMock(spec=Result)
-    result_mock.scalar_one_or_none = MagicMock(return_value=None)
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=True)
+    lookup_result = MagicMock(spec=Result)
+    lookup_result.scalar_one_or_none = MagicMock(return_value=None)
+    claim_result = MagicMock(spec=Result)
+    claim_result.scalar_one = MagicMock(return_value=False)
+    mock_session.execute = AsyncMock(side_effect=[reserve_result, lookup_result, claim_result])
 
-    # Mock session.execute for invite update to raise error
-    from sqlalchemy.exc import SQLAlchemyError
-
-    mock_session.execute = AsyncMock(
-        side_effect=[
-            result_mock,  # First call for user lookup
-            SQLAlchemyError("DB error", None, None),  # Second call for invite update
-        ]
-    )
-
-    # Mock async_persistence
     mock_async_persistence = MagicMock()
     mock_async_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
 
@@ -397,21 +403,102 @@ async def test_register_user_invite_marking_failure(mock_request: MagicMock, moc
             with patch(
                 "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
             ):
-                with patch("server.auth.endpoints._generate_jwt_token", return_value="test_token"):
-                    # Mock session.add and commit to succeed
-                    mock_session.add = MagicMock()
-                    mock_session.commit = AsyncMock()
-                    mock_session.refresh = AsyncMock()
+                mock_session.add = MagicMock()
 
-                    # Should still succeed even if invite marking fails
-                    response = await register_user(
+                with pytest.raises(LoggedHTTPException) as exc_info:
+                    _ = await register_user(
                         user_create=user_create,
                         request=mock_request,
                         invite_manager=mock_invite_manager,
                         session=mock_session,
                     )
 
-                    assert response.access_token == "test_token"
+    assert exc_info.value.status_code == 400
+    mock_session.commit.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_register_user_capture_error_rolls_back(mock_request: MagicMock, mock_session: MagicMock):
+    """Test registration when capture_invite itself errors (SQLAlchemyError).
+
+    Fixes #733's swallowed-error bypass: previously this error was caught and logged, and
+    registration succeeded anyway, leaving a committed user against an unclaimed invite. It
+    must now propagate so the caller (get_async_session) rolls the user back.
+    """
+    user_create = UserCreate(
+        username="newuser",
+        password="testpass123",
+        invite_code="valid_invite",
+    )
+
+    mock_invite = MagicMock()
+    mock_invite_manager = MagicMock()
+    mock_invite_manager.validate_invite = AsyncMock(return_value=mock_invite)
+
+    from sqlalchemy.engine import Result
+
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=True)
+    lookup_result = MagicMock(spec=Result)
+    lookup_result.scalar_one_or_none = MagicMock(return_value=None)
+    mock_session.execute = AsyncMock(
+        side_effect=[reserve_result, lookup_result, SQLAlchemyError("DB error", None, None)]
+    )
+
+    mock_async_persistence = MagicMock()
+    mock_async_persistence.get_active_players_by_user_id = AsyncMock(return_value=[])
+
+    with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+        with patch("server.auth.argon2_utils.hash_password", return_value="hashed"):
+            with patch(
+                "server.async_persistence.get_async_persistence", return_value=mock_async_persistence, create=True
+            ):
+                mock_session.add = MagicMock()
+
+                with pytest.raises(SQLAlchemyError):
+                    _ = await register_user(
+                        user_create=user_create,
+                        request=mock_request,
+                        invite_manager=mock_invite_manager,
+                        session=mock_session,
+                    )
+
+    mock_session.commit.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_register_user_reserve_rejected(mock_request: MagicMock, mock_session: MagicMock):
+    """Test registration rejected when reserve_invite (AUTH) sees the code as unreservable.
+
+    This is the authoritative concurrent-reuse guard: it must reject before any user object is
+    built (no username lookup, no session.add) and must not commit.
+    """
+    user_create = UserCreate(
+        username="newuser",
+        password="testpass123",
+        invite_code="already_used",
+    )
+
+    mock_invite_manager = _mock_invite_manager()
+
+    from sqlalchemy.engine import Result
+
+    reserve_result = MagicMock(spec=Result)
+    reserve_result.scalar_one = MagicMock(return_value=False)
+    mock_session.execute = AsyncMock(return_value=reserve_result)
+
+    with patch("server.commands.admin_shutdown_command.is_shutdown_pending", return_value=False):
+        with pytest.raises(LoggedHTTPException) as exc_info:
+            _ = await register_user(
+                user_create=user_create,
+                request=mock_request,
+                invite_manager=mock_invite_manager,
+                session=mock_session,
+            )
+
+    assert exc_info.value.status_code == 400
+    mock_session.execute.assert_awaited_once()  # reserve_invite only - no username lookup reached
+    mock_session.commit.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -420,9 +507,10 @@ async def test_register_user_unexpected_exception(mock_request: MagicMock, mock_
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     from sqlalchemy.engine import Result
 
@@ -450,9 +538,10 @@ async def test_register_user_username_constraint_violation(mock_request: MagicMo
     user_create = UserCreate(
         username="existinguser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     # Mock IntegrityError with username constraint
     orig_exception = Exception("duplicate key value violates unique constraint users_username_key")
@@ -486,9 +575,10 @@ async def test_register_user_generic_constraint_violation(mock_request: MagicMoc
     user_create = UserCreate(
         username="newuser",
         password="testpass123",
+        invite_code="valid_invite",
     )
 
-    mock_invite_manager = MagicMock()
+    mock_invite_manager = _mock_invite_manager()
 
     # Mock IntegrityError with generic constraint
     orig_exception = Exception("duplicate key value violates unique constraint")
@@ -526,6 +616,7 @@ async def test_register_user_password_validation_empty():
         _ = UserCreate(
             username="newuser",
             password="",  # Empty password
+            invite_code="valid_invite",
         )
 
 
@@ -539,4 +630,35 @@ async def test_register_user_password_validation_whitespace():
         _ = UserCreate(
             username="newuser",
             password="   ",  # Whitespace-only password
+            invite_code="valid_invite",
+        )
+
+
+@pytest.mark.asyncio
+async def test_register_user_invite_code_missing():
+    """Test registration with no invite_code at all is rejected by Pydantic (#733).
+
+    This is the exact shape of #733: the field must be required, not optional-with-None-default,
+    so a caller cannot omit it entirely and reach the handler. Uses model_validate() on a plain
+    dict (mirroring FastAPI's parsing of an incoming JSON body) rather than a keyword UserCreate(...)
+    call, since the latter is a field genuinely missing from the wire payload - a static
+    "missing argument" call wouldn't compile against UserCreate's own generated __init__ and
+    wouldn't reflect what an actual malicious/malformed request looks like.
+    """
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        _ = UserCreate.model_validate({"username": "newuser", "password": "testpass123"})
+
+
+@pytest.mark.asyncio
+async def test_register_user_invite_code_blank():
+    """Test registration with a whitespace-only invite_code is rejected by Pydantic (#733)."""
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        _ = UserCreate(
+            username="newuser",
+            password="testpass123",
+            invite_code="   ",
         )

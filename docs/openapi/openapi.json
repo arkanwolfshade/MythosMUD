@@ -11555,14 +11555,7 @@
             "title": "Password"
           },
           "invite_code": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Invite Code"
           },
           "email": {
@@ -11580,7 +11573,8 @@
         "type": "object",
         "required": [
           "username",
-          "password"
+          "password",
+          "invite_code"
         ],
         "title": "UserCreate",
         "description": "Schema for user creation with invite code validation."

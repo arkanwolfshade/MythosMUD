@@ -84,11 +84,19 @@ def _sync_test_url_state() -> None:
 
 
 def _normalize_connect_args_search_path(database_url: str, connect_args: dict[str, Any]) -> dict[str, Any]:
-    """Ensure PostgreSQL search_path matches the target database schema name."""
+    """Ensure PostgreSQL search_path matches the target database schema name.
+
+    Merges into any existing server_settings (e.g. idle_in_transaction_session_timeout from
+    get_postgres_connect_args()) rather than replacing connect_args outright - a prior version
+    of this function returned a brand-new {"server_settings": {"search_path": db_name}}, which
+    silently discarded every other server_settings key whenever search_path didn't already match
+    db_name (i.e. in every dev/test environment on first connect).
+    """
     db_name = database_url.split("/")[-1].split("?")[0] if database_url else ""
     if db_name not in ("mythos_dev", "mythos_unit", "mythos_e2e"):
         return connect_args
-    current = (connect_args.get("server_settings") or {}).get("search_path", "").strip()
+    existing_server_settings: dict[str, str] = connect_args.get("server_settings") or {}
+    current = existing_server_settings.get("search_path", "").strip()
     if current == db_name:
         return connect_args
     logger.info(
@@ -96,7 +104,7 @@ def _normalize_connect_args_search_path(database_url: str, connect_args: dict[st
         database=db_name,
         previous_search_path=current or None,
     )
-    return {"server_settings": {"search_path": db_name}}
+    return {"server_settings": {**existing_server_settings, "search_path": db_name}}
 
 
 def _create_engine_or_raise(
