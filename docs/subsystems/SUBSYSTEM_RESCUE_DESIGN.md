@@ -1,6 +1,6 @@
 # Rescue Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -60,12 +60,12 @@ flowchart LR
 
 **Components:**
 
-- **rescue_commands**: [server/commands/rescue_commands.py](server/commands/rescue_commands.py) –
+- **rescue_commands**: [server/commands/rescue_commands.py](../../server/commands/rescue_commands.py) –
   handle*ground_command: validates rescuer/target/same room, loads PlayerLucidity, requires
   current_tier == "catatonic", sends channeling events, applies LucidityService.apply_lucidity*
   adjustment (reason_code "ground_rescue"), commits, sends success/failure events via
   send_rescue_update_event. handle_rescue_command: delegates to RescueService.rescue.
-- **RescueService**: [server/services/rescue_service.py](server/services/rescue_service.py) –
+- **RescueService**: [server/services/rescue_service.py](../../server/services/rescue_service.py) –
   rescue(target_name, current_user, player_name): same-room check, load PlayerLucidity, require
   catatonic, apply_lucidity_adjustment (reason_code "rescue_command"), commit, dispatch
   rescue_update events (status "rescued").
@@ -157,3 +157,4 @@ See also [SUBSYSTEM_LUCIDITY_DESIGN.md](SUBSYSTEM_LUCIDITY_DESIGN.md) and
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |

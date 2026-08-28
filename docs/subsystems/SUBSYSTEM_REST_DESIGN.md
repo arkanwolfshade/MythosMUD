@@ -1,6 +1,6 @@
 # Rest Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -56,11 +56,11 @@ flowchart LR
 
 **Components:**
 
-- **rest_command**: [server/commands/rest_command.py](server/commands/rest_command.py) – Validates
+- **rest_command**: [server/commands/rest_command.py](../../server/commands/rest_command.py) – Validates
   not already resting, not in combat; if rest location, calls \_disconnect_player_intentionally;
   else sets position to sitting and starts countdown via create_rest_countdown_task, stored in
   connection_manager.resting_players[player_id].
-- **rest_countdown_task**: [server/commands/rest_countdown_task.py](server/commands/rest_countdown_task.py) –
+- **rest_countdown_task**: [server/commands/rest_countdown_task.py](../../server/commands/rest_countdown_task.py) –
   Async task: every second sends "You will disconnect in N second(s)..." and checks if still in
   resting_players (interrupted if removed). On completion, sends intentional_disconnect event, calls
   disconnect_func (force_disconnect_player), then removes from resting_players in finally.
@@ -161,3 +161,4 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |

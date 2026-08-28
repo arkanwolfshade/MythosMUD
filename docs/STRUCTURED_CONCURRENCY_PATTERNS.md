@@ -1,6 +1,6 @@
 # Structured Concurrency Patterns
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -309,7 +309,7 @@ async def test_structured_concurrency_task_cleanup(self):
 ## 8. References
 
 **[SPEC]**
-[AnyIO Best Practices](.cursor/rules/anyio.mdc)
+[AnyIO Best Practices](../.cursor/rules/anyio.mdc)
 
 - [Python asyncio.TaskGroup](https://docs.python.org/3/library/asyncio-task.html#asyncio.TaskGroup) (Python 3.11+)
 - [Structured Concurrency](https://en.wikipedia.org/wiki/Structured_concurrency)
@@ -332,3 +332,4 @@ async def test_structured_concurrency_task_cleanup(self):
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken `anyio.mdc` link (wrong depth) (#695) |

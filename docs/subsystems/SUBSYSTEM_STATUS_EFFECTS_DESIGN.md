@@ -1,6 +1,6 @@
 # Status Effects Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -63,7 +63,7 @@ flowchart LR
 
 **Components:**
 
-- **mechanics.py**: [server/game/mechanics.py](server/game/mechanics.py) – GameMechanicsService:
+- **mechanics.py**: [server/game/mechanics.py](../../server/game/mechanics.py) – GameMechanicsService:
   apply_lucidity_loss, apply_fear, apply_corruption, heal_player, damage_player, gain_experience.
   Delegates to persistence (apply_lucidity_loss, damage_player, heal_player, etc.). Used by
   combat, magic, and other callers for consistent stat updates.
@@ -168,3 +168,4 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md),
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 1 broken component link (wrong depth) (#695) |

@@ -1,6 +1,6 @@
 # Follow Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -59,9 +59,9 @@ flowchart LR
 
 **Components:**
 
-- **Commands**: [server/commands/follow_commands.py](server/commands/follow_commands.py) – follow
+- **Commands**: [server/commands/follow_commands.py](../../server/commands/follow_commands.py) – follow
   (target resolved via TargetResolutionService, same as combat), unfollow, following (display).
-- **FollowService**: [server/game/follow_service.py](server/game/follow_service.py) – In-memory
+- **FollowService**: [server/game/follow_service.py](../../server/game/follow_service.py) – In-memory
   `_follow_target` (follower_id -> (target_id, target_type) or (target_id, target_type, display_name)
   for NPC), `_pending_requests` (request_id -> requestor/target/created_at). Subscribes to
   PlayerEnteredRoom and NPCEnteredRoom; on event, moves each follower via MovementService and
@@ -165,3 +165,4 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |

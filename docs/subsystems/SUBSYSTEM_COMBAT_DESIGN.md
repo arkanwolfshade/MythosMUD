@@ -1,6 +1,6 @@
 # Combat Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -62,22 +62,21 @@ flowchart LR
 
 **Components:**
 
-- **combat.py**: [server/commands/combat.py](server/commands/combat.py) – CombatCommandHandler:
+- **combat.py**: [server/commands/combat.py](../../server/commands/combat.py) – CombatCommandHandler:
   rest/grace check, get player/room, validate target name, resolve target (TargetResolutionService),
   require NPC and alive, validate combat action, execute (weapon resolution, damage calc,
   handle_player_attack_on_npc). Top-level handlers handle_attack_command, handle_punch_command, etc.
   (aliases). get_combat_command_handler(app) lazy-inits handler from container.
-- **CombatValidator**: [server/validators/combat_validator.py](server/validators/combat_validator.py) –
+- **CombatValidator**: [server/validators/combat_validator.py](../../server/validators/combat_validator.py) –
   validate_can_attack_target(attacker_id, target_id, target_type): if party_service and target_type
   player, is_in_same_party blocks with thematic message. Used for consistency; current command flow
   only allows NPC targets.
-- **weapons.py**: [server/game/weapons.py](server/game/weapons.py) – resolve*weapon_attack_from*
+- **weapons.py**: [server/game/weapons.py](../../server/game/weapons.py) – resolve*weapon_attack_from*
   equipped(main_hand_stack, registry): returns WeaponAttackInfo(base_damage, damage_type) from
   prototype metadata (weapon.min_damage, max_damage, modifier, damage_types) or None for unarmed.
-- **NPCCombatIntegration**: [server/npc/combat_integration.py](server/npc/combat_integration.py) –
+- **NPCCombatIntegration**: [server/npc/combat_integration.py](../../server/npc/combat_integration.py) –
   calculate_damage(attacker_stats, target_stats, weapon_damage, damage_type) for CON/resistance.
-- **NPCCombatIntegrationService**: [server/services/npc_combat_integration_service.py](server/services/
-  npc_combat_integration_service.py) – handle_player_attack_on_npc(player_id, npc_id, room_id,
+- **NPCCombatIntegrationService**: [server/services/npc_combat_integration_service.py](../../server/services/npc_combat_integration_service.py) – handle_player_attack_on_npc(player_id, npc_id, room_id,
   action_type, damage, npc_instance): login grace check, room match, start or queue combat, apply
   damage; returns True/False for success.
 - **TargetResolutionService**: Resolves target name in player's room; combat requires single NPC
@@ -155,8 +154,7 @@ flowchart LR
 - **Wrong damage**: Check equipped main_hand and prototype metadata.weapon; fallback
   basic_unarmed_damage in config.
 
-See also [SUBSYSTEM_PARTY_DESIGN.md](SUBSYSTEM_PARTY_DESIGN.md), [SUBSYSTEM_REST_DESIGN.md]
-(SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md), and
+See also [SUBSYSTEM_PARTY_DESIGN.md](SUBSYSTEM_PARTY_DESIGN.md), [SUBSYSTEM_REST_DESIGN.md](SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_NPC_DESIGN.md](SUBSYSTEM_NPC_DESIGN.md), and
 [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## 8. Related docs
@@ -174,3 +172,4 @@ See also [SUBSYSTEM_PARTY_DESIGN.md](SUBSYSTEM_PARTY_DESIGN.md), [SUBSYSTEM_REST
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 5 broken component links (wrong depth, 1 also broken across a line wrap); fix 1 link where the closing bracket and opening paren landed on separate lines (#695) |

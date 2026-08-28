@@ -1,6 +1,6 @@
 # Skills / Level Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -61,20 +61,20 @@ flowchart LR
 
 **Components:**
 
-- **SkillService**: [server/game/skill_service.py](server/game/skill_service.py) – get*skills*
+- **SkillService**: [server/game/skill_service.py](../../server/game/skill_service.py) – get*skills*
   catalog (SkillRepository.get_all_skills), set_player_skills (occupation + personal interest
   validation), get_player_skills (PlayerSkillRepository, ownership), skill use logging
   (SkillUseLogRepository), improvement rolls. Constants: OCCUPATION_VALUES (9 slots: 70,60,60,50,50,
   50,40,40,40), PERSONAL_INTEREST_BONUS 20, MAX_SKILL_VALUE 99.
-- **LevelService**: [server/game/level_service.py](server/game/level_service.py) – grant_xp(player_id,
+- **LevelService**: [server/game/level_service.py](../../server/game/level_service.py) – grant_xp(player_id,
   amount): add to experience_points, level = level_from_total_xp(total_xp), if level increased
   save and call level_up_hook(player_id, new_level). Level-up hook is optional (e.g. skill
   improvement on level-up).
-- **level_curve**: [server/game/level_curve.py](server/game/level_curve.py) – level_from_total_xp
+- **level_curve**: [server/game/level_curve.py](../../server/game/level_curve.py) – level_from_total_xp
   (XP-to-level mapping).
-- **skills_commands**: [server/commands/skills_commands.py](server/commands/skills_commands.py) –
+- **skills_commands**: [server/commands/skills_commands.py](../../server/commands/skills_commands.py) –
   handle_skills_command: list/inspect skills (catalog and player values).
-- **teach_command**: [server/commands/teach_command.py](server/commands/teach_command.py) –
+- **teach_command**: [server/commands/teach_command.py](../../server/commands/teach_command.py) –
   handle_teach_command: integrates with SpellLearningService for teaching spells (and possibly
   skills).
 - **Repositories**: SkillRepository, PlayerSkillRepository, SkillUseLogRepository (persistence).
@@ -153,3 +153,4 @@ See also [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md) (teach/learn),
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 5 broken component links (wrong depth) (#695) |
