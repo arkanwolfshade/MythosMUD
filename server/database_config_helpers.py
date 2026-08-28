@@ -111,18 +111,27 @@ _DEFAULT_POOL_SETTINGS: dict[str, int] = {
 
 def get_postgres_connect_args() -> dict[str, dict[str, str]]:
     """
-    Build connect_args for asyncpg when POSTGRES_SEARCH_PATH is set.
+    Build connect_args for asyncpg: always a hung-transaction timeout, plus search_path when set.
 
-    Used so unit tests (and any env) can target [database].[schema] (e.g. mythos_unit.mythos_unit)
-    instead of the default public schema. Returns empty dict if POSTGRES_SEARCH_PATH is not set.
+    idle_in_transaction_session_timeout is a backstop against a request that hangs (never errors,
+    never crashes) while holding a row lock across multiple awaits - see reserve_invite/
+    capture_invite in server/auth/endpoints.py (#733), the first thing in this codebase to hold a
+    lock that way. A crash or dropped connection already releases locks via Postgres's own
+    backend teardown; this covers the hang-without-dying case, for every transaction, not just
+    invite registration. Generous value so it never fires on a legitimately slow request.
+
+    search_path is set so unit tests (and any env) can target [database].[schema]
+    (e.g. mythos_unit.mythos_unit) instead of the default public schema; omitted if
+    POSTGRES_SEARCH_PATH is not set (true in production).
 
     Returns:
         Dict suitable for create_async_engine(..., connect_args=...).
     """
+    server_settings: dict[str, str] = {"idle_in_transaction_session_timeout": "30s"}
     search_path = os.environ.get("POSTGRES_SEARCH_PATH", "").strip()
-    if not search_path:
-        return {}
-    return {"server_settings": {"search_path": search_path}}
+    if search_path:
+        server_settings["search_path"] = search_path
+    return {"server_settings": server_settings}
 
 
 def get_asyncpg_server_settings_for_database_url(database_url: str) -> dict[str, str]:

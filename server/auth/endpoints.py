@@ -21,13 +21,12 @@ from ..auth_utils import create_access_token
 from ..database import get_async_session
 from ..dependencies import get_container
 from ..exceptions import LoggedHTTPException
-from ..models.invite import Invite
 from ..models.user import User
 from ..schemas.auth import InviteRead
 from ..schemas.players import CharacterInfo
 from ..structured_logging.enhanced_logging_config import get_logger
 from .dependencies import get_current_active_user, get_current_superuser
-from .invites import InviteManager, get_invite_manager
+from .invites import InviteManager, capture_invite, get_invite_manager, reserve_invite
 from .token_epoch import get_auth_epoch
 from .users import UserManager, get_user_manager, validate_jwt_secret
 
@@ -62,7 +61,7 @@ class UserCreate(BaseModel):
 
     username: str
     password: str
-    invite_code: str | None = None
+    invite_code: str
     email: str | None = None
 
     # Add password validation to reject empty passwords and enforce length limits
@@ -77,6 +76,18 @@ class UserCreate(BaseModel):
         # Enforce maximum length to prevent DoS attacks (matches argon2_utils.py)
         if len(v) > MAX_PASSWORD_LENGTH:
             raise ValueError(f"Password must not exceed {MAX_PASSWORD_LENGTH} characters")  # pylint: disable=redefined-outer-name  # Reason: MAX_PASSWORD_LENGTH is a module-level constant, not being redefined; Pylint false positive
+        return v
+
+    # Invite-only registration: reject absent/whitespace-only codes at the schema boundary
+    # (server/api/real_time.py's websocket_player_id_fallback_allowed() config-gated pattern was
+    # considered and rejected here - see #733's remediation grill - since no config surface for
+    # relaxing this is needed anywhere in the codebase).
+    @field_validator("invite_code")
+    @classmethod
+    def validate_invite_code(cls, v: str) -> str:
+        """Validate invite code is present and non-blank."""
+        if not v or not v.strip():
+            raise ValueError("Invite code is required")
         return v
 
 
@@ -131,17 +142,17 @@ def _ensure_user_email(user_create: UserCreate) -> None:
         logger.info("Generated simple bogus email", username=user_create.username, email=user_create.email)
 
 
-async def _validate_invite_code(
-    user_create: UserCreate, invite_manager: InviteManager, request: Request
-) -> Invite | None:
-    """Validate invite code. Returns validated invite or None."""
-    if not user_create.invite_code:
-        return None
+def _build_clean_user_create(user_create: UserCreate) -> UserCreate:
+    """Rebuild UserCreate via keyword args.
 
-    try:
-        return await invite_manager.validate_invite(user_create.invite_code, request)
-    except LoggedHTTPException as e:
-        raise e
+    Not **dict: mixing email (str|None) into a dict widens values to str|None.
+    """
+    return UserCreate(
+        username=user_create.username,
+        password=user_create.password,
+        invite_code=user_create.invite_code,
+        email=user_create.email,
+    )
 
 
 async def _check_username_exists(session: AsyncSession, username: str, _request: Request) -> None:
@@ -184,40 +195,6 @@ def _create_user_object(user_create_clean: UserCreate) -> User:
     return user
 
 
-async def _mark_invite_as_used(
-    session: AsyncSession, user: User, invite_code: str | None, validated_invite: Invite | None
-) -> None:
-    """Mark invite as used after successful registration."""
-    if not validated_invite or not invite_code:
-        return
-
-    try:
-        from sqlalchemy import text
-
-        _ = await session.execute(
-            text("SELECT mark_invite_used(:invite_code, CAST(:used_by_user_id AS UUID))"),
-            {
-                "used_by_user_id": str(user.id),
-                "invite_code": invite_code,
-            },
-        )
-        await session.commit()
-        logger.info(
-            "Invite marked as used during registration",
-            invite_code=invite_code,
-            user_id=user.id,
-            username=user.username,
-        )
-    except SQLAlchemyError as invite_error:
-        logger.error(
-            "Failed to mark invite as used during registration",
-            error=str(invite_error),
-            error_type=type(invite_error).__name__,
-            invite_code=invite_code,
-            user_id=user.id,
-        )
-
-
 def _handle_integrity_error(e: IntegrityError, username: str, _request: Request) -> NoReturn:
     """Handle IntegrityError during registration."""
     error_str = str(e).lower()
@@ -239,6 +216,48 @@ def _handle_integrity_error(e: IntegrityError, username: str, _request: Request)
         constraint_error=str(e),
         original_error=orig_error_str if hasattr(e, "orig") else "",
     ) from e
+
+
+async def _persist_new_user(
+    session: AsyncSession, user_create: UserCreate, user_create_clean: UserCreate, request: Request
+) -> User:
+    """Reserve the invite, create and flush the user, capture the invite, commit.
+
+    The DB-transaction core of register_user, split out so register_user itself stays a thin
+    prep/response wrapper. Raises on any failure; the caller has nothing left to do afterward
+    except build the response.
+    """
+    try:
+        await reserve_invite(session, user_create.invite_code)
+
+        await _check_username_exists(session, user_create_clean.username, request)
+
+        user = _create_user_object(user_create_clean)
+
+        session.add(user)
+        await session.flush()
+
+        await capture_invite(session, user, user_create.invite_code)
+
+        await session.commit()
+        await session.refresh(user)
+
+    except LoggedHTTPException:
+        raise
+    except IntegrityError as e:
+        _handle_integrity_error(e, user_create_clean.username, request)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(
+            "Unexpected error during registration",
+            error=str(e),
+            error_type=type(e).__name__,
+            username=user_create_clean.username,
+        )
+        raise e
+
+    return user
 
 
 def _generate_jwt_token(user: User) -> str:
@@ -270,8 +289,11 @@ async def register_user(
     """
     Register a new user with invite code validation.
 
-    This endpoint validates the invite code and creates a new user account.
-    The invite code is marked as used after successful registration.
+    Invite enforcement follows an auth-and-capture model. reserve_invite (AUTH) takes a row
+    lock on the invite and holds it for the rest of this transaction; capture_invite (CAPTURE)
+    finalizes it after the user is flushed but still before commit. A failure anywhere between
+    the two rolls the whole transaction back - releasing the lock and leaving the invite
+    untouched - rather than leaving an orphaned account behind an already-used invite.
     """
     _check_shutdown_status(request)
 
@@ -279,46 +301,16 @@ async def register_user(
 
     _ensure_user_email(user_create)
 
-    validated_invite = await _validate_invite_code(user_create, invite_manager, request)
+    # Early rejection (better logging, differentiated invalid/expired/used messages, fails
+    # before any user object is built). Non-locking - authoritative enforcement against
+    # concurrent reuse is the reserve/capture pair below.
+    _ = await invite_manager.validate_invite(user_create.invite_code, request)
 
-    # Keyword args (not **dict): mixing email (str|None) into a dict widens values to str|None.
-    user_create_clean = UserCreate(
-        username=user_create.username,
-        password=user_create.password,
-        email=user_create.email,
-    )
-
-    try:
-        await _check_username_exists(session, user_create_clean.username, request)
-
-        user = _create_user_object(user_create_clean)
-
-        session.add(user)
-        await session.commit()
-        await session.refresh(user)
-
-        await _mark_invite_as_used(session, user, user_create.invite_code, validated_invite)
-
-    except LoggedHTTPException:
-        raise
-    except IntegrityError as e:
-        _handle_integrity_error(e, user_create_clean.username, request)
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(
-            "Unexpected error during registration",
-            error=str(e),
-            error_type=type(e).__name__,
-            username=user_create_clean.username,
-        )
-        raise e
-
-    logger.info("User registered successfully", username=user.username, user_id=user.id)
+    user_create_clean = _build_clean_user_create(user_create)
+    user = await _persist_new_user(session, user_create, user_create_clean, request)
 
     access_token = _generate_jwt_token(user)
-
-    logger.info("Registration successful for user", username=user.username, character_count=0)
+    logger.info("Registration successful", username=user.username, user_id=user.id, character_count=0)
 
     return LoginResponse(
         access_token=access_token,
