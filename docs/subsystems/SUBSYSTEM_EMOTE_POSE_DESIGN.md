@@ -110,7 +110,11 @@ flowchart LR
 **[NOTE]**
 
 - **Adding predefined emotes**: Insert into emotes table (stable_id, self_message, other_message)
-  and emote_aliases; restart or reload EmoteService so \_load_emotes runs (init only).
+  and emote_aliases; restart or reload EmoteService so `load_emotes` runs (init only). Renamed from
+  `_load_emotes` and made properly async after this doc's 2026-07-30 baseline (#624) – EmoteService now
+  takes an injected `EmoteRepository` and is constructed via the DI container
+  (`server/container/bundles/game.py`), no longer needing the thread+new-event-loop workaround for the
+  sync/async boundary.
 - **Making me broadcast**: Change handle_me_command to call chat_service.send_me_message (or
   equivalent) with player_id and action, and return self message; ensure chat/NATS supports the
   message type.

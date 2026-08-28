@@ -126,6 +126,9 @@ from_room_id=...)`, `save_player` (current_room_id), optional tutorial exit and 
 4. **EventBus** → Real-time layer subscribes; NATS/WebSocket broadcast to room (see
    EVENT_OWNERSHIP_MATRIX, NATS_SUBJECT_PATTERNS). Follow subsystem subscribes to PlayerEnteredRoom
    to move followers.
+5. **Dialogue (#583)** – added after this doc's 2026-07-30 baseline. `handle_go_command` clears any
+   in-progress dialogue session for the moving player (`get_dialogue_service().clear_cursor(player_id)`)
+   after a successful move – leaving the room ends the conversation.
 
 ## 6. Developer guide
 

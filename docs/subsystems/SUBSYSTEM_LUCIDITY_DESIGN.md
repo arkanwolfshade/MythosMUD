@@ -105,6 +105,11 @@ flowchart LR
    catatonic target to 1 LCD; tier updates; catatonia_observer notified.
 3. **Mythos spell** – SpellCostsService checks and applies lucidity_cost; can_cast_spell in
    MagicService validates current lucidity.
+4. **Phantom hostiles (combat, #625)** – added after this doc's 2026-07-30 baseline.
+   `LucidityService.apply_lucidity_adjustment` clears any active phantom hostiles
+   (`phantom_hostile_service.clear_all_phantoms`) whenever a tier transition leaves the
+   `fractured`/`deranged` tiers in either direction – phantoms only make sense while the player
+   remains hallucination-eligible.
 
 ## 6. Developer guide
 
