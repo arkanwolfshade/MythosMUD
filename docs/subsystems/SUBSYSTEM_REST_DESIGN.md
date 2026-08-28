@@ -110,7 +110,10 @@ flowchart LR
    change_position(player_name, "sitting"), then create_rest_countdown_task and store in
    resting_players[player_id]; return result with player_update (position).
 2. **Interrupt (go/attack/cast)** – Caller calls `cancel_rest_countdown(player_id, connection_manager)`:
-   task = resting_players[player_id], task.cancel(), await task, del resting_players[player_id].
+   task = resting_players[player_id], task.cancel(), await task, del resting_players[player_id]. Finally
+   block also restores standing posture (`_stand_after_cancelled_rest`, added after this doc's 2026-07-30
+   baseline) – /rest sits the player, so interrupting it must stand them back up or the session sticks in
+   the Sitting position.
 3. **Countdown task** – Loop 10..1: if not in resting_players, return; send countdown message; sleep
    1s. Then send intentional_disconnect event, call disconnect_func (force_disconnect_player).
    Finally block always removes player_id from resting_players.

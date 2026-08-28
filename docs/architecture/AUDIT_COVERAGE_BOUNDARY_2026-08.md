@@ -1,6 +1,6 @@
 # Audit Coverage Boundary — 2026-08 Design Audit
 
-**Version 1.2.0** · MythosMUD · 2026-08-28
+**Version 1.3.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -179,6 +179,10 @@ cost."*). Issue #639 ranks a subsystems conformance check as its top suggested n
 document deliberately overrides that ordering — see §6 — because the audit's own closing
 recommendation on the same evidence says the opposite. The pass with real signal is **staleness**:
 has the code moved since 2026-07-30 in ways the derived docs no longer reflect?
+
+| Surface | Excluded because | Risk if wrong | Status | Closed by |
+|---|---|---|---|---|
+| `docs/subsystems/` staleness (16 files) | — | swept all 15 subsystem docs (+ README) via git log since 2026-07-30 on each doc's own cited source paths, filtering cosmetic/refactor commits from structural ones by reading the actual diffs (commit titles proved unreliable — a "Chore/codacy" squash merge carried a genuine REST behavior change alongside pure reformatting). 4 findings, all fixed inline (small, factual): REST (interrupting rest now also restores standing posture, `_stand_after_cancelled_rest`), EMOTE_POSE (`_load_emotes` renamed `load_emotes`, now async, DI-constructed with an injected repository), LUCIDITY (leaving fractured/deranged tiers now clears phantom hostiles, #625), MOVEMENT (leaving a room now clears any in-progress dialogue session, #583). 10 of 15 docs had zero structural commits since the baseline and needed no changes; 1 (WHO) had an internal validator swap the doc's abstraction level doesn't describe and needed none either. | SWEPT, 4 findings, all fixed inline | `#648` comment |
 
 ### 4.5 Security — a boundary issue #639 does not mention
 
