@@ -132,8 +132,6 @@ These tests were already run and verified in the current session:
 # These can run in any session - no bcrypt dependencies
 
 uv run pytest `
-  server/tests/unit/infrastructure/test_message_broker.py `
-  server/tests/unit/infrastructure/test_nats_broker.py `
   server/tests/unit/caching/test_cache_service.py `
   server/tests/unit/realtime/errors/test_error_handler.py `
   server/tests/unit/test_world_loader.py `
