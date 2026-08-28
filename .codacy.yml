@@ -431,8 +431,6 @@ ignore_patterns:
       - "server/commands/combat_flee.py"
       - "server/game/dialogue/__init__.py"
       - "server/game/room_service.py"
-      - "server/infrastructure/message_broker.py"
-      - "server/infrastructure/nats_broker.py"
       - "server/persistence/container_query_helpers_async.py"
       - "server/realtime/connection_session_management.py"
       - "server/services/combat_configuration_service.py"

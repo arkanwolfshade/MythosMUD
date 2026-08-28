@@ -1,6 +1,6 @@
 # ADR-003: Dual Event Systems (EventBus + NATS)
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -61,6 +61,7 @@ and rationale for keeping this as two paths rather than merging through EventBus
 2. **NATS only** - Rejected: adds latency and complexity for in-process domain events; every domain event would require network round-trip
 3. **Redis Pub/Sub instead of NATS** - Rejected at time of decision: NATS chosen for operational reasons (streaming, durability, subject hierarchy)
 4. **Kafka** - Rejected: heavier operational footprint; NATS sufficient for current scale
+5. **`MessageBroker` protocol abstraction over NATS** (`server/infrastructure/`) - Built 2026-04, never adopted by the service layer, removed 2026-08 (#687): `nats_service.py` and siblings kept importing `nats` directly the whole time, so the abstraction had zero callers and had drifted from `NATSService`'s actual (much larger) surface. `NATSService` already satisfies 5 of the protocol's 7 methods verbatim; a `Protocol` can be extracted from its current signature if horizontal scale-out ever needs a swappable broker.
 
 ## 5. Consequences
 
@@ -69,6 +70,7 @@ and rationale for keeping this as two paths rather than merging through EventBus
 - **Positive**: Clear separation of concerns; EventBus is fast for in-process events; NATS enables horizontal scaling for chat/combat
 - **Negative**: Two systems to understand and operate; risk of event duplication if developers publish to both incorrectly (documented in EVENT_OWNERSHIP_MATRIX.md)
 - **Neutral**: ~~EventBus is single-instance; horizontal scaling of game logic requires distributed EventBus (e.g., Redis) - deferred~~ **Implemented (2026-02):** Distributed EventBus via NATS. See DISTRIBUTED_EVENTBUS_NATS.md.
+- **Accepted deviation (2026-08, #687)**: No `MessageBroker` protocol between the service layer and NATS; `nats_service.py` imports `nats` directly. See P0-Known-Deviations.md (events-nats, ACCEPTED).
 
 ## 6. Related ADRs
 
@@ -91,3 +93,4 @@ and rationale for keeping this as two paths rather than merging through EventBus
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record removal of the unused `MessageBroker` protocol abstraction as an accepted deviation, not a gap (#687). |

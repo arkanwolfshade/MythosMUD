@@ -81,7 +81,6 @@ DEFAULT_LOG_CATEGORIES: dict[str, list[str]] = {
         "server.utils.command_processor",
     ],
     "events": ["events", "EventBus"],
-    "infrastructure": ["infrastructure", "server.infrastructure"],
     "validators": ["validators", "server.validators"],
     "combat": [
         "services.combat_service",
