@@ -25,6 +25,10 @@ jobs:
   backend:
     name: Python Backend
     runs-on: ubuntu-latest
+    # Backstop for #731: a normal run finishes in single-digit-to-teens minutes. If any step's
+    # pytest invocation silently loses its per-test --timeout again (the exact way this one did),
+    # this bounds the damage instead of running toward GitHub's 6-hour job ceiling unnoticed.
+    timeout-minutes: 45
     # Expression form marks the environment as dynamic so Actions language servers skip
     # false-positive "invalid" diagnostics for optional repo secrets (MYTHOSMUD_*_CI).
     # Resolves to the job id (e.g. backend); GitHub creates the environment if missing.
@@ -301,9 +305,16 @@ jobs:
       - name: Check for excessive warnings
         run: |
           source .venv-ci/bin/activate
-          # Temporarily disable --disable-warnings to check warning count
           # Fail if warnings exceed 100 (should be ~72 after fixes)
-          # Use --override-ini to temporarily disable --disable-warnings
+          # --override-ini replaces server/pytest.ini's whole addopts string (it does not merge),
+          # so everything the step needs from addopts has to be listed explicitly here. The one
+          # real reason for the override: dropping --maxfail=1 so this step still counts warnings
+          # across the whole suite on a red run (see the rc>1 check below) instead of stopping at
+          # the first failure. --timeout=30 --timeout-method=thread must be carried through too --
+          # server/pytest.ini's copy is the suite's only per-test timeout, and its absence here
+          # once let this step hang for 1h45m+ on an unrelated docs-only commit with nothing to
+          # fail it fast (no test even needs to genuinely hang; anything slow enough compounds
+          # under -n 0). See #731.
           # --deselect: test_logging_file_setup.py crashes pytest-xdist workers under -n auto
           # (QueueListener/root logger teardown in forked process -- see run_test_ci.py's own
           # comment on the same module). Without this deselect, this step hangs indefinitely
@@ -319,7 +330,7 @@ jobs:
           # reports under -n auto (workers exit cleanly -- Exit Status: 0, no OS-level fault --
           # yet get reported as crashed), an unresolved xdist/execnet gap. See #724.
           set +e
-          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n 0 --tb=short --override-ini=addopts="--strict-markers --strict-config" 2>&1)
+          WARNING_OUTPUT=$(uv run pytest server/tests/ -m "not slow and not e2e" --deselect tests/unit/structured_logging/test_logging_file_setup.py -n 0 --tb=short --override-ini=addopts="--strict-markers --strict-config --timeout=30 --timeout-method=thread" 2>&1)
           PYTEST_RC=$?
           set -e
           if [ "$PYTEST_RC" -gt 1 ]; then
