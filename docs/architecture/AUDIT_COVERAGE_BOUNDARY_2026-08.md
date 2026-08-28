@@ -1,6 +1,6 @@
 # Audit Coverage Boundary — 2026-08 Design Audit
 
-**Version 1.0.0** · MythosMUD · 2026-08-19
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -195,8 +195,8 @@ anywhere else. #632's closure is a fix, not coverage.
 
 | Surface | Excluded because | Risk if wrong | Status | Closed by |
 |---|---|---|---|---|
-| Systematic security review (auth, authz, injection, secrets handling) | never scoped as a dimension of this audit | unknown — the one incidental finding was Critical | NOT EXAMINED | — |
-| Test-only-affordance defect class (comment-gated bypasses with no enforcing flag) | only the one instance was found, and only by accident | other instances of the same pattern may exist unflagged | NOT EXAMINED | — |
+| Systematic security review (auth, authz, injection, secrets handling) | filed separately — open-ended corpus, distinct from the bounded defect-class sweep below | unknown — the one incidental finding was Critical | NOT EXAMINED | `#734` |
+| Test-only-affordance defect class (comment-gated bypasses with no enforcing flag) | — | swept; corpus `server/` non-test source + `server/config/` + `env.*.example`; `client/`/`scripts/`/`tools/` excluded (reasons in `#648` comment). Existing scanners (Bandit, CodeQL) cannot detect this class — both answer "dangerous API called?", not "does enforcement match the stated precondition?". One new instance found: open registration bypasses the invite-only requirement when `invite_code` is omitted (`server/auth/endpoints.py:134-139`) — filed, not fixed inline (remediation shape crosses into new config surface / contract change per the sweep's own disposition rule). Both `CRITICAL-WebSocket-Auth.md`'s originally-deferred `/ws/{player_id}` claims re-verified false (token is required before the path parameter is consulted; `token=` does propagate to the handler). | SWEPT, 1 finding | `#648` comment, `#733` |
 
 ### 4.6 Questions never asked
 
