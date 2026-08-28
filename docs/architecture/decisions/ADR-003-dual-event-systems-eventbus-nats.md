@@ -1,6 +1,6 @@
 # ADR-003: Dual Event Systems (EventBus + NATS)
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,7 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Post-hoc — authored after the systems it describes. See [README §2](README.md).
 
 ## 2. Context
 
@@ -37,10 +38,14 @@ Maintain **two event systems** with clear separation of responsibility:
    - Pure asyncio implementation
    - Events: PlayerEnteredRoom, PlayerDiedEvent, etc. (**not** combat's own event classes — see below)
    - Subscribers: RealTimeEventHandler, logging, internal handlers
-   - Single process only; no network
+   - In-memory by default; **networked when the NATS bridge is active**. The container constructs
+     `DistributedEventBus` (`server/container/bundles/core.py`) and attaches the bridge once NATS
+     connects (`server/container/bundles/realtime.py`), and NATS is enabled by default — so the
+     networked path is the production default. The pure in-process path applies only when NATS is
+     disabled. See [DISTRIBUTED_EVENTBUS_NATS.md](../DISTRIBUTED_EVENTBUS_NATS.md).
 
 2. **NATS** (`server/services/nats_service.py`) - Distributed pub/sub for real-time messaging
-   - Subject-based routing: `chat.say.{room_id}`, `combat.attack.{room_id}` (and 9 sibling `combat.*` subjects, see EVENT_OWNERSHIP_MATRIX.md), `events.player_entered.{room_id}`
+   - Subject-based routing: `chat.say.room.{room_id}`, `combat.attack.{room_id}` (and 9 sibling `combat.*` subjects, see EVENT_OWNERSHIP_MATRIX.md), `events.player_entered.{room_id}`
    - Used for: chat, combat broadcasts, cross-instance coordination
    - Supports horizontal scaling and multiple subscribers
 
@@ -94,3 +99,4 @@ and rationale for keeping this as two paths rather than merging through EventBus
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record removal of the unused `MessageBroker` protocol abstraction as an accepted deviation, not a gap (#687). |
+| 1.2.0 | 2026-08-28 | Record provenance; correct §3.1 (EventBus is networked via the NATS bridge by default, not single-process); correct the chat NATS subject form to `chat.say.room.{room_id}` (#721) |

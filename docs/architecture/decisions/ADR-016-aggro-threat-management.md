@@ -1,6 +1,6 @@
 # ADR-016: Aggro and Threat Management System
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,7 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-26
+**Provenance:** Post-hoc — authored after the systems it describes. See [README §2](README.md).
 
 ## 2. Context
 
@@ -67,7 +68,7 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 **[SPEC]**
 
 - [Aggro and Threat System Design](../aggro-threat-system.md) – Formulas, data structures, pseudocode, test scenarios
-- [Aggro and Threat Implementation Plan](../aggro-threat-implementation-plan.md) – Implementation summary and key files
+- [Aggro and Threat Implementation Plan](../../archive/aggro-threat-implementation-plan.md) – Implementation summary and key files
 
 ## 8. Changelog
 
@@ -76,3 +77,4 @@ Detailed formulas, data structures, UpdateAggro() behaviour, and test scenarios 
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship); fix broken implementation-plan link, now in `docs/archive/` (#721) |

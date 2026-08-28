@@ -1,6 +1,6 @@
 # ADR-004: WebSocket-Only Real-Time Architecture
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,7 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Post-hoc — authored after the systems it describes. See [README §2](README.md).
 
 ## 2. Context
 
@@ -32,7 +33,15 @@ Use **WebSocket-only** for all real-time communication after initial REST authen
 - **All game traffic**: Single WebSocket connection for commands and state updates
 - **No SSE, no long polling** for game data
 
-Clients establish one WebSocket connection per session. The connection carries both outbound commands (e.g., `say`, `move`, `attack`) and inbound events (e.g., `player_entered`, `combat_event`, `room_update`).
+Clients establish a WebSocket connection per session.
+
+> **Amended by [ADR-018](ADR-018-new-game-session-replacement.md) (2026-08-14).** The original
+> one-connection-per-session claim no longer holds: registration **appends**, so
+> `ConnectionManager.player_websockets` maps a player to a *list* of connections and a session may
+> hold several (grace reconnect, multiple tabs). WebSocket-only transport is unaffected — only
+> connection multiplicity changed.
+
+The connection carries both outbound commands (e.g., `say`, `move`, `attack`) and inbound events (e.g., `player_entered`, `combat_event`, `room_update`).
 
 ## 4. Alternatives Considered
 
@@ -72,3 +81,4 @@ Clients establish one WebSocket connection per session. The connection carries b
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record provenance; cross-reference ADR-018's connection-multiplicity amendment (#721) |

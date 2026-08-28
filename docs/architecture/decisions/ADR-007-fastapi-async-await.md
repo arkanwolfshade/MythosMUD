@@ -1,6 +1,6 @@
 # ADR-007: FastAPI with Async/Await
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,7 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Status:** Accepted
 **Date:** 2026-02-02
+**Provenance:** Post-hoc — authored after the systems it describes. See [README §2](README.md).
 
 ## 2. Context
 
@@ -65,7 +66,7 @@ All I/O-bound operations use `async def` and `await`. Synchronous code is wrappe
 
 **[SPEC]**
 
-- [Async Persistence Migration Plan](../../ASYNC_PERSISTENCE_MIGRATION_PLAN.md)
+- [Async Persistence Migration Plan](../../archive/ASYNC_PERSISTENCE_MIGRATION_PLAN.md)
 - [SQLAlchemy Async Best Practices](../../SQLALCHEMY_ASYNC_BEST_PRACTICES.md)
 
 ## 8. Changelog
@@ -75,3 +76,4 @@ All I/O-bound operations use `async def` and `await`. Synchronous code is wrappe
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship); fix broken migration-plan link, now in `docs/archive/` (#721) |
