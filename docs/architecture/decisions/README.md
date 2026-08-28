@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -27,6 +27,15 @@ Each ADR follows this structure:
 - **Decision**: The chosen approach
 - **Alternatives Considered**: Other options evaluated
 - **Consequences**: Positive, negative, and neutral outcomes
+- **Provenance** *(ADR-001–017 only)*: Whether the ADR was written to describe a system already in
+  place ("post-hoc") or ahead of implementation ("contemporaneous"). Recorded by the 2026-08
+  design/implementation audit, which found that ADR-001–017's structural source documents predate
+  them by months and that `DOCUMENTATION_AUDIT.md` records the design documentation as
+  reverse-engineered with code treated as the source of truth — so a post-hoc ADR "conforming" to
+  its own code is weak evidence, while a contemporaneous one deviating is a real finding
+  (`AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.1 weights `CONFORMS` verdicts on exactly this
+  distinction). **Absence of this field on ADR-018 and later means the audit never assessed that
+  ADR — not that it is contemporaneous.**
 
 ## 3. Index
 
@@ -63,7 +72,7 @@ Each ADR follows this structure:
 
 - [Architecture Review Plan](../../.cursor/plans/architecture_review_plan_7bcbc812.plan.md)
 - [Bounded Contexts and Service Boundaries](../../BOUNDED_CONTEXTS_AND_SERVICE_BOUNDARIES.md)
-- [ApplicationContainer Analysis](../../APPLICATION_CONTAINER_ANALYSIS.md)
+- [ApplicationContainer Analysis](../../archive/APPLICATION_CONTAINER_ANALYSIS.md)
 - [Event Ownership Matrix](../../EVENT_OWNERSHIP_MATRIX.md)
 - [Real-Time Architecture](../../REAL_TIME_ARCHITECTURE.md)
 - [Aggro and Threat System Design](../aggro-threat-system.md)
@@ -72,6 +81,7 @@ Each ADR follows this structure:
 
 **[SPEC]**
 
-| Version | Date       | Change                             |
-| ------- | ---------- | ---------------------------------- |
-| 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
+| Version | Date       | Change                                                                       |
+| ------- | ---------- | ----------------------------------------------------------------------------- |
+| 1.0.0   | 2026-07-30 | Initial HADS structural conversion                                            |
+| 1.1.0   | 2026-08-28 | Document the Provenance field; fix broken `APPLICATION_CONTAINER_ANALYSIS.md` link (ADR-001–017 backfill, #721) |

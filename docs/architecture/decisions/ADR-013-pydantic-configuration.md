@@ -1,6 +1,6 @@
 # ADR-013: Pydantic BaseSettings for Configuration Management
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This document states 2025-10-11 but
+first appears in this repository on 2026-02-26; its Context line notes it was **recovered from `.agent-os`**,
+so the stated date is most likely the original decision date under earlier tooling and the later date is when
+the record was transcribed here. Its section structure differs from ADR-001–010, consistent with that
+separate origin. Unlike much of this ADR set, this one may well be a genuine contemporaneous decision record.
 **Decision Makers**: Prof. Wolfshade, AI Assistant
 **Context**: CRITICAL-2 Configuration Management Refactoring (recovered from .agent-os)
 
@@ -241,3 +246,4 @@ def get_config() -> AppConfig:
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record provenance (#721) |

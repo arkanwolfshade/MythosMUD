@@ -1,6 +1,6 @@
 # ADR-014: Circuit Breaker + Dead Letter Queue for NATS Error Boundaries
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -17,6 +17,11 @@ Read `[NOTE]` only if additional context is needed.
 **[SPEC]**
 **Date**: 2025-10-11
 **Status**: Accepted
+**Provenance:** Recorded by the 2026-08 design/implementation audit. This document states 2025-10-11 but
+first appears in this repository on 2026-02-26; its Context line notes it was **recovered from `.agent-os`**,
+so the stated date is most likely the original decision date under earlier tooling and the later date is when
+the record was transcribed here. Its section structure differs from ADR-001–010, consistent with that
+separate origin. Unlike much of this ADR set, this one may well be a genuine contemporaneous decision record.
 **Decision Makers**: Prof. Wolfshade, AI Assistant
 **Context**: CRITICAL-4 NATS Error Boundaries Implementation (recovered from .agent-os)
 
@@ -114,7 +119,7 @@ The NATS message handler had broad exception catching without recovery mechanism
 2. **Tailored Solution**: Exactly fits our needs without unnecessary complexity
 3. **Full Control**: Can optimize for our specific use case
 4. **Python Native**: Pure Python, async-native implementation
-5. **Testability**: 60 comprehensive tests verify all components
+5. **Testability**: circuit breaker, DLQ and retry handler are each covered by unit tests
 6. **Observability**: Built-in metrics collection
 7. **Integration**: Seamlessly integrates with existing code
 
@@ -210,7 +215,7 @@ class NATSMessageHandler:
 - **Resilient Delivery**: Retry logic handles transient failures
 - **Cascade Prevention**: Circuit breaker prevents overwhelming failed services
 - **Observability**: Comprehensive metrics for monitoring
-- **Admin Control**: `/api/metrics` endpoints for operational visibility
+- **Admin Control**: `/v1/metrics` endpoints for operational visibility
 - **No Infrastructure**: File-based DLQ requires no additional services
 - **Performance**: Minimal overhead (only on failures)
 
@@ -231,13 +236,9 @@ class NATSMessageHandler:
 
 **[SPEC]**
 
-- All 60 NATS error boundary tests passing (100%)
-- Retry handler: 13/13 tests passing
-- Dead Letter Queue: 13/13 tests passing
-- Circuit Breaker: 16/16 tests passing
-- Metrics Collector: 18/18 tests passing
+- Retry handler, Dead Letter Queue, Circuit Breaker, and Metrics Collector each have passing test coverage
 - No performance regression
-- `/api/metrics` endpoints functional
+- `/v1/metrics` endpoints functional
 
 ---
 
@@ -264,8 +265,8 @@ Alert on:
 ### DLQ Management
 
 - Automatic cleanup after 7 days (configurable)
-- Admin endpoint: `GET /api/metrics/dlq` for investigation
-- Manual replay: `POST /api/metrics/dlq/{id}/replay` (future enhancement)
+- Admin endpoint: `GET /v1/metrics/dlq` for investigation
+- Manual replay: `POST /v1/metrics/dlq/{id}/replay` (future enhancement)
 
 ---
 
@@ -281,7 +282,7 @@ Alert on:
   - `server/realtime/circuit_breaker.py`
   - `server/middleware/metrics_collector.py`
   - `server/api/metrics.py`
-- Tests: 60 tests across 4 test files
+- Tests: `server/tests/` (retry handler, DLQ, circuit breaker, metrics collector suites)
 
 ---
 
@@ -300,3 +301,4 @@ Alert on:
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Record provenance; remove hard-coded test counts; correct metrics paths to `/v1/metrics` (#721) |
