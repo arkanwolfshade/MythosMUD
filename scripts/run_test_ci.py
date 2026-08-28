@@ -281,6 +281,13 @@ if IN_CI:
     # a runtime DB and single-worker execution and run under 'make test-playwright' (Makefile).
     # Repository/EventBus and other integration paths are verified in that flow. This keeps the CI
     # backend job fast and stable without a dedicated integration DB; coverage here is unit-only.
+    # -n 0: overrides server/pytest.ini's default -n auto. pytest-xdist's worker restart/shutdown
+    # protocol produces false "worker crashed" reports under -n auto (workers observed exiting
+    # cleanly -- Exit Status: 0, no OS-level fault -- yet reported as crashed); a decade-old,
+    # unresolved, cross-platform xdist/execnet gap (see #724). Serial measured 100% clean across
+    # every run in that investigation, at comparable wall-clock to parallel-when-it-doesn't-crash
+    # on this suite (per-worker import cost swamps the parallelism gain). This is the CI-gating
+    # invocation, so it goes serial; local `make test-server` keeps -n auto for dev-loop speed.
     env_unit = env.copy()
     coverage_unit = os.path.join(PROJECT_ROOT, ".coverage.unit")
     env_unit["COVERAGE_FILE"] = coverage_unit
@@ -293,6 +300,8 @@ if IN_CI:
         "not integration",
         "--deselect",
         FLAKY_XDIST_MODULE_NODE_ID,
+        "-n",
+        "0",
         "--cov=server",
         "--cov-report=",
         "--cov-config=.coveragerc",

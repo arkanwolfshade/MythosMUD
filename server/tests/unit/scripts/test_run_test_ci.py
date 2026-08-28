@@ -74,3 +74,29 @@ def test_coverage_step_has_pipefail() -> None:
     coverage_step_end = workflow.index("Upload pytest log", coverage_step_start)
     step_body = workflow[coverage_step_start:coverage_step_end]
     assert "set -o pipefail" in step_body
+
+
+def test_run1_uses_serial_execution() -> None:
+    """Run 1 must pass -n 0, overriding server/pytest.ini's default -n auto. pytest-xdist's
+    worker restart/shutdown protocol produces false "worker crashed" reports under -n auto
+    (workers observed exiting cleanly -- Exit Status: 0, no OS-level fault -- yet reported as
+    crashed); an unresolved, cross-platform xdist/execnet gap. This is the CI-gating invocation,
+    so it must stay serial even though local `make test-server` keeps -n auto. See #724."""
+    source = _script_source()
+    run1_start = source.index('"server/tests/",')
+    run1_end = source.index("env=env_unit,", run1_start)
+    run1_args = source[run1_start:run1_end]
+    assert '"-n",' in run1_args
+    assert '"0",' in run1_args
+
+
+def test_excessive_warnings_step_uses_serial_execution() -> None:
+    """ci.yml's 'Check for excessive warnings' step is CI-gating (a real crash now fails it
+    loudly, see #666's rc>1 check) and re-runs nearly the whole suite -- same false-crash risk
+    as Run 1, so it must also be serial (-n 0, not -n auto). See #724."""
+    workflow = CI_WORKFLOW.read_text(encoding="utf-8")
+    invocation_start = workflow.index("WARNING_OUTPUT=$(uv run pytest")
+    invocation_end = workflow.index("\n", invocation_start)
+    invocation = workflow[invocation_start:invocation_end]
+    assert "-n 0 " in invocation
+    assert "-n auto" not in invocation
