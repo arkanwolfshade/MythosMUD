@@ -1,6 +1,6 @@
 # 🐙 MythosMUD
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -434,7 +434,6 @@ The `scripts/` directory contains PowerShell and Python utility scripts for mana
 **Test Setup Scripts:**
 
 - `scripts/setup_test_environment.ps1` - Setup test environment files (required before running tests)
-- See [Test Setup Guide](server/tests/SETUP.md) for detailed instructions
 
 **Make Commands:**
 
@@ -477,12 +476,11 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
   - See [E2E Testing Guide](docs/E2E_TESTING_GUIDE.md) for details
   - **CRITICAL**: Run `make setup-test-env` before running server tests for the first time
   - **CRITICAL**: Always use `make test` from project root, NEVER from `/server/` directory
-  - See [Test Setup Guide](server/tests/SETUP.md) for detailed setup instructions
 - **Security:**
   - COPPA compliance verification
   - Comprehensive input validation and XSS protection
 - **AI Agents:**
-  - See [DEVELOPMENT_AI.md](DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
+  - See [DEVELOPMENT_AI.md](docs/DEVELOPMENT_AI.md) for comprehensive AI agent guidelines
   - Includes task prioritization framework and development workflow
 
 ---
@@ -495,7 +493,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Core Documentation
 
-[Product Requirements Document (PRD)](docs/PRD.md) — Full game and technical design
+[Product Requirements Document (PRD)](docs/archive/PRD.md) — Full game and technical design
 
 - [Deployment](docs/deployment.md) — Production deployment with Gunicorn + Uvicorn
 - [PLANNING.md](PLANNING.md) — Comprehensive project planning and current status
@@ -521,8 +519,8 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 [Real-time Architecture](docs/REAL_TIME_ARCHITECTURE.md) — Dual connection system architecture
 
-- [Advanced Chat Channels Spec](docs/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
-- [Dual Connection System](docs/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
+- [Advanced Chat Channels Spec](docs/archive/ADVANCED_CHAT_CHANNELS_SPEC.md) — Communication system design
+- [Dual Connection System](docs/archive/DUAL_CONNECTION_SYSTEM_SPEC.md) — WebSocket + SSE architecture
 
 ### Logging & Monitoring
 
@@ -533,7 +531,7 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 
 ### Security & Error Handling
 
-[Security Fixes](docs/SECURITY_FIXES.md) — Security implementation and fixes
+[Security Fixes](docs/archive/SECURITY_FIXES.md) — Security implementation and fixes
 
 - [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md) — Error handling patterns and best practices
 - [Troubleshooting Guide](docs/TROUBLESHOOTING_GUIDE.md) — Common issues and solutions
@@ -552,3 +550,4 @@ See [scripts/README.md](scripts/README.md) for detailed documentation.
 | Version | Date       | Change                             |
 | ------- | ---------- | ---------------------------------- |
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken links: `server/tests/SETUP.md` references removed (file deleted in #337, no successor); `DEVELOPMENT_AI.md` (wrong depth); `docs/PRD.md`, `ADVANCED_CHAT_CHANNELS_SPEC.md`, `DUAL_CONNECTION_SYSTEM_SPEC.md`, `SECURITY_FIXES.md` (now in `docs/archive/`) (#695) |

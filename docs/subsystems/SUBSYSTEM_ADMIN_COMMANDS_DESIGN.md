@@ -1,6 +1,6 @@
 # Admin Commands Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -58,12 +58,11 @@ flowchart LR
 
 **Components:**
 
-- **admin_commands**: [server/commands/admin_commands.py](server/commands/admin_commands.py) –
+- **admin_commands**: [server/commands/admin_commands.py](../../server/commands/admin_commands.py) –
   handle_admin_command: parses subcommand and args; dispatches to handle_mute_command,
   handle_teleport_command, handle_goto_command, handle_add_admin_command, etc. Top-level
   commands (mute, teleport, goto, shutdown, ...) are also registered directly in command_service.
-- **admin_permission_utils**: [server/commands/admin_permission_utils.py](server/commands/
-  admin_permission_utils.py) – validate_admin_permission(player, player_name): checks player
+- **admin_permission_utils**: [server/commands/admin_permission_utils.py](../../server/commands/admin_permission_utils.py) – validate_admin_permission(player, player_name): checks player
   and player.is_admin; logs result via get_admin_actions_logger().log_permission_check (success
   or failure with additional_data).
 - **admin_mute_commands**: Mute/unmute (player or global); UserManager and persistence.
@@ -76,8 +75,7 @@ flowchart LR
 - **admin_setlucidity_command**: Set player lucidity; admin only.
 - **npc_admin_commands**: handle_npc_command – admin NPC spawn/despawn/list; uses lifecycle and
   spawning services.
-- **admin_actions_logger**: [server/structured_logging/admin_actions_logger.py](server/
-  structured_logging/admin_actions_logger.py) – Logs permission checks and admin actions for
+- **admin_actions_logger**: [server/structured_logging/admin_actions_logger.py](../../server/structured_logging/admin_actions_logger.py) – Logs permission checks and admin actions for
   audit.
 
 ## 3. Key design decisions
@@ -164,3 +162,4 @@ security/COPPA requirements in project rules.
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 3 broken component links (wrong depth, 2 also broken across a line wrap) (#695) |

@@ -1,6 +1,6 @@
 # Lucidity Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -59,16 +59,14 @@ flowchart LR
 
 **Components:**
 
-- **lucidity_recovery_commands**: [server/commands/lucidity_recovery_commands.py](server/commands/
-  lucidity*recovery_commands.py) – handle_meditate_command, handle_pray_command, handle_therapy*
+- **lucidity_recovery_commands**: [server/commands/lucidity_recovery_commands.py](../../server/commands/lucidity_recovery_commands.py) – handle_meditate_command, handle_pray_command, handle_therapy*
   command, handle_folk_tonic_command, handle_group_solace_command. Each validates context
   (persistence, player, room), calls ActiveLucidityService (or equivalent) with action code,
   handles LucidityActionOnCooldownError and UnknownLucidityActionError; some actions restore MP
   (meditate, pray) via mp_regeneration_service.
-- **ActiveLucidityService**: [server/services/active_lucidity_service.py](server/services/
-  active_lucidity_service.py) – Executes lucidity recovery actions with cooldowns; raises
+- **ActiveLucidityService**: [server/services/active_lucidity_service.py](../../server/services/active_lucidity_service.py) – Executes lucidity recovery actions with cooldowns; raises
   LucidityActionOnCooldownError, UnknownLucidityActionError.
-- **LucidityService**: [server/services/lucidity_service.py](server/services/lucidity_service.py) –
+- **LucidityService**: [server/services/lucidity_service.py](../../server/services/lucidity_service.py) –
   apply_lucidity_adjustment (reason_code, metadata, location_id); updates PlayerLucidity and
   tier; notifies catatonia_observer when catatonia cleared.
 - **Rescue/ground**: Uses LucidityService.apply_lucidity_adjustment to restore catatonic players
@@ -130,8 +128,7 @@ flowchart LR
 - **UnknownLucidityActionError**: Action code not registered in ActiveLucidityService; check
   command_data and action code string.
 
-See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MAGIC_DESIGN.md]
-(SUBSYSTEM_MAGIC_DESIGN.md). Archived: [docs/archive/lucidity-system.md](../archive/lucidity-system.md).
+See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MAGIC_DESIGN.md](SUBSYSTEM_MAGIC_DESIGN.md). Archived: [docs/archive/lucidity-system.md](../archive/lucidity-system.md).
 
 ## 8. Related docs
 
@@ -146,3 +143,4 @@ See also [SUBSYSTEM_RESCUE_DESIGN.md](SUBSYSTEM_RESCUE_DESIGN.md), [SUBSYSTEM_MA
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 3 broken component links (wrong depth, 2 also broken across a line wrap); fix `lucidity*recovery_commands.py` typo (asterisk for underscore); fix 1 link where the closing bracket and opening paren landed on separate lines (#695) |

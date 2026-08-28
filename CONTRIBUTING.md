@@ -1,6 +1,6 @@
 # Contributing to MythosMUD
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -250,7 +250,7 @@ Key documentation to review:
 
 - [README.md](README.md) - Project overview and quickstart
 - [PLANNING.md](PLANNING.md) - Project planning and status
-- [docs/PRD.md](docs/PRD.md) - Product requirements
+- [docs/PRD.md](docs/archive/PRD.md) - Product requirements
 - [SECURITY.md](SECURITY.md) - Security policies
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Development guide
 
@@ -534,7 +534,6 @@ from "Combat Mechanics in Non-Euclidean Spaces" - Dr. Armitage, 1928.
 from server.logging.enhanced_logging_config import get_logger
 
 logger = get_logger(__name__)
-
 
 class CombatSystem:
     """Handles player-to-NPC combat interactions.
@@ -836,7 +835,6 @@ by Prof. Armitage, ensuring mathematically sound damage calculations.
 import pytest
 from server.game.combat import CombatSystem
 
-
 class TestCombatSystem:
     """Test suite for CombatSystem class."""
 
@@ -1028,8 +1026,6 @@ make test PYTEST_ARGS="-vv -s"
 - Tests use isolated test databases
 - All tests should be idempotent (repeatable)
 - Tests clean up after themselves
-
-See [server/tests/SETUP.md](server/tests/SETUP.md) for detailed testing guide.
 
 ---
 
@@ -1224,7 +1220,7 @@ We value all contributions, large and small. Contributors will be:
 
 ### Technical Documentation
 
-[docs/PRD.md](docs/PRD.md) - Product requirements
+[docs/PRD.md](docs/archive/PRD.md) - Product requirements
 
 - [docs/REAL_TIME_ARCHITECTURE.md](docs/REAL_TIME_ARCHITECTURE.md) - Real-time system
 - [docs/LOGGING_BEST_PRACTICES.md](docs/LOGGING_BEST_PRACTICES.md) - Logging guide
@@ -1232,8 +1228,6 @@ We value all contributions, large and small. Contributors will be:
 - [docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md](docs/POSTGRESQL_CONTRIBUTOR_GUIDE.md) - PostgreSQL standards and SQL guardrails
 
 ### Testing Resources
-
-[server/tests/SETUP.md](server/tests/SETUP.md) - Test setup guide
 
 - [e2e-tests/MULTIPLAYER_TEST_RULES.md](e2e-tests/MULTIPLAYER_TEST_RULES.md) - E2E scenarios
 - [docs/COMMAND_TESTING_GUIDE.md](docs/COMMAND_TESTING_GUIDE.md) - Command testing
@@ -1278,3 +1272,4 @@ If you have questions about contributing:
 | Version | Date       | Change                             |
 | ------- | ---------- | ---------------------------------- |
 | 1.0.0   | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix broken `docs/PRD.md` links (now in `docs/archive/`); remove 2 dead `server/tests/SETUP.md` references (file deleted in #337, no successor) (#695) |

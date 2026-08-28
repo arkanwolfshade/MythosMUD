@@ -1,6 +1,6 @@
 # Who Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -51,7 +51,7 @@ flowchart LR
 
 **Components:**
 
-- **who_commands**: [server/commands/who_commands.py](server/commands/who_commands.py) – handle*who*
+- **who_commands**: [server/commands/who_commands.py](../../server/commands/who_commands.py) – handle*who*
   command gets optional filter term (target_player), persistence from container, calls
   persistence.list_players(), filter_online_players(players, online_threshold) with threshold =
   now - 5 minutes, get_players_for_who (apply name filter if any), format_who_result; returns
@@ -61,7 +61,7 @@ flowchart LR
   format_who_result, get_players_for_who.
 - **Persistence**: list_players() returns all players (from DB); each player has last_active,
   name, level, current_room_id, is_admin.
-- **PlayerSearchService**: [server/game/player_search_service.py](server/game/player_search_service.py) –
+- **PlayerSearchService**: [server/game/player_search_service.py](../../server/game/player_search_service.py) –
   Used elsewhere (e.g. chat name resolution); who does not use it. Who uses in-file
   filter_players_by_name for name filtering.
 
@@ -142,3 +142,4 @@ Archived spec: [docs/archive/WHO_COMMAND_FRD.md](../archive/WHO_COMMAND_FRD.md).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |

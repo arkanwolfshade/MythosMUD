@@ -1,6 +1,6 @@
 # Magic Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -59,29 +59,26 @@ flowchart LR
 
 **Components:**
 
-- **magic_commands**: [server/commands/magic_commands.py](server/commands/magic_commands.py) –
+- **magic_commands**: [server/commands/magic_commands.py](../../server/commands/magic_commands.py) –
   MagicCommandHandler: handle_cast_command (incapacitated check, rest interrupt, spell_name/target,
   magic_service.cast_spell, announce); handle_spells_command, handle_spell_command (list/info);
   handle_learn_command (SpellLearningService); handle_stop_command (stop casting).
-- **MagicService**: [server/game/magic/magic_service.py](server/game/magic/magic_service.py) –
+- **MagicService**: [server/game/magic/magic_service.py](../../server/game/magic/magic_service.py) –
   can_cast_spell (player, MP, lucidity for Mythos, materials); cast_spell (validate, target
   resolution, cost application, effect execution via SpellEffects, mastery/learning hooks).
-- **SpellRegistry**: [server/game/magic/spell_registry.py](server/game/magic/spell_registry.py) –
+- **SpellRegistry**: [server/game/magic/spell_registry.py](../../server/game/magic/spell_registry.py) –
   Spell lookup by name/id.
-- **SpellEffects**: [server/game/magic/spell_effects.py](server/game/magic/spell_effects.py) –
+- **SpellEffects**: [server/game/magic/spell_effects.py](../../server/game/magic/spell_effects.py) –
   Effect execution (damage, heal, etc.) per spell type.
-- **SpellTargetingService**: [server/game/magic/spell_targeting.py](server/game/magic/spell_targeting.py) –
+- **SpellTargetingService**: [server/game/magic/spell_targeting.py](../../server/game/magic/spell_targeting.py) –
   Resolve target (self, room, NPC, player) for spell.
-- **SpellCostsService**: [server/game/magic/spell_costs.py](server/game/magic/spell_costs.py) –
+- **SpellCostsService**: [server/game/magic/spell_costs.py](../../server/game/magic/spell_costs.py) –
   Apply MP and lucidity costs.
-- **SpellMaterialsService**: [server/game/magic/spell_materials.py](server/game/magic/spell_materials.py) –
+- **SpellMaterialsService**: [server/game/magic/spell_materials.py](../../server/game/magic/spell_materials.py) –
   Consume materials if required.
-- **CastingStateManager**: [server/game/magic/casting_state_manager.py](server/game/magic/
-  casting_state_manager.py) – Track active casting (e.g. for /stop).
-- **SpellLearningService**: [server/game/magic/spell_learning_service.py](server/game/magic/
-  spell_learning_service.py) – Learn spells (teach, books, etc.).
-- **MP regeneration**: [server/game/magic/mp_regeneration_service.py](server/game/magic/
-  mp_regeneration_service.py) – MP regen over time/tick.
+- **CastingStateManager**: [server/game/magic/casting_state_manager.py](../../server/game/magic/casting_state_manager.py) – Track active casting (e.g. for /stop).
+- **SpellLearningService**: [server/game/magic/spell_learning_service.py](../../server/game/magic/spell_learning_service.py) – Learn spells (teach, books, etc.).
+- **MP regeneration**: [server/game/magic/mp_regeneration_service.py](../../server/game/magic/mp_regeneration_service.py) – MP regen over time/tick.
 
 ## 3. Key design decisions
 
@@ -148,10 +145,7 @@ flowchart LR
 - **Rest not interrupting**: \_interrupt_rest_for_cast needs app/connection_manager; ensure handler
   or magic_service has \_app_instance set if used.
 
-See also [SUBSYSTEM_REST_DESIGN.md](SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md]
-(SUBSYSTEM_STATUS_EFFECTS_DESIGN.md), [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/
-GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived: [docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md]
-(../archive/MAGIC_SYSTEM_FEATURE_PLAN.md).
+See also [SUBSYSTEM_REST_DESIGN.md](SUBSYSTEM_REST_DESIGN.md), [SUBSYSTEM_STATUS_EFFECTS_DESIGN.md](SUBSYSTEM_STATUS_EFFECTS_DESIGN.md), [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived: [docs/archive/MAGIC_SYSTEM_FEATURE_PLAN.md](../archive/MAGIC_SYSTEM_FEATURE_PLAN.md).
 
 ## 8. Related docs
 
@@ -166,3 +160,4 @@ GAME_BUG_INVESTIGATION_PLAYBOOK.mdc). Archived: [docs/archive/MAGIC_SYSTEM_FEATU
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 10 broken component links (wrong depth, 3 also broken across a line wrap); fix 1 wrap-only `GAME_BUG_INVESTIGATION_PLAYBOOK.mdc` link; fix 2 links where the closing bracket and opening paren landed on separate lines (#695) |

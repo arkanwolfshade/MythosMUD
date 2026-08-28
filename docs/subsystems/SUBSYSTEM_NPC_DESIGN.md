@@ -1,6 +1,6 @@
 # NPC Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -65,31 +65,29 @@ flowchart LR
 
 **Components:**
 
-- **lifecycle_manager**: [server/npc/lifecycle_manager.py](server/npc/lifecycle_manager.py) –
+- **lifecycle_manager**: [server/npc/lifecycle_manager.py](../../server/npc/lifecycle_manager.py) –
   NPCLifecycleManager: active_npcs (npc_id -> NPCBase), lifecycle records (NPCLifecycleRecord),
   states (SPAWNING, ACTIVE, INACTIVE, DESPAWNING, DESPAWNED, RESPAWNING, ERROR). Spawn/despawn/
   respawn orchestration; subscribes to events; integrates with SpawningService and
   NPCPopulationController.
-- **spawning_service**: [server/npc/spawning_service.py](server/npc/spawning_service.py) –
+- **spawning_service**: [server/npc/spawning_service.py](../../server/npc/spawning_service.py) –
   NPCSpawnRequest, NPCSpawnResult, spawn logic (room, rules, zone config); builds NPC instances
   (AggressiveMobNPC, PassiveMobNPC, ShopkeeperNPC) from NPCDefinition.
-- **npc_base**: [server/npc/npc_base.py](server/npc/npc_base.py) – NPCBase: npc_id, definition,
+- **npc_base**: [server/npc/npc_base.py](../../server/npc/npc_base.py) – NPCBase: npc_id, definition,
   current_room, spawn_room_id, \_alive, \_stats (determination_points), \_behavior_config,
   BehaviorEngine, event_reaction_system. Subclasses: AggressiveMobNPC, PassiveMobNPC,
   ShopkeeperNPC (in behaviors.py).
-- **behavior_engine**: [server/npc/behavior_engine.py](server/npc/behavior_engine.py) – Executes
+- **behavior_engine**: [server/npc/behavior_engine.py](../../server/npc/behavior_engine.py) – Executes
   behavior config (idle, combat, etc.).
-- **combat_integration**: [server/npc/combat_integration.py](server/npc/combat_integration.py) –
+- **combat_integration**: [server/npc/combat_integration.py](../../server/npc/combat_integration.py) –
   NPCCombatIntegration: calculate_damage; used by combat command and NPCCombatIntegrationService.
-- **movement_integration**: [server/npc/movement_integration.py](server/npc/movement_integration.py) –
+- **movement_integration**: [server/npc/movement_integration.py](../../server/npc/movement_integration.py) –
   NPC movement (e.g. idle movement, follow room exits).
-- **communication_integration**: [server/npc/communication_integration.py](server/npc/
-  communication_integration.py) – NPC say/emote/response.
-- **event_reaction_system**: [server/npc/event_reaction_system.py](server/npc/
-  event_reaction_system.py) – Reactions to PlayerEnteredRoom, PlayerLeftRoom (greeting, farewell).
-- **population_control**: [server/npc/population_control.py](server/npc/population_control.py) –
+- **communication_integration**: [server/npc/communication_integration.py](../../server/npc/communication_integration.py) – NPC say/emote/response.
+- **event_reaction_system**: [server/npc/event_reaction_system.py](../../server/npc/event_reaction_system.py) – Reactions to PlayerEnteredRoom, PlayerLeftRoom (greeting, farewell).
+- **population_control**: [server/npc/population_control.py](../../server/npc/population_control.py) –
   Subscribes to PlayerEnteredRoom/PlayerLeftRoom; adjusts population per zone (ZoneConfiguration).
-- **zone_configuration**: [server/npc/zone_configuration.py](server/npc/zone_configuration.py) –
+- **zone_configuration**: [server/npc/zone_configuration.py](../../server/npc/zone_configuration.py) –
   Zone and spawn rules.
 - **Commands**: look_npc, npc_admin_commands (npc command for admin spawn/despawn/list).
 
@@ -156,9 +154,7 @@ flowchart LR
 - **Combat NPC dead but still targetable**: Ensure is_alive is False and combat/look reject dead
   NPCs; lifecycle should despawn or mark dead.
 
-See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [SUBSYSTEM_FOLLOW_DESIGN.md]
-(SUBSYSTEM_FOLLOW_DESIGN.md), [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/
-GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
+See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md), [SUBSYSTEM_FOLLOW_DESIGN.md](SUBSYSTEM_FOLLOW_DESIGN.md), [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 
 ## 8. Related docs
 
@@ -174,3 +170,4 @@ GAME_BUG_INVESTIGATION_PLAYBOOK.mdc).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 10 broken component links (wrong depth, 2 also broken across a line wrap); fix 1 wrap-only `GAME_BUG_INVESTIGATION_PLAYBOOK.mdc` link; fix 1 link where the closing bracket and opening paren landed on separate lines (#695) |

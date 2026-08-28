@@ -1,6 +1,6 @@
 # Movement Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -66,14 +66,14 @@ flowchart LR
 
 **Components:**
 
-- **Command**: [server/commands/go_command.py](server/commands/go_command.py) – Parses direction, resolves
+- **Command**: [server/commands/go_command.py](../../server/commands/go_command.py) – Parses direction, resolves
   player/room, validates posture and rest, resolves exit, calls MovementService.
-- **MovementService**: [server/game/movement_service.py](server/game/movement_service.py) – Single
+- **MovementService**: [server/game/movement_service.py](../../server/game/movement_service.py) – Single
   authority for `move_player`, `add_player_to_room`, `remove_player_from_room`, `get_player_room`,
   `get_room_players`, `validate_player_location`. Uses an RLock for thread-safe movement.
-- **MovementMonitor**: [server/game/movement_monitor.py](server/game/movement_monitor.py) – Singleton;
+- **MovementMonitor**: [server/game/movement_monitor.py](../../server/game/movement_monitor.py) – Singleton;
   records attempts, success/failure, timing, room occupancy; optional integrity checks and alerts.
-- **Room model**: [server/models/room.py](server/models/room.py) – `player_entered()`, `player_left()`,
+- **Room model**: [server/models/room.py](../../server/models/room.py) – `player_entered()`, `player_left()`,
   `add_player_silently()`; `player_entered(force_event=True)` emits EventBus events.
 - **Persistence**: Player’s `current_room_id` is updated and saved via AsyncPersistenceLayer.
 - **InstanceManager** (optional): Tutorial exit handling: when player moves to instance exit room,
@@ -182,3 +182,4 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 4 broken component links (wrong depth) (#695) |

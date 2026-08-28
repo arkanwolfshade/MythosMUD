@@ -5,6 +5,10 @@ Vendored from https://github.com/catcam/hads (validate.py).
 
 Pinned source commit: dcfe582df90c8a276690fd05ebe4819d4ba12c36
 
+MythosMUD addition (not upstream — preserve on re-vendoring, #695): check_relative_links()
+resolves every markdown link target against the filesystem, relative to the containing
+document's directory. A broken relative link is a hard error, not a warning.
+
 Usage:
     python scripts/hads/validate.py <file.md>
     python scripts/hads/validate.py <file.md> --verbose
@@ -12,7 +16,7 @@ Usage:
 
 Exit codes:
     0 - valid HADS document (all files when using --manifest)
-    1 - missing required element (title, version, manifest)
+    1 - missing required element (title, version, manifest, or a broken relative link)
     2 - malformed block tag
     3 - [BUG] block missing required fields
 """
@@ -31,6 +35,9 @@ BLOCK_TAG_PATTERN: re.Pattern[str] = re.compile(r"^\*\*(\[(?:SPEC|NOTE|BUG|\?)\]
 LOOSE_TAG_PATTERN: re.Pattern[str] = re.compile(r"\[(?:SPEC|NOTE|BUG|\?)\]")
 VERSION_PATTERN: re.Pattern[str] = re.compile(r"\*\*Version\s+\d+\.\d+\.\d+\*\*")
 MANIFEST_KEYWORDS: list[str] = ["[SPEC]", "[BUG]", "reading instruction", "ai reading"]
+LINK_PATTERN: re.Pattern[str] = re.compile(r"\]\(([^)]+)\)")
+SPLIT_LINK_PATTERN: re.Pattern[str] = re.compile(r"\]\s*\n\s*\(")
+EXTERNAL_LINK_PREFIXES: tuple[str, ...] = ("http://", "https://", "mailto:")
 
 
 class BugBlock(TypedDict):
@@ -138,6 +145,46 @@ def check_loose_tags(lines: list[str]) -> list[tuple[int, str]]:
             if stripped.startswith("**" + match):
                 continue
             issues.append((i + 1, f"Possible unformatted tag '{match}' - should be **{match}**"))
+    return issues
+
+
+def check_relative_links(lines: list[str], doc_dir: Path) -> list[tuple[int, str]]:
+    """Find markdown links whose relative target does not resolve to a file on disk.
+
+    Deliberately does NOT collapse internal whitespace before resolving a target - a link
+    destination broken across a line wrap (`[text](server/x.py\n  y.py)`) is not valid CommonMark
+    and must fail here, not silently pass because the collapsed path happens to exist.
+    """
+    issues: list[tuple[int, str]] = []
+    text = "\n".join(lines)
+    in_fence = False
+    fence_lines: set[int] = set()
+    for i, line in enumerate(lines):
+        if line.strip().startswith("```"):
+            in_fence = not in_fence
+        if in_fence:
+            fence_lines.add(i)
+
+    for m in LINK_PATTERN.finditer(text):
+        line_num = text.count("\n", 0, m.start())
+        if line_num in fence_lines:
+            continue
+        target = m.group(1).strip()
+        if not target or target.startswith(EXTERNAL_LINK_PREFIXES) or target.startswith("#"):
+            continue
+        if target.startswith("<") and target.endswith(">"):
+            continue  # angle-bracket autolink, e.g. <https://...>
+        target_path = target.split("#", 1)[0]
+        if not target_path:
+            continue
+        resolved = (doc_dir / target_path).resolve()
+        if not resolved.exists():
+            issues.append((line_num + 1, f"broken relative link -> {target_path!r}"))
+
+    for m in SPLIT_LINK_PATTERN.finditer(text):
+        line_num = text.count("\n", 0, m.start()) + 1
+        issues.append((line_num, "link syntax broken across a line wrap (']' and '(' on separate lines)"))
+
     return issues
 
 
@@ -249,6 +296,11 @@ def validate(path: str, verbose: bool = False) -> int:
     _check_required_structure(lines, errors, passed)
     _check_bugs(lines, errors, passed)
     warnings.extend(f"Line {line_num}: {msg}" for line_num, msg in check_loose_tags(lines))
+    link_issues = check_relative_links(lines, Path(path).resolve().parent)
+    if link_issues:
+        errors.extend(f"Line {line_num}: {msg}" for line_num, msg in link_issues)
+    else:
+        passed.append("Relative links resolve")
     _print_validation_report(path, errors, warnings, passed, verbose)
     return _exit_code_for_errors(errors)
 

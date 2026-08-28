@@ -1,6 +1,6 @@
 # Party Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -63,12 +63,12 @@ flowchart LR
 
 **Components:**
 
-- **party_commands**: [server/commands/party_commands.py](server/commands/party_commands.py) –
+- **party_commands**: [server/commands/party_commands.py](../../server/commands/party_commands.py) –
   handle_party_command: subcommand invite|leave|kick|list or party &lt;message&gt; (party chat).
   Invite/kick use TargetResolutionService (same room, player only). Invite creates party if
   leader has none, then request_party_invite; leave/kick/list call PartyService methods.
   Party chat uses chat_service.send_party_message(player_id_str, message, party_id).
-- **PartyService**: [server/game/party_service.py](server/game/party_service.py) – _parties
+- **PartyService**: [server/game/party_service.py](../../server/game/party_service.py) – _parties
   (party_id -> Party), \_player_to_party (player_id -> party_id), \_pending_invites (invite_id ->
   inviter/target/party_id/created_at). Party dataclass: party_id, leader_id, member_ids (set).
   create_party, disband_party, add_member, remove_member (leader leave = disband), kick_member,
@@ -163,3 +163,4 @@ See also [SUBSYSTEM_COMBAT_DESIGN.md](SUBSYSTEM_COMBAT_DESIGN.md) and
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 2 broken component links (wrong depth) (#695) |

@@ -1,6 +1,6 @@
 # Emote / Pose Subsystem Design
 
-**Version 1.0.0** · MythosMUD · 2026-07-30
+**Version 1.1.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -52,16 +52,16 @@ flowchart LR
 
 **Components:**
 
-- **emote_commands**: [server/commands/emote_commands.py](server/commands/emote_commands.py) –
+- **emote_commands**: [server/commands/emote_commands.py](../../server/commands/emote_commands.py) –
   handle_emote_command: gets action from command_data, validates player/room via player_service,
   formats messages via EmoteService (predefined alias -> self_message/other_message, else custom
   "player_name action"), calls chat_service.send_emote_message(player_id, formatted_action),
   returns self_message to actor.
-- **communication_commands**: [server/commands/communication_commands.py](server/commands/communication_commands.py) –
+- **communication_commands**: [server/commands/communication_commands.py](../../server/commands/communication_commands.py) –
   handle_me_command: extracts action, returns "{player_name} {action}" to actor only (no room
   broadcast in current implementation). handle_pose_command: gets persistence, player by name, sets
   or clears player.pose, save_player, returns result.
-- **EmoteService**: [server/game/emote_service.py](server/game/emote_service.py) – Loads emotes
+- **EmoteService**: [server/game/emote_service.py](../../server/game/emote_service.py) – Loads emotes
   from PostgreSQL (emotes, emote_aliases) at init; is_emote_alias, get_emote_definition,
   format_emote_messages (self_message, other_message with {player_name} substitution). Falls back
   to custom emote (no DB) if table missing.
@@ -149,3 +149,4 @@ See also [GAME_BUG_INVESTIGATION_PLAYBOOK](../../.cursor/rules/GAME_BUG_INVESTIG
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
+| 1.1.0 | 2026-08-28 | Fix 3 broken component links (wrong depth) (#695) |
