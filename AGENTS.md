@@ -349,7 +349,7 @@ register**, never as a count:
 
 **Why:** `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.7 records a sweep that did
 exactly the failure mode above — ~15 findings written as `unverifiable: 15` in a frontmatter field,
-with no claim IDs — and its own `[BUG]` block calls the resulting debt *irrecoverable*: the sweep
+with no claim IDs — and its own `[BUG]` block calls the resulting debt _irrecoverable_: the sweep
 had to be re-run wholesale to produce what a citable register would have preserved the first time.
 The same document's plan-document sweep, on the same day, recorded its unresolved items as a named
 prose list instead — and those survived and were resolved directly, no re-run needed. One habit
