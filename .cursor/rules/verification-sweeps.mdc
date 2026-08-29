@@ -1,0 +1,50 @@
+---
+description: Record findings from any multi-document/multi-file verification sweep as a citable register, never as a count
+globs:
+alwaysApply: false
+---
+
+# Verification sweeps: citation or UNVERIFIABLE, never a count
+
+When a task is a **sweep** — checking a corpus of documents or code against a claim, a design, or a
+requirement, across more than a handful of items (a full FRD/SPEC re-derivation, a code-to-doc
+coverage pass, a design-vs-implementation audit) — record findings as an **individually citable
+register**, never as a count.
+
+## The rule
+
+- Every claim gets a row: claim text (or a pointer to it), its source `doc:line`, a verdict, and an
+  evidence citation. A verdict without a citation is not a verdict.
+- A claim that cannot be verified is recorded `UNVERIFIABLE` **with its own claim text and source
+  location**. That is a legitimate, citable outcome, not a failure to be summarized away.
+- **Never** collapse a set of unresolved claims into a bare integer
+  (`"15 claims unverifiable"`, `unverifiable: 15` in frontmatter, "~4 claims remain unresolved"). A
+  number can't be re-derived, can't be individually re-checked later, and can't be distinguished
+  from a differently-sized set of entirely different claims the next time the sweep runs.
+- If the sweep's corpus (which documents, which files) was never enumerated up front, reconstruct
+  and enumerate it before sweeping, and give every boundary decision (`in`/`out`) an explicit
+  reason. Don't let corpus membership be implicit in which files happened to get read.
+- A conforming ("looks fine") verdict needs a citation too, not just a non-conforming one — an
+  uncited "confirmed present" is exactly as unfalsifiable to a later reader as an uncited "confirmed
+  absent." (This is also how a false negative from a stale search index gets caught: an uncited
+  claim that something is absent can't be told apart from a claim that was never really checked.)
+
+## Why
+
+`docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.7 records a sweep that did exactly the
+failure mode above: ~15 findings written as `unverifiable: 15` in a note's frontmatter, with no
+claim IDs. Its own `[BUG]` block calls the resulting debt *irrecoverable* — the sweep had to be
+re-run wholesale (`docs/architecture/FRD_PLAN_VERIFICATION_REGISTER_2026-08.md`) to produce what a
+citable register would have preserved the first time, for free, as a side effect of doing the work.
+
+The same audit's plan-document sweep, run the same day by the same author, recorded its unresolved
+items as a **named prose list** instead of a count. Those survived and were resolved directly months
+later, no re-run needed. One habit preserved the debt as reusable work product; the other converted
+it into a number that could only be paid off by redoing the entire sweep from scratch.
+
+## How to apply
+
+Structure the sweep's output as a markdown table (or equivalent) from the start, not as narrative
+prose you plan to summarize into counts at the end. If the sweep is large enough to need staging —
+derive claims, then verify them — persist the claim list as soon as it's derived, before verification
+begins, so a claim that never gets verified this pass is still on record with its location.

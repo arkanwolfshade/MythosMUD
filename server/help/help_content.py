@@ -564,7 +564,7 @@ and their current locations.</p>
 
 <h4>Sample Output:</h4>
 <pre>
-Online players (3): alice [5] - Arkham: City: Northside Intersection Derby High,
+Online Players (3): alice [5] - Arkham: City: Northside Intersection Derby High,
 bob [3] - Arkham: City: Northside Room Derby St 001,
 charlie [7] [ADMIN] - Arkham: City: Northside Room High Ln 002
 

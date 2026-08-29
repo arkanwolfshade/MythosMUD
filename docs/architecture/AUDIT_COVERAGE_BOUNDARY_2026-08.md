@@ -1,6 +1,6 @@
 # Audit Coverage Boundary — 2026-08 Design Audit
 
-**Version 1.4.0** · MythosMUD · 2026-08-28
+**Version 1.5.0** · MythosMUD · 2026-08-28
 
 ---
 
@@ -232,10 +232,10 @@ a number — the same asymmetry this whole document exists to correct.
 
 | Surface | Excluded because | Risk if wrong | Status | Closed by |
 |---|---|---|---|---|
-| ~15 `UNVERIFIABLE` claims, FRD sweep | recorded as a count only, no claim IDs | unknown — one re-verified instance was a false negative | UNRESOLVED | — |
-| ~4 `UNVERIFIABLE` claims, plan-document sweep | same | unknown | UNRESOLVED | — |
-| `server_authority_remediation` | unverifiable on a stale index; needs a dedicated client-side pass | unknown | UNRESOLVED | — |
-| `generate-authoritative-database-schema` phases 3–4 | schema-application step moved somewhere the sweep did not cover | unknown | UNRESOLVED | — |
+| ~15 `UNVERIFIABLE` claims, FRD sweep | recorded as a count only, no claim IDs | unknown — one re-verified instance was a false negative | SWEPT — re-run wholesale into a per-claim register (5 refuted/fixed since original pass, 1 confirmed-and-drifted, ~10 newly verified, 4 genuinely unverifiable with citation) | `FRD_PLAN_VERIFICATION_REGISTER_2026-08.md` |
+| ~4 `UNVERIFIABLE` claims, plan-document sweep | same | unknown | RESOLVED — the plan sweep named these individually (`P4-Intent-Plan-Docs.md:104-108`); resolved directly rather than re-derived | `FRD_PLAN_VERIFICATION_REGISTER_2026-08.md` §4 |
+| `server_authority_remediation` | unverifiable on a stale index; needs a dedicated client-side pass | unknown | PARTIALLY RESOLVED — agent-rule half adjudicated intentional (tooling config, same category §7 already excludes); client-side store pass still genuinely open | `FRD_PLAN_VERIFICATION_REGISTER_2026-08.md` §4, `#752` |
+| `generate-authoritative-database-schema` phases 3–4 | schema-application step moved somewhere the sweep did not cover | unknown | RESOLVED — `make verify-schema` (`Makefile:246`) runs `scripts/verify_schema_match.ps1` against per-environment `db/mythos_<env>_ddl.sql`; the same undocumented substitution already flagged for Phase 2 | `FRD_PLAN_VERIFICATION_REGISTER_2026-08.md` §4 |
 
 ### 4.8 Unmerged remediation — the audit's own output was never verified against `main`
 
@@ -257,9 +257,18 @@ WebSocket authentication") lives on `origin/design-impl-audit` and is **not an a
 **Fix:** merge or re-apply `origin/design-impl-audit`, then re-verify the citation repoint count
 against `main` rather than trusting the vault's "Applied" status. See §6, item 1.
 
+**Correction (found during the §4.7 pass, 2026-08-28):** this row was itself stale. The fix landed —
+`docs/architecture/decisions/ADR-019-player-effects-system.md` exists (added by `ffc732811`,
+"docs(architecture): re-apply ADR-019 player-effects residue (#648) (#720)"), and
+`grep -rl "ADR-009" server/ --include=*.py` returns zero hits: all 16 citations repointed. The row
+never tripped because its own literal verification (`git merge-base --is-ancestor d7627813f HEAD`)
+stayed false — `#720` **re-applied** the branch's content rather than merging it, so the ancestry
+check this row was keyed on could never pass even after the debt was gone. A row keyed on *how* a
+fix arrives rather than *what is true afterward* goes stale silently, in the safe-looking direction.
+
 | Surface | Excluded because | Risk if wrong | Status | Closed by |
 |---|---|---|---|---|
-| P8 remediation (`d7627813f`, `ADR-019`, 16 citation repoints) | reported Done in the vault; verification against `main` was never performed | a reader trusts the vault and believes the citations are already fixed | UNRESOLVED | — |
+| P8 remediation (`d7627813f`, `ADR-019`, 16 citation repoints) | reported Done in the vault; verification against `main` was never performed | a reader trusts the vault and believes the citations are already fixed | RESOLVED — re-applied (not merged) via `#720`; `ADR-019` present, zero `ADR-009` citations remain in `server/` | `#720` |
 
 ## 5. Close rule
 
@@ -283,19 +292,29 @@ The ranked implementation order for issues 618–639 (`issue_ranking_618-639_466
 0–7) ends at #638. **None of the following are scheduled anywhere in that plan.** They are recorded
 here so they read as acknowledged, prioritized debt rather than either a competing queue or silence.
 
+**All five items below are now closed** — see each item's cited row for its closing artifact. This
+list is kept for its own historical ordering record, not as an open queue.
+
 Priority — **the audit's own closing recommendation overrides issue #639's stated ordering** where
 the two conflict (see §4.4):
 
 1. **Merge or re-apply `origin/design-impl-audit`** (§4.8). Finished work sitting unmerged and
    currently misreported as applied. Cheaper than any sweep below, and until it lands the codebase
-   carries 16 citations the audit already proved wrong.
+   carries 16 citations the audit already proved wrong. **Closed** — `#720` (re-applied, not merged;
+   see §4.8's correction).
 2. **Code-to-documentation coverage sweep** (§4.6). Never run; result is not predetermined; converts
-   the undocumented-systems list from a sample into an inventory.
+   the undocumented-systems list from a sample into an inventory. **Closed** — `#648` comment,
+   `#736`–`#746`.
 3. **Re-run the FRD and plan-document sweeps wholesale** (§4.7), reindexing
-   `server/api/real_time.py` and `server/game/chat_service.py` first.
+   `server/api/real_time.py` and `server/game/chat_service.py` first. **Closed** —
+   `FRD_PLAN_VERIFICATION_REGISTER_2026-08.md` (asymmetric re-run: FRD sweep re-derived wholesale,
+   plan sweep's named unverifiables resolved directly).
 4. **Security defect-class sweep** (§4.5): grep for test-only fallbacks and comment-gated bypasses
-   with no enforcing config flag, the pattern that produced the one Critical finding.
-5. **`docs/subsystems/` staleness check** (§4.4) — explicitly *not* a conformance audit. Demoted
+   with no enforcing config flag, the pattern that produced the one Critical finding. **Closed** —
+   `#648` comment, `#733`. (The broader systematic security review, a separate item, closed via
+   `#734`/`#751`.)
+5. **`docs/subsystems/` staleness check** (§4.4) — explicitly *not* a conformance audit. **Closed** —
+   `#648` comment / `#750`. Demoted
    below the four passes above per the audit's own recommendation, contrary to issue #639's ranking.
 
 ## 7. Explicitly out of scope
