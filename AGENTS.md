@@ -330,6 +330,34 @@ The definition of done for any work must include:
 - Content-creator documentation when the feature adds authoring tools (runbooks under
   `docs/runbooks/` or subsystem docs)
 
+### Verification and audit sweeps
+
+When a task is a **sweep** — checking a corpus of documents or code against a claim, a design, or a
+requirement, across more than a handful of items — record findings as an **individually citable
+register**, never as a count:
+
+- Every claim gets a row: claim text (or a pointer to it), its source `doc:line`, a verdict, and an
+  evidence citation. A verdict without a citation is not a verdict.
+- A claim that cannot be verified is recorded `UNVERIFIABLE` **with its own claim text and source
+  location** — that is a legitimate, citable outcome, not a failure to be summarized away. Never
+  collapse a set of unresolved claims into a bare integer (`"15 claims unverifiable"`) — a number
+  can't be re-derived, can't be individually re-checked later, and can't be told apart from a
+  differently-sized set of different claims next time the sweep runs.
+- If the sweep's corpus (which documents, which files) was never enumerated up front, reconstruct
+  and enumerate it before sweeping, and give every boundary decision (`in` / `out`) an explicit
+  reason — don't let corpus membership be implicit in which files happened to get read.
+
+**Why:** `docs/architecture/AUDIT_COVERAGE_BOUNDARY_2026-08.md` §4.7 records a sweep that did
+exactly the failure mode above — ~15 findings written as `unverifiable: 15` in a frontmatter field,
+with no claim IDs — and its own `[BUG]` block calls the resulting debt *irrecoverable*: the sweep
+had to be re-run wholesale to produce what a citable register would have preserved the first time.
+The same document's plan-document sweep, on the same day, recorded its unresolved items as a named
+prose list instead — and those survived and were resolved directly, no re-run needed. One habit
+preserved the debt as work; the other converted it into a number that could only be paid off by
+redoing everything.
+
+Canonical rule: [`.cursor/rules/verification-sweeps.mdc`](.cursor/rules/verification-sweeps.mdc).
+
 ---
 
 ## Dependency management
