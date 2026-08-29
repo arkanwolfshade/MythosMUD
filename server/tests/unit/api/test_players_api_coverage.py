@@ -23,9 +23,11 @@ from server.exceptions import LoggedHTTPException, ValidationError
 from server.schemas.players.player_requests import SelectCharacterRequest
 
 
-def _user() -> MagicMock:
+def _user(*, is_superuser: bool = True) -> MagicMock:
     u = MagicMock()
     u.id = uuid.uuid4()
+    u.username = "test-admin"
+    u.is_superuser = is_superuser
     return u
 
 
@@ -152,6 +154,18 @@ async def test_create_player_validation_error_to_400() -> None:
 
 
 @pytest.mark.asyncio
+async def test_create_player_rejects_non_superuser() -> None:
+    """#734: no client caller uses this endpoint; it's admin-only, not self-service."""
+    from fastapi import HTTPException
+
+    svc = MagicMock()
+    with pytest.raises(HTTPException) as ei:
+        _ = await create_player("Hero", MagicMock(spec=Request), "room_1", _user(is_superuser=False), svc)
+    assert ei.value.status_code == 403
+    assert svc.mock_calls == []
+
+
+@pytest.mark.asyncio
 async def test_list_players_requires_auth() -> None:
     svc = MagicMock()
     with pytest.raises(LoggedHTTPException) as ei:
@@ -209,6 +223,42 @@ async def test_get_player_by_name_success() -> None:
     svc = MagicMock()
     svc.get_player_by_name = AsyncMock(return_value=player)
     out = await get_player_by_name("Hero", MagicMock(spec=Request), _user(), svc)
+    assert out is player
+
+
+@pytest.mark.asyncio
+async def test_get_player_rejects_non_owner_non_admin() -> None:
+    """#734: PlayerRead carries user_id/stats/inventory/is_admin -- not public game data."""
+    from server.api.players import get_player
+
+    owner = _user(is_superuser=False)
+    owner.is_admin = False
+    other_caller = _user(is_superuser=False)
+    other_caller.is_admin = False
+
+    player = MagicMock()
+    player.user_id = owner.id
+    svc = MagicMock()
+    svc.get_player_by_id = AsyncMock(return_value=player)
+
+    with pytest.raises(LoggedHTTPException) as ei:
+        await get_player(uuid.uuid4(), MagicMock(spec=Request), other_caller, svc)
+    assert ei.value.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_get_player_allows_owner() -> None:
+    from server.api.players import get_player
+
+    owner = _user(is_superuser=False)
+    owner.is_admin = False
+
+    player = MagicMock()
+    player.user_id = owner.id
+    svc = MagicMock()
+    svc.get_player_by_id = AsyncMock(return_value=player)
+
+    out = await get_player(uuid.uuid4(), MagicMock(spec=Request), owner, svc)
     assert out is player
 
 
@@ -308,6 +358,20 @@ async def test_delete_player_validation_error() -> None:
     with pytest.raises(LoggedHTTPException) as ei:
         await delete_player(uuid.uuid4(), MagicMock(spec=Request), _user(), svc)
     assert ei.value.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_delete_player_rejects_non_superuser() -> None:
+    """#734: raw-by-UUID deletion, no ownership check; must be admin-gated."""
+    from fastapi import HTTPException
+
+    from server.api.players import delete_player
+
+    svc = MagicMock()
+    with pytest.raises(HTTPException) as ei:
+        await delete_player(uuid.uuid4(), MagicMock(spec=Request), _user(is_superuser=False), svc)
+    assert ei.value.status_code == 403
+    assert svc.mock_calls == []
 
 
 @pytest.mark.asyncio
