@@ -808,7 +808,7 @@
           "players"
         ],
         "summary": "Apply Lucidity Loss",
-        "description": "Apply lucidity loss to a player.",
+        "description": "Apply lucidity loss to a player.\n\nAdmin-only (#734): no client caller applies effects via this REST surface \u2014 real gameplay\neffects (combat, spells, status ticks) call the service layer directly in-process. This\nendpoint is an ops/debug tool and was previously reachable by any bearer of a valid or\neven absent token, with no ownership or role check at all.",
         "operationId": "apply_lucidity_loss_v1_api_players__player_id__lucidity_loss_post",
         "security": [
           {
@@ -867,7 +867,7 @@
           "players"
         ],
         "summary": "Apply Fear",
-        "description": "Apply fear to a player.",
+        "description": "Apply fear to a player. Admin-only (#734) \u2014 see apply_lucidity_loss.",
         "operationId": "apply_fear_v1_api_players__player_id__fear_post",
         "security": [
           {
@@ -926,7 +926,7 @@
           "players"
         ],
         "summary": "Apply Corruption",
-        "description": "Apply corruption to a player.",
+        "description": "Apply corruption to a player. Admin-only (#734) \u2014 see apply_lucidity_loss.",
         "operationId": "apply_corruption_v1_api_players__player_id__corruption_post",
         "security": [
           {
@@ -985,7 +985,7 @@
           "players"
         ],
         "summary": "Gain Occult Knowledge",
-        "description": "Gain occult knowledge (with lucidity loss).",
+        "description": "Gain occult knowledge (with lucidity loss). Admin-only (#734) \u2014 see apply_lucidity_loss.",
         "operationId": "gain_occult_knowledge_v1_api_players__player_id__occult_knowledge_post",
         "security": [
           {
@@ -1044,7 +1044,7 @@
           "players"
         ],
         "summary": "Heal Player",
-        "description": "Heal a player's health.",
+        "description": "Heal a player's health. Admin-only (#734) \u2014 see apply_lucidity_loss.",
         "operationId": "heal_player_v1_api_players__player_id__heal_post",
         "security": [
           {
@@ -1103,7 +1103,7 @@
           "players"
         ],
         "summary": "Damage Player",
-        "description": "Damage a player's health.",
+        "description": "Damage a player's health. Admin-only (#734) \u2014 see apply_lucidity_loss.",
         "operationId": "damage_player_v1_api_players__player_id__damage_post",
         "security": [
           {
@@ -1216,7 +1216,7 @@
           "players"
         ],
         "summary": "Create Player",
-        "description": "Create a new player character.\n\n:param name: Display name for the new character.\n:param _request: FastAPI request (unused; kept for dependency injection).\n:param starting_room_id: Room ID where the character will spawn.\n:param current_user: Authenticated user (injected).\n:param player_service: Player service (injected).\n:return: The created player as PlayerRead.\n:raises LoggedHTTPException: On validation error (400) or auth failure (401).",
+        "description": "Create a new player character, unowned by any user account.\n\nAdmin-only (#734): the real character-creation flow is `character_creation.create_character_with_stats`,\nwhich ties the character to `current_user.id`. This raw endpoint creates an orphan player and was\npreviously reachable with no authentication or role check at all.\n\n:param name: Display name for the new character.\n:param request: FastAPI request (audit logging for the admin permission check).\n:param starting_room_id: Room ID where the character will spawn.\n:param current_user: Authenticated user (injected).\n:param player_service: Player service (injected).\n:return: The created player as PlayerRead.\n:raises LoggedHTTPException: On validation error (400) or auth failure (401).",
         "operationId": "create_player_v1_api_players__post",
         "security": [
           {
@@ -1469,7 +1469,7 @@
           "players"
         ],
         "summary": "Get Player",
-        "description": "Get a specific player by ID.",
+        "description": "Get a specific player by ID. Restricted to the owning user or an admin (#734).",
         "operationId": "get_player_v1_api_players__player_id__get",
         "security": [
           {
@@ -1516,7 +1516,7 @@
           "players"
         ],
         "summary": "Delete Player",
-        "description": "Delete a player character.",
+        "description": "Delete a player character by raw ID, no ownership check.\n\nAdmin-only (#734): distinct from the self-service `_soft_delete_character` path (gated by\n`validate_character_access(character_id, current_user.id)`), this endpoint deletes any player\nby UUID and was previously reachable by any bearer of a valid or even absent token.",
         "operationId": "delete_player_v1_api_players__player_id__delete",
         "security": [
           {
@@ -1565,7 +1565,7 @@
           "players"
         ],
         "summary": "Get Player By Name",
-        "description": "Get a specific player by name.",
+        "description": "Get a specific player by name. Restricted to the owning user or an admin (#734).",
         "operationId": "get_player_by_name_v1_api_players_name__player_name__get",
         "security": [
           {

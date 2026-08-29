@@ -37,6 +37,7 @@ from ..schemas.players import (
 )
 from ..schemas.players.skill import PlayerSkillEntry, PlayerSkillsResponse
 from ..schemas.quest import QuestLogEntryResponse, QuestLogResponse
+from ..services.admin_auth_service import AdminAction, get_admin_auth_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from . import character_creation, player_effects, player_respawn
 from .player_router import player_router
@@ -50,21 +51,26 @@ _ = (character_creation, player_effects, player_respawn)
 @player_router.post("/", response_model=PlayerRead)
 async def create_player(
     name: str,
-    _request: FastAPIRequest,
+    request: FastAPIRequest,
     starting_room_id: str = "earth_arkhamcity_sanitarium_room_foyer_001",
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
-    """Create a new player character.
+    """Create a new player character, unowned by any user account.
+
+    Admin-only (#734): the real character-creation flow is `character_creation.create_character_with_stats`,
+    which ties the character to `current_user.id`. This raw endpoint creates an orphan player and was
+    previously reachable with no authentication or role check at all.
 
     :param name: Display name for the new character.
-    :param _request: FastAPI request (unused; kept for dependency injection).
+    :param request: FastAPI request (audit logging for the admin permission check).
     :param starting_room_id: Room ID where the character will spawn.
     :param current_user: Authenticated user (injected).
     :param player_service: Player service (injected).
     :return: The created player as PlayerRead.
     :raises LoggedHTTPException: On validation error (400) or auth failure (401).
     """
+    get_admin_auth_service().validate_permission(current_user, AdminAction.CREATE_PLAYER, request)
     try:
         player = await player_service.create_player(name, profession_id=0, starting_room_id=starting_room_id)
         return player
@@ -241,6 +247,24 @@ async def get_player_quests(
     )
 
 
+def _require_owner_or_admin(current_user: User | None, player: PlayerRead) -> None:
+    """Reject unless the caller is authenticated as the player's own owning user, or an admin.
+
+    #734: `PlayerRead` carries `user_id` (account-linkable), `stats`, `inventory`, and `is_admin` --
+    a full account-and-character record, not public game data. Both callers of this were previously
+    reachable with no authentication at all (`current_user` was referenced only in error logging).
+    """
+    if current_user is None:
+        raise LoggedHTTPException(status_code=401, detail=ErrorMessages.AUTHENTICATION_REQUIRED)
+    if current_user.is_superuser or current_user.is_admin:
+        return
+    if str(player.user_id) == str(current_user.id):
+        return
+    raise LoggedHTTPException(
+        status_code=403, detail="Not authorized to view this player", user_id=str(current_user.id)
+    )
+
+
 @player_router.get("/{player_id}", response_model=PlayerRead)
 async def get_player(
     player_id: uuid.UUID,
@@ -248,7 +272,7 @@ async def get_player(
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
-    """Get a specific player by ID."""
+    """Get a specific player by ID. Restricted to the owning user or an admin (#734)."""
     player = await player_service.get_player_by_id(player_id)
     if not player:
         raise LoggedHTTPException(
@@ -257,6 +281,7 @@ async def get_player(
             user_id=str(current_user.id) if current_user else None,
             requested_player_id=str(player_id),
         )
+    _require_owner_or_admin(current_user, player)
 
     return player
 
@@ -268,7 +293,7 @@ async def get_player_by_name(
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> PlayerRead:
-    """Get a specific player by name."""
+    """Get a specific player by name. Restricted to the owning user or an admin (#734)."""
     player = await player_service.get_player_by_name(player_name)
     if not player:
         raise LoggedHTTPException(
@@ -277,6 +302,7 @@ async def get_player_by_name(
             user_id=str(current_user.id) if current_user else None,
             requested_player_name=player_name,
         )
+    _require_owner_or_admin(current_user, player)
 
     return player
 
@@ -284,11 +310,17 @@ async def get_player_by_name(
 @player_router.delete("/{player_id}", response_model=MessageResponse)
 async def delete_player(
     player_id: uuid.UUID,
-    _request: FastAPIRequest,
+    request: FastAPIRequest,
     current_user: User = Depends(get_current_user),
     player_service: PlayerService = PlayerServiceDep,
 ) -> MessageResponse:
-    """Delete a player character."""
+    """Delete a player character by raw ID, no ownership check.
+
+    Admin-only (#734): distinct from the self-service `_soft_delete_character` path (gated by
+    `validate_character_access(character_id, current_user.id)`), this endpoint deletes any player
+    by UUID and was previously reachable by any bearer of a valid or even absent token.
+    """
+    get_admin_auth_service().validate_permission(current_user, AdminAction.DELETE_PLAYER, request)
     try:
         success, message = await player_service.delete_player(player_id)
         if not success:

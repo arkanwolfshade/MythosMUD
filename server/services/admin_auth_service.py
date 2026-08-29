@@ -100,6 +100,11 @@ class AdminAction(enum.StrEnum):
     UPSERT_DIALOGUE_DEFINITION = "upsert_dialogue_definition"
     DELETE_DIALOGUE_DEFINITION = "delete_dialogue_definition"
 
+    # Player Management (#734)
+    APPLY_PLAYER_EFFECT = "apply_player_effect"
+    CREATE_PLAYER = "create_player"
+    DELETE_PLAYER = "delete_player"
+
 
 class AdminSession:
     """Represents an admin session."""

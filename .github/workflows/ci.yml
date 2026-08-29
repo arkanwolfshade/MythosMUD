@@ -190,6 +190,14 @@ jobs:
         run: |
           source .venv-ci/bin/activate
           pre-commit run container-get-instance-lint --all-files
+      - name: Optional-auth route guard
+        run: |
+          source .venv-ci/bin/activate
+          pre-commit run optional-auth-no-guard-lint --all-files
+      - name: Bandit security scan
+        run: |
+          source .venv-ci/bin/activate
+          python scripts/bandit.py
       - name: Install Playwright browsers
         run: |
           source .venv-ci/bin/activate

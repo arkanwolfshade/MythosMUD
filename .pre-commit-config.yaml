@@ -94,6 +94,14 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: optional-auth-no-guard-lint
+        name: Optional-Auth Route Guard
+        entry: python scripts/lint_optional_auth_no_guard.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: fstring-logging-lint
         name: F-String Logging Anti-Pattern Detector
         entry: python scripts/check_logging_patterns.py
