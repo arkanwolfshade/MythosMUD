@@ -1,6 +1,6 @@
 # Models Package Design
 
-**Version 1.0.0** · MythosMUD · 2026-08-29
+**Version 1.1.0** · MythosMUD · 2026-08-30
 
 ---
 
@@ -68,18 +68,14 @@ model classes; the command dispatcher (`server/command_handler_unified.py` and
   translation layer. Not treated as a finding: a schema referencing a model type it wraps or
   extends is a narrower coupling than the reverse would be, and each of the four is a plausible
   case of a response schema needing the persisted entity's shape directly.
-- **`server/domain/`** — **[BUG]** declared but effectively empty. Its `__init__.py` describes a
-  full hexagonal-architecture domain layer (*"entities/, value_objects/, services/, events/,
-  repositories/, exceptions/ — Domain entities are framework-agnostic... Domain defines
-  interfaces; infrastructure implements them"*), but all six subpackages contain only an
-  `__init__.py` with `__all__ = []` and no other code — 208 lines total, all docstring/scaffold,
-  zero entities. In practice, **`server/models/` is the domain model layer** — the docstring's
-  aspiration was never built out, and the actual "core business logic and domain entities" the
-  docstring describes live here, in ORM form, not in `server/domain/`. Not filed as a new issue
-  here: `server/domain/` is already tracked as one of the 22 undocumented packages in
-  [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746), and the retire-vs-populate
-  question this fact raises belongs to that package's own pass, not this one — recorded here
-  because it is exactly the boundary fact a reader of `models/` needs.
+- **`server/domain/`** — **removed.** It was a separate, declared-but-empty hexagonal-architecture
+  scaffold (*"entities/, value_objects/, services/, events/, repositories/, exceptions/"*), all
+  six subpackages holding only an `__init__.py` with `__all__ = []` — 208 lines total, zero
+  entities, and zero references anywhere in the tree outside its own docstring examples. Deleted
+  by the `#757` architecture-review remediation; ADR-001 was amended in the same pass to state
+  explicitly that its Domain Layer means `server/models/` (this package) + `server/events/`. This
+  entry stays as a pointer for anyone who finds `server/domain/` referenced in history or in an
+  older doc.
 
 **Invariants a caller must not violate:**
 
@@ -157,3 +153,4 @@ model classes; the command dispatcher (`server/command_handler_unified.py` and
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-08-29 | Initial version, closes #738 |
+| 1.1.0 | 2026-08-30 | Record `server/domain/`'s removal per #757 |

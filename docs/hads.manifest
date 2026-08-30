@@ -30,6 +30,7 @@ docs/architecture/decisions/ADR-019-player-effects-system.md
 docs/architecture/decisions/ADR-020-websocket-authentication-and-csrf.md
 docs/architecture/decisions/ADR-021-character-display-name-validation.md
 docs/architecture/decisions/ADR-022-ui-v2-client-transition.md
+docs/architecture/decisions/ADR-023-package-ownership-and-fan-out.md
 docs/architecture/decisions/README.md
 docs/architecture/DISTRIBUTED_EVENTBUS_NATS.md
 docs/ASYNC_ANTI_PATTERNS_QUICK_REF.md
