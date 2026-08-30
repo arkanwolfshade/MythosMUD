@@ -13,40 +13,15 @@ from typing import Any
 import numpy as np
 
 from ..models import AttributeType, Stats
+from ..models.game import (  # noqa: F401  # pylint: disable=unused-import
+    generate_random_stats,  # Reason: re-exported for API stability, callers import it from here
+)
 from ..structured_logging.enhanced_logging_config import get_logger
 
-
-def generate_random_stats(seed: int | None = None) -> Stats:
-    """
-    Generate Stats with random attribute values.
-
-    Factory function for creating Stats objects with randomly generated attributes.
-    This separates business logic from the model's __init__ method.
-
-    Args:
-        seed: Optional random seed for reproducible generation (useful for testing)
-
-    Returns:
-        Stats: A new Stats object with randomly generated attribute values
-    """
-    local_rng = random.Random(seed) if seed is not None else random.Random()  # nosec B311: Game mechanics stat generation, not cryptographic
-
-    # Roll Size using formula: (2D6+6)*5 (range 40-90)
-    size_roll = local_rng.randint(2, 12) + 6  # 2D6+6 (range 8-18)
-    size = size_roll * 5  # Multiply by 5 (range 40-90)
-
-    return Stats(
-        strength=local_rng.randint(15, 90),
-        dexterity=local_rng.randint(15, 90),
-        constitution=local_rng.randint(15, 90),
-        size=size,
-        intelligence=local_rng.randint(15, 90),
-        power=local_rng.randint(15, 90),
-        education=local_rng.randint(15, 90),
-        charisma=local_rng.randint(15, 90),
-        luck=local_rng.randint(15, 90),
-    )
-
+# generate_random_stats's canonical implementation lives in server/models/game.py, beside the
+# Stats class it constructs — Stats.__init__ itself calls it, and models/ must not import
+# game/ (ADR-001; #757). Re-exported here for API stability: existing callers import it as
+# `from server.game.stats_generator import generate_random_stats`.
 
 logger = get_logger(__name__)
 
@@ -482,6 +457,26 @@ class StatsGenerator:
         Returns:
             Dict: Summary of stats with modifiers and totals
         """
+        # Use NumPy array to eliminate code duplication and improve efficiency
+        stat_values = np.array(
+            [
+                stats.strength or 50,
+                stats.dexterity or 50,
+                stats.constitution or 50,
+                stats.size or 50,
+                stats.intelligence or 50,
+                stats.power or 50,
+                stats.education or 50,
+                stats.charisma or 50,
+                stats.luck or 50,
+            ],
+            dtype=np.int32,
+        )
+
+        # total_points/average_stat are computed up front and included in the literal below
+        # (rather than assigned via summary[...] afterward) so pyright infers summary's type
+        # from one literal with every key present, instead of narrowing it from the
+        # attributes/derived_stats-only literal and then rejecting a later int/float __setitem__.
         summary = {
             "attributes": {
                 "strength": {"value": stats.strength, "modifier": stats.get_attribute_modifier(AttributeType.STR)},
@@ -505,25 +500,8 @@ class StatsGenerator:
                 "max_magic_points": stats.max_magic_points,
                 "max_lucidity": stats.max_lucidity,
             },
+            "total_points": int(np.sum(stat_values)),
+            "average_stat": float(np.mean(stat_values)),
         }
-
-        # Use NumPy array to eliminate code duplication and improve efficiency
-        stat_values = np.array(
-            [
-                stats.strength or 50,
-                stats.dexterity or 50,
-                stats.constitution or 50,
-                stats.size or 50,
-                stats.intelligence or 50,
-                stats.power or 50,
-                stats.education or 50,
-                stats.charisma or 50,
-                stats.luck or 50,
-            ],
-            dtype=np.int32,
-        )
-
-        summary["total_points"] = int(np.sum(stat_values))
-        summary["average_stat"] = float(np.mean(stat_values))
 
         return summary

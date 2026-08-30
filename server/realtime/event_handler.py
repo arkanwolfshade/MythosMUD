@@ -27,9 +27,9 @@ from ..events.event_types import (
     PlayerEnteredRoom,
     PlayerLeftRoom,
     PlayerRespawnedEvent,
+    PlayerXPAwardEvent,
 )
 from ..services.chat_logger import chat_logger
-from ..services.player_combat_service import PlayerXPAwardEvent
 from ..services.room_sync_service import get_room_sync_service
 from ..structured_logging.enhanced_logging_config import get_logger
 from .message_builders import MessageBuilder

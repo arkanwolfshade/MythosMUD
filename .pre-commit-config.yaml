@@ -102,6 +102,13 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
+      - id: import-linter
+        name: Import Layer Direction Guard (ADR-001, #757)
+        entry: lint-imports
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
       - id: fstring-logging-lint
         name: F-String Logging Anti-Pattern Detector
         entry: python scripts/check_logging_patterns.py

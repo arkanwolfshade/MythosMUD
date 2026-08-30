@@ -10,6 +10,14 @@ class CombatIntegrationProtocol(Protocol):
         """Handle NPC death in the combat integration layer."""
 
 
+class CombatServiceLookupProtocol(Protocol):
+    """Protocol for the one CombatService method NPCBase needs (avoids a services/ import)."""
+
+    def is_npc_in_combat_sync(self, npc_id: str) -> bool:
+        """Return True if the given NPC is currently in combat."""
+        return False
+
+
 class CommunicationIntegrationProtocol(Protocol):
     """Protocol for communication integration (whisper, room message, handle player message)."""
 

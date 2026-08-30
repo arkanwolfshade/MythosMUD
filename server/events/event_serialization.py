@@ -54,15 +54,11 @@ def _register_event_types() -> None:
 
     _register_module_events(event_types, _EVENT_CLASS_REGISTRY, include_base=False)
 
-    # PlayerXPAwardEvent has event_type "player_xp_awarded" - lazy import to avoid pulling config
-    try:
-        from ..services.player_combat_service import PlayerXPAwardEvent
-
-        _EVENT_CLASS_REGISTRY["player_xp_awarded"] = PlayerXPAwardEvent
-        _EVENT_CLASS_REGISTRY["PlayerXPAwardEvent"] = PlayerXPAwardEvent
-    except ImportError:
-        # Optional combat XP event type unavailable in this import context
-        pass
+    # PlayerXPAwardEvent's event_type ("player_xp_awarded") is set in __post_init__, which
+    # _register_event_class's __new__()-without-__init__() probe never runs — the reflective
+    # scan above registers it under its class name only. Register the event_type-string key
+    # explicitly, same as before the #757 move of this class from services/ into event_types.
+    _EVENT_CLASS_REGISTRY["player_xp_awarded"] = event_types.PlayerXPAwardEvent
 
     _register_module_events(combat_events, _EVENT_CLASS_REGISTRY, include_base=True)
 

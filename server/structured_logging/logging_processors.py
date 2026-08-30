@@ -10,6 +10,7 @@ request context, and enhancing player IDs with names.
 import re
 import threading
 import uuid
+from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import cast
 
@@ -161,25 +162,20 @@ def add_request_context(_logger: object, _name: str, event_dict: EventDict) -> E
     return event_dict
 
 
-def _database_error_type() -> type[BaseException]:
-    try:
-        from server.exceptions import DatabaseError as imported
-
-        return imported
-    except ImportError:
-        return Exception
-
-
-def _enhance_one_player_id(event_dict: EventDict, key: str, value: str, get_player: object) -> None:
+def _enhance_one_player_id(
+    event_dict: EventDict, key: str, value: str, get_player: Callable[[uuid.UUID], object]
+) -> None:
     if len(value) != 36 or value.count("-") != 4:
         return
-    err_t = _database_error_type()
     try:
-        player = get_player(uuid.UUID(value))  # type: ignore[operator]
+        player = get_player(uuid.UUID(value))
         player_name = getattr(player, "name", None) if player is not None else None
         if player_name is not None:
             event_dict[key] = f"<{player_name}>: {value}"
-    except (AttributeError, KeyError, TypeError, ValueError, err_t, RecursionError):
+    except Exception:  # pylint: disable=broad-exception-caught  # nosec B110  # noqa: BLE001
+        # Reason: get_player is an arbitrary persistence lookup (including
+        # server.exceptions.DatabaseError, which structured_logging must not import — see
+        # ADR-001/#757); never let player-id log enrichment crash the application.
         pass
 
 

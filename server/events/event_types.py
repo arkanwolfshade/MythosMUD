@@ -478,3 +478,24 @@ class QuestCompleted(BaseEvent):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.event_type = "QuestCompleted"
+
+
+@dataclass
+class PlayerXPAwardEvent(BaseEvent):  # pylint: disable=too-few-public-methods  # Reason: Event dataclass with focused responsibility, minimal public interface
+    """
+    Event published when a player receives XP.
+
+    Moved here from server/services/player_combat_service.py (#757): a domain-event
+    dataclass has no business living inside a service module, and the move removes a
+    persistence/ -> services/ layer-direction edge (ADR-001) that existed only to
+    construct this event.
+    """
+
+    player_id: UUID
+    xp_amount: int
+    new_level: int
+
+    def __post_init__(self) -> None:
+        """Set event_type for serialization/deserialization."""
+        super().__post_init__()
+        object.__setattr__(self, "event_type", "player_xp_awarded")

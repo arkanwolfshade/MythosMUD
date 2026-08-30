@@ -5,6 +5,7 @@ This module contains models specific to the game mechanics including
 character statistics and attribute types.
 """
 
+import random
 from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
@@ -181,9 +182,6 @@ class Stats(BaseModel):
         )
 
         if needs_random_stats:
-            # Import here to avoid circular dependency
-            from ..game.stats_generator import generate_random_stats
-
             # Generate random stats and merge with provided data
             seed = data.pop("_test_seed", None)
             random_stats = generate_random_stats(seed=seed)
@@ -321,6 +319,43 @@ class Stats(BaseModel):
     def is_delirious(self) -> bool:
         """Check if the character has lost their lucidity completely."""
         return self.lucidity <= 0
+
+
+def generate_random_stats(seed: int | None = None) -> Stats:
+    """
+    Generate Stats with random attribute values.
+
+    Factory function for creating Stats objects with randomly generated attributes.
+    This separates business logic from the model's __init__ method.
+
+    Canonical implementation lives here (models/), not in server/game/stats_generator.py,
+    which re-exports this name for API stability. Stats.__init__ calls this directly to avoid
+    a models/ -> game/ layer-direction violation (ADR-001; #757); this function has no
+    dependency beyond `random` and Stats itself, so it belongs beside the model it constructs.
+
+    Args:
+        seed: Optional random seed for reproducible generation (useful for testing)
+
+    Returns:
+        Stats: A new Stats object with randomly generated attribute values
+    """
+    local_rng = random.Random(seed) if seed is not None else random.Random()  # nosec B311: Game mechanics stat generation, not cryptographic
+
+    # Roll Size using formula: (2D6+6)*5 (range 40-90)
+    size_roll = local_rng.randint(2, 12) + 6  # 2D6+6 (range 8-18)
+    size = size_roll * 5  # Multiply by 5 (range 40-90)
+
+    return Stats(
+        strength=local_rng.randint(15, 90),
+        dexterity=local_rng.randint(15, 90),
+        constitution=local_rng.randint(15, 90),
+        size=size,
+        intelligence=local_rng.randint(15, 90),
+        power=local_rng.randint(15, 90),
+        education=local_rng.randint(15, 90),
+        charisma=local_rng.randint(15, 90),
+        luck=local_rng.randint(15, 90),
+    )
 
 
 class InventoryItem(BaseModel):

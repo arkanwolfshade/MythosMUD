@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Protocol, cast, override
 
 from structlog.stdlib import BoundLogger
 
+from ..container.running_app import npc_instance_service_from_running_app
 from ..structured_logging.enhanced_logging_config import get_logger
 from .npc_base import NPCBase
 
@@ -92,13 +93,13 @@ class AggressiveMobNPC(NPCBase):
         Get player_in_range, enemy_nearby, and target_id from persistence.
         Returns (player_in_range, enemy_nearby, target_id or None).
         """
-        from ..services.npc_instance_service import get_npc_instance_service
-
-        npc_instance_service = get_npc_instance_service()
-        if not npc_instance_service or not hasattr(npc_instance_service, "lifecycle_manager"):
+        npc_instance_service = npc_instance_service_from_running_app()
+        if npc_instance_service is None:
             return (False, False, None)
 
-        lifecycle_manager = npc_instance_service.lifecycle_manager
+        lifecycle_manager = getattr(npc_instance_service, "lifecycle_manager", None)
+        if lifecycle_manager is None:
+            return (False, False, None)
         persistence_raw = getattr(lifecycle_manager, "persistence", None)
         if not persistence_raw:
             return (False, False, None)

@@ -1,0 +1,42 @@
+; import-linter contracts encoding ADR-001's layer direction (Domain / Persistence must not
+; reach up into Service), scoped to what #757's remediation actually fixed and verified clean.
+;
+; Verify: uv run lint-imports
+;
+; Scope note (#757): a full ADR-001 "layers" contract across all of server/ was evaluated and
+; deliberately NOT written here. server/npc/ still has 6 pre-existing lazy imports of
+; server/services/ (movement_integration.py, threading.py x2, npc_combat_schedule.py,
+; idle_movement.py) that are part of the explicitly out-of-scope "922 individually-hoistable
+; lazy imports" population this remediation measured but did not touch (see #757's PR2). A
+; contract forbidding npc/ -> services/ would fail on those six today. Locking that boundary is
+; a fast-follow once that locator pattern is addressed on its own.
+;
+; server/api/__init__.py <-> server/api/players.py and server/api/admin/__init__.py <->
+; server/api/admin/npc.py are known, deliberate module-init side-effect-import cycles (route
+; registration) — not covered by either contract below, so no exemption syntax is needed.
+
+[importlinter]
+root_package = server
+exclude_type_checking_imports = True
+
+[importlinter:contract:domain-layer-direction]
+name = ADR-001: Domain layer (models/, events/) must not import Service (game/, services/, npc/) or Persistence
+type = forbidden
+source_modules =
+    server.models
+    server.events
+forbidden_modules =
+    server.game
+    server.services
+    server.npc
+    server.persistence
+
+[importlinter:contract:persistence-layer-direction]
+name = ADR-001: Persistence layer must not import Service (game/, services/, npc/)
+type = forbidden
+source_modules =
+    server.persistence
+forbidden_modules =
+    server.game
+    server.services
+    server.npc

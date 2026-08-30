@@ -12,6 +12,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from server.database import get_session_maker
+from server.events.event_types import PlayerXPAwardEvent
 from server.exceptions import DatabaseError
 from server.models.player import Player
 from server.structured_logging.enhanced_logging_config import get_logger
@@ -88,8 +89,6 @@ class ExperienceRepository:
 
             # Publish event if event bus available
             if self._event_bus:
-                from server.services.player_combat_service import PlayerXPAwardEvent
-
                 event = PlayerXPAwardEvent(
                     player_id=uuid.UUID(str(player.player_id)),
                     xp_amount=amount,
