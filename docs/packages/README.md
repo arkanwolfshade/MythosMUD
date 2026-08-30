@@ -1,6 +1,6 @@
 # Server & Client Package Documentation Coverage
 
-**Version 1.0.0** · MythosMUD · 2026-08-29
+**Version 1.1.0** · MythosMUD · 2026-08-30
 
 ---
 
@@ -64,9 +64,13 @@ never certifiable as conformance). **Undocumented** — neither.
 | `server/game/` | `docs/subsystems/*` coverage only |
 | `server/npc/` | `docs/subsystems/*` coverage only |
 
-### Undocumented (26)
+### Undocumented (25)
 
-Each cites the issue that owns writing its documentation.
+Each cites the issue that owns writing its documentation. `server/domain/` (formerly one of
+`#746`'s 22 batched entries) is no longer listed: it was an empty, zero-reference hexagonal-
+architecture scaffold, deleted by the `#757` architecture-review remediation rather than
+documented — see [`PACKAGE_MODELS_DESIGN.md`](PACKAGE_MODELS_DESIGN.md)'s boundary-contract
+section for the record.
 
 | Package | Owning issue |
 | --- | --- |
@@ -75,7 +79,6 @@ Each cites the issue that owns writing its documentation.
 | `client/src/components/ui/` (legacy) | [`#744`](https://github.com/arkanwolfshade/MythosMUD/issues/744) |
 | `db/` root DDL files | [`#745`](https://github.com/arkanwolfshade/MythosMUD/issues/745) |
 | `server/utils/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
-| `server/domain/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) — see [`PACKAGE_MODELS_DESIGN.md`](PACKAGE_MODELS_DESIGN.md)'s boundary contract for a directly relevant fact: this package is currently empty scaffolding. |
 | `server/monitoring/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/validators/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `server/time/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
@@ -97,9 +100,11 @@ Each cites the issue that owns writing its documentation.
 | `client/src/components/lucidity/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 | `client/src/components/magic/` | [`#746`](https://github.com/arkanwolfshade/MythosMUD/issues/746) |
 
-**Reconciliation:** 16 Documented + 2 Provisional + 26 Undocumented = 44, matching the `#648`
-item 2 sweep's original inventory exactly (10 Documented + 2 Provisional + 32 Undocumented at
-that time; six of the 32 flipped to Documented in this pass, none unaccounted).
+**Reconciliation:** 16 Documented + 2 Provisional + 25 Undocumented = 43, one below the `#648`
+item 2 sweep's original 44-package inventory (10 Documented + 2 Provisional + 32 Undocumented at
+that time). Six of the 32 flipped to Documented in the `#736`–`#741` pass; one
+(`server/domain/`) was removed rather than documented in the `#757` remediation, so it drops out
+of the inventory entirely instead of flipping status — the count is intentionally 43, not 44.
 
 ## 3. Related documentation
 
@@ -116,3 +121,4 @@ that time; six of the 32 flipped to Documented in this pass, none unaccounted).
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0.0 | 2026-08-29 | Initial version — promotes the `#648` item 2 sweep result to a maintained index; six `server/` packages flip to Documented, closing `#736`–`#741` |
+| 1.1.0 | 2026-08-30 | Remove `server/domain/` from the inventory (deleted, not documented, per `#757`); count drops from 44 to 43 |

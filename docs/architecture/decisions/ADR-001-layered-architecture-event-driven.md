@@ -1,6 +1,6 @@
 # ADR-001: Layered Architecture with Event-Driven Components
 
-**Version 1.1.0** · MythosMUD · 2026-08-28
+**Version 1.2.0** · MythosMUD · 2026-08-30
 
 ---
 
@@ -32,7 +32,10 @@ Adopt a **layered architecture** with **event-driven components**:
 1. **Client Layer** (React/TypeScript) - Presentation and user interaction
 2. **API Layer** (FastAPI Routers) - HTTP/WebSocket entry points, request routing
 3. **Service Layer** - Domain-specific business logic (PlayerService, CombatService, etc.)
-4. **Domain Layer** - Models (Player, Room, NPC), EventBus for domain events
+4. **Domain Layer** - Models (Player, Room, NPC), EventBus for domain events. Concretely
+   `server/models/` + `server/events/`. (`server/domain/` was a separate, unrelated
+   hexagonal-architecture scaffold — entities/value_objects/repositories/ports — that was never
+   adopted and was removed; see the 2026-08 architecture review, `#757`.)
 5. **Persistence Layer** - AsyncPersistenceLayer facade, repositories (Player, Room, etc.)
 6. **Database** - PostgreSQL
 
@@ -70,3 +73,4 @@ Outer layers depend on inner layers. Domain events flow through EventBus; servic
 | --- | --- | --- |
 | 1.0.0 | 2026-07-30 | Initial HADS structural conversion |
 | 1.1.0 | 2026-08-28 | Record provenance (post-hoc authorship) per the 2026-08 audit (#721) |
+| 1.2.0 | 2026-08-30 | Clarify Domain Layer names `server/models/` + `server/events/`; note removal of the unrelated `server/domain/` scaffold (#757) |
