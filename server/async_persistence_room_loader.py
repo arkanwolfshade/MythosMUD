@@ -5,14 +5,101 @@ Extracted from async_persistence.py to satisfy file-nloc limit.
 Loads rooms from PostgreSQL via get_rooms_with_exits() and builds in-memory Room cache.
 """
 
+from __future__ import annotations
+
 import json
-from typing import Any, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
+from structlog.stdlib import BoundLogger
 
 from .database import get_async_session
+from .events import EventBus
 from .exceptions import DatabaseError
+
+if TYPE_CHECKING:
+    from .models.room import Room
+
+
+class ExitJsonEntry(TypedDict, total=False):
+    """One exit entry from get_rooms_with_exits exits JSON."""
+
+    direction: str
+    to_room_stable_id: str
+    to_subzone_stable_id: str
+    to_zone_stable_id: str
+
+
+class ProcessedRoomData(TypedDict):
+    """Intermediate room row after zone/id normalization."""
+
+    room_id: str
+    stable_id: str | None
+    name: str | None
+    description: str | None
+    attributes: object
+    plane: str
+    zone: str
+    sub_zone: str | None
+
+
+class RoomLoadResult(TypedDict):
+    """Mutable container passed through room object construction."""
+
+    rooms: dict[str, Room]
+
+
+class RoomInitPayload(TypedDict, total=False):
+    """Payload passed to Room.__init__ during cache load."""
+
+    id: str
+    name: str | None
+    description: str | None
+    plane: str
+    zone: str
+    sub_zone: str | None
+    resolved_environment: str
+    exits: dict[str, str]
+    attributes: dict[str, object]
+
+
+def _row_optional_str(row: dict[str, object], key: str) -> str | None:
+    value = row.get(key)
+    return value if isinstance(value, str) else None
+
+
+def _attributes_from_row(row: dict[str, object]) -> dict[str, object]:
+    raw = row.get("attributes")
+    if isinstance(raw, dict):
+        return cast(dict[str, object], raw)
+    return {}
+
+
+def _coerce_exit_entries(raw: object) -> list[ExitJsonEntry]:
+    if not isinstance(raw, list):
+        return []
+    entries: list[ExitJsonEntry] = []
+    for item in cast(list[object], raw):
+        if not isinstance(item, dict):
+            continue
+        item_dict = cast(dict[str, object], item)
+        entry: ExitJsonEntry = {}
+        direction = item_dict.get("direction")
+        if isinstance(direction, str):
+            entry["direction"] = direction
+        to_room_stable_id = item_dict.get("to_room_stable_id")
+        if isinstance(to_room_stable_id, str):
+            entry["to_room_stable_id"] = to_room_stable_id
+        to_subzone_stable_id = item_dict.get("to_subzone_stable_id")
+        if isinstance(to_subzone_stable_id, str):
+            entry["to_subzone_stable_id"] = to_subzone_stable_id
+        to_zone_stable_id = item_dict.get("to_zone_stable_id")
+        if isinstance(to_zone_stable_id, str):
+            entry["to_zone_stable_id"] = to_zone_stable_id
+        entries.append(entry)
+    return entries
 
 
 class RoomCacheLoader:
@@ -24,15 +111,15 @@ class RoomCacheLoader:
 
     def __init__(
         self,
-        room_cache: dict[str, Any],
-        room_mappings: dict[str, Any],
-        logger: Any,
-        event_bus: Any,
+        room_cache: dict[str, Room],
+        room_mappings: dict[str, object],
+        logger: BoundLogger,
+        event_bus: EventBus | None,
     ) -> None:
-        self._room_cache = room_cache
-        self._room_mappings = room_mappings
-        self._logger = logger
-        self._event_bus = event_bus
+        self._room_cache: dict[str, Room] = room_cache
+        self._room_mappings: dict[str, object] = room_mappings
+        self._logger: BoundLogger = logger
+        self._event_bus: EventBus | None = event_bus
 
     async def load(self) -> None:
         """Load rooms from PostgreSQL and update the room cache."""
@@ -40,16 +127,16 @@ class RoomCacheLoader:
             try:
                 combined_rows = await self._query_rooms_with_exits_async(session)
                 room_data_list, exits_by_room = self._process_combined_rows(combined_rows)
-                result_container: dict[str, Any] = {"rooms": {}}
+                result_container: RoomLoadResult = {"rooms": {}}
                 self._build_room_objects(room_data_list, exits_by_room, result_container)
-                self._apply_rooms_to_cache(result_container.get("rooms"))
+                self._apply_rooms_to_cache(result_container["rooms"])
                 self._log_room_cache_after_load()
             except (DatabaseError, OSError, RuntimeError, ConnectionError, TimeoutError, SQLAlchemyError) as e:
                 self._handle_room_load_error(e)
             break
 
-    def _apply_rooms_to_cache(self, rooms: Any) -> None:
-        if rooms is not None and isinstance(rooms, dict):
+    def _apply_rooms_to_cache(self, rooms: dict[str, Room] | None) -> None:
+        if rooms is not None:
             self._room_cache.clear()
             self._room_cache.update(rooms)
         else:
@@ -81,7 +168,7 @@ class RoomCacheLoader:
         else:
             raise e
 
-    async def _query_rooms_with_exits_async(self, session: Any) -> list[dict[str, Any]]:
+    async def _query_rooms_with_exits_async(self, session: AsyncSession) -> list[dict[str, object]]:
         try:
             result = await session.execute(
                 text(
@@ -102,7 +189,10 @@ class RoomCacheLoader:
                 )
             )
             rows = result.fetchall()
-            return [dict(row._mapping) for row in rows]  # pylint: disable=protected-access  # SQLAlchemy Row._mapping
+            combined_rows: list[dict[str, object]] = []
+            for row in rows:
+                combined_rows.append(dict(row._mapping))  # pyright: ignore[reportPrivateUsage]  # SQLAlchemy Row._mapping
+            return combined_rows
         except Exception as e:
             error_msg = str(e).lower()
             if "does not exist" in error_msg or "relation" in error_msg or "function get_rooms_with_exits" in error_msg:
@@ -129,19 +219,19 @@ class RoomCacheLoader:
             return stable_str
         return generate_room_id(plane_name, zone_name, subzone_str, stable_str)
 
-    def _parse_exits_json(self, exits_json: Any) -> list[dict[str, Any]]:
+    def _parse_exits_json(self, exits_json: object) -> list[ExitJsonEntry]:
         if isinstance(exits_json, str):
             try:
-                result: list[dict[str, Any]] = cast(list[dict[str, Any]], json.loads(exits_json))
-                return result
+                parsed = cast(object, json.loads(exits_json))
             except json.JSONDecodeError:
                 return []
+            return _coerce_exit_entries(parsed)
         if isinstance(exits_json, list):
-            return exits_json
+            return _coerce_exit_entries(cast(object, exits_json))
         return []
 
     def _process_exits_for_room(
-        self, room_id: str, exits_list: list[dict[str, Any]], exits_by_room: dict[str, dict[str, str]]
+        self, room_id: str, exits_list: list[ExitJsonEntry], exits_by_room: dict[str, dict[str, str]]
     ) -> None:
         for exit_data in exits_list:
             direction = exit_data.get("direction")
@@ -156,18 +246,18 @@ class RoomCacheLoader:
             exits_by_room[room_id][direction] = to_room_id
 
     def _process_combined_rows(
-        self, combined_rows: list[dict[str, Any]]
-    ) -> tuple[list[dict[str, Any]], dict[str, dict[str, str]]]:
-        room_data_list = []
+        self, combined_rows: list[dict[str, object]]
+    ) -> tuple[list[ProcessedRoomData], dict[str, dict[str, str]]]:
+        room_data_list: list[ProcessedRoomData] = []
         exits_by_room: dict[str, dict[str, str]] = {}
 
         for row in combined_rows:
-            stable_id = row.get("stable_id")
-            name = row.get("name")
-            description = row.get("description")
-            attributes = row.get("attributes") if row.get("attributes") else {}
-            subzone_stable_id = row.get("subzone_stable_id")
-            zone_stable_id = row.get("zone_stable_id")
+            stable_id = _row_optional_str(row, "stable_id")
+            name = _row_optional_str(row, "name")
+            description = _row_optional_str(row, "description")
+            attributes = _attributes_from_row(row)
+            subzone_stable_id = _row_optional_str(row, "subzone_stable_id")
+            zone_stable_id = _row_optional_str(row, "zone_stable_id")
             exits_json = row.get("exits")
 
             room_id = self._generate_room_id_from_zone_data(zone_stable_id, subzone_stable_id, stable_id)
@@ -194,9 +284,9 @@ class RoomCacheLoader:
 
         return room_data_list, exits_by_room
 
-    def _build_room_data_from_row(self, row: dict[str, Any]) -> dict[str, Any] | None:
-        stable_id = row.get("stable_id")
-        zone_stable_id = row.get("zone_stable_id")
+    def _build_room_data_from_row(self, row: dict[str, object]) -> ProcessedRoomData | None:
+        stable_id = _row_optional_str(row, "stable_id")
+        zone_stable_id = _row_optional_str(row, "zone_stable_id")
         if zone_stable_id is None:
             self._logger.warning("zone_stable_id is None, skipping room", stable_id=stable_id)
             return None
@@ -204,10 +294,10 @@ class RoomCacheLoader:
             self._logger.warning("stable_id is None, skipping room", zone_stable_id=zone_stable_id)
             return None
 
-        name = row.get("name")
-        description = row.get("description")
-        attributes = row.get("attributes") if row.get("attributes") else {}
-        subzone_stable_id = row.get("subzone_stable_id")
+        name = _row_optional_str(row, "name")
+        description = _row_optional_str(row, "description")
+        attributes = _attributes_from_row(row)
+        subzone_stable_id = _row_optional_str(row, "subzone_stable_id")
         room_id = self._generate_room_id_from_zone_data(zone_stable_id, subzone_stable_id, stable_id)
         plane_name, zone_name = self._parse_zone_parts(zone_stable_id)
 
@@ -222,8 +312,8 @@ class RoomCacheLoader:
             "sub_zone": subzone_stable_id,
         }
 
-    def _process_room_rows(self, rooms_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        room_data_list: list[dict[str, Any]] = []
+    def _process_room_rows(self, rooms_rows: list[dict[str, object]]) -> list[ProcessedRoomData]:
+        room_data_list: list[ProcessedRoomData] = []
         for row in rooms_rows:
             room_data = self._build_room_data_from_row(row)
             if room_data is not None:
@@ -231,15 +321,15 @@ class RoomCacheLoader:
         return room_data_list
 
     def _extract_exit_fields(
-        self, row: dict[str, Any]
+        self, row: dict[str, object]
     ) -> tuple[str, str, str, str, str, str | None, str | None] | None:
-        from_stable_id = row.get("from_room_stable_id")
-        to_stable_id = row.get("to_room_stable_id")
-        direction = row.get("direction")
-        from_subzone = row.get("from_subzone_stable_id")
-        from_zone = row.get("from_zone_stable_id")
-        to_subzone = row.get("to_subzone_stable_id")
-        to_zone = row.get("to_zone_stable_id")
+        from_stable_id = _row_optional_str(row, "from_room_stable_id")
+        to_stable_id = _row_optional_str(row, "to_room_stable_id")
+        direction = _row_optional_str(row, "direction")
+        from_subzone = _row_optional_str(row, "from_subzone_stable_id")
+        from_zone = _row_optional_str(row, "from_zone_stable_id")
+        to_subzone = _row_optional_str(row, "to_subzone_stable_id")
+        to_zone = _row_optional_str(row, "to_zone_stable_id")
 
         if direction is None:
             self._logger.warning(
@@ -299,7 +389,7 @@ class RoomCacheLoader:
                 to_room_id=to_room_id,
             )
 
-    def _process_exit_rows(self, exits_rows: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
+    def _process_exit_rows(self, exits_rows: list[dict[str, object]]) -> dict[str, dict[str, str]]:
         exits_by_room: dict[str, dict[str, str]] = {}
         for row in exits_rows:
             extracted = self._extract_exit_fields(row)
@@ -335,9 +425,9 @@ class RoomCacheLoader:
 
     def _build_room_objects(
         self,
-        room_data_list: list[dict[str, Any]],
+        room_data_list: list[ProcessedRoomData],
         exits_by_room: dict[str, dict[str, str]],
-        result_container: dict[str, Any],
+        result_container: RoomLoadResult,
     ) -> None:
         from .models.room import Room
 
@@ -345,7 +435,7 @@ class RoomCacheLoader:
             room_id = room_data_item["room_id"]
             name = room_data_item["name"]
             description = room_data_item["description"]
-            attributes = room_data_item["attributes"]
+            attributes_raw = room_data_item["attributes"]
             plane_name = room_data_item["plane"]
             zone_name = room_data_item["zone"]
             subzone_stable_id = room_data_item["sub_zone"]
@@ -360,18 +450,25 @@ class RoomCacheLoader:
                     exits_by_room_size=len(exits_by_room),
                 )
 
-            room_data = {
+            if isinstance(attributes_raw, dict):
+                attributes = cast(dict[str, object], attributes_raw)
+                environment = attributes.get("environment", "outdoors")
+                resolved_environment = environment if isinstance(environment, str) else "outdoors"
+                attributes_payload = attributes
+            else:
+                resolved_environment = "outdoors"
+                attributes_payload = {}
+
+            room_payload: RoomInitPayload = {
                 "id": room_id,
                 "name": name,
                 "description": description,
                 "plane": plane_name,
                 "zone": zone_name,
                 "sub_zone": subzone_stable_id,
-                "resolved_environment": attributes.get("environment", "outdoors")
-                if isinstance(attributes, dict)
-                else "outdoors",
+                "resolved_environment": resolved_environment,
                 "exits": exits,
-                "attributes": attributes if isinstance(attributes, dict) else {},
+                "attributes": attributes_payload,
             }
 
-            result_container["rooms"][room_id] = Room(room_data, self._event_bus)
+            result_container["rooms"][room_id] = Room(dict(room_payload), self._event_bus)
