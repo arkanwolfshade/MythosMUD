@@ -23,10 +23,11 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (6 shared connections)
+- [FollowService](FollowService.md) (3 shared connections)
 - [EventBus](EventBus.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
 
 ## Source Files
 

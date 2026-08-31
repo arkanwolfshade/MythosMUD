@@ -6,9 +6,9 @@
 
 - **GameMechanicsService** (26 connections) — `server/game/mechanics.py`
 - **test_mechanics.py** (17 connections) — `server/tests/unit/game/test_mechanics.py`
+- **mechanics.py** (14 connections) — `server/game/mechanics.py`
 - **_player()** (8 connections) — `server/tests/unit/game/test_mechanics.py`
 - **asyncio** (8 connections)
-- **.__init__()** (5 connections) — `server/npc/combat_integration_base.py`
 - **test_apply_corruption_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_fear_success()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
 - **test_apply_lucidity_loss_player_not_found()** (4 connections) — `server/tests/unit/game/test_mechanics.py`
@@ -28,28 +28,31 @@
 - **service()** (3 connections) — `server/tests/unit/game/test_mechanics.py`
 - **persistence()** (2 connections) — `server/tests/unit/game/test_mechanics.py`
 - **fixture** (2 connections)
-- **Heal a player's health.** (1 connections) — `server/game/mechanics.py`
+- **Game mechanics service for MythosMUD server. This module handles all game…** (1 connections) — `server/game/mechanics.py`
 - *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (12 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (8 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (2 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
+- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
+- [error_logging.py](error_logging.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/mechanics.py`
-- `server/npc/combat_integration_base.py`
 - `server/tests/unit/game/test_mechanics.py`
 
 ## Audit Trail
 
-- EXTRACTED: 71 (89%)
-- INFERRED: 9 (11%)
+- EXTRACTED: 79 (90%)
+- INFERRED: 9 (10%)
 - AMBIGUOUS: 0 (0%)
 
 ---

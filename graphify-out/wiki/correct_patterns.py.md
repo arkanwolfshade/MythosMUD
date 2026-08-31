@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [bind_request_context](bind_request_context.md) (3 shared connections)
+- [log_with_context](log_with_context.md) (3 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (3 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [migration_examples.py](migration_examples.py.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

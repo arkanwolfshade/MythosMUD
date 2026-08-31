@@ -1,12 +1,11 @@
 # NPCCommunicationIntegration
 
-> 33 nodes
+> 31 nodes
 
 ## Key Concepts
 
 - **NPCCommunicationIntegration** (24 connections) — `server/npc/communication_integration.py`
 - **test_communication_integration.py** (16 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **communication_integration.py** (13 connections) — `server/npc/communication_integration.py`
 - **.handle_player_message()** (4 connections) — `server/npc/communication_integration.py`
 - **.__init__()** (4 connections) — `server/npc/communication_integration.py`
 - **._process_message_for_response()** (4 connections) — `server/npc/communication_integration.py`
@@ -27,19 +26,16 @@
 - **test_subscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
 - **test_unsubscribe_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
 - **test_whisper_error_returns_false()** (2 connections) — `server/tests/unit/npc/test_communication_integration.py`
-- **NPC Communication Integration for MythosMUD. This module provides integration…** (1 connections) — `server/npc/communication_integration.py`
 - **Handle a message received by an NPC from a player. Args: npc_id: ID of the NPC…** (1 connections) — `server/npc/communication_integration.py`
-- *... and 8 more nodes in this community*
+- **Process a message to determine if the NPC should respond. Args: npc_id: ID of…** (1 connections) — `server/npc/communication_integration.py`
+- **Subscribe an NPC to messages in a specific room. Args: npc_id: ID of the NPC to…** (1 connections) — `server/npc/communication_integration.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [test_event_reaction_speech.py](test_event_reaction_speech.py.md) (2 shared connections)
-- [EventBus](EventBus.md) (2 shared connections)
-- [ChatService](ChatService.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (6 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files
 
@@ -48,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 53 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

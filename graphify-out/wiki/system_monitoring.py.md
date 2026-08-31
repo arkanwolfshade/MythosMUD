@@ -1,6 +1,6 @@
 # system_monitoring.py
 
-> 79 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -21,30 +21,30 @@
 - **SystemAlertsResponse** (5 connections) — `server/api/monitoring_models.py`
 - **SystemHealthResponse** (5 connections) — `server/api/monitoring_models.py`
 - **SystemMetricsResponse** (5 connections) — `server/api/monitoring_models.py`
-- **TestLifespan** (5 connections) — `server/tests/unit/test_main.py`
+- **SystemMonitoringSummaryResponse** (5 connections) — `server/api/monitoring_models.py`
 - **_request_with_container()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
 - **test_get_system_metrics_handles_missing_collector_gracefully()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
 - **test_get_system_metrics_includes_memory_leak_metrics()** (5 connections) — `server/tests/unit/api/test_system_monitoring_endpoints.py`
-- **.test_lifespan_initialization_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_lifespan_shutdown()** (4 connections) — `server/tests/unit/test_main.py`
-- **.test_lifespan_success()** (4 connections) — `server/tests/unit/test_main.py`
 - **.test_get_alerts_failure()** (4 connections) — `server/tests/unit/test_main.py`
-- *... and 54 more nodes in this community*
+- **.test_get_alerts_success()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_get_metrics_failure()** (4 connections) — `server/tests/unit/test_main.py`
+- **.test_get_metrics_success()** (4 connections) — `server/tests/unit/test_main.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
 - [api/monitoring.py](api-monitoring.py.md) (13 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (12 shared connections)
-- [lifespan.py](lifespan.py.md) (7 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (8 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (4 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [test_cache_service.py](test_cache_service.py.md) (2 shared connections)
 - [admin_summon_command.py](admin_summon_command.py.md) (2 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)
 - [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
 
 ## Source Files
 
@@ -56,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 188 (99%)
+- EXTRACTED: 181 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

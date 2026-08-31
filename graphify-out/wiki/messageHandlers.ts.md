@@ -33,11 +33,13 @@
 
 ## Relationships
 
-- [GameClientV2.tsx](GameClientV2.tsx.md) (8 shared connections)
-- [logger.ts](logger.ts.md) (5 shared connections)
 - [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (5 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (4 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (3 shared connections)
+- [projectorRoom.ts](projectorRoom.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
+- [systemHandlers.ts](systemHandlers.ts.md) (1 shared connections)
 
 ## Source Files
 

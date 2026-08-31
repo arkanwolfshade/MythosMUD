@@ -33,10 +33,9 @@
 
 ## Relationships
 
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

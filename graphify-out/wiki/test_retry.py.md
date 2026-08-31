@@ -23,7 +23,7 @@
 
 - [retry.py](retry.py.md) (6 shared connections)
 - [retry_with_backoff](retry_with_backoff.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [DatabaseError](DatabaseError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

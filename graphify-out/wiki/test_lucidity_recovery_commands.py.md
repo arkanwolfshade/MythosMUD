@@ -1,6 +1,6 @@
 # test_lucidity_recovery_commands.py
 
-> 165 nodes
+> 162 nodes
 
 ## Key Concepts
 
@@ -27,21 +27,22 @@
 - **_restore_mp_for_action()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
 - **_validate_recovery_context()** (5 connections) — `server/commands/lucidity_recovery_commands.py`
 - **.apply_encounter_lucidity_loss()** (5 connections) — `server/services/active_lucidity_service.py`
-- **.__init__()** (5 connections) — `server/services/active_lucidity_service.py`
 - **test_handle_group_solace_command_unknown_action()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
-- *... and 140 more nodes in this community*
+- **test_handle_meditate_command_cooldown()** (5 connections) — `server/tests/unit/commands/test_lucidity_recovery_commands.py`
+- *... and 137 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (14 shared connections)
-- [get_logger](get_logger.md) (11 shared connections)
+- [AliasStorage](AliasStorage.md) (16 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (9 shared connections)
 - [debrief_command.py](debrief_command.py.md) (7 shared connections)
-- [LucidityService](LucidityService.md) (7 shared connections)
-- [NPCCombatLucidity](NPCCombatLucidity.md) (6 shared connections)
 - [server/services/__init__.py](server-services-__init__.py.md) (6 shared connections)
+- [LucidityService](LucidityService.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [lucidity.py](lucidity.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [test_mp_regeneration_service.py](test_mp_regeneration_service.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [mp_regeneration_service](mp_regeneration_service.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 324 (93%)
+- EXTRACTED: 320 (93%)
 - INFERRED: 25 (7%)
 - AMBIGUOUS: 0 (0%)
 

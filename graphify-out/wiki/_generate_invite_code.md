@@ -15,9 +15,8 @@
 
 ## Relationships
 
-- [Invite](Invite.md) (6 shared connections)
+- [Invite](Invite.md) (7 shared connections)
 - [InviteManager](InviteManager.md) (1 shared connections)
-- [.create_invite](create_invite.md) (1 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files

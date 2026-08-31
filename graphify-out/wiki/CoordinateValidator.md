@@ -1,10 +1,11 @@
 # CoordinateValidator
 
-> 19 nodes
+> 21 nodes
 
 ## Key Concepts
 
 - **CoordinateValidator** (11 connections) — `server/services/coordinate_validator.py`
+- **coordinate_validator.py** (9 connections) — `server/services/coordinate_validator.py`
 - **test_coordinate_validator.py** (7 connections) — `server/tests/unit/services/test_coordinate_validator.py`
 - **.validate_coordinates()** (6 connections) — `server/services/coordinate_validator.py`
 - **._fetch_conflicts()** (4 connections) — `server/services/coordinate_validator.py`
@@ -19,6 +20,7 @@
 - **asyncio** (2 connections)
 - **AsyncSession** (1 connections)
 - **fixture** (1 connections)
+- **Coordinate validation service for ASCII maps. This module provides conflict…** (1 connections) — `server/services/coordinate_validator.py`
 - **Validates room coordinates and detects conflicts. A conflict occurs when…** (1 connections) — `server/services/coordinate_validator.py`
 - **Initialize coordinate validator. Args: session: Database session for coordinate…** (1 connections) — `server/services/coordinate_validator.py`
 - **Validate coordinates for rooms in a zone/subzone and detect conflicts. Args:…** (1 connections) — `server/services/coordinate_validator.py`
@@ -26,8 +28,9 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
-- [maps.py](maps.py.md) (3 shared connections)
+- [ExplorationService](ExplorationService.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -37,7 +40,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 31 (97%)
+- EXTRACTED: 36 (97%)
 - INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 

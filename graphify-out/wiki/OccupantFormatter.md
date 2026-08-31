@@ -1,6 +1,6 @@
 # OccupantFormatter
 
-> 73 nodes
+> 75 nodes
 
 ## Key Concepts
 
@@ -19,6 +19,7 @@
 - **test_occupant_formatter_is_uuid_string_invalid_dashes()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_invalid_length()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_uuid_string_valid()** (4 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
 - **test_occupant_formatter_add_valid_name_to_lists()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_init()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_is_valid_name_for_occupant_empty()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
@@ -28,15 +29,12 @@
 - **test_occupant_formatter_is_valid_name_for_occupant_valid()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_dict_occupant_for_update_fallback_name()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
 - **test_occupant_formatter_process_dict_occupant_for_update_npc()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- **test_occupant_formatter_process_dict_occupant_for_update_player()** (3 connections) — `server/tests/unit/realtime/test_occupant_formatter.py`
-- *... and 48 more nodes in this community*
+- *... and 50 more nodes in this community*
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [.__init__](__init__.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -45,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (96%)
+- EXTRACTED: 120 (96%)
 - INFERRED: 5 (4%)
 - AMBIGUOUS: 0 (0%)
 

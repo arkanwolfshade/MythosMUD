@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)
 
 ## Source Files
 

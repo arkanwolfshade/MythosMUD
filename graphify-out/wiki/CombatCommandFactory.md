@@ -33,8 +33,9 @@
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (8 shared connections)
+- [BaseCommand](BaseCommand.md) (6 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
+- [CommandFactory](CommandFactory.md) (2 shared connections)
 - [CommunicationCommandFactory](CommunicationCommandFactory.md) (1 shared connections)
 - [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
 - [InventoryCommandFactory](InventoryCommandFactory.md) (1 shared connections)

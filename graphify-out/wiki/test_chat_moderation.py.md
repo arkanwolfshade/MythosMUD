@@ -1,6 +1,6 @@
 # test_chat_moderation.py
 
-> 30 nodes
+> 29 nodes
 
 ## Key Concepts
 
@@ -19,7 +19,6 @@
 - **test_mute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_mute_player_returns_false_when_target_missing()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_mute_player_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- **test_normalize_player_id_accepts_uuid()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_remove_admin()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_unmute_channel()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_unmute_global_success()** (2 connections) — `server/tests/unit/game/test_chat_moderation.py`
@@ -29,12 +28,14 @@
 - **test_format_mute_duration_expired()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_format_mute_duration_permanent()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
 - **test_format_mute_duration_remaining_minutes()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
-- *... and 5 more nodes in this community*
+- **test_format_mute_entry_and_section()** (1 connections) — `server/tests/unit/game/test_chat_moderation.py`
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (5 shared connections)
+- [ChatModeration](ChatModeration.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 49 (98%)
+- EXTRACTED: 48 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

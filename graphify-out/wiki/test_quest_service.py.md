@@ -1,6 +1,6 @@
 # test_quest_service.py
 
-> 78 nodes
+> 85 nodes
 
 ## Key Concepts
 
@@ -11,6 +11,7 @@
 - **_make_definition_row()** (18 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_message()** (17 connections) — `server/tests/unit/game/test_quest_service.py`
 - **_InstanceStub** (15 connections) — `server/tests/unit/game/test_quest_service.py`
+- **quest_service()** (11 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_inventory_full_blocks_item_reward()** (10 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_abandon_not_active()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_abandon_success()** (9 connections) — `server/tests/unit/game/test_quest_service.py`
@@ -28,15 +29,17 @@
 - **test_start_quest_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_no_active_instance_returns_error()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
 - **test_turn_in_success()** (8 connections) — `server/tests/unit/game/test_quest_service.py`
-- **_make_turn_in_definition_row()** (7 connections) — `server/tests/unit/game/test_quest_service.py`
-- *... and 53 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (29 shared connections)
-- [quest_service](quest_service.md) (7 shared connections)
+- [QuestService](QuestService.md) (31 shared connections)
+- [inventory_command_helpers.py](inventory_command_helpers.py.md) (1 shared connections)
+- [quest_commands.py](quest_commands.py.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [player_connection_setup.py](player_connection_setup.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -44,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 212 (89%)
-- INFERRED: 26 (11%)
+- EXTRACTED: 219 (88%)
+- INFERRED: 31 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

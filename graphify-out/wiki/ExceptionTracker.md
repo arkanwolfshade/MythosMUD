@@ -1,6 +1,6 @@
 # ExceptionTracker
 
-> 89 nodes
+> 96 nodes
 
 ## Key Concepts
 
@@ -17,6 +17,7 @@
 - **ExceptionTrackInput** (6 connections) — `server/monitoring/exception_tracker.py`
 - **._create_and_store_record()** (6 connections) — `server/monitoring/exception_tracker.py`
 - **track_exception_with_context()** (6 connections) — `server/monitoring/exception_tracker.py`
+- **WebSocket** (5 connections) — `docs/examples/logging/websocket_integration.py`
 - **._call_handlers()** (5 connections) — `server/monitoring/exception_tracker.py`
 - **._log_tracked_exception()** (5 connections) — `server/monitoring/exception_tracker.py`
 - **Any** (5 connections)
@@ -28,23 +29,22 @@
 - **._update_stats()** (4 connections) — `server/monitoring/exception_tracker.py`
 - **handle_chat_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
 - **handle_websocket_error()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- **parse_websocket_message()** (3 connections) — `docs/examples/logging/websocket_integration.py`
-- *... and 64 more nodes in this community*
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
 - [PerformanceMonitor](PerformanceMonitor.md) (12 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [log_with_context](log_with_context.md) (3 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
 - [testing_examples.py](testing_examples.py.md) (3 shared connections)
-- [MonitoringDashboard](MonitoringDashboard.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [bind_request_context](bind_request_context.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [fastapi_integration.py](fastapi_integration.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 176 (98%)
+- EXTRACTED: 182 (98%)
 - INFERRED: 3 (2%)
 - AMBIGUOUS: 0 (0%)
 

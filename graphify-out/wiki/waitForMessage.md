@@ -4,8 +4,8 @@
 
 ## Key Concepts
 
-- **waitForMessage()** (55 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **multiplayer.ts** (55 connections) — `client/tests/e2e/runtime/fixtures/multiplayer.ts`
+- **waitForMessage()** (54 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **ensurePlayerInGame()** (53 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
 - **cleanupMultiPlayerContexts()** (42 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
 - **createMultiPlayerContexts()** (42 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-contexts.ts`
@@ -22,8 +22,8 @@
 - **movement-between-rooms.spec.ts** (19 connections) — `client/tests/e2e/runtime/movement/movement-between-rooms.spec.ts`
 - **admin-teleportation.spec.ts** (18 connections) — `client/tests/e2e/runtime/admin/admin-teleportation.spec.ts`
 - **party-commands.spec.ts** (18 connections) — `client/tests/e2e/runtime/party/party-commands.spec.ts`
-- **posture-messages-game-info.spec.ts** (17 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
 - **prepareReceiverForInboundMessages()** (16 connections) — `client/tests/e2e/runtime/fixtures/multiplayer-ready.ts`
+- **posture-messages-game-info.spec.ts** (16 connections) — `client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts`
 - **whisper-basic.spec.ts** (16 connections) — `client/tests/e2e/runtime/communication/whisper-basic.spec.ts`
 - **whisper-integration.spec.ts** (15 connections) — `client/tests/e2e/runtime/communication/whisper-integration.spec.ts`
 - **basic-connection.spec.ts** (15 connections) — `client/tests/e2e/runtime/connection/basic-connection.spec.ts`
@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [executeCommand](executeCommand.md) (65 shared connections)
+- [executeCommand](executeCommand.md) (81 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (48 shared connections)
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (46 shared connections)
 - [player.ts](player.ts.md) (41 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (39 shared connections)
-- [local-channel-isolation.spec.ts](local-channel-isolation.spec.ts.md) (14 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (37 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (2 shared connections)
 
 ## Source Files
@@ -66,7 +65,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 561 (100%)
+- EXTRACTED: 560 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

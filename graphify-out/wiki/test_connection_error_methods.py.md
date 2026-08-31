@@ -1,6 +1,6 @@
 # test_connection_error_methods.py
 
-> 33 nodes
+> 27 nodes
 
 ## Key Concepts
 
@@ -15,9 +15,6 @@
 - **UUID** (6 connections)
 - **asyncio** (6 connections)
 - **Any** (5 connections)
-- **.detect_and_handle_error_state()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_security_violation()** (4 connections) — `server/realtime/connection_manager.py`
-- **.handle_websocket_error()** (4 connections) — `server/realtime/connection_manager.py`
 - **test_detect_and_handle_error_state_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
 - **test_error_impl_returns_default_when_handler_missing()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
 - **test_handle_authentication_error_impl_delegates()** (3 connections) — `server/tests/unit/realtime/test_connection_error_methods.py`
@@ -29,25 +26,27 @@
 - **Generic delegate for error handler methods. Args: error_handler: Error handler…** (1 connections) — `server/realtime/connection_delegates.py`
 - **Error-handling method implementations for ConnectionManager. Thin wrappers that…** (1 connections) — `server/realtime/connection_error_methods.py`
 - **Detect when a client is in an error state and handle it appropriately.** (1 connections) — `server/realtime/connection_error_methods.py`
-- *... and 8 more nodes in this community*
+- **Handle WebSocket-specific errors.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Handle authentication-related errors.** (1 connections) — `server/realtime/connection_error_methods.py`
+- **Handle security violations.** (1 connections) — `server/realtime/connection_error_methods.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [ConnectionManager](ConnectionManager.md) (8 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [ConnectionManager](ConnectionManager.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/realtime/connection_delegates.py`
 - `server/realtime/connection_error_methods.py`
-- `server/realtime/connection_manager.py`
 - `server/tests/unit/realtime/test_connection_error_methods.py`
 
 ## Audit Trail
 
-- EXTRACTED: 83 (100%)
+- EXTRACTED: 74 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

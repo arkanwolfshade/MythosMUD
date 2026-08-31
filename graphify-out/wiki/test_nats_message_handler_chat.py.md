@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [NATSError](NATSError.md) (3 shared connections)
+- [NATSError](NATSError.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 

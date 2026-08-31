@@ -33,15 +33,15 @@
 
 ## Relationships
 
-- [threading.py](threading.py.md) (13 shared connections)
+- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (12 shared connections)
 - [NPCDefinition](NPCDefinition.md) (5 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
-- [Lock](Lock.md) (1 shared connections)
 - [NPCActionMessage](NPCActionMessage.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

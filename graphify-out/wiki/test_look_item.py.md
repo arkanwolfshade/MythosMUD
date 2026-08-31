@@ -1,53 +1,52 @@
 # test_look_item.py
 
-> 28 nodes
+> 152 nodes
 
 ## Key Concepts
 
 - **test_look_item.py** (56 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_look_item_helpers.py** (28 connections) — `server/tests/unit/commands/test_look_item_helpers.py`
+- **_find_item_in_room_drops()** (23 connections) — `server/commands/look_item.py`
+- **_find_item_in_inventory()** (18 connections) — `server/commands/look_item.py`
+- **_find_item_in_equipped()** (17 connections) — `server/commands/look_item.py`
+- **_handle_item_look()** (17 connections) — `server/commands/look_item.py`
+- **_try_lookup_item_implicit()** (15 connections) — `server/commands/look_item.py`
+- **look_item.py** (14 connections) — `server/commands/look_item.py`
+- **_check_item_in_location()** (13 connections) — `server/commands/look_item.py`
 - **_get_item_description_from_prototype()** (12 connections) — `server/commands/look_item.py`
-- **test_check_equipped_item_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_check_item_in_location_with_location_name()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_not_found()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_find_item_in_equipped_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_exception_handling()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_fallback_no_prototype()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_prototype_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_no_registry()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_success()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_get_item_description_from_prototype_with_item_id()** (3 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Get item description from prototype registry. Returns: Formatted result string…** (1 connections) — `server/commands/look_item.py`
-- **Unit tests for item look functionality. Tests the helper functions for looking…** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items by name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test finding item in equipped items when not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description from prototype.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype registry is None.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description when prototype_id is missing.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype exists.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test getting item description with fallback name when prototype doesn't exist.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location with location name.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test checking item in location when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- *... and 3 more nodes in this community*
+- **asyncio** (12 connections)
+- **_check_equipped_item()** (10 connections) — `server/commands/look_item.py`
+- **Any** (8 connections)
+- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
+- *... and 127 more nodes in this community*
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (20 shared connections)
-- [asyncio](asyncio.md) (12 shared connections)
-- [test_look_item_helpers.py](test_look_item_helpers.py.md) (8 shared connections)
-- [_find_item_in_inventory](_find_item_in_inventory.md) (5 shared connections)
+- [look_command.py](look_command.py.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/look_item.py`
 - `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/commands/test_look_item_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 84 (100%)
+- EXTRACTED: 267 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

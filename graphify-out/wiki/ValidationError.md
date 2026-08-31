@@ -1,89 +1,79 @@
 # ValidationError
 
-> God node · 314 connections · `server/exceptions.py`
+> 406 nodes
 
-**Community:** [get_logger](get_logger.md)
+## Key Concepts
 
-## Connections by Relation
+- **ValidationError** (314 connections) — `server/exceptions.py`
+- **DatabaseManager** (113 connections) — `server/database.py`
+- **.get_instance()** (88 connections) — `server/database.py`
+- **.reset_instance()** (87 connections) — `server/database.py`
+- **database.py** (83 connections) — `server/database.py`
+- **get_async_session()** (53 connections) — `server/database.py`
+- **test_database_helpers.py** (48 connections) — `server/tests/unit/infrastructure/test_database_helpers.py`
+- **test_database_extended.py** (44 connections) — `server/tests/unit/infrastructure/test_database_extended.py`
+- **test_database_error_handling.py** (43 connections) — `server/tests/unit/infrastructure/test_database_error_handling.py`
+- **test_database_init.py** (37 connections) — `server/tests/unit/infrastructure/test_database_init.py`
+- **database_helpers.py** (32 connections) — `server/database_helpers.py`
+- **test_command_helpers.py** (28 connections) — `server/tests/unit/utils/test_command_helpers.py`
+- **database_config_helpers.py** (24 connections) — `server/database_config_helpers.py`
+- **get_database_path()** (17 connections) — `server/database_helpers.py`
+- **reset_database()** (16 connections) — `server/database.py`
+- **async_persistence_direct_queries.py** (16 connections) — `server/async_persistence_direct_queries.py`
+- **._initialize_database()** (15 connections) — `server/database.py`
+- **asyncio** (14 connections)
+- **.initialize()** (12 connections) — `server/container/bundles/core.py`
+- **get_database_path()** (12 connections) — `server/database.py`
+- **get_async_session()** (12 connections) — `server/database_helpers.py`
+- **asyncio** (12 connections)
+- **get_session_maker()** (10 connections) — `server/database_helpers.py`
+- **init_db()** (10 connections) — `server/database.py`
+- **MythosValidationError** (10 connections)
+- *... and 381 more nodes in this community*
 
-### calls
-- get_database_path() `EXTRACTED`
-- handle_exception() `EXTRACTED`
-- ._get_rooms_for_movement() `EXTRACTED`
-- ._resolve_player_for_movement() `EXTRACTED`
-- .test_roll_character_stats_profession_not_found() `EXTRACTED`
-- test_get_database_path_none_url() `EXTRACTED`
-- test_get_engine_raises_validation_error() `EXTRACTED`
-- test_get_session_maker_raises_validation_error() `EXTRACTED`
-- test_handle_delirium_validation_generic_500() `EXTRACTED`
-- test_handle_delirium_validation_lucidity_keyword() `EXTRACTED`
-- test_handle_delirium_validation_must_be_delirious() `EXTRACTED`
-- test_handle_delirium_validation_not_found() `EXTRACTED`
-- test_handle_respawn_validation_generic_500() `EXTRACTED`
-- test_handle_respawn_validation_must_be_dead() `EXTRACTED`
-- test_handle_respawn_validation_not_found() `EXTRACTED`
-- test_parse_command_string_validation_error() `EXTRACTED`
-- test_create_command_object_re_raises_mythos_validation_error() `EXTRACTED`
-- test_process_command_string_mythos_validation_error() `EXTRACTED`
-- .validate_and_get_profession() `EXTRACTED`
-- test_handle_validation_error_security_sensitive() `EXTRACTED`
+## Relationships
 
-### contains
-- server/exceptions.py `EXTRACTED`
+- [get_logger](get_logger.md) (25 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (24 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (19 shared connections)
+- [pytest.md](pytest.md.md) (19 shared connections)
+- [log_and_raise](log_and_raise.md) (18 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (18 shared connections)
+- [test_command_parser.py](test_command_parser.py.md) (16 shared connections)
+- [DatabaseError](DatabaseError.md) (16 shared connections)
+- [CommunicationCommandFactory](CommunicationCommandFactory.md) (15 shared connections)
+- [npc_database.py](npc_database.py.md) (13 shared connections)
+- [AliasStorage](AliasStorage.md) (12 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (12 shared connections)
 
-### imports
-- command_service.py `EXTRACTED`
-- database.py `EXTRACTED`
-- players.py `EXTRACTED`
-- test_container_service.py `EXTRACTED`
-- [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [test_players_api_coverage.py](test_players_api_coverage.py.md) `EXTRACTED`
-- [test_container_persistence_extended_row_helpers.py](test_container_persistence_extended_row_helpers.py.md) `EXTRACTED`
-- container_persistence.py `EXTRACTED`
-- [test_movement_service.py](test_movement_service.py.md) `EXTRACTED`
-- test_command_factories_utility.py `EXTRACTED`
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) `EXTRACTED`
-- player_service.py `EXTRACTED`
-- test_command_factories_exploration.py `EXTRACTED`
-- [test_command_factories_inventory.py](test_command_factories_inventory.py.md) `EXTRACTED`
-- test_database_helpers.py `EXTRACTED`
-- [test_command_parser.py](test_command_parser.py.md) `EXTRACTED`
-- command_parser.py `EXTRACTED`
-- test_database_extended.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
-- test_database_error_handling.py `EXTRACTED`
+## Source Files
 
-### inherits
-- MythosMUDError `EXTRACTED`
+- `scripts/add_flavor_text_column.py`
+- `scripts/load_seed_using_project_db.py`
+- `scripts/verify_and_load_seed.py`
+- `server/async_persistence.py`
+- `server/async_persistence_direct_queries.py`
+- `server/async_persistence_room_loader.py`
+- `server/container/bundles/core.py`
+- `server/database.py`
+- `server/database_config_helpers.py`
+- `server/database_helpers.py`
+- `server/exceptions.py`
+- `server/tests/unit/api/test_container_exception_handlers.py`
+- `server/tests/unit/commands/test_command_service.py`
+- `server/tests/unit/infrastructure/test_database.py`
+- `server/tests/unit/infrastructure/test_database_error_handling.py`
+- `server/tests/unit/infrastructure/test_database_extended.py`
+- `server/tests/unit/infrastructure/test_database_helpers.py`
+- `server/tests/unit/infrastructure/test_database_init.py`
+- `server/tests/unit/test_database_config_helpers_asyncpg_settings.py`
+- `server/tests/unit/utils/test_command_helpers.py`
 
-### method
-- .__init__() `EXTRACTED`
-- ._log_error() `EXTRACTED`
+## Audit Trail
 
-### rationale_for
-- Data validation errors (e.g. empty local/whisper message). Log at warning, not… `EXTRACTED`
-
-### uses
-- [DatabaseManager](DatabaseManager.md) `INFERRED`
-- validate_room_data() `INFERRED`
-- TestRollCharacterStats `INFERRED`
-- TestHandleTransferItemsExceptions `INFERRED`
-- init_npc_db() `INFERRED`
-- _initialize_npc_database() `INFERRED`
-- [TestValidateRoomData](TestValidateRoomData.md) `INFERRED`
-- get_npc_database_path() `INFERRED`
-- fetch_user_by_username_case_insensitive() `INFERRED`
-- test_apply_lucidity_loss_validation_maps_to_404() `INFERRED`
-- _create_engine_or_raise() `INFERRED`
-- TestNPCDatabaseInitialization `INFERRED`
-- load_database_url() `INFERRED`
-- validate_database_url() `INFERRED`
-- test_respawn_player_from_delirium_not_found() `INFERRED`
-- test_respawn_player_not_found() `INFERRED`
-- test_respawn_player_validation_error() `INFERRED`
-- test_create_player_validation_error_to_400() `INFERRED`
-- test_delete_player_validation_error() `INFERRED`
-- test_resolve_player_username_error() `INFERRED`
+- EXTRACTED: 1080 (78%)
+- INFERRED: 301 (22%)
+- AMBIGUOUS: 0 (0%)
 
 ---
 

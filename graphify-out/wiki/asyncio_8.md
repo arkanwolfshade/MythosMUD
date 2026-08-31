@@ -1,57 +1,51 @@
 # asyncio
 
-> 25 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **asyncio** (38 connections)
-- **test_get_adjacent_rooms_target_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_local_chat_scope_source_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_info_success()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_with_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_occupants_without_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_persistence_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_get_room_with_cache()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_lookup_explored_stable_ids_calls_procedure_and_binds_uuid_list()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_cache_dict()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_player_in_room_with_cache_false()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **test_validate_room_exists_cache_not_found()** (3 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not found in persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_adjacent_rooms() handles target room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_local_chat_scope() returns empty list when source room not found.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_room_exists() returns False when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_occupants() falls back to persistence.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() returns False when player not in room.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test validate_player_in_room() handles room dict.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room_info() returns comprehensive room information.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test _lookup_explored_stable_ids() calls get_room_stable_ids_by_uuids with the…** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() uses cache when available.** (1 connections) — `server/tests/unit/game/test_room_service.py`
-- **Test get_room() returns None when room not in cache.** (1 connections) — `server/tests/unit/game/test_room_service.py`
+- **asyncio** (23 connections)
+- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_no_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_players_batch_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_process_occupants_with_grace_periods()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_send_initial_game_state()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() handles player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test send_initial_game_state() sends initial state.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() with empty room_data.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test convert_room_uuids_to_names() when player not found.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _process_occupants_with_grace_periods() splits players and NPCs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_player_data_for_client() uses PlayerService when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_player() retrieves player from persistence.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_players_batch() returns empty dict when persistence is None.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [test_room_service.py](test_room_service.py.md) (12 shared connections)
-- [test_get_adjacent_rooms_no_exits](test_get_adjacent_rooms_no_exits.md) (1 shared connections)
-- [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
-- [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
-- [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
-- [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
-- [test_get_room_exits_no_exits](test_get_room_exits_no_exits.md) (1 shared connections)
-- [test_get_room_exits_room_not_found](test_get_room_exits_room_not_found.md) (1 shared connections)
-- [test_get_room_exits_success](test_get_room_exits_success.md) (1 shared connections)
-- [test_get_room_info_not_found](test_get_room_info_not_found.md) (1 shared connections)
-- [test_get_room_occupants_cache_not_found](test_get_room_occupants_cache_not_found.md) (1 shared connections)
-- [test_get_room_occupants_with_cache_room_object](test_get_room_occupants_with_cache_room_object.md) (1 shared connections)
+- [test_game_state_provider.py](test_game_state_provider.py.md) (9 shared connections)
+- [test_convert_room_uuids_to_names](test_convert_room_uuids_to_names.md) (1 shared connections)
+- [test_convert_room_uuids_to_names_invalid_uuid](test_convert_room_uuids_to_names_invalid_uuid.md) (1 shared connections)
+- [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
+- [test_convert_room_uuids_with_npcs](test_convert_room_uuids_with_npcs.md) (1 shared connections)
+- [test_get_following_for_client](test_get_following_for_client.md) (1 shared connections)
+- [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
+- [test_get_players_batch](test_get_players_batch.md) (1 shared connections)
+- [test_get_quest_log_for_client](test_get_quest_log_for_client.md) (1 shared connections)
+- [test_get_room_data_with_conversion](test_get_room_data_with_conversion.md) (1 shared connections)
+- [test_get_room_occupants](test_get_room_occupants.md) (1 shared connections)
+- [test_get_room_occupants_empty_online_players](test_get_room_occupants_empty_online_players.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_room_service.py`
+- `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Audit Trail
 
-- EXTRACTED: 62 (100%)
+- EXTRACTED: 41 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

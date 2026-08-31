@@ -1,6 +1,6 @@
 # test_magic_service.py
 
-> 37 nodes
+> 39 nodes
 
 ## Key Concepts
 
@@ -8,6 +8,7 @@
 - **MagicService** (41 connections) — `server/game/magic/magic_service.py`
 - **UUID** (26 connections)
 - **asyncio** (19 connections)
+- **CastingState** (8 connections) — `server/game/magic/casting_state_manager.py`
 - **test_can_cast_spell_unknown_and_materials()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_cast_spell_material_consume_failure()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_check_casting_progress_completes()** (6 connections) — `server/tests/unit/game/magic/test_magic_service.py`
@@ -28,33 +29,33 @@
 - **test_get_player_and_normalized_stats()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_get_player_and_room_missing_player()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
 - **test_interrupt_casting_not_casting()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- **test_restore_mp()** (4 connections) — `server/tests/unit/game/magic/test_magic_service.py`
-- *... and 12 more nodes in this community*
+- *... and 14 more nodes in this community*
 
 ## Relationships
 
-- [Spell](Spell.md) (23 shared connections)
-- [magic_service.py](magic_service.py.md) (6 shared connections)
+- [TargetMatch](TargetMatch.md) (16 shared connections)
+- [SpellEffectType](SpellEffectType.md) (11 shared connections)
+- [CastingStateManager](CastingStateManager.md) (5 shared connections)
+- [SpellEffects](SpellEffects.md) (5 shared connections)
 - [AliasStorage](AliasStorage.md) (5 shared connections)
-- [TargetMatch](TargetMatch.md) (4 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
 - [CombatService](CombatService.md) (1 shared connections)
-- [SpellLearningService](SpellLearningService.md) (1 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 - [MagicCommandHandler](MagicCommandHandler.md) (1 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
 
 ## Source Files
 
+- `server/game/magic/casting_state_manager.py`
 - `server/game/magic/magic_service.py`
 - `server/tests/unit/game/magic/test_magic_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 115 (73%)
-- INFERRED: 42 (27%)
+- EXTRACTED: 121 (74%)
+- INFERRED: 42 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

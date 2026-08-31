@@ -1,6 +1,6 @@
 # fixtures/integration/__init__.py
 
-> 26 nodes
+> 25 nodes
 
 ## Key Concepts
 
@@ -17,7 +17,6 @@
 - **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
 - **FixtureRequest** (3 connections)
 - **AsyncSession** (3 connections)
-- **async_sessionmaker** (2 connections)
 - **_IntegrationState** (1 connections) — `server/tests/fixtures/integration/__init__.py`
 - **AsyncEngine** (1 connections)
 - **Database fixtures for integration tests. This module provides database…** (1 connections) — `server/tests/fixtures/integration/db.py`
@@ -29,13 +28,15 @@
 - **Return True only if the URL points to an allowed test-only database…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
 - **Raise ValueError if URL is not an allowed test DB. Never truncate mythos_dev.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
 - **Provide an isolated PostgreSQL database URL for integration tests. Reads from…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- *... and 1 more nodes in this community*
+- **Provide a SQLAlchemy async engine bound to the integration DB URL. CRITICAL:…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
 
 ## Relationships
 
 - [session_factory](session_factory.md) (7 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [Player](Player.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (3 shared connections)
+- [npc_database.py](npc_database.py.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (98%)
+- EXTRACTED: 54 (98%)
 - INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 

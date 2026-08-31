@@ -1,19 +1,12 @@
 # RoomDataCache
 
-> 73 nodes
+> 60 nodes
 
 ## Key Concepts
 
 - **RoomDataCache** (40 connections) — `server/services/room_data_cache.py`
 - **TestRoomDataCache** (28 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **Any** (6 connections)
-- **._is_newer_data()** (4 connections) — `server/services/room_data_cache.py`
-- **.merge_room_data()** (4 connections) — `server/services/room_data_cache.py`
 - **test_room_data_cache.py** (4 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- **.get_cache()** (3 connections) — `server/services/room_data_cache.py`
-- **.get_cache_stats()** (3 connections) — `server/services/room_data_cache.py`
-- **.is_room_data_fresh()** (3 connections) — `server/services/room_data_cache.py`
-- **.set_cache()** (3 connections) — `server/services/room_data_cache.py`
 - **.test_clear_cache_all()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_clear_cache_nonexistent_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_clear_cache_specific_room()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
@@ -29,12 +22,20 @@
 - **.test_is_room_data_fresh_custom_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_is_room_data_fresh_exactly_at_threshold()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
 - **.test_is_room_data_fresh_fresh()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
-- *... and 48 more nodes in this community*
+- **.test_is_room_data_fresh_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_no_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_is_room_data_fresh_stale()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_invalid_input()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_new_field()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_newer_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- **.test_merge_room_data_older_timestamp()** (3 connections) — `server/tests/unit/services/test_room_data_cache.py`
+- *... and 35 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [Any](Any.md) (7 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 107 (98%)
+- EXTRACTED: 94 (98%)
 - INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 

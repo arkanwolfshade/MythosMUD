@@ -1,14 +1,20 @@
 # WebSocketRequestContext
 
-> 43 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **WebSocketRequestContext** (26 connections) — `server/realtime/request_context.py`
+- **command_request_app_state()** (16 connections) — `server/command_handler/command_execution_request.py`
 - **test_request_context.py** (16 connections) — `server/tests/unit/realtime/test_request_context.py`
+- **create_websocket_request_context()** (11 connections) — `server/realtime/request_context.py`
+- **command_execution_request.py** (11 connections) — `server/command_handler/command_execution_request.py`
+- **request_context.py** (10 connections) — `server/realtime/request_context.py`
+- **test_command_execution_request.py** (8 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **Any** (7 connections)
 - **.get_alias_storage()** (4 connections) — `server/realtime/request_context.py`
 - **.get_event_bus()** (4 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_from_http_request_like_object()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_command_request_app_state_from_websocket_request_context()** (4 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_create_websocket_request_context()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_create_websocket_request_context_no_user()** (4 connections) — `server/tests/unit/realtime/test_request_context.py`
@@ -16,39 +22,41 @@
 - **.__init__()** (3 connections) — `server/realtime/request_context.py`
 - **.set_alias_storage()** (3 connections) — `server/realtime/request_context.py`
 - **.set_app_state_services()** (3 connections) — `server/realtime/request_context.py`
+- **test_command_request_app_state_missing_app_or_state_returns_none()** (3 connections) — `server/tests/unit/command_handler/test_command_execution_request.py`
 - **test_websocket_request_context_get_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_get_alias_storage_not_set()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_get_event_bus()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_get_event_bus_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_get_persistence()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
 - **test_websocket_request_context_init()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_init_no_user()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_alias_storage()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **test_websocket_request_context_set_app_state_services_none()** (3 connections) — `server/tests/unit/realtime/test_request_context.py`
-- **Get the event bus from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Get the alias storage from the request context.** (1 connections) — `server/realtime/request_context.py`
-- **Creates FastAPI Request-like objects for WebSocket commands. This allows…** (1 connections) — `server/realtime/request_context.py`
-- *... and 18 more nodes in this community*
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [websocket_handler.py](websocket_handler.py.md) (5 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (5 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [catatonia_check.py](catatonia_check.py.md) (3 shared connections)
+- [look_command.py](look_command.py.md) (3 shared connections)
+- [test_websocket_handler_app_state_connection.py](test_websocket_handler_app_state_connection.py.md) (2 shared connections)
+- [websocket_handler_commands.py](websocket_handler_commands.py.md) (2 shared connections)
+- [_is_predefined_emote](_is_predefined_emote.md) (1 shared connections)
+- [.state](state.md) (1 shared connections)
 - [Alias](Alias.md) (1 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/command_handler/command_execution_request.py`
 - `server/realtime/request_context.py`
 - `server/tests/unit/command_handler/test_command_execution_request.py`
 - `server/tests/unit/realtime/test_request_context.py`
 
 ## Audit Trail
 
-- EXTRACTED: 69 (95%)
-- INFERRED: 4 (5%)
+- EXTRACTED: 109 (95%)
+- INFERRED: 6 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

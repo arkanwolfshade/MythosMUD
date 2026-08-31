@@ -1,60 +1,51 @@
 # HolidayEntry
 
-> 52 nodes
+> 20 nodes
 
 ## Key Concepts
 
 - **HolidayEntry** (31 connections) — `server/schemas/calendar/calendar.py`
 - **test_calendar_schemas.py** (23 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **ScheduleCollection** (12 connections) — `server/schemas/calendar/calendar.py`
-- **calendar/__init__.py** (11 connections) — `server/schemas/calendar/__init__.py`
-- **calendar/calendar.py** (10 connections) — `server/schemas/calendar/calendar.py`
-- **extract_observance_ids()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **load_schedule_directory()** (8 connections) — `server/schemas/calendar/calendar.py`
-- **slugify_observance()** (6 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
-- **.load_file()** (5 connections) — `server/schemas/calendar/calendar.py`
 - **test_holiday_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_collection_ensure_unique_ids()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_collection_id_map()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **BaseModel** (4 connections)
 - **.id_map()** (3 connections) — `server/schemas/calendar/calendar.py`
-- **test_extract_observance_ids()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_holiday_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_entry_validation_bonus_tags()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_entry_validation_season()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 - **test_holiday_entry_validation_tradition()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_collection_load_file()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- **test_schedule_entry_validation_days()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
-- *... and 27 more nodes in this community*
+- **Create a mapping of holiday IDs to holiday entries. Returns: dict[str,…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Single holiday definition loaded from data/<env>/calendar/holidays.json.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Unit tests for calendar schemas. Tests the Pydantic models in calendar.py…** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayCollection.id_map property.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayCollection.ensure_unique_ids() detects duplicates.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayEntry can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayEntry validates tradition.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayEntry validates season.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayEntry validates bonus_tags format.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test HolidayCollection can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (16 shared connections)
-- [schedule_service.py](schedule_service.py.md) (8 shared connections)
-- [ScheduleEntry](ScheduleEntry.md) (8 shared connections)
-- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
-- [field_validator](field_validator.md) (3 shared connections)
-- [get_mythos_time](get_mythos_time.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
-- [_holiday_entry_from_row](_holiday_entry_from_row.md) (1 shared connections)
+- [ScheduleCollection](ScheduleCollection.md) (10 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (7 shared connections)
+- [HolidayService](HolidayService.md) (6 shared connections)
+- [pytest.md](pytest.md.md) (5 shared connections)
+- [.get_upcoming_holidays](get_upcoming_holidays.md) (5 shared connections)
+- [test_holiday_service.py](test_holiday_service.py.md) (2 shared connections)
 - [.sample_holidays](sample_holidays.md) (1 shared connections)
-- [test_game.py](test_game.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 
-- `server/schemas/calendar/__init__.py`
 - `server/schemas/calendar/calendar.py`
 - `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 124 (100%)
+- EXTRACTED: 65 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

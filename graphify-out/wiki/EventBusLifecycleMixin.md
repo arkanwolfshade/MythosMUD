@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
+- [EventBus](EventBus.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
 
 ## Source Files
 

@@ -34,12 +34,11 @@
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (18 shared connections)
-- [SpellLearningService](SpellLearningService.md) (3 shared connections)
+- [SpellEffects](SpellEffects.md) (4 shared connections)
 - [test_magic_commands.py](test_magic_commands.py.md) (2 shared connections)
 - [test_rest_command.py](test_rest_command.py.md) (2 shared connections)
 - [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
-- [magic_service.py](magic_service.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [SpellLearningService](SpellLearningService.md) (1 shared connections)
 - [ChatService](ChatService.md) (1 shared connections)
 
 ## Source Files

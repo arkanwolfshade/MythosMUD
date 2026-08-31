@@ -1,11 +1,12 @@
 # test_container_helpers_inventory_find.py
 
-> 90 nodes
+> 92 nodes
 
 ## Key Concepts
 
 - **test_container_helpers_inventory_find.py** (56 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **container_helpers_inventory_find.py** (32 connections) — `server/commands/container_helpers_inventory_find.py`
+- **container_helpers_inventory.py** (31 connections) — `server/commands/container_helpers_inventory.py`
 - **asyncio** (19 connections)
 - **find_wearable_container()** (17 connections) — `server/commands/container_helpers_inventory_find.py`
 - **UUID** (16 connections)
@@ -28,24 +29,24 @@
 - **_container_uuid()** (5 connections) — `server/commands/container_helpers_inventory_find.py`
 - **test_create_wearable_container_fallback_when_equip_returns_non_dict()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
 - **test_create_wearable_container_uses_equip_dict_branch()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- **test_find_wearable_container_falls_back_to_name_slot_match()** (5 connections) — `server/tests/unit/commands/test_container_helpers_inventory_find.py`
-- *... and 65 more nodes in this community*
+- *... and 67 more nodes in this community*
 
 ## Relationships
 
-- [container_helpers_inventory.py](container_helpers_inventory.py.md) (14 shared connections)
-- [equipment_service.py](equipment_service.py.md) (5 shared connections)
-- [inventory_get_command.py](inventory_get_command.py.md) (2 shared connections)
-- [command_result_text](command_result_text.md) (2 shared connections)
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (15 shared connections)
+- [inventory_unequip_command.py](inventory_unequip_command.py.md) (5 shared connections)
+- [command_result_text](command_result_text.md) (4 shared connections)
+- [test_container_helpers_inventory_display.py](test_container_helpers_inventory_display.py.md) (4 shared connections)
+- [inventory_get_command.py](inventory_get_command.py.md) (3 shared connections)
+- [pytest.md](pytest.md.md) (3 shared connections)
+- [test_look_container.py](test_look_container.py.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/commands/container_helpers_inventory.py`
 - `server/commands/container_helpers_inventory_find.py`
 - `server/commands/look_container.py`
 - `server/tests/unit/api/test_container_exception_handlers.py`
@@ -53,7 +54,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 248 (96%)
+- EXTRACTED: 267 (96%)
 - INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 

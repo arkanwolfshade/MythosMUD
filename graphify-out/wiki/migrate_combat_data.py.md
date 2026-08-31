@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [NPCDefinition](NPCDefinition.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [NPCDefinition](NPCDefinition.md) (9 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [npc_database.py](npc_database.py.md) (3 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (2 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (1 shared connections)
 - [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [handle_new_game_session](handle_new_game_session.md) (7 shared connections)
+- [_ensure_connection_manager](_ensure_connection_manager.md) (6 shared connections)
 - [real_time.py](real_time.py.md) (5 shared connections)
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) (4 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (4 shared connections)
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) (3 shared connections)
 - [test_nats_messages.py](test_nats_messages.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -18,7 +18,7 @@
 ## Relationships
 
 - [IdleMovementHandler](IdleMovementHandler.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [server/models/game.py](server-models-game.py.md) (1 shared connections)
 - [Invite](Invite.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 - [NPCBase](NPCBase.md) (1 shared connections)

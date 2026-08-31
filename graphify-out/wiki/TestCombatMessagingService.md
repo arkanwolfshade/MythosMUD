@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [CombatMessagingService](CombatMessagingService.md) (4 shared connections)
 
 ## Source Files
 

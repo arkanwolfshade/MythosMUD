@@ -1,6 +1,6 @@
 # CoordinateGenerator
 
-> 49 nodes
+> 51 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **._generate_for_subzone()** (8 connections) — `server/services/coordinate_generator.py`
 - **Any** (8 connections)
 - **._load_rooms_data()** (7 connections) — `server/services/coordinate_generator.py`
+- **coordinate_generator.py** (7 connections) — `server/services/coordinate_generator.py`
 - **.generate_coordinates_for_zone()** (6 connections) — `server/services/coordinate_generator.py`
 - **asyncio** (6 connections)
 - **._assign_coordinates_bfs()** (5 connections) — `server/services/coordinate_generator.py`
@@ -28,14 +29,14 @@
 - **test_store_coordinates_sends_one_bulk_call_with_full_payload()** (3 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **test_generate_coordinates_for_zone_empty_data()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
 - **test_generate_coordinates_for_zone_stores_results()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- **test_generate_for_subzone_positions_linked_rooms()** (2 connections) — `server/tests/unit/services/test_coordinate_generator.py`
-- *... and 24 more nodes in this community*
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [maps.py](maps.py.md) (4 shared connections)
+- [ExplorationService](ExplorationService.md) (5 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -45,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 79 (94%)
+- EXTRACTED: 84 (94%)
 - INFERRED: 5 (6%)
 - AMBIGUOUS: 0 (0%)
 

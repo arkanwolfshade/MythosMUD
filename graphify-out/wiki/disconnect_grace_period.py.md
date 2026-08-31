@@ -1,12 +1,14 @@
 # disconnect_grace_period.py
 
-> 36 nodes
+> 40 nodes
 
 ## Key Concepts
 
 - **disconnect_grace_period.py** (27 connections) — `server/realtime/disconnect_grace_period.py`
+- **is_player_in_grace_period()** (24 connections) — `server/realtime/disconnect_grace_period.py`
 - **start_grace_period()** (20 connections) — `server/realtime/disconnect_grace_period.py`
 - **test_disconnect_grace_period.py** (19 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
+- **player_event_handlers_utils.py** (16 connections) — `server/realtime/player_event_handlers_utils.py`
 - **cancel_grace_period()** (14 connections) — `server/realtime/disconnect_grace_period.py`
 - **asyncio** (9 connections)
 - **test_start_grace_period_reconnection_cancels()** (5 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
@@ -26,34 +28,33 @@
 - **fixture** (1 connections)
 - **Disconnect grace period management for MythosMUD. This module handles the…** (1 connections) — `server/realtime/disconnect_grace_period.py`
 - **Cancel grace period for a player (e.g., on reconnection). Args: player_id: The…** (1 connections) — `server/realtime/disconnect_grace_period.py`
-- **Start a grace period for a disconnected player. During the grace period, the…** (1 connections) — `server/realtime/disconnect_grace_period.py`
-- **Unit tests for disconnect grace period management. Tests the grace period…** (1 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- **Test grace period is cancelled when player reconnects.** (1 connections) — `server/tests/unit/realtime/test_disconnect_grace_period.py`
-- *... and 11 more nodes in this community*
+- **Check if a player is currently in grace period. Args: player_id: The player's…** (1 connections) — `server/realtime/disconnect_grace_period.py`
+- *... and 15 more nodes in this community*
 
 ## Relationships
 
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (10 shared connections)
 - [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (4 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
+- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (7 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [connection_establishment.py](connection_establishment.py.md) (3 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
+- [test_look_player.py](test_look_player.py.md) (3 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (3 shared connections)
 - [extract_player_name](extract_player_name.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
-- [test_look_player.py](test_look_player.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (3 shared connections)
 
 ## Source Files
 
 - `server/realtime/disconnect_grace_period.py`
+- `server/realtime/player_event_handlers_utils.py`
 - `server/tests/unit/realtime/test_disconnect_grace_period.py`
 
 ## Audit Trail
 
-- EXTRACTED: 101 (100%)
+- EXTRACTED: 132 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

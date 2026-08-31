@@ -49,7 +49,7 @@
 - [test_player_repository.py](test_player_repository.py.md) `EXTRACTED`
 - player_respawn_service.py `EXTRACTED`
 - test_inventory_equip_command.py `EXTRACTED`
-- [movement_service.py](movement_service.py.md) `EXTRACTED`
+- movement_service.py `EXTRACTED`
 - [service.py](service.py.md) `EXTRACTED`
 - [game_tick_death.py](game_tick_death.py.md) `EXTRACTED`
 
@@ -91,8 +91,8 @@
 - HealthRepository `INFERRED`
 - PlayerRepository `INFERRED`
 - [SpellTargetingService](SpellTargetingService.md) `INFERRED`
-- [ExperienceRepository](ExperienceRepository.md) `INFERRED`
-- PlayerDeathService `INFERRED`
+- ExperienceRepository `INFERRED`
+- [PlayerDeathService](PlayerDeathService.md) `INFERRED`
 - LucidityExposureState `INFERRED`
 - [PlayerRepositoryProtocol](PlayerRepositoryProtocol.md) `INFERRED`
 - LucidityCooldown `INFERRED`

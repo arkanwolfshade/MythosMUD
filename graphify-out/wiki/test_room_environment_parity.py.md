@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [Player](Player.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 
 ## Source Files
 

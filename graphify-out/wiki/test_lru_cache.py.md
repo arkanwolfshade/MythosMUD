@@ -34,7 +34,7 @@
 ## Relationships
 
 - [LRUCache](LRUCache.md) (4 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [test_cache_service.py](test_cache_service.py.md) (1 shared connections)
 

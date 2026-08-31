@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [PrototypeRegistryError](PrototypeRegistryError.md) (6 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (4 shared connections)
 - [test_inventory_helpers.py](test_inventory_helpers.py.md) (3 shared connections)
 - [inventory_equip_command.py](inventory_equip_command.py.md) (3 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (2 shared connections)
 - [.state](state.md) (1 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (1 shared connections)
 - [PrototypeRegistry](PrototypeRegistry.md) (1 shared connections)

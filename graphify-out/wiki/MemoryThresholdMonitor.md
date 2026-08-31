@@ -1,12 +1,11 @@
 # MemoryThresholdMonitor
 
-> 53 nodes
+> 51 nodes
 
 ## Key Concepts
 
 - **MemoryThresholdMonitor** (25 connections) — `server/app/memory_cleanup_service.py`
 - **test_memory_cleanup_service.py** (22 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- **memory_cleanup_service.py** (12 connections) — `server/app/memory_cleanup_service.py`
 - **asyncio** (9 connections)
 - **create_memory_cleanup_monitor()** (8 connections) — `server/app/memory_cleanup_service.py`
 - **get_managed_task_cleanup_implementation_for_task_four_spec_compliance()** (6 connections) — `server/app/memory_cleanup_service.py`
@@ -29,15 +28,14 @@
 - **test_flush_memory_indexes_cache_error()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_active_task_count_no_loop()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
 - **test_get_current_memory_usage_failure()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
-- *... and 28 more nodes in this community*
+- **test_get_current_memory_usage_success()** (3 connections) — `server/tests/unit/app/test_memory_cleanup_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (3 shared connections)
-- [TrackedTaskManager](TrackedTaskManager.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [PeriodicOrphanAuditor](PeriodicOrphanAuditor.md) (1 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -47,8 +45,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 86 (88%)
-- INFERRED: 12 (12%)
+- EXTRACTED: 78 (87%)
+- INFERRED: 12 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

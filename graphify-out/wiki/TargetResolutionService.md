@@ -1,13 +1,15 @@
 # TargetResolutionService
 
-> 151 nodes
+> 186 nodes
 
 ## Key Concepts
 
 - **TargetResolutionService** (51 connections) — `server/services/target_resolution_service.py`
 - **TargetType** (45 connections) — `server/schemas/shared/target_resolution.py`
 - **test_target_resolution_service.py** (43 connections) — `server/tests/unit/services/test_target_resolution_service.py`
+- **TargetResolutionResult** (36 connections) — `server/schemas/shared/target_resolution.py`
 - **target_resolution_service.py** (29 connections) — `server/services/target_resolution_service.py`
+- **test_spell_targeting.py** (29 connections) — `server/tests/unit/game/magic/test_spell_targeting.py`
 - **asyncio** (21 connections)
 - **test_target_resolution.py** (16 connections) — `server/tests/unit/schemas/test_target_resolution.py`
 - **TargetMetadata** (15 connections) — `server/schemas/shared/target_metadata.py`
@@ -20,31 +22,29 @@
 - **._search_phantoms_in_room()** (7 connections) — `server/services/target_resolution_service.py`
 - **._search_players_in_room()** (7 connections) — `server/services/target_resolution_service.py`
 - **UUID** (7 connections)
+- **asyncio** (7 connections)
 - **.get_room_by_id()** (6 connections) — `server/services/target_resolution_service.py`
 - **._get_player_from_persistence()** (6 connections) — `server/services/target_resolution_service.py`
 - **._load_npc_ids_with_room_fallback()** (6 connections) — `server/services/target_resolution_service.py`
 - **._validate_player_and_room()** (6 connections) — `server/services/target_resolution_service.py`
 - **target_metadata.py** (6 connections) — `server/schemas/shared/target_metadata.py`
 - **PlayerServiceProtocol** (5 connections) — `server/services/target_resolution_service.py`
-- **.get_player_by_id()** (5 connections) — `server/services/target_resolution_service.py`
-- **._add_disambiguation_suffixes()** (5 connections) — `server/services/target_resolution_service.py`
-- **._build_target_result()** (5 connections) — `server/services/target_resolution_service.py`
-- *... and 126 more nodes in this community*
+- *... and 161 more nodes in this community*
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (18 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (14 shared connections)
+- [TargetMatch](TargetMatch.md) (32 shared connections)
+- [SpellEffectType](SpellEffectType.md) (11 shared connections)
+- [CombatInstance](CombatInstance.md) (10 shared connections)
+- [test_follow_commands.py](test_follow_commands.py.md) (10 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (7 shared connections)
+- [test_combat_handler.py](test_combat_handler.py.md) (7 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
 - [handle_teach_command](handle_teach_command.md) (7 shared connections)
+- [SpellEffects](SpellEffects.md) (7 shared connections)
 - [test_party_commands.py](test_party_commands.py.md) (6 shared connections)
-- [combat_taunt.py](combat_taunt.py.md) (5 shared connections)
-- [test_follow_commands.py](test_follow_commands.py.md) (5 shared connections)
-- [Spell](Spell.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
-- [event_types.py](event_types.py.md) (4 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
-- [combat_attack.py](combat_attack.py.md) (3 shared connections)
-- [run_flee_effect](run_flee_effect.md) (3 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (6 shared connections)
+- [AliasStorage](AliasStorage.md) (4 shared connections)
 
 ## Source Files
 
@@ -52,13 +52,14 @@
 - `server/schemas/shared/target_metadata.py`
 - `server/schemas/shared/target_resolution.py`
 - `server/services/target_resolution_service.py`
+- `server/tests/unit/game/magic/test_spell_targeting.py`
 - `server/tests/unit/schemas/test_target_resolution.py`
 - `server/tests/unit/services/test_target_resolution_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 332 (92%)
-- INFERRED: 28 (8%)
+- EXTRACTED: 416 (92%)
+- INFERRED: 34 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

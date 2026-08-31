@@ -1,48 +1,44 @@
 # asyncio
 
-> 25 nodes
+> 21 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (13 connections)
+- **test_publish_game_tick_uses_metadata_tick_number()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_resolves_names_from_persistence()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_returns_false_when_nats_publish_fails()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_uses_legacy_subjects_without_subject_manager()** (4 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_game_tick_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_nats_error()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_not_connected()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_entered_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **test_publish_player_left_event_success()** (3 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_game_tick_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Persistence lookup should replace Player_/Room_ fallbacks in event data.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Legacy subject strings when subject_manager is unset.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **tick_number from additional_metadata should win over sequence.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **publish() returning False should surface as False from EventPublisher.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() when NATS is not connected.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_left_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_game_tick_event() successfully publishes.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
+- **Test publish_player_entered_event() handles NATS errors.** (1 connections) — `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_event_publisher.py](test_event_publisher.py.md) (13 shared connections)
+- [EventPublisher](EventPublisher.md) (4 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/realtime/test_event_publisher.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 33 (89%)
+- INFERRED: 4 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

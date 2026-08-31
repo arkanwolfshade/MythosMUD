@@ -1,6 +1,6 @@
 # AsyncPersistenceLayer
 
-> 187 nodes
+> 178 nodes
 
 ## Key Concepts
 
@@ -8,11 +8,9 @@
 - **test_async_persistence_delegates.py** (34 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 - **asyncio** (22 connections)
 - **Player** (20 connections)
-- **get_container_async_persistence()** (19 connections) — `server/async_persistence.py`
 - **Any** (17 connections)
 - **UUID** (15 connections)
 - **._ensure_room_cache_loaded()** (12 connections) — `server/async_persistence.py`
-- **infrastructure/conftest.py** (6 connections) — `server/tests/unit/infrastructure/conftest.py`
 - **.get_player_by_id()** (5 connections) — `server/async_persistence.py`
 - **.get_players_batch()** (5 connections) — `server/async_persistence.py`
 - **test_apply_corruption_delegates()** (5 connections) — `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
@@ -29,34 +27,35 @@
 - **.add_player_effect()** (4 connections) — `server/async_persistence.py`
 - **.create_container()** (4 connections) — `server/async_persistence.py`
 - **.get_active_player_effects()** (4 connections) — `server/async_persistence.py`
-- *... and 162 more nodes in this community*
+- **.get_active_players_by_user_id()** (4 connections) — `server/async_persistence.py`
+- **.get_container()** (4 connections) — `server/async_persistence.py`
+- *... and 153 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (16 shared connections)
-- [get_logger](get_logger.md) (14 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (6 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (5 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (5 shared connections)
+- [event_types.py](event_types.py.md) (12 shared connections)
+- [Player](Player.md) (11 shared connections)
+- [pytest.md](pytest.md.md) (9 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (5 shared connections)
+- [CombatInstance](CombatInstance.md) (5 shared connections)
 - [TransferContainerRequest](TransferContainerRequest.md) (4 shared connections)
-- [movement_service.py](movement_service.py.md) (4 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
 - [ContainerServiceError](ContainerServiceError.md) (4 shared connections)
-- [ContainerRepository](ContainerRepository.md) (4 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (4 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (4 shared connections)
+- [ContainerData](ContainerData.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 
 ## Source Files
 
 - `server/async_persistence.py`
-- `server/tests/unit/infrastructure/conftest.py`
 - `server/tests/unit/infrastructure/test_async_persistence_core.py`
 - `server/tests/unit/infrastructure/test_async_persistence_delegates.py`
 
 ## Audit Trail
 
-- EXTRACTED: 370 (88%)
-- INFERRED: 50 (12%)
+- EXTRACTED: 346 (87%)
+- INFERRED: 50 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

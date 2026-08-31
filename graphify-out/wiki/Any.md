@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [TaskRegistry](TaskRegistry.md) (16 shared connections)
+- [TaskRegistry](TaskRegistry.md) (15 shared connections)
+- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (1 shared connections)
 
 ## Source Files
 

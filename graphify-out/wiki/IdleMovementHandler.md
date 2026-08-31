@@ -33,15 +33,12 @@
 
 ## Relationships
 
+- [event_types.py](event_types.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [NPCMovementIntegration](NPCMovementIntegration.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [PassiveMobNPC](PassiveMobNPC.md) (2 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (2 shared connections)
 - [.__init__](__init__.md) (2 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [NPCBase](NPCBase.md) (1 shared connections)
-- [threading.py](threading.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
 - [EventBus](EventBus.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

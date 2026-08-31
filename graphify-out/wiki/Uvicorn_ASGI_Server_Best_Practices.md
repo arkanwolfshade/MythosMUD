@@ -32,7 +32,7 @@
 
 ## Relationships
 
-- [factory.py](factory.py.md) (1 shared connections)
+- [server/main.py](server-main.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,72 +1,65 @@
 # NPCBase
 
-> 295 nodes
+> 180 nodes
 
 ## Key Concepts
 
 - **NPCBase** (79 connections) — `server/npc/npc_base.py`
-- **BehaviorEngine** (73 connections) — `server/npc/behavior_engine.py`
-- **test_behavior_engine.py** (55 connections) — `server/tests/unit/npc/test_behavior_engine.py`
-- **npc_base.py** (45 connections) — `server/npc/npc_base.py`
+- **NPCSpawningService** (66 connections) — `server/npc/spawning_service.py`
+- **test_spawning_modules.py** (41 connections) — `server/tests/unit/npc/test_spawning_modules.py`
+- **spawning_service.py** (38 connections) — `server/npc/spawning_service.py`
 - **spawning_instance_factory.py** (25 connections) — `server/npc/spawning_instance_factory.py`
-- **NPCEventReactionSystem** (24 connections) — `server/npc/event_reaction_system.py`
-- **aggressive_mob_npc.py** (19 connections) — `server/npc/aggressive_mob_npc.py`
-- **passive_mob_npc.py** (18 connections) — `server/npc/passive_mob_npc.py`
+- **spawning_request_execution.py** (21 connections) — `server/npc/spawning_request_execution.py`
+- **NPCSpawnRequest** (19 connections) — `server/npc/spawning_models.py`
+- **spawn_npc_from_request()** (18 connections) — `server/npc/spawning_request_execution.py`
 - **behaviors.py** (17 connections) — `server/npc/behaviors.py`
+- **SimpleNPCDefinition** (16 connections) — `server/npc/spawning_models.py`
 - **create_npc_instance()** (16 connections) — `server/npc/spawning_instance_factory.py`
-- **.event_bus()** (14 connections) — `server/realtime/connection_manager.py`
-- **npc_config_parsing.py** (14 connections) — `server/npc/npc_config_parsing.py`
-- **shopkeeper_npc.py** (13 connections) — `server/npc/shopkeeper_npc.py`
-- **Any** (12 connections)
-- **.__init__()** (11 connections) — `server/npc/npc_base.py`
+- **NPCSpawnResult** (15 connections) — `server/npc/spawning_models.py`
+- **spawning_models.py** (13 connections) — `server/npc/spawning_models.py`
+- **generate_npc_id()** (10 connections) — `server/npc/spawning_instance_factory.py`
 - **_instantiate_by_type()** (10 connections) — `server/npc/spawning_instance_factory.py`
-- **CommunicationIntegrationProtocol** (8 connections) — `server/npc/npc_protocols.py`
 - **_build_aggressive()** (8 connections) — `server/npc/spawning_instance_factory.py`
-- **._try_evaluators()** (7 connections) — `server/npc/behavior_engine.py`
-- **get_combat_stats_dict()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **to_int_or_default()** (7 connections) — `server/npc/npc_config_parsing.py`
-- **behavior_engine.py** (7 connections) — `server/npc/behavior_engine.py`
-- **CombatIntegrationProtocol** (6 connections) — `server/npc/npc_protocols.py`
-- **.evaluate_condition()** (6 connections) — `server/npc/behavior_engine.py`
+- **_spawn_success()** (8 connections) — `server/npc/spawning_request_execution.py`
+- **._evaluate_spawn_requirements()** (8 connections) — `server/npc/spawning_service.py`
+- **.__init__()** (7 connections) — `server/npc/spawning_service.py`
 - **_build_passive()** (6 connections) — `server/npc/spawning_instance_factory.py`
-- *... and 270 more nodes in this community*
+- **_build_shopkeeper()** (6 connections) — `server/npc/spawning_instance_factory.py`
+- **_room_from_persistence()** (6 connections) — `server/npc/spawning_request_execution.py`
+- **._create_npc_instance()** (6 connections) — `server/npc/spawning_service.py`
+- **._maybe_add_required_npc_request()** (6 connections) — `server/npc/spawning_service.py`
+- **._spawn_npc_from_request()** (6 connections) — `server/npc/spawning_service.py`
+- *... and 155 more nodes in this community*
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (36 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (20 shared connections)
-- [get_logger](get_logger.md) (16 shared connections)
-- [EventBus](EventBus.md) (15 shared connections)
-- [test_event_reaction_speech.py](test_event_reaction_speech.py.md) (14 shared connections)
-- [PassiveMobNPC](PassiveMobNPC.md) (8 shared connections)
-- [NPCDefinition](NPCDefinition.md) (7 shared connections)
-- [AggressiveMobNPC](AggressiveMobNPC.md) (6 shared connections)
-- [test_shopkeeper_npc.py](test_shopkeeper_npc.py.md) (6 shared connections)
-- [NPCCombatIntegration](NPCCombatIntegration.md) (5 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
+- [event_types.py](event_types.py.md) (54 shared connections)
+- [EventBus](EventBus.md) (28 shared connections)
+- [NPCDefinition](NPCDefinition.md) (17 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (9 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (8 shared connections)
+- [npc_config_parsing.py](npc_config_parsing.py.md) (7 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (7 shared connections)
+- [ZoneConfiguration](ZoneConfiguration.md) (5 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
+- [PopulationStats](PopulationStats.md) (4 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (3 shared connections)
 
 ## Source Files
 
-- `server/npc/aggressive_mob_npc.py`
-- `server/npc/behavior_engine.py`
 - `server/npc/behaviors.py`
-- `server/npc/event_reaction_system.py`
 - `server/npc/npc_base.py`
-- `server/npc/npc_config_parsing.py`
-- `server/npc/npc_protocols.py`
-- `server/npc/passive_mob_npc.py`
-- `server/npc/shopkeeper_npc.py`
 - `server/npc/spawning_instance_factory.py`
+- `server/npc/spawning_models.py`
+- `server/npc/spawning_request_execution.py`
 - `server/npc/spawning_service.py`
-- `server/realtime/connection_manager.py`
-- `server/tests/unit/npc/test_behavior_engine.py`
 - `server/tests/unit/npc/test_spawning_modules.py`
 
 ## Audit Trail
 
-- EXTRACTED: 577 (94%)
-- INFERRED: 39 (6%)
+- EXTRACTED: 442 (89%)
+- INFERRED: 57 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

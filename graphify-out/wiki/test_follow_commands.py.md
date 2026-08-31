@@ -1,6 +1,6 @@
 # test_follow_commands.py
 
-> 44 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -10,6 +10,7 @@
 - **asyncio** (13 connections)
 - **_make_container()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **_make_request()** (12 connections) — `server/tests/unit/commands/test_follow_commands.py`
+- **handle_following_command()** (10 connections) — `server/commands/follow_commands.py`
 - **handle_unfollow_command()** (10 connections) — `server/commands/follow_commands.py`
 - **test_handle_follow_same_room_npc_immediate()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **test_handle_follow_same_room_player_sends_request()** (8 connections) — `server/tests/unit/commands/test_follow_commands.py`
@@ -28,17 +29,14 @@
 - **test_handle_follow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **test_handle_following_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
 - **test_handle_unfollow_no_container()** (4 connections) — `server/tests/unit/commands/test_follow_commands.py`
-- **Follow commands for MythosMUD. Handlers for /follow, /unfollow, and /following.…** (1 connections) — `server/commands/follow_commands.py`
-- *... and 19 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
 - [AliasStorage](AliasStorage.md) (13 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (5 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (5 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (10 shared connections)
 - [TargetMatch](TargetMatch.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [InventorySchemaValidationError](InventorySchemaValidationError.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
@@ -49,8 +47,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 126 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 128 (96%)
+- INFERRED: 6 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

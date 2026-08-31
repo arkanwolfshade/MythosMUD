@@ -1,10 +1,11 @@
 # game_tick_protocols.py
 
-> 27 nodes
+> 29 nodes
 
 ## Key Concepts
 
 - **game_tick_protocols.py** (30 connections) — `server/app/game_tick_protocols.py`
+- **_app_container()** (13 connections) — `server/app/game_tick_protocols.py`
 - **Protocol** (9 connections)
 - **UUID** (9 connections)
 - **_TickDeathService** (6 connections) — `server/app/game_tick_protocols.py`
@@ -28,23 +29,22 @@
 - **Player** (2 connections)
 - **.process_game_tick()** (1 connections) — `server/app/game_tick_protocols.py`
 - **.publish()** (1 connections) — `server/app/game_tick_protocols.py`
-- **.check_casting_progress()** (1 connections) — `server/app/game_tick_protocols.py`
-- *... and 2 more nodes in this community*
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
-- [game_tick_status_effects.py](game_tick_status_effects.py.md) (8 shared connections)
-- [game_tick_death.py](game_tick_death.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [test_game_tick_death.py](test_game_tick_death.py.md) (3 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
-- [test_player_death_service.py](test_player_death_service.py.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (10 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (8 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (5 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [models/combat.py](models-combat.py.md) (1 shared connections)
-- [passive_lucidity_flux/models.py](passive_lucidity_flux-models.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
+- [service.py](service.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 72 (100%)
+- EXTRACTED: 83 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,7 +34,8 @@
 ## Relationships
 
 - [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (5 shared connections)
-- [npc_combat_integration_validation_mixin.py](npc_combat_integration_validation_mixin.py.md) (4 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (2 shared connections)
+- [NPCCombatLucidity](NPCCombatLucidity.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 
 ## Source Files

@@ -1,33 +1,26 @@
 # days
 
-> 10 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **days** (4 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **items** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **effects** (3 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (2 connections) — `schemas/calendar/schedule.schema.json`
-- **minItems** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **type** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **days** (5 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **minItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **type** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
+- **uniqueItems** (1 connections) — `db/static/schemas/npc_schedules.schema.json`
 
 ## Relationships
 
-- [properties](properties.md) (2 shared connections)
+- [properties](properties.md) (1 shared connections)
 - [applies_to](applies_to.md) (1 shared connections)
-- [enum](enum.md) (1 shared connections)
 
 ## Source Files
 
-- `schemas/calendar/schedule.schema.json`
+- `db/static/schemas/npc_schedules.schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 5 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

@@ -32,8 +32,8 @@
 - enhanced_logging_config.py `EXTRACTED`
 
 ### imports
-- server/exceptions.py `EXTRACTED`
-- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
+- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
+- connection_manager.py `EXTRACTED`
 - command_service.py `EXTRACTED`
 - [server/dependencies.py](server-dependencies.py.md) `EXTRACTED`
 - time.py `EXTRACTED`
@@ -44,7 +44,7 @@
 - players.py `EXTRACTED`
 - alias_storage.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
+- maps.py `EXTRACTED`
 - [lifespan_startup.py](lifespan_startup.py.md) `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`

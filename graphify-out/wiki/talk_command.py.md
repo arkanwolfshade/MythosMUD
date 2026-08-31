@@ -33,18 +33,16 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (6 shared connections)
-- [test_communication_commands_flows.py](test_communication_commands_flows.py.md) (5 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
+- [communication_commands_flows.py](communication_commands_flows.py.md) (7 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [quest_commands.py](quest_commands.py.md) (5 shared connections)
-- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (3 shared connections)
-- [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (3 shared connections)
+- [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (3 shared connections)
 - [test_go_command.py](test_go_command.py.md) (3 shared connections)
-- [get_pose_persistence](get_pose_persistence.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,63 +1,65 @@
 # test_auth_utils.py
 
-> 130 nodes
+> 202 nodes
 
 ## Key Concepts
 
 - **test_auth_utils.py** (53 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **AttributeError** (46 connections)
+- **test_argon2_utils.py** (43 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **AuthenticationError** (37 connections) — `server/exceptions.py`
 - **create_access_token()** (32 connections) — `server/auth_utils.py`
+- **hash_password()** (27 connections) — `server/auth/argon2_utils.py`
 - **decode_access_token()** (25 connections) — `server/auth_utils.py`
+- **argon2_utils.py** (19 connections) — `server/auth/argon2_utils.py`
 - **hash_password()** (18 connections) — `server/auth_utils.py`
-- **test_connection_event_helpers.py** (14 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **subscribe_to_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
-- **unsubscribe_from_room_events_impl()** (10 connections) — `server/realtime/connection_event_helpers.py`
+- **auth_utils.py** (17 connections) — `server/auth_utils.py`
+- **verify_password()** (16 connections) — `server/auth/argon2_utils.py`
+- **create_hasher_with_params()** (11 connections) — `server/auth/argon2_utils.py`
+- **is_argon2_hash()** (9 connections) — `server/auth/argon2_utils.py`
 - **verify_password()** (9 connections) — `server/auth_utils.py`
-- **asyncio** (8 connections)
+- **seed_e2e_users.py** (9 connections) — `scripts/seed_e2e_users.py`
+- **needs_rehash()** (7 connections) — `server/auth/argon2_utils.py`
+- **get_hash_info()** (6 connections) — `server/auth/argon2_utils.py`
+- **_ensure_player_for_user()** (5 connections) — `scripts/seed_e2e_users.py`
 - **test_create_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
 - **test_decode_access_token_attribute_error()** (5 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_subscribe_to_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_subscribe_to_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_attribute_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **test_unsubscribe_from_room_events_impl_database_error()** (5 connections) — `server/tests/unit/realtime/test_connection_event_helpers.py`
-- **setup_jwt_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_jwt_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_runtime_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_value_error()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_audience()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_custom_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_create_access_token_with_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_expired()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- **test_decode_access_token_none_secret()** (4 connections) — `server/tests/unit/auth/test_auth_utils.py`
-- *... and 105 more nodes in this community*
+- **_seed_e2e_users()** (4 connections) — `scripts/seed_e2e_users.py`
+- **_validate_password_for_hashing()** (4 connections) — `server/auth/argon2_utils.py`
+- **test_get_hash_info_valid()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_empty_string()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_hashing_error()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- **test_hash_password_invalid_type()** (4 connections) — `server/tests/unit/auth/test_argon2_utils.py`
+- *... and 177 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (31 shared connections)
-- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
-- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
-- [test_room_sync_service.py](test_room_sync_service.py.md) (3 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
-- [real_time.py](real_time.py.md) (2 shared connections)
-- [test_real_time_helpers.py](test_real_time_helpers.py.md) (2 shared connections)
-- [test_argon2_utils.py](test_argon2_utils.py.md) (2 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (2 shared connections)
-- [test_status_commands.py](test_status_commands.py.md) (2 shared connections)
-- [test_nats_message_handler.py](test_nats_message_handler.py.md) (2 shared connections)
-- [test_combat_persistence_handler_persistence.py](test_combat_persistence_handler_persistence.py.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (12 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [log_and_raise](log_and_raise.md) (5 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (5 shared connections)
+- [test_users.py](test_users.py.md) (5 shared connections)
+- [real_time.py](real_time.py.md) (3 shared connections)
+- [AttributeError](AttributeError.md) (3 shared connections)
+- [test_connection_delegates.py](test_connection_delegates.py.md) (2 shared connections)
+- [error_logging.py](error_logging.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [test_real_time_helpers.py](test_real_time_helpers.py.md) (1 shared connections)
+- [NPCCombatDataProvider](NPCCombatDataProvider.md) (1 shared connections)
 
 ## Source Files
 
+- `scripts/seed_e2e_users.py`
+- `server/auth/argon2_utils.py`
+- `server/auth/users.py`
 - `server/auth_utils.py`
-- `server/realtime/connection_event_helpers.py`
+- `server/exceptions.py`
+- `server/tests/unit/auth/test_argon2_utils.py`
 - `server/tests/unit/auth/test_auth_utils.py`
-- `server/tests/unit/realtime/test_connection_event_helpers.py`
-- `server/tests/unit/utils/test_command_processor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 232 (79%)
-- INFERRED: 61 (21%)
+- EXTRACTED: 370 (94%)
+- INFERRED: 24 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

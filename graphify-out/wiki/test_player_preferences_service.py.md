@@ -33,10 +33,11 @@
 
 ## Relationships
 
-- [Player](Player.md) (4 shared connections)
-- [test_channel_commands.py](test_channel_commands.py.md) (2 shared connections)
+- [PlayerPreferencesService](PlayerPreferencesService.md) (3 shared connections)
+- [PlayerChannelPreferences](PlayerChannelPreferences.md) (2 shared connections)
 - [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 
 ## Source Files
 

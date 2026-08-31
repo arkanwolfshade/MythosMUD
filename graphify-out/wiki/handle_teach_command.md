@@ -1,6 +1,6 @@
 # handle_teach_command
 
-> 21 nodes
+> 18 nodes
 
 ## Key Concepts
 
@@ -14,10 +14,7 @@
 - **test_handle_teach_command_not_npc_target()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
 - **test_handle_teach_command_success_with_corruption()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
 - **test_handle_teach_command_target_resolution_failure()** (4 connections) — `server/tests/unit/commands/test_teach_command.py`
-- **Any** (4 connections)
 - **patch** (4 connections)
-- **_format_teach_result()** (3 connections) — `server/commands/teach_command.py`
-- **_get_teach_services()** (3 connections) — `server/commands/teach_command.py`
 - **test_handle_teach_command_no_spell_learning_service()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
 - **test_handle_teach_command_player_not_found()** (3 connections) — `server/tests/unit/commands/test_teach_command.py`
 - **Handle /teach command for learning spells from NPCs. Usage: /teach <npc_name>…** (1 connections) — `server/commands/teach_command.py`
@@ -29,8 +26,7 @@
 ## Relationships
 
 - [TargetResolutionService](TargetResolutionService.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -40,7 +36,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 50 (94%)
+- EXTRACTED: 45 (94%)
 - INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 

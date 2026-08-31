@@ -37,11 +37,10 @@
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (30 shared connections)
 - [ensurePlayableConnection](ensurePlayableConnection.md) (25 shared connections)
 - [player.ts](player.ts.md) (21 shared connections)
-- [executeCommand](executeCommand.md) (9 shared connections)
+- [executeCommand](executeCommand.md) (10 shared connections)
 - [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (9 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (5 shared connections)
 - [authenticated.ts](authenticated.ts.md) (4 shared connections)
-- [local-channel-isolation.spec.ts](local-channel-isolation.spec.ts.md) (1 shared connections)
 
 ## Source Files
 

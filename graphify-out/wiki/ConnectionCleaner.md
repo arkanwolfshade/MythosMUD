@@ -1,21 +1,18 @@
 # ConnectionCleaner
 
-> 92 nodes
+> 46 nodes
 
 ## Key Concepts
 
 - **ConnectionCleaner** (27 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **test_connection_cleaner.py** (27 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 - **Any** (14 connections)
 - **UUID** (10 connections)
 - **.cleanup_ghost_players()** (8 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **fixture** (8 connections)
 - **.prune_stale_players()** (7 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.check_and_cleanup()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.cleanup_dead_connections()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._cleanup_dead_connections_for_player()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.cleanup_orphaned_data()** (6 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **asyncio** (6 connections)
 - **._close_and_remove_stale_websocket()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._get_online_player_ids()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._remove_stale_player_data()** (5 connections) — `server/realtime/maintenance/connection_cleaner.py`
@@ -28,26 +25,28 @@
 - **._identify_stale_players()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **.__init__()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
 - **._remove_ghost_players_from_room()** (4 connections) — `server/realtime/maintenance/connection_cleaner.py`
-- **connection_cleaner()** (4 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
-- *... and 67 more nodes in this community*
+- **._identify_stale_connections()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **._is_websocket_dead()** (3 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- **test_stale_prune_max_age_local()** (3 connections) — `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
+- **Identify players whose last_seen timestamp exceeds the max age. Args:…** (1 connections) — `server/realtime/maintenance/connection_cleaner.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (8 shared connections)
-- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (4 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
+- [test_connection_cleaner.py](test_connection_cleaner.py.md) (3 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [connection_cleanup_methods.py](connection_cleanup_methods.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/maintenance/__init__.py`
 - `server/realtime/maintenance/connection_cleaner.py`
 - `server/tests/unit/realtime/maintenance/test_connection_cleaner.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 90 (98%)
+- INFERRED: 2 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

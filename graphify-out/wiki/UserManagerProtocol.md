@@ -1,13 +1,11 @@
 # UserManagerProtocol
 
-> 27 nodes
+> 25 nodes
 
 ## Key Concepts
 
 - **UserManagerProtocol** (20 connections) — `server/game/chat_moderation.py`
 - **.can_send_message()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
-- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
 - **.is_admin()** (2 connections) — `server/game/chat_moderation.py`
 - **.is_channel_muted()** (2 connections) — `server/game/chat_moderation.py`
 - **.is_globally_muted()** (2 connections) — `server/game/chat_moderation.py`
@@ -29,12 +27,14 @@
 - **Unmute a player for another player.** (1 connections) — `server/game/chat_moderation.py`
 - **Check if player is muted.** (1 connections) — `server/game/chat_moderation.py`
 - **Check if player is globally muted.** (1 connections) — `server/game/chat_moderation.py`
-- *... and 2 more nodes in this community*
+- **Check if player is admin.** (1 connections) — `server/game/chat_moderation.py`
+- **Check if player can send message.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [ChatModeration](ChatModeration.md) (4 shared connections)
+- [Any](Any.md) (3 shared connections)
 - [chat_service.py](chat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -42,7 +42,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 31 (100%)
+- EXTRACTED: 29 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

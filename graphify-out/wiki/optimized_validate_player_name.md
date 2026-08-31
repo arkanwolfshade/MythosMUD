@@ -30,7 +30,7 @@
 ## Relationships
 
 - [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (11 shared connections)
-- [optimized_security_validator.py](optimized_security_validator.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

@@ -33,17 +33,17 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (15 shared connections)
-- [magic_service.py](magic_service.py.md) (13 shared connections)
-- [TargetMatch](TargetMatch.md) (6 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (20 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [SpellEffects](SpellEffects.md) (4 shared connections)
+- [CastingStateManager](CastingStateManager.md) (3 shared connections)
 - [test_magic_service.py](test_magic_service.py.md) (1 shared connections)
-- [MagicServiceHealingMixin](MagicServiceHealingMixin.md) (1 shared connections)
-- [magic_service_completion.py](magic_service_completion.py.md) (1 shared connections)
+- [test_magic_healing_events.py](test_magic_healing_events.py.md) (1 shared connections)
+- [MagicServiceCompletionMixin](MagicServiceCompletionMixin.md) (1 shared connections)
 - [PlayerService](PlayerService.md) (1 shared connections)
 - [SpellTargetingService](SpellTargetingService.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [SpellLearningService](SpellLearningService.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
 - [SpellMaterialsService](SpellMaterialsService.md) (1 shared connections)
 
 ## Source Files

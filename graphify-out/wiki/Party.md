@@ -1,16 +1,14 @@
 # Party
 
-> 12 nodes
+> 10 nodes
 
 ## Key Concepts
 
 - **Party** (9 connections) — `server/game/party_service.py`
-- **.create_party()** (7 connections) — `server/game/party_service.py`
 - **.get_party()** (3 connections) — `server/game/party_service.py`
 - **test_party_post_init_includes_leader_in_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
 - **test_party_post_init_preserves_other_members()** (3 connections) — `server/tests/unit/game/test_party_service.py`
 - **.__post_init__()** (2 connections) — `server/game/party_service.py`
-- **Create a new party with the given player as leader. Returns dict with success…** (1 connections) — `server/game/party_service.py`
 - **In-memory party model. Ephemeral: not persisted. party_id and member_ids are…** (1 connections) — `server/game/party_service.py`
 - **Return the party by id, or None.** (1 connections) — `server/game/party_service.py`
 - **Ensure leader is in member set.** (1 connections) — `server/game/party_service.py`
@@ -20,9 +18,9 @@
 ## Relationships
 
 - [test_party_service.py](test_party_service.py.md) (3 shared connections)
-- [_str_id](_str_id.md) (3 shared connections)
-- [PartyService](PartyService.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
+- [PartyService](PartyService.md) (2 shared connections)
+- [Any](Any.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
@@ -31,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
+- EXTRACTED: 16 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

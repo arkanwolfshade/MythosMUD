@@ -34,9 +34,10 @@
 ## Relationships
 
 - [.validate_timestamp](validate_timestamp.md) (3 shared connections)
-- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [realtime/realtime.py](realtime-realtime.py.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
+- [format_message_content](format_message_content.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

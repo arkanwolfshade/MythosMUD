@@ -1,6 +1,6 @@
 # ._build_player_attacked_event
 
-> 29 nodes
+> 23 nodes
 
 ## Key Concepts
 
@@ -13,11 +13,8 @@
 - **._publish_player_dp_updated_after_npc_damage()** (5 connections) — `server/npc/combat_integration.py`
 - **._publish_player_dp_updated_event()** (5 connections) — `server/npc/combat_integration.py`
 - **UUID** (5 connections)
-- **.get_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
 - **._get_player_and_stats_for_nats()** (4 connections) — `server/npc/combat_integration.py`
-- **._get_player_combat_stats()** (4 connections) — `server/npc/combat_integration.py`
 - **._get_player_for_dp_update()** (4 connections) — `server/npc/combat_integration.py`
-- **._normalize_npc_stats()** (3 connections) — `server/npc/combat_integration.py`
 - **.get_stats()** (3 connections) — `server/npc/npc_base.py`
 - **Resolve the player and UUID needed for DP update events.** (1 connections) — `server/npc/combat_integration.py`
 - **Compute old_dp, new_dp, and max_dp values for PlayerDPUpdated.** (1 connections) — `server/npc/combat_integration.py`
@@ -28,19 +25,20 @@
 - **Construct the PlayerAttackedEvent payload for NATS publication.** (1 connections) — `server/npc/combat_integration.py`
 - **Return an integer stat from stats[key], handling common primitive types.** (1 connections) — `server/npc/combat_integration.py`
 - **Calculate max_dp from stats with fallbacks.** (1 connections) — `server/npc/combat_integration.py`
-- **Get combat stats for a player.** (1 connections) — `server/npc/combat_integration.py`
-- *... and 4 more nodes in this community*
+- **Publish PlayerDPUpdated so the client's health/DP bar updates after NPC damage.** (1 connections) — `server/npc/combat_integration.py`
+- **Get current NPC stats.** (1 connections) — `server/npc/npc_base.py`
 
 ## Relationships
 
-- [NPCCombatIntegration](NPCCombatIntegration.md) (14 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (1 shared connections)
-- [get_config](get_config.md) (1 shared connections)
-- [NPCCombatIntegrationBase](NPCCombatIntegrationBase.md) (1 shared connections)
+- [NPCCombatIntegration](NPCCombatIntegration.md) (10 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [._get_npc_display_name](_get_npc_display_name.md) (1 shared connections)
+- [.get_combat_stats](get_combat_stats.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
-- [player_event_handlers.py](player_event_handlers.py.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
 - [NPCBase](NPCBase.md) (1 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -49,7 +47,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (96%)
+- EXTRACTED: 44 (96%)
 - INFERRED: 2 (4%)
 - AMBIGUOUS: 0 (0%)
 

@@ -35,12 +35,11 @@
 
 - [waitForMessage](waitForMessage.md) (46 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (30 shared connections)
+- [executeCommand](executeCommand.md) (10 shared connections)
 - [player.ts](player.ts.md) (10 shared connections)
-- [executeCommand](executeCommand.md) (7 shared connections)
-- [ensurePlayableConnection](ensurePlayableConnection.md) (6 shared connections)
+- [ensurePlayableConnection](ensurePlayableConnection.md) (5 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (4 shared connections)
 - [revised-character-creation.spec.ts](revised-character-creation.spec.ts.md) (4 shared connections)
-- [local-channel-isolation.spec.ts](local-channel-isolation.spec.ts.md) (2 shared connections)
 - [multiplayer-browser-helpers.js](multiplayer-browser-helpers.js.md) (2 shared connections)
 
 ## Source Files

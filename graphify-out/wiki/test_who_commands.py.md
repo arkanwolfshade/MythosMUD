@@ -33,16 +33,17 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
 - [test_logout_commands.py](test_logout_commands.py.md) (3 shared connections)
 - [test_status_commands.py](test_status_commands.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 - [handle_emote_command](handle_emote_command.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [Player](Player.md) (2 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 - [handle_time_command](handle_time_command.md) (1 shared connections)
 - [TestLogoutCommand](TestLogoutCommand.md) (1 shared connections)
 - [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

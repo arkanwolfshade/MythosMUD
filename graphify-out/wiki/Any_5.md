@@ -1,41 +1,48 @@
 # Any
 
-> 16 nodes
+> 35 nodes
 
 ## Key Concepts
 
-- **Any** (10 connections)
-- **._emit_party_updated()** (9 connections) — `server/game/party_service.py`
-- **.disband_party()** (8 connections) — `server/game/party_service.py`
-- **.kick_member()** (8 connections) — `server/game/party_service.py`
-- **.remove_member()** (8 connections) — `server/game/party_service.py`
-- **.__init__()** (6 connections) — `server/game/party_service.py`
-- **._notify_player_removed_from_party()** (6 connections) — `server/game/party_service.py`
-- **._schedule_notification()** (6 connections) — `server/game/party_service.py`
-- **ConnectionManager** (1 connections)
-- **Disband a party. If by_player_id is given, only the leader may disband. If…** (1 connections) — `server/game/party_service.py`
-- **Safely schedule an async notification, handling cases where no event loop is…** (1 connections) — `server/game/party_service.py`
-- **Notify a player they have been removed from a party. Resolves leader name.** (1 connections) — `server/game/party_service.py`
-- **Remove a player from a party (leave or internal remove). If leader leaves,…** (1 connections) — `server/game/party_service.py`
-- **Remove a member from the party. Only the leader may kick.** (1 connections) — `server/game/party_service.py`
-- **Initialize empty party store. Optionally provide event_bus, connection_manager,…** (1 connections) — `server/game/party_service.py`
-- **Emit PartyUpdated event if event_bus is set.** (1 connections) — `server/game/party_service.py`
+- **Any** (13 connections)
+- **.get_room()** (8 connections) — `server/game/room_service.py`
+- **.get_room_info()** (7 connections) — `server/game/room_service.py`
+- **.filter_rooms_by_exploration()** (6 connections) — `server/game/room_service.py`
+- **.get_adjacent_rooms()** (6 connections) — `server/game/room_service.py`
+- **.list_rooms()** (5 connections) — `server/game/room_service.py`
+- **.get_local_chat_scope()** (4 connections) — `server/game/room_service.py`
+- **.get_room_exits()** (4 connections) — `server/game/room_service.py`
+- **.get_room_occupants()** (4 connections) — `server/game/room_service.py`
+- **._extract_occupants_from_room()** (3 connections) — `server/game/room_service.py`
+- **.get_environment_state()** (3 connections) — `server/game/room_service.py`
+- **.get_room_by_name()** (3 connections) — `server/game/room_service.py`
+- **.get_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **.list_rooms_in_zone()** (3 connections) — `server/game/room_service.py`
+- **._lookup_explored_stable_ids()** (3 connections) — `server/game/room_service.py`
+- **._prepare_room_for_list()** (3 connections) — `server/game/room_service.py`
+- **._room_matches_zone_filters()** (3 connections) — `server/game/room_service.py`
+- **.search_rooms_by_name()** (3 connections) — `server/game/room_service.py`
+- **.validate_exit_exists()** (3 connections) — `server/game/room_service.py`
+- **AsyncSession** (2 connections)
+- **UUID** (2 connections)
+- **Get a list of rooms adjacent to the specified room. Args: room_id: The room's…** (1 connections) — `server/game/room_service.py`
+- **Get the scope of rooms for local chat (current room + adjacent rooms). Args:…** (1 connections) — `server/game/room_service.py`
+- **Validate that there's a valid exit from one room to another. Args:…** (1 connections) — `server/game/room_service.py`
+- **Get all occupants (players and NPCs) currently in a room using cached data.…** (1 connections) — `server/game/room_service.py`
+- *... and 10 more nodes in this community*
 
 ## Relationships
 
-- [_str_id](_str_id.md) (13 shared connections)
-- [PartyService](PartyService.md) (8 shared connections)
-- [Party](Party.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (18 shared connections)
+- [room_service.py](room_service.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/party_service.py`
+- `server/game/room_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 47 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

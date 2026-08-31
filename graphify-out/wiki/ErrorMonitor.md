@@ -33,7 +33,8 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

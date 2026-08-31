@@ -29,8 +29,9 @@
 
 ## Relationships
 
-- [Player](Player.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (5 shared connections)
+- [Player](Player.md) (4 shared connections)
+- [get_session_maker](get_session_maker.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

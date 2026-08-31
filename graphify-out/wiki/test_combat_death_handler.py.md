@@ -33,13 +33,11 @@
 
 ## Relationships
 
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (3 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (3 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [CombatInstance](CombatInstance.md) (1 shared connections)
-- [CombatParticipantType](CombatParticipantType.md) (1 shared connections)
-- [models/combat.py](models-combat.py.md) (1 shared connections)
 
 ## Source Files
 

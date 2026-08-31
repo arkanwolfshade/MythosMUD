@@ -33,12 +33,18 @@
 
 ## Relationships
 
-- [player_event_handlers.py](player_event_handlers.py.md) (15 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (10 shared connections)
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (3 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (7 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (5 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (4 shared connections)
+- [test_player_occupant_processor.py](test_player_occupant_processor.py.md) (4 shared connections)
+- [PlayerRoomEventHandler](PlayerRoomEventHandler.md) (3 shared connections)
 - [get_logger](get_logger.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (2 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
+- [disconnect_grace_period.py](disconnect_grace_period.py.md) (2 shared connections)
+- [PlayerEventHandlerUtils](PlayerEventHandlerUtils.md) (2 shared connections)
+- [test_room_sync_service.py](test_room_sync_service.py.md) (1 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (1 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (1 shared connections)
+- [AttributeError](AttributeError.md) (1 shared connections)
 
 ## Source Files
 

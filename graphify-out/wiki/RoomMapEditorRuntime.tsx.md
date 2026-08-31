@@ -37,10 +37,10 @@
 - [map/types.ts](map-types.ts.md) (13 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (8 shared connections)
 - [edgeModalLogic.ts](edgeModalLogic.ts.md) (6 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [EdgeDetailsPanel.tsx](EdgeDetailsPanel.tsx.md) (2 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 

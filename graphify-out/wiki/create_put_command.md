@@ -29,8 +29,9 @@
 
 - [InventoryCommandFactory](InventoryCommandFactory.md) (10 shared connections)
 - [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [ValidationError](ValidationError.md) (4 shared connections)
 - [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (3 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (1 shared connections)
 - [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files

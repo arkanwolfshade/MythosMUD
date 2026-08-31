@@ -1,6 +1,6 @@
 # TaskRegistry
 
-> 52 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -14,7 +14,6 @@
 - **unregister_task()** (7 connections) — `server/app/task_registry.py`
 - **register_task()** (6 connections) — `server/app/task_registry.py`
 - **test_module_level_helpers()** (6 connections) — `server/tests/unit/app/test_task_registry.py`
-- **.get_task_lifecycle_metrics()** (5 connections) — `server/app/task_registry.py`
 - **test_register_closes_coro_when_create_task_fails()** (5 connections) — `server/tests/unit/app/test_task_registry.py`
 - **._cleanup_registry_collections()** (4 connections) — `server/app/task_registry.py`
 - **test_cancel_task_by_name()** (4 connections) — `server/tests/unit/app/test_task_registry.py`
@@ -28,21 +27,23 @@
 - **._cancel_lifecycle_tasks()** (3 connections) — `server/app/task_registry.py`
 - **._cancel_remaining_tasks()** (3 connections) — `server/app/task_registry.py`
 - **._forcible_cleanup_on_timeout()** (3 connections) — `server/app/task_registry.py`
-- **.get_active_task_count()** (3 connections) — `server/app/task_registry.py`
-- *... and 27 more nodes in this community*
+- **._wait_for_task_completion()** (3 connections) — `server/app/task_registry.py`
+- **_hang_until_cancelled()** (3 connections) — `server/tests/unit/app/test_task_registry.py`
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [Any](Any.md) (16 shared connections)
+- [Any](Any.md) (15 shared connections)
 - [TrackedTaskManager](TrackedTaskManager.md) (5 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (4 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [lifespan_protocols.py](lifespan_protocols.py.md) (3 shared connections)
+- [.get_task_lifecycle_metrics](get_task_lifecycle_metrics.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
 - [api/monitoring.py](api-monitoring.py.md) (2 shared connections)
-- [lifespan.py](lifespan.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (1 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -52,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 126 (88%)
-- INFERRED: 18 (12%)
+- EXTRACTED: 120 (87%)
+- INFERRED: 18 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

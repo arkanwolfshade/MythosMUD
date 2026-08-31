@@ -1,13 +1,12 @@
 # Typography
 
-> 15 nodes
+> 14 nodes
 
 ## Key Concepts
 
 - **Typography** (6 connections) — `.claude/skills/frontend-design/reference/typography.md`
 - **Classic Typography Principles** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
 - **Font Selection & Pairing** (4 connections) — `.claude/skills/frontend-design/reference/typography.md`
-- **typography.md** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
 - **Modern Web Typography** (3 connections) — `.claude/skills/frontend-design/reference/typography.md`
 - **Accessibility Considerations** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
 - **Choosing Distinctive Fonts** (1 connections) — `.claude/skills/frontend-design/reference/typography.md`
@@ -22,7 +21,7 @@
 
 ## Relationships
 
-- [Frontend Design Skill](Frontend_Design_Skill.md) (2 shared connections)
+- [Frontend Design Skill](Frontend_Design_Skill.md) (1 shared connections)
 
 ## Source Files
 
@@ -30,7 +29,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 16 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

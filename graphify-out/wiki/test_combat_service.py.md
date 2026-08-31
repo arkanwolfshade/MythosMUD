@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [CombatService](CombatService.md) (6 shared connections)
-- [CombatInstance](CombatInstance.md) (2 shared connections)
+- [CombatInstance](CombatInstance.md) (5 shared connections)
+- [CombatService](CombatService.md) (3 shared connections)
+- [NATSError](NATSError.md) (3 shared connections)
 - [CombatParticipant](CombatParticipant.md) (2 shared connections)
-- [CombatParticipantType](CombatParticipantType.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [models/combat.py](models-combat.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,62 +1,55 @@
 # ScheduleEntry
 
-> 76 nodes
+> 26 nodes
 
 ## Key Concepts
 
 - **ScheduleEntry** (29 connections) — `server/schemas/calendar/calendar.py`
-- **ScheduleService** (28 connections) — `server/services/schedule_service.py`
-- **TestScheduleService** (21 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **test_schedule_service.py** (13 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_schedule_entry_from_row()** (10 connections) — `server/services/schedule_service.py`
-- **._async_load_from_database()** (7 connections) — `server/services/schedule_service.py`
-- **_fetch_schedule_entries()** (6 connections) — `server/services/schedule_service.py`
-- **_lower_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **_resolve_asyncpg_database_url()** (6 connections) — `server/services/schedule_service.py`
-- **_string_list_from_row()** (6 connections) — `server/services/schedule_service.py`
-- **normalize_weekday_names()** (5 connections) — `server/services/schedule_service.py`
-- **._load_from_database()** (5 connections) — `server/services/schedule_service.py`
-- **.test_async_load_from_database_passes_search_path_for_mythos_e2e()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_loads_from_database()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_load_from_database_success()** (5 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **_DatabaseLoadResult** (4 connections) — `server/services/schedule_service.py`
-- **.get_active_entries()** (4 connections) — `server/services/schedule_service.py`
-- **.test_entries_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_entry_count_property()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_boundary_conditions()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_with_matches()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_get_active_entries_wrong_day()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_init_database_load_failure_raises()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_normalize_weekday_names_latin_to_standard()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- **.test_resolve_asyncpg_database_url()** (4 connections) — `server/tests/unit/services/test_schedule_service.py`
-- *... and 51 more nodes in this community*
+- **field_validator** (6 connections)
+- **.validate_duration()** (4 connections) — `server/schemas/calendar/calendar.py`
+- **test_schedule_collection()** (4 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **.apply_schedule_state()** (3 connections) — `server/npc/lifecycle_manager.py`
+- **.validate_bonus_tags()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_season()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_tradition()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_days()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.validate_slug_list()** (3 connections) — `server/schemas/calendar/calendar.py`
+- **.entries()** (3 connections) — `server/services/schedule_service.py`
+- **test_schedule_entry()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **test_schedule_entry_validation_days()** (3 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Any** (1 connections)
+- **Record the schedule categories currently active for NPC routines.** (1 connections) — `server/npc/lifecycle_manager.py`
+- **Single schedule block describing routine availability…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate schedule entry days are standard English weekday names (Sunday,…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate slug-formatted list entries. Args: value: Sequence of strings to…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Ensure the schedule window moves time forward like the Chronology Tablets…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate tradition value. Args: value: The tradition string to validate…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate season value. Args: value: The season string to validate Returns: str:…** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Validate bonus tags format.** (1 connections) — `server/schemas/calendar/calendar.py`
+- **Get all schedule entries. Returns: list[ScheduleEntry]: List of all schedule…** (1 connections) — `server/services/schedule_service.py`
+- **Test ScheduleEntry can be instantiated.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- **Test ScheduleEntry validates days.** (1 connections) — `server/tests/unit/schemas/test_calendar_schemas.py`
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
-- [schedule_service.py](schedule_service.py.md) (14 shared connections)
-- [HolidayEntry](HolidayEntry.md) (8 shared connections)
-- [field_validator](field_validator.md) (3 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [time_event_consumer.py](time_event_consumer.py.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (15 shared connections)
+- [HolidayEntry](HolidayEntry.md) (7 shared connections)
+- [ScheduleCollection](ScheduleCollection.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (2 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (1 shared connections)
-- [HolidayService](HolidayService.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (1 shared connections)
-- [get_asyncpg_server_settings_for_database_url](get_asyncpg_server_settings_for_database_url.md) (1 shared connections)
 
 ## Source Files
 
 - `server/npc/lifecycle_manager.py`
 - `server/schemas/calendar/calendar.py`
 - `server/services/schedule_service.py`
-- `server/tests/unit/services/test_schedule_service.py`
+- `server/tests/unit/schemas/test_calendar_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 151 (97%)
-- INFERRED: 4 (3%)
+- EXTRACTED: 56 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

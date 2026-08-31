@@ -1,6 +1,6 @@
 # ContainerService
 
-> 82 nodes
+> 73 nodes
 
 ## Key Concepts
 
@@ -10,7 +10,6 @@
 - **_container_data()** (25 connections) — `server/tests/unit/services/test_container_service.py`
 - **_stack()** (21 connections) — `server/tests/unit/services/test_container_service.py`
 - **MutationDecision** (17 connections) — `server/services/inventory_mutation_guard.py`
-- **_container()** (15 connections) — `server/tests/unit/services/test_container_service.py`
 - **_open_from_fixture()** (11 connections) — `server/tests/unit/services/test_container_service.py`
 - **_allow_all_mutations()** (8 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_transfer_from_container_capacity_exceeded()** (8 connections) — `server/tests/unit/services/test_container_service.py`
@@ -29,20 +28,23 @@
 - **test_loot_all_continues_past_other_errors()** (5 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_loot_all_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_loot_all_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- *... and 57 more nodes in this community*
+- **test_open_container_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- *... and 48 more nodes in this community*
 
 ## Relationships
 
-- [server/services/__init__.py](server-services-__init__.py.md) (19 shared connections)
-- [ContainerComponent](ContainerComponent.md) (17 shared connections)
-- [LootAllRequest](LootAllRequest.md) (14 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
-- [TransferContainerRequest](TransferContainerRequest.md) (3 shared connections)
-- [api/conftest.py](api-conftest.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [ContainerComponent](ContainerComponent.md) (23 shared connections)
+- [pytest.md](pytest.md.md) (17 shared connections)
+- [transfer_all_items_from_container](transfer_all_items_from_container.md) (12 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (10 shared connections)
+- [InventoryService](InventoryService.md) (7 shared connections)
+- [InventoryMutationGuard](InventoryMutationGuard.md) (6 shared connections)
+- [ContainerLockState](ContainerLockState.md) (5 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (4 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
 
 ## Source Files
 
@@ -54,8 +56,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 226 (72%)
-- INFERRED: 88 (28%)
+- EXTRACTED: 218 (74%)
+- INFERRED: 78 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -35,9 +35,8 @@
 - [is_safe_filename](is_safe_filename.md) (8 shared connections)
 - [ensure_directory_exists](ensure_directory_exists.md) (4 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
 - [test_validate_secure_path_path_traversal_commonpath](test_validate_secure_path_path_traversal_commonpath.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

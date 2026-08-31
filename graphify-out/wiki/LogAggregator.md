@@ -16,7 +16,6 @@
 - **.export_logs()** (7 connections) — `server/structured_logging/log_aggregator.py`
 - **_query_filter_from_mapping()** (6 connections) — `server/structured_logging/log_aggregator.py`
 - **_flush_queue()** (6 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
-- **log_time_formats.py** (6 connections) — `server/structured_logging/log_time_formats.py`
 - **._export_csv()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._export_json()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.get_correlation_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
@@ -25,6 +24,7 @@
 - **.get_warning_logs()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **.__init__()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **._log_matches_filter()** (5 connections) — `server/structured_logging/log_aggregator.py`
+- **peek_log_aggregator()** (5 connections) — `server/structured_logging/log_aggregator.py`
 - **test_export_logs_json()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **test_get_logs_after_flush()** (5 connections) — `server/tests/unit/structured_logging/test_log_aggregator.py`
 - **.add_log_entry()** (4 connections) — `server/structured_logging/log_aggregator.py`
@@ -33,27 +33,23 @@
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (6 shared connections)
-- [lifespan.py](lifespan.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (5 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
 - [PerformanceMonitor](PerformanceMonitor.md) (2 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (1 shared connections)
 - [logging_file_setup.py](logging_file_setup.py.md) (1 shared connections)
-- [threading.py](threading.py.md) (1 shared connections)
-- [chat_service.py](chat_service.py.md) (1 shared connections)
-- [AdminActionsLogger](AdminActionsLogger.md) (1 shared connections)
-- [test_logging_utilities.py](test_logging_utilities.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/structured_logging/log_aggregator.py`
-- `server/structured_logging/log_time_formats.py`
 - `server/tests/unit/structured_logging/test_log_aggregator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 160 (99%)
+- EXTRACTED: 158 (99%)
 - INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 

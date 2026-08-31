@@ -1,0 +1,40 @@
+# parse_shutdown_parameters
+
+> 14 nodes
+
+## Key Concepts
+
+- **parse_shutdown_parameters()** (11 connections) — `server/commands/admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_cancel()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_negative()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_string()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_invalid_zero()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_no_args()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **test_parse_shutdown_parameters_seconds()** (3 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Parse shutdown command parameters. Args: command_data: Command data dictionary…** (1 connections) — `server/commands/admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with no args defaults to 10 seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with cancel action.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with negative seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with zero seconds.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+- **Test parse_shutdown_parameters() with invalid string.** (1 connections) — `server/tests/unit/commands/test_admin_shutdown_command.py`
+
+## Relationships
+
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (7 shared connections)
+- [admin_shutdown_command.py](admin_shutdown_command.py.md) (3 shared connections)
+
+## Source Files
+
+- `server/commands/admin_shutdown_command.py`
+- `server/tests/unit/commands/test_admin_shutdown_command.py`
+
+## Audit Trail
+
+- EXTRACTED: 23 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
