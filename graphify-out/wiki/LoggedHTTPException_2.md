@@ -29,26 +29,26 @@
 - select_character() `EXTRACTED`
 
 ### contains
-- server/exceptions.py `EXTRACTED`
+- [server/exceptions.py](server-exceptions.py.md) `EXTRACTED`
 
 ### imports
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
+- maps.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - [api/monitoring.py](api-monitoring.py.md) `EXTRACTED`
 - rooms.py `EXTRACTED`
-- [test_players_api_coverage.py](test_players_api_coverage.py.md) `EXTRACTED`
+- test_players_api_coverage.py `EXTRACTED`
 - test_monitoring_endpoints.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - test_container_helpers.py `EXTRACTED`
 - test_rooms_write_api.py `EXTRACTED`
-- [test_exceptions.py](test_exceptions.py.md) `EXTRACTED`
+- test_exceptions.py `EXTRACTED`
 - api/container_helpers.py `EXTRACTED`
 - [real_time.py](real_time.py.md) `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
 - [test_real_time_helpers.py](test_real_time_helpers.py.md) `EXTRACTED`
-- api/player_effects.py `EXTRACTED`
+- [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
 - test_exceptions_comprehensive.py `EXTRACTED`
 - standardized_responses.py `EXTRACTED`
 - test_npc_definitions_api.py `EXTRACTED`
@@ -76,7 +76,7 @@
 - TestOpenContainer `INFERRED`
 - TestTransferItems `INFERRED`
 - TestGetContainerAndPlayerForLootAll `INFERRED`
-- [TestHelperFunctions](TestHelperFunctions.md) `INFERRED`
+- TestHelperFunctions `INFERRED`
 - test_create_room_exit_duplicate_direction_409() `INFERRED`
 - TestHandleLootAllExceptions `INFERRED`
 - TestHandleOpenContainerExceptions `INFERRED`

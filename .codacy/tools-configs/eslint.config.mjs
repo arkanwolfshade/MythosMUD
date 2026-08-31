@@ -61,7 +61,7 @@ export default [
           "no-useless-escape": ["error"],
           "no-with": ["error"],
           "require-yield": ["error"],
-          "use-isnan": ["error", {"enforceForIndexOf": false, "enforceForSwitchCase": true}],
+          "use-isnan": ["error", {"enforceForSwitchCase": true, "enforceForIndexOf": false}],
           "valid-typeof": ["error", {"requireStringLiterals": false}],
         }
     }

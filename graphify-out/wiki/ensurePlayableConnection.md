@@ -1,6 +1,6 @@
 # ensurePlayableConnection
 
-> 28 nodes
+> 27 nodes
 
 ## Key Concepts
 
@@ -12,7 +12,6 @@
 - **executeCommandWithoutRecovery()** (15 connections) — `client/tests/e2e/runtime/fixtures/auth.ts`
 - **ensureQuestGiverPresent()** (8 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **listActiveQuestGiverIds()** (7 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- **prepareLocalIsolationPair()** (6 connections) — `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
 - **ensureArmitagePresent()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
 - **listArmitageIds()** (6 connections) — `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
 - **assertCollectNJournalComplete()** (5 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
@@ -29,22 +28,21 @@
 - **resetPlayerPosition()** (3 connections) — `client/tests/e2e/runtime/fixtures/player.ts`
 - **abandonCollectNQuest()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
 - **assertQuestGiverVisible()** (3 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
-- *... and 3 more nodes in this community*
+- **resetCollectNQuestInstances()** (2 connections) — `client/tests/e2e/runtime/quest/collect-n-quest.spec.ts`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [waitForMessage](waitForMessage.md) (39 shared connections)
+- [waitForMessage](waitForMessage.md) (37 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (25 shared connections)
 - [player.ts](player.ts.md) (21 shared connections)
-- [executeCommand](executeCommand.md) (17 shared connections)
+- [executeCommand](executeCommand.md) (19 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (7 shared connections)
-- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (6 shared connections)
-- [local-channel-isolation.spec.ts](local-channel-isolation.spec.ts.md) (3 shared connections)
+- [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (5 shared connections)
 
 ## Source Files
 
 - `client/tests/e2e/runtime/communication/chat-messages.spec.ts`
-- `client/tests/e2e/runtime/communication/local-channel-isolation.spec.ts`
 - `client/tests/e2e/runtime/dialogue/dialogue-trees.spec.ts`
 - `client/tests/e2e/runtime/fixtures/auth.ts`
 - `client/tests/e2e/runtime/fixtures/player.ts`
@@ -52,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 180 (100%)
+- EXTRACTED: 175 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

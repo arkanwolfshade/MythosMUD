@@ -23,8 +23,10 @@
 
 ## Relationships
 
-- [Spell](Spell.md) (7 shared connections)
-- [magic_service.py](magic_service.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (3 shared connections)
+- [SpellEffects](SpellEffects.md) (2 shared connections)
+- [SpellEffectType](SpellEffectType.md) (2 shared connections)
 - [PlayerService](PlayerService.md) (2 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 

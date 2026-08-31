@@ -1,15 +1,17 @@
 # EmoteService
 
-> 37 nodes
+> 41 nodes
 
 ## Key Concepts
 
 - **EmoteService** (18 connections) — `server/game/emote_service.py`
 - **test_emote_service.py** (18 connections) — `server/tests/unit/game/test_emote_service.py`
+- **emote_service.py** (16 connections) — `server/game/emote_service.py`
 - **_service_with_emotes()** (10 connections) — `server/tests/unit/game/test_emote_service.py`
 - **EmoteDefinition** (6 connections) — `server/game/emote_service.py`
 - **.format_emote_messages()** (4 connections) — `server/game/emote_service.py`
 - **.get_emote_definition()** (4 connections) — `server/game/emote_service.py`
+- **_get_emote_validator()** (4 connections) — `server/game/emote_service.py`
 - **test_load_emotes_handles_missing_table_gracefully()** (4 connections) — `server/tests/unit/game/test_emote_service.py`
 - **.__init__()** (3 connections) — `server/game/emote_service.py`
 - **.load_emotes()** (3 connections) — `server/game/emote_service.py`
@@ -27,15 +29,19 @@
 - **test_list_available_emotes()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
 - **test_validate_emote_payload_no_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
 - **test_validate_emote_payload_with_validator()** (2 connections) — `server/tests/unit/game/test_emote_service.py`
-- **TypedDict** (1 connections)
-- **Check if a command is an emote alias. Args: command: The command to check…** (1 connections) — `server/game/emote_service.py`
-- *... and 12 more nodes in this community*
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
+- [SchemaValidator](SchemaValidator.md) (4 shared connections)
+- [test_emote_repository.py](test_emote_repository.py.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [log_and_raise](log_and_raise.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 - [.initialize](initialize.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [error_logging.py](error_logging.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -45,8 +51,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 78 (96%)
+- INFERRED: 3 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

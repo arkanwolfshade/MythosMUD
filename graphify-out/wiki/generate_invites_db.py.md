@@ -1,11 +1,10 @@
 # generate_invites_db.py
 
-> 20 nodes
+> 18 nodes
 
 ## Key Concepts
 
 - **generate_invites_db.py** (14 connections) — `tools/invite_tools/generate_invites_db.py`
-- **set_test_database_url()** (9 connections) — `server/database_config_helpers.py`
 - **main()** (7 connections) — `tools/invite_tools/generate_invites_db.py`
 - **normalize_database_url()** (6 connections) — `server/database_config_helpers.py`
 - **create_invite_in_db()** (6 connections) — `tools/invite_tools/generate_invites_db.py`
@@ -15,7 +14,6 @@
 - **parse_expires_date()** (4 connections) — `tools/invite_tools/generate_invites_db.py`
 - **generate_invite_code()** (3 connections) — `tools/invite_tools/generate_invites_db.py`
 - **datetime** (3 connections)
-- **Set test override database URL.** (1 connections) — `server/database_config_helpers.py`
 - **Normalize database URL for asyncpg. Args: database_url: Original database URL…** (1 connections) — `server/database_config_helpers.py`
 - **Generate a unique Mythos-themed invite code.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
 - **Generate a list of unique invite codes.** (1 connections) — `tools/invite_tools/generate_invites_db.py`
@@ -27,10 +25,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (10 shared connections)
-- [DatabaseManager](DatabaseManager.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (6 shared connections)
+- [get_session_maker](get_session_maker.md) (3 shared connections)
 - [Invite](Invite.md) (2 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -39,7 +37,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 38 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

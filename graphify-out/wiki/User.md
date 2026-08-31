@@ -2,7 +2,7 @@
 
 > God node · 301 connections · `server/models/user.py`
 
-**Community:** [LoggedHTTPException](LoggedHTTPException.md)
+**Community:** [pytest.md](pytest.md.md)
 
 ## Connections by Relation
 
@@ -31,11 +31,11 @@
 - async_persistence.py `EXTRACTED`
 - players.py `EXTRACTED`
 - [api/character_creation.py](api-character_creation.py.md) `EXTRACTED`
-- [maps.py](maps.py.md) `EXTRACTED`
+- maps.py `EXTRACTED`
 - endpoints.py `EXTRACTED`
 - container_endpoints_basic.py `EXTRACTED`
 - rooms.py `EXTRACTED`
-- [test_admin_auth_service.py](test_admin_auth_service.py.md) `EXTRACTED`
+- test_admin_auth_service.py `EXTRACTED`
 - test_maps.py `EXTRACTED`
 - [test_users.py](test_users.py.md) `EXTRACTED`
 - users.py `EXTRACTED`
@@ -43,7 +43,7 @@
 - api/container_helpers.py `EXTRACTED`
 - test_async_persistence_core.py `EXTRACTED`
 - [test_metrics_endpoints.py](test_metrics_endpoints.py.md) `EXTRACTED`
-- api/player_effects.py `EXTRACTED`
+- [api/player_effects.py](api-player_effects.py.md) `EXTRACTED`
 - test_npc_definitions_api.py `EXTRACTED`
 - npc_definitions_api.py `EXTRACTED`
 

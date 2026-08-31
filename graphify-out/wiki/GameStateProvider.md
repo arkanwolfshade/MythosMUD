@@ -1,10 +1,11 @@
 # GameStateProvider
 
-> 43 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **GameStateProvider** (26 connections) — `server/realtime/integration/game_state_provider.py`
+- **NATSMessageHandler** (25 connections) — `server/realtime/nats_message_handler.py`
 - **UUID** (14 connections)
 - **Any** (13 connections)
 - **.send_initial_game_state()** (12 connections) — `server/realtime/integration/game_state_provider.py`
@@ -14,6 +15,7 @@
 - **._add_grace_period_indicators()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_quest_log_for_client()** (7 connections) — `server/realtime/integration/game_state_provider.py`
 - **._process_occupants_with_grace_periods()** (7 connections) — `server/realtime/integration/game_state_provider.py`
+- **.__init__()** (7 connections) — `server/realtime/nats_message_handler.py`
 - **._convert_player_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
 - **.convert_room_uuids_to_names()** (6 connections) — `server/realtime/integration/game_state_provider.py`
 - **._get_fallback_player_data()** (6 connections) — `server/realtime/integration/game_state_provider.py`
@@ -25,26 +27,24 @@
 - **.get_players_batch()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **.get_room_occupants()** (4 connections) — `server/realtime/integration/game_state_provider.py`
 - **.__init__()** (4 connections) — `server/realtime/integration/game_state_provider.py`
-- **_not_configured_async()** (3 connections) — `server/realtime/nats_message_handler.py`
-- **Any** (2 connections)
-- **setter** (1 connections)
-- **Get NPC names for multiple NPCs in a batch operation. Args: npc_ids: List of…** (1 connections) — `server/realtime/integration/game_state_provider.py`
-- *... and 18 more nodes in this community*
+- **._subscribe_to_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- **._subscribe_to_standardized_chat_subjects()** (4 connections) — `server/realtime/nats_message_handler.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (7 shared connections)
-- [connection_manager.py](connection_manager.py.md) (4 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [test_websocket_room_updates.py](test_websocket_room_updates.py.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
 - [.state](state.md) (3 shared connections)
-- [test_game_state_provider.py](test_game_state_provider.py.md) (2 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [lifespan_protocols.py](lifespan_protocols.py.md) (2 shared connections)
+- [realtime/conftest.py](realtime-conftest.py.md) (2 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
-- [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
-- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (1 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
-- [quest_service](quest_service.md) (1 shared connections)
-- [build_event](build_event.md) (1 shared connections)
-- [resolve_connection_manager](resolve_connection_manager.md) (1 shared connections)
+- [DeadLetterQueue](DeadLetterQueue.md) (2 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (2 shared connections)
+- [MessageFilteringHelper](MessageFilteringHelper.md) (2 shared connections)
 
 ## Source Files
 
@@ -53,8 +53,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (90%)
-- INFERRED: 11 (10%)
+- EXTRACTED: 131 (88%)
+- INFERRED: 18 (12%)
 - AMBIGUOUS: 0 (0%)
 
 ---

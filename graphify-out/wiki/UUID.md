@@ -1,53 +1,30 @@
 # UUID
 
-> 29 nodes
+> 5 nodes
 
 ## Key Concepts
 
-- **UUID** (15 connections)
-- **._award_xp_via_persistence_fallback()** (7 connections) — `server/services/player_combat_service.py`
-- **.award_xp_on_npc_death()** (6 connections) — `server/services/player_combat_service.py`
-- **.clear_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **._get_xp_from_lifecycle_manager()** (5 connections) — `server/services/player_combat_service.py`
-- **.track_player_combat_state()** (5 connections) — `server/services/player_combat_service.py`
-- **._award_xp_via_npc_rewards()** (4 connections) — `server/services/player_combat_service.py`
-- **.calculate_xp_reward()** (4 connections) — `server/services/player_combat_service.py`
-- **.handle_combat_end()** (4 connections) — `server/services/player_combat_service.py`
-- **.handle_combat_start()** (4 connections) — `server/services/player_combat_service.py`
-- **.handle_npc_death()** (4 connections) — `server/services/player_combat_service.py`
-- **.cleanup_stale_combat_states()** (3 connections) — `server/services/player_combat_service.py`
-- **.get_players_in_combat()** (3 connections) — `server/services/player_combat_service.py`
-- **.is_player_in_combat()** (3 connections) — `server/services/player_combat_service.py`
-- **.is_player_in_combat_sync()** (3 connections) — `server/services/player_combat_service.py`
-- **Track a player's combat state. Args: player_id: ID of the player player_name:…** (1 connections) — `server/services/player_combat_service.py`
-- **Clear a player's combat state. Args: player_id: ID of the player** (1 connections) — `server/services/player_combat_service.py`
-- **Synchronously check if a player is currently in combat. This is the preferred…** (1 connections) — `server/services/player_combat_service.py`
-- **Check if a player is currently in combat. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
-- **Get all players currently in combat. Returns: List of player IDs currently in…** (1 connections) — `server/services/player_combat_service.py`
-- **Handle combat start for a player. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
-- **Handle combat end by clearing all players in the combat. Args: combat_id: ID of…** (1 connections) — `server/services/player_combat_service.py`
-- **Handle NPC death and award XP to the player. Args: player_id: ID of the player…** (1 connections) — `server/services/player_combat_service.py`
-- **Return True if the NPC rewards path handled the award (success or logged…** (1 connections) — `server/services/player_combat_service.py`
-- **Fallback: load player, add XP, save, publish (used without integration in…** (1 connections) — `server/services/player_combat_service.py`
-- *... and 4 more nodes in this community*
+- **UUID** (8 connections)
+- **._publish_player_dp_correction_event()** (5 connections) — `server/services/combat_hp_sync.py`
+- **._persist_player_dp_background()** (3 connections) — `server/services/combat_hp_sync.py`
+- **Publish a correction event when database persistence fails.** (1 connections) — `server/services/combat_hp_sync.py`
+- **Persist player DP to database in background (fire-and-forget). This method runs…** (1 connections) — `server/services/combat_hp_sync.py`
 
 ## Relationships
 
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (15 shared connections)
-- [test_player_combat_service.py](test_player_combat_service.py.md) (2 shared connections)
-- [PlayerXPAwardEvent](PlayerXPAwardEvent.md) (1 shared connections)
-- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
-- [PositionPlayer](PositionPlayer.md) (1 shared connections)
-- [_JSONDict](_JSONDict.md) (1 shared connections)
+- [NATSError](NATSError.md) (7 shared connections)
+- [EventBus](EventBus.md) (1 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/services/player_combat_service.py`
+- `server/services/combat_hp_sync.py`
 
 ## Audit Trail
 
-- EXTRACTED: 52 (95%)
-- INFERRED: 3 (5%)
+- EXTRACTED: 14 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

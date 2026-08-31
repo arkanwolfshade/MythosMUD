@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [NPCLifecycleManager](NPCLifecycleManager.md) (13 shared connections)
-- [game_tick_processing.py](game_tick_processing.py.md) (3 shared connections)
-- [NPCDefinition](NPCDefinition.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
-- [ZoneConfiguration](ZoneConfiguration.md) (1 shared connections)
+- [event_types.py](event_types.py.md) (13 shared connections)
+- [NPCDefinition](NPCDefinition.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (2 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (1 shared connections)
 
 ## Source Files
 

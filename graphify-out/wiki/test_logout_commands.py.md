@@ -33,13 +33,12 @@
 
 ## Relationships
 
+- [AliasStorage](AliasStorage.md) (9 shared connections)
 - [TestLogoutCommand](TestLogoutCommand.md) (8 shared connections)
-- [AliasStorage](AliasStorage.md) (6 shared connections)
 - [get_cached_player](get_cached_player.md) (5 shared connections)
 - [fixture](fixture.md) (4 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

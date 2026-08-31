@@ -1,6 +1,6 @@
 # HealthStatus
 
-> 113 nodes
+> 122 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,9 @@
 - **health_service.py** (17 connections) — `server/services/health_service.py`
 - **health.py** (15 connections) — `server/models/health.py`
 - **patch** (14 connections)
+- **get_health_status()** (13 connections) — `server/api/monitoring.py`
 - **HealthErrorResponse** (10 connections) — `server/models/health.py`
+- **test_get_health_status_healthy_returns_model()** (9 connections) — `server/tests/unit/api/test_monitoring_endpoints.py`
 - **test_health_response_creation()** (8 connections) — `server/tests/unit/models/test_health.py`
 - **test_health_response_default_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
 - **test_health_response_with_alerts()** (8 connections) — `server/tests/unit/models/test_health.py`
@@ -27,35 +29,35 @@
 - **test_generate_alerts_no_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_generate_alerts_with_alerts()** (7 connections) — `server/tests/unit/services/test_health_service.py`
 - **test_get_health_status_version_fallback()** (7 connections) — `server/tests/unit/services/test_health_service.py`
-- **BaseModel** (6 connections)
-- **test_connections_component_creation()** (4 connections) — `server/tests/unit/models/test_health.py`
-- *... and 88 more nodes in this community*
+- *... and 97 more nodes in this community*
 
 ## Relationships
 
 - [api/monitoring.py](api-monitoring.py.md) (21 shared connections)
-- [HealthService](HealthService.md) (12 shared connections)
-- [Player](Player.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
+- [HealthService](HealthService.md) (13 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (4 shared connections)
+- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
 - [_RaisesOnBool](_RaisesOnBool.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (3 shared connections)
-- [Any](Any.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [health_service](health_service.md) (2 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [StandardizedErrorResponse](StandardizedErrorResponse.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [ValidationError](ValidationError.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/monitoring.py`
 - `server/models/health.py`
 - `server/services/health_service.py`
+- `server/tests/unit/api/test_monitoring_endpoints.py`
 - `server/tests/unit/models/test_health.py`
 - `server/tests/unit/services/test_health_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 252 (85%)
-- INFERRED: 46 (15%)
+- EXTRACTED: 271 (85%)
+- INFERRED: 48 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

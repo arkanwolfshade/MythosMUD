@@ -1,78 +1,78 @@
 # get_logger
 
-> 814 nodes
+> 466 nodes
 
 ## Key Concepts
 
 - **get_logger()** (530 connections) — `server/structured_logging/enhanced_logging_config.py`
 - **enhanced_logging_config.py** (506 connections) — `server/structured_logging/enhanced_logging_config.py`
-- **ValidationError** (314 connections) — `server/exceptions.py`
-- **DatabaseError** (251 connections) — `server/exceptions.py`
-- **server/exceptions.py** (245 connections) — `server/exceptions.py`
-- **log_and_raise()** (189 connections) — `server/utils/error_logging.py`
-- **get_session_maker()** (100 connections) — `server/database.py`
-- **sqlalchemy.md** (98 connections) — `.claude/rules/sqlalchemy.md`
-- **log_and_raise_enhanced()** (97 connections) — `server/utils/enhanced_error_logging.py`
-- **async_persistence.py** (85 connections) — `server/async_persistence.py`
-- **database.py** (83 connections) — `server/database.py`
-- **error_logging.py** (61 connections) — `server/utils/error_logging.py`
-- **MythosMUDError** (53 connections) — `server/exceptions.py`
-- **get_async_session()** (53 connections) — `server/database.py`
+- **connection_manager.py** (129 connections) — `server/realtime/connection_manager.py`
+- **time.py** (106 connections) — `server/container/bundles/time.py`
+- **get_config()** (102 connections) — `server/config/__init__.py`
+- **asyncio.md** (57 connections) — `.claude/rules/asyncio.md`
 - **player_service.py** (49 connections) — `server/game/player_service.py`
-- **command_parser.py** (47 connections) — `server/utils/command_parser.py`
-- **bundles/game.py** (40 connections) — `server/container/bundles/game.py`
+- **magic_service.py** (48 connections) — `server/game/magic/magic_service.py`
+- **threading.py** (45 connections) — `server/npc/threading.py`
+- **test_connection_disconnection.py** (42 connections) — `server/tests/unit/realtime/test_connection_disconnection.py`
 - **enhanced_error_logging.py** (38 connections) — `server/utils/enhanced_error_logging.py`
-- **AuthenticationError** (37 connections) — `server/exceptions.py`
-- **PlayerSpellRepository** (35 connections) — `server/persistence/repositories/player_spell_repository.py`
-- **test_exceptions_comprehensive.py** (35 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **repositories/__init__.py** (31 connections) — `server/persistence/repositories/__init__.py`
-- **PlayerRepository** (30 connections) — `server/persistence/repositories/player_repository.py`
-- **create_error_context()** (29 connections) — `server/exceptions.py`
-- **player_repository.py** (29 connections) — `server/persistence/repositories/player_repository.py`
-- *... and 789 more nodes in this community*
+- **nats_message_handler.py** (36 connections) — `server/realtime/nats_message_handler.py`
+- **connection_disconnection.py** (35 connections) — `server/realtime/connection_disconnection.py`
+- **nats_service.py** (34 connections) — `server/services/nats_service.py`
+- **ConnectionMetadata** (30 connections) — `server/realtime/connection_models.py`
+- **send_game_event()** (28 connections) — `server/realtime/connection_manager_api.py`
+- **time_service.py** (27 connections) — `server/time/time_service.py`
+- **_DisconnectConnectionManager** (26 connections) — `server/realtime/connection_disconnection.py`
+- **server/config/__init__.py** (26 connections) — `server/config/__init__.py`
+- **connection_session_management.py** (26 connections) — `server/realtime/connection_session_management.py`
+- **magic_service_completion.py** (25 connections) — `server/game/magic/magic_service_completion.py`
+- **holiday_service.py** (25 connections) — `server/services/holiday_service.py`
+- **time_event_consumer.py** (25 connections) — `server/time/time_event_consumer.py`
+- **event_handlers.py** (24 connections) — `server/realtime/event_handlers.py`
+- **nats_message_handler_processing.py** (24 connections) — `server/realtime/nats_message_handler_processing.py`
+- *... and 441 more nodes in this community*
 
 ## Relationships
 
-- [Player](Player.md) (98 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (84 shared connections)
-- [DatabaseManager](DatabaseManager.md) (73 shared connections)
-- [test_exceptions.py](test_exceptions.py.md) (65 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (58 shared connections)
-- [test_container_persistence_async_helpers.py](test_container_persistence_async_helpers.py.md) (56 shared connections)
-- [test_command_parser.py](test_command_parser.py.md) (44 shared connections)
-- [AliasStorage](AliasStorage.md) (43 shared connections)
-- [ErrorType](ErrorType.md) (37 shared connections)
-- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (36 shared connections)
-- [BaseCommand](BaseCommand.md) (36 shared connections)
-- [event_types.py](event_types.py.md) (35 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (91 shared connections)
+- [event_types.py](event_types.py.md) (77 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (45 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (35 shared connections)
+- [AliasStorage](AliasStorage.md) (32 shared connections)
+- [NATSError](NATSError.md) (30 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (26 shared connections)
+- [ValidationError](ValidationError.md) (25 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (24 shared connections)
+- [pytest.md](pytest.md.md) (24 shared connections)
+- [ConnectionManager](ConnectionManager.md) (23 shared connections)
+- [CombatInstance](CombatInstance.md) (23 shared connections)
 
 ## Source Files
 
-- `.claude/rules/sqlalchemy.md`
-- `e2e-tests/load-tests/get_invite_codes.py`
-- `schemas/validator.py`
-- `scripts/add_flavor_text_column.py`
-- `scripts/load_seed_using_project_db.py`
-- `scripts/verify_and_load_seed.py`
-- `server/alembic/versions/2025_11_12_add_item_tables.py`
-- `server/async_persistence.py`
-- `server/async_persistence_direct_queries.py`
-- `server/async_persistence_room_loader.py`
-- `server/auth/argon2_utils.py`
-- `server/auth_utils.py`
-- `server/command_handler/command_execution_request.py`
-- `server/command_handler/processing.py`
+- `.claude/rules/asyncio.md`
+- `monitoring/webhook-receiver.py`
+- `server/api/containers.py`
+- `server/app/lifespan_event_subscriptions.py`
+- `server/app/memory_cleanup_service.py`
+- `server/app/memory_lifespan_coordinator.py`
+- `server/command_handler/alias_expansion.py`
+- `server/command_handler/command_input.py`
+- `server/commands/admin_permission_utils.py`
 - `server/commands/container_helpers_inventory_logging.py`
-- `server/container/bundles/game.py`
-- `server/container/utils.py`
-- `server/database.py`
-- `server/database_config_helpers.py`
+- `server/commands/shutdown_process_termination.py`
+- `server/commands/time_commands.py`
+- `server/config/__init__.py`
+- `server/config/models/_helpers.py`
+- `server/config/models/nats.py`
+- `server/container/bundles/time.py`
 - `server/events/event_bus_lifecycle.py`
+- `server/game/chat_moderation.py`
+- `server/game/chat_pose_manager.py`
+- `server/game/chat_whisper_tracker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4395 (92%)
-- INFERRED: 403 (8%)
+- EXTRACTED: 3109 (99%)
+- INFERRED: 35 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

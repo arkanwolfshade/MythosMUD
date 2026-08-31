@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [security.ts](security.ts.md) (7 shared connections)
 - [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [CharacterNameScreen.tsx](CharacterNameScreen.tsx.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
-- [security.ts](security.ts.md) (1 shared connections)
-- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
+- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (1 shared connections)
 
 ## Source Files
 

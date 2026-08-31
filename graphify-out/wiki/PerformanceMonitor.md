@@ -20,6 +20,7 @@
 - **record_performance_metric()** (6 connections) — `server/monitoring/performance_monitor.py`
 - **reset_performance_metrics()** (6 connections) — `server/monitoring/performance_monitor.py`
 - **get_performance_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
+- **peek_performance_monitor()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **.export_metrics()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **.get_operation_stats()** (5 connections) — `server/monitoring/performance_monitor.py`
 - **._trigger_alert()** (5 connections) — `server/monitoring/performance_monitor.py`
@@ -28,23 +29,22 @@
 - **.get_all_stats()** (4 connections) — `server/monitoring/performance_monitor.py`
 - **.get_recent_metrics()** (4 connections) — `server/monitoring/performance_monitor.py`
 - **test_module_level_helpers_use_global_monitor()** (4 connections) — `server/tests/unit/monitoring/test_performance_monitor.py`
-- **RecentMetricExport** (3 connections) — `server/monitoring/performance_monitor.py`
 - *... and 49 more nodes in this community*
 
 ## Relationships
 
-- [MonitoringDashboard](MonitoringDashboard.md) (14 shared connections)
+- [MonitoringDashboard](MonitoringDashboard.md) (13 shared connections)
 - [ExceptionTracker](ExceptionTracker.md) (12 shared connections)
-- [lifespan.py](lifespan.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (6 shared connections)
 - [fastapi_integration.py](fastapi_integration.py.md) (5 shared connections)
+- [service.py](service.py.md) (4 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (4 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (4 shared connections)
 - [testing_examples.py](testing_examples.py.md) (4 shared connections)
-- [service.py](service.py.md) (3 shared connections)
+- [MemoryLeakMetricsCollector](MemoryLeakMetricsCollector.md) (3 shared connections)
 - [correct_patterns.py](correct_patterns.py.md) (3 shared connections)
+- [log_with_context](log_with_context.md) (3 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [MemoryMonitor](MemoryMonitor.md) (2 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
 
 ## Source Files
 
@@ -56,7 +56,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 184 (92%)
+- EXTRACTED: 185 (92%)
 - INFERRED: 16 (8%)
 - AMBIGUOUS: 0 (0%)
 

@@ -33,14 +33,15 @@
 
 ## Relationships
 
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (14 shared connections)
-- [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
-- [ItemPrototypeModel](ItemPrototypeModel.md) (8 shared connections)
-- [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (16 shared connections)
+- [PrototypeRegistryError](PrototypeRegistryError.md) (7 shared connections)
+- [ItemPrototypeModel](ItemPrototypeModel.md) (7 shared connections)
+- [CombatInstance](CombatInstance.md) (3 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [validate_prototypes.py](validate_prototypes.py.md) (2 shared connections)
 - [.initialize](initialize.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [registry_with_switchblade](registry_with_switchblade.md) (1 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

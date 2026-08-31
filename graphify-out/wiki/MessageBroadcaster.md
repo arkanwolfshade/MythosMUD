@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (6 shared connections)
 - [build_event](build_event.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [test_message_broadcaster.py](test_message_broadcaster.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
 
 ## Source Files
 

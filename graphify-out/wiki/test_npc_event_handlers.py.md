@@ -33,8 +33,8 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (14 shared connections)
-- [MessageBuilder](MessageBuilder.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (13 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (4 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

@@ -21,9 +21,10 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (5 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (3 shared connections)
+- [ValidationError](ValidationError.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (1 shared connections)
 
 ## Source Files
 

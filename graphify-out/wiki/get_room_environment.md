@@ -30,7 +30,8 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (4 shared connections)
+- [validate_room_data](validate_room_data.md) (3 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

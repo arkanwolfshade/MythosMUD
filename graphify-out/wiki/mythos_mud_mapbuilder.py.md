@@ -33,7 +33,7 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (5 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (5 shared connections)
 
 ## Source Files
 

@@ -4,27 +4,25 @@
 
 ## Key Concepts
 
-- **TestGetPlayerService** (5 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_not_initialized()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **.test_get_player_service_success()** (3 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service() function.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service() returns player service from container.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
-- **Test get_player_service() raises error when service not initialized.** (1 connections) — `server/tests/unit/test_dependency_injection.py`
+- **TestGetPlayerService** (4 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_none_raises_runtime_error()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **.test_get_player_service_success()** (3 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service raises RuntimeError when service is None.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Tests for get_player_service dependency function.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
+- **Test get_player_service returns service when present.** (1 connections) — `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [PlayerService](PlayerService.md) (1 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/test_dependency_injection.py`
+- `server/tests/unit/infrastructure/test_dependencies.py`
 
 ## Audit Trail
 
-- EXTRACTED: 8 (89%)
-- INFERRED: 1 (11%)
+- EXTRACTED: 8 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

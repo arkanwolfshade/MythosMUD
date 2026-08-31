@@ -1,73 +1,78 @@
 # pytest.md
 
-> 296 nodes
+> 666 nodes
 
 ## Key Concepts
 
-- **pytest.md** (533 connections) — `.claude/rules/pytest.md`
-- **Stats** (77 connections) — `server/models/game.py`
-- **StatsGenerator** (43 connections) — `server/game/stats_generator.py`
-- **server/models/game.py** (33 connections) — `server/models/game.py`
-- **StatusEffect** (31 connections) — `server/models/game.py`
-- **test_game_stats_methods.py** (31 connections) — `server/tests/unit/models/test_game_stats_methods.py`
-- **Player** (26 connections) — `server/models/game.py`
-- **test_game_player.py** (23 connections) — `server/tests/unit/models/test_game_player.py`
-- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **players/player.py** (21 connections) — `server/schemas/players/player.py`
-- **test_stats_generator.py** (20 connections) — `server/tests/unit/game/test_stats_generator.py`
-- **test_dependency_injection.py** (20 connections) — `server/tests/unit/test_dependency_injection.py`
-- **StatusEffectType** (18 connections) — `server/models/game.py`
-- **InventoryItem** (17 connections) — `server/models/game.py`
-- **PositionState** (17 connections) — `server/models/game.py`
-- **stats_generator.py** (16 connections) — `server/game/stats_generator.py`
-- **test_game_status_effect.py** (15 connections) — `server/tests/unit/models/test_game_status_effect.py`
-- **generate_random_stats()** (12 connections) — `server/game/stats_generator.py`
-- **get_stats_generator()** (11 connections) — `server/dependencies.py`
-- **Stats** (11 connections)
-- **test_game_enums.py** (11 connections) — `server/tests/unit/models/test_game_enums.py`
-- **memory_profiler.py** (11 connections) — `server/utils/memory_profiler.py`
-- **PlayerBase** (10 connections) — `server/schemas/players/player.py`
-- **CharacterInfo** (9 connections) — `server/schemas/players/player.py`
-- **PlayerCreate** (9 connections) — `server/schemas/players/player.py`
-- *... and 271 more nodes in this community*
+- **pytest.md** (534 connections) — `.claude/rules/pytest.md`
+- **User** (301 connections) — `server/models/user.py`
+- **fastapi.md** (118 connections) — `.claude/rules/fastapi.md`
+- **container_endpoints_basic.py** (64 connections) — `server/api/container_endpoints_basic.py`
+- **models/user.py** (64 connections) — `server/models/user.py`
+- **test_container_helpers.py** (44 connections) — `server/tests/unit/api/test_container_helpers.py`
+- **api/container_helpers.py** (43 connections) — `server/api/container_helpers.py`
+- **test_async_persistence_core.py** (41 connections) — `server/tests/unit/infrastructure/test_async_persistence_core.py`
+- **api/game.py** (29 connections) — `server/api/game.py`
+- **test_containers.py** (29 connections) — `server/tests/unit/api/test_containers.py`
+- **transfer_items()** (28 connections) — `server/api/container_endpoints_basic.py`
+- **handle_transfer_items_exceptions()** (28 connections) — `server/api/container_exception_handlers.py`
+- **test_container_exception_handlers.py** (28 connections) — `server/tests/unit/api/test_container_exception_handlers.py`
+- **open_container()** (27 connections) — `server/api/container_endpoints_basic.py`
+- **test_auth_dependencies.py** (26 connections) — `server/tests/unit/auth/test_auth_dependencies.py`
+- **test_container_helpers_loot.py** (24 connections) — `server/tests/unit/api/test_container_helpers_loot.py`
+- **close_container()** (23 connections) — `server/api/container_endpoints_basic.py`
+- **handle_open_container_exceptions()** (23 connections) — `server/api/container_exception_handlers.py`
+- **asyncio** (23 connections)
+- **container_exception_handlers.py** (22 connections) — `server/api/container_exception_handlers.py`
+- **handle_close_container_exceptions()** (21 connections) — `server/api/container_exception_handlers.py`
+- **test_game.py** (21 connections) — `server/tests/unit/api/test_game.py`
+- **handle_loot_all_exceptions()** (20 connections) — `server/api/container_exception_handlers.py`
+- **get_player_id_from_user()** (19 connections) — `server/api/container_helpers.py`
+- **handle_container_service_error()** (19 connections) — `server/api/container_helpers.py`
+- *... and 641 more nodes in this community*
 
 ## Relationships
 
-- [BaseCommand](BaseCommand.md) (18 shared connections)
-- [get_logger](get_logger.md) (17 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (17 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (16 shared connections)
-- [Player](Player.md) (16 shared connections)
-- [PlayerService](PlayerService.md) (13 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (13 shared connections)
-- [player_schema_converter.py](player_schema_converter.py.md) (12 shared connections)
-- [run_flee_effect](run_flee_effect.md) (11 shared connections)
-- [LucidityService](LucidityService.md) (8 shared connections)
-- [players/__init__.py](players-__init__.py.md) (8 shared connections)
-- [test_character_creation_service.py](test_character_creation_service.py.md) (6 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (121 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (65 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (63 shared connections)
+- [LootAllRequest](LootAllRequest.md) (58 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (44 shared connections)
+- [PlayerService](PlayerService.md) (38 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (36 shared connections)
+- [BaseCommand](BaseCommand.md) (33 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (33 shared connections)
+- [test_users.py](test_users.py.md) (31 shared connections)
+- [ExplorationService](ExplorationService.md) (29 shared connections)
+- [get_logger](get_logger.md) (24 shared connections)
 
 ## Source Files
 
+- `.claude/rules/fastapi.md`
 - `.claude/rules/pytest.md`
-- `server/dependencies.py`
-- `server/game/stats_generator.py`
-- `server/models/game.py`
-- `server/schemas/players/player.py`
-- `server/tests/unit/game/test_stats_generator.py`
-- `server/tests/unit/models/test_game_enums.py`
-- `server/tests/unit/models/test_game_inventory_item.py`
-- `server/tests/unit/models/test_game_player.py`
-- `server/tests/unit/models/test_game_stats_methods.py`
-- `server/tests/unit/models/test_game_status_effect.py`
-- `server/tests/unit/schemas/test_player_schemas.py`
-- `server/tests/unit/test_asyncio_run_guardrails.py`
-- `server/tests/unit/test_dependency_injection.py`
-- `server/utils/memory_profiler.py`
+- `docs/examples/logging/fastapi_integration.py`
+- `server/api/container_endpoints_basic.py`
+- `server/api/container_exception_handlers.py`
+- `server/api/container_helpers.py`
+- `server/api/container_models.py`
+- `server/api/game.py`
+- `server/api/player_helpers.py`
+- `server/api/skills.py`
+- `server/auth/dependencies.py`
+- `server/auth/endpoints.py`
+- `server/auth/users.py`
+- `server/models/user.py`
+- `server/schemas/auth/invite.py`
+- `server/schemas/game/__init__.py`
+- `server/schemas/game/game.py`
+- `server/schemas/players/skill.py`
+- `server/tests/integration/test_db_connectivity.py`
+- `server/tests/integration/test_procedures_return_shape.py`
 
 ## Audit Trail
 
-- EXTRACTED: 1152 (100%)
-- INFERRED: 4 (0%)
+- EXTRACTED: 2283 (92%)
+- INFERRED: 200 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

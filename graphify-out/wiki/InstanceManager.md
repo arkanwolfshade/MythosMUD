@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [event_types.py](event_types.py.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [event_types.py](event_types.py.md) (5 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (3 shared connections)
 - [Room](Room.md) (2 shared connections)
 - [ExplorationService](ExplorationService.md) (1 shared connections)
 - [MovementService](MovementService.md) (1 shared connections)
 - [PlayerPositionService](PlayerPositionService.md) (1 shared connections)
+- [FollowService](FollowService.md) (1 shared connections)
 - [PartyService](PartyService.md) (1 shared connections)
 - [.initialize](initialize.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
 - [Alias](Alias.md) (1 shared connections)
-- [EventBus](EventBus.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

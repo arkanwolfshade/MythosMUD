@@ -1,44 +1,48 @@
 # asyncio
 
-> 11 nodes
+> 31 nodes
 
 ## Key Concepts
 
-- **asyncio** (27 connections)
-- **test_delete_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_heal_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **test_update_player_location_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test heal_player() heals player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test delete_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
-- **Test apply_lucidity_loss() applies lucidity loss.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **asyncio** (15 connections)
+- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test remove_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test is_admin() returns False when persistence not available (#679: injected).** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes_async() uses cache when valid.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- **Test load_player_mutes_batch() with empty list.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
-- [test_player_service_mutations.py](test_player_service_mutations.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
-- [test_apply_corruption](test_apply_corruption.md) (1 shared connections)
-- [test_apply_corruption_player_not_found](test_apply_corruption_player_not_found.md) (1 shared connections)
-- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
-- [test_damage_player](test_damage_player.md) (1 shared connections)
-- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
-- [test_delete_player_persistence_fails](test_delete_player_persistence_fails.md) (1 shared connections)
-- [test_delete_player_success](test_delete_player_success.md) (1 shared connections)
-- [test_gain_occult_knowledge](test_gain_occult_knowledge.md) (1 shared connections)
-- [test_gain_occult_knowledge_player_not_found](test_gain_occult_knowledge_player_not_found.md) (1 shared connections)
-- [test_get_user_characters](test_get_user_characters.md) (1 shared connections)
+- [test_user_manager.py](test_user_manager.py.md) (15 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/game/test_player_service_mutations.py`
+- `server/tests/unit/services/test_user_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 37 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 45 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,12 +33,10 @@
 
 ## Relationships
 
-- [logger.ts](logger.ts.md) (4 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (3 shared connections)
+- [roomHandlers.ts](roomHandlers.ts.md) (7 shared connections)
 - [ResourceManager](ResourceManager.md) (3 shared connections)
-- [security.ts](security.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (1 shared connections)
+- [security.ts](security.ts.md) (3 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
 
 ## Source Files
 

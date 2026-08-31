@@ -33,16 +33,16 @@
 
 - [asyncio](asyncio.md) (12 shared connections)
 - [fixture](fixture.md) (5 shared connections)
-- [RoomService](RoomService.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [room_service.py](room_service.py.md) (1 shared connections)
 - [test_get_room_persistence_returns_dict](test_get_room_persistence_returns_dict.md) (1 shared connections)
 - [test_get_adjacent_rooms_success](test_get_adjacent_rooms_success.md) (1 shared connections)
 - [test_get_adjacent_rooms_source_not_found](test_get_adjacent_rooms_source_not_found.md) (1 shared connections)
-- [test_get_adjacent_rooms_no_exits](test_get_adjacent_rooms_no_exits.md) (1 shared connections)
 - [test_get_adjacent_rooms_null_exit](test_get_adjacent_rooms_null_exit.md) (1 shared connections)
 - [test_get_local_chat_scope](test_get_local_chat_scope.md) (1 shared connections)
 - [test_validate_room_exists_with_cache](test_validate_room_exists_with_cache.md) (1 shared connections)
+- [test_validate_room_exists_cache_not_found](test_validate_room_exists_cache_not_found.md) (1 shared connections)
 
 ## Source Files
 

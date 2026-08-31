@@ -1,49 +1,40 @@
 # asyncio
 
-> 17 nodes
+> 15 nodes
 
 ## Key Concepts
 
-- **asyncio** (24 connections)
-- **test_save_players_success()** (4 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_get_player_by_user_id_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_soft_delete_player_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_update_player_last_active_success()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **test_update_player_last_active_with_timestamp()** (3 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_id returns None when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test get_player_by_user_id returns None when no players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test save_players successfully saves multiple players.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test soft_delete_player successfully soft deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player successfully deletes player.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test delete_player returns False when player not found.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active successfully updates timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
-- **Test update_player_last_active with provided timestamp.** (1 connections) — `server/tests/unit/persistence/test_player_repository.py`
+- **asyncio** (8 connections)
+- **test_call_rejects_when_open()** (6 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_closes_from_half_open_on_success()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_failure_closed_state()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_opens_circuit_after_threshold()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_reopens_from_half_open_on_failure()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_transitions_to_half_open_after_timeout()** (5 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **test_call_success_closed_state()** (4 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() closes circuit from HALF_OPEN after success threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() reopens circuit from HALF_OPEN on failure.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() executes successfully in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() handles failure in CLOSED state.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() opens circuit after failure threshold.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() raises CircuitBreakerOpen when circuit is OPEN.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
+- **Test call() transitions to HALF_OPEN after timeout.** (1 connections) — `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Relationships
 
-- [test_player_repository.py](test_player_repository.py.md) (10 shared connections)
-- [_make_mock_row](_make_mock_row.md) (6 shared connections)
-- [Player](Player.md) (1 shared connections)
-- [test_get_player_by_name_database_error](test_get_player_by_name_database_error.md) (1 shared connections)
-- [test_get_player_by_user_id_success](test_get_player_by_user_id_success.md) (1 shared connections)
-- [test_get_players_batch_success](test_get_players_batch_success.md) (1 shared connections)
-- [test_list_players_database_error](test_list_players_database_error.md) (1 shared connections)
-- [test_save_player_database_error](test_save_player_database_error.md) (1 shared connections)
-- [test_save_player_success](test_save_player_success.md) (1 shared connections)
-- [test_save_player_with_bool_is_admin](test_save_player_with_bool_is_admin.md) (1 shared connections)
-- [test_soft_delete_player_not_found](test_soft_delete_player_not_found.md) (1 shared connections)
+- [test_circuit_breaker.py](test_circuit_breaker.py.md) (8 shared connections)
+- [CircuitBreaker](CircuitBreaker.md) (7 shared connections)
+- [CircuitState](CircuitState.md) (6 shared connections)
+- [format_message_content](format_message_content.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/persistence/test_player_repository.py`
+- `server/tests/unit/realtime/test_circuit_breaker.py`
 
 ## Audit Trail
 
-- EXTRACTED: 40 (98%)
-- INFERRED: 1 (2%)
+- EXTRACTED: 22 (61%)
+- INFERRED: 14 (39%)
 - AMBIGUOUS: 0 (0%)
 
 ---

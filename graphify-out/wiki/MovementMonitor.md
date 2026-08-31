@@ -35,9 +35,8 @@
 
 - [api/monitoring.py](api-monitoring.py.md) (11 shared connections)
 - [test_movement_monitor.py](test_movement_monitor.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [threading.py](threading.py.md) (1 shared connections)
-- [movement_service.py](movement_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (1 shared connections)
 
 ## Source Files
 

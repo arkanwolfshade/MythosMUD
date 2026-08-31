@@ -33,12 +33,11 @@
 
 ## Relationships
 
-- [connection_manager.py](connection_manager.py.md) (6 shared connections)
+- [connection_manager_methods.py](connection_manager_methods.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [build_event](build_event.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [PlayerEnteredRoom](PlayerEnteredRoom.md) (2 shared connections)
 - [GameStateProvider](GameStateProvider.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

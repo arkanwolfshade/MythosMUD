@@ -32,7 +32,7 @@
 - event_bus.py `EXTRACTED`
 
 ### imports
-- [connection_manager.py](connection_manager.py.md) `EXTRACTED`
+- connection_manager.py `EXTRACTED`
 - combat_service.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - test_population_control.py `EXTRACTED`
@@ -47,11 +47,11 @@
 - test_spawning_modules.py `EXTRACTED`
 - spawning_service.py `EXTRACTED`
 - memory_monitor.py `EXTRACTED`
-- [movement_service.py](movement_service.py.md) `EXTRACTED`
+- movement_service.py `EXTRACTED`
 - event_handler.py `EXTRACTED`
 - chat_npc_system.py `EXTRACTED`
-- follow_service.py `EXTRACTED`
 - models/room.py `EXTRACTED`
+- follow_service.py `EXTRACTED`
 
 ### inherits
 - [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`
@@ -101,14 +101,14 @@
 ### uses
 - [CombatService](CombatService.md) `INFERRED`
 - BaseEvent `INFERRED`
-- [NPCLifecycleManager](NPCLifecycleManager.md) `INFERRED`
+- [FollowService](FollowService.md) `INFERRED`
+- NPCLifecycleManager `INFERRED`
 - NPCSpawningService `INFERRED`
 - NPCPopulationController `INFERRED`
 - [CombatCommandHandler](CombatCommandHandler.md) `INFERRED`
-- FollowService `INFERRED`
 - [PartyService](PartyService.md) `INFERRED`
 - [MythosTickScheduler](MythosTickScheduler.md) `INFERRED`
-- MythosTimeEventConsumer `INFERRED`
+- [MythosTimeEventConsumer](MythosTimeEventConsumer.md) `INFERRED`
 - NPCInstanceService `INFERRED`
 - create_npc_instance() `INFERRED`
 - initialize_npc_instance_service() `INFERRED`

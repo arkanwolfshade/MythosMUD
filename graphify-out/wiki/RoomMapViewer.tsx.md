@@ -40,9 +40,9 @@
 - [GameClientV2.tsx](GameClientV2.tsx.md) (5 shared connections)
 - [useRoomEditModal.ts](useRoomEditModal.ts.md) (5 shared connections)
 - [stateNormalization.ts](stateNormalization.ts.md) (4 shared connections)
-- [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (4 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (4 shared connections)
 - [MapPerformanceMonitor](MapPerformanceMonitor.md) (3 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
+- [eventHandlers/types.ts](eventHandlers-types.ts.md) (2 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (2 shared connections)
 

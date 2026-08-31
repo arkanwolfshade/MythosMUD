@@ -1,20 +1,16 @@
 # test_manager.py
 
-> 83 nodes
+> 76 nodes
 
 ## Key Concepts
 
 - **test_manager.py** (49 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **subject_manager()** (7 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **subject_manager_no_cache()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **subject_manager_no_metrics()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_subject_too_long()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_nats_subject_manager_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_nats_subject_manager_init_custom_max_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_nats_subject_manager_init_no_cache()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_nats_subject_manager_init_no_metrics()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_nats_subject_manager_init_strict_validation()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- **fixture** (3 connections)
 - **test_build_subject_invalid_parameter_value()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_missing_parameter()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_build_subject_multiple_params()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
@@ -29,16 +25,20 @@
 - **test_get_event_subscription_patterns()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_get_pattern_info_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
 - **test_get_pattern_info_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
-- *... and 58 more nodes in this community*
+- **test_get_performance_metrics_with_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_performance_metrics_without_metrics()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_subscription_pattern_not_found()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- **test_get_subscription_pattern_success()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_manager.py`
+- *... and 51 more nodes in this community*
 
 ## Relationships
 
-- [NATSSubjectManager](NATSSubjectManager.md) (10 shared connections)
-- [SubjectValidator](SubjectValidator.md) (6 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (1 shared connections)
-- [.initialize](initialize.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (7 shared connections)
+- [PatternNotFoundError](PatternNotFoundError.md) (3 shared connections)
+- [SubjectValidator](SubjectValidator.md) (3 shared connections)
+- [subject_manager_no_cache](subject_manager_no_cache.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 98 (94%)
-- INFERRED: 6 (6%)
+- EXTRACTED: 92 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

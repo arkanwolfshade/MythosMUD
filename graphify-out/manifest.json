@@ -3366,8 +3366,8 @@
     "semantic_hash": "8c2546cea6741735e9fe12893db68d46"
   },
   "docs/openapi/openapi.json": {
-    "mtime": 1788185076.1956806,
-    "seen": 1788192785.508005,
+    "mtime": 1788202867.5528448,
+    "seen": 1788205932.3910453,
     "ast_hash": "6183dfe04295f798f4666ed0ea9de6b2",
     "semantic_hash": ""
   },
@@ -5130,9 +5130,9 @@
     "semantic_hash": "6cb54bf11893846ac2ba0fae1c4ca827"
   },
   "server/commands/admin_setstat_command.py": {
-    "mtime": 1788190363.9916966,
-    "seen": 1788192785.5237434,
-    "ast_hash": "448525c8cca3c98b6461f0949222d177",
+    "mtime": 1788200764.8678148,
+    "seen": 1788205932.4086554,
+    "ast_hash": "b6914c1da08de74fcb5b7312d65d0828",
     "semantic_hash": ""
   },
   "server/commands/admin_shutdown_command.py": {
@@ -5964,9 +5964,9 @@
     "semantic_hash": "7d0f73a43d9278d3ef48ec75afe94147"
   },
   "server/game/follow_service.py": {
-    "mtime": 1788192602.7186086,
-    "seen": 1788192785.5307453,
-    "ast_hash": "bac03e8541c2d01cc2fb6be8196c68d8",
+    "mtime": 1788201757.1903226,
+    "seen": 1788205932.4161441,
+    "ast_hash": "4c5de152f04784516fcfb53303f3b774",
     "semantic_hash": ""
   },
   "server/game/instance_manager.py": {
@@ -6486,9 +6486,9 @@
     "semantic_hash": "422c09109459404b3ae9b6ba02316c03"
   },
   "server/models/player.py": {
-    "mtime": 1788187788.0450735,
-    "seen": 1788192785.535163,
-    "ast_hash": "f77b1de3ede2222b789ad1b6d10459af",
+    "mtime": 1788200925.9199288,
+    "seen": 1788205932.4211586,
+    "ast_hash": "197cbe74ea4594e8ef52583ed8187f04",
     "semantic_hash": ""
   },
   "server/models/player_effect.py": {
@@ -7356,9 +7356,9 @@
     "semantic_hash": "359bf8d0f793a6d69d454605037318be"
   },
   "server/realtime/player_event_handlers_respawn.py": {
-    "mtime": 1788187995.5045886,
-    "seen": 1788192785.542728,
-    "ast_hash": "787ad105fa21f62ac0aee789991dedd6",
+    "mtime": 1788201758.4771252,
+    "seen": 1788205932.4295118,
+    "ast_hash": "27017922167a54e345e2578e1438a655",
     "semantic_hash": ""
   },
   "server/realtime/player_event_handlers_room.py": {
@@ -7368,9 +7368,9 @@
     "semantic_hash": "85dbafaf21f656ac15aab65c7d190962"
   },
   "server/realtime/player_event_handlers_state.py": {
-    "mtime": 1788187007.1187956,
-    "seen": 1788192785.5427787,
-    "ast_hash": "d0d788c87cfd8971d9fb59054a071ef9",
+    "mtime": 1788202004.9483714,
+    "seen": 1788205932.4295676,
+    "ast_hash": "4a30dcd572e888032c10df75598473ef",
     "semantic_hash": ""
   },
   "server/realtime/player_event_handlers_utils.py": {
@@ -8040,9 +8040,9 @@
     "semantic_hash": "74082a83b2d5a48968fc3a777b6c12e2"
   },
   "server/services/combat_service_start.py": {
-    "mtime": 1788190958.06557,
-    "seen": 1788192785.5487432,
-    "ast_hash": "82ee57f5ae1f1b07e77a1772bf60f450",
+    "mtime": 1788194432.104783,
+    "seen": 1788205932.4362967,
+    "ast_hash": "96ecf481ad8695728fcc8c837d5c2426",
     "semantic_hash": ""
   },
   "server/services/combat_service_state.py": {
@@ -8454,9 +8454,9 @@
     "semantic_hash": "1654ba2f5250b4548b76b20cd3cbde21"
   },
   "server/services/player_position_service.py": {
-    "mtime": 1788190957.8290427,
-    "seen": 1788192785.5525224,
-    "ast_hash": "561f5991cd0729a597fa1408c5fdaf3d",
+    "mtime": 1788202004.949672,
+    "seen": 1788205932.4404035,
+    "ast_hash": "d0e36c5e1973edd578b8df9944011e89",
     "semantic_hash": ""
   },
   "server/services/player_preferences_service.py": {
@@ -8988,9 +8988,9 @@
     "semantic_hash": "11f9b0d5f03ae8607db5490f15e605a3"
   },
   "server/tests/unit/commands/test_admin_setstat_command.py": {
-    "mtime": 1788190363.9916966,
-    "seen": 1788192785.5588186,
-    "ast_hash": "43466f7a3d53363a84fc5867e4f09eb4",
+    "mtime": 1788195201.53358,
+    "seen": 1788205932.4484308,
+    "ast_hash": "783fab97f8cd0891d2c7043a6373a471",
     "semantic_hash": ""
   },
   "server/tests/unit/commands/test_admin_shutdown_command.py": {
@@ -9336,10 +9336,10 @@
     "semantic_hash": "ebcb59145fabf4c3c11dca564b5e8709"
   },
   "server/tests/unit/commands/test_position_commands.py": {
-    "mtime": 1786571994.9312901,
-    "seen": 1787249678.6050913,
-    "ast_hash": "f438cabd4538299b8b716da055ebb5a9",
-    "semantic_hash": "f438cabd4538299b8b716da055ebb5a9"
+    "mtime": 1788202613.1992407,
+    "seen": 1788205932.4532096,
+    "ast_hash": "95ae52012d3aec64130cffdf107cf087",
+    "semantic_hash": ""
   },
   "server/tests/unit/commands/test_position_commands_helpers.py": {
     "mtime": 1788187995.5035667,
@@ -9366,9 +9366,9 @@
     "semantic_hash": "00e5ac90ec54596c04f7f9605f94a37a"
   },
   "server/tests/unit/commands/test_rest_command.py": {
-    "mtime": 1788187334.5349216,
-    "seen": 1788192785.5629427,
-    "ast_hash": "3642a74da95ca8c1f3ff61f73d084f06",
+    "mtime": 1788200764.8678148,
+    "seen": 1788205932.4535813,
+    "ast_hash": "2898ff561b8cd94ee9443a515d8ac13d",
     "semantic_hash": ""
   },
   "server/tests/unit/commands/test_status_commands.py": {
@@ -9522,9 +9522,9 @@
     "semantic_hash": "b9a6dc6ed19ce24094733cc41ba5ba53"
   },
   "server/tests/unit/game/test_follow_service.py": {
-    "mtime": 1788192602.674912,
-    "seen": 1788192785.5662951,
-    "ast_hash": "010c52d7723b56b4baa4f3147e8e1a70",
+    "mtime": 1788200764.868816,
+    "seen": 1788205932.457037,
+    "ast_hash": "b75d92979489859d83fc91c84e2ec0fc",
     "semantic_hash": ""
   },
   "server/tests/unit/game/test_instance_manager.py": {
@@ -10416,9 +10416,9 @@
     "semantic_hash": "c49b0ba7ceddc4063750fcafbc7e5eb1"
   },
   "server/tests/unit/realtime/test_player_event_handlers_respawn.py": {
-    "mtime": 1788187196.10998,
-    "seen": 1788192785.57784,
-    "ast_hash": "a8ebe6ecc33353670f6695e7134ae505",
+    "mtime": 1788200764.8678148,
+    "seen": 1788205932.4691284,
+    "ast_hash": "5e04c76ca6e23e3da4f5f6e2cf2b4721",
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_player_event_handlers_room.py": {
@@ -10434,9 +10434,9 @@
     "semantic_hash": "c7f3ee5f163689199cff90efcb461c0b"
   },
   "server/tests/unit/realtime/test_player_event_handlers_state.py": {
-    "mtime": 1788187517.0559204,
-    "seen": 1788192785.577966,
-    "ast_hash": "06e87110c83099b7e0eacd670f90dc7f",
+    "mtime": 1788200764.868816,
+    "seen": 1788205932.4692328,
+    "ast_hash": "81ba6c2941cb5d49dae38a51f8b061c1",
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_player_event_handlers_utils.py": {
@@ -11952,8 +11952,8 @@
     "semantic_hash": "14a662582b3347bd10912dbe7dd9b8a2"
   },
   ".codacy/codacy.yaml": {
-    "mtime": 1788192644.3511908,
-    "seen": 1788192785.597458,
+    "mtime": 1788205813.9985683,
+    "seen": 1788205932.490271,
     "ast_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d",
     "semantic_hash": "b657d1aa91f6ddc9bd0130ad3cbf457d"
   },
@@ -12834,9 +12834,9 @@
     "semantic_hash": "66cd7e734bb71ecc06c0e5293053c562"
   },
   "client/src/components/ui-v2/eventLog/EVENTS_SCHEMA.md": {
-    "mtime": 1788187315.3657045,
-    "seen": 1788192785.6050546,
-    "ast_hash": "ae90548f048c935d34edc616325fd6a4",
+    "mtime": 1788200766.9268715,
+    "seen": 1788205932.49857,
+    "ast_hash": "c1ce5c0707b5f4045442648dbf1bf867",
     "semantic_hash": ""
   },
   "client/src/components/ui-v2/eventLog/HANDOFFS.md": {
@@ -13326,8 +13326,8 @@
     "semantic_hash": "351d122328066b0fb394e37d09fbb516"
   },
   "docs/architecture/API_OPENAPI_SPECIFICATION.md": {
-    "mtime": 1788185076.2026808,
-    "seen": 1788192785.6160862,
+    "mtime": 1788202867.5538461,
+    "seen": 1788205932.5111122,
     "ast_hash": "28224fd1a376662188d3dbd768372609",
     "semantic_hash": ""
   },
@@ -17640,10 +17640,10 @@
     "semantic_hash": "9d35ad87c14facf97069bc8d837de88e"
   },
   "server/tests/unit/services/test_combat_service_modules.py": {
-    "mtime": 1787247285.9884613,
-    "seen": 1787781232.7491605,
-    "ast_hash": "39239f18b209854b71cca66f06924042",
-    "semantic_hash": "39239f18b209854b71cca66f06924042"
+    "mtime": 1788202613.1992407,
+    "seen": 1788205932.473762,
+    "ast_hash": "7e5127eab46c8c28068926f8a4ce9a83",
+    "semantic_hash": ""
   },
   "server/tests/unit/services/test_combat_service_npc_helpers.py": {
     "mtime": 1786659775.284689,
@@ -18954,8 +18954,8 @@
     "semantic_hash": "2f4fa02488b6fc250d942915bebb11f3"
   },
   ".codacy/tools-configs/eslint.config.mjs": {
-    "mtime": 1788192634.0979254,
-    "seen": 1788192785.4725583,
+    "mtime": 1788205811.0530748,
+    "seen": 1788205932.3502898,
     "ast_hash": "36e2dc52f1147055b88e9173ef86b599",
     "semantic_hash": ""
   },
@@ -18972,32 +18972,32 @@
     "semantic_hash": "a3ae28c79135fc2e4badbe62d42bb4e8"
   },
   ".codacy/cli-config.yaml": {
-    "mtime": 1788192626.1117318,
-    "seen": 1788192785.5974567,
+    "mtime": 1788205795.5605514,
+    "seen": 1788205932.490268,
     "ast_hash": "203ff582a9910dce987a7cf705ef71f9",
     "semantic_hash": "203ff582a9910dce987a7cf705ef71f9"
   },
   ".codacy/tools-configs/analysis_options.yaml": {
-    "mtime": 1788192629.0490227,
-    "seen": 1788192785.5975106,
+    "mtime": 1788205801.3287654,
+    "seen": 1788205932.4903765,
     "ast_hash": "36910684fda7b41b4891198f6301f08b",
     "semantic_hash": "36910684fda7b41b4891198f6301f08b"
   },
   ".codacy/tools-configs/languages-config.yaml": {
-    "mtime": 1788192643.8414738,
-    "seen": 1788192785.597512,
+    "mtime": 1788205813.7015889,
+    "seen": 1788205932.4903781,
     "ast_hash": "cbe72bafe58616377844d94278c04f53",
     "semantic_hash": "cbe72bafe58616377844d94278c04f53"
   },
   ".codacy/tools-configs/lizard.yaml": {
-    "mtime": 1788192634.922956,
-    "seen": 1788192785.597513,
+    "mtime": 1788205797.932364,
+    "seen": 1788205932.49038,
     "ast_hash": "fec2ac51c841c76acbf00d6bd6081ba0",
     "semantic_hash": "fec2ac51c841c76acbf00d6bd6081ba0"
   },
   ".codacy/tools-configs/semgrep.yaml": {
-    "mtime": 1788192642.0873027,
-    "seen": 1788192785.5975142,
+    "mtime": 1788205808.5884655,
+    "seen": 1788205932.4903822,
     "ast_hash": "80625f6b393b5d5c540983baaa6c47fc",
     "semantic_hash": "80625f6b393b5d5c540983baaa6c47fc"
   },
@@ -19584,9 +19584,9 @@
     "semantic_hash": ""
   },
   "client/src/components/ui-v2/eventLog/__tests__/projector.messages.test.ts": {
-    "mtime": 1788188613.1982486,
-    "seen": 1788192785.4865546,
-    "ast_hash": "8bbfc72c5869f743e391e9f5f5dfd787",
+    "mtime": 1788200766.8918667,
+    "seen": 1788205932.367861,
+    "ast_hash": "8419aa37bb75b42b575c7d5f9d0b6b0f",
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/commands/look-command-game-info.spec.ts": {
@@ -19596,33 +19596,9 @@
     "semantic_hash": ""
   },
   "client/tests/e2e/runtime/commands/posture-messages-game-info.spec.ts": {
-    "mtime": 1788187995.9441037,
-    "seen": 1788192785.5016615,
-    "ast_hash": "0544b73d5acc5df443b04f6f0e5b0004",
-    "semantic_hash": ""
-  },
-  "data/e2e_test/aliases/ArkanWolfshade_aliases.json": {
-    "mtime": 1788127559.1009789,
-    "seen": 1788192785.506125,
-    "ast_hash": "243341d818baad6653cb8691bd6cb6ec",
-    "semantic_hash": ""
-  },
-  "data/e2e_test/aliases/Ithaqua_aliases.json": {
-    "mtime": 1788127559.4281185,
-    "seen": 1788192785.5061266,
-    "ast_hash": "0c295b06f344706a0460b715555b643f",
-    "semantic_hash": ""
-  },
-  "data/e2e_test/user_management/mutes_0f9d27ea-9e70-4366-b951-e7af320896a4.json": {
-    "mtime": 1788129749.5859723,
-    "seen": 1788192785.5061276,
-    "ast_hash": "b12e0cbefe097777f16ff2033bad0a72",
-    "semantic_hash": ""
-  },
-  "data/e2e_test/user_management/mutes_799d76a7-e761-46c9-afd8-5599d1564227.json": {
-    "mtime": 1788129749.5849726,
-    "seen": 1788192785.5061283,
-    "ast_hash": "f1e994b2c7867521f716a99589849f08",
+    "mtime": 1788201365.9747536,
+    "seen": 1788205932.3838596,
+    "ast_hash": "5dfdf99947e02c30d601f59c49dd0a9c",
     "semantic_hash": ""
   },
   "scripts/hads/test_validate.py": {
@@ -19638,21 +19614,21 @@
     "semantic_hash": ""
   },
   "server/commands/admin_setstat_support.py": {
-    "mtime": 1788190363.9916966,
-    "seen": 1788192785.5237446,
-    "ast_hash": "45617aab03adac2de6c0f79348b03c02",
+    "mtime": 1788201742.7615232,
+    "seen": 1788205932.4086568,
+    "ast_hash": "bb85a5e74a49098790975d74e5fd89af",
     "semantic_hash": ""
   },
   "server/game/follow_movement.py": {
-    "mtime": 1788192623.9370706,
-    "seen": 1788192785.5307446,
-    "ast_hash": "866463feb90018ad02c6a889272c6692",
+    "mtime": 1788202004.9501755,
+    "seen": 1788205932.4161427,
+    "ast_hash": "8f9856f17372661b2723271a5394fe2f",
     "semantic_hash": ""
   },
   "server/game/follow_types.py": {
-    "mtime": 1788192479.7138546,
-    "seen": 1788192785.5307462,
-    "ast_hash": "f296d7e50c14afecf93684fb3fb7dcf3",
+    "mtime": 1788202004.9516938,
+    "seen": 1788205932.416145,
+    "ast_hash": "c72004e848cc427f81b81a054ec21a9e",
     "semantic_hash": ""
   },
   "server/realtime/posture_notify.py": {
@@ -19668,9 +19644,9 @@
     "semantic_hash": ""
   },
   "server/tests/unit/realtime/test_posture_notify.py": {
-    "mtime": 1788187995.5035667,
-    "seen": 1788192785.5783339,
-    "ast_hash": "fc0a8097f2369134e00dcfddb12fa532",
+    "mtime": 1788197194.6555445,
+    "seen": 1788205932.4696083,
+    "ast_hash": "7595e085dcbd78acab384610e48b16ff",
     "semantic_hash": ""
   },
   "server/tests/unit/scripts/test_lint_optional_auth_no_guard.py": {
@@ -19755,6 +19731,24 @@
     "mtime": 1787956263.2670412,
     "seen": 1788192785.6300347,
     "ast_hash": "0733d69dadc81c349fa02c42acb75142",
+    "semantic_hash": ""
+  },
+  "server/realtime/player_event_handlers_respawn_room.py": {
+    "mtime": 1788202004.949672,
+    "seen": 1788205932.4295132,
+    "ast_hash": "baa5b066bb12e463db2179fb2a0a19c0",
+    "semantic_hash": ""
+  },
+  "server/realtime/player_event_handlers_respawn_types.py": {
+    "mtime": 1788193494.628111,
+    "seen": 1788205932.4295142,
+    "ast_hash": "53f5ca36b0d37bab05625205d740c75c",
+    "semantic_hash": ""
+  },
+  "server/tests/unit/commands/test_admin_setstat_command_context.py": {
+    "mtime": 1788200776.1318834,
+    "seen": 1788205932.4484322,
+    "ast_hash": "cf1885cd0f16a68efde9e587394fd0be",
     "semantic_hash": ""
   }
 }

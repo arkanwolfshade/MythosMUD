@@ -24,7 +24,7 @@
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
+- [sqlalchemy.md](sqlalchemy.md.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,45 +1,40 @@
 # asyncio
 
-> 13 nodes
+> 19 nodes
 
 ## Key Concepts
 
-- **asyncio** (22 connections)
-- **test_get_current_lucidity_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_delirium_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_error_handling()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_no_connection_manager()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **test_get_player_data_for_respawn_player_not_found()** (3 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_respawn() returns None when connection manager not…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_respawn() handles errors.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_current_lucidity() returns default when record not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_delirium_respawn() returns None when connection…** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
-- **Test get_player_data_for_delirium_respawn() returns None when player not found.** (1 connections) — `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- **asyncio** (7 connections)
+- **TestProcessAliasExpansion** (6 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **TestHandleSpecialCommandRouting** (5 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_alias_command_no_storage()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_handle_special_command_routing_emote_conversion()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_invalid_expanded()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_no_alias_storage()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **.test_process_alias_expansion_unsafe_alias()** (4 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing handles alias management commands.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing returns error when alias storage…** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _handle_special_command_routing converts single-word emotes.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion function.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when no alias storage.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns None when alias not found.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for unsafe alias.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
+- **Test _process_alias_expansion returns error for invalid expanded command.** (1 connections) — `server/tests/unit/commands/test_command_aliases.py`
 
 ## Relationships
 
-- [test_player_event_handlers_respawn.py](test_player_event_handlers_respawn.py.md) (8 shared connections)
-- [test_get_current_lucidity_found](test_get_current_lucidity_found.md) (1 shared connections)
-- [test_get_player_data_for_delirium_respawn_error_handling](test_get_player_data_for_delirium_respawn_error_handling.md) (1 shared connections)
-- [test_get_player_data_for_delirium_respawn_success](test_get_player_data_for_delirium_respawn_success.md) (1 shared connections)
-- [test_get_player_data_for_respawn_no_get_stats](test_get_player_data_for_respawn_no_get_stats.md) (1 shared connections)
-- [test_get_player_data_for_respawn_no_persistence](test_get_player_data_for_respawn_no_persistence.md) (1 shared connections)
-- [test_get_player_data_for_respawn_success](test_get_player_data_for_respawn_success.md) (1 shared connections)
-- [test_handle_player_delirium_respawned_error_handling](test_handle_player_delirium_respawned_error_handling.md) (1 shared connections)
-- [test_handle_player_delirium_respawned_success](test_handle_player_delirium_respawned_success.md) (1 shared connections)
-- [test_handle_player_respawned_error_handling](test_handle_player_respawned_error_handling.md) (1 shared connections)
-- [test_handle_player_respawned_success](test_handle_player_respawned_success.md) (1 shared connections)
-- [test_prepare_room_data_for_respawn_no_connection_manager](test_prepare_room_data_for_respawn_no_connection_manager.md) (1 shared connections)
+- [command_handler_unified.py](command_handler_unified.py.md) (9 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/realtime/test_player_event_handlers_respawn.py`
+- `server/tests/unit/commands/test_command_aliases.py`
 
 ## Audit Trail
 
-- EXTRACTED: 34 (100%)
+- EXTRACTED: 32 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

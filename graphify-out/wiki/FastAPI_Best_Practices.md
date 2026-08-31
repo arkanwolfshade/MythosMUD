@@ -16,7 +16,7 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 

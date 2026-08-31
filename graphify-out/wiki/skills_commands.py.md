@@ -31,11 +31,10 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (7 shared connections)
 - [api/character_creation.py](api-character_creation.py.md) (4 shared connections)
-- [test_skill_service.py](test_skill_service.py.md) (1 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

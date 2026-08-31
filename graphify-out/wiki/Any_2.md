@@ -1,36 +1,39 @@
 # Any
 
-> 9 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **Any** (8 connections)
-- **benchmark_model_memory_usage()** (7 connections) — `server/utils/memory_profiler.py`
-- **.compare_models_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_comparison_results()** (4 connections) — `server/utils/memory_profiler.py`
-- **.print_model_memory_usage()** (4 connections) — `server/utils/memory_profiler.py`
-- **Compare memory usage across multiple model classes. Args: model_classes: List…** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted model memory usage results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Print formatted comparison results.** (1 connections) — `server/utils/memory_profiler.py`
-- **Benchmark memory usage for all major models.** (1 connections) — `server/utils/memory_profiler.py`
+- **PlayerServiceProtocol** (6 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (5 connections) — `server/game/chat_moderation.py`
+- **.get_user_management_stats()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_by_id()** (3 connections) — `server/game/chat_moderation.py`
+- **.resolve_player_name()** (3 connections) — `server/game/chat_moderation.py`
+- **.get_player_mutes()** (2 connections) — `server/game/chat_moderation.py`
+- **.get_system_stats()** (2 connections) — `server/game/chat_moderation.py`
+- **Protocol** (2 connections)
+- **Protocol for player service.** (1 connections) — `server/game/chat_moderation.py`
+- **Resolve player name to player object.** (1 connections) — `server/game/chat_moderation.py`
+- **Get all mutes applied by a player.** (1 connections) — `server/game/chat_moderation.py`
+- **Get user management system statistics.** (1 connections) — `server/game/chat_moderation.py`
 
 ## Relationships
 
-- [MemoryProfiler](MemoryProfiler.md) (4 shared connections)
-- [.measure_model_deserialization](measure_model_deserialization.md) (4 shared connections)
-- [HealthStatus](HealthStatus.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
-- [Alias](Alias.md) (1 shared connections)
-- [.get_memory_usage_summary](get_memory_usage_summary.md) (1 shared connections)
+- [ChatModeration](ChatModeration.md) (5 shared connections)
+- [UserManagerProtocol](UserManagerProtocol.md) (3 shared connections)
+- [._format_mute_entry](_format_mute_entry.md) (2 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 
-- `server/utils/memory_profiler.py`
+- `server/game/chat_moderation.py`
 
 ## Audit Trail
 
-- EXTRACTED: 19 (86%)
-- INFERRED: 3 (14%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

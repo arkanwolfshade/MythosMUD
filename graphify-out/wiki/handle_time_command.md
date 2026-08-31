@@ -23,8 +23,9 @@
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (4 shared connections)
-- [get_username_from_user](get_username_from_user.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
 - [test_who_commands.py](test_who_commands.py.md) (1 shared connections)
 - [.state](state.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

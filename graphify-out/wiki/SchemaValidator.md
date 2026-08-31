@@ -36,7 +36,7 @@
 - [RoomLoader](RoomLoader.md) (12 shared connections)
 - [TestHierarchicalSchema](TestHierarchicalSchema.md) (3 shared connections)
 - [ValidationRule](ValidationRule.md) (2 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [SchemaValidator](SchemaValidator.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

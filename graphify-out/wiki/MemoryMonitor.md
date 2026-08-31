@@ -34,7 +34,7 @@
 ## Relationships
 
 - [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
 
 ## Source Files
 

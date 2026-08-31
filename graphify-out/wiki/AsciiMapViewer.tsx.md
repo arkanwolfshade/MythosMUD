@@ -34,13 +34,13 @@
 ## Relationships
 
 - [RoomMapViewer.tsx](RoomMapViewer.tsx.md) (10 shared connections)
-- [maps.ts](maps.ts.md) (6 shared connections)
+- [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
 - [GameClientV2ContainerView.tsx](GameClientV2ContainerView.tsx.md) (4 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (3 shared connections)
 - [GameClientV2.tsx](GameClientV2.tsx.md) (3 shared connections)
 - [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
 - [security.ts](security.ts.md) (2 shared connections)
-- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # ChatMessage
 
-> 41 nodes
+> 43 nodes
 
 ## Key Concepts
 
@@ -12,6 +12,7 @@
 - **store_message_in_room_history()** (11 connections) — `server/game/chat_message_helpers.py`
 - **create_and_log_say_message()** (7 connections) — `server/game/chat_message_helpers.py`
 - **store_global_message_in_history()** (6 connections) — `server/game/chat_message_helpers.py`
+- **test_get_room_messages()** (4 connections) — `server/tests/unit/game/test_chat_service.py`
 - **.to_dict()** (3 connections) — `server/game/chat_message.py`
 - **test_create_and_log_chat_message()** (3 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
 - **test_store_global_message_in_history_trims()** (3 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
@@ -28,19 +29,18 @@
 - **test_create_and_log_say_message()** (2 connections) — `server/tests/unit/game/test_chat_message_helpers.py`
 - **UUID** (2 connections)
 - **Any** (1 connections)
-- **Message creation and storage helpers for chat service.** (1 connections) — `server/game/chat_message_helpers.py`
-- *... and 16 more nodes in this community*
+- *... and 18 more nodes in this community*
 
 ## Relationships
 
-- [chat_service.py](chat_service.py.md) (27 shared connections)
-- [chat_channel_message_senders.py](chat_channel_message_senders.py.md) (15 shared connections)
-- [ChatService](ChatService.md) (15 shared connections)
+- [chat_service.py](chat_service.py.md) (31 shared connections)
+- [ChatService](ChatService.md) (16 shared connections)
 - [test_chat_npc_system.py](test_chat_npc_system.py.md) (14 shared connections)
+- [test_chat_message_senders.py](test_chat_message_senders.py.md) (10 shared connections)
 - [test_chat_nats_publisher.py](test_chat_nats_publisher.py.md) (5 shared connections)
 - [test_chat_validator.py](test_chat_validator.py.md) (5 shared connections)
 - [test_chat_pose_helpers.py](test_chat_pose_helpers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
 
 ## Source Files
 
@@ -52,7 +52,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 123 (86%)
+- EXTRACTED: 126 (86%)
 - INFERRED: 20 (14%)
 - AMBIGUOUS: 0 (0%)
 

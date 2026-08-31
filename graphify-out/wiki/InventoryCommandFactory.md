@@ -35,13 +35,16 @@
 
 - [test_command_factories_inventory.py](test_command_factories_inventory.py.md) (19 shared connections)
 - [test_command_factories_inventory_helpers.py](test_command_factories_inventory_helpers.py.md) (15 shared connections)
-- [get_logger](get_logger.md) (12 shared connections)
 - [.create_put_command](create_put_command.md) (10 shared connections)
 - [.create_get_command](create_get_command.md) (10 shared connections)
 - [.create_equip_command](create_equip_command.md) (9 shared connections)
 - [.create_drop_command](create_drop_command.md) (7 shared connections)
-- [BaseCommand](BaseCommand.md) (2 shared connections)
+- [ValidationError](ValidationError.md) (7 shared connections)
+- [log_and_raise_enhanced](log_and_raise_enhanced.md) (3 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
+- [CommandFactory](CommandFactory.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
 
 ## Source Files
 

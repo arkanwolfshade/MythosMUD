@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [QuestService](QuestService.md) (4 shared connections)
+- [QuestService](QuestService.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [quest_service.py](quest_service.py.md) (1 shared connections)
 
 ## Source Files
 

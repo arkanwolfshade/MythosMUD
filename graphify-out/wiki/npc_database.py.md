@@ -12,6 +12,7 @@
 - **init_npc_db()** (11 connections) — `server/npc_database.py`
 - **_initialize_npc_database()** (11 connections) — `server/npc_database.py`
 - **get_npc_database_path()** (10 connections) — `server/npc_database.py`
+- **get_postgres_connect_args()** (9 connections) — `server/database_config_helpers.py`
 - **close_npc_db()** (9 connections) — `server/npc_database.py`
 - **asyncio** (9 connections)
 - **TestNPCDatabaseInitialization** (8 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
@@ -28,33 +29,32 @@
 - **.test_get_npc_engine_recreates_on_loop_change()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **.test_init_npc_db_raises_on_none_engine()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - **.test_init_npc_db_success()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
-- **.test_get_npc_session_inits_db_for_unit_test()** (5 connections) — `server/tests/unit/infrastructure/test_npc_database.py`
 - *... and 66 more nodes in this community*
 
 ## Relationships
 
-- [get_logger](get_logger.md) (21 shared connections)
+- [ValidationError](ValidationError.md) (13 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (4 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
-- [get_admin_auth_service](get_admin_auth_service.md) (3 shared connections)
+- [log_and_raise](log_and_raise.md) (4 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
 - [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (3 shared connections)
 - [migrate_combat_data.py](migrate_combat_data.py.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 - [NPCStartupService](NPCStartupService.md) (3 shared connections)
-- [get_config](get_config.md) (2 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (1 shared connections)
-- [DatabaseManager](DatabaseManager.md) (1 shared connections)
-- [asyncio.md](asyncio.md.md) (1 shared connections)
+- [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (2 shared connections)
+- [server/exceptions.py](server-exceptions.py.md) (2 shared connections)
 
 ## Source Files
 
+- `server/database_config_helpers.py`
 - `server/npc_database.py`
-- `server/services/npc_instance_service.py`
 - `server/tests/unit/infrastructure/test_npc_database.py`
 
 ## Audit Trail
 
-- EXTRACTED: 203 (97%)
+- EXTRACTED: 207 (97%)
 - INFERRED: 6 (3%)
 - AMBIGUOUS: 0 (0%)
 

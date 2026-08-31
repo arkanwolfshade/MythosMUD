@@ -33,11 +33,11 @@
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (7 shared connections)
+- [pytest.md](pytest.md.md) (8 shared connections)
 - [server/schemas/__init__.py](server-schemas-__init__.py.md) (6 shared connections)
 - [BaseCommand](BaseCommand.md) (5 shared connections)
 - [InventorySchemaValidationError](InventorySchemaValidationError.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

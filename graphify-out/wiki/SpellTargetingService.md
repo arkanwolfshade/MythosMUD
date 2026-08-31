@@ -1,6 +1,6 @@
 # SpellTargetingService
 
-> 20 nodes
+> 18 nodes
 
 ## Key Concepts
 
@@ -13,32 +13,29 @@
 - **._resolve_area_target()** (6 connections) — `server/game/magic/spell_targeting.py`
 - **._resolve_entity_target()** (6 connections) — `server/game/magic/spell_targeting.py`
 - **._resolve_self_target()** (6 connections) — `server/game/magic/spell_targeting.py`
-- **.__init__()** (5 connections) — `server/game/magic/spell_targeting.py`
 - **Player** (1 connections)
 - **Resolve the target for a spell cast. Args: player_id: ID of the player casting…** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Get player from persistence.** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Build a TargetMatch for a combat opponent, or None if unresolved.** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Get the combat target for a player if they are in combat. Args: player_id:…** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Service for resolving spell targets. Handles target resolution based on spell…** (1 connections) — `server/game/magic/spell_targeting.py`
-- **Initialize the spell targeting service. Args: target_resolution_service:…** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Resolve self-target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Resolve area/all target spell. Returns (target_match, error_message).** (1 connections) — `server/game/magic/spell_targeting.py`
 - **Resolve entity/location target spell with explicit target. Returns…** (1 connections) — `server/game/magic/spell_targeting.py`
 
 ## Relationships
 
-- [Spell](Spell.md) (7 shared connections)
-- [TargetMatch](TargetMatch.md) (6 shared connections)
-- [lifespan_magic.py](lifespan_magic.py.md) (2 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [magic_service.py](magic_service.py.md) (2 shared connections)
-- [TargetResolutionResult](TargetResolutionResult.md) (2 shared connections)
+- [TargetMatch](TargetMatch.md) (9 shared connections)
+- [SpellEffects](SpellEffects.md) (6 shared connections)
+- [PlayerCombatService](PlayerCombatService.md) (4 shared connections)
 - [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
-- [CombatService](CombatService.md) (2 shared connections)
-- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (2 shared connections)
+- [SpellEffectType](SpellEffectType.md) (2 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [_MagicServiceCore](_MagicServiceCore.md) (1 shared connections)
 - [Player](Player.md) (1 shared connections)
+- [CombatService](CombatService.md) (1 shared connections)
+- [CombatParticipant](CombatParticipant.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 55 (86%)
-- INFERRED: 9 (14%)
+- EXTRACTED: 51 (85%)
+- INFERRED: 9 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

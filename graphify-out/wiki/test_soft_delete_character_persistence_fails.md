@@ -11,7 +11,7 @@
 
 - [asyncio](asyncio.md) (1 shared connections)
 - [test_player_service_mutations.py](test_player_service_mutations.py.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 

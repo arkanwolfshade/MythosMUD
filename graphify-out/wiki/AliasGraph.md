@@ -1,6 +1,6 @@
 # AliasGraph
 
-> 30 nodes
+> 28 nodes
 
 ## Key Concepts
 
@@ -15,7 +15,6 @@
 - **.build_graph()** (3 connections) — `server/utils/alias_graph.py`
 - **.detect_cycle()** (3 connections) — `server/utils/alias_graph.py`
 - **._extract_alias_references()** (3 connections) — `server/utils/alias_graph.py`
-- **.__init__()** (3 connections) — `server/utils/alias_graph.py`
 - **.is_safe_to_expand()** (3 connections) — `server/utils/alias_graph.py`
 - **.clear()** (2 connections) — `server/utils/alias_graph.py`
 - **.get_expansion_depth()** (2 connections) — `server/utils/alias_graph.py`
@@ -29,12 +28,14 @@
 - **Check if alias can be safely expanded without creating cycles. Args:…** (1 connections) — `server/utils/alias_graph.py`
 - **Calculate maximum expansion depth for an alias. Returns the length of the…** (1 connections) — `server/utils/alias_graph.py`
 - **Clear the dependency graph.** (1 connections) — `server/utils/alias_graph.py`
-- *... and 5 more nodes in this community*
+- **Graph-based circular dependency detection for alias expansion. Uses depth-first…** (1 connections) — `server/utils/alias_graph.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [AliasStorage](AliasStorage.md) (3 shared connections)
-- [alias_expansion.py](alias_expansion.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_alias_expansion.py](test_alias_expansion.py.md) (1 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,7 +44,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 42 (100%)
+- EXTRACTED: 40 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

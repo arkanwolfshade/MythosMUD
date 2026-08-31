@@ -1,41 +1,46 @@
 # test_game_state_provider.py
 
-> 80 nodes
+> 22 nodes
 
 ## Key Concepts
 
 - **test_game_state_provider.py** (42 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **asyncio** (23 connections)
-- **fixture** (5 connections)
-- **game_state_provider()** (4 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_app()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_get_async_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_room_manager()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **mock_send_personal_message()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_empty_room_data()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_invalid_uuid()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_no_player_ids()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_to_names_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_convert_room_uuids_with_npcs()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_following_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_data_for_client_with_service()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_empty()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_no_persistence()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_players_batch_player_not_found()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_quest_log_for_client()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_data_with_conversion()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- **test_get_room_occupants()** (3 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
-- *... and 55 more nodes in this community*
+- **test_add_grace_period_indicators()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_fallback_player_data_json_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_fallback_player_data_with_get_stats()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_login_grace_period_status()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npcs_batch()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npcs_batch_empty()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npcs_batch_exception_fallback()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npcs_batch_none_ids()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_npcs_batch_with_lifecycle_manager()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **test_get_player_name_with_grace_periods()** (2 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Unit tests for game state provider. Tests the GameStateProvider class.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() returns NPC names.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() returns empty dict for empty input.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() handles None in NPC IDs list.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_fallback_player_data() uses get_stats when available.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_fallback_player_data() parses JSON stats string.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_player_name_with_grace_periods() returns name with grace indicators.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() resolves names from active NPCs.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test get_npcs_batch() falls back to ID-derived names on service error.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _add_grace_period_indicators() appends linkdead marker.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
+- **Test _get_login_grace_period_status() returns active grace period info.** (1 connections) — `server/tests/unit/realtime/integration/test_game_state_provider.py`
 
 ## Relationships
 
-- [GameStateProvider](GameStateProvider.md) (2 shared connections)
+- [asyncio](asyncio.md) (9 shared connections)
+- [fixture](fixture.md) (5 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [GameStateProvider](GameStateProvider.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_convert_room_uuids_to_names](test_convert_room_uuids_to_names.md) (1 shared connections)
+- [test_get_room_occupants](test_get_room_occupants.md) (1 shared connections)
+- [test_get_player_not_found](test_get_player_not_found.md) (1 shared connections)
+- [test_convert_room_uuids_to_names_no_player_ids](test_convert_room_uuids_to_names_no_player_ids.md) (1 shared connections)
+- [test_convert_room_uuids_to_names_invalid_uuid](test_convert_room_uuids_to_names_invalid_uuid.md) (1 shared connections)
+- [test_get_room_occupants_empty_online_players](test_get_room_occupants_empty_online_players.md) (1 shared connections)
+- [test_get_room_occupants_with_online_players](test_get_room_occupants_with_online_players.md) (1 shared connections)
 
 ## Source Files
 
@@ -43,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 108 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 52 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

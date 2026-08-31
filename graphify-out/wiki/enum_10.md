@@ -1,20 +1,21 @@
 # enum
 
-> 11 nodes
+> 12 nodes
 
 ## Key Concepts
 
-- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **environment** (4 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
-- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- **enum** (8 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **environment** (5 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **default** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **description** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **type** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **arena** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **indoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **intersection** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **outdoors** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **street_paved** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **underwater** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
+- **void** (1 connections) — `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Relationships
 
@@ -22,11 +23,11 @@
 
 ## Source Files
 
-- `tools/room_toolkit/room_validator/schemas/room_hierarchy_schema.json`
+- `tools/room_toolkit/room_validator/schemas/unified_room_schema.json`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

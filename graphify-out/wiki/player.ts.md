@@ -36,9 +36,8 @@
 - [waitForMessage](waitForMessage.md) (41 shared connections)
 - [fixtures/auth.ts](fixtures-auth.ts.md) (21 shared connections)
 - [ensurePlayableConnection](ensurePlayableConnection.md) (21 shared connections)
-- [executeCommand](executeCommand.md) (17 shared connections)
+- [executeCommand](executeCommand.md) (19 shared connections)
 - [multiplayer-colocated.ts](multiplayer-colocated.ts.md) (10 shared connections)
-- [local-channel-isolation.spec.ts](local-channel-isolation.spec.ts.md) (2 shared connections)
 - [e2e-bootstrap.ts](e2e-bootstrap.ts.md) (1 shared connections)
 
 ## Source Files

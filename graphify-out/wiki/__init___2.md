@@ -1,31 +1,26 @@
 # .__init__
 
-> 7 nodes
+> 4 nodes
 
 ## Key Concepts
 
-- **.__init__()** (6 connections) — `server/models/lucidity.py`
-- **.__init__()** (5 connections) — `server/models/lucidity.py`
-- **.__init__()** (5 connections) — `server/models/lucidity.py`
-- **Any** (3 connections)
-- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
-- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
-- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
+- **.__init__()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **._setup_aggressive_mob_behavior_rules()** (3 connections) — `server/npc/aggressive_mob_npc.py`
+- **Initialize aggressive mob NPC.** (1 connections) — `server/npc/aggressive_mob_npc.py`
+- **Setup aggressive mob-specific behavior rules.** (1 connections) — `server/npc/aggressive_mob_npc.py`
 
 ## Relationships
 
-- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
-- [LucidityService](LucidityService.md) (2 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
 
 ## Source Files
 
-- `server/models/lucidity.py`
+- `server/npc/aggressive_mob_npc.py`
 
 ## Audit Trail
 
-- EXTRACTED: 11 (79%)
-- INFERRED: 3 (21%)
+- EXTRACTED: 5 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

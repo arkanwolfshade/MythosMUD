@@ -1,17 +1,13 @@
 # test_validation.py
 
-> 65 nodes
+> 58 nodes
 
 ## Key Concepts
 
 - **test_validation.py** (37 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **custom_length_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **strict_validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **validator()** (4 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_custom_length()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_subject_validator_init_strict()** (3 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- **fixture** (3 connections)
 - **test_validate_parameter_value_empty()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_parameter_value_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_parameter_value_none()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
@@ -29,11 +25,16 @@
 - **test_validate_subject_basic_ends_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_basic_starts_with_dot()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
 - **test_validate_subject_basic_too_long()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
-- *... and 40 more nodes in this community*
+- **test_validate_subject_basic_valid()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_empty_component()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_hyphens()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- **test_validate_subject_components_invalid_characters()** (2 connections) — `server/tests/unit/services/nats_subject_manager/test_validation.py`
+- *... and 33 more nodes in this community*
 
 ## Relationships
 
-- [SubjectValidator](SubjectValidator.md) (10 shared connections)
+- [SubjectValidator](SubjectValidator.md) (7 shared connections)
+- [custom_length_validator](custom_length_validator.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -42,8 +43,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 74 (96%)
-- INFERRED: 3 (4%)
+- EXTRACTED: 68 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -4,42 +4,44 @@
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_lifecycle_manager_for_filtering()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._filter_single_fallback_npc()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results. Args: npc_id: The…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room. Args: active_npcs_dict:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get lifecycle manager for filtering fallback NPCs. Returns: Lifecycle manager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Check if a single fallback NPC should be included. Args: npc_id: The NPC ID to…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Filter fallback NPCs to only include those in active_npcs and alive. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Process NPC IDs and convert to occupant information. Args: npc_ids: List of NPC…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance. Args: npc_instance: The NPC instance…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID. Args: npc_id: The NPC ID…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **Any** (13 connections)
+- **.render_map()** (11 connections) — `server/services/ascii_map_renderer.py`
+- **._build_grid()** (6 connections) — `server/services/ascii_map_renderer.py`
+- **._build_exit_lookup()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._determine_map_style()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_exit_entries_for_room()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_horizontal_exit_char()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._render_room_row()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._resolve_exit_target()** (5 connections) — `server/services/ascii_map_renderer.py`
+- **._get_room_symbol()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._horizontal_exit_char_between()** (4 connections) — `server/services/ascii_map_renderer.py`
+- **._auto_center_viewport()** (3 connections) — `server/services/ascii_map_renderer.py`
+- **Resolve one exit to (target_x, target_y) and is_bidirectional. Returns None if…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return list of (direction, (target_x, target_y), is_bidirectional) for exits…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build exit lookup map from room data.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Center viewport on the character's current room so the player is in the middle…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render a single row of rooms with horizontal exits.** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Render an ASCII map as HTML. Args: rooms: List of room dictionaries with…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Return the horizontal exit character (—, >, or <) given east/west exit state,…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get exit character to display after a room for horizontal (east/west) exits.…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Determine map style from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Build a coordinate grid from room data. Args: rooms: List of room dictionaries…** (1 connections) — `server/services/ascii_map_renderer.py`
+- **Get ASCII symbol for a room. Args: room: Room dictionary map_style: Current map…** (1 connections) — `server/services/ascii_map_renderer.py`
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (12 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
+- [AsciiMapRenderer](AsciiMapRenderer.md) (11 shared connections)
+- [._get_vertical_exit_char](_get_vertical_exit_char.md) (4 shared connections)
+- [._exit_is_bidirectional](_exit_is_bidirectional.md) (2 shared connections)
+- [._render_empty_map](_render_empty_map.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `server/services/ascii_map_renderer.py`
 
 ## Audit Trail
 
-- EXTRACTED: 44 (100%)
+- EXTRACTED: 50 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
