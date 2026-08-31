@@ -36,7 +36,7 @@
 - [PrototypeRegistry](PrototypeRegistry.md) (14 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (13 shared connections)
 - [PrototypeRegistryError](PrototypeRegistryError.md) (7 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
+- [combat_attack.py](combat_attack.py.md) (3 shared connections)
 - [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)

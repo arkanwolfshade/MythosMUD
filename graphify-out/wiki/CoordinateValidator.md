@@ -27,7 +27,7 @@
 ## Relationships
 
 - [get_logger](get_logger.md) (4 shared connections)
-- [User](User.md) (3 shared connections)
+- [maps.py](maps.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

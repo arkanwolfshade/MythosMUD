@@ -37,9 +37,10 @@
 - [PrototypeRegistryError](PrototypeRegistryError.md) (11 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (8 shared connections)
 - [combat_turn_participant_actions.py](combat_turn_participant_actions.py.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [._init_player_quest_layer](_init_player_quest_layer.md) (1 shared connections)
+- [.initialize](initialize.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
 - [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

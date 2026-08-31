@@ -1,38 +1,50 @@
 # asyncio
 
-> 15 nodes
+> 41 nodes
 
 ## Key Concepts
 
-- **asyncio** (7 connections)
-- **test_format_npc_stats_for_admin_no_npc_id()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_npc_stats_for_admin_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_format_single_npc_result_with_admin_stats()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_multiple_matches()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_no_npcs()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **test_try_lookup_npc_implicit_success()** (4 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC stats for admin successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting NPC stats for admin when NPC ID missing.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting single NPC result successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test formatting single NPC result with admin stats.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup successfully.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup when no NPCs in room.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
-- **Test trying implicit NPC lookup with multiple matches.** (1 connections) — `server/tests/unit/commands/test_look_npc.py`
+- **asyncio** (20 connections)
+- **test_move_player_empty_player_id()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_from_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_invalid_to_room()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_room_membership_auto_add()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_player_room_membership_db_mismatch()** (4 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_room_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_add_player_to_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_get_player_room_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_player_not_found()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_same_room()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_move_player_validation_fails()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_resolve_player_by_name()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_allows_ghost_in_destination()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_combat_blocks()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_player_already_in_target()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_success()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **test_validate_movement_target_room_missing()** (3 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test add_player_to_room() when room is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test add_player_to_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test get_player_room() returns player's room.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- **Test get_player_room() when player is not found.** (1 connections) — `server/tests/unit/game/test_movement_service.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [look_npc.py](look_npc.py.md) (7 shared connections)
-- [test_look_npc.py](test_look_npc.py.md) (7 shared connections)
+- [test_movement_service.py](test_movement_service.py.md) (20 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [movement_service.py](movement_service.py.md) (2 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_npc.py`
+- `server/tests/unit/game/test_movement_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 62 (95%)
+- INFERRED: 3 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

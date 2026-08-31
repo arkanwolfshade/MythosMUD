@@ -16,8 +16,8 @@
 
 ## Relationships
 
-- [test_npc_threading_messages.py](test_npc_threading_messages.py.md) (2 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (2 shared connections)
+- [threading.py](threading.py.md) (2 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
 - [MetricsCollector](MetricsCollector.md) (1 shared connections)
 - [NPCThreadManager](NPCThreadManager.md) (1 shared connections)
 - [ApplicationContainer](ApplicationContainer.md) (1 shared connections)

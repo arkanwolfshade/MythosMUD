@@ -1,16 +1,18 @@
 # Async Audit Executive Summary
 
-> 31 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **Async Audit Executive Summary** (20 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **Asyncio Code Review** (7 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
 - **Critical Findings** (5 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Alternative Approaches Considered** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Cost-Benefit Analysis** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Recommendations** (4 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Next Steps** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Success Metrics** (3 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
+- **asyncpg Connection Pool Leak** (2 connections) — `docs/archive/ASYNCIO_CODE_REVIEW.md`
 - **Benefit** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Break-Even** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Contact** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
@@ -27,25 +29,25 @@
 - **Long-Term (Month 2)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Option A: Do Nothing** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 - **Option B: Quick Hack (asyncio.to_thread everywhere)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Option C: Full Remediation (RECOMMENDED)** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- **Phase 1 Success Criteria** (1 connections) — `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
-- *... and 6 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (4 shared connections)
+- [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (6 shared connections)
 - [Async Remediation Complete](Async_Remediation_Complete.md) (1 shared connections)
 - [Async Remediation Final Report](Async_Remediation_Final_Report.md) (1 shared connections)
-- [DOCUMENTATION_AUDIT.md](DOCUMENTATION_AUDIT.md.md) (1 shared connections)
+- [Code Review: Import Analysis and Anti-Patterns](Code_Review-_Import_Analysis_and_Anti-Patterns.md) (1 shared connections)
+- [Asyncio Code Review - feature/sqlite-to-postgresql Branch](Asyncio_Code_Review_-_feature-sqlite-to-postgresql_Branch.md) (1 shared connections)
 
 ## Source Files
 
+- `docs/archive/ASYNCIO_CODE_REVIEW.md`
 - `docs/archive/ASYNC_AUDIT_EXECUTIVE_SUMMARY.md`
 
 ## Audit Trail
 
-- EXTRACTED: 36 (97%)
-- INFERRED: 1 (3%)
+- EXTRACTED: 42 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

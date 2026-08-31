@@ -33,11 +33,12 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (7 shared connections)
 - [test_look_helpers.py](test_look_helpers.py.md) (7 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (7 shared connections)
 - [test_look_room.py](test_look_room.py.md) (7 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (5 shared connections)
 - [look_command.py](look_command.py.md) (5 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (3 shared connections)
+- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [disconnect_grace_period.py](disconnect_grace_period.py.md) (1 shared connections)

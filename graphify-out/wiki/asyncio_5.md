@@ -1,48 +1,44 @@
 # asyncio
 
-> 25 nodes
+> 11 nodes
 
 ## Key Concepts
 
-- **asyncio** (12 connections)
-- **test_handle_item_look_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_look_in_skips_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_handle_item_look_with_instance_number()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_equipped()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_in_room_drops()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_not_found()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_equipped_items()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **test_try_lookup_item_implicit_player_no_get_inventory()** (4 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is in inventory.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with look_in flag skips equipped items.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is in room drops.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item not found.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test handling item look with instance number.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test trying implicit lookup when item is equipped.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _handle_item_look() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_inventory method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
-- **Test _try_lookup_item_implicit() when player has no get_equipped_items method.** (1 connections) — `server/tests/unit/commands/test_look_item.py`
+- **asyncio** (27 connections)
+- **test_delete_player_not_found()** (4 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_apply_lucidity_loss()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_heal_player()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_soft_delete_character_already_deleted()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **test_update_player_location_success()** (3 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test heal_player() heals player.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test soft_delete_character() when character already deleted.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test delete_player() when player not found.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test update_player_location() successfully updates location.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
+- **Test apply_lucidity_loss() applies lucidity loss.** (1 connections) — `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Relationships
 
-- [_find_item_in_equipped](_find_item_in_equipped.md) (12 shared connections)
-- [test_look_item.py](test_look_item.py.md) (12 shared connections)
+- [test_player_service_mutations.py](test_player_service_mutations.py.md) (9 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [test_apply_corruption](test_apply_corruption.md) (1 shared connections)
+- [test_apply_corruption_player_not_found](test_apply_corruption_player_not_found.md) (1 shared connections)
+- [test_apply_lucidity_loss_player_not_found](test_apply_lucidity_loss_player_not_found.md) (1 shared connections)
+- [test_damage_player](test_damage_player.md) (1 shared connections)
+- [test_damage_player_player_not_found](test_damage_player_player_not_found.md) (1 shared connections)
+- [test_delete_player_persistence_fails](test_delete_player_persistence_fails.md) (1 shared connections)
+- [test_delete_player_success](test_delete_player_success.md) (1 shared connections)
+- [test_gain_occult_knowledge](test_gain_occult_knowledge.md) (1 shared connections)
+- [test_gain_occult_knowledge_player_not_found](test_gain_occult_knowledge_player_not_found.md) (1 shared connections)
+- [test_get_user_characters](test_get_user_characters.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/commands/test_look_item.py`
+- `server/tests/unit/game/test_player_service_mutations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 48 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 37 (97%)
+- INFERRED: 1 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

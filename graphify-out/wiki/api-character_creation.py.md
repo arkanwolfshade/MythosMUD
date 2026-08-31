@@ -1,72 +1,67 @@
 # api/character_creation.py
 
-> 122 nodes
+> 129 nodes
 
 ## Key Concepts
 
 - **api/character_creation.py** (67 connections) — `server/api/character_creation.py`
-- **players/__init__.py** (48 connections) — `server/schemas/players/__init__.py`
-- **PlayerRead** (46 connections) — `server/schemas/players/player.py`
 - **SkillService** (38 connections) — `server/game/skill_service.py`
+- **roll_character_stats()** (26 connections) — `server/api/character_creation.py`
 - **CreateCharacterRequest** (25 connections) — `server/schemas/players/player_requests.py`
+- **test_character_creation.py** (24 connections) — `server/tests/unit/api/test_character_creation.py`
+- **RollStatsRequest** (23 connections) — `server/schemas/players/player_requests.py`
 - **create_character_with_stats()** (23 connections) — `server/api/character_creation.py`
-- **test_player_schemas.py** (23 connections) — `server/tests/unit/schemas/test_player_schemas.py`
-- **players/player.py** (21 connections) — `server/schemas/players/player.py`
-- **is_shutdown_pending()** (14 connections) — `server/commands/admin_shutdown_command.py`
+- **ProfessionService** (21 connections) — `server/game/profession_service.py`
+- **validate_character_stats()** (15 connections) — `server/api/character_creation.py`
 - **asyncio** (14 connections)
 - **_execute_create_character()** (13 connections) — `server/api/character_creation.py`
 - **get_shutdown_blocking_message()** (13 connections) — `server/commands/admin_shutdown_command.py`
+- **RollStatsResponse** (12 connections) — `server/schemas/players/character_creation.py`
+- **_roll_stats_with_profession_preview()** (12 connections) — `server/api/character_creation.py`
+- **_convert_stat_summary_to_stat_summary_model()** (11 connections) — `server/api/character_creation.py`
 - **players/character_creation.py** (11 connections) — `server/schemas/players/character_creation.py`
-- **PlayerBase** (10 connections) — `server/schemas/players/player.py`
+- **_dispatch_roll_stats()** (10 connections) — `server/api/character_creation.py`
+- **get_profession_service()** (10 connections) — `server/dependencies.py`
 - **CreateCharacterResponse** (9 connections) — `server/schemas/players/character_creation.py`
-- **CharacterInfo** (9 connections) — `server/schemas/players/player.py`
-- **PlayerCreate** (9 connections) — `server/schemas/players/player.py`
-- **AvailableClassesResponse** (8 connections) — `server/schemas/players/player.py`
-- **DeleteCharacterResponse** (8 connections) — `server/schemas/players/player.py`
-- **PlayerUpdate** (8 connections) — `server/schemas/players/player.py`
 - **TestCreateCharacterWithStats** (8 connections) — `server/tests/unit/api/test_character_creation.py`
 - **_check_shutdown_status()** (8 connections) — `server/api/character_creation.py`
 - **_prepare_create_character_request()** (8 connections) — `server/api/character_creation.py`
-- **ValidateStatsResponse** (7 connections) — `server/schemas/players/character_creation.py`
-- **ClassDefinition** (7 connections) — `server/schemas/players/class_definition.py`
-- *... and 97 more nodes in this community*
+- **_raise_roll_stats_error()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_raw()** (8 connections) — `server/api/character_creation.py`
+- **_roll_stats_with_class()** (8 connections) — `server/api/character_creation.py`
+- *... and 104 more nodes in this community*
 
 ## Relationships
 
-- [roll_character_stats](roll_character_stats.md) (46 shared connections)
-- [players.py](players.py.md) (21 shared connections)
-- [test_player_requests.py](test_player_requests.py.md) (21 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (19 shared connections)
-- [PlayerService](PlayerService.md) (14 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (62 shared connections)
+- [players/__init__.py](players-__init__.py.md) (23 shared connections)
+- [get_logger](get_logger.md) (17 shared connections)
+- [pytest.md](pytest.md.md) (16 shared connections)
 - [Any](Any.md) (13 shared connections)
-- [ValidationError](ValidationError.md) (11 shared connections)
-- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (11 shared connections)
-- [server/dependencies.py](server-dependencies.py.md) (9 shared connections)
-- [User](User.md) (9 shared connections)
-- [models/player.py](models-player.py.md) (8 shared connections)
-- [Stats](Stats.md) (8 shared connections)
+- [server/dependencies.py](server-dependencies.py.md) (12 shared connections)
+- [PlayerService](PlayerService.md) (12 shared connections)
+- [test_admin_shutdown_command.py](test_admin_shutdown_command.py.md) (7 shared connections)
+- [skills_commands.py](skills_commands.py.md) (4 shared connections)
+- [server/schemas/__init__.py](server-schemas-__init__.py.md) (3 shared connections)
+- [BaseCommand](BaseCommand.md) (3 shared connections)
+- [test_profession_service.py](test_profession_service.py.md) (2 shared connections)
 
 ## Source Files
 
 - `server/api/character_creation.py`
 - `server/commands/admin_shutdown_command.py`
-- `server/game/player_search_service.py`
-- `server/game/player_service.py`
+- `server/dependencies.py`
+- `server/game/profession_service.py`
 - `server/game/skill_service.py`
-- `server/schemas/players/__init__.py`
 - `server/schemas/players/character_creation.py`
-- `server/schemas/players/class_definition.py`
-- `server/schemas/players/player.py`
 - `server/schemas/players/player_requests.py`
 - `server/schemas/players/stat_values.py`
-- `server/services/target_resolution_service.py`
 - `server/tests/unit/api/test_character_creation.py`
-- `server/tests/unit/schemas/test_player_schemas.py`
 
 ## Audit Trail
 
-- EXTRACTED: 455 (97%)
-- INFERRED: 13 (3%)
+- EXTRACTED: 426 (97%)
+- INFERRED: 14 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

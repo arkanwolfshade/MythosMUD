@@ -1,6 +1,6 @@
 # dialogue_definitions_api.py
 
-> 47 nodes
+> 49 nodes
 
 ## Key Concepts
 
@@ -17,6 +17,7 @@
 - **asyncio** (8 connections)
 - **DialogueDefinitionCreate** (7 connections) — `server/api/admin/dialogue_schemas.py`
 - **DialogueDefinitionUpdate** (7 connections) — `server/api/admin/dialogue_schemas.py`
+- **api/admin/__init__.py** (6 connections) — `server/api/admin/__init__.py`
 - **test_create_dialogue_definition_upserts()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_upsert_dialogue_definition()** (5 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **Request** (5 connections)
@@ -28,33 +29,32 @@
 - **test_list_dialogue_definitions_returns_rows()** (4 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_delete_dialogue_definition_success()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
 - **test_to_response_maps_row()** (3 connections) — `server/tests/unit/api/test_dialogue_definitions_api.py`
-- **BaseModel** (3 connections)
-- *... and 22 more nodes in this community*
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [LoggedHTTPException](LoggedHTTPException.md) (25 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (20 shared connections)
+- [get_admin_auth_service](get_admin_auth_service.md) (14 shared connections)
 - [DialogueDefinitionRepository](DialogueDefinitionRepository.md) (6 shared connections)
-- [User](User.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [DialogueService](DialogueService.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
+- [talk_command.py](talk_command.py.md) (3 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
 - [quest_commands.py](quest_commands.py.md) (1 shared connections)
-- [factory.py](factory.py.md) (1 shared connections)
 - [test_admin_auth_service.py](test_admin_auth_service.py.md) (1 shared connections)
-- [test_users.py](test_users.py.md) (1 shared connections)
+- [NATSSubjectManager](NATSSubjectManager.md) (1 shared connections)
+- [factory.py](factory.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/api/admin/__init__.py`
 - `server/api/admin/dialogue_definitions_api.py`
 - `server/api/admin/dialogue_schemas.py`
 - `server/tests/unit/api/test_dialogue_definitions_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 137 (92%)
+- EXTRACTED: 142 (92%)
 - INFERRED: 12 (8%)
 - AMBIGUOUS: 0 (0%)
 

@@ -34,14 +34,16 @@
 ## Relationships
 
 - [logging_file_setup.py](logging_file_setup.py.md) (9 shared connections)
-- [get_logger](get_logger.md) (6 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [logging_file_categories.py](logging_file_categories.py.md) (4 shared connections)
 - [test_logging_processors.py](test_logging_processors.py.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
 - [PlayerGuidFormatter](PlayerGuidFormatter.md) (2 shared connections)
 - [RoomLoader](RoomLoader.md) (2 shared connections)
-- [log_with_context](log_with_context.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
+- [bind_request_context](bind_request_context.md) (1 shared connections)
+- [LogAggregator](LogAggregator.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

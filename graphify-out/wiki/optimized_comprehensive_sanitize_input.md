@@ -16,14 +16,13 @@
 ## Relationships
 
 - [test_optimized_security_validator.py](test_optimized_security_validator.py.md) (5 shared connections)
+- [optimized_security_validator.py](optimized_security_validator.py.md) (2 shared connections)
 - [optimized_sanitize_unicode_input](optimized_sanitize_unicode_input.md) (1 shared connections)
-- [optimized_strip_ansi_codes](optimized_strip_ansi_codes.md) (1 shared connections)
 - [optimized_validate_action_content](optimized_validate_action_content.md) (1 shared connections)
 - [optimized_validate_command_content](optimized_validate_command_content.md) (1 shared connections)
 - [optimized_validate_pose_content](optimized_validate_pose_content.md) (1 shared connections)
 - [optimized_validate_reason_content](optimized_validate_reason_content.md) (1 shared connections)
 - [optimized_validate_security_comprehensive](optimized_validate_security_comprehensive.md) (1 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

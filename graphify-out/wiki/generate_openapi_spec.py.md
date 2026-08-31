@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [create_app](create_app.md) (2 shared connections)
+- [factory.py](factory.py.md) (2 shared connections)
 
 ## Source Files
 

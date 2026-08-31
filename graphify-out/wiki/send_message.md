@@ -21,10 +21,11 @@
 
 ## Relationships
 
-- [PersonalMessageSender](PersonalMessageSender.md) (7 shared connections)
+- [PersonalMessageSender](PersonalMessageSender.md) (6 shared connections)
 - [PayloadOptimizer](PayloadOptimizer.md) (1 shared connections)
 - [connection_manager.py](connection_manager.py.md) (1 shared connections)
 - [websocket_handler.py](websocket_handler.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
 
 ## Source Files
 

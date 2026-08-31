@@ -1,6 +1,6 @@
 # test_combat_handler.py
 
-> 55 nodes
+> 57 nodes
 
 ## Key Concepts
 
@@ -26,19 +26,21 @@
 - **test_validate_combat_action_empty_name()** (4 connections) — `server/tests/unit/commands/test_combat_handler.py`
 - **_CmdType** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
 - **mock_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
+- **test_combat_command_handler_requires_async_persistence()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
 - **test_extract_combat_command_data_enum_value()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
 - **test_extract_combat_command_data_string_type()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- **test_room_forbids_combat_false_no_attrs()** (3 connections) — `server/tests/unit/commands/test_combat_handler.py`
-- *... and 30 more nodes in this community*
+- *... and 32 more nodes in this community*
 
 ## Relationships
 
-- [get_username_from_user](get_username_from_user.md) (9 shared connections)
+- [TargetResolutionResult](TargetResolutionResult.md) (6 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (5 shared connections)
 - [TargetMatch](TargetMatch.md) (5 shared connections)
-- [CombatCommandHandler](CombatCommandHandler.md) (4 shared connections)
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [combat_loader.py](combat_loader.py.md) (1 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (1 shared connections)
+- [combat_taunt.py](combat_taunt.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -46,7 +48,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 114 (92%)
+- EXTRACTED: 116 (92%)
 - INFERRED: 10 (8%)
 - AMBIGUOUS: 0 (0%)
 

@@ -1,6 +1,6 @@
 # test_connection_state_machine.py
 
-> 26 nodes
+> 24 nodes
 
 ## Key Concepts
 
@@ -11,7 +11,6 @@
 - **test_connection_failed_from_reconnecting()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_get_stats_no_connected_time()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_last_error_set()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **test_nats_connection_state_machine_init_defaults()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_open_circuit()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_reconnect_attempts_reset_on_success()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **test_should_open_circuit_under_threshold()** (3 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
@@ -27,13 +26,12 @@
 - **Test reconnect_attempts resets on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **Test total_connections increments on successful connection.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **Test last_error is set on connection failure.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- **Test NATSConnectionStateMachine initialization with defaults.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 - **Test connected_successfully() transition from reconnecting to connected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
-- *... and 1 more nodes in this community*
+- **Test connection_failed() transition from reconnecting to disconnected.** (1 connections) — `server/tests/unit/realtime/test_connection_state_machine.py`
 
 ## Relationships
 
-- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (13 shared connections)
+- [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (12 shared connections)
 - [connection_state_machine.py](connection_state_machine.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [test_disconnect_from_connected](test_disconnect_from_connected.md) (1 shared connections)
@@ -52,7 +50,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 64 (100%)
+- EXTRACTED: 62 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

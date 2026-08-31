@@ -25,7 +25,7 @@
 ## Relationships
 
 - [security.ts](security.ts.md) (2 shared connections)
-- [GameClientV2Dock.test.tsx](GameClientV2Dock.test.tsx.md) (1 shared connections)
+- [ui-v2/types.ts](ui-v2-types.ts.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,6 +1,6 @@
 # Phase 2 Async Persistence Migration - Status Update
 
-> 23 nodes
+> 21 nodes
 
 ## Key Concepts
 
@@ -11,11 +11,9 @@
 - **✅ Completed Today** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **📊 Effort Analysis** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **PassiveLucidityFluxService Tick Blocking** (3 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- **asyncio.to_thread Persistence Pattern** (3 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 - **Awaiting Your Direction, Professor Wolfshade** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **🚦 Current Status** (2 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **Room Cache 60s TTL** (2 connections) — `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
-- **asyncpg Explicit Transaction** (2 connections) — `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 - **adjusts spectacles and awaits instruction** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **Critical Phase 1 Fixes (100% Complete)** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
 - **My Recommendation** (1 connections) — `docs/archive/PHASE2_MIGRATION_STATUS.md`
@@ -31,19 +29,17 @@
 ## Relationships
 
 - [✅ Phase 2 Async Persistence Migration - COMPLETE](✅_Phase_2_Async_Persistence_Migration_-_COMPLETE.md) (1 shared connections)
-- [Transaction Boundaries Audit](Transaction_Boundaries_Audit.md) (1 shared connections)
 - [Async Persistence Migration Tracker](Async_Persistence_Migration_Tracker.md) (1 shared connections)
 
 ## Source Files
 
 - `docs/archive/PHASE2_MIGRATION_COMPLETE.md`
 - `docs/archive/PHASE2_MIGRATION_STATUS.md`
-- `docs/archive/TRANSACTION_BOUNDARIES_AUDIT.md`
 
 ## Audit Trail
 
-- EXTRACTED: 24 (92%)
-- INFERRED: 2 (8%)
+- EXTRACTED: 22 (96%)
+- INFERRED: 1 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

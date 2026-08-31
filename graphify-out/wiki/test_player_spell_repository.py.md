@@ -1,6 +1,6 @@
 # test_player_spell_repository.py
 
-> 15 nodes
+> 17 nodes
 
 ## Key Concepts
 
@@ -14,16 +14,17 @@
 - **test_learn_spell_no_row_raises()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_record_spell_cast()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_update_mastery()** (4 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **repo()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spell_missing()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_get_player_spells_db_error()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_update_mastery_not_found()** (3 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 - **test_row_to_player_spell_maps_fields()** (2 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
+- **fixture** (1 connections)
 - **Unit tests for PlayerSpellRepository.** (1 connections) — `server/tests/unit/persistence/test_player_spell_repository.py`
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (7 shared connections)
-- [SpellEffects](SpellEffects.md) (2 shared connections)
+- [get_logger](get_logger.md) (9 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -32,8 +33,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 43 (96%)
-- INFERRED: 2 (4%)
+- EXTRACTED: 44 (94%)
+- INFERRED: 3 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

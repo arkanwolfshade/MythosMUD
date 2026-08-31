@@ -17,9 +17,8 @@
 
 - [test_connection_state_machine.py](test_connection_state_machine.py.md) (3 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [NATSService](NATSService.md) (2 shared connections)
 - [NATSConnectionStateMachine](NATSConnectionStateMachine.md) (2 shared connections)
-- [NATSService](NATSService.md) (1 shared connections)
-- [NATSError](NATSError.md) (1 shared connections)
 
 ## Source Files
 

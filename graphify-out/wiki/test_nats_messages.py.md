@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - **test_nats_messages.py** (25 connections) — `server/tests/unit/schemas/test_nats_messages.py`
-- **validate_message()** (14 connections) — `server/schemas/realtime/nats_messages.py`
 - **ChatMessageSchema** (13 connections) — `server/schemas/realtime/nats_messages.py`
+- **validate_message()** (12 connections) — `server/schemas/realtime/nats_messages.py`
 - **BaseMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
 - **EventMessageSchema** (11 connections) — `server/schemas/realtime/nats_messages.py`
 - **nats_messages.py** (10 connections) — `server/schemas/realtime/nats_messages.py`
@@ -34,11 +34,9 @@
 ## Relationships
 
 - [.validate_timestamp](validate_timestamp.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [realtime/realtime.py](realtime-realtime.py.md) (2 shared connections)
 - [BaseCommand](BaseCommand.md) (2 shared connections)
-- [NATSMessageBroker](NATSMessageBroker.md) (1 shared connections)
-- [nats_broker.py](nats_broker.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -48,7 +46,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 89 (96%)
+- EXTRACTED: 87 (96%)
 - INFERRED: 4 (4%)
 - AMBIGUOUS: 0 (0%)
 

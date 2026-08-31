@@ -1,47 +1,43 @@
 # asyncio
 
-> 31 nodes
+> 13 nodes
 
 ## Key Concepts
 
 - **asyncio** (15 connections)
-- **test_add_admin_no_container_duplicate()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_add_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_admin_not_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_false()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_is_player_muted_async_true()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_async_cache_valid()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_all_cached()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_load_player_mutes_batch_empty_list()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_no_persistence()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_player_not_found()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **test_remove_admin_success()** (3 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns True when player is muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_player_muted_async() returns False when player is not muted.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test add_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles missing persistence (#679: injected, not via…** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test remove_admin() handles player not found.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test is_admin() returns False when persistence not available (#679: injected).** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test load_player_mutes_async() uses cache when valid.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- **Test load_player_mutes_batch() with empty list.** (1 connections) — `server/tests/unit/services/test_user_manager.py`
-- *... and 6 more nodes in this community*
+- **test_broadcast_combat_attack()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_combat_attack_logs_error_on_failed_deliveries()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_combat_attack_no_attacker_id()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_combat_attack_personal_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_broadcast_player_died()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **test_send_dp_decay_message_error()** (3 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_player_died broadcasts death message.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack without attacker_id.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test send_dp_decay_message handles errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **broadcast_combat_attack surfaces a partial room-broadcast failure at error…** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack broadcasts attack event.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
+- **Test broadcast_combat_attack handles personal message errors gracefully.** (1 connections) — `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Relationships
 
-- [test_user_manager.py](test_user_manager.py.md) (15 shared connections)
+- [test_combat_messaging_integration.py](test_combat_messaging_integration.py.md) (6 shared connections)
+- [test_broadcast_combat_attack_with_attacker_id](test_broadcast_combat_attack_with_attacker_id.md) (1 shared connections)
+- [test_broadcast_combat_target_switch](test_broadcast_combat_target_switch.md) (1 shared connections)
+- [test_broadcast_player_death_personal_message_error](test_broadcast_player_death_personal_message_error.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded](test_broadcast_player_mortally_wounded.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded_no_attacker](test_broadcast_player_mortally_wounded_no_attacker.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded_personal_message_error](test_broadcast_player_mortally_wounded_personal_message_error.md) (1 shared connections)
+- [test_broadcast_player_mortally_wounded_with_attacker](test_broadcast_player_mortally_wounded_with_attacker.md) (1 shared connections)
+- [test_connection_manager_lazy_load_called](test_connection_manager_lazy_load_called.md) (1 shared connections)
+- [test_send_dp_decay_message](test_send_dp_decay_message.md) (1 shared connections)
 
 ## Source Files
 
-- `server/tests/unit/services/test_user_manager.py`
+- `server/tests/unit/services/test_combat_messaging_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 45 (100%)
+- EXTRACTED: 27 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

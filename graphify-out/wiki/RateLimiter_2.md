@@ -26,7 +26,7 @@
 
 - [test_auth_rate_limit.py](test_auth_rate_limit.py.md) (4 shared connections)
 - [test_rate_limiter_utils.py](test_rate_limiter_utils.py.md) (4 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (2 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (2 shared connections)
 - [connection_manager.py](connection_manager.py.md) (2 shared connections)
 
 ## Source Files

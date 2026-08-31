@@ -36,6 +36,8 @@ export const PROJECTED_EVENT_TYPES = new Set([
   'playerdeliriumrespawned',
   'player_dp_updated',
   'playerdpupdated',
+  'player_dp_decay',
+  'player_posture_change',
   'player_update',
   'command_response',
   'chat_message',

@@ -1,26 +1,31 @@
 # .__init__
 
-> 4 nodes
+> 7 nodes
 
 ## Key Concepts
 
-- **.__init__()** (4 connections) — `server/game/level_service.py`
-- **LevelUpHook** (1 connections)
-- **Any** (1 connections)
-- **Initialize the level service. Args: async_persistence: Async persistence for…** (1 connections) — `server/game/level_service.py`
+- **.__init__()** (6 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **.__init__()** (5 connections) — `server/models/lucidity.py`
+- **Any** (3 connections)
+- **Initialize LucidityAdjustmentLog with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize LucidityExposureState with defaults.** (1 connections) — `server/models/lucidity.py`
+- **Initialize PlayerLucidity with defaults.** (1 connections) — `server/models/lucidity.py`
 
 ## Relationships
 
-- [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
+- [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/level_service.py`
+- `server/models/lucidity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 4 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 11 (79%)
+- INFERRED: 3 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

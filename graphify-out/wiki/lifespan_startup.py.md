@@ -1,61 +1,61 @@
 # lifespan_startup.py
 
-> 69 nodes
+> 100 nodes
 
 ## Key Concepts
 
 - **lifespan_startup.py** (66 connections) — `server/app/lifespan_startup.py`
-- **lifespan.py** (46 connections) — `server/app/lifespan.py`
-- **test_lifespan_helpers.py** (27 connections) — `server/tests/unit/app/test_lifespan_helpers.py`
-- **lifespan()** (17 connections) — `server/app/lifespan.py`
-- **_startup_application()** (16 connections) — `server/app/lifespan.py`
+- **test_lifespan_startup.py** (43 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- **asyncio** (18 connections)
+- **FastAPI** (16 connections)
+- **initialize_container_and_legacy_services()** (15 connections) — `server/app/lifespan_startup.py`
 - **FastAPI** (15 connections)
-- **_shutdown_with_error_handling()** (12 connections) — `server/app/lifespan.py`
-- **setup_connection_manager()** (11 connections) — `server/app/lifespan_startup.py`
-- **_initialize_enhanced_systems()** (10 connections) — `server/app/lifespan.py`
-- **asyncio** (10 connections)
+- **NPCService** (14 connections) — `server/services/npc_service/__init__.py`
+- **initialize_combat_services()** (12 connections) — `server/app/lifespan_startup.py`
+- **_create_npc_services_on_app()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_npc_services()** (10 connections) — `server/app/lifespan_startup.py`
+- **initialize_chat_service()** (9 connections) — `server/app/lifespan_startup.py`
+- **initialize_mythos_time_consumer()** (9 connections) — `server/app/lifespan_startup.py`
 - **initialize_nats_and_combat_services()** (9 connections) — `server/app/lifespan_startup.py`
 - **initialize_npc_startup_spawning()** (9 connections) — `server/app/lifespan_startup.py`
-- **_cleanup_container_on_error()** (8 connections) — `server/app/lifespan.py`
 - **_attach_combat_service()** (8 connections) — `server/app/lifespan_startup.py`
-- **_calculate_metrics_delta()** (7 connections) — `server/app/lifespan.py`
-- **_cleanup_dead_letter_queue_periodically()** (7 connections) — `server/app/lifespan.py`
-- **_persist_mythos_state_on_error()** (7 connections) — `server/app/lifespan.py`
-- **_persist_metrics_to_file()** (6 connections) — `server/app/lifespan.py`
+- **_get_item_prototype_entries()** (7 connections) — `server/app/lifespan_startup.py`
+- **_validate_npc_services_prerequisites()** (7 connections) — `server/app/lifespan_startup.py`
+- **_get_item_prototype_count()** (6 connections) — `server/app/lifespan_startup.py`
 - **_load_npc_definitions_and_rules()** (6 connections) — `server/app/lifespan_startup.py`
 - **_set_legacy_services()** (6 connections) — `server/app/lifespan_startup.py`
+- **test_setup_connection_manager()** (6 connections) — `server/tests/unit/app/test_lifespan_startup.py`
 - **nats_is_connected()** (5 connections) — `server/app/lifespan_protocols.py`
 - **_log_npc_startup_errors()** (5 connections) — `server/app/lifespan_startup.py`
 - **_start_nats_message_handler()** (5 connections) — `server/app/lifespan_startup.py`
-- **_log_memory_metrics_periodically()** (4 connections) — `server/app/lifespan.py`
-- **_ensure_room_cache_before_npc_startup()** (4 connections) — `server/app/lifespan_startup.py`
-- *... and 44 more nodes in this community*
+- **mock_app()** (5 connections) — `server/tests/unit/app/test_lifespan_startup.py`
+- *... and 75 more nodes in this community*
 
 ## Relationships
 
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (29 shared connections)
-- [ApplicationContainer](ApplicationContainer.md) (14 shared connections)
-- [get_logger](get_logger.md) (8 shared connections)
-- [system_monitoring.py](system_monitoring.py.md) (7 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (7 shared connections)
-- [AliasStorage](AliasStorage.md) (5 shared connections)
-- [lifespan_protocols.py](lifespan_protocols.py.md) (5 shared connections)
-- [ExceptionTracker](ExceptionTracker.md) (4 shared connections)
+- [ApplicationContainer](ApplicationContainer.md) (16 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (10 shared connections)
+- [lifespan.py](lifespan.py.md) (10 shared connections)
+- [get_logger](get_logger.md) (5 shared connections)
 - [CombatService](CombatService.md) (4 shared connections)
-- [NPCDefinition](NPCDefinition.md) (4 shared connections)
-- [.__post_init__](__post_init__.md) (4 shared connections)
-- [models/player.py](models-player.py.md) (4 shared connections)
+- [LucidityService](LucidityService.md) (4 shared connections)
+- [test_npc_service.py](test_npc_service.py.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
+- [NPCCombatIntegrationService](NPCCombatIntegrationService.md) (3 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (3 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (3 shared connections)
+- [time_event_consumer.py](time_event_consumer.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/app/lifespan.py`
 - `server/app/lifespan_protocols.py`
 - `server/app/lifespan_startup.py`
-- `server/tests/unit/app/test_lifespan_helpers.py`
+- `server/services/npc_service/__init__.py`
+- `server/tests/unit/app/test_lifespan_startup.py`
 
 ## Audit Trail
 
-- EXTRACTED: 269 (99%)
+- EXTRACTED: 287 (99%)
 - INFERRED: 4 (1%)
 - AMBIGUOUS: 0 (0%)
 

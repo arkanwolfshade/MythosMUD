@@ -33,18 +33,18 @@
 
 ## Relationships
 
+- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (10 shared connections)
 - [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (9 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (8 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (4 shared connections)
+- [test_connection_establishment.py](test_connection_establishment.py.md) (3 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (3 shared connections)
 - [extract_player_name](extract_player_name.md) (3 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (3 shared connections)
-- [test_connection_establishment.py](test_connection_establishment.py.md) (2 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
-- [_track_player_presence](_track_player_presence.md) (1 shared connections)
-- [event_types.py](event_types.py.md) (1 shared connections)
+- [asyncio.md](asyncio.md.md) (1 shared connections)
 - [command_handler_unified.py](command_handler_unified.py.md) (1 shared connections)
+- [test_look_player.py](test_look_player.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

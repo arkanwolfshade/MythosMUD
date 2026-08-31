@@ -1,24 +1,24 @@
 # .__init__
 
-> 2 nodes
+> 3 nodes
 
 ## Key Concepts
 
-- **.__init__()** (3 connections) — `server/realtime/occupant_formatter.py`
-- **Initialize occupant formatter.** (1 connections) — `server/realtime/occupant_formatter.py`
+- **.__init__()** (3 connections) — `server/realtime/message_validator.py`
+- **.__init__()** (2 connections) — `server/realtime/message_validator.py`
+- **Initialize the message validator. Args: max_message_size: Maximum message size…** (1 connections) — `server/realtime/message_validator.py`
 
 ## Relationships
 
-- [get_logger](get_logger.md) (1 shared connections)
-- [OccupantFormatter](OccupantFormatter.md) (1 shared connections)
+- [WebSocketMessageValidator](WebSocketMessageValidator.md) (2 shared connections)
 
 ## Source Files
 
-- `server/realtime/occupant_formatter.py`
+- `server/realtime/message_validator.py`
 
 ## Audit Trail
 
-- EXTRACTED: 3 (100%)
+- EXTRACTED: 4 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

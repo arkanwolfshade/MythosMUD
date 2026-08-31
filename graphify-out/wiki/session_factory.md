@@ -1,60 +1,51 @@
 # session_factory
 
-> 28 nodes
+> 16 nodes
 
 ## Key Concepts
 
-- **session_factory()** (65 connections) — `server/tests/fixtures/integration/__init__.py`
-- **fixtures/integration/__init__.py** (19 connections) — `server/tests/fixtures/integration/__init__.py`
-- **db_cleanup()** (11 connections) — `server/tests/fixtures/integration/__init__.py`
-- **integration_engine()** (7 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_assert_allowed_integration_test_db()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_delete_mutable_integration_test_rows()** (6 connections) — `server/tests/fixtures/integration/__init__.py`
-- **db.py** (6 connections) — `server/tests/fixtures/integration/db.py`
-- **integration_db_url()** (5 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_get_db_name_from_url()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **_is_allowed_integration_test_db()** (4 connections) — `server/tests/fixtures/integration/__init__.py`
-- **fixture** (4 connections)
-- **_should_preserve_table_on_cleanup()** (3 connections) — `server/tests/fixtures/integration/__init__.py`
-- **FixtureRequest** (3 connections)
-- **AsyncSession** (3 connections)
-- **async_sessionmaker** (2 connections)
-- **_IntegrationState** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **AsyncEngine** (1 connections)
-- **Database fixtures for integration tests. This module provides database…** (1 connections) — `server/tests/fixtures/integration/db.py`
-- **Integration-tier fixtures with real database connections.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
+- **session_factory()** (68 connections) — `server/tests/fixtures/integration/__init__.py`
+- **test_calendar_procedures.py** (7 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **test_db_connectivity_create_and_read_user()** (6 connections) — `server/tests/integration/test_db_connectivity.py`
+- **holiday_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **npc_schedule_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **test_get_calendar_holidays_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **test_get_calendar_npc_schedules_includes_the_new_row()** (5 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **async_sessionmaker** (4 connections)
+- **AsyncSession** (4 connections)
+- **asyncio** (2 connections)
+- **fixture** (2 connections)
+- **asyncio** (1 connections)
+- **serial** (1 connections)
 - **Provide an async session factory for integration tests. CRITICAL: This fixture…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Return True for alembic_version and reference/world seed tables.** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Remove test-created rows; preserve reference seed (world topology, professions).** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Clean up database after each test. Deletes test-created rows from mutable…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Extract database name from a PostgreSQL URL. Returns empty string on parse…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- **Return True only if the URL points to an allowed test-only database…** (1 connections) — `server/tests/fixtures/integration/__init__.py`
-- *... and 3 more nodes in this community*
+- **Integration tests for db/procedures/calendar.sql (#633). Replace raw SQL…** (1 connections) — `server/tests/integration/test_calendar_procedures.py`
+- **Test that we can create and read a User from the database. CRITICAL: This test…** (1 connections) — `server/tests/integration/test_db_connectivity.py`
 
 ## Relationships
 
-- [async_sessionmaker](async_sessionmaker.md) (12 shared connections)
+- [test_room_write_procedures.py](test_room_write_procedures.py.md) (12 shared connections)
 - [test_exploration_procedures.py](test_exploration_procedures.py.md) (10 shared connections)
-- [test_players_procedures.py](test_players_procedures.py.md) (6 shared connections)
-- [models/player.py](models-player.py.md) (5 shared connections)
+- [test_players_procedures.py](test_players_procedures.py.md) (9 shared connections)
+- [fixtures/integration/__init__.py](fixtures-integration-__init__.py.md) (7 shared connections)
 - [test_add_player_effect_generates_id](test_add_player_effect_generates_id.md) (5 shared connections)
-- [holiday_row](holiday_row.md) (4 shared connections)
 - [test_containers_procedures.py](test_containers_procedures.py.md) (4 shared connections)
-- [subzone_with_override](subzone_with_override.md) (4 shared connections)
-- [pytest.md](pytest.md.md) (4 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [test_lucidity_procedures.py](test_lucidity_procedures.py.md) (4 shared connections)
 - [test_emotes_procedures.py](test_emotes_procedures.py.md) (3 shared connections)
+- [test_npcs_zone_config_procedures.py](test_npcs_zone_config_procedures.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (3 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (2 shared connections)
+- [LucidityService](LucidityService.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/fixtures/integration/__init__.py`
-- `server/tests/fixtures/integration/db.py`
+- `server/tests/integration/test_calendar_procedures.py`
+- `server/tests/integration/test_db_connectivity.py`
 
 ## Audit Trail
 
-- EXTRACTED: 56 (49%)
-- INFERRED: 58 (51%)
+- EXTRACTED: 31 (34%)
+- INFERRED: 61 (66%)
 - AMBIGUOUS: 0 (0%)
 
 ---

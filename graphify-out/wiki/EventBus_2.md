@@ -33,7 +33,7 @@
 
 ### imports
 - [connection_manager.py](connection_manager.py.md) `EXTRACTED`
-- [combat_service.py](combat_service.py.md) `EXTRACTED`
+- combat_service.py `EXTRACTED`
 - async_persistence.py `EXTRACTED`
 - test_population_control.py `EXTRACTED`
 - test_event_bus.py `EXTRACTED`
@@ -47,11 +47,11 @@
 - test_spawning_modules.py `EXTRACTED`
 - spawning_service.py `EXTRACTED`
 - memory_monitor.py `EXTRACTED`
+- [movement_service.py](movement_service.py.md) `EXTRACTED`
 - event_handler.py `EXTRACTED`
-- movement_service.py `EXTRACTED`
 - chat_npc_system.py `EXTRACTED`
+- follow_service.py `EXTRACTED`
 - models/room.py `EXTRACTED`
-- npc_instance_service.py `EXTRACTED`
 
 ### inherits
 - [DistributedEventBus](DistributedEventBus.md) `EXTRACTED`

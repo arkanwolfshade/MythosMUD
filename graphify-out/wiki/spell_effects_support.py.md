@@ -1,58 +1,45 @@
 # spell_effects_support.py
 
-> 38 nodes
+> 15 nodes
 
 ## Key Concepts
 
 - **spell_effects_support.py** (20 connections) — `server/game/magic/spell_effects_support.py`
-- **test_spell_effects_support.py** (14 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **process_create_object_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
-- **process_stat_modify_effect()** (11 connections) — `server/game/magic/spell_effects_support.py`
 - **apply_stat_modifications()** (10 connections) — `server/game/magic/spell_effects_stats.py`
 - **_apply_stat_modify_to_player()** (8 connections) — `server/game/magic/spell_effects_support.py`
-- **_spell()** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 - **test_spell_effects_stats.py** (8 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- **_build_stat_modifications()** (7 connections) — `server/game/magic/spell_effects_support.py`
-- **_create_object_for_room()** (7 connections) — `server/game/magic/spell_effects_support.py`
-- **_target()** (7 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 - **spell_effects_stats.py** (6 connections) — `server/game/magic/spell_effects_stats.py`
-- **Any** (6 connections)
-- **_create_object_for_player()** (5 connections) — `server/game/magic/spell_effects_support.py`
-- **test_process_create_object_for_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_create_object_missing_prototype()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_rejects_non_player()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_process_stat_modify_success()** (5 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_create_object_for_room_placeholder()** (4 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **asyncio** (4 connections)
-- **test_build_stat_modifications_missing()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
-- **test_build_stat_modifications_shorthand()** (3 connections) — `server/tests/unit/game/magic/test_spell_effects_support.py`
 - **test_apply_stat_modifications_bad_string_skipped()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 - **test_apply_stat_modifications_basic()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 - **test_apply_stat_modifications_clamps_to_bounds()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- *... and 13 more nodes in this community*
+- **test_apply_stat_modifications_skips_invalid_stat()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **test_apply_stat_modifications_string_coercion()** (2 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
+- **Stat modification helpers for spell effects. This module contains utility…** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Apply stat modification dict to stats. Returns (updated stats, stat_changes,…** (1 connections) — `server/game/magic/spell_effects_stats.py`
+- **Support helpers for spell effects that would otherwise bloat spell_effects.py.…** (1 connections) — `server/game/magic/spell_effects_support.py`
+- **Apply stat modifications (and optional BUFF status) to a player.** (1 connections) — `server/game/magic/spell_effects_support.py`
+- **Unit tests for spell_effects_stats helpers.** (1 connections) — `server/tests/unit/game/magic/test_spell_effects_stats.py`
 
 ## Relationships
 
-- [TargetMatch](TargetMatch.md) (17 shared connections)
+- [test_spell_effects_support.py](test_spell_effects_support.py.md) (8 shared connections)
+- [pytest.md](pytest.md.md) (4 shared connections)
 - [get_logger](get_logger.md) (4 shared connections)
-- [SpellEffects](SpellEffects.md) (3 shared connections)
-- [StatusEffect](StatusEffect.md) (2 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
-- [SpellEffectType](SpellEffectType.md) (1 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [Spell](Spell.md) (3 shared connections)
+- [TargetMatch](TargetMatch.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (1 shared connections)
+- [spell_effects.py](spell_effects.py.md) (1 shared connections)
 
 ## Source Files
 
 - `server/game/magic/spell_effects_stats.py`
 - `server/game/magic/spell_effects_support.py`
 - `server/tests/unit/game/magic/test_spell_effects_stats.py`
-- `server/tests/unit/game/magic/test_spell_effects_support.py`
 
 ## Audit Trail
 
-- EXTRACTED: 102 (95%)
-- INFERRED: 5 (5%)
+- EXTRACTED: 44 (98%)
+- INFERRED: 1 (2%)
 - AMBIGUOUS: 0 (0%)
 
 ---

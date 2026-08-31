@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [HolidayService](HolidayService.md) (6 shared connections)
-- [event_types.py](event_types.py.md) (5 shared connections)
-- [ScheduleService](ScheduleService.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [MythosTickScheduler](MythosTickScheduler.md) (3 shared connections)
+- [get_logger](get_logger.md) (7 shared connections)
+- [HolidayService](HolidayService.md) (5 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (4 shared connections)
+- [NPCLifecycleManager](NPCLifecycleManager.md) (4 shared connections)
+- [event_types.py](event_types.py.md) (3 shared connections)
 - [EventBus](EventBus.md) (3 shared connections)
-- [RoomService](RoomService.md) (3 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [schedule_service.py](schedule_service.py.md) (3 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (2 shared connections)
 - [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [NPCLifecycleManager](NPCLifecycleManager.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
+- [ScheduleEntry](ScheduleEntry.md) (2 shared connections)
+- [RoomService](RoomService.md) (2 shared connections)
 
 ## Source Files
 

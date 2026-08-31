@@ -1,63 +1,54 @@
 # test_game_tick_processing.py
 
-> 81 nodes
+> 37 nodes
 
 ## Key Concepts
 
 - **test_game_tick_processing.py** (40 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **test_game_tick_death.py** (28 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **game_tick_loop()** (17 connections) — `server/app/game_tick_processing.py`
 - **asyncio** (17 connections)
-- **broadcast_tick_event()** (13 connections) — `server/app/game_tick_processing.py`
-- **cleanup_decayed_corpses()** (12 connections) — `server/app/game_tick_corpses.py`
-- **asyncio** (12 connections)
-- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
-- **process_combat_tick()** (10 connections) — `server/app/game_tick_processing.py`
-- **_cleanup_single_decayed_corpse()** (8 connections) — `server/app/game_tick_corpses.py`
-- **_create_corpse_lifecycle_service()** (8 connections) — `server/app/game_tick_corpses.py`
-- **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
-- **process_npc_maintenance()** (8 connections) — `server/app/game_tick_processing.py`
-- **_log_cleanup_results()** (7 connections) — `server/app/game_tick_corpses.py`
-- **process_casting_progress()** (7 connections) — `server/app/game_tick_processing.py`
-- **FastAPI** (6 connections)
-- **_tick_broadcast_payload()** (4 connections) — `server/app/game_tick_processing.py`
-- **test_process_mortally_wounded_publishes_dp_decay_to_nats()** (4 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **test_process_single_player_mp_regeneration()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
-- **_CorpseLike** (3 connections) — `server/app/game_tick_corpses.py`
-- **test_broadcast_tick_event()** (3 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **test_broadcast_tick_event_skips_when_no_players()** (3 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **test_cleanup_decayed_corpses_on_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **test_game_tick_loop_cancelled_on_sleep()** (3 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- **test_process_dead_players_moves_to_limbo()** (3 connections) — `server/tests/unit/app/test_game_tick_death.py`
-- *... and 56 more nodes in this community*
+- **test_get_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_reset_current_tick()** (4 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_cleanup_decayed_corpses_no_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_cleanup_single_decayed_corpse_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_get_tick_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_all_status_effects_empty()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_casting_progress_calls_magic_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_combat_tick_calls_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_damage_over_time_zero_remaining()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_dp_decay_and_death_no_service()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_heal_over_time_effect()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_npc_maintenance_runs_on_interval()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_player_effects_expiration_login_warded()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_single_effect_heal_expires()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_status_effects_no_online_players()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_process_status_effects_with_online_player()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_update_player_status_effects_saves()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_and_get_player_invalid_id()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_and_get_player_success()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_connection_manager_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_container_is_none()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_async_persistence()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- **test_validate_app_state_for_status_effects_no_connection_manager()** (3 connections) — `server/tests/unit/app/test_game_tick_processing.py`
+- *... and 12 more nodes in this community*
 
 ## Relationships
 
-- [game_tick_processing.py](game_tick_processing.py.md) (48 shared connections)
-- [AliasStorage](AliasStorage.md) (10 shared connections)
-- [resolve_lazy_attr](resolve_lazy_attr.md) (4 shared connections)
-- [get_current_tick](get_current_tick.md) (3 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (3 shared connections)
-- [ContainerComponent](ContainerComponent.md) (2 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (2 shared connections)
-- [build_event](build_event.md) (2 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (2 shared connections)
-- [players.py](players.py.md) (2 shared connections)
-- [time_event_consumer.py](time_event_consumer.py.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (16 shared connections)
+- [game_tick_processing.py](game_tick_processing.py.md) (11 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (7 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (4 shared connections)
+- [CombatService](CombatService.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_corpses.py`
-- `server/app/game_tick_processing.py`
-- `server/realtime/connection_manager_api.py`
-- `server/tests/unit/app/test_game_tick_death.py`
 - `server/tests/unit/app/test_game_tick_processing.py`
 
 ## Audit Trail
 
-- EXTRACTED: 197 (88%)
-- INFERRED: 28 (12%)
+- EXTRACTED: 72 (77%)
+- INFERRED: 21 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

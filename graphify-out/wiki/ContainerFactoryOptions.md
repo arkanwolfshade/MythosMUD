@@ -21,7 +21,7 @@
 ## Relationships
 
 - [ContainerComponent](ContainerComponent.md) (5 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (3 shared connections)
+- [LootAllRequest](LootAllRequest.md) (3 shared connections)
 
 ## Source Files
 

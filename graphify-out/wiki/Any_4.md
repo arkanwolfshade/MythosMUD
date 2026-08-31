@@ -1,43 +1,49 @@
 # Any
 
-> 19 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **Any** (11 connections)
-- **.query_npcs_for_room()** (6 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_fallback_npcs()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_lifecycle_manager()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **.__init__()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._scan_active_npcs_for_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._should_include_npc_in_room()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._validate_npc_room_tracking()** (5 connections) — `server/realtime/npc_occupant_processor.py`
-- **._get_npc_room_id()** (4 connections) — `server/realtime/npc_occupant_processor.py`
-- **.process_npcs_for_occupants()** (3 connections) — `server/realtime/npc_occupant_processor.py`
-- **Determine if NPC should be included in room query results. Args: npc_id: The…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Scan active NPCs to find those in the target room. Args: active_npcs_dict:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Initialize NPC occupant processor. Args: connection_manager: ConnectionManager…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Query NPCs for a room from lifecycle manager. Args: room_id: The room ID room:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get and validate NPC lifecycle manager. Args: room_id: The room ID for logging…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get fallback NPCs from room.get_npcs() if lifecycle manager query fails. Args:…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Process NPC IDs and convert to occupant information. Args: npc_ids: List of NPC…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Get NPC's current room ID from instance. Args: npc_instance: The NPC instance…** (1 connections) — `server/realtime/npc_occupant_processor.py`
-- **Validate NPC has room tracking and get room ID. Args: npc_id: The NPC ID…** (1 connections) — `server/realtime/npc_occupant_processor.py`
+- **.set_player_skills()** (9 connections) — `server/game/skill_service.py`
+- **Any** (9 connections)
+- **UUID** (7 connections)
+- **._validate_occupation_slots()** (6 connections) — `server/game/skill_service.py`
+- **._validate_personal_interest()** (6 connections) — `server/game/skill_service.py`
+- **.validate_skills_payload()** (6 connections) — `server/game/skill_service.py`
+- **._build_profession_mod_by_key()** (5 connections) — `server/game/skill_service.py`
+- **._compute_final_skill_values()** (5 connections) — `server/game/skill_service.py`
+- **._validate_no_overlap()** (5 connections) — `server/game/skill_service.py`
+- **.get_player_skills()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_used_this_level()** (4 connections) — `server/game/skill_service.py`
+- **.record_successful_skill_use()** (4 connections) — `server/game/skill_service.py`
+- **.roll_skill_check()** (4 connections) — `server/game/skill_service.py`
+- **.run_improvement_rolls()** (4 connections) — `server/game/skill_service.py`
+- **.get_skills_catalog()** (3 connections) — `server/game/skill_service.py`
+- **Raise ValueError if any skill_id appears in both occupation and personal…** (1 connections) — `server/game/skill_service.py`
+- **Build skill_key -> total modifier from profession skill_modifiers (supports…** (1 connections) — `server/game/skill_service.py`
+- **Compute final skill_id -> value: base + profession mod, then occupation…** (1 connections) — `server/game/skill_service.py`
+- **Validate skills allocation without persisting. Raises ValueError if invalid.…** (1 connections) — `server/game/skill_service.py`
+- **Set all skills for a character at creation. Validates occupation_slots (9…** (1 connections) — `server/game/skill_service.py`
+- **Return list of {skill_id, skill_key, skill_name, value} for the player. If the…** (1 connections) — `server/game/skill_service.py`
+- **Record one successful use of a skill at the character's current level. Used for…** (1 connections) — `server/game/skill_service.py`
+- **Return distinct skill_ids that the player successfully used at the given level.…** (1 connections) — `server/game/skill_service.py`
+- **For each skill the player used during the previous level, roll d100. If roll >…** (1 connections) — `server/game/skill_service.py`
+- **Roll d100 against the character's skill value; on success record use and return…** (1 connections) — `server/game/skill_service.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [NPCOccupantProcessor](NPCOccupantProcessor.md) (12 shared connections)
-- [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (13 shared connections)
+- [SkillRepository](SkillRepository.md) (4 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [RoomIDUtils](RoomIDUtils.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/npc_occupant_processor.py`
+- `server/game/skill_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 39 (100%)
+- EXTRACTED: 56 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

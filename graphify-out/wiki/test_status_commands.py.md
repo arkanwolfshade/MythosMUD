@@ -1,12 +1,22 @@
 # test_status_commands.py
 
-> 37 nodes
+> 84 nodes
 
 ## Key Concepts
 
 - **test_status_commands.py** (32 connections) — `server/tests/unit/commands/test_status_commands.py`
+- **status_commands.py** (18 connections) — `server/commands/status_commands.py`
+- **handle_status_command()** (14 connections) — `server/commands/status_commands.py`
 - **asyncio** (14 connections)
+- **test_status_commands_helpers.py** (13 connections) — `server/tests/unit/commands/test_status_commands_helpers.py`
+- **_add_additional_stats_lines()** (12 connections) — `server/commands/status_commands.py`
+- **handle_whoami_command()** (12 connections) — `server/commands/status_commands.py`
+- **_add_profession_lines()** (11 connections) — `server/commands/status_commands.py`
+- **_build_base_status_lines()** (11 connections) — `server/commands/status_commands.py`
 - **_get_profession_info()** (10 connections) — `server/commands/status_commands.py`
+- **_build_status_result()** (9 connections) — `server/commands/status_commands.py`
+- **_get_combat_status()** (9 connections) — `server/commands/status_commands.py`
+- **Any** (9 connections)
 - **test_get_profession_info_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_handle_status_command_error_handling()** (5 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_get_combat_status_no_app()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
@@ -19,35 +29,28 @@
 - **test_get_profession_info_with_profession()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_handle_status_command_no_persistence()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
 - **test_handle_status_command_player_not_found()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_handle_status_command_success()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_handle_whoami_command()** (4 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_build_base_status_lines()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **test_build_base_status_lines_in_combat()** (3 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **Get profession information for a player. Args: player: Player object…** (1 connections) — `server/commands/status_commands.py`
-- **Unit tests for status command handlers. Tests handlers for status and whoami…** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **Test _get_combat_status returns False when no combat service.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **Test _get_combat_status returns False when no app.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **Test _get_combat_status returns True when player is in combat.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
-- **Test _get_combat_status returns False when player is not in combat.** (1 connections) — `server/tests/unit/commands/test_status_commands.py`
-- *... and 12 more nodes in this community*
+- *... and 59 more nodes in this community*
 
 ## Relationships
 
-- [status_commands.py](status_commands.py.md) (19 shared connections)
-- [test_status_commands_helpers.py](test_status_commands_helpers.py.md) (4 shared connections)
-- [_add_profession_lines](_add_profession_lines.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (6 shared connections)
+- [test_who_commands.py](test_who_commands.py.md) (3 shared connections)
+- [test_utility_commands_whoami.py](test_utility_commands_whoami.py.md) (3 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/status_commands.py`
 - `server/tests/unit/commands/test_status_commands.py`
+- `server/tests/unit/commands/test_status_commands_helpers.py`
 
 ## Audit Trail
 
-- EXTRACTED: 82 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 163 (95%)
+- INFERRED: 8 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

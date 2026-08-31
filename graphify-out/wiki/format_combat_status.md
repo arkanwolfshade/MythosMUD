@@ -22,7 +22,7 @@
 
 ## Relationships
 
-- [combat_loader.py](combat_loader.py.md) (3 shared connections)
+- [CombatCommandHandler](CombatCommandHandler.md) (3 shared connections)
 - [test_combat_flee_helpers.py](test_combat_flee_helpers.py.md) (2 shared connections)
 
 ## Source Files

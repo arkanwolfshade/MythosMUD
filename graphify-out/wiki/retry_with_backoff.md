@@ -19,7 +19,7 @@
 ## Relationships
 
 - [test_retry.py](test_retry.py.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
 - [_StubPlayerRepo](_StubPlayerRepo.md) (2 shared connections)
 - [retry.py](retry.py.md) (2 shared connections)
 

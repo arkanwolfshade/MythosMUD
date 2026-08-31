@@ -37,13 +37,14 @@
 - [logging_file_categories.py](logging_file_categories.py.md) (8 shared connections)
 - [test_logging_handlers.py](test_logging_handlers.py.md) (6 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [test_windows_safe_rotation.py](test_windows_safe_rotation.py.md) (2 shared connections)
-- [time.py](time.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (2 shared connections)
 - [test_logging_processors.py](test_logging_processors.py.md) (1 shared connections)
 - [safe_run_static](safe_run_static.md) (1 shared connections)
+- [chat_service.py](chat_service.py.md) (1 shared connections)
 - [LogAggregator](LogAggregator.md) (1 shared connections)
+- [threading.py](threading.py.md) (1 shared connections)
 
 ## Source Files
 

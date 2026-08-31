@@ -35,8 +35,9 @@
 
 - [connection_manager.py](connection_manager.py.md) (5 shared connections)
 - [get_config](get_config.md) (3 shared connections)
-- [get_logger](get_logger.md) (3 shared connections)
 - [connection_manager_methods.py](connection_manager_methods.py.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [AppConfig](AppConfig.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

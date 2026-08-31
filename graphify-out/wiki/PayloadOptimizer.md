@@ -34,10 +34,9 @@
 ## Relationships
 
 - [.optimize_payload](optimize_payload.md) (4 shared connections)
-- [test_connection_helpers_impl.py](test_connection_helpers_impl.py.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [_optimize_payload](_optimize_payload.md) (1 shared connections)
 - [.send_message](send_message.md) (1 shared connections)
-- [PersonalMessageSender](PersonalMessageSender.md) (1 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 

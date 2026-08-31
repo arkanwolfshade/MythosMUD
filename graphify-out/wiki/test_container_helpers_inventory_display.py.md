@@ -33,14 +33,13 @@
 
 ## Relationships
 
-- [test_container_helpers_inventory_find.py](test_container_helpers_inventory_find.py.md) (6 shared connections)
+- [container_helpers_inventory.py](container_helpers_inventory.py.md) (4 shared connections)
+- [equipment_service.py](equipment_service.py.md) (3 shared connections)
 - [AliasStorage](AliasStorage.md) (2 shared connections)
 - [server/services/__init__.py](server-services-__init__.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
 - [LRUCache](LRUCache.md) (1 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
 - [get_logger](get_logger.md) (1 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

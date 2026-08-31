@@ -1,41 +1,48 @@
 # UUID
 
-> 16 nodes
+> 28 nodes
 
 ## Key Concepts
 
-- **UUID** (8 connections)
-- **Any** (7 connections)
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **.broadcast()** (4 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast party message to party members only, with dampening and mute checks.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Send whisper message to specific player with communication dampening.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast system/admin message; personal when target_player_id is set.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Handle unknown channel type.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast message according to channel strategy. Args: chat_event: WebSocket…** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast room-based message with server-side filtering.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
-- **Broadcast global message to all connected players.** (1 connections) — `server/realtime/channel_broadcasting_strategies.py`
+- **UUID** (9 connections)
+- **._process_single_connection()** (8 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_all_connections_health()** (6 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.periodic_health_check_task()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.start_periodic_checks()** (5 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.check_player_connection_health()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._cleanup_stale_connections()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._find_player_id_for_cleanup()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._wait_for_task_cancellation()** (4 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_connection_stale()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._check_websocket_open()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.__init__()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **.stop_periodic_checks()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **._validate_and_update_token()** (3 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Any** (2 connections)
+- **Find player_id for cleanup when metadata is missing.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check if connection is stale based on timeout.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check if WebSocket is actually open.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Validate token and update last validation time if needed.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Process health check for a single connection.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Clean up stale connections.** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Check health of all connections and clean up stale/dead ones. This method: -…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Periodic health check task that runs continuously. This task: - Runs health…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Start the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- **Stop the periodic health check task. This should be called during application…** (1 connections) — `server/realtime/monitoring/health_monitor.py`
+- *... and 3 more nodes in this community*
 
 ## Relationships
 
-- [channel_broadcasting_strategies.py](channel_broadcasting_strategies.py.md) (4 shared connections)
-- [asyncio](asyncio.md) (1 shared connections)
-- [RoomBasedChannelStrategy](RoomBasedChannelStrategy.md) (1 shared connections)
-- [SystemAdminChannelStrategy](SystemAdminChannelStrategy.md) (1 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (14 shared connections)
+- [TrackedTaskManager](TrackedTaskManager.md) (1 shared connections)
 
 ## Source Files
 
-- `server/realtime/channel_broadcasting_strategies.py`
+- `server/realtime/monitoring/health_monitor.py`
 
 ## Audit Trail
 
-- EXTRACTED: 29 (100%)
+- EXTRACTED: 47 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

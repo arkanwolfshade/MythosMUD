@@ -4,8 +4,18 @@ Unit tests for player respawn event handlers.
 Tests the PlayerRespawnEventHandler class.
 """
 
+# pyright: reportAny=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
+# Reason: MagicMock fixture attribute chains are Any; typing each access adds no safety.
+# pyright: reportUnknownVariableType=false
+# Reason: Follows from MagicMock fixture usage in assertions.
+# pyright: reportPrivateUsage=false
+# Reason: Unit tests intentionally access protected handler members.
+
+from __future__ import annotations
+
 import asyncio
 import uuid
+from collections.abc import AsyncIterator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -15,43 +25,50 @@ from server.realtime.player_event_handlers_respawn import PlayerRespawnEventHand
 from server.realtime.player_event_handlers_utils import PlayerEventHandlerUtils
 
 # pylint: disable=protected-access  # Reason: Test file - accessing protected members is standard practice for unit testing
-# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names, causing intentional redefinitions
+# pylint: disable=redefined-outer-name  # Reason: Test file - pytest fixture parameter names must match fixture names
 
 
 @pytest.fixture
-def mock_connection_manager():
+def mock_connection_manager() -> MagicMock:
     """Create a mock connection manager."""
     return MagicMock()
 
 
 @pytest.fixture
-def mock_utils(mock_connection_manager):
+def mock_utils(mock_connection_manager: MagicMock) -> PlayerEventHandlerUtils:
     """Create a mock PlayerEventHandlerUtils."""
     return PlayerEventHandlerUtils(mock_connection_manager, MagicMock(), MagicMock())
 
 
 @pytest.fixture
-def mock_logger():
+def mock_logger() -> MagicMock:
     """Create a mock logger."""
     return MagicMock()
 
 
 @pytest.fixture
-def player_respawn_event_handler(mock_connection_manager, mock_utils, mock_logger):
+def player_respawn_event_handler(
+    mock_connection_manager: MagicMock, mock_utils: PlayerEventHandlerUtils, mock_logger: MagicMock
+) -> PlayerRespawnEventHandler:
     """Create a PlayerRespawnEventHandler instance."""
     return PlayerRespawnEventHandler(mock_connection_manager, mock_utils, mock_logger)
 
 
 def test_player_respawn_event_handler_init(
-    player_respawn_event_handler, mock_connection_manager, mock_utils, mock_logger
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler,
+    mock_connection_manager: MagicMock,
+    mock_utils: PlayerEventHandlerUtils,
+    mock_logger: MagicMock,
+) -> None:
     """Test PlayerRespawnEventHandler initialization."""
     assert player_respawn_event_handler.connection_manager == mock_connection_manager
     assert player_respawn_event_handler.utils == mock_utils
     assert player_respawn_event_handler._logger == mock_logger
 
 
-def test_update_connection_manager_position_success(player_respawn_event_handler, mock_connection_manager, mock_logger):
+def test_update_connection_manager_position_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock, mock_logger: MagicMock
+) -> None:
     """Test update_connection_manager_position() updates position."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -61,7 +78,9 @@ def test_update_connection_manager_position_success(player_respawn_event_handler
     mock_logger.debug.assert_called_once()
 
 
-def test_update_connection_manager_position_player_not_online(player_respawn_event_handler, mock_connection_manager):
+def test_update_connection_manager_position_player_not_online(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test update_connection_manager_position() handles player not in online_players."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -71,8 +90,8 @@ def test_update_connection_manager_position_player_not_online(player_respawn_eve
 
 
 def test_update_connection_manager_position_no_online_players_attr(
-    player_respawn_event_handler, mock_connection_manager
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test update_connection_manager_position() handles missing online_players attribute."""
     player_id_str = str(uuid.uuid4())
     del mock_connection_manager.online_players
@@ -81,7 +100,9 @@ def test_update_connection_manager_position_no_online_players_attr(
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_respawn_success(player_respawn_event_handler, mock_connection_manager):
+async def test_get_player_data_for_respawn_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test get_player_data_for_respawn() successfully retrieves player data."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -103,7 +124,9 @@ async def test_get_player_data_for_respawn_success(player_respawn_event_handler,
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_respawn_no_connection_manager(player_respawn_event_handler):
+async def test_get_player_data_for_respawn_no_connection_manager(
+    player_respawn_event_handler: PlayerRespawnEventHandler,
+) -> None:
     """Test get_player_data_for_respawn() returns None when connection manager not available."""
     player_respawn_event_handler.connection_manager = None
     result, position = await player_respawn_event_handler.get_player_data_for_respawn(str(uuid.uuid4()))
@@ -112,7 +135,9 @@ async def test_get_player_data_for_respawn_no_connection_manager(player_respawn_
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_respawn_no_persistence(player_respawn_event_handler, mock_connection_manager):
+async def test_get_player_data_for_respawn_no_persistence(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test get_player_data_for_respawn() returns None when persistence not available."""
     mock_connection_manager.async_persistence = None
     result, position = await player_respawn_event_handler.get_player_data_for_respawn(str(uuid.uuid4()))
@@ -121,7 +146,9 @@ async def test_get_player_data_for_respawn_no_persistence(player_respawn_event_h
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_respawn_player_not_found(player_respawn_event_handler, mock_connection_manager):
+async def test_get_player_data_for_respawn_player_not_found(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test get_player_data_for_respawn() returns None when player not found."""
     player_id_str = str(uuid.uuid4())
     mock_connection_manager.async_persistence = MagicMock()
@@ -133,8 +160,8 @@ async def test_get_player_data_for_respawn_player_not_found(player_respawn_event
 
 @pytest.mark.asyncio
 async def test_get_player_data_for_respawn_error_handling(
-    player_respawn_event_handler, mock_connection_manager, mock_logger
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock, mock_logger: MagicMock
+) -> None:
     """Test get_player_data_for_respawn() handles errors."""
     player_id_str = str(uuid.uuid4())
     mock_connection_manager.async_persistence = MagicMock()
@@ -148,10 +175,12 @@ async def test_get_player_data_for_respawn_error_handling(
 
 
 @pytest.mark.asyncio
-async def test_send_respawn_event_with_retry_success(player_respawn_event_handler, mock_connection_manager):
+async def test_send_respawn_event_with_retry_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test send_respawn_event_with_retry() successfully sends event."""
     player_id = uuid.uuid4()
-    respawn_event = {"type": "player_respawned"}
+    respawn_event: dict[str, object] = {"type": "player_respawned"}
     mock_connection_manager.player_websockets = {player_id: MagicMock()}
     mock_connection_manager.send_personal_message = AsyncMock(
         return_value={"websocket_delivered": 1, "active_connections": 1}
@@ -162,42 +191,46 @@ async def test_send_respawn_event_with_retry_success(player_respawn_event_handle
 
 @pytest.mark.asyncio
 async def test_send_respawn_event_with_retry_waits_for_connection(
-    player_respawn_event_handler, mock_connection_manager
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test send_respawn_event_with_retry() waits for connection to become available."""
     player_id = uuid.uuid4()
-    respawn_event = {"type": "player_respawned"}
+    respawn_event: dict[str, object] = {"type": "player_respawned"}
     # Start with no connection, then add it
     mock_connection_manager.player_websockets = {}
     mock_connection_manager.send_personal_message = AsyncMock(
         return_value={"websocket_delivered": 1, "active_connections": 1}
     )
 
-    async def add_connection_after_delay():
+    async def add_connection_after_delay() -> None:
         await asyncio.sleep(0.1)
         mock_connection_manager.player_websockets[player_id] = MagicMock()
 
     # Handler uses anyio.sleep; under pytest-asyncio it must yield to the loop so the task can add the connection
     with patch("server.realtime.player_event_handlers_respawn.sleep", side_effect=asyncio.sleep):
-        asyncio.create_task(add_connection_after_delay())
+        _ = asyncio.create_task(add_connection_after_delay())
         await player_respawn_event_handler.send_respawn_event_with_retry(player_id, respawn_event, max_wait_time=1.0)
     mock_connection_manager.send_personal_message.assert_awaited()
 
 
 @pytest.mark.asyncio
-async def test_send_respawn_event_with_retry_no_connection_manager(mock_utils, mock_logger):
+async def test_send_respawn_event_with_retry_no_connection_manager(
+    mock_utils: PlayerEventHandlerUtils, mock_logger: MagicMock
+) -> None:
     """Test send_respawn_event_with_retry() is a no-op when connection manager is unset."""
     handler = PlayerRespawnEventHandler(None, mock_utils, mock_logger)
     player_id = uuid.uuid4()
-    respawn_event = {"type": "player_respawned"}
+    respawn_event: dict[str, object] = {"type": "player_respawned"}
     await handler.send_respawn_event_with_retry(player_id, respawn_event)
 
 
 @pytest.mark.asyncio
-async def test_send_respawn_event_with_retry_timeout(player_respawn_event_handler, mock_connection_manager):
+async def test_send_respawn_event_with_retry_timeout(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test send_respawn_event_with_retry() times out when connection never available."""
     player_id = uuid.uuid4()
-    respawn_event = {"type": "player_respawned"}
+    respawn_event: dict[str, object] = {"type": "player_respawned"}
     mock_connection_manager.player_websockets = {}
     mock_connection_manager.send_personal_message = AsyncMock()
     await player_respawn_event_handler.send_respawn_event_with_retry(player_id, respawn_event, max_wait_time=0.1)
@@ -206,7 +239,9 @@ async def test_send_respawn_event_with_retry_timeout(player_respawn_event_handle
 
 
 @pytest.mark.asyncio
-async def test_handle_player_respawned_success(player_respawn_event_handler, mock_connection_manager):
+async def test_handle_player_respawned_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test handle_player_respawned() successfully handles event."""
     player_id = uuid.uuid4()
     event = MagicMock()
@@ -233,14 +268,23 @@ async def test_handle_player_respawned_success(player_respawn_event_handler, moc
     with (
         patch("server.realtime.envelope.build_event") as mock_build_event,
         patch("server.async_persistence.get_container_async_persistence", return_value=mock_persistence),
+        patch("server.realtime.player_event_handlers_respawn.emit_posture_change", new_callable=AsyncMock) as mock_emit,
     ):
         mock_build_event.return_value = {"type": "player_respawned"}
         await player_respawn_event_handler.handle_player_respawned(event)
         mock_connection_manager.send_personal_message.assert_awaited()
+        mock_emit.assert_awaited_once()
+        assert mock_emit.await_args is not None
+        emit_kwargs = mock_emit.await_args.kwargs
+        assert emit_kwargs["include_self_message"] is False
+        assert emit_kwargs["previous_position"] == "lying"
+        assert emit_kwargs["new_position"] == "standing"
 
 
 @pytest.mark.asyncio
-async def test_handle_player_respawned_error_handling(player_respawn_event_handler, mock_logger):
+async def test_handle_player_respawned_error_handling(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_logger: MagicMock
+) -> None:
     """Test handle_player_respawned() handles errors."""
     event = MagicMock()
     event.player_id = uuid.uuid4()
@@ -250,7 +294,7 @@ async def test_handle_player_respawned_error_handling(player_respawn_event_handl
 
 
 @pytest.mark.asyncio
-async def test_get_current_lucidity_found(player_respawn_event_handler):
+async def test_get_current_lucidity_found(player_respawn_event_handler: PlayerRespawnEventHandler) -> None:
     """Test get_current_lucidity() returns lucidity from database."""
     player_id = uuid.uuid4()
     mock_lucidity_record = MagicMock()
@@ -258,7 +302,7 @@ async def test_get_current_lucidity_found(player_respawn_event_handler):
     mock_session = MagicMock()
     mock_session.get = AsyncMock(return_value=mock_lucidity_record)
 
-    async def async_gen():
+    async def async_gen() -> AsyncIterator[MagicMock]:
         yield mock_session
 
     with patch("server.database.get_async_session", return_value=async_gen()):
@@ -267,13 +311,13 @@ async def test_get_current_lucidity_found(player_respawn_event_handler):
 
 
 @pytest.mark.asyncio
-async def test_get_current_lucidity_not_found(player_respawn_event_handler):
+async def test_get_current_lucidity_not_found(player_respawn_event_handler: PlayerRespawnEventHandler) -> None:
     """Test get_current_lucidity() returns default when record not found."""
     player_id = uuid.uuid4()
     mock_session = MagicMock()
     mock_session.get = AsyncMock(return_value=None)
 
-    async def async_gen():
+    async def async_gen() -> AsyncIterator[MagicMock]:
         yield mock_session
 
     with patch("server.database.get_async_session", return_value=async_gen()):
@@ -282,7 +326,9 @@ async def test_get_current_lucidity_not_found(player_respawn_event_handler):
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_delirium_respawn_success(player_respawn_event_handler, mock_connection_manager):
+async def test_get_player_data_for_delirium_respawn_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test get_player_data_for_delirium_respawn() successfully retrieves player data."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)
@@ -300,7 +346,7 @@ async def test_get_player_data_for_delirium_respawn_success(player_respawn_event
     mock_lucidity_record.current_lcd = 80
     mock_session.get = AsyncMock(return_value=mock_lucidity_record)
 
-    async def async_gen():
+    async def async_gen() -> AsyncIterator[MagicMock]:
         yield mock_session
 
     with patch("server.database.get_async_session", return_value=async_gen()):
@@ -311,7 +357,9 @@ async def test_get_player_data_for_delirium_respawn_success(player_respawn_event
 
 
 @pytest.mark.asyncio
-async def test_get_player_data_for_delirium_respawn_no_connection_manager(player_respawn_event_handler):
+async def test_get_player_data_for_delirium_respawn_no_connection_manager(
+    player_respawn_event_handler: PlayerRespawnEventHandler,
+) -> None:
     """Test get_player_data_for_delirium_respawn() returns None when connection manager not available."""
     player_respawn_event_handler.connection_manager = None
     result, position = await player_respawn_event_handler.get_player_data_for_delirium_respawn(str(uuid.uuid4()), 100)
@@ -321,8 +369,8 @@ async def test_get_player_data_for_delirium_respawn_no_connection_manager(player
 
 @pytest.mark.asyncio
 async def test_get_player_data_for_delirium_respawn_player_not_found(
-    player_respawn_event_handler, mock_connection_manager
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test get_player_data_for_delirium_respawn() returns None when player not found."""
     player_id_str = str(uuid.uuid4())
     mock_connection_manager.async_persistence = MagicMock()
@@ -334,8 +382,8 @@ async def test_get_player_data_for_delirium_respawn_player_not_found(
 
 @pytest.mark.asyncio
 async def test_get_player_data_for_delirium_respawn_error_handling(
-    player_respawn_event_handler, mock_connection_manager, mock_logger
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock, mock_logger: MagicMock
+) -> None:
     """Test get_player_data_for_delirium_respawn() handles errors."""
     player_id_str = str(uuid.uuid4())
     mock_connection_manager.async_persistence = MagicMock()
@@ -347,7 +395,9 @@ async def test_get_player_data_for_delirium_respawn_error_handling(
 
 
 @pytest.mark.asyncio
-async def test_handle_player_delirium_respawned_success(player_respawn_event_handler, mock_connection_manager):
+async def test_handle_player_delirium_respawned_success(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock
+) -> None:
     """Test handle_player_delirium_respawned() successfully handles event."""
     player_id = uuid.uuid4()
     event = MagicMock()
@@ -374,7 +424,7 @@ async def test_handle_player_delirium_respawned_success(player_respawn_event_han
     mock_lucidity_record.current_lcd = 100
     mock_session.get = AsyncMock(return_value=mock_lucidity_record)
 
-    async def async_gen():
+    async def async_gen() -> AsyncIterator[MagicMock]:
         yield mock_session
 
     with patch("server.realtime.envelope.build_event") as mock_build_event:
@@ -385,7 +435,9 @@ async def test_handle_player_delirium_respawned_success(player_respawn_event_han
 
 
 @pytest.mark.asyncio
-async def test_handle_player_delirium_respawned_error_handling(player_respawn_event_handler, mock_logger):
+async def test_handle_player_delirium_respawned_error_handling(
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_logger: MagicMock
+) -> None:
     """Test handle_player_delirium_respawned() handles errors."""
     event = MagicMock()
     event.player_id = uuid.uuid4()
@@ -395,7 +447,9 @@ async def test_handle_player_delirium_respawned_error_handling(player_respawn_ev
 
 
 @pytest.mark.asyncio
-async def test_prepare_room_data_for_respawn_no_connection_manager(player_respawn_event_handler):
+async def test_prepare_room_data_for_respawn_no_connection_manager(
+    player_respawn_event_handler: PlayerRespawnEventHandler,
+) -> None:
     """Test _prepare_room_data_for_respawn() without connection manager uses persistence-only room data."""
     player_respawn_event_handler.connection_manager = None
     mock_room = MagicMock()
@@ -422,8 +476,8 @@ async def test_prepare_room_data_for_respawn_no_connection_manager(player_respaw
 
 @pytest.mark.asyncio
 async def test_get_player_data_for_respawn_no_get_stats(
-    player_respawn_event_handler, mock_connection_manager, mock_logger
-):
+    player_respawn_event_handler: PlayerRespawnEventHandler, mock_connection_manager: MagicMock, mock_logger: MagicMock
+) -> None:
     """Test get_player_data_for_respawn() handles player without get_stats method."""
     player_id = uuid.uuid4()
     player_id_str = str(player_id)

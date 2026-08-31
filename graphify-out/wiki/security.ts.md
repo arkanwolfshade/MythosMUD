@@ -1,6 +1,6 @@
 # security.ts
 
-> 47 nodes
+> 46 nodes
 
 ## Key Concepts
 
@@ -8,7 +8,6 @@
 - **domPurifyClient.ts** (14 connections) — `client/src/utils/domPurifyClient.ts`
 - **SessionManager** (12 connections) — `client/src/utils/security.ts`
 - **SafeHtml.tsx** (11 connections) — `client/src/components/common/SafeHtml.tsx`
-- **inputSanitizer** (8 connections) — `client/src/utils/security.ts`
 - **CSRFProtection** (7 connections) — `client/src/utils/security.ts`
 - **SafeHtml()** (7 connections) — `client/src/components/common/SafeHtml.tsx`
 - **getDomPurify()** (5 connections) — `client/src/utils/domPurifyClient.ts`
@@ -26,33 +25,34 @@
 - **.cleanupExpiredSessions()** (3 connections) — `client/src/utils/security.ts`
 - **.startCleanupInterval()** (3 connections) — `client/src/utils/security.ts`
 - **setupSecurityMocks()** (3 connections) — `client/src/utils/__tests__/security.test-utils.ts`
+- **useCommandHandlers.test.ts** (3 connections) — `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - **INCOMING_HTML_DOMPURIFY_CONFIG** (3 connections) — `client/src/utils/security.ts`
 - **sessionManager.test.ts** (3 connections) — `client/src/utils/__tests__/sessionManager.test.ts`
 - **.addTokenToHeaders()** (2 connections) — `client/src/utils/security.ts`
-- *... and 22 more nodes in this community*
+- *... and 21 more nodes in this community*
 
 ## Relationships
 
-- [useMythosAppActions.ts](useMythosAppActions.ts.md) (8 shared connections)
-- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (6 shared connections)
-- [useGameConnectionRefactored.ts](useGameConnectionRefactored.ts.md) (5 shared connections)
-- [utils/config.ts](utils-config.ts.md) (3 shared connections)
-- [eventHandlers/types.ts](eventHandlers-types.ts.md) (3 shared connections)
-- [1774539086359-useMythosAppState.ts](1774539086359-useMythosAppState.ts.md) (3 shared connections)
+- [ChatHistoryPanel.tsx](ChatHistoryPanel.tsx.md) (7 shared connections)
+- [logoutHandler.ts](logoutHandler.ts.md) (6 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (4 shared connections)
+- [useGameClientV2Container.ts](useGameClientV2Container.ts.md) (3 shared connections)
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (2 shared connections)
 - [maps.ts](maps.ts.md) (2 shared connections)
 - [setup.ts](setup.ts.md) (2 shared connections)
-- [useRespawnHandlers.ts](useRespawnHandlers.ts.md) (2 shared connections)
-- [Profession](Profession.md) (2 shared connections)
+- [useWebSocketConnection.ts](useWebSocketConnection.ts.md) (2 shared connections)
+- [submitAuth.ts](submitAuth.ts.md) (2 shared connections)
+- [useMythosAppActions.ts](useMythosAppActions.ts.md) (2 shared connections)
+- [DialogueEditorPage.tsx](DialogueEditorPage.tsx.md) (2 shared connections)
 - [mapPageRenderer.tsx](mapPageRenderer.tsx.md) (2 shared connections)
 
 ## Source Files
 
 - `client/src/components/common/SafeHtml.tsx`
 - `client/src/components/common/__tests__/SafeHtml.test.tsx`
+- `client/src/components/ui-v2/hooks/__tests__/useCommandHandlers.test.ts`
 - `client/src/utils/__tests__/csrfProtection.test.ts`
 - `client/src/utils/__tests__/domPurifyClient.test.ts`
-- `client/src/utils/__tests__/inputSanitizer.test.ts`
 - `client/src/utils/__tests__/secureTokenStorage.test.ts`
 - `client/src/utils/__tests__/security.test-utils.ts`
 - `client/src/utils/__tests__/sessionManager.test.ts`
@@ -61,7 +61,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 120 (100%)
+- EXTRACTED: 115 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

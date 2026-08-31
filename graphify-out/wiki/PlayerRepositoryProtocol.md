@@ -1,12 +1,11 @@
 # PlayerRepositoryProtocol
 
-> 51 nodes
+> 49 nodes
 
 ## Key Concepts
 
 - **PlayerRepositoryProtocol** (23 connections) — `server/persistence/protocols.py`
 - **test_protocol_ellipsis_bodies_via_unbound_methods()** (22 connections) — `server/tests/unit/persistence/test_protocols.py`
-- **protocols.py** (12 connections) — `server/persistence/protocols.py`
 - **RoomRepositoryProtocol** (11 connections) — `server/persistence/protocols.py`
 - **Player** (11 connections)
 - **test_protocols.py** (11 connections) — `server/tests/unit/persistence/test_protocols.py`
@@ -29,17 +28,17 @@
 - **.get_room_by_id()** (4 connections) — `server/persistence/protocols.py`
 - **.list_rooms()** (4 connections) — `server/persistence/protocols.py`
 - **.list_players()** (3 connections) — `server/persistence/protocols.py`
-- *... and 26 more nodes in this community*
+- **test_room_repository_protocol_stub()** (3 connections) — `server/tests/unit/persistence/test_protocols.py`
+- *... and 24 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (3 shared connections)
-- [ContainerData](ContainerData.md) (3 shared connections)
-- [Room](Room.md) (3 shared connections)
+- [Player](Player.md) (6 shared connections)
 - [_StubPlayerRepo](_StubPlayerRepo.md) (3 shared connections)
-- [Player](Player.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
+- [server/persistence/__init__.py](server-persistence-__init__.py.md) (2 shared connections)
 - [test_container_helpers_inventory_ops.py](test_container_helpers_inventory_ops.py.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
+- [Room](Room.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
@@ -49,8 +48,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 102 (93%)
-- INFERRED: 8 (7%)
+- EXTRACTED: 95 (92%)
+- INFERRED: 8 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

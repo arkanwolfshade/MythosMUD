@@ -1,6 +1,6 @@
 # test_skill_service.py
 
-> 64 nodes
+> 66 nodes
 
 ## Key Concepts
 
@@ -9,6 +9,7 @@
 - **_occupation_slots_9()** (11 connections) — `server/tests/unit/game/test_skill_service.py`
 - **_personal_interest_4()** (8 connections) — `server/tests/unit/game/test_skill_service.py`
 - **fixture** (6 connections)
+- **skill_service()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_cthulhu_mythos_in_occupation_rejected()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_duplicate_occupation_skill_ids_raises()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_set_player_skills_own_language_not_allocated_equals_edu()** (5 connections) — `server/tests/unit/game/test_skill_service.py`
@@ -28,16 +29,16 @@
 - **test_get_player_skills_owner_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_get_skills_catalog_returns_list()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
 - **test_get_skills_used_this_level_returns_repo_result()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- **test_record_successful_skill_use_calls_repo()** (3 connections) — `server/tests/unit/game/test_skill_service.py`
-- *... and 39 more nodes in this community*
+- *... and 41 more nodes in this community*
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (3 shared connections)
-- [test_skills_commands.py](test_skills_commands.py.md) (2 shared connections)
+- [SkillRepository](SkillRepository.md) (2 shared connections)
+- [api/character_creation.py](api-character_creation.py.md) (2 shared connections)
+- [skills_commands.py](skills_commands.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [api/character_creation.py](api-character_creation.py.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
+- [get_logger](get_logger.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 
@@ -45,8 +46,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 111 (99%)
-- INFERRED: 1 (1%)
+- EXTRACTED: 112 (97%)
+- INFERRED: 3 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,65 +1,55 @@
 # test_users.py
 
-> 158 nodes
+> 68 nodes
 
 ## Key Concepts
 
 - **test_users.py** (55 connections) — `server/tests/unit/auth/test_users.py`
-- **users.py** (48 connections) — `server/auth/users.py`
 - **UserManager** (41 connections) — `server/auth/users.py`
-- **RestartInvalidatingJWTStrategy** (13 connections) — `server/auth/jwt_strategy.py`
-- **get_user_manager()** (13 connections) — `server/auth/users.py`
-- **get_auth_backend()** (12 connections) — `server/auth/users.py`
-- **get_user_db()** (11 connections) — `server/auth/users.py`
 - **asyncio** (11 connections)
-- **set_auth_epoch()** (10 connections) — `server/auth/token_epoch.py`
-- **test_jwt_strategy.py** (10 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **get_username_auth_backend()** (9 connections) — `server/auth/users.py`
-- **UsernameAuthenticationBackend** (8 connections) — `server/auth/users.py`
-- **get_auth_epoch()** (8 connections) — `server/auth/token_epoch.py`
-- **token_epoch.py** (8 connections) — `server/auth/token_epoch.py`
-- **auth/conftest.py** (8 connections) — `server/tests/unit/auth/conftest.py`
-- **.read_token()** (7 connections) — `server/auth/jwt_strategy.py`
-- **server/auth/__init__.py** (7 connections) — `server/auth/__init__.py`
-- **jwt_strategy.py** (7 connections) — `server/auth/jwt_strategy.py`
-- **UUID** (7 connections)
-- **.login()** (6 connections) — `server/auth/users.py`
-- **validate_jwt_secret()** (6 connections) — `server/auth/users.py`
-- **test_read_token_accepts_matching_epoch()** (6 connections) — `server/tests/unit/auth/test_jwt_strategy.py`
-- **test_username_authentication_backend_login()** (6 connections) — `server/tests/unit/auth/test_users.py`
-- **.__init__()** (5 connections) — `server/auth/users.py`
-- **.on_after_register()** (5 connections) — `server/auth/users.py`
-- *... and 133 more nodes in this community*
+- **test_user_manager_on_after_forgot_password()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_forgot_password_with_request()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_no_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_non_bogus_email()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_register_with_request()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_request_verify()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_on_after_request_verify_with_request()** (5 connections) — `server/tests/unit/auth/test_users.py`
+- **._hash_password()** (3 connections) — `server/auth/users.py`
+- **._verify_password()** (3 connections) — `server/auth/users.py`
+- **test_user_manager_parse_id_attribute_error()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_empty_string()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_invalid()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_non_string_convertible()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_non_string_non_uuid()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_none()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_string()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_type_error()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_uuid()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_uuid_type_error()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_uuid_value_error()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- **test_user_manager_parse_id_valid_uuid_string()** (3 connections) — `server/tests/unit/auth/test_users.py`
+- *... and 43 more nodes in this community*
 
 ## Relationships
 
-- [User](User.md) (21 shared connections)
-- [endpoints.py](endpoints.py.md) (13 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (12 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (5 shared connections)
-- [get_logger](get_logger.md) (4 shared connections)
-- [lifespan_startup.py](lifespan_startup.py.md) (3 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (18 shared connections)
+- [get_user_manager](get_user_manager.md) (10 shared connections)
+- [get_username_auth_backend](get_username_auth_backend.md) (9 shared connections)
+- [RestartInvalidatingJWTStrategy](RestartInvalidatingJWTStrategy.md) (6 shared connections)
 - [test_email_utils.py](test_email_utils.py.md) (3 shared connections)
-- [pytest.md](pytest.md.md) (3 shared connections)
-- [UnknownChannelStrategy](UnknownChannelStrategy.md) (2 shared connections)
-- [factory.py](factory.py.md) (2 shared connections)
-- [test_users_current_user_logging.py](test_users_current_user_logging.py.md) (2 shared connections)
-- [get_async_session](get_async_session.md) (1 shared connections)
+- [test_argon2_utils.py](test_argon2_utils.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/auth/__init__.py`
-- `server/auth/jwt_strategy.py`
-- `server/auth/token_epoch.py`
 - `server/auth/users.py`
-- `server/tests/unit/auth/conftest.py`
-- `server/tests/unit/auth/test_jwt_strategy.py`
 - `server/tests/unit/auth/test_users.py`
 
 ## Audit Trail
 
-- EXTRACTED: 308 (91%)
-- INFERRED: 30 (9%)
+- EXTRACTED: 129 (87%)
+- INFERRED: 19 (13%)
 - AMBIGUOUS: 0 (0%)
 
 ---

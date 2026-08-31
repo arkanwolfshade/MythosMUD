@@ -18,7 +18,7 @@
 ## Relationships
 
 - [asyncio](asyncio.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (2 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 - [test_process_exit_rows_with_partial_room_ids](test_process_exit_rows_with_partial_room_ids.md) (1 shared connections)
 - [test_process_exit_rows_debug_logging](test_process_exit_rows_debug_logging.md) (1 shared connections)

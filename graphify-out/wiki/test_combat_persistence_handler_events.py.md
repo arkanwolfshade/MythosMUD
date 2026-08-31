@@ -34,8 +34,9 @@
 ## Relationships
 
 - [CombatPersistenceHandler](CombatPersistenceHandler.md) (3 shared connections)
-- [NATSError](NATSError.md) (3 shared connections)
+- [NATSError](NATSError.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NATSService](NATSService.md) (1 shared connections)
 
 ## Source Files
 

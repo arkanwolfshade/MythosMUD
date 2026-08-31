@@ -5,14 +5,14 @@
 ## Key Concepts
 
 - **properties** (10 connections) — `schemas/calendar/schedule.schema.json`
-- **id** (4 connections) — `schemas/calendar/schedule.schema.json`
+- **end_hour** (4 connections) — `schemas/calendar/schedule.schema.json`
 - **category** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **name** (3 connections) — `schemas/calendar/schedule.schema.json`
 - **notes** (2 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
-- **pattern** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **maximum** (1 connections) — `schemas/calendar/schedule.schema.json`
+- **minimum** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **minLength** (1 connections) — `schemas/calendar/schedule.schema.json`
 - **type** (1 connections) — `schemas/calendar/schedule.schema.json`
@@ -22,8 +22,8 @@
 
 - [days](days.md) (2 shared connections)
 - [required](required.md) (1 shared connections)
+- [id](id.md) (1 shared connections)
 - [start_hour](start_hour.md) (1 shared connections)
-- [end_hour](end_hour.md) (1 shared connections)
 - [applies_to](applies_to.md) (1 shared connections)
 
 ## Source Files

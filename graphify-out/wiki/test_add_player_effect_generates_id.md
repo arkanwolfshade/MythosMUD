@@ -21,10 +21,9 @@
 
 ## Relationships
 
-- [pytest.md](pytest.md.md) (5 shared connections)
+- [Player](Player.md) (6 shared connections)
 - [session_factory](session_factory.md) (5 shared connections)
-- [User](User.md) (1 shared connections)
-- [Player](Player.md) (1 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (1 shared connections)
 
 ## Source Files
 

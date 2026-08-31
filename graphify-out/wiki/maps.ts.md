@@ -35,10 +35,10 @@
 
 - [AsciiMapViewer.tsx](AsciiMapViewer.tsx.md) (6 shared connections)
 - [apiTypeGuards.ts](apiTypeGuards.ts.md) (6 shared connections)
-- [map/types.ts](map-types.ts.md) (2 shared connections)
+- [saveMapChanges.ts](saveMapChanges.ts.md) (2 shared connections)
 - [ui-v2/types.ts](ui-v2-types.ts.md) (2 shared connections)
 - [security.ts](security.ts.md) (2 shared connections)
-- [utils/config.ts](utils-config.ts.md) (1 shared connections)
+- [useMythosAppState.ts](useMythosAppState.ts.md) (1 shared connections)
 
 ## Source Files
 

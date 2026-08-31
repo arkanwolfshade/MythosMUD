@@ -6,7 +6,6 @@
 
 - **PlayerStateCommandFactory** (40 connections) — `server/utils/command_factories_player_state.py`
 - **test_command_factories_player_state.py** (28 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
-- **.__init__()** (9 connections) — `server/utils/command_factories.py`
 - **.create_journal_command()** (6 connections) — `server/utils/command_factories_player_state.py`
 - **.create_quests_command()** (6 connections) — `server/utils/command_factories_player_state.py`
 - **.create_quit_command()** (6 connections) — `server/utils/command_factories_player_state.py`
@@ -29,32 +28,25 @@
 - **test_create_journal_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **test_create_logout_command()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - **test_create_logout_command_with_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
+- **test_create_quest_command_empty_args()** (4 connections) — `server/tests/unit/utils/test_command_factories_player_state.py`
 - *... and 47 more nodes in this community*
 
 ## Relationships
 
-- [ValidationError](ValidationError.md) (22 shared connections)
-- [BaseCommand](BaseCommand.md) (9 shared connections)
-- [CommandFactory](CommandFactory.md) (2 shared connections)
-- [test_command_player_state.py](test_command_player_state.py.md) (2 shared connections)
-- [ExplorationCommandFactory](ExplorationCommandFactory.md) (1 shared connections)
-- [ModerationCommandFactory](ModerationCommandFactory.md) (1 shared connections)
+- [get_logger](get_logger.md) (21 shared connections)
+- [BaseCommand](BaseCommand.md) (13 shared connections)
 - [CombatCommandFactory](CombatCommandFactory.md) (1 shared connections)
-- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
-- [test_command_utility.py](test_command_utility.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [DatabaseError](DatabaseError.md) (1 shared connections)
 
 ## Source Files
 
 - `server/tests/unit/utils/test_command_factories_player_state.py`
-- `server/utils/command_factories.py`
 - `server/utils/command_factories_player_state.py`
 
 ## Audit Trail
 
-- EXTRACTED: 126 (80%)
-- INFERRED: 31 (20%)
+- EXTRACTED: 120 (79%)
+- INFERRED: 31 (21%)
 - AMBIGUOUS: 0 (0%)
 
 ---

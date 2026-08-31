@@ -1,6 +1,6 @@
 # PrototypeRegistryError
 
-> 38 nodes
+> 36 nodes
 
 ## Key Concepts
 
@@ -16,7 +16,6 @@
 - **._build_instance_metadata()** (4 connections) — `server/game/items/item_factory.py`
 - **main()** (4 connections) — `server/scripts/validate_prototypes.py`
 - **test_create_instance_prototype_not_found()** (4 connections) — `server/tests/unit/game/test_item_factory.py`
-- **test_weapon_from_prototype_registry_missing_prototype_returns_none()** (4 connections) — `server/tests/unit/game/test_player_schema_converter_weapon.py`
 - **.__init__()** (3 connections) — `server/game/items/item_factory.py`
 - **._resolve_stack_slot()** (3 connections) — `server/game/items/item_factory.py`
 - **parse_arguments()** (3 connections) — `server/scripts/validate_prototypes.py`
@@ -29,22 +28,23 @@
 - **Exception** (1 connections)
 - **PrototypeRegistry** (1 connections)
 - **Exception** (1 connections)
-- *... and 13 more nodes in this community*
+- **Namespace** (1 connections)
+- *... and 11 more nodes in this community*
 
 ## Relationships
 
 - [PrototypeRegistry](PrototypeRegistry.md) (11 shared connections)
-- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (7 shared connections)
 - [get_logger](get_logger.md) (7 shared connections)
+- [resolve_weapon_attack_from_equipped](resolve_weapon_attack_from_equipped.md) (7 shared connections)
+- [admin_summon_command.py](admin_summon_command.py.md) (6 shared connections)
 - [test_inventory_command_prototype.py](test_inventory_command_prototype.py.md) (6 shared connections)
 - [ItemInstance](ItemInstance.md) (5 shared connections)
-- [test_admin_summon_command.py](test_admin_summon_command.py.md) (4 shared connections)
-- [StatusEffect](StatusEffect.md) (4 shared connections)
+- [player_schema_converter.py](player_schema_converter.py.md) (5 shared connections)
 - [ItemPrototypeModel](ItemPrototypeModel.md) (4 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
-- [AliasStorage](AliasStorage.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [initialize_components](initialize_components.md) (2 shared connections)
+- [initialize_components](initialize_components.md) (3 shared connections)
+- [.initialize](initialize.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [system_monitoring.py](system_monitoring.py.md) (1 shared connections)
 
 ## Source Files
 
@@ -53,11 +53,10 @@
 - `server/game/items/prototype_registry.py`
 - `server/scripts/validate_prototypes.py`
 - `server/tests/unit/game/test_item_factory.py`
-- `server/tests/unit/game/test_player_schema_converter_weapon.py`
 
 ## Audit Trail
 
-- EXTRACTED: 109 (87%)
+- EXTRACTED: 106 (87%)
 - INFERRED: 16 (13%)
 - AMBIGUOUS: 0 (0%)
 

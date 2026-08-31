@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [PlayerLeftRoom](PlayerLeftRoom.md) (4 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [player_event_handlers.py](player_event_handlers.py.md) (3 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
+- [NPCOccupantProcessor](NPCOccupantProcessor.md) (1 shared connections)
 
 ## Source Files
 

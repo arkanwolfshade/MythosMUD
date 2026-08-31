@@ -1,13 +1,11 @@
 # test_optimized_security_validator.py
 
-> 36 nodes
+> 32 nodes
 
 ## Key Concepts
 
 - **test_optimized_security_validator.py** (82 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **optimized_validate_message_content()** (19 connections) — `server/validators/optimized_security_validator.py`
-- **benchmark_validation_performance()** (5 connections) — `server/validators/optimized_security_validator.py`
-- **test_benchmark_validation_performance()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **test_optimized_validate_message_content_dangerous_chars()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **test_optimized_validate_message_content_data_url()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **test_optimized_validate_message_content_empty()** (3 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
@@ -27,19 +25,21 @@
 - **Test validating message with injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **Test validating message with SQL injection pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **Test validating message with XSS pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- **Test benchmark function runs without errors.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
 - **Test validating message with path traversal pattern.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
-- *... and 11 more nodes in this community*
+- **Test validating message with javascript: URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with event handler.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- **Test validating message with data URL.** (1 connections) — `server/tests/unit/validators/test_optimized_security_validator.py`
+- *... and 7 more nodes in this community*
 
 ## Relationships
 
 - [optimized_validate_player_name](optimized_validate_player_name.md) (11 shared connections)
+- [optimized_security_validator.py](optimized_security_validator.py.md) (9 shared connections)
 - [optimized_comprehensive_sanitize_input](optimized_comprehensive_sanitize_input.md) (5 shared connections)
 - [optimized_validate_action_content](optimized_validate_action_content.md) (5 shared connections)
 - [optimized_validate_alias_name](optimized_validate_alias_name.md) (5 shared connections)
 - [optimized_validate_security_comprehensive](optimized_validate_security_comprehensive.md) (5 shared connections)
 - [optimized_sanitize_unicode_input](optimized_sanitize_unicode_input.md) (4 shared connections)
-- [optimized_strip_ansi_codes](optimized_strip_ansi_codes.md) (4 shared connections)
 - [optimized_validate_command_content](optimized_validate_command_content.md) (4 shared connections)
 - [optimized_validate_filter_name](optimized_validate_filter_name.md) (4 shared connections)
 - [optimized_validate_help_topic](optimized_validate_help_topic.md) (4 shared connections)
@@ -53,7 +53,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 118 (100%)
+- EXTRACTED: 114 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

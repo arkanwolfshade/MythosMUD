@@ -1,63 +1,63 @@
 # game_tick_processing.py
 
-> 93 nodes
+> 27 nodes
 
 ## Key Concepts
 
 - **game_tick_processing.py** (56 connections) — `server/app/game_tick_processing.py`
-- **game_tick_death.py** (35 connections) — `server/app/game_tick_death.py`
-- **game_tick_protocols.py** (30 connections) — `server/app/game_tick_protocols.py`
-- **game_tick_status_effects.py** (30 connections) — `server/app/game_tick_status_effects.py`
-- **_TickContainer** (23 connections) — `server/app/game_tick_protocols.py`
-- **_process_mortally_wounded_player()** (14 connections) — `server/app/game_tick_death.py`
-- **_process_single_effect()** (14 connections) — `server/app/game_tick_status_effects.py`
-- **_validate_app_state_for_status_effects()** (14 connections) — `server/app/game_tick_status_effects.py`
+- **game_tick_loop()** (17 connections) — `server/app/game_tick_processing.py`
+- **broadcast_tick_event()** (13 connections) — `server/app/game_tick_processing.py`
 - **_app_container()** (13 connections) — `server/app/game_tick_protocols.py`
-- **_process_damage_over_time_effect()** (13 connections) — `server/app/game_tick_status_effects.py`
-- **process_status_effects()** (13 connections) — `server/app/game_tick_status_effects.py`
-- **_process_mp_regeneration()** (11 connections) — `server/app/game_tick_death.py`
-- **_process_heal_over_time_effect()** (11 connections) — `server/app/game_tick_status_effects.py`
-- **process_dp_decay_and_death()** (10 connections) — `server/app/game_tick_death.py`
-- **_process_session_dp_decay_and_death()** (9 connections) — `server/app/game_tick_death.py`
-- **_tick_online_players()** (9 connections) — `server/app/game_tick_protocols.py`
-- **_process_all_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **_update_player_status_effects()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **_validate_and_get_player()** (9 connections) — `server/app/game_tick_status_effects.py`
-- **Protocol** (9 connections)
-- **UUID** (9 connections)
-- **_handle_player_death_threshold()** (8 connections) — `server/app/game_tick_death.py`
-- **_online_player_ids()** (8 connections) — `server/app/game_tick_protocols.py`
-- **process_player_effects_expiration()** (8 connections) — `server/app/game_tick_status_effects.py`
-- **_process_player_status_effects()** (8 connections) — `server/app/game_tick_status_effects.py`
-- *... and 68 more nodes in this community*
+- **broadcast_game_event()** (11 connections) — `server/realtime/connection_manager_api.py`
+- **process_combat_tick()** (10 connections) — `server/app/game_tick_processing.py`
+- **get_tick_interval()** (8 connections) — `server/app/game_tick_processing.py`
+- **process_npc_maintenance()** (8 connections) — `server/app/game_tick_processing.py`
+- **process_casting_progress()** (7 connections) — `server/app/game_tick_processing.py`
+- **reset_current_tick()** (6 connections) — `server/app/game_tick_counter.py`
+- **FastAPI** (6 connections)
+- **set_current_tick()** (5 connections) — `server/app/game_tick_counter.py`
+- **_tick_broadcast_payload()** (4 connections) — `server/app/game_tick_processing.py`
+- **.should_run_maintenance()** (3 connections) — `server/config/npc_config.py`
+- **Set the current game tick (game tick loop).** (1 connections) — `server/app/game_tick_counter.py`
+- **Reset the current tick for testing.** (1 connections) — `server/app/game_tick_counter.py`
+- **Game tick processing functions. This module handles all game tick processing…** (1 connections) — `server/app/game_tick_processing.py`
+- **Process NPC lifecycle maintenance (every 60 ticks = 1 minute).** (1 connections) — `server/app/game_tick_processing.py`
+- **Build game_tick event payload (Mythos clock + calendar).** (1 connections) — `server/app/game_tick_processing.py`
+- **Broadcast game tick event to all connected players.** (1 connections) — `server/app/game_tick_processing.py`
+- **Main game tick loop. This function runs continuously and handles periodic game…** (1 connections) — `server/app/game_tick_processing.py`
+- **Get the server tick interval from configuration. Returns: float: Tick interval…** (1 connections) — `server/app/game_tick_processing.py`
+- **Process combat auto-progression.** (1 connections) — `server/app/game_tick_processing.py`
+- **Process casting progress for all active spell castings.** (1 connections) — `server/app/game_tick_processing.py`
+- **Return the DI container from app.state, or None if missing.** (1 connections) — `server/app/game_tick_protocols.py`
+- *... and 2 more nodes in this community*
 
 ## Relationships
 
-- [test_game_tick_processing.py](test_game_tick_processing.py.md) (48 shared connections)
-- [test_game_tick_processing_async.py](test_game_tick_processing_async.py.md) (14 shared connections)
-- [Player](Player.md) (13 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (8 shared connections)
-- [test_combat_event_publisher.py](test_combat_event_publisher.py.md) (4 shared connections)
-- [get_current_tick](get_current_tick.md) (4 shared connections)
-- [models/combat.py](models-combat.py.md) (3 shared connections)
-- [event_types.py](event_types.py.md) (3 shared connections)
-- [models/player.py](models-player.py.md) (3 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [game_tick_status_effects.py](game_tick_status_effects.py.md) (19 shared connections)
+- [test_game_tick_processing.py](test_game_tick_processing.py.md) (11 shared connections)
+- [game_tick_death.py](game_tick_death.py.md) (11 shared connections)
+- [test_game_tick_death.py](test_game_tick_death.py.md) (9 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (5 shared connections)
+- [CombatService](CombatService.md) (4 shared connections)
+- [build_event](build_event.md) (4 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [PlayerService](PlayerService.md) (3 shared connections)
+- [game_tick_protocols.py](game_tick_protocols.py.md) (3 shared connections)
+- [test_lifecycle_periodic.py](test_lifecycle_periodic.py.md) (3 shared connections)
 
 ## Source Files
 
-- `server/app/game_tick_death.py`
+- `server/app/game_tick_counter.py`
 - `server/app/game_tick_processing.py`
 - `server/app/game_tick_protocols.py`
-- `server/app/game_tick_status_effects.py`
-- `server/services/combat_messaging_integration.py`
+- `server/config/npc_config.py`
+- `server/realtime/connection_manager_api.py`
 
 ## Audit Trail
 
-- EXTRACTED: 307 (89%)
-- INFERRED: 39 (11%)
+- EXTRACTED: 132 (97%)
+- INFERRED: 4 (3%)
 - AMBIGUOUS: 0 (0%)
 
 ---

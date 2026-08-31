@@ -33,9 +33,8 @@
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (4 shared connections)
-- [models/player.py](models-player.py.md) (1 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [Player](Player.md) (6 shared connections)
 
 ## Source Files
 

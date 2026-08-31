@@ -1,12 +1,13 @@
 # look_command.py
 
-> 81 nodes
+> 85 nodes
 
 ## Key Concepts
 
 - **look_command.py** (58 connections) — `server/commands/look_command.py`
 - **test_look_command.py** (26 connections) — `server/tests/unit/commands/test_look_command.py`
 - **handle_look_command()** (18 connections) — `server/commands/look_command.py`
+- **LookRequest** (15 connections) — `server/commands/look_helpers.py`
 - **_handle_implicit_target_lookup()** (14 connections) — `server/commands/look_command.py`
 - **_setup_look_command()** (13 connections) — `server/commands/look_command.py`
 - **_route_look_command()** (12 connections) — `server/commands/look_command.py`
@@ -28,33 +29,33 @@
 - **_connection_manager_from_app()** (6 connections) — `server/commands/look_command.py`
 - **_prototype_registry_from_app()** (6 connections) — `server/commands/look_command.py`
 - **_try_implicit_target_lookup()** (6 connections) — `server/commands/look_command.py`
-- **test_handle_look_command_accepts_websocket_request_context()** (5 connections) — `server/tests/unit/commands/test_look_command.py`
-- *... and 56 more nodes in this community*
+- *... and 60 more nodes in this community*
 
 ## Relationships
 
-- [test_look_helpers.py](test_look_helpers.py.md) (9 shared connections)
-- [test_look_room.py](test_look_room.py.md) (7 shared connections)
+- [test_look_room.py](test_look_room.py.md) (10 shared connections)
+- [test_look_container_helpers.py](test_look_container_helpers.py.md) (8 shared connections)
+- [test_look_helpers.py](test_look_helpers.py.md) (6 shared connections)
 - [AliasStorage](AliasStorage.md) (6 shared connections)
 - [test_look_player.py](test_look_player.py.md) (5 shared connections)
 - [_find_item_in_equipped](_find_item_in_equipped.md) (5 shared connections)
-- [test_look_container.py](test_look_container.py.md) (4 shared connections)
-- [build_event](build_event.md) (3 shared connections)
-- [look_npc.py](look_npc.py.md) (3 shared connections)
-- [test_look_container_helpers.py](test_look_container_helpers.py.md) (3 shared connections)
-- [command_handler_unified.py](command_handler_unified.py.md) (3 shared connections)
-- [get_username_from_user](get_username_from_user.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [test_look_container.py](test_look_container.py.md) (3 shared connections)
+- [test_look_npc.py](test_look_npc.py.md) (3 shared connections)
+- [websocket_handler.py](websocket_handler.py.md) (2 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [get_username_from_user](get_username_from_user.md) (1 shared connections)
 
 ## Source Files
 
 - `server/commands/look_command.py`
+- `server/commands/look_helpers.py`
 - `server/tests/unit/commands/test_look_command.py`
 
 ## Audit Trail
 
-- EXTRACTED: 229 (97%)
-- INFERRED: 7 (3%)
+- EXTRACTED: 236 (96%)
+- INFERRED: 10 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

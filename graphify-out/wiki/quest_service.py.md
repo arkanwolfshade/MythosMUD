@@ -1,62 +1,62 @@
 # quest_service.py
 
-> 38 nodes
+> 59 nodes
 
 ## Key Concepts
 
 - **quest_service.py** (32 connections) — `server/game/quest/quest_service.py`
-- **quest_chat_notify.py** (20 connections) — `server/game/quest/quest_chat_notify.py`
-- **schedule_personal_system()** (12 connections) — `server/game/chat_npc_system.py`
-- **should_notify_quest_progress()** (10 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_progress()** (9 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_abandoned()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_completed()** (8 connections) — `server/game/quest/quest_chat_notify.py`
-- **notify_quest_started()** (8 connections) — `server/game/quest/quest_chat_notify.py`
+- **collect_inventory.py** (17 connections) — `server/game/quest/collect_inventory.py`
+- **Any** (14 connections)
+- **consume_prototype_from_player()** (13 connections) — `server/game/quest/collect_inventory.py`
+- **count_prototype_in_stacks()** (12 connections) — `server/game/quest/collect_inventory.py`
+- **test_collect_inventory.py** (10 connections) — `server/tests/unit/game/test_collect_inventory.py`
+- **collect_player_stacks()** (9 connections) — `server/game/quest/collect_inventory.py`
+- **_consume_from_stack_list()** (8 connections) — `server/game/quest/collect_inventory.py`
+- **_build_collect_n_progress()** (7 connections) — `server/game/quest/quest_service.py`
 - **_consume_collect_goals_from_player()** (7 connections) — `server/game/quest/quest_service.py`
-- **test_notify_quest_lifecycle_schedules_personal_system()** (6 connections) — `server/tests/unit/game/test_chat_npc_system.py`
+- **_apply_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
+- **_snapshot_holdings()** (6 connections) — `server/game/quest/collect_inventory.py`
 - **game/quest/__init__.py** (6 connections) — `server/game/quest/__init__.py`
-- **_goal_is_met()** (5 connections) — `server/game/quest/quest_chat_notify.py`
+- **_consume_from_equipped()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_nested_item_dicts()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_prototype_id()** (5 connections) — `server/game/quest/collect_inventory.py`
+- **_stack_quantity()** (5 connections) — `server/game/quest/collect_inventory.py`
 - **_collect_goal_prototype_id()** (5 connections) — `server/game/quest/quest_service.py`
-- **UUID** (5 connections)
-- **_progress_has_any_value()** (4 connections) — `server/game/quest/quest_chat_notify.py`
+- **_deepcopy_dict_stacks()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_deepcopy_equipped_map()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_dict_stacks_from_callable()** (4 connections) — `server/game/quest/collect_inventory.py`
+- **_dict_stacks_from_equipped()** (4 connections) — `server/game/quest/collect_inventory.py`
 - **_collect_goal_required_count()** (4 connections) — `server/game/quest/quest_service.py`
-- **_goal_activity_target()** (4 connections) — `server/game/quest/quest_service.py`
-- **Any** (4 connections)
-- **_as_int()** (3 connections) — `server/game/quest/quest_chat_notify.py`
-- **test_should_notify_quest_progress_milestones()** (3 connections) — `server/tests/unit/game/test_chat_npc_system.py`
-- **Schedule personal system chat from sync or async callers.** (1 connections) — `server/game/chat_npc_system.py`
-- **Quest subsystem: service, goal progression, rewards.** (1 connections) — `server/game/quest/__init__.py`
-- **Quest lifecycle and NPC quest-line chat helpers (issue #146 MVP). # group:…** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat when a quest becomes active.** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- **Personal system chat for milestone progress (first tick or goal newly met).** (1 connections) — `server/game/quest/quest_chat_notify.py`
-- *... and 13 more nodes in this community*
+- **.set_equipped_items()** (3 connections) — `server/models/player.py`
+- **.set_inventory()** (3 connections) — `server/models/player.py`
+- *... and 34 more nodes in this community*
 
 ## Relationships
 
-- [QuestService](QuestService.md) (24 shared connections)
-- [test_chat_npc_system.py](test_chat_npc_system.py.md) (15 shared connections)
-- [quest_commands.py](quest_commands.py.md) (8 shared connections)
-- [collect_inventory.py](collect_inventory.py.md) (5 shared connections)
-- [pytest.md](pytest.md.md) (2 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [players.py](players.py.md) (1 shared connections)
+- [QuestService](QuestService.md) (18 shared connections)
+- [test_chat_npc_system.py](test_chat_npc_system.py.md) (6 shared connections)
+- [get_logger](get_logger.md) (3 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [PlayerService](PlayerService.md) (1 shared connections)
+- [quest_commands.py](quest_commands.py.md) (1 shared connections)
 - [server/dependencies.py](server-dependencies.py.md) (1 shared connections)
-- [.__post_init__](__post_init__.md) (1 shared connections)
+- [test_quest_instance_repository.py](test_quest_instance_repository.py.md) (1 shared connections)
+- [test_follow_service.py](test_follow_service.py.md) (1 shared connections)
 - [test_quest_service.py](test_quest_service.py.md) (1 shared connections)
 - [test_quest_service_collect.py](test_quest_service_collect.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/game/chat_npc_system.py`
 - `server/game/quest/__init__.py`
-- `server/game/quest/quest_chat_notify.py`
+- `server/game/quest/collect_inventory.py`
 - `server/game/quest/quest_service.py`
-- `server/tests/unit/game/test_chat_npc_system.py`
+- `server/models/player.py`
+- `server/tests/unit/game/test_collect_inventory.py`
 
 ## Audit Trail
 
-- EXTRACTED: 121 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 137 (99%)
+- INFERRED: 2 (1%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -33,18 +33,18 @@
 
 ## Relationships
 
-- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (10 shared connections)
+- [is_player_in_login_grace_period](is_player_in_login_grace_period.md) (7 shared connections)
+- [connection_manager.py](connection_manager.py.md) (4 shared connections)
 - [.state](state.md) (3 shared connections)
-- [connection_manager.py](connection_manager.py.md) (2 shared connections)
 - [test_game_state_provider.py](test_game_state_provider.py.md) (2 shared connections)
-- [is_player_in_grace_period](is_player_in_grace_period.md) (2 shared connections)
+- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (2 shared connections)
 - [NATSRetryHandler](NATSRetryHandler.md) (2 shared connections)
 - [RoomEventHandler](RoomEventHandler.md) (1 shared connections)
+- [test_login_grace_period_visual_indicator.py](test_login_grace_period_visual_indicator.py.md) (1 shared connections)
 - [get_npc_instance_service](get_npc_instance_service.md) (1 shared connections)
 - [quest_service](quest_service.md) (1 shared connections)
 - [build_event](build_event.md) (1 shared connections)
 - [resolve_connection_manager](resolve_connection_manager.md) (1 shared connections)
-- [websocket_handler_commands.py](websocket_handler_commands.py.md) (1 shared connections)
 
 ## Source Files
 

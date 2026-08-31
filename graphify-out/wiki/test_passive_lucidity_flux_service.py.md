@@ -1,15 +1,18 @@
 # test_passive_lucidity_flux_service.py
 
-> 28 nodes
+> 33 nodes
 
 ## Key Concepts
 
 - **test_passive_lucidity_flux_service.py** (33 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **_make_service()** (22 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **PassiveFluxContext** (13 connections) — `server/services/passive_lucidity_flux/models.py`
+- **FluxServiceConfig** (9 connections) — `server/services/passive_lucidity_flux/config.py`
 - **PassiveLucidityFluxService** (8 connections)
 - **asyncio** (6 connections)
 - **test_process_single_player_no_delta()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_process_tick_applies_adjustment()** (5 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
+- **test_resolve_context_with_custom_resolver()** (4 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_build_room_cache()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_get_room_cached_uses_persistence()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_process_tick_skipped_when_not_due()** (3 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
@@ -26,28 +29,28 @@
 - **test_is_player_active_recent()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_lookup_base_flux_for_room_overrides()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 - **test_lookup_base_flux_sub_zone_override()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_lookup_world_override_flux()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_normalize_datetime_timezone()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- **test_parse_last_active_variants()** (2 connections) — `server/tests/unit/services/test_passive_lucidity_flux_service.py`
-- *... and 3 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
-- [PassiveFluxContext](PassiveFluxContext.md) (9 shared connections)
-- [LucidityFluxService](LucidityFluxService.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [test_lifespan_startup.py](test_lifespan_startup.py.md) (1 shared connections)
-- [PlayerDeathService](PlayerDeathService.md) (1 shared connections)
+- [service.py](service.py.md) (8 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (4 shared connections)
+- [passive_lucidity_flux/models.py](passive_lucidity_flux-models.py.md) (3 shared connections)
+- [LucidityService](LucidityService.md) (2 shared connections)
+- [lifespan_startup.py](lifespan_startup.py.md) (1 shared connections)
+- [CatatoniaRegistry](CatatoniaRegistry.md) (1 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/passive_lucidity_flux/config.py`
+- `server/services/passive_lucidity_flux/models.py`
 - `server/tests/unit/services/test_passive_lucidity_flux_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 67 (94%)
-- INFERRED: 4 (6%)
+- EXTRACTED: 80 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

@@ -1,6 +1,6 @@
 # ContainerService
 
-> 85 nodes
+> 82 nodes
 
 ## Key Concepts
 
@@ -25,26 +25,24 @@
 - **test_transfer_to_container_mutation_guard_suppressed()** (6 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_transfer_to_container_player_not_found()** (6 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_transfer_to_container_success()** (6 connections) — `server/tests/unit/services/test_container_service.py`
-- **TestGetPlayerIdFromUser** (5 connections) — `server/tests/unit/api/test_container_helpers.py`
 - **test_lock_container_updates_state()** (5 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_loot_all_continues_past_other_errors()** (5 connections) — `server/tests/unit/services/test_container_service.py`
 - **test_loot_all_player_not_found()** (5 connections) — `server/tests/unit/services/test_container_service.py`
-- *... and 60 more nodes in this community*
+- **test_loot_all_success()** (5 connections) — `server/tests/unit/services/test_container_service.py`
+- *... and 57 more nodes in this community*
 
 ## Relationships
 
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (26 shared connections)
+- [server/services/__init__.py](server-services-__init__.py.md) (19 shared connections)
 - [ContainerComponent](ContainerComponent.md) (17 shared connections)
-- [ContainerServiceError](ContainerServiceError.md) (12 shared connections)
-- [server/services/__init__.py](server-services-__init__.py.md) (10 shared connections)
-- [test_containers.py](test_containers.py.md) (3 shared connections)
-- [InventoryMutationGuard](InventoryMutationGuard.md) (3 shared connections)
-- [test_inventory_mutation_guard.py](test_inventory_mutation_guard.py.md) (3 shared connections)
-- [ValidationError](ValidationError.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [LootAllRequest](LootAllRequest.md) (14 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
+- [ContainerServiceError](ContainerServiceError.md) (9 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [TransferContainerRequest](TransferContainerRequest.md) (3 shared connections)
 - [api/conftest.py](api-conftest.py.md) (2 shared connections)
-- [._init_player_quest_layer](_init_player_quest_layer.md) (1 shared connections)
-- [ContainerLockMixin](ContainerLockMixin.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
@@ -52,11 +50,12 @@
 - `server/services/inventory_mutation_guard.py`
 - `server/tests/unit/api/test_container_helpers.py`
 - `server/tests/unit/services/test_container_service.py`
+- `server/tests/unit/services/test_inventory_mutation_guard.py`
 
 ## Audit Trail
 
-- EXTRACTED: 232 (72%)
-- INFERRED: 89 (28%)
+- EXTRACTED: 226 (72%)
+- INFERRED: 88 (28%)
 - AMBIGUOUS: 0 (0%)
 
 ---

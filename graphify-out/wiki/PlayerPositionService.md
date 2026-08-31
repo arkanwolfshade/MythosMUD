@@ -1,63 +1,56 @@
 # PlayerPositionService
 
-> 181 nodes
+> 51 nodes
 
 ## Key Concepts
 
-- **PlayerPositionService** (48 connections) — `server/services/player_position_service.py`
-- **test_rest_command.py** (41 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **rest_command.py** (28 connections) — `server/commands/rest_command.py`
+- **PlayerPositionService** (50 connections) — `server/services/player_position_service.py`
 - **test_player_position_service.py** (28 connections) — `server/tests/unit/services/test_player_position_service.py`
-- **cancel_rest_countdown()** (25 connections) — `server/commands/rest_command.py`
-- **asyncio** (22 connections)
-- **handle_rest_command()** (21 connections) — `server/commands/rest_command.py`
-- **is_player_resting()** (19 connections) — `server/commands/rest_command.py`
-- **_start_rest_countdown()** (12 connections) — `server/commands/rest_command.py`
-- **.change_position()** (12 connections) — `server/services/player_position_service.py`
-- **Any** (12 connections)
 - **asyncio** (12 connections)
-- **_execute_rest_flow()** (11 connections) — `server/commands/rest_command.py`
-- **UUID** (10 connections)
-- **_check_player_in_combat()** (9 connections) — `server/commands/rest_command.py`
-- **_check_rest_location()** (9 connections) — `server/commands/rest_command.py`
-- **.check_and_interrupt_rest()** (8 connections) — `server/commands/combat_handler.py`
-- **_begin_seated_rest_countdown()** (8 connections) — `server/commands/rest_command.py`
-- **_disconnect_player_intentionally()** (8 connections) — `server/commands/rest_command.py`
-- **Player** (8 connections)
-- **MockPersistence** (7 connections) — `server/tests/unit/commands/test_rest_command.py`
-- **PositionChangeResponse** (6 connections) — `server/services/player_position_service.py`
-- **_resolve_rest_command_setup()** (6 connections) — `server/commands/rest_command.py`
-- **_stand_after_cancelled_rest()** (6 connections) — `server/commands/rest_command.py`
-- **._apply_player_info()** (5 connections) — `server/services/player_position_service.py`
-- *... and 156 more nodes in this community*
+- **test_change_position_database_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_save_error()** (5 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_all_positions()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_already_in_position()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_get_stats_error()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_invalid_position()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_no_get_stats()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_no_persistence()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_player_not_found()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_success()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_updates_connection_manager()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_change_position_updates_existing_connection_info()** (4 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_creates_missing()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_keeps_correct()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_no_storage()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_ensure_default_aliases_updates_incorrect()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_player_position_service_init_none_values()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_handles_errors()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_manager()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- **test_update_connection_manager_no_online_players()** (3 connections) — `server/tests/unit/services/test_player_position_service.py`
+- *... and 26 more nodes in this community*
 
 ## Relationships
 
-- [rescue_commands.py](rescue_commands.py.md) (9 shared connections)
-- [test_rest_and_grace_period.py](test_rest_and_grace_period.py.md) (9 shared connections)
-- [AliasStorage](AliasStorage.md) (7 shared connections)
-- [test_go_command.py](test_go_command.py.md) (5 shared connections)
-- [test_magic_commands.py](test_magic_commands.py.md) (5 shared connections)
-- [combat_service.py](combat_service.py.md) (5 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (4 shared connections)
-- [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (4 shared connections)
-- [get_username_from_user](get_username_from_user.md) (3 shared connections)
-- [rest_countdown_task.py](rest_countdown_task.py.md) (3 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
-- [test_container_bundles.py](test_container_bundles.py.md) (2 shared connections)
+- [PositionPlayer](PositionPlayer.md) (10 shared connections)
+- [get_logger](get_logger.md) (6 shared connections)
+- [event_types.py](event_types.py.md) (5 shared connections)
+- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [test_rest_command.py](test_rest_command.py.md) (3 shared connections)
+- [InstanceManager](InstanceManager.md) (1 shared connections)
+- [test_container_bundles.py](test_container_bundles.py.md) (1 shared connections)
+- [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files
 
-- `server/commands/combat_handler.py`
-- `server/commands/rest_command.py`
 - `server/services/player_position_service.py`
-- `server/tests/unit/commands/test_rest_command.py`
 - `server/tests/unit/services/test_player_position_service.py`
 
 ## Audit Trail
 
-- EXTRACTED: 374 (95%)
-- INFERRED: 20 (5%)
+- EXTRACTED: 97 (85%)
+- INFERRED: 17 (15%)
 - AMBIGUOUS: 0 (0%)
 
 ---

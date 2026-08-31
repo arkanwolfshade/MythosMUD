@@ -1,53 +1,57 @@
 # test_hallucination_services.py
 
-> 37 nodes
+> 108 nodes
 
 ## Key Concepts
 
 - **test_hallucination_services.py** (27 connections) — `server/tests/unit/services/test_hallucination_services.py`
 - **HallucinationFrequencyService** (20 connections) — `server/services/hallucination_frequency_service.py`
+- **PhantomHostileService** (18 connections) — `server/services/phantom_hostile_service.py`
+- **FakeHallucinationService** (12 connections) — `server/services/fake_hallucination_service.py`
+- **handle_hallucination_triggers()** (12 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **hallucinations.py** (12 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
 - **asyncio** (9 connections)
+- **test_passive_lucidity_hallucinations.py** (9 connections) — `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
+- **handle_fake_hallucination()** (8 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
 - **.should_trigger_hallucination()** (7 connections) — `server/services/hallucination_frequency_service.py`
 - **.check_room_entry_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
 - **.check_time_based_hallucination()** (6 connections) — `server/services/hallucination_frequency_service.py`
 - **._time_based_hallucination_due()** (6 connections) — `server/services/hallucination_frequency_service.py`
+- **handle_phantom_hostile_hallucination()** (6 connections) — `server/services/passive_lucidity_flux/hallucinations.py`
+- **UUID** (6 connections)
+- **asyncio** (6 connections)
+- **.create_phantom_hostile_data()** (5 connections) — `server/services/phantom_hostile_service.py`
+- **.find_phantom_by_name_in_room()** (5 connections) — `server/services/phantom_hostile_service.py`
 - **UUID** (5 connections)
+- **.generate_fake_npc_tell()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.generate_room_text_overlay()** (4 connections) — `server/services/fake_hallucination_service.py`
+- **.get_active_phantoms()** (4 connections) — `server/services/phantom_hostile_service.py`
 - **test_check_room_entry_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
 - **test_check_time_based_delegates_to_should_trigger()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
 - **test_hallucination_frequency_handles_lucidity_errors()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_room_entry_roll()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_cooldown_active()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_requires_session()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_time_based_triggers_and_sets_cooldown()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_unknown_tier()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **test_hallucination_frequency_wrong_trigger_type()** (4 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **AsyncSession** (4 connections)
-- **.__init__()** (2 connections) — `server/services/hallucination_frequency_service.py`
-- **test_phantom_hostile_service_module_singleton()** (2 connections) — `server/tests/unit/services/test_hallucination_services.py`
-- **Any** (1 connections)
-- **Check if hallucination should trigger on room entry (Uneasy tier). Args:…** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Check if hallucination should trigger based on time (Fractured/Deranged tiers).…** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Service for managing hallucination frequency checks based on player tier.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- **Initialize the hallucination frequency service.** (1 connections) — `server/services/hallucination_frequency_service.py`
-- *... and 12 more nodes in this community*
+- *... and 83 more nodes in this community*
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (7 shared connections)
-- [PhantomHostileService](PhantomHostileService.md) (7 shared connections)
-- [FakeHallucinationService](FakeHallucinationService.md) (6 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [pytest.md](pytest.md.md) (1 shared connections)
+- [LucidityService](LucidityService.md) (10 shared connections)
+- [get_logger](get_logger.md) (8 shared connections)
+- [service.py](service.py.md) (2 shared connections)
+- [pytest.md](pytest.md.md) (2 shared connections)
+- [LucidityFluxService](LucidityFluxService.md) (1 shared connections)
 
 ## Source Files
 
+- `server/services/fake_hallucination_service.py`
 - `server/services/hallucination_frequency_service.py`
+- `server/services/passive_lucidity_flux/hallucinations.py`
+- `server/services/phantom_hostile_service.py`
 - `server/tests/unit/services/test_hallucination_services.py`
+- `server/tests/unit/services/test_passive_lucidity_hallucinations.py`
 
 ## Audit Trail
 
-- EXTRACTED: 73 (86%)
-- INFERRED: 12 (14%)
+- EXTRACTED: 182 (94%)
+- INFERRED: 12 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

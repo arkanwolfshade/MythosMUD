@@ -9,13 +9,12 @@ keeping persistence and live state aligned.
 
 from __future__ import annotations
 
-from typing import Protocol, cast
+from typing import cast
 
 from fastapi import Request
-from sqlalchemy.exc import SQLAlchemyError
 
 from ..alias_storage import AliasStorage
-from ..realtime.envelope import build_event
+from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import (
     PlayerPositionService,
     SupportsConnectionManager,
@@ -25,37 +24,6 @@ from ..structured_logging.enhanced_logging_config import get_logger
 from ..utils.command_parser import get_username_from_user
 
 logger = get_logger(__name__)
-
-
-class _EventSequence(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
-    """Sequence counter surface used by build_event."""
-
-    sequence_counter: int
-
-
-class _RoomBroadcaster(Protocol):  # pylint: disable=too-few-public-methods  # Reason: Protocol stub
-    """Connection manager surface used to fan out posture events."""
-
-    async def broadcast_to_room(self, room_id: str, event: object, exclude_player: object = None) -> None:
-        """Send event to occupants of room_id."""
-
-
-def _format_room_posture_message(player_name: str, previous_position: str | None, new_position: str) -> str:
-    """Create a descriptive room message for posture changes."""
-    previous = (previous_position or "").lower()
-    current = new_position.lower()
-
-    if current == "sitting":
-        return f"{player_name} settles into a seated position."
-    if current == "lying":
-        return f"{player_name} stretches out and lies prone upon the floor."
-    if current == "standing":
-        if previous == "lying":
-            return f"{player_name} pushes up from the floor and stands once more."
-        if previous == "sitting":
-            return f"{player_name} rises from their seat, ready to move again."
-        return f"{player_name} straightens and stands tall."
-    return f"{player_name} shifts their posture uneasily."
 
 
 def _get_position_command_services(
@@ -85,74 +53,6 @@ def _get_position_command_services(
     )
 
 
-def _build_posture_change_event(
-    connection_manager: SupportsConnectionManager | None,
-    player_id: object,
-    room_id: object,
-    player_display_name: str,
-    previous_position: str | None,
-    new_position: str,
-    room_message: str,
-) -> dict[str, object]:
-    return build_event(
-        "player_posture_change",
-        {
-            "player_id": str(player_id) if player_id else None,
-            "player_name": player_display_name,
-            "previous_position": previous_position,
-            "position": new_position,
-            "message": room_message,
-        },
-        room_id=str(room_id) if room_id else None,
-        player_id=str(player_id) if player_id else None,
-        connection_manager=(
-            cast(_EventSequence, cast(object, connection_manager)) if connection_manager is not None else None
-        ),
-    )
-
-
-async def _broadcast_posture_change(
-    connection_manager: SupportsConnectionManager | None,
-    player_id: object,
-    room_id: object,
-    player_display_name: str,
-    previous_position: str | None,
-    new_position: str,
-    room_message: str,
-) -> None:
-    if connection_manager is None or not hasattr(connection_manager, "broadcast_to_room"):
-        return
-    if not room_id or not player_id:
-        return
-    try:
-        event = _build_posture_change_event(
-            connection_manager,
-            player_id,
-            room_id,
-            player_display_name,
-            previous_position,
-            new_position,
-            room_message,
-        )
-        broadcaster = cast(_RoomBroadcaster, cast(object, connection_manager))
-        await broadcaster.broadcast_to_room(str(room_id) if room_id else "", event, exclude_player=player_id)
-        logger.info(
-            "Broadcasted posture change",
-            player_name=player_display_name,
-            player_id=player_id,
-            previous_position=previous_position,
-            new_position=new_position,
-            room_id=room_id,
-        )
-    except (ValueError, AttributeError, ImportError, SQLAlchemyError, TypeError) as exc:
-        logger.warning(
-            "Failed to broadcast posture change",
-            player_name=player_display_name,
-            player_id=player_id,
-            error=str(exc),
-        )
-
-
 async def _handle_position_change(
     current_user: dict[str, object],
     request: Request | None,
@@ -168,7 +68,6 @@ async def _handle_position_change(
     position_service = PlayerPositionService(persistence, connection_manager, alias_storage)
     result = await position_service.change_position(target_player_name, desired_position)
 
-    room_message: str | None = None
     # Always sync posture to client (including "already standing"): UI can show Sitting
     # after cancelled /rest while persistence already has standing.
     previous_position = result.get("previous_position")
@@ -178,15 +77,17 @@ async def _handle_position_change(
     }
     if result.get("success"):
         player_display_name = result.get("player_display_name", target_player_name)
-        room_message = _format_room_posture_message(player_display_name, previous_position, result["position"])
-        await _broadcast_posture_change(
+        player_id = result.get("player_id")
+        room_id = result.get("room_id")
+        # Self line goes via command_response; room via player_posture_change (M1).
+        _ = await emit_posture_change(
             connection_manager,
-            result.get("player_id"),
-            result.get("room_id"),
-            player_display_name,
-            previous_position,
-            result["position"],
-            room_message,
+            player_id=str(player_id) if player_id else target_player_name,
+            display_name=player_display_name,
+            room_id=str(room_id) if room_id else None,
+            previous_position=previous_position,
+            new_position=result["position"],
+            include_self_message=False,
         )
 
     logger.info(
@@ -201,7 +102,6 @@ async def _handle_position_change(
         "result": result["message"],
         "position": result["position"],
         "changed": result["success"],
-        "room_message": room_message,
         "player_update": player_update,
         "game_log_message": result["message"],
         "game_log_channel": "game-log",

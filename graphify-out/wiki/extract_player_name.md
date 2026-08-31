@@ -33,14 +33,13 @@
 
 ## Relationships
 
+- [get_logger](get_logger.md) (7 shared connections)
 - [test_player_presence_tracker.py](test_player_presence_tracker.py.md) (6 shared connections)
-- [DatabaseError](DatabaseError.md) (5 shared connections)
 - [disconnect_grace_period.py](disconnect_grace_period.py.md) (3 shared connections)
 - [player_connection_setup.py](player_connection_setup.py.md) (3 shared connections)
 - [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (3 shared connections)
-- [get_logger](get_logger.md) (2 shared connections)
-- [models/player.py](models-player.py.md) (2 shared connections)
-- [AttributeError](AttributeError.md) (1 shared connections)
+- [Player](Player.md) (2 shared connections)
+- [test_auth_utils.py](test_auth_utils.py.md) (1 shared connections)
 
 ## Source Files
 

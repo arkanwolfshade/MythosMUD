@@ -1,16 +1,15 @@
 # dependencies
 
-> 25 nodes
+> 23 nodes
 
 ## Key Concepts
 
-- **dependencies** (13 connections) — `client/package.json`
+- **dependencies** (12 connections) — `client/package.json`
 - **dompurify** (2 connections) — `client/package.json`
 - **lucide-react** (2 connections) — `client/package.json`
 - **react** (2 connections) — `client/package.json`
 - **react-dom** (2 connections) — `client/package.json`
 - **react-grid-layout** (2 connections) — `client/package.json`
-- **react-resizable** (2 connections) — `client/package.json`
 - **react-rnd** (2 connections) — `client/package.json`
 - **react-router-dom** (2 connections) — `client/package.json`
 - **reactflow** (2 connections) — `client/package.json`
@@ -22,7 +21,6 @@
 - **react** (1 connections) — `client/package.json`
 - **react-dom** (1 connections) — `client/package.json`
 - **react-grid-layout** (1 connections) — `client/package.json`
-- **react-resizable** (1 connections) — `client/package.json`
 - **react-rnd** (1 connections) — `client/package.json`
 - **react-router-dom** (1 connections) — `client/package.json`
 - **reactflow** (1 connections) — `client/package.json`
@@ -40,7 +38,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 23 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

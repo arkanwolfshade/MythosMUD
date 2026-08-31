@@ -35,7 +35,7 @@
 
 - [NATSRetryHandler](NATSRetryHandler.md) (32 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
-- [time.py](time.py.md) (1 shared connections)
+- [connection_manager.py](connection_manager.py.md) (1 shared connections)
 
 ## Source Files
 

@@ -1,46 +1,48 @@
 # Any
 
-> 21 nodes
+> 41 nodes
 
 ## Key Concepts
 
+- **._canonical_room_id()** (13 connections) — `server/realtime/room_subscription_manager.py`
 - **Any** (13 connections)
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.__init__()** (4 connections) — `server/caching/cache_service.py`
-- **.get_cache_stats()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definition()** (3 connections) — `server/caching/cache_service.py`
-- **.get_npc_definitions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_spawn_rules()** (3 connections) — `server/caching/cache_service.py`
-- **.get_all_professions()** (3 connections) — `server/caching/cache_service.py`
-- **.get_profession_by_id()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room()** (3 connections) — `server/caching/cache_service.py`
-- **.get_room_sync()** (3 connections) — `server/caching/cache_service.py`
-- **Initialize the room cache service. Args: persistence: Persistence layer instance** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching. Args: room_id: The room ID Returns: Room data…** (1 connections) — `server/caching/cache_service.py`
-- **Get room data with caching (synchronous version). Args: room_id: The room ID…** (1 connections) — `server/caching/cache_service.py`
-- **Initialize the NPC cache service. Args: npc_service: NPC service instance** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC definitions with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific NPC definition with caching. Args: session: Database session…** (1 connections) — `server/caching/cache_service.py`
-- **Get NPC spawn rules with caching. Args: session: Database session Returns: List…** (1 connections) — `server/caching/cache_service.py`
-- **Get all professions with caching. Returns: List of profession objects** (1 connections) — `server/caching/cache_service.py`
-- **Get a specific profession by ID with caching. Args: profession_id: The…** (1 connections) — `server/caching/cache_service.py`
-- **Get statistics for all caches. Returns: Dictionary containing cache statistics** (1 connections) — `server/caching/cache_service.py`
+- **.get_room_occupants()** (8 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_fallback_npcs_from_room()** (7 connections) — `server/realtime/room_subscription_manager.py`
+- **._query_npcs_from_lifecycle_manager()** (6 connections) — `server/realtime/room_subscription_manager.py`
+- **._add_npc_to_occupants()** (5 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._filter_fallback_npcs()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_npc_name_from_lifecycle_manager()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **._get_online_player_occupants()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.list_room_drops()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.reconcile_room_presence()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.take_room_drop()** (4 connections) — `server/realtime/room_subscription_manager.py`
+- **.add_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.adjust_room_drop()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_room_subscribers()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.get_stats()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.remove_room_occupant()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.set_async_persistence()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.subscribe_to_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **.unsubscribe_from_room()** (3 connections) — `server/realtime/room_subscription_manager.py`
+- **Retrieve current room drops as a defensive copy for callers. Args: room_id: The…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Append an item stack to the room drop ledger. Args: room_id: The room receiving…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Remove quantity of a drop entry, returning the removed stack. Args: room_id:…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- **Adjust quantity for an existing drop entry; removing entry when zero. Args:…** (1 connections) — `server/realtime/room_subscription_manager.py`
+- *... and 16 more nodes in this community*
 
 ## Relationships
 
-- [NPCCacheService](NPCCacheService.md) (4 shared connections)
-- [test_cache_service.py](test_cache_service.py.md) (3 shared connections)
-- [ProfessionCacheService](ProfessionCacheService.md) (3 shared connections)
-- [RoomCacheService](RoomCacheService.md) (3 shared connections)
-- [CacheService](CacheService.md) (2 shared connections)
+- [connection_manager.py](connection_manager.py.md) (20 shared connections)
+- [get_npc_instance_service](get_npc_instance_service.md) (2 shared connections)
 
 ## Source Files
 
-- `server/caching/cache_service.py`
+- `server/realtime/room_subscription_manager.py`
 
 ## Audit Trail
 
-- EXTRACTED: 35 (100%)
+- EXTRACTED: 73 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

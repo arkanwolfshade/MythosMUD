@@ -25,7 +25,7 @@
 
 ## Relationships
 
-- [ADR-020: WebSocket Authentication and CSRF](ADR-020-_WebSocket_Authentication_and_CSRF.md) (1 shared connections)
+- [Claims by cluster](Claims_by_cluster.md) (1 shared connections)
 
 ## Source Files
 

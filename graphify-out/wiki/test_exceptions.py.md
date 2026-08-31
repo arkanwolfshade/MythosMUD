@@ -1,60 +1,63 @@
 # test_exceptions.py
 
-> 42 nodes
+> 113 nodes
 
 ## Key Concepts
 
 - **test_exceptions.py** (44 connections) — `server/tests/unit/test_exceptions.py`
-- **ResourceNotFoundError** (13 connections) — `server/exceptions.py`
-- **GameLogicError** (9 connections) — `server/exceptions.py`
+- **ErrorContext** (40 connections) — `server/exceptions.py`
+- **LoggedException** (20 connections) — `server/exceptions.py`
+- **.__init__()** (15 connections) — `server/exceptions.py`
+- **log_exception_once()** (15 connections) — `server/structured_logging/enhanced_logging_config.py`
+- **Any** (13 connections)
+- **.error()** (9 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **_StubBoundLogger** (7 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **.__init__()** (7 connections) — `server/exceptions.py`
+- **_as_bound_logger()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_log_exception_once_logged_exception_uses_mark_logged()** (6 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **.mark_logged()** (5 connections) — `server/exceptions.py`
+- **test_log_exception_once_plain_exception_sets_flag_and_skips_repeat()** (5 connections) — `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
+- **test_logged_http_exception_initialization()** (5 connections) — `server/tests/unit/test_exceptions.py`
+- **.__init__()** (4 connections) — `server/error_handlers/pydantic_error_handler.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
+- **.__init__()** (4 connections) — `server/exceptions.py`
 - **test_create_error_context()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_http_exception_inheritance()** (4 connections) — `server/tests/unit/test_exceptions.py`
-- **test_game_logic_error()** (3 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **test_resource_not_found_error()** (3 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **test_authentication_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_database_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_database_error_without_table()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_error_context_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_error_context_to_dict()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_error_context_with_values()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_game_logic_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_logged_http_exception_with_logger_name()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_rate_limit_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_rate_limit_error_without_retry_after()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_resource_not_found_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_resource_not_found_error_partial()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_validation_error_initialization()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **test_validation_error_without_field()** (3 connections) — `server/tests/unit/test_exceptions.py`
-- **Game mechanics and logic errors.** (1 connections) — `server/exceptions.py`
-- **Resource not found errors.** (1 connections) — `server/exceptions.py`
-- **Test GameLogicError can be instantiated.** (1 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- **Test ResourceNotFoundError can be instantiated.** (1 connections) — `server/tests/unit/test_exceptions_comprehensive.py`
-- *... and 17 more nodes in this community*
+- *... and 88 more nodes in this community*
 
 ## Relationships
 
-- [test_exceptions_comprehensive.py](test_exceptions_comprehensive.py.md) (8 shared connections)
-- [MythosMUDError](MythosMUDError.md) (8 shared connections)
-- [ErrorContext](ErrorContext.md) (7 shared connections)
-- [DatabaseError](DatabaseError.md) (6 shared connections)
-- [LoggedException](LoggedException.md) (6 shared connections)
-- [ValidationError](ValidationError.md) (5 shared connections)
-- [ErrorType](ErrorType.md) (4 shared connections)
-- [LoggedHTTPException](LoggedHTTPException.md) (4 shared connections)
-- [container_endpoints_basic.py](container_endpoints_basic.py.md) (3 shared connections)
-- [test_auth_utils.py](test_auth_utils.py.md) (2 shared connections)
-- [ConfigurationError](ConfigurationError.md) (2 shared connections)
+- [get_logger](get_logger.md) (65 shared connections)
+- [LoggedHTTPException](LoggedHTTPException.md) (13 shared connections)
+- [ErrorType](ErrorType.md) (8 shared connections)
+- [test_player_death_service.py](test_player_death_service.py.md) (5 shared connections)
+- [lifespan.py](lifespan.py.md) (3 shared connections)
+- [MythosTickScheduler](MythosTickScheduler.md) (2 shared connections)
+- [test_config_init.py](test_config_init.py.md) (1 shared connections)
+- [MemoryMonitor](MemoryMonitor.md) (1 shared connections)
+- [UtilityCommandFactory](UtilityCommandFactory.md) (1 shared connections)
+- [BaseCommand](BaseCommand.md) (1 shared connections)
+- [test_error_handling_middleware.py](test_error_handling_middleware.py.md) (1 shared connections)
 
 ## Source Files
 
+- `server/error_handlers/pydantic_error_handler.py`
 - `server/exceptions.py`
+- `server/structured_logging/enhanced_logging_config.py`
+- `server/tests/unit/structured_logging/test_enhanced_logging_config.py`
 - `server/tests/unit/test_exceptions.py`
 - `server/tests/unit/test_exceptions_comprehensive.py`
 
 ## Audit Trail
 
-- EXTRACTED: 97 (98%)
-- INFERRED: 2 (2%)
+- EXTRACTED: 239 (95%)
+- INFERRED: 13 (5%)
 - AMBIGUOUS: 0 (0%)
 
 ---

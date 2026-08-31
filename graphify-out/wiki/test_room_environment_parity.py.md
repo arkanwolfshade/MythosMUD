@@ -20,7 +20,7 @@
 
 ## Relationships
 
-- [models/player.py](models-player.py.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
 
 ## Source Files
 

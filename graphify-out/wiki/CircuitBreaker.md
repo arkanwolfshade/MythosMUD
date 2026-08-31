@@ -33,9 +33,9 @@
 
 ## Relationships
 
-- [NATSRetryHandler](NATSRetryHandler.md) (7 shared connections)
-- [get_logger](get_logger.md) (5 shared connections)
+- [NATSRetryHandler](NATSRetryHandler.md) (10 shared connections)
 - [test_nats_message_handler.py](test_nats_message_handler.py.md) (4 shared connections)
+- [get_logger](get_logger.md) (2 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

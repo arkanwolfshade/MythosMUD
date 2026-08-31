@@ -30,10 +30,9 @@
 
 ## Relationships
 
-- [DatabaseError](DatabaseError.md) (17 shared connections)
+- [get_logger](get_logger.md) (18 shared connections)
 - [dialogue_definitions_api.py](dialogue_definitions_api.py.md) (6 shared connections)
-- [DialogueService](DialogueService.md) (3 shared connections)
-- [get_logger](get_logger.md) (1 shared connections)
+- [talk_command.py](talk_command.py.md) (3 shared connections)
 - [pytest.md](pytest.md.md) (1 shared connections)
 
 ## Source Files

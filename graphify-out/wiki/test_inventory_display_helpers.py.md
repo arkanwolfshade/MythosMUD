@@ -33,9 +33,10 @@
 
 ## Relationships
 
-- [inventory_command_helpers.py](inventory_command_helpers.py.md) (6 shared connections)
-- [AliasStorage](AliasStorage.md) (3 shared connections)
+- [test_inventory_helpers.py](test_inventory_helpers.py.md) (6 shared connections)
 - [get_logger](get_logger.md) (2 shared connections)
+- [command_result_text](command_result_text.md) (2 shared connections)
+- [AliasStorage](AliasStorage.md) (1 shared connections)
 
 ## Source Files
 

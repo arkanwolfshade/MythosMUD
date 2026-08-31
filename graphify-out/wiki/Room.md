@@ -1,67 +1,60 @@
 # Room
 
-> 225 nodes
+> 96 nodes
 
 ## Key Concepts
 
 - **Room** (73 connections) — `server/models/room.py`
-- **NPCMovementIntegration** (50 connections) — `server/npc/movement_integration.py`
-- **models/room.py** (32 connections) — `server/models/room.py`
 - **test_room_class.py** (30 connections) — `server/tests/unit/models/test_room_class.py`
-- **test_movement_integration.py** (30 connections) — `server/tests/unit/npc/test_movement_integration.py`
-- **server/events/__init__.py** (25 connections) — `server/events/__init__.py`
-- **movement_integration.py** (20 connections) — `server/npc/movement_integration.py`
-- **InstanceManager** (19 connections) — `server/game/instance_manager.py`
-- **idle_movement.py** (18 connections) — `server/npc/idle_movement.py`
-- **test_instance_manager.py** (16 connections) — `server/tests/unit/game/test_instance_manager.py`
-- **instance_manager.py** (13 connections) — `server/game/instance_manager.py`
-- **ObjectAddedToRoom** (8 connections) — `server/events/event_types.py`
-- **ObjectRemovedFromRoom** (8 connections) — `server/events/event_types.py`
 - **.to_dict()** (8 connections) — `server/models/room.py`
-- **.create_instance()** (7 connections) — `server/game/instance_manager.py`
-- **.move_npc_to_room()** (7 connections) — `server/npc/movement_integration.py`
-- **._build_instance_rooms()** (6 connections) — `server/game/instance_manager.py`
 - **UUID** (6 connections)
-- **.__init__()** (5 connections) — `server/game/instance_manager.py`
-- **._stable_id_from_room()** (5 connections) — `server/game/instance_manager.py`
 - **.__init__()** (5 connections) — `server/models/room.py`
 - **.player_entered()** (5 connections) — `server/models/room.py`
-- **.__init__()** (5 connections) — `server/npc/idle_movement.py`
-- **.__init__()** (5 connections) — `server/npc/movement_integration.py`
-- **instance_manager()** (5 connections) — `server/tests/unit/game/test_instance_manager.py`
-- *... and 200 more nodes in this community*
+- **.get_containers()** (4 connections) — `server/models/room.py`
+- **.get_npcs()** (4 connections) — `server/models/room.py`
+- **.get_occupant_count()** (4 connections) — `server/models/room.py`
+- **.has_player()** (4 connections) — `server/models/room.py`
+- **.player_left()** (4 connections) — `server/models/room.py`
+- **.add_player_silently()** (3 connections) — `server/models/room.py`
+- **.get_objects()** (3 connections) — `server/models/room.py`
+- **.is_empty()** (3 connections) — `server/models/room.py`
+- **.npc_left()** (3 connections) — `server/models/room.py`
+- **.object_added()** (3 connections) — `server/models/room.py`
+- **.object_removed()** (3 connections) — `server/models/room.py`
+- **.remove_player_silently()** (3 connections) — `server/models/room.py`
+- **test_room_add_player_silently()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_get_containers()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_get_npcs()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_get_objects()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_get_occupant_count()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_get_players()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- **test_room_has_npc()** (3 connections) — `server/tests/unit/models/test_room_class.py`
+- *... and 71 more nodes in this community*
 
 ## Relationships
 
-- [AsyncPersistenceLayer](AsyncPersistenceLayer.md) (18 shared connections)
-- [time.py](time.py.md) (15 shared connections)
-- [EventBus](EventBus.md) (12 shared connections)
-- [get_logger](get_logger.md) (10 shared connections)
-- [event_types.py](event_types.py.md) (9 shared connections)
-- [IdleMovementHandler](IdleMovementHandler.md) (9 shared connections)
-- [PlayerLeftRoom](PlayerLeftRoom.md) (6 shared connections)
-- [test_follow_service.py](test_follow_service.py.md) (5 shared connections)
-- [NPCBase](NPCBase.md) (5 shared connections)
-- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (5 shared connections)
-- [build_event](build_event.md) (4 shared connections)
-- [DatabaseError](DatabaseError.md) (3 shared connections)
+- [event_types.py](event_types.py.md) (11 shared connections)
+- [get_logger](get_logger.md) (4 shared connections)
+- [movement_service.py](movement_service.py.md) (2 shared connections)
+- [test_websocket_initial_state.py](test_websocket_initial_state.py.md) (2 shared connections)
+- [TargetResolutionService](TargetResolutionService.md) (2 shared connections)
+- [InstanceManager](InstanceManager.md) (2 shared connections)
+- [AggressiveMobNPC](AggressiveMobNPC.md) (2 shared connections)
+- [websocket_helpers.py](websocket_helpers.py.md) (2 shared connections)
+- [RoomCacheLoader](RoomCacheLoader.md) (1 shared connections)
+- [Player](Player.md) (1 shared connections)
+- [RoomRepository](RoomRepository.md) (1 shared connections)
+- [test_player_disconnect_handlers.py](test_player_disconnect_handlers.py.md) (1 shared connections)
 
 ## Source Files
 
-- `server/events/__init__.py`
-- `server/events/event_types.py`
-- `server/game/instance_manager.py`
 - `server/models/room.py`
-- `server/npc/idle_movement.py`
-- `server/npc/movement_integration.py`
-- `server/tests/unit/game/test_instance_manager.py`
 - `server/tests/unit/models/test_room_class.py`
-- `server/tests/unit/npc/test_movement_integration.py`
 
 ## Audit Trail
 
-- EXTRACTED: 447 (97%)
-- INFERRED: 12 (3%)
+- EXTRACTED: 165 (96%)
+- INFERRED: 7 (4%)
 - AMBIGUOUS: 0 (0%)
 
 ---

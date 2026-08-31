@@ -6,17 +6,29 @@ When the followed entity moves, followers attempt the same move; on failure they
 Player-to-player follow requires target acceptance (pending request + follow_request event).
 """
 
-# pylint: disable=too-many-lines  # FollowService keeps tightly coupled follow logic together; splitting would harm cohesion.
-
 from __future__ import annotations
 
 import asyncio
 import uuid
 from collections.abc import Coroutine
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, Literal, TypeGuard
+from typing import TYPE_CHECKING
+
+from structlog.stdlib import BoundLogger
 
 from server.events.event_types import NPCEnteredRoom, PlayerEnteredRoom
+from server.game import follow_movement
+from server.game.follow_types import (
+    FOLLOW_REQUEST_TTL_SECONDS,
+    FollowActionResult,
+    FollowPersistence,
+    FollowStatePayload,
+    FollowTargetValue,
+    PendingFollowRequest,
+    TargetType,
+    is_npc_follow_value,
+    str_id,
+)
 from server.realtime.connection_manager_api import send_game_event
 from server.structured_logging.enhanced_logging_config import get_logger
 
@@ -27,22 +39,12 @@ if TYPE_CHECKING:
     from server.services.player_position_service import PlayerPositionService
     from server.services.user_manager import UserManager
 
+# Re-exports for callers/tests that import from this module.
+_str_id = str_id
+_is_npc_follow_value = is_npc_follow_value
+_FollowTargetValue = FollowTargetValue
+
 logger = get_logger(__name__)
-
-FOLLOW_REQUEST_TTL_SECONDS = 60
-TargetType = Literal["player", "npc"]
-# Stored value: (target_id, target_type) for player; (target_id, target_type, display_name) for NPC.
-_FollowTargetValue = tuple[str, TargetType] | tuple[str, TargetType, str]
-
-
-def _is_npc_follow_value(v: _FollowTargetValue) -> TypeGuard[tuple[str, TargetType, str]]:
-    """True when v is the 3-tuple (target_id, 'npc', display_name)."""
-    return len(v) == 3
-
-
-def _str_id(value: uuid.UUID | str) -> str:
-    """Normalize ID to string for dict keys."""
-    return str(value) if isinstance(value, uuid.UUID) else value
 
 
 class FollowService:
@@ -59,21 +61,21 @@ class FollowService:
         movement_service: MovementService | None = None,
         user_manager: UserManager | None = None,
         connection_manager: ConnectionManager | None = None,
-        async_persistence: Any | None = None,
+        async_persistence: FollowPersistence | None = None,
         player_position_service: PlayerPositionService | None = None,
     ) -> None:
-        self._event_bus = event_bus
-        self._movement_service = movement_service
-        self._user_manager = user_manager
-        self._connection_manager = connection_manager
-        self._async_persistence = async_persistence
-        self._player_position_service = player_position_service
-        self._logger = get_logger(__name__)
+        self._event_bus: EventBus | None = event_bus
+        self._movement_service: MovementService | None = movement_service
+        self._user_manager: UserManager | None = user_manager
+        self._connection_manager: ConnectionManager | None = connection_manager
+        self._async_persistence: FollowPersistence | None = async_persistence
+        self._player_position_service: PlayerPositionService | None = player_position_service
+        self._logger: BoundLogger = get_logger(__name__)
         # follower_id -> (target_id, target_type) or (target_id, target_type, display_name)
-        self._follow_target: dict[str, _FollowTargetValue] = {}
-        # request_id -> { requestor_id, requestor_name, target_id, created_at }
-        self._pending_requests: dict[str, dict[str, Any]] = {}
-        self._service_id = "follow_service"
+        self._follow_target: dict[str, FollowTargetValue] = {}
+        # request_id -> pending request record
+        self._pending_requests: dict[str, PendingFollowRequest] = {}
+        self._service_id: str = "follow_service"
         if event_bus:
             event_bus.subscribe(
                 PlayerEnteredRoom,
@@ -96,30 +98,27 @@ class FollowService:
         now = datetime.now(UTC)
         to_remove: list[str] = []
         for req_id, data in self._pending_requests.items():
-            created = data.get("created_at")
-            if isinstance(created, datetime):
-                elapsed = (now - created).total_seconds()
-                if elapsed >= FOLLOW_REQUEST_TTL_SECONDS:
-                    to_remove.append(req_id)
+            created = data["created_at"]
+            elapsed = (now - created).total_seconds()
+            if elapsed >= FOLLOW_REQUEST_TTL_SECONDS:
+                to_remove.append(req_id)
         for req_id in to_remove:
-            data = self._pending_requests.pop(req_id, {})
-            if data and self._connection_manager:
-                requestor_id = data.get("requestor_id")
-                if requestor_id:
-                    self._send_result_to_player(
-                        _str_id(requestor_id),
-                        "Your follow request has expired.",
-                    )
-                    self._logger.debug(
-                        "Follow request expired",
-                        request_id=req_id,
-                        requestor_id=requestor_id,
-                    )
+            data = self._pending_requests.pop(req_id)
+            if self._connection_manager:
+                self._send_result_to_player(
+                    data["requestor_id"],
+                    "Your follow request has expired.",
+                )
+                self._logger.debug(
+                    "Follow request expired",
+                    request_id=req_id,
+                    requestor_id=data["requestor_id"],
+                )
 
-    def _schedule_coro(self, coro: Coroutine[Any, Any, Any]) -> None:
+    def _schedule_coro(self, coro: Coroutine[object, object, object]) -> None:
         """Fire-and-forget; close coro if no running event loop (e.g. sync unit tests)."""
         try:
-            asyncio.create_task(coro)
+            _ = asyncio.create_task(coro)
         except RuntimeError:
             coro.close()
             raise
@@ -143,29 +142,7 @@ class FollowService:
                 error=str(e),
             )
 
-    def _send_result_and_player_update(self, player_id: str, result: str, position: str | None = None) -> None:
-        """Send command_response with result message and optional player_update (e.g. position) for client UI."""
-        if not self._connection_manager:
-            return
-        try:
-            data: dict[str, Any] = {"result": result}
-            if position is not None:
-                data["player_update"] = {"position": position}
-            self._schedule_coro(
-                send_game_event(
-                    player_id,
-                    "command_response",
-                    data,
-                )
-            )
-        except (ValueError, TypeError, RuntimeError) as e:
-            self._logger.warning(
-                "Failed to send result and player update to player",
-                player_id=player_id,
-                error=str(e),
-            )
-
-    def _send_follow_state_to_player(self, player_id: str, following: dict[str, Any] | None) -> None:
+    def _send_follow_state_to_player(self, player_id: str, following: FollowStatePayload | None) -> None:
         """Send follow_state event so client can update title panel (who I am following)."""
         if not self._connection_manager:
             return
@@ -184,75 +161,72 @@ class FollowService:
                 error=str(e),
             )
 
-    async def request_follow(
+    def _start_following_npc(
         self,
-        requestor_id: uuid.UUID | str,
+        requestor_id: str,
         target_id: str,
-        target_type: TargetType,
-        requestor_name: str,
-        target_display_name: str | None = None,
-    ) -> dict[str, Any]:
-        """
-        Request to follow a player (pending acceptance) or start following an NPC immediately.
+        target_display_name: str | None,
+    ) -> FollowActionResult:
+        """Immediately attach follow state for an NPC target."""
+        display_name = (target_display_name or target_id).strip() or target_id
+        self._follow_target[requestor_id] = (target_id, "npc", display_name)
+        self._logger.info(
+            "Player now following NPC",
+            requestor_id=requestor_id,
+            target_id=target_id,
+        )
+        self._send_follow_state_to_player(requestor_id, {"target_name": display_name, "target_type": "npc"})
+        return {"success": True, "result": f"You are now following {display_name}."}
 
-        Returns dict with keys: success (bool), result (str), and optionally target_message (str).
-        target_display_name: Optional display name for messages (e.g. NPC "Sanitarium patient").
-        """
-        self._expire_pending_requests()
-        rid = _str_id(requestor_id)
-        if rid == target_id:
-            return {"success": False, "result": "You cannot follow yourself."}
-        current = self._follow_target.get(rid)
-        if current:
-            return {"success": False, "result": "You are already following someone. Use /unfollow first."}
-
-        if target_type == "npc":
-            display_name = (target_display_name or target_id).strip() or target_id
-            self._follow_target[rid] = (target_id, "npc", display_name)
-            self._logger.info(
-                "Player now following NPC",
-                requestor_id=rid,
+    async def _follow_request_mute_failure(
+        self,
+        requestor_id: str,
+        target_id: str,
+    ) -> FollowActionResult | None:
+        """Return a failure payload when mute blocks the request; None if allowed."""
+        if not self._user_manager:
+            return None
+        try:
+            if await self._user_manager.is_player_muted_async(uuid.UUID(target_id), uuid.UUID(requestor_id)):
+                return {
+                    "success": False,
+                    "result": "They are not accepting follow requests.",
+                }
+        except (ValueError, TypeError, AttributeError) as e:
+            self._logger.warning(
+                "Mute check failed for follow request",
+                requestor_id=requestor_id,
                 target_id=target_id,
+                error=str(e),
             )
-            self._send_follow_state_to_player(rid, {"target_name": display_name, "target_type": "npc"})
-            return {"success": True, "result": f"You are now following {display_name}."}
+            return {"success": False, "result": "Unable to complete follow request."}
+        return None
 
-        # Player target: check mute then create pending request
-        if self._user_manager:
-            try:
-                target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
-                req_uuid = uuid.UUID(rid) if isinstance(rid, str) else requestor_id
-                muted = await self._user_manager.is_player_muted_async(target_uuid, req_uuid)
-                if muted:
-                    return {
-                        "success": False,
-                        "result": "They are not accepting follow requests.",
-                    }
-            except (ValueError, TypeError, AttributeError) as e:
-                self._logger.warning(
-                    "Mute check failed for follow request",
-                    requestor_id=rid,
-                    target_id=target_id,
-                    error=str(e),
-                )
-                return {"success": False, "result": "Unable to complete follow request."}
-
+    def _create_pending_follow_request(
+        self,
+        requestor_id: str,
+        target_id: str,
+        requestor_name: str,
+    ) -> FollowActionResult:
+        """Store a pending player follow request and notify the target when possible."""
         request_id = str(uuid.uuid4())
         self._pending_requests[request_id] = {
-            "requestor_id": rid,
+            "requestor_id": requestor_id,
             "requestor_name": requestor_name,
             "target_id": target_id,
             "created_at": datetime.now(UTC),
         }
         try:
-            self._schedule_coro(self._send_follow_request_to_target(target_id, request_id, requestor_name, rid))
+            self._schedule_coro(
+                self._send_follow_request_to_target(target_id, request_id, requestor_name, requestor_id)
+            )
         except RuntimeError:
             # No running loop (e.g. sync unit tests); request remains pending in memory.
             pass
         self._logger.info(
             "Follow request created",
             request_id=request_id,
-            requestor_id=rid,
+            requestor_id=requestor_id,
             target_id=target_id,
         )
         return {
@@ -260,6 +234,33 @@ class FollowService:
             "result": "Follow request sent. Waiting for them to accept.",
             "request_id": request_id,
         }
+
+    async def request_follow(
+        self,
+        requestor_id: uuid.UUID | str,
+        target_id: str,
+        target_type: TargetType,
+        requestor_name: str,
+        target_display_name: str | None = None,
+    ) -> FollowActionResult:
+        """
+        Request to follow a player (pending acceptance) or start following an NPC immediately.
+
+        Returns dict with keys: success (bool), result (str), and optionally target_message (str).
+        target_display_name: Optional display name for messages (e.g. NPC "Sanitarium patient").
+        """
+        self._expire_pending_requests()
+        rid = str_id(requestor_id)
+        if rid == target_id:
+            return {"success": False, "result": "You cannot follow yourself."}
+        if self._follow_target.get(rid):
+            return {"success": False, "result": "You are already following someone. Use /unfollow first."}
+        if target_type == "npc":
+            return self._start_following_npc(rid, target_id, target_display_name)
+        mute_failure = await self._follow_request_mute_failure(rid, target_id)
+        if mute_failure is not None:
+            return mute_failure
+        return self._create_pending_follow_request(rid, target_id, requestor_name)
 
     async def _send_follow_request_to_target(
         self,
@@ -283,8 +284,7 @@ class FollowService:
                     "requestor_id": requestor_id,
                 },
             )
-            target_uuid = uuid.UUID(target_id) if isinstance(target_id, str) else target_id
-            await self._connection_manager.send_personal_message(target_uuid, event)
+            _ = await self._connection_manager.send_personal_message(uuid.UUID(target_id), event)
         except (ValueError, TypeError, AttributeError, RuntimeError) as e:
             self._logger.warning(
                 "Failed to send follow_request to target",
@@ -292,15 +292,15 @@ class FollowService:
                 error=str(e),
             )
 
-    async def accept_follow(self, target_id: uuid.UUID | str, request_id: str) -> dict[str, Any]:
+    async def accept_follow(self, target_id: uuid.UUID | str, request_id: str) -> FollowActionResult:
         """Accept a follow request. Target is the player who accepted (the followee)."""
         self._expire_pending_requests()
-        tid = _str_id(target_id)
+        tid = str_id(target_id)
         data = self._pending_requests.pop(request_id, None)
-        if not data or data.get("target_id") != tid:
+        if not data or data["target_id"] != tid:
             return {"success": False, "result": "Invalid or expired follow request."}
-        requestor_id = data.get("requestor_id", "")
-        requestor_name = data.get("requestor_name", "Someone")
+        requestor_id = data["requestor_id"]
+        requestor_name = data["requestor_name"]
         self._follow_target[requestor_id] = (tid, "player")
         self._logger.info(
             "Follow request accepted",
@@ -310,9 +310,8 @@ class FollowService:
         target_display_name = tid
         if self._async_persistence:
             try:
-                target_uuid = uuid.UUID(tid) if isinstance(tid, str) else target_id
-                followee = await self._async_persistence.get_player_by_id(target_uuid)
-                if followee and getattr(followee, "name", None):
+                followee = await self._async_persistence.get_player_by_id(uuid.UUID(tid))
+                if followee is not None and followee.name:
                     target_display_name = followee.name
             except (ValueError, TypeError, AttributeError):
                 pass
@@ -324,14 +323,14 @@ class FollowService:
             "requestor_id": requestor_id,
         }
 
-    async def decline_follow(self, target_id: uuid.UUID | str, request_id: str) -> dict[str, Any]:
+    async def decline_follow(self, target_id: uuid.UUID | str, request_id: str) -> FollowActionResult:
         """Decline a follow request."""
         self._expire_pending_requests()
-        tid = _str_id(target_id)
+        tid = str_id(target_id)
         data = self._pending_requests.pop(request_id, None)
-        if not data or data.get("target_id") != tid:
+        if not data or data["target_id"] != tid:
             return {"success": False, "result": "Invalid or expired follow request."}
-        requestor_id = data.get("requestor_id", "")
+        requestor_id = data["requestor_id"]
         self._send_result_to_player(requestor_id, "Your follow request was declined.")
         return {
             "success": True,
@@ -339,9 +338,9 @@ class FollowService:
             "requestor_id": requestor_id,
         }
 
-    def unfollow(self, follower_id: uuid.UUID | str) -> dict[str, Any]:
+    def unfollow(self, follower_id: uuid.UUID | str) -> FollowActionResult:
         """Stop following. Returns result message."""
-        fid = _str_id(follower_id)
+        fid = str_id(follower_id)
         removed = self._follow_target.pop(fid, None)
         if removed:
             self._logger.info("Player unfollowed", follower_id=fid, target_id=removed[0])
@@ -351,12 +350,12 @@ class FollowService:
 
     def get_followers(self, target_id: str) -> list[str]:
         """Return list of follower player IDs (for movement propagation)."""
-        target_id_str = _str_id(target_id)
+        target_id_str = str_id(target_id)
         return [f for f, v in self._follow_target.items() if v[0] == target_id_str]
 
     def get_following(self, follower_id: uuid.UUID | str) -> tuple[str, TargetType] | None:
         """Return (target_id, target_type) if following someone, else None."""
-        fid = _str_id(follower_id)
+        fid = str_id(follower_id)
         v = self._follow_target.get(fid)
         if v is None:
             return None
@@ -364,274 +363,96 @@ class FollowService:
 
     def get_following_display_name(self, follower_id: uuid.UUID | str) -> str | None:
         """Return stored display name when following an NPC, else None. For players, resolve via persistence."""
-        fid = _str_id(follower_id)
+        fid = str_id(follower_id)
         v = self._follow_target.get(fid)
         if not v or v[1] != "npc":
             return None
-        if _is_npc_follow_value(v):
+        if is_npc_follow_value(v):
             return v[2]
         return None
+
+    async def _resolve_follow_target_label(
+        self,
+        following: FollowTargetValue,
+        async_persistence: FollowPersistence | None,
+    ) -> str:
+        """Human-readable label for the entity this player is following."""
+        target_id, ttype = following[0], following[1]
+        if ttype == "npc" and is_npc_follow_value(following):
+            return following[2]
+        if ttype != "player" or not async_persistence:
+            return target_id
+        try:
+            target_player = await async_persistence.get_player_by_id(uuid.UUID(target_id))
+            if target_player is not None and target_player.name:
+                return target_player.name
+            return target_id
+        except (ValueError, TypeError, AttributeError):
+            return target_id
+
+    async def _followers_display_line(
+        self,
+        followers: list[str],
+        async_persistence: FollowPersistence | None,
+    ) -> str:
+        """One line listing who follows the player (or none)."""
+        if not followers:
+            return "No one is following you."
+        if not async_persistence:
+            return "Following you: " + ", ".join(followers)
+        names: list[str] = []
+        for pid in followers:
+            try:
+                player = await async_persistence.get_player_by_id(uuid.UUID(pid))
+                if player is not None and player.name:
+                    names.append(player.name)
+                else:
+                    names.append(pid)
+            except (ValueError, TypeError, AttributeError):
+                names.append(pid)
+        return "Following you: " + ", ".join(names)
 
     async def get_following_display(
         self,
         follower_id: uuid.UUID | str,
-        async_persistence: Any | None = None,
+        async_persistence: FollowPersistence | None = None,
     ) -> str:
         """Format who you follow and who follows you for /following output."""
-        fid = _str_id(follower_id)
-        lines: list[str] = []
+        fid = str_id(follower_id)
         following = self._follow_target.get(fid)
         if following:
-            target_id, ttype = following[0], following[1]
-            target_display = target_id
-            if ttype == "player" and async_persistence:
-                try:
-                    target_player = await async_persistence.get_player_by_id(uuid.UUID(target_id))
-                    if target_player and getattr(target_player, "name", None):
-                        target_display = target_player.name
-                except (ValueError, TypeError, AttributeError):
-                    pass
-            elif ttype == "npc" and len(following) >= 3:
-                target_display = following[2]
-            lines.append(f"You are following: {target_display} ({ttype})")
+            label = await self._resolve_follow_target_label(following, async_persistence)
+            lines = [f"You are following: {label} ({following[1]})"]
         else:
-            lines.append("You are not following anyone.")
-        followers = self.get_followers(fid)
-        if followers:
-            if async_persistence:
-                names: list[str] = []
-                for pid in followers:
-                    try:
-                        p = await async_persistence.get_player_by_id(uuid.UUID(pid))
-                        names.append(getattr(p, "name", pid) if p else pid)
-                    except (ValueError, TypeError, AttributeError):
-                        names.append(pid)
-                lines.append("Following you: " + ", ".join(names))
-            else:
-                lines.append("Following you: " + ", ".join(followers))
-        else:
-            lines.append("No one is following you.")
+            lines = ["You are not following anyone."]
+        lines.append(await self._followers_display_line(self.get_followers(fid), async_persistence))
         return "\n".join(lines)
 
     async def _ensure_follower_standing(self, follower_id: str) -> bool:
-        """
-        If follower is sitting or prone, try to stand them so they can move.
-        Returns True if follower is or can be standing, False if unable to stand.
-        """
-        if not self._async_persistence or not self._player_position_service:
-            return True
-        try:
-            player = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
-            if not player or not hasattr(player, "get_stats"):
-                return True
-            stats = player.get_stats() or {}
-            if not isinstance(stats, dict):
-                return True
-            position = (stats.get("position") or "standing").lower()
-            if position == "standing":
-                return True
-            if position not in ("sitting", "lying"):
-                return True
-            name = getattr(player, "name", None) or str(follower_id)
-            result = await self._player_position_service.change_position(name, "standing")
-            if result.get("success"):
-                self._logger.debug(
-                    "Follower stood automatically to follow",
-                    follower_id=follower_id,
-                )
-                # Notify follower so Game Info shows stand message and Character panel updates posture.
-                self._send_result_and_player_update(
-                    follower_id,
-                    result.get("message", "You rise to your feet."),
-                    position="standing",
-                )
-                return True
-            self._logger.info(
-                "Follower could not stand to follow",
-                follower_id=follower_id,
-            )
-            return False
-        except (ValueError, TypeError, AttributeError) as e:
-            self._logger.warning(
-                "Could not check/stand follower for follow move",
-                follower_id=follower_id,
-                error=str(e),
-            )
-            return True
+        """If follower is sitting or prone, try to stand them so they can move."""
+        return await follow_movement.ensure_follower_standing(self, follower_id)
 
     async def _on_player_entered_room(self, event: PlayerEnteredRoom) -> None:
         """Move followers when the followed player moves."""
-        if not event.from_room_id or not self._movement_service:
-            return
-        followers = self.get_followers(event.player_id)
-        for follower_id in followers:
-            await self._handle_player_follower_move(follower_id, event)
+        await follow_movement.on_player_entered_room(self, event)
 
     async def _on_npc_entered_room(self, event: NPCEnteredRoom) -> None:
         """Move followers when the followed NPC moves."""
-        if not event.from_room_id or not self._movement_service:
-            return
-        followers = self.get_followers(event.npc_id)
-        for follower_id in followers:
-            await self._handle_npc_follower_move(follower_id, event)
-
-    async def _handle_player_follower_move(self, follower_id: str, event: PlayerEnteredRoom) -> None:
-        """
-        Handle movement propagation for a single follower of a player.
-
-        This helper keeps _on_player_entered_room shallow for readability and Pylint nesting rules.
-        """
-        if not self._movement_service or event.from_room_id is None:
-            # Guard for mypy and runtime: caller should already check these, but we assert locally for safety.
-            return
-        movement_service = self._movement_service
-        try:
-            if not await self._ensure_follower_standing(follower_id):
-                self.unfollow(follower_id)
-                self._send_result_to_player(
-                    follower_id,
-                    "You could not stand to follow and are no longer following.",
-                )
-                self._logger.info(
-                    "Follower lost target (could not stand)",
-                    follower_id=follower_id,
-                    target_id=event.player_id,
-                )
-                return
-            # Idempotency: if follower is already in target room (e.g. duplicate
-            # PlayerEnteredRoom event), skip move and do not unfollow.
-            if self._async_persistence:
-                try:
-                    follower = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
-                    if follower and getattr(follower, "current_room_id", None):
-                        if str(follower.current_room_id) == event.room_id:
-                            self._logger.debug(
-                                "Follower already in target room, skipping move",
-                                follower_id=follower_id,
-                                room_id=event.room_id,
-                            )
-                            return
-                except (ValueError, TypeError, AttributeError):
-                    pass
-            success = await movement_service.move_player(
-                follower_id,
-                event.from_room_id,
-                event.room_id,
-            )
-            if not success:
-                self.unfollow(follower_id)
-                self._send_result_to_player(
-                    follower_id,
-                    "You lost your target and are no longer following.",
-                )
-                self._send_follow_state_to_player(follower_id, None)
-                self._logger.info(
-                    "Follower lost target (move failed)",
-                    follower_id=follower_id,
-                    target_id=event.player_id,
-                )
-            else:
-                # Notify follower so Game Info shows they moved (room_state updates Location panel).
-                self._send_result_to_player(
-                    follower_id,
-                    "You follow your target into the room.",
-                )
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            self._logger.warning(
-                "Error moving follower",
-                follower_id=follower_id,
-                error=str(e),
-            )
-            self.unfollow(follower_id)
-            self._send_result_to_player(
-                follower_id,
-                "You lost your target and are no longer following.",
-            )
-
-    async def _handle_npc_follower_move(self, follower_id: str, event: NPCEnteredRoom) -> None:
-        """
-        Handle movement propagation for a single follower of an NPC.
-
-        Extracted helper to keep _on_npc_entered_room shallow and maintain Pylint nesting limits.
-        """
-        if not self._movement_service or event.from_room_id is None:
-            # Guard for mypy and runtime: caller should already check these, but we assert locally for safety.
-            return
-        movement_service = self._movement_service
-        try:
-            if not await self._ensure_follower_standing(follower_id):
-                self.unfollow(follower_id)
-                self._send_result_to_player(
-                    follower_id,
-                    "You could not stand to follow and are no longer following.",
-                )
-                self._logger.info(
-                    "Follower lost target (could not stand)",
-                    follower_id=follower_id,
-                    npc_id=event.npc_id,
-                )
-                return
-            # Idempotency: skip move if follower already in target room.
-            if self._async_persistence:
-                try:
-                    follower = await self._async_persistence.get_player_by_id(uuid.UUID(follower_id))
-                    if follower and getattr(follower, "current_room_id", None):
-                        if str(follower.current_room_id) == event.room_id:
-                            self._logger.debug(
-                                "Follower already in target room, skipping move (NPC)",
-                                follower_id=follower_id,
-                                room_id=event.room_id,
-                            )
-                            return
-                except (ValueError, TypeError, AttributeError):
-                    pass
-            success = await movement_service.move_player(
-                follower_id,
-                event.from_room_id,
-                event.room_id,
-            )
-            if not success:
-                self.unfollow(follower_id)
-                self._send_result_to_player(
-                    follower_id,
-                    "You lost your target and are no longer following.",
-                )
-                self._send_follow_state_to_player(follower_id, None)
-                self._logger.info(
-                    "Follower lost target (NPC move failed)",
-                    follower_id=follower_id,
-                    npc_id=event.npc_id,
-                )
-            else:
-                self._send_result_to_player(
-                    follower_id,
-                    "You follow your target into the room.",
-                )
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            self._logger.warning(
-                "Error moving follower of NPC",
-                follower_id=follower_id,
-                error=str(e),
-            )
-            self.unfollow(follower_id)
-            self._send_result_to_player(
-                follower_id,
-                "You lost your target and are no longer following.",
-            )
+        await follow_movement.on_npc_entered_room(self, event)
 
     def on_player_disconnect(self, player_id: uuid.UUID | str) -> None:
         """Remove player from follow state and cancel any pending requests involving them."""
-        pid = _str_id(player_id)
-        self._follow_target.pop(pid, None)
+        pid = str_id(player_id)
+        _ = self._follow_target.pop(pid, None)
         to_remove = [
             req_id
             for req_id, data in self._pending_requests.items()
-            if data.get("requestor_id") == pid or data.get("target_id") == pid
+            if pid in (data["requestor_id"], data["target_id"])
         ]
         for req_id in to_remove:
-            self._pending_requests.pop(req_id, None)
+            _ = self._pending_requests.pop(req_id, None)
         for fid, v in list(self._follow_target.items()):
             target_id = v[0]
             if target_id == pid:
-                self._follow_target.pop(fid, None)
+                _ = self._follow_target.pop(fid, None)
         self._logger.debug("Cleaned up follow state for disconnected player", player_id=pid)

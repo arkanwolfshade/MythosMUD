@@ -20,9 +20,11 @@ relaxation limits Any/unknown noise on that boundary.
 
 import asyncio
 import uuid
+from collections.abc import Awaitable, Callable
 from typing import Any, cast
 
 from ..alias_storage import AliasStorage
+from ..realtime.posture_notify import emit_posture_change
 from ..services.player_position_service import PlayerPositionService
 from ..structured_logging.enhanced_logging_config import get_logger
 from .rest_countdown_task import create_rest_countdown_task
@@ -146,7 +148,8 @@ async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: 
     get_player = getattr(connection_manager, "get_player", None)
     if callable(get_player):
         try:
-            player = await get_player(player_id)
+            load_player = cast(Callable[[uuid.UUID], Awaitable[object]], get_player)
+            player = await load_player(player_id)
         except (AttributeError, RuntimeError, TypeError, ValueError) as e:
             logger.warning("Could not load player to stand after rest cancel", player_id=player_id, error=str(e))
 
@@ -156,7 +159,18 @@ async def _stand_after_cancelled_rest(player_id: uuid.UUID, connection_manager: 
 
     try:
         position_service = PlayerPositionService(persistence, connection_manager, None)
-        await position_service.change_position(player_name, "standing")
+        result = await position_service.change_position(player_name, "standing")
+        if result.get("success"):
+            _ = await emit_posture_change(
+                connection_manager,
+                player_id=player_id,
+                display_name=result.get("player_display_name", player_name),
+                room_id=str(result.get("room_id")) if result.get("room_id") else None,
+                previous_position=result.get("previous_position"),
+                new_position=result["position"],
+                include_self_message=True,
+                send_personal_update=True,
+            )
     except (AttributeError, RuntimeError, TypeError, ValueError) as e:
         logger.warning("Failed to stand player after rest cancel", player_id=player_id, error=str(e))
 
@@ -281,6 +295,17 @@ async def _begin_seated_rest_countdown(
 
     if not position_result.get("success") and position_result.get("position") != "sitting":
         return {"result": position_result.get("message", "Failed to assume resting position.")}
+
+    if position_result.get("success"):
+        _ = await emit_posture_change(
+            connection_manager,
+            player_id=player_id,
+            display_name=position_result.get("player_display_name", player_name),
+            room_id=str(position_result.get("room_id")) if position_result.get("room_id") else None,
+            previous_position=position_result.get("previous_position"),
+            new_position=position_result.get("position", "sitting"),
+            include_self_message=False,
+        )
 
     await _start_rest_countdown(player_id, player_name, connection_manager, persistence)
     player_update = {
